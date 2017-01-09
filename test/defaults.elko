@@ -1,0 +1,1 @@
+{"context":"context-test", "user":"user-chip", "listen":"127.0.0.1:1337", "elko":"127.0.0.1:9000", "delay":2000, "rate":1200, "logtime":true, "trace":"debug" }
