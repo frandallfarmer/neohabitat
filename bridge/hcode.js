@@ -582,7 +582,7 @@ this.help		= {
 		clientMessages: { 
 			0:{ op:"HELP" }
 		}
-}
+};
 
 this.Bag		= this.openable;
 this.Box		= this.openable;
