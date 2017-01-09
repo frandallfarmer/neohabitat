@@ -1,0 +1,54 @@
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Going for a walk!", "Telko": { "delay": 1 }}
+{"to":"ME","op":"WALK","x":20,"y":130,"how":1, "Telko": { "delay": 7 }}
+{"to":"ME","op":"WALK","x":20,"y":150,"how":1 }
+{"to":"ME","op":"WALK","x":150,"y":150,"how":1, "Telko": { "delay": 2 }}
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 5 } }
+{"to":"ME","op":"WALK","x":150,"y":130,"how":1, "Telko": { "delay": 7 }}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:4 more laps!", "Telko": { "delay": 1 }}
+{"to":"ME","op":"WALK","x":20,"y":130,"how":1, "Telko": { "delay": 3 } }
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 4 } }
+{"to":"ME","op":"WALK","x":20,"y":150,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"WALK","x":150,"y":150,"how":1, "Telko": { "delay": 2 }}
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 5 } }
+{"to":"ME","op":"WALK","x":150,"y":130,"how":1, "Telko": { "delay": 7 }}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:3 more laps!", "Telko": { "delay": 1 }}
+{"to":"ME","op":"WALK","x":20,"y":130,"how":1, "Telko": { "delay": 3 } }
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 4 } }
+{"to":"ME","op":"WALK","x":20,"y":150,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"WALK","x":150,"y":150,"how":1, "Telko": { "delay": 2 }}
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 5 } }
+{"to":"ME","op":"WALK","x":150,"y":130,"how":1, "Telko": { "delay": 7 }}
+
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:2 more laps!", "Telko": { "delay": 1 }}
+{"to":"ME","op":"WALK","x":20,"y":130,"how":1, "Telko": { "delay": 3 } }
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 4 } }
+{"to":"ME","op":"WALK","x":20,"y":150,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"WALK","x":150,"y":150,"how":1, "Telko": { "delay": 2 }}
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 5 } }
+{"to":"ME","op":"WALK","x":150,"y":130,"how":1, "Telko": { "delay": 7 }}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:1 more laps!", "Telko": { "delay": 1 }}
+{"to":"ME","op":"WALK","x":20,"y":130,"how":1, "Telko": { "delay": 3 } }
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 4 } }
+{"to":"ME","op":"WALK","x":20,"y":150,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"WALK","x":150,"y":150,"how":1, "Telko": { "delay": 2 }}
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Hup!", "Telko": { "delay": "0.1" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 5 } }
+{"to":"ME","op":"WALK","x":"$ME.x","y":"$ME.y","how":1, "Telko": { "delay": 7 }}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Workout complete!", "Telko": { "delay": "2" }}
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 1 } }
+{"to":"ME","op":"POSTURE","pose":134, "Telko": { "delay": 3 } }
+{"to":"ME","op":"POSTURE","pose":135, "Telko": { "delay": 3 } }
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 1 } }

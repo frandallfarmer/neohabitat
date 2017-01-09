@@ -1,0 +1,6 @@
+{"to":"ME","op":"WALK","x":"$woman.x","y":"$woman.y","how":1, "Telko": { "delay": 15 } }
+{"to":"woman","op":"GET", "Telko": { "delay": 3 }}
+{"to":"woman","op":"WEAR"}
+{"to":"ME","op":"POSTURE","pose":146 }
+{"to":"ME","op":"WALK","x":"$ME.x","y":"$ME.y","how":1, "Telko": { "delay": 15 }}
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 2 } }

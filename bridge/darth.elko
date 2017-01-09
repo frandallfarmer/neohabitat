@@ -1,0 +1,6 @@
+{"to":"ME","op":"WALK","x":"$darth.x","y":"$darth.y","how":1, "Telko": { "delay": 10 } }
+{"to":"darth","op":"GET", "Telko": { "delay": 3 }}
+{"to":"darth","op":"WEAR"}
+{"to":"ME","op":"POSTURE","pose":146 }
+{"to":"ME","op":"WALK","x":"$ME.x","y":"$ME.y","how":1, "Telko": { "delay": 15 }}
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 2 } }

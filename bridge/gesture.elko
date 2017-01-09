@@ -1,0 +1,29 @@
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ waves.. (Tab+1)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":141, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ points... (Tab+2)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":136, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ shows... (Tab+3)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":148, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ jumps... (Tab+4)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":139, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ turns... (Tab+5)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ turns tail... (Tab+6)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":143, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ bends over... (Tab+7)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":134, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ bends back... (Tab+8)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":135, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ punches... (Tab+9)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":140, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$ reacts... (Tab+0)", "Telko": { "delay": "0.5" } }
+{"to":"ME","op":"POSTURE","pose":142, "Telko": { "delay": 3 } }

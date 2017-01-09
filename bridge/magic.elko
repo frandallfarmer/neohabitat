@@ -1,0 +1,29 @@
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:What does that chainsaw DO?", "Telko": { "delay": 3 } }
+{"to":"ME","op":"POSTURE","pose":136, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"WALK","x":"$knick_knack.x","y":"$knick_knack.y","how":1, "Telko": { "delay": 7 } }
+{"to":"item-r2.n4.knick_knack","op":"GET", "Telko": { "delay": 4 } }
+
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"POSTURE","pose":148, "Telko": { "delay": 1 } }
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Hmm... Here's a button marked 'DO'. Immagunna pressit!", "Telko": { "delay": 2 } }
+{"to":"ME","op":"POSTURE","pose":140, "Telko": { "delay": 0.25 } }
+{"to":"knick_knack","op":"MAGIC", "Telko": { "delay": 3 } }
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 1 } }
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:OOH! Magic! Again! Again!", "Telko": { "delay": 2 }}
+{"to":"ME","op":"POSTURE","pose":254, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"POSTURE","pose":140}
+{"to":"knick_knack","op":"MAGIC", "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:OOH! One more time, for luck!", "Telko": { "delay": 2 }}
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"POSTURE","pose":140}
+{"to":"knick_knack","op":"MAGIC", "Telko": { "delay": 3 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Well, I'm bored now."}
+{"to":"knick_knack", "op":"PUT", "containerNoid": 0, "x": "$knick_knack.x", "y": "$knick_knack.y", "orientation": 0}
+{"to":"ME","op":"WALK","x": "$ME.x","y": "$ME.y","how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 1 } }

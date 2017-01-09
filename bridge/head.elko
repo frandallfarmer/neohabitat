@@ -1,0 +1,43 @@
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"WALK","x":144,"y":142,"how":1, "Telko": { "delay": 7 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:I need to get ahead...", "Telko": { "delay": "0.5" }}
+{"to":"ME","op":"POSTURE","pose":254, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"WALK","x":"$boy.x","y":"$boy.y","how":1, "Telko": { "delay": 7 } }
+{"to":"boy","op":"GET", "Telko": { "delay": 3 }}
+
+
+{"to":"ME","op":"POSTURE","pose":254, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"WALK","x":20,"y":142,"how":0, "Telko": { "delay": 7 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Ooops! I should put it on.", "Telko": { "delay": "2" }}
+{"to":"boy","op":"WEAR"}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Looks great! Lets walk around and show it off."}
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"WALK","x":50,"y":130,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 3 } }
+{"to":"ME","op":"POSTURE","pose":254}
+{"to":"ME","op":"POSTURE","pose":143}
+{"to":"ME","op":"WALK","x":80,"y":150,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"WALK","x":120,"y":130,"how":1}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Let's see what this head's special expression is!", "Telko": { "delay": "2" }}
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"ME","op":"POSTURE","pose":142, "Telko": { "delay": 3 } }
+{"to":"ME","op":"POSTURE","pose":254, "Telko": { "delay": 2 } }
+
+{"to":"ME","op":"WALK","x":150,"y":150,"how":1, "Telko": { "delay": 7 } }
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 2 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:Nice enough, but not my style.", "Telko": { "delay": "2" }}
+
+{"to":"ME","op":"WALK","x": "$boy.x","y": "$boy.y", "how":0, "Telko": { "delay": 5 } }
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 0.25 } }
+{"to":"boy","op":"REMOVE", "Telko": { "delay": 3 }}
+{"to":"boy","op":"PUT","containerNoid": 0,"x": "$boy.x","y": "$boy.y","orientation": 0}
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$:That was refreshing!"}
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 1 } }
+

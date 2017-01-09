@@ -1,0 +1,4 @@
+{"to":"ME","op":"NEWREGION","direction":2,"passage_id":5, "Telko": {"delay": 2}}
+
+{"to":"session","op":"entercontext","context":"context-test","user":"$USER"}
+
