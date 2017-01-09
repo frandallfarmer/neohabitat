@@ -1,0 +1,5 @@
+{"to":"chipmonk","op":"REMOVE", "Telko": { "delay": 3 }}
+{"to":"ME","op":"WALK","x":"$chipmonk.x","y":"$chipmonk.y","how":1, "Telko": { "delay": 7 } }
+{"to":"chipmonk","op":"PUT","containerNoid": 0,"x": "$chipmonk.x","y": "$chipmonk.y","orientation": 0}
+{"to":"ME","op":"WALK","x":"$ME.x","y":"$ME.y","how":1, "Telko": { "delay": 10 }}
+{"to":"ME","op":"POSTURE","pose":146, "Telko": { "delay": 2 } }
