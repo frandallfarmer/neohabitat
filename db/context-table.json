@@ -1,0 +1,13 @@
+{
+	"type": "context",
+	"ref": "context-table",
+	"capacity": 6,
+	"name": "For testing basic contents handling",
+	"mods": [
+		{
+			"type": "Region",
+			"nitty_bits": 3,
+			"neighbors": ["context-test", "", "context-test", ""]
+		}
+	]
+}

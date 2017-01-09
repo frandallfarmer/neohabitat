@@ -1,0 +1,13 @@
+{
+	"type": "context",
+	"ref": "context-test",
+	"capacity": 6,
+	"name": "Second Region",
+	"mods": [
+		{
+			"type": "Region",
+			"nitty_bits": 3,
+			"neighbors": ["context-table", "context-table", "context-table", "context-table"]
+		}
+	]
+}

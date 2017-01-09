@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-test.magic.godtool",
+	"deletable": true,
+	"name": "Tool to rule the universe.",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Knick_knack",
+			"style": 2,
+			"x": 70,
+			"y": 138,
+			"orientation": 8,
+			"magic_type": 17,
+			"charges": 255
+		}
+	]
+}

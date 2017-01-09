@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-test.head.darth",
+	"deletable": true,
+	"name": "Darth Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 52,
+			"x": 70,
+			"y": 80,
+			"orientation": 8,
+			"gr_state": 1
+		}
+	]
+}

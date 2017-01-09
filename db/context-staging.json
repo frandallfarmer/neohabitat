@@ -1,0 +1,13 @@
+{
+	"type": "context",
+	"ref": "context-staging",
+	"capacity": 6,
+	"name": "Put Objects Here if they are not working yet...",
+	"mods": [
+		{
+			"type": "Region",
+			"nitty_bits": 3,
+			"neighbors": ["context-staging","context-staging","context-staging","context-staging" ]
+		}
+	]
+}

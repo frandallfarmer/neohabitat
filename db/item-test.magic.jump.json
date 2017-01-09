@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-test.magic.jump",
+	"deletable": true,
+	"name": "Makes other avatars jump..",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Knick_knack",
+			"style": 7,
+			"x": 50,
+			"y": 138,
+			"orientation": 16,
+			"magic_type": 2,
+			"charges": 255
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-test.head.melvin",
+	"deletable": true,
+	"name": "Melvin Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 142,
+			"x": 10,
+			"y": 80,
+			"orientation": 0,
+			"gr_state": 1
+		}
+	]
+}

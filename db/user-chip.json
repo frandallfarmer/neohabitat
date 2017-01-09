@@ -1,0 +1,15 @@
+{
+	"type": "user",
+	"ref": "user-chip",
+	"name": "Chip",
+	"mods": [
+		{
+			"type": "Avatar",
+			"x": 136,
+			"y": 130,
+			"bodyType": "male",
+			"bankBalance": 10000,
+			"custom": [68, 68]
+		}
+	]
+}

@@ -1,0 +1,19 @@
+{
+	"type": "item",
+	"ref": "item-test.knick_knack.chainsaw",
+	"deletable": true,
+	"name": "A Chainsaw knick knack.",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Knick_knack",
+			"style": 5,
+			"x": 100,
+			"y": 138,
+			"orientation": 8,
+			"magic_type": 1,
+			"gr_state": 1,
+			"charges": 10
+		}
+	]
+}

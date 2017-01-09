@@ -1,0 +1,81 @@
+{
+	"ref": "classes",
+	"type": "classes",
+	"classes": [
+		{
+			"type": "class",
+			"tag": "Avatar",
+			"name": "org.made.neohabitat.mods.Avatar"
+		},
+		{
+			"type": "class",
+			"tag": "Bag",
+			"name": "org.made.neohabitat.mods.Bag"
+		},
+		{
+			"type": "class",
+			"tag": "Box",
+			"name": "org.made.neohabitat.mods.Box"
+		},
+		{
+			"type": "class",
+			"tag": "Flashlight",
+			"name": "org.made.neohabitat.mods.Flashlight"
+		},
+		{
+			"type": "class",
+			"tag": "Ground",
+			"name": "org.made.neohabitat.mods.Ground"
+		},
+		{
+			"type": "class",
+			"tag": "Head",
+			"name": "org.made.neohabitat.mods.Head"
+		},
+		{
+			"type": "class",
+			"tag": "Key",
+			"name": "org.made.neohabitat.mods.Key"
+		},		
+		{
+			"type": "class",
+			"tag": "Knick_knack",
+			"name": "org.made.neohabitat.mods.Knick_knack"
+		},
+		{
+			"type": "class",
+			"tag": "Region",
+			"name": "org.made.neohabitat.mods.Region"
+		},
+		{
+			"type": "class",
+			"tag": "Rock",
+			"name": "org.made.neohabitat.mods.Rock"
+		},
+		{
+			"type": "class",
+			"tag": "Table",
+			"name": "org.made.neohabitat.mods.Table"
+		},
+		{
+			"type": "class",
+			"tag": "Tree",
+			"name": "org.made.neohabitat.mods.Tree"
+		},
+		{
+			"type": "class",
+			"tag": "Sign",
+			"name": "org.made.neohabitat.mods.Sign"
+		},
+		{
+			"type": "class",
+			"tag": "Short_sign",
+			"name": "org.made.neohabitat.mods.Short_sign"
+		},
+		{
+			"type": "class",
+			"tag": "Wall",
+			"name": "org.made.neohabitat.mods.Wall"
+		}
+	]
+}

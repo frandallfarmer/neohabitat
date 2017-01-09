@@ -1,0 +1,16 @@
+{
+	"type": "item",
+	"ref": "item-staging.tree",
+	"deletable": true,
+	"name": "Tree",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Tree",
+			"style": 9,
+			"x": 40,
+			"y": 32,
+			"orientation": 0
+		}
+	]
+}
