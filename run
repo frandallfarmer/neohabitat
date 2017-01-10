@@ -37,6 +37,7 @@ BASE_ARGS=(
   org.elkoserver.server.context.ContextServerBoot
 )
 
+# Ensures that the log directory exists.
 mkdir -p ${TRACE_DIR}
 
 # Starts the Habitat-to-Elko bridge process.

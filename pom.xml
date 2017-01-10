@@ -19,11 +19,9 @@
             <version>3.4.1</version>
         </dependency>
         <dependency>
-            <groupId>elkoserver</groupId>
+            <groupId>org.elko</groupId>
             <artifactId>elkoserver</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/elkoserver-2.0.3.jar</systemPath>
+            <version>${env.ELKO_VERSION}</version>
         </dependency>
     </dependencies>
 
@@ -46,26 +44,6 @@
                                     <mainClass>org.elkoserver.foundation.boot.Boot</mainClass>
                                 </transformer>
                             </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.googlecode.addjars-maven-plugin</groupId>
-                <artifactId>addjars-maven-plugin</artifactId>
-                <version>1.0.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>add-jars</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/lib</directory>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>
