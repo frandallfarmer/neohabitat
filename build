@@ -1,4 +1,5 @@
 #!/bin/bash
+# Builds the Neoclassical Habitat Elko server.
 
 export ELKO_VERSION="${NEOHABITAT_ELKO_VERSION-2.0.3}"
 

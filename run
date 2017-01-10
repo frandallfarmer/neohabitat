@@ -1,5 +1,5 @@
 #!/bin/bash
-# Starts a Neoclassical Habitat server.
+# Starts a Neoclassical Habitat server and Habitat protocol bridge.
 
 set -eo pipefail
 
