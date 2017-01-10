@@ -16,6 +16,8 @@ services:
     privileged: true
     volumes:
       - .:/neohabitat
+    environment:
+      - NEOHABITAT_MONGO_HOST=mongo:27017
     ports:
       - "1337:1337"
       - "9000:9000"
