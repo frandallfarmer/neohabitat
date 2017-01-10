@@ -19,7 +19,7 @@ NEOHABITAT_MONGO_HOST := "127.0.0.1"
 
 # Make the database setup stuff
 db:
-	rm $(DBINIT_SCRIPT)
+	rm -f $(DBINIT_SCRIPT)
 	echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	echo 'mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js <<ENDINITS' >> $(DBINIT_SCRIPT)
 	cat dbinitpre.js >> $(DBINIT_SCRIPT)
