@@ -10,6 +10,8 @@ GIT_BASE_DIR=$(git rev-parse --show-toplevel)
 # Sets default config values if there are no environment-level overrides.
 DEBUG_PORT="${NEOHABITAT_DEBUG_PORT-1985}"
 MONGO_HOST="${NEOHABITAT_MONGO_HOST-127.0.0.1:27017}"
+BRIDGE_HOST="${NEOHABITAT_BRIDGE_HOST-0.0.0.0}"
+BRIDGE_PORT="${NEOHABITAT_BRIDGE_PORT-1337}"
 SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
 SERVER_BIND="${NEOHABITAT_SERVER_PORT-0.0.0.0}"
@@ -42,7 +44,7 @@ BASE_ARGS=(
 mkdir -p "${TRACE_DIR}"
 
 # Starts the Habitat-to-Elko bridge process.
-supervisor bridge/Habitat2ElkoBridge.js &
+supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
 
 # Starts the Habitat Elko server.
 java -jar target/neohabitat-*.jar "${BASE_ARGS[@]}" "${@}"
