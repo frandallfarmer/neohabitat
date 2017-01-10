@@ -1,0 +1,11 @@
+{
+  "name": "neohabitat",
+  "version": "0.1.0",
+  "description": "Neoclassical Habitat",
+  "dependencies": {
+    "winston": "^2.3.0",
+    "yargs": "^6.6.0"
+  },
+  "license": "MIT",
+  "homepage": "https://frandallfarmer.github.io/neohabitat/"
+}

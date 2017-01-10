@@ -1,4 +1,11 @@
-/bin/
+.idea/
+bin/
+lib/
+log/
+node_modules/
+target/
 .classpath
 .project
 .settings
+dependency-reduced-pom.xml
+neohabitat.iml

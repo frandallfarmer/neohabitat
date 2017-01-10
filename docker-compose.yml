@@ -1,0 +1,41 @@
+version: '2'
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=dev
+      - MYSQL_DATABASE=qlink
+      - MYSQL_USER=qlink
+      - MYSQL_PASSWORD=qlink
+    ports:
+      - "3306:3307"
+  mongo:
+    image: mongo:3.0
+    ports:
+      - "27017:27017"
+  neohabitat:
+    build: .
+    privileged: true
+    volumes:
+      - .:/neohabitat
+    environment:
+      - NEOHABITAT_MONGO_HOST=mongo:27017
+    ports:
+      - "1337:1337"
+      - "9000:9000"
+    depends_on:
+      - mariadb
+      - mongo
+  qlink:
+    image: philcollins/qlink
+    environment:
+      - QLINK_DB_HOST=mariadb
+      - QLINK_DB_JDBC_URI=jdbc:mysql://mariadb:3306/qlink
+      - QLINK_DB_USERNAME=qlink
+      - QLINK_DB_PASSWORD=qlink
+      - QLINK_HABITAT_HOST=neohabitat
+    ports:
+      - "5190:5190"
+    depends_on:
+      - neohabitat
+      - mariadb

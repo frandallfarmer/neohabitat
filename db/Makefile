@@ -15,17 +15,16 @@ MONGODB_OBJECTS = $(shell find . -name '*.json')
 # The file that actually gets produced by "make db"
 DBINIT_SCRIPT = ./dbinit.sh
 
+NEOHABITAT_MONGO_HOST := "127.0.0.1"
+
 # Make the database setup stuff
 db:
-	rm $(DBINIT_SCRIPT)
+	rm -f $(DBINIT_SCRIPT)
 	echo '#!/bin/bash' > $(DBINIT_SCRIPT)
-	echo 'mongo elko --verbose --shell mongohelper.js <<ENDINITS' >> $(DBINIT_SCRIPT)
+	echo 'mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js <<ENDINITS' >> $(DBINIT_SCRIPT)
 	cat dbinitpre.js >> $(DBINIT_SCRIPT)
 	$(foreach F,$(MONGODB_OBJECTS),echo "eupdate("`sed -e 's/\\\/\\\\\\\\/' -e 's/\\$$/\\\\$$/' < $(F)`")" >> $(DBINIT_SCRIPT);)
 	cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	echo 'ENDINITS' >> $(DBINIT_SCRIPT)
 	chmod +x $(DBINIT_SCRIPT)
 	$(DBINIT_SCRIPT)
-
-
-
