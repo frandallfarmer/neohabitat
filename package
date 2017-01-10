@@ -1,0 +1,9 @@
+#!/bin/bash
+
+ELKO_VERSION=2.0.3
+
+mkdir lib
+wget -O ./lib/elkoserver-${ELKO_VERSION}.jar \
+  https://github.com/FUDCo/Elko/releases/download/v${ELKO_VERSION}/elkoserver-${ELKO_VERSION}.jar
+
+mvn package
