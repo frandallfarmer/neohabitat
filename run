@@ -16,6 +16,8 @@ SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
 SERVER_BIND="${NEOHABITAT_SERVER_PORT-0.0.0.0}"
 SHUTDOWN_PASSWORD="${NEOHABITAT_SHUTDOWN_PASSWORD-figleaf}"
+SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE-true}"
+SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT-true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
 TRACE_DIR="${GIT_BASE_DIR}/log"
 
@@ -43,8 +45,12 @@ BASE_ARGS=(
 # Ensures that the log directory exists.
 mkdir -p "${TRACE_DIR}"
 
-# Starts the Habitat-to-Elko bridge process.
-supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
+# Starts the Habitat-to-Elko bridge process if requested.
+if [ "${SHOULD_RUN_BRIDGE}" = true ]; then
+  supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
+fi
 
-# Starts the Habitat Elko server.
-java -jar target/neohabitat-*.jar "${BASE_ARGS[@]}" "${@}"
+# Starts the Habitat Elko server if requested.
+if [ "${SHOULD_RUN_NEOHABITAT}" = true ]; then
+  java -jar target/neohabitat-*.jar "${BASE_ARGS[@]}" "${@}"
+fi
