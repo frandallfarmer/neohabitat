@@ -1,1 +1,37 @@
 #!/bin/bash
+# Starts a Neoclassical Habitat server.
+
+set -eo pipefail
+
+GIT_BASE_DIR=$(git rev-parse --show-toplevel)
+
+MONGO_HOST="${NEOHABITAT_MONGO_HOST-127.0.0.1:27017}"
+SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
+SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
+SERVER_BIND="${NEOHABITAT_SERVER_PORT-0.0.0.0}"
+PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
+TRACE_DIR="${GIT_BASE_DIR}/log"
+
+BASE_ARGS=(
+  trace_cont=EVENT
+  trace_comm=EVENT
+  tracelog_tag=context
+  tracelog_dir="${TRACE_DIR}"
+  conf.listen.host="${SERVER_HOST}:${PORT_RESV_TCP}"
+  conf.listen.bind="${SERVER_BIND}:${PORT_RESV_TCP}"
+  conf.listen.protocol=tcp
+  conf.listen.auth.mode=open
+  conf.register.auto=true
+  conf.comm.jsonstrictness=true
+  conf.context.entrytimeout=300
+  conf.context.odb=mongo
+  conf.context.odb.mongo.hostport="${MONGO_HOST}"
+  conf.context.objstore=org.elkoserver.objdb.store.mongostore.MongoObjectStore
+  conf.context.name="${SERVER_NAME}"
+  conf.context.shutdownpassword=figleaf
+  conf.msgdiagnostics=true
+  org.elkoserver.server.context.ContextServerBoot
+)
+
+mkdir -p ${TRACE_DIR}
+java -jar target/neohabitat-*.jar "${BASE_ARGS[@]}" "${@}"
