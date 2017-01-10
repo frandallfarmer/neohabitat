@@ -36,14 +36,11 @@ RUN yum -y install \
   yum clean all
 
 # Installs Node dependencies.
-RUN npm install -g \
-  supervisor \
-  yargs \
-  winston
+RUN npm install -g supervisor
 
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
-RUN ./package
+RUN npm install && ./package
 
 ENTRYPOINT /neohabitat/run
 

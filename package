@@ -7,15 +7,15 @@ if [ ! -e ./lib/elkoserver-${ELKO_VERSION}.jar ]; then
   mkdir -p lib
   wget -O ./lib/elkoserver-${ELKO_VERSION}.jar \
     https://github.com/FUDCo/Elko/releases/download/v${ELKO_VERSION}/elkoserver-${ELKO_VERSION}.jar
-
-  # Installs the Elkoserver JAR into the local Maven repository.
-  mvn install:install-file \
-    -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
-    -DgroupId=org.elko \
-    -DartifactId=elkoserver \
-    -Dversion="${ELKO_VERSION}" \
-    -Dpackaging=jar \
-    -DgeneratePom=true
 fi
+
+# Installs the Elkoserver JAR into the local Maven repository.
+mvn install:install-file \
+  -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
+  -DgroupId=org.elko \
+  -DartifactId=elkoserver \
+  -Dversion="${ELKO_VERSION}" \
+  -Dpackaging=jar \
+  -DgeneratePom=true
 
 mvn package

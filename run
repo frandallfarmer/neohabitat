@@ -8,6 +8,7 @@ trap 'kill %1; kill %2' SIGINT
 GIT_BASE_DIR=$(git rev-parse --show-toplevel)
 
 # Sets default config values if there are no environment-level overrides.
+DEBUG_PORT="${NEOHABITAT_DEBUG_PORT-1985}"
 MONGO_HOST="${NEOHABITAT_MONGO_HOST-127.0.0.1:27017}"
 SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
@@ -38,7 +39,7 @@ BASE_ARGS=(
 )
 
 # Ensures that the log directory exists.
-mkdir -p ${TRACE_DIR}
+mkdir -p "${TRACE_DIR}"
 
 # Starts the Habitat-to-Elko bridge process.
 supervisor bridge/Habitat2ElkoBridge.js &
