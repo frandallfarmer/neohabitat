@@ -1,18 +1,23 @@
 #!/bin/bash
 # Builds the Neoclassical Habitat Elko server.
 
-export ELKO_VERSION="${NEOHABITAT_ELKO_VERSION-2.0.3}"
+set -eo pipefail
 
+ELKO_VERSION="2.0.4-SNAPSHOT"
+
+# Downloads the latest version of Elkoserver if we have not yet done so.
 if [ ! -e ./lib/elkoserver-${ELKO_VERSION}.jar ]; then
-  # Downloads the latest version of Elkoserver.
   mkdir -p lib
   wget -O ./lib/elkoserver-${ELKO_VERSION}.jar \
-    https://github.com/FUDCo/Elko/releases/download/v${ELKO_VERSION}/elkoserver-${ELKO_VERSION}.jar
+    https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}.jar
+  wget -O ./lib/elkoserver-${ELKO_VERSION}-sources.jar \
+    https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-sources.jar
 fi
 
 # Installs the Elkoserver JAR into the local Maven repository.
 mvn install:install-file \
   -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
+  -Dsources=./lib/elkoserver-${ELKO_VERSION}-sources.jar \
   -DgroupId=org.elko \
   -DartifactId=elkoserver \
   -Dversion="${ELKO_VERSION}" \
