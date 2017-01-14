@@ -80,7 +80,7 @@ Download the latest Windows Vice emulator from the above link then make the foll
 
 **OS X**
 
-Download the **Cocoa variant** Vice emulator from the above link then make the following configuration changes:
+Newer versions of Vice are not compatible with QuantumLink, so be sure to download **version 2.4** of the **Cocoa UI variant**.  Once you've done so, open the DMG and follow this configuration procedure:
 
 - Drag the x64 application from the Vice D64 to your Applications folder
 - Establish a shell alias in your ~/.bashrc or ~/.zshrc to force the enabling of the RS232 userport:
@@ -89,7 +89,7 @@ Download the **Cocoa variant** Vice emulator from the above link then make the f
 alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rsuserdev 0'
 ```
 
-- Launch Vice via the above command then go to Settings -> Resource Inspector
+- Launch Vice via the above alias then go to Settings -> Resource Inspector
 - Under Peripherals -> RS232, set Device 1 to the following: ```|nc 127.0.0.1 5190```
 - Under Peripherals -> RS232, set Device 1 Baud Rate to the following: ```1200```
 - Save these new settings via Settings -> Save current Settings
