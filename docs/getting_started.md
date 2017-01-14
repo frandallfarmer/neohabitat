@@ -21,8 +21,56 @@ Step 1 - Install Docker
 
 To take advantage of the Neohabitat automation, you'll need to install Docker and Docker Compose.  You can do so by following one of the following guides:
 
-- [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+**Windows**
+
+If you're currently running Windows 10 Professional/Enterprise/Education, you can use Docker for Windows, which will streamline the setup experience:
+
 - [Docker for Windows](https://docs.docker.com/docker-for-windows/)
+
+If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all other versions.  Download and install the **latest versions** of the following programs:
+
+- [Vagrant](https://www.vagrantup.com/downloads.html)
+- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+
+Next, open a command line and navigate to the location of your Neohabitat checkout.  Run the following command:
+
+```bash
+vagrant plugin install vagrant-docker-compose
+vagrant up
+```
+
+Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services.
+
+If all does not go well, it's likely that one of the upstream Linux package repositories is having issues.  If so, you may need to retry the Vagrant build process:
+
+```bash
+vagrant up
+```
+
+After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
+
+- **1337**: Habitat protocol bridge
+- **3307**: MariaDB (open source MySQL) server
+- **5190**: QuantumLink Reloaded server
+- **9000**: Neoclassical Habitat Elko server
+- **27017**: MongoDB server
+
+If you wish to restart the Neohabitat server after making a code change, be certain that you've build a new JAR via the ```./build``` command, then restart Neohabitat with the following command:
+
+```bash
+vagrant reload
+```
+
+**OS X**
+
+Follow the instructions here:
+
+- [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+
+**Linux**
+
+Follow the instructions here:
+
 - [Docker for Ubuntu](https://docs.docker.com/engine/installation/linux/ubuntulinux/)
 - [Docker for CentOS](https://docs.docker.com/engine/installation/linux/centos/)
 - [Docker for Fedora](https://docs.docker.com/engine/installation/linux/fedora/)
@@ -73,10 +121,10 @@ To test Commodore 64 behavior, you'll need to install a C64 emulator and downloa
 Download the latest Windows Vice emulator from the above link then make the following configuration changes:
 
 - Go to Settings –> RS232 Settings:
-  - Set RS232 Device 1 to the following: 127.0.0.1:5190
+  - Set RS232 Device 1 to the following: **127.0.0.1:5190**
 - Go to Settings –> Cart I/O Settings –> RS232 Userport settings:
-  - Enable RS232 Userport and Userport Device RS232 Device 1
-  - Set Userport baud rate to the following: 1200
+  - Enable **RS232 Userport** and **Userport Device RS232 Device 1**
+  - Set **Userport baud rate** to the following: **1200**
 
 **OS X**
 
@@ -100,8 +148,8 @@ Step 4 - Download the C64 Clients
 Client software can be downloaded here:
 
 - [QuantumLink (with Habitat support)](https://s3.amazonaws.com/ssalevan/neohabitat/QuantumLink.d64)
-- [Club Caribe (disk A/side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
-- [Club Caribe (disk B/Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
+- [Club Caribe disk A (a.k.a. side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
+- [Club Caribe disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
 
 The Club Caribe client software is identical to the Habitat software, so please note this as we continue.
 
@@ -133,7 +181,7 @@ When this task is complete, you'll be brought to the QuantumLink home screen; it
 Step 6 - Load MongoDB Models
 ----------------------------
 
-Recall the username you entered above then create a file in the **db/** folder called **user-<username>.json**.  For instance, if your username was **Steve**, you'd add the following to **db/user-steve.json**:
+Recall the username you entered above then create a file in the **db/** folder called **user-username.json**.  For instance, if your username was **Steve**, you'd add the following to **db/user-steve.json**:
 
 ```json
 {
@@ -186,7 +234,7 @@ You'll be asked to insert the **Imagery Disk**, which is **Club Caribe Disk B (c
 
 If all goes well, you'll be brought to the first Habitat screen.  If so, congratulations!
 
-Step 8 - Build Neohabitat locally to enable IDE integration
+Step 8 - Build Neohabitat Locally to Enable IDE Integration
 -----------------------------------------------------------
 
 The Neohabitat build scripting will install necessary dependency JARs that are not present in Maven Central; to enable IDE support, simply run a local build:
