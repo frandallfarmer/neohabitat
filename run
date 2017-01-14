@@ -6,6 +6,7 @@ set -eo pipefail
 trap 'kill %1; kill %2' SIGINT
 
 GIT_BASE_DIR=$(git rev-parse --show-toplevel)
+VERSION=$(cat ${GIT_BASE_DIR}/target/classes/version.txt)
 
 # Sets default config values if there are no environment-level overrides.
 DEBUG_PORT="${NEOHABITAT_DEBUG_PORT-1985}"
@@ -25,7 +26,6 @@ BASE_ARGS=(
   trace_cont=EVENT
   trace_comm=EVENT
   tracelog_tag=context
-  tracelog_dir="${TRACE_DIR}"
   conf.listen.host="${SERVER_HOST}:${PORT_RESV_TCP}"
   conf.listen.bind="${SERVER_BIND}:${PORT_RESV_TCP}"
   conf.listen.protocol=tcp
@@ -46,11 +46,11 @@ BASE_ARGS=(
 mkdir -p "${TRACE_DIR}"
 
 # Starts the Habitat-to-Elko bridge process if requested.
-if [ "${SHOULD_RUN_BRIDGE}" = true ]; then
+if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
   supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
 fi
 
 # Starts the Habitat Elko server if requested.
-if [ "${SHOULD_RUN_NEOHABITAT}" = true ]; then
-  java -jar target/neohabitat-*.jar "${BASE_ARGS[@]}" "${@}"
+if [ "${SHOULD_RUN_NEOHABITAT}" == true ]; then
+  java -jar target/neohabitat-${VERSION}.jar "${BASE_ARGS[@]}" "${@}"
 fi
