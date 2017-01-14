@@ -93,14 +93,14 @@ docker-compose exec neohabitat /bin/bash
 Step 2 - Build and Start Neohabitat Services (with Vagrant)
 -----------------------------------------------------------
 
-Open a command line and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
+Open a **standard Windows command line (cmd.exe, not Bash or PowerShell)** and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
 
 ```bash
 vagrant plugin install vagrant-docker-compose
 vagrant up --provider=virtualbox
 ```
 
-Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services.
+Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services; launch time will also be greatly minimized.
 
 After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
 
@@ -110,16 +110,18 @@ After the build procedure has concluded, you can develop and build new artifacts
 - **9000**: Neoclassical Habitat Elko server
 - **27017**: MongoDB server
 
-If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
-
-```bash
-vagrant reload
-```
-
 You can reach a console via the following command:
 
 ```bash
 vagrant ssh
+```
+
+If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
+
+```bash
+vagrant ssh
+cd /vagrant
+docker-compose restart neohabitat
 ```
 
 **Troubleshooting**
@@ -147,9 +149,9 @@ why a particular provider isn't working by forcing usage with
 error message for that particular provider.
 ```
 
-You may need to change the value of the ```ENV["VBOX_INSTALL_PATH"]``` setting in your Vagrantfile to point to your installation of VirtualBox.
+You may need to change the value of the ```ENV["VBOX_INSTALL_PATH"]``` setting in your Vagrantfile to point to your custom VirtualBox installation.
 
-If an error occurs during the provisioning process, simply retry the launch procedure:
+If an error occurs during the provisioning process, simply retry the launch procedure after waiting a few minutes:
 
 ```bash
 vagrant up --provider=virtualbox
@@ -216,7 +218,11 @@ Eventually, you'll be brought to a screen that asks you to establish your initia
 - Phone: **Tone**
 - Number: **+5551212**
 
-After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```.  Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
+After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```:
+
+![QuantumLink Connect Screen](https://s3.amazonaws.com/ssalevan/neohabitat/connect_qlink.png)
+
+Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
 
 When this task is complete, you'll be brought to the QuantumLink home screen; it'll look something like this:
 
@@ -264,7 +270,11 @@ On the Commodore 64, the function keys were placed prominently to the right of t
 - **F5** - Goes back, similar to the back button in a web browser
 - **F7** - Brings up a department menu
 
-At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen.  After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** and press **F1**.  Select **Start a game (pick your partners)** and press **F1** again.
+At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen:
+
+![QuantumLink People Connection Screen](https://s3.amazonaws.com/ssalevan/neohabitat/people_connection.png)
+
+After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** and press **F1**.  Select **Start a game (pick your partners)** and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
 
@@ -276,7 +286,11 @@ Eventually, you'll reach a screen that looks something like this:
 
 You'll be asked to insert the **Imagery Disk**, which is **Club Caribe Disk B (club-caribe-b.d64)**.  Attach this disk using the above procedure and hit **Enter**.  You can engage Warp Mode here as well.
 
-If all goes well, you'll be brought to the first Habitat screen.  If so, congratulations!
+If all goes well, you'll be brought to the first Habitat screen:
+
+![Habitat Start Screen](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_start.png)
+
+If so, congratulations, you've just rebuilt Habitat!
 
 Step 8 - Build Neohabitat Locally to Enable IDE Integration
 -----------------------------------------------------------
