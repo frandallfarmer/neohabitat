@@ -153,7 +153,7 @@ You'll be asked to insert the Imagery Disk, which is Club Caribe Disk B (club-ca
 
 If all goes well, you'll be brought to the first Habitat screen.  If so, congratulations!
 
-Step 5 - Build Neohabitat locally to enable IDE integration
+Step 7 - Build Neohabitat locally to enable IDE integration
 -----------------------------------------------------------
 
 The Neohabitat build scripting will install necessary dependency JARs that are not present in Maven Central; to enable IDE support, simply run a local build:
