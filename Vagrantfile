@@ -1,6 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# If we're running on Windows, ensures that VBOX_INSTALL_PATH is appropriately set.
+if Gem.win_platform?
+  ENV["VBOX_INSTALL_PATH"] = "C:\\Program Files\\Oracle\\VirtualBox\\"
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
 

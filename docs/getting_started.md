@@ -27,45 +27,22 @@ If you're currently running Windows 10 Professional/Enterprise/Education, you ca
 
 - [Docker for Windows](https://docs.docker.com/docker-for-windows/)
 
-If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all other versions.  Download and install the **latest versions** of the following programs:
+Next, follow the Docker variant of Step 2.
+
+If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all others (7/8/10 Home).  Download and install the **latest versions** of the following programs:
 
 - [Vagrant](https://www.vagrantup.com/downloads.html)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-Next, open a command line and navigate to the location of your Neohabitat checkout.  Run the following command:
-
-```bash
-vagrant plugin install vagrant-docker-compose
-vagrant up
-```
-
-Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services.
-
-If all does not go well, it's likely that one of the upstream Linux package repositories is having issues.  If so, you may need to retry the Vagrant build process:
-
-```bash
-vagrant up
-```
-
-After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
-
-- **1337**: Habitat protocol bridge
-- **3307**: MariaDB (open source MySQL) server
-- **5190**: QuantumLink Reloaded server
-- **9000**: Neoclassical Habitat Elko server
-- **27017**: MongoDB server
-
-If you wish to restart the Neohabitat server after making a code change, be certain that you've build a new JAR via the ```./build``` command, then restart Neohabitat with the following command:
-
-```bash
-vagrant reload
-```
+Next, follow the Vagrant variant variant of Step 2.
 
 **OS X**
 
 Follow the instructions here:
 
 - [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+
+Next, follow the Docker variant of Step 2.
 
 **Linux**
 
@@ -75,8 +52,10 @@ Follow the instructions here:
 - [Docker for CentOS](https://docs.docker.com/engine/installation/linux/centos/)
 - [Docker for Fedora](https://docs.docker.com/engine/installation/linux/fedora/)
 
-Step 2 - Build and Start Neohabitat Services
---------------------------------------------
+Next, follow the Docker variant of Step 2.
+
+Step 2 - Build and Start Neohabitat Services (with Docker)
+----------------------------------------------------------
 
 Now that you've installed Docker, you can trigger the Neohabitat launch process with a single command:
 
@@ -109,6 +88,71 @@ The Neohabitat repository will be linked into the /neohabitat directory of the '
 
 ```bash
 docker-compose exec neohabitat /bin/bash
+```
+
+Step 2 - Build and Start Neohabitat Services (with Vagrant)
+-----------------------------------------------------------
+
+Open a command line and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
+
+```bash
+vagrant plugin install vagrant-docker-compose
+vagrant up --provider=virtualbox
+```
+
+Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services.
+
+After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
+
+- **1337**: Habitat protocol bridge
+- **3307**: MariaDB (open source MySQL) server
+- **5190**: QuantumLink Reloaded server
+- **9000**: Neoclassical Habitat Elko server
+- **27017**: MongoDB server
+
+If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
+
+```bash
+vagrant reload
+```
+
+You can reach a console via the following command:
+
+```bash
+vagrant ssh
+```
+
+**Troubleshooting**
+
+If all does not go well, it's likely that either Vagrant can't find VirtualBox or one of the upstream Linux package repositories is having issues.
+
+If Vagrant returns an error like so:
+
+```
+No usable default provider could be found for your system.
+
+Vagrant relies on interactions with 3rd party systems, known as
+"providers", to provide Vagrant with resources to run development
+environments. Examples are VirtualBox, VMware, Hyper-V.
+
+If so, you may need to retry the Vagrant build process:
+
+The easiest solution to this message is to install VirtualBox, which
+is available for free on all major platforms.
+
+If you believe you already have a provider available, make sure it
+is properly installed and configured. You can see more details about
+why a particular provider isn't working by forcing usage with
+`vagrant up --provider=PROVIDER`, which should give you a more specific
+error message for that particular provider.
+```
+
+You may need to change the value of the ```ENV["VBOX_INSTALL_PATH"]``` setting in your Vagrantfile to point to your installation of VirtualBox.
+
+If an error occurs during the provisioning process, simply retry the launch procedure:
+
+```bash
+vagrant up --provider=virtualbox
 ```
 
 Step 3 - Download and Configure Vice
