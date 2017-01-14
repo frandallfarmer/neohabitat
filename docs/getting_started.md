@@ -118,11 +118,11 @@ LOAD"*",8,1
 
 Eventually, you'll be brought to a screen that asks you to establish your initial modem settings.  You can use the arrow keys and enter to select each configuration field; use the following settings:
 
-Modem: **Other command driven modems**
-Speed: **1200 Baud**
-Dial: **Automatic**
-Phone: **Tone**
-Number: **+5551212**
+- Modem: **Other command driven modems**
+- Speed: **1200 Baud**
+- Dial: **Automatic**
+- Phone: **Tone**
+- Number: **+5551212**
 
 After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```.  Press F1, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
 
