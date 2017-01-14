@@ -6,7 +6,7 @@ We're rebuilding the world's first MMO, brick by brick, and we're over the moon 
 Overview
 --------
 
-There are five services that must be set up to run Neohabitat:
+There are five services that must be established to run Neohabitat:
 
 - Neohabitat server (based on [Elko](https://github.com/FUDCo/Elko))
 - Neohabitat-to-Habitat protocol bridge (converts Neohabitat messages into binary packets compatible with the QuantumLink protocol)
@@ -14,7 +14,7 @@ There are five services that must be set up to run Neohabitat:
 - [QuantumLink Reloaded server](https://github.com/ssalevan/qlink) (reconstructs the original 1980s [QuantumLink](https://en.wikipedia.org/wiki/Quantum_Link) service, proxying Habitat packets to Commodore 64 clients)
 - [MySQL](https://www.mysql.com/) (to persist QuantumLink Reloaded data)
 
-To expedite the setup procedure, we've created a [Docker Compose](https://docs.docker.com/compose/) setup script which will establish these services and provide for swift iteration.
+To expedite the setup procedure, we've created a [Docker Compose](https://docs.docker.com/compose/) setup script which will setup these services and provide for swift iteration.
 
 Step 1 - Install Docker
 -----------------------
@@ -108,7 +108,7 @@ The Club Caribe client software is identical to the Habitat software, so please 
 Step 5 - Connect to QuantumLink Reloaded
 ----------------------------------------
 
-Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via File->Attach Disk Image->Unit #8.
+Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via File -> Attach Disk Image -> Unit #8.
 
 After the QuantumLink disk is loaded, you can start it by running the following C64 command:
 
@@ -124,36 +124,69 @@ Eventually, you'll be brought to a screen that asks you to establish your initia
 - Phone: **Tone**
 - Number: **+5551212**
 
-After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```.  Press F1, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
+After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```.  Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
 
 When this task is complete, you'll be brought to the QuantumLink home screen; it'll look something like this:
 
 ![QuantumLink Home Screen](http://toastytech.com/guis/c64gquantumlink.gif)
 
-Step 6 - Launch Habitat
+Step 6 - Load MongoDB Models
+----------------------------
+
+Recall the username you entered above then create a file in the **db/** folder called **user-<username>.json**.  For instance, if your username was **Steve**, you'd add the following to **db/user-steve.json**:
+
+```json
+{
+  "type": "user",
+  "ref": "user-steve",
+  "name": "Steve",
+  "mods": [
+    {
+      "type": "Avatar",
+      "x": 100,
+      "y": 130,
+      "bodyType": "male",
+      "bankBalance": 2000,
+      "custom": [68, 68],
+      "nitty_bits": 8
+    }
+  ]
+}
+```
+
+After you've completed this step, you can load all models into MongoDB by running the following commands from your Neohabitat checkout:
+
+```bash
+cd db
+make db
+```
+
+You're now ready to start Habitat for the first time.
+
+Step 7 - Launch Habitat
 -----------------------
 
-On the Commodore 64, the function keys were placed prominently to the right of the main keyboard and were used heavily by many applications.  As a result, much of the navigation you'll use within QuantumLink will depend on the usage of function keys.  You'll use the following keys during your QuantumLink experience:
+On the Commodore 64, the function keys were placed prominently to the right of the main keyboard and were used heavily by many applications.  As a result, much of the navigation you'll use within QuantumLink will depend upon the usage of function keys.  These are the ones you'll use during your QuantumLink experience:
 
 - **F1** - Selects whatever is highlighted
 - **F5** - Goes back, similar to the back button in a web browser
 - **F7** - Brings up a department menu
 
-When you reach the QuantumLink home screen again, ensure that the selector is placed over **People Connection** then press **F1**.  There will be a short load period which will lead you to the People Connection screen.  After reaching this screen, press **F7** to bring up the department menu.  Select **Play or observe an online game** and press **F1**.  Select **Start a game (pick your partners)** and press **F1** again.
+At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen.  After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** and press **F1**.  Select **Start a game (pick your partners)** and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
 
-You'll be asked to insert Game Disk 3, which is Club Caribe Disk A (club-caribe-a.d64).  Attach this disk using the above procedure and hit Enter.  After doing so, you can engage Warp Mode to expedite the load process.
+You'll be asked to insert **Game Disk 3**, which is **Club Caribe Disk A (club-caribe-a.d64)**.  Attach this disk using the above procedure and hit **Enter**.  After doing so, you can engage Warp Mode to expedite the load process.
 
 Eventually, you'll reach a screen that looks something like this:
 
 ![QuantumLink Home Screen](http://vzn.eddcoates.com/clubcaribe/sitepics/ClubCarFront.gif)
 
-You'll be asked to insert the Imagery Disk, which is Club Caribe Disk B (club-caribe-b.d64).  Attach this disk using the above procedure and hit Enter.  You can engage Warp Mode here as well.
+You'll be asked to insert the **Imagery Disk**, which is **Club Caribe Disk B (club-caribe-b.d64)**.  Attach this disk using the above procedure and hit **Enter**.  You can engage Warp Mode here as well.
 
 If all goes well, you'll be brought to the first Habitat screen.  If so, congratulations!
 
-Step 7 - Build Neohabitat locally to enable IDE integration
+Step 8 - Build Neohabitat locally to enable IDE integration
 -----------------------------------------------------------
 
 The Neohabitat build scripting will install necessary dependency JARs that are not present in Maven Central; to enable IDE support, simply run a local build:
@@ -169,4 +202,4 @@ Conclusion
 
 We hope that this guide helped you to get acquainted with Neohabitat and its services and we're looking forward to working with you!  If you have any questions or concerns, feel free to ask them in the [Neohabitat Slack](https://neohabitat.slack.com/).
 
-Have fun!
+Have fun and happy hacking!
