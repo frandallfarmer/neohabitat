@@ -23,13 +23,13 @@ To take advantage of the Neohabitat automation, you'll need to install Docker an
 
 **Windows**
 
-If you're currently running Windows 10 Professional/Enterprise/Education, you can use Docker for Windows, which will streamline the setup experience:
+If you're currently running **Windows 10 Professional/Enterprise/Education**, you can use Docker for Windows, which will streamline the setup experience:
 
 - [Docker for Windows](https://docs.docker.com/docker-for-windows/)
 
 Next, follow the Docker variant of Step 2.
 
-If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all others (7/8/10 Home).  Download and install the **latest versions** of the following programs:
+If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all others **(7/8/10 Home)**.  Download and install the **latest versions** of the following programs:
 
 - [Vagrant](https://www.vagrantup.com/downloads.html)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
@@ -88,6 +88,12 @@ The Neohabitat repository will be linked into the /neohabitat directory of the '
 
 ```bash
 docker-compose exec neohabitat /bin/bash
+```
+
+If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
+
+```bash
+docker-compose restart neohabitat
 ```
 
 Step 2 - Build and Start Neohabitat Services (with Vagrant)
@@ -166,9 +172,9 @@ To test Commodore 64 behavior, you'll need to install a C64 emulator and downloa
 
 Download the latest Windows Vice emulator from the above link then make the following configuration changes:
 
-- Go to Settings –> RS232 Settings:
-  - Set RS232 Device 1 to the following: **127.0.0.1:5190**
-- Go to Settings –> Cart I/O Settings –> RS232 Userport settings:
+- Go to **Settings –> RS232 Settings**:
+  - Set **RS232 Device 1** to the following: **127.0.0.1:5190**
+- Go to **Settings –> Cart I/O Settings –> RS232 Userport settings**:
   - Enable **RS232 Userport** and **Userport Device RS232 Device 1**
   - Set **Userport baud rate** to the following: **1200**
 
@@ -177,16 +183,16 @@ Download the latest Windows Vice emulator from the above link then make the foll
 Newer versions of Vice are not compatible with QuantumLink, so be sure to download **version 2.4** of the **Cocoa UI variant**.  Once you've done so, open the DMG and follow this configuration procedure:
 
 - Drag the x64 application from the Vice D64 to your Applications folder
-- Establish a shell alias in your ~/.bashrc or ~/.zshrc to force the enabling of the RS232 userport:
+- Establish a shell alias in your **~/.bashrc** or **~/.zshrc** to force the enabling of the RS232 userport:
 
 ```bash
 alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rsuserdev 0'
 ```
 
-- Launch Vice via the above alias then go to Settings -> Resource Inspector
-- Under Peripherals -> RS232, set Device 1 to the following: ```|nc 127.0.0.1 5190```
-- Under Peripherals -> RS232, set Device 1 Baud Rate to the following: ```1200```
-- Save these new settings via Settings -> Save current Settings
+- Launch Vice via the above alias then go to **Settings -> Resource Inspector**
+- Under **Peripherals -> RS232**, set **Device 1** to the following: ```|nc 127.0.0.1 5190```
+- Under **Peripherals -> RS232**, set **Device 1 Baud Rate** to the following: ```1200```
+- Save these new settings via **Settings -> Save current Settings**
 
 Step 4 - Download the C64 Clients
 ---------------------------------
@@ -197,12 +203,12 @@ Client software can be downloaded here:
 - [Club Caribe disk A (a.k.a. side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
 - [Club Caribe disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
 
-The Club Caribe client software is identical to the Habitat software, so please note this as we continue.
+The **Club Caribe client software is identical to the Habitat software**, so please note this as we continue.
 
 Step 5 - Connect to QuantumLink Reloaded
 ----------------------------------------
 
-Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via File -> Attach Disk Image -> Unit #8.
+Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via **File -> Attach Disk Image -> Unit #8**.
 
 After the QuantumLink disk is loaded, you can start it by running the following C64 command:
 
@@ -222,7 +228,7 @@ After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought t
 
 ![QuantumLink Connect Screen](https://s3.amazonaws.com/ssalevan/neohabitat/connect_qlink.png)
 
-Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
+Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  **Enter the information prompted** and **remember your username**; you'll need it later.
 
 When this task is complete, you'll be brought to the QuantumLink home screen; it'll look something like this:
 
@@ -267,14 +273,16 @@ Step 7 - Launch Habitat
 On the Commodore 64, the function keys were placed prominently to the right of the main keyboard and were used heavily by many applications.  As a result, much of the navigation you'll use within QuantumLink will depend upon the usage of function keys.  These are the ones you'll use during your QuantumLink experience:
 
 - **F1** - Selects whatever is highlighted
+- **F3** - Saves whatever you're looking at to disk (you can likely ignore this one)
 - **F5** - Goes back, similar to the back button in a web browser
 - **F7** - Brings up a department menu
+- **Arrow Keys** - Moves the selector, whether in a menu or on the Home screen
 
 At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen:
 
 ![QuantumLink People Connection Screen](https://s3.amazonaws.com/ssalevan/neohabitat/people_connection.png)
 
-After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** and press **F1**.  Select **Start a game (pick your partners)** and press **F1** again.
+After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**.  Select **Start a game (pick your partners)** with the and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
 
@@ -302,6 +310,8 @@ The Neohabitat build scripting will install necessary dependency JARs that are n
 ```
 
 After doing so, you'll be able to import the root pom.xml into Eclipse or IntelliJ to gain full IDE integration.
+
+You'll also want to run a local build when you've completed a code change and are ready to reload Neohabitat.
 
 Conclusion
 ----------
