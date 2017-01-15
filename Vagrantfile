@@ -27,6 +27,11 @@ Vagrant.configure("2") do |config|
   SCRIPT
 
   config.vm.provision :docker
-  config.vm.provision :docker_compose
-  config.vm.provision :shell, :binary: true, inline: $run_docker_compose
+  if Gem.win_platform?
+    # Handles Windows-style line endings.
+    config.vm.provision :docker_compose
+    config.vm.provision :shell, binary: true, inline: $run_docker_compose
+  else
+    config.vm.provision :docker_compose, yml: "/vagrant/docker-compose.yml", run: "always"
+  end
 end
