@@ -283,7 +283,11 @@ At the QuantumLink home screen, ensure that the selector is placed over the **Pe
 
 ![QuantumLink People Connection Screen](https://s3.amazonaws.com/ssalevan/neohabitat/people_connection.png)
 
-After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**.  Select **Start a game (pick your partners)** with the and press **F1** again.
+After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**:
+
+![QuantumLink People Connection Department Menu](https://s3.amazonaws.com/ssalevan/neohabitat/department_menu.png)
+
+Select **Start a game (pick your partners)** with the and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
 
