@@ -7,10 +7,14 @@ services:
       - MYSQL_DATABASE=qlink
       - MYSQL_USER=qlink
       - MYSQL_PASSWORD=qlink
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
     ports:
-      - "3306:3307"
+      - "3306:3306"
   mongo:
     image: mongo:3.0
+    volumes:
+      - ./data/mongodb:/data/db
     ports:
       - "27017:27017"
   neohabitat:

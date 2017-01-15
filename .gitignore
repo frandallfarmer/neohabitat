@@ -8,6 +8,7 @@ target/
 .classpath
 .project
 .settings
+*.log
 context.*
 dependency-reduced-pom.xml
 neohabitat.iml

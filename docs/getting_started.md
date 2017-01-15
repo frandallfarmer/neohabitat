@@ -16,10 +16,10 @@ There are five services that must be established to run Neohabitat:
 
 To expedite the setup procedure, we've created a [Docker Compose](https://docs.docker.com/compose/) setup script which will setup these services and provide for swift iteration.
 
-Step 1 - Install Docker
------------------------
+Step 1 - Install Docker or Vagrant
+----------------------------------
 
-To take advantage of the Neohabitat automation, you'll need to install Docker and Docker Compose.  You can do so by following one of the following guides:
+To take advantage of the Neohabitat automation, you'll need to install either **Docker and Docker Compose** or **Vagrant**.  You can do so by following one of the following guides:
 
 **Windows**
 
@@ -27,14 +27,14 @@ If you're currently running **Windows 10 Professional/Enterprise/Education**, yo
 
 - [Docker for Windows](https://docs.docker.com/docker-for-windows/)
 
-Next, follow the Docker variant of Step 2.
+If so, follow the **Docker variant** of Step 2.
 
 If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all others **(7/8/10 Home)**.  Download and install the **latest versions** of the following programs:
 
 - [Vagrant](https://www.vagrantup.com/downloads.html)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-Next, follow the Vagrant variant variant of Step 2.
+Next, follow the **Vagrant variant** of Step 2.
 
 **OS X**
 
@@ -42,7 +42,7 @@ Follow the instructions here:
 
 - [Docker for Mac](https://docs.docker.com/docker-for-mac/)
 
-Next, follow the Docker variant of Step 2.
+Next, follow the **Docker variant** of Step 2.
 
 **Linux**
 
@@ -52,7 +52,7 @@ Follow the instructions here:
 - [Docker for CentOS](https://docs.docker.com/engine/installation/linux/centos/)
 - [Docker for Fedora](https://docs.docker.com/engine/installation/linux/fedora/)
 
-Next, follow the Docker variant of Step 2.
+Next, follow the **Docker variant** of Step 2.
 
 Step 2 - Build and Start Neohabitat Services (with Docker)
 ----------------------------------------------------------
@@ -102,14 +102,12 @@ Step 2 - Build and Start Neohabitat Services (with Vagrant)
 Open a **standard Windows command line (cmd.exe, not Bash or PowerShell)** and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
 
 ```bash
-vagrant plugin install vagrant-reload
-vagrant plugin install vagrant-docker-compose
 vagrant up --provider=virtualbox
 ```
 
-Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.
+Vagrant will proceed to download the Ubuntu image, launch it, install all supporting services, then build Neohabitat and QuantumLink Reloaded.
 
-After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
+After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Vagrant.  Furthermore, the following service ports will be forwarded to your local environment:
 
 - **1337**: Habitat protocol bridge
 - **3307**: MariaDB (open source MySQL) server
@@ -126,10 +124,10 @@ vagrant ssh
 If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
 
 ```bash
-vagrant ssh
-cd /vagrant
-docker-compose restart neohabitat
+vagrant reload
 ```
+
+This method **will not use Docker whatsoever**.
 
 **Troubleshooting**
 
