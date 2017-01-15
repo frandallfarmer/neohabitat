@@ -21,14 +21,41 @@ Step 1 - Install Docker
 
 To take advantage of the Neohabitat automation, you'll need to install Docker and Docker Compose.  You can do so by following one of the following guides:
 
-- [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+**Windows**
+
+If you're currently running **Windows 10 Professional/Enterprise/Education**, you can use Docker for Windows, which will streamline the setup experience:
+
 - [Docker for Windows](https://docs.docker.com/docker-for-windows/)
+
+Next, follow the Docker variant of Step 2.
+
+If you're not running one of these Windows versions, you can use the Vagrant setup procedure, which will work on all others **(7/8/10 Home)**.  Download and install the **latest versions** of the following programs:
+
+- [Vagrant](https://www.vagrantup.com/downloads.html)
+- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+
+Next, follow the Vagrant variant variant of Step 2.
+
+**OS X**
+
+Follow the instructions here:
+
+- [Docker for Mac](https://docs.docker.com/docker-for-mac/)
+
+Next, follow the Docker variant of Step 2.
+
+**Linux**
+
+Follow the instructions here:
+
 - [Docker for Ubuntu](https://docs.docker.com/engine/installation/linux/ubuntulinux/)
 - [Docker for CentOS](https://docs.docker.com/engine/installation/linux/centos/)
 - [Docker for Fedora](https://docs.docker.com/engine/installation/linux/fedora/)
 
-Step 2 - Build and Start Neohabitat Services
---------------------------------------------
+Next, follow the Docker variant of Step 2.
+
+Step 2 - Build and Start Neohabitat Services (with Docker)
+----------------------------------------------------------
 
 Now that you've installed Docker, you can trigger the Neohabitat launch process with a single command:
 
@@ -63,6 +90,79 @@ The Neohabitat repository will be linked into the /neohabitat directory of the '
 docker-compose exec neohabitat /bin/bash
 ```
 
+If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
+
+```bash
+docker-compose restart neohabitat
+```
+
+Step 2 - Build and Start Neohabitat Services (with Vagrant)
+-----------------------------------------------------------
+
+Open a **standard Windows command line (cmd.exe, not Bash or PowerShell)** and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
+
+```bash
+vagrant plugin install vagrant-docker-compose
+vagrant up --provider=virtualbox
+```
+
+Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services; launch time will also be greatly minimized.
+
+After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
+
+- **1337**: Habitat protocol bridge
+- **3307**: MariaDB (open source MySQL) server
+- **5190**: QuantumLink Reloaded server
+- **9000**: Neoclassical Habitat Elko server
+- **27017**: MongoDB server
+
+You can reach a console via the following command:
+
+```bash
+vagrant ssh
+```
+
+If you wish to restart the Neohabitat server after making a code change, be certain that you've built a new JAR locally via the ```./build``` command then restart Neohabitat with the following command:
+
+```bash
+vagrant ssh
+cd /vagrant
+docker-compose restart neohabitat
+```
+
+**Troubleshooting**
+
+If all does not go well, it's likely that either Vagrant can't find VirtualBox or one of the upstream Linux package repositories is having issues.
+
+If Vagrant returns an error like so:
+
+```
+No usable default provider could be found for your system.
+
+Vagrant relies on interactions with 3rd party systems, known as
+"providers", to provide Vagrant with resources to run development
+environments. Examples are VirtualBox, VMware, Hyper-V.
+
+If so, you may need to retry the Vagrant build process:
+
+The easiest solution to this message is to install VirtualBox, which
+is available for free on all major platforms.
+
+If you believe you already have a provider available, make sure it
+is properly installed and configured. You can see more details about
+why a particular provider isn't working by forcing usage with
+`vagrant up --provider=PROVIDER`, which should give you a more specific
+error message for that particular provider.
+```
+
+You may need to change the value of the ```ENV["VBOX_INSTALL_PATH"]``` setting in your Vagrantfile to point to your custom VirtualBox installation.
+
+If an error occurs during the provisioning process, simply retry the launch procedure after waiting a few minutes:
+
+```bash
+vagrant up --provider=virtualbox
+```
+
 Step 3 - Download and Configure Vice
 ------------------------------------
 
@@ -72,27 +172,27 @@ To test Commodore 64 behavior, you'll need to install a C64 emulator and downloa
 
 Download the latest Windows Vice emulator from the above link then make the following configuration changes:
 
-- Go to Settings –> RS232 Settings:
-  - Set RS232 Device 1 to the following: 127.0.0.1:5190
-- Go to Settings –> Cart I/O Settings –> RS232 Userport settings:
-  - Enable RS232 Userport and Userport Device RS232 Device 1
-  - Set Userport baud rate to the following: 1200
+- Go to **Settings –> RS232 Settings**:
+  - Set **RS232 Device 1** to the following: **127.0.0.1:5190**
+- Go to **Settings –> Cart I/O Settings –> RS232 Userport settings**:
+  - Enable **RS232 Userport** and **Userport Device RS232 Device 1**
+  - Set **Userport baud rate** to the following: **1200**
 
 **OS X**
 
 Newer versions of Vice are not compatible with QuantumLink, so be sure to download **version 2.4** of the **Cocoa UI variant**.  Once you've done so, open the DMG and follow this configuration procedure:
 
 - Drag the x64 application from the Vice D64 to your Applications folder
-- Establish a shell alias in your ~/.bashrc or ~/.zshrc to force the enabling of the RS232 userport:
+- Establish a shell alias in your **~/.bashrc** or **~/.zshrc** to force the enabling of the RS232 userport:
 
 ```bash
 alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rsuserdev 0'
 ```
 
-- Launch Vice via the above alias then go to Settings -> Resource Inspector
-- Under Peripherals -> RS232, set Device 1 to the following: ```|nc 127.0.0.1 5190```
-- Under Peripherals -> RS232, set Device 1 Baud Rate to the following: ```1200```
-- Save these new settings via Settings -> Save current Settings
+- Launch Vice via the above alias then go to **Settings -> Resource Inspector**
+- Under **Peripherals -> RS232**, set **Device 1** to the following: ```|nc 127.0.0.1 5190```
+- Under **Peripherals -> RS232**, set **Device 1 Baud Rate** to the following: ```1200```
+- Save these new settings via **Settings -> Save current Settings**
 
 Step 4 - Download the C64 Clients
 ---------------------------------
@@ -100,15 +200,15 @@ Step 4 - Download the C64 Clients
 Client software can be downloaded here:
 
 - [QuantumLink (with Habitat support)](https://s3.amazonaws.com/ssalevan/neohabitat/QuantumLink.d64)
-- [Club Caribe (disk A/side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
-- [Club Caribe (disk B/Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
+- [Club Caribe disk A (a.k.a. side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
+- [Club Caribe disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
 
-The Club Caribe client software is identical to the Habitat software, so please note this as we continue.
+The **Club Caribe client software is identical to the Habitat software**, so please note this as we continue.
 
 Step 5 - Connect to QuantumLink Reloaded
 ----------------------------------------
 
-Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via File -> Attach Disk Image -> Unit #8.
+Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via **File -> Attach Disk Image -> Unit #8**.
 
 After the QuantumLink disk is loaded, you can start it by running the following C64 command:
 
@@ -124,7 +224,11 @@ Eventually, you'll be brought to a screen that asks you to establish your initia
 - Phone: **Tone**
 - Number: **+5551212**
 
-After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```.  Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  Enter the information prompted and remember your username; you'll need it later.
+After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```:
+
+![QuantumLink Connect Screen](https://s3.amazonaws.com/ssalevan/neohabitat/connect_qlink.png)
+
+Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  **Enter the information prompted** and **remember your username**; you'll need it later.
 
 When this task is complete, you'll be brought to the QuantumLink home screen; it'll look something like this:
 
@@ -133,7 +237,7 @@ When this task is complete, you'll be brought to the QuantumLink home screen; it
 Step 6 - Load MongoDB Models
 ----------------------------
 
-Recall the username you entered above then create a file in the **db/** folder called **user-<username>.json**.  For instance, if your username was **Steve**, you'd add the following to **db/user-steve.json**:
+Recall the username you entered above then create a file in the **db/** folder called **user-username.json**.  For instance, if your username was **Steve**, you'd add the following to **db/user-steve.json**:
 
 ```json
 {
@@ -169,10 +273,16 @@ Step 7 - Launch Habitat
 On the Commodore 64, the function keys were placed prominently to the right of the main keyboard and were used heavily by many applications.  As a result, much of the navigation you'll use within QuantumLink will depend upon the usage of function keys.  These are the ones you'll use during your QuantumLink experience:
 
 - **F1** - Selects whatever is highlighted
+- **F3** - Saves whatever you're looking at to disk (you can likely ignore this one)
 - **F5** - Goes back, similar to the back button in a web browser
 - **F7** - Brings up a department menu
+- **Arrow Keys** - Moves the selector, whether in a menu or on the Home screen
 
-At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen.  After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** and press **F1**.  Select **Start a game (pick your partners)** and press **F1** again.
+At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen:
+
+![QuantumLink People Connection Screen](https://s3.amazonaws.com/ssalevan/neohabitat/people_connection.png)
+
+After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**.  Select **Start a game (pick your partners)** with the and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
 
@@ -184,9 +294,13 @@ Eventually, you'll reach a screen that looks something like this:
 
 You'll be asked to insert the **Imagery Disk**, which is **Club Caribe Disk B (club-caribe-b.d64)**.  Attach this disk using the above procedure and hit **Enter**.  You can engage Warp Mode here as well.
 
-If all goes well, you'll be brought to the first Habitat screen.  If so, congratulations!
+If all goes well, you'll be brought to the first Habitat screen:
 
-Step 8 - Build Neohabitat locally to enable IDE integration
+![Habitat Start Screen](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_start.png)
+
+If so, congratulations, you've just rebuilt Habitat!
+
+Step 8 - Build Neohabitat Locally to Enable IDE Integration
 -----------------------------------------------------------
 
 The Neohabitat build scripting will install necessary dependency JARs that are not present in Maven Central; to enable IDE support, simply run a local build:
@@ -196,6 +310,8 @@ The Neohabitat build scripting will install necessary dependency JARs that are n
 ```
 
 After doing so, you'll be able to import the root pom.xml into Eclipse or IntelliJ to gain full IDE integration.
+
+You'll also want to run a local build when you've completed a code change and are ready to reload Neohabitat.
 
 Conclusion
 ----------
