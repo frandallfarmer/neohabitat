@@ -102,6 +102,7 @@ Step 2 - Build and Start Neohabitat Services (with Vagrant)
 Open a **standard Windows command line (cmd.exe, not Bash or PowerShell)** and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
 
 ```bash
+vagrant plugin install vagrant-reload
 vagrant plugin install vagrant-docker-compose
 vagrant up --provider=virtualbox
 ```
