@@ -102,11 +102,12 @@ Step 2 - Build and Start Neohabitat Services (with Vagrant)
 Open a **standard Windows command line (cmd.exe, not Bash or PowerShell)** and navigate via ```cd``` to the location of your Neohabitat checkout.  Run the following command:
 
 ```bash
+vagrant plugin install vagrant-reload
 vagrant plugin install vagrant-docker-compose
 vagrant up --provider=virtualbox
 ```
 
-Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services; launch time will also be greatly minimized.
+Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.
 
 After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
 
@@ -132,7 +133,7 @@ docker-compose restart neohabitat
 
 **Troubleshooting**
 
-If all does not go well, it's likely that either Vagrant can't find VirtualBox or one of the upstream Linux package repositories is having issues.
+If all does not go well during the Vagrant provisioning step, it's likely that either Vagrant can't find VirtualBox or one of the upstream Linux package repositories is having issues.
 
 If Vagrant returns an error like so:
 
@@ -282,7 +283,11 @@ At the QuantumLink home screen, ensure that the selector is placed over the **Pe
 
 ![QuantumLink People Connection Screen](https://s3.amazonaws.com/ssalevan/neohabitat/people_connection.png)
 
-After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**.  Select **Start a game (pick your partners)** with the and press **F1** again.
+After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**:
+
+![QuantumLink People Connection Department Menu](https://s3.amazonaws.com/ssalevan/neohabitat/department_menu.png)
+
+Select **Start a game (pick your partners)** with the and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
 

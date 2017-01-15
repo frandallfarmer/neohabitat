@@ -16,19 +16,24 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 27017, host: 27017
 
   config.vm.provider :virtualbox do |vb|
-    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
     vb.customize ["modifyvm", :id, "--memory", "1024"]
     vb.customize ["modifyvm", :id, "--cpus", "2"]
   end
 
-  $run_docker_compose = "cd /vagrant && docker-compose up"
+  # Explicitly enforces syncing of the local folder to /vagrant on the VM.
+  config.vm.synced_folder ".", "/vagrant"
 
-  config.vm.provision :docker
+  # Updates VBox guest additions to the latest version of VirtualBox then reboots the VM.
+  config.vm.provision :shell, binary: true, path: "./script/update_vbox_additions.sh"
+  config.vm.provision :reload
+
   if Gem.win_platform?
     # Handles Windows-style line endings.
+    config.vm.provision :docker
     config.vm.provision :docker_compose
-    config.vm.provision :shell, binary: true, inline: $run_docker_compose
+    config.vm.provision :shell, binary: true, inline: "cd /vagrant && docker-compose up"
   else
+    config.vm.provision :docker
     config.vm.provision :docker_compose, yml: "/vagrant/docker-compose.yml", run: "always"
   end
 end
