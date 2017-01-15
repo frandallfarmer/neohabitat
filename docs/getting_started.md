@@ -107,7 +107,7 @@ vagrant plugin install vagrant-docker-compose
 vagrant up --provider=virtualbox
 ```
 
-Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.  If all goes well during this step, you can skip Step 2, as Vagrant will now cover the building and assembly of all Docker-based services; launch time will also be greatly minimized.
+Vagrant will proceed to download the Ubuntu image, launch it, then install Docker and run the docker-compose build step.
 
 After the build procedure has concluded, you can develop and build new artifacts on your local machine and they will be synced through to Docker.  Furthermore, the following service ports will be forwarded to your local environment:
 
@@ -133,7 +133,7 @@ docker-compose restart neohabitat
 
 **Troubleshooting**
 
-If all does not go well, it's likely that either Vagrant can't find VirtualBox or one of the upstream Linux package repositories is having issues.
+If all does not go well during the Vagrant provisioning step, it's likely that either Vagrant can't find VirtualBox or one of the upstream Linux package repositories is having issues.
 
 If Vagrant returns an error like so:
 
