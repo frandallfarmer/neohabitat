@@ -23,7 +23,12 @@ Vagrant.configure("2") do |config|
 
   $run_docker_compose = "cd /vagrant && docker-compose up"
 
+  # Explicitly enforces syncing of the local folder to /vagrant on the VM.
   config.vm.synced_folder ".", "/vagrant"
+
+  # Updates VBox guest additions to the latest version of VirtualBox then reboots the VM.
+  config.vm.provision :shell, binary: true, path: "./script/update_vbox_additions.sh"
+  config.vm.provision :reload
 
   if Gem.win_platform?
     # Handles Windows-style line endings.
