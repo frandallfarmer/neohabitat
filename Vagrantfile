@@ -21,10 +21,7 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--cpus", "2"]
   end
 
-  $run_docker_compose = <<SCRIPT
-  cd /vagrant
-  docker-compose up
-  SCRIPT
+  $run_docker_compose = "cd /vagrant && docker-compose up"
 
   config.vm.provision :docker
   if Gem.win_platform?
