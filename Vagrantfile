@@ -21,6 +21,12 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--cpus", "2"]
   end
 
+  $run_docker_compose = <<SCRIPT
+  cd /vagrant
+  docker-compose up
+  SCRIPT
+
   config.vm.provision :docker
-  config.vm.provision :docker_compose, yml: "/vagrant/docker-compose.yml", run: "always"
+  config.vm.provision :docker_compose
+  config.vm.provision :shell, :binary: true, inline: $run_docker_compose
 end
