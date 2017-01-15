@@ -7,7 +7,7 @@ if Gem.win_platform?
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   config.vm.network "forwarded_port", guest: 1337, host: 1337
   config.vm.network "forwarded_port", guest: 3307, host: 3307
@@ -21,19 +21,11 @@ Vagrant.configure("2") do |config|
   end
 
   # Explicitly enforces syncing of the local folder to /vagrant on the VM.
-  config.vm.synced_folder ".", "/vagrant"
-
-  # Updates VBox guest additions to the latest version of VirtualBox then reboots the VM.
-  config.vm.provision :shell, binary: true, path: "./script/update_vbox_additions.sh"
-  config.vm.provision :reload
+  config.vm.synced_folder ".", "/neohabitat"
 
   if Gem.win_platform?
-    # Handles Windows-style line endings.
-    config.vm.provision :docker
-    config.vm.provision :docker_compose
-    config.vm.provision :shell, binary: true, inline: "cd /vagrant && docker-compose up"
+    config.vm.provision :shell, binary: true, path: "./vagrant/build.sh"
   else
-    config.vm.provision :docker
-    config.vm.provision :docker_compose, yml: "/vagrant/docker-compose.yml", run: "always"
+    config.vm.provision :shell, path: "./vagrant/build.sh"
   end
 end

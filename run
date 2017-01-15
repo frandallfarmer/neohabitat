@@ -17,14 +17,16 @@ SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
 SERVER_BIND="${NEOHABITAT_SERVER_PORT-0.0.0.0}"
 SHUTDOWN_PASSWORD="${NEOHABITAT_SHUTDOWN_PASSWORD-figleaf}"
+SHOULD_BACKGROUND_BRIDGE="${NEOHABITAT_SHOULD_BACKGROUND_BRIDGE-true}"
 SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE-true}"
 SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT-true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
-TRACE_DIR="${GIT_BASE_DIR}/log"
 
 BASE_ARGS=(
   trace_cont=EVENT
   trace_comm=EVENT
+  # Forcibly logs to stdout to comply with 12 Factor App guidelines.
+  tracelog_dir=/plz/log/to/stdout
   tracelog_tag=context
   conf.listen.host="${SERVER_HOST}:${PORT_RESV_TCP}"
   conf.listen.bind="${SERVER_BIND}:${PORT_RESV_TCP}"
@@ -42,12 +44,13 @@ BASE_ARGS=(
   org.elkoserver.server.context.ContextServerBoot
 )
 
-# Ensures that the log directory exists.
-mkdir -p "${TRACE_DIR}"
-
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
-  supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
+  if [ "${SHOULD_BACKGROUND_BRIDGE}" == true ]; then
+    supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
+  else
+    supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" 
+  fi
 fi
 
 # Starts the Habitat Elko server if requested.
