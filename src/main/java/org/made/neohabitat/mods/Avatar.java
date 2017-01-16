@@ -3,6 +3,7 @@ package org.made.neohabitat.mods;
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
+import org.elkoserver.foundation.server.BuildVersion;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserMod;
 import org.made.neohabitat.Container;
@@ -310,8 +311,8 @@ public class Avatar extends Container implements UserMod {
 		case 16: // F8
 			object_say(from, "        You are connected to          ");
 			object_say(from, "   The Neoclassical Habitat Server    ");
-			object_say(from, "                                 v.01 ");
-			object_say(from, "    The MADE, The Museum of Arts and Digital Entertainment, Oakland CA");
+			object_say(from, "                                     ".substring(BuildVersion.version.length()) + BuildVersion.version + " ");
+			object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
 			object_say(from, "                                      ");
 			object_say(from, "Open source - Join us! NeoHabitat.org ");
 			send_reply_success(from);
