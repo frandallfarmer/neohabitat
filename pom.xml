@@ -67,6 +67,7 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+            </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
