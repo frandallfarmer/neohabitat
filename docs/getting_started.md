@@ -236,7 +236,7 @@ When this task is complete, you'll be brought to the QuantumLink home screen; it
 Step 6 - Load MongoDB Models
 ----------------------------
 
-Recall the username you entered above then create a file in the **db/** folder called **user-username.json**.  For instance, if your username was **Steve**, you'd add the following to **db/user-steve.json**:
+Recall the username you entered above then create a file in the **db/** folder called **user-<lowercase_username>.json**.  For instance, if your username was **Steve** ('steve' in lowercase form), you'd add the following to **db/user-steve.json**:
 
 ```json
 {
@@ -256,6 +256,8 @@ Recall the username you entered above then create a file in the **db/** folder c
   ]
 }
 ```
+
+Please note that your username within the above "name" field **must also be lowercase**.
 
 After you've completed this step, you can load all models into MongoDB by running the following commands from your Neohabitat checkout:
 
