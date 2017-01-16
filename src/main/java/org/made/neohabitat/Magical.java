@@ -69,7 +69,7 @@ public abstract class Magical extends HabitatMod {
 	 * Verb (Magical): Activate any magic on this, if there are charges left.
 	 * 
 	 * @param from User representing the connection making the request.
-	 * @param type TODO Why would we trust the client to specify a magic type?
+	 * @param target TODO Why would we trust the client to specify a magic type?
 	 */
 	@JSONMethod({"target"})
 	public void MAGIC (User from, OptInteger target) {

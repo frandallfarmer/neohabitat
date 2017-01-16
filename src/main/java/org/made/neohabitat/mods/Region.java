@@ -99,7 +99,7 @@ public class Region extends Container implements ContextMod, Constants {
 	/**
 	 * Remove the noid from the object list.
 	 * 
-	 * @param noid
+	 * @param mod The object to remove from the noid list.
 	 */
 	public static void removeFromObjList(HabitatMod mod) {
 		mod.current_region().noids[mod.noid] = null;

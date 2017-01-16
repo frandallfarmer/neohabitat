@@ -76,7 +76,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/**
 	 * Replaces original global 'position'
 	 * 
-	 * @returns this.y which is a synonym for position within a container.
+	 * @return this.y which is a synonym for position within a container.
 	 * */
 	public int position() {
 		return y;
@@ -87,7 +87,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * 
 	 * NOTE: Changes it's type from originally numeric to string.
 	 * 
-	 * @returns This is a unique object database identity for the object
+	 * @return The unique object database identity for the object
 	 * */
 	public String obj_id() {
 		return this.object().ref();
@@ -136,11 +136,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *  
 	 *  This is an abstract class, and the constructor is only ever called by the actual habitat objects
 	 * 
+	 * @param style style offset to choose the presentation image default:0
 	 * @param x horizontal screen position default: 0 
 	 * @param y vertical screen position/z-depth default: 0 
-	 * @param position container offset default: 0 
 	 * @param orientation graphic image orientation default: 0 
-	 * 
+	 * @param gr_state animation/graphic state default:0
 	 */
 
 	public HabitatMod(
@@ -400,7 +400,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * Put this into a new container specified by noid. 
 	 * 
 	 * @param from User 	representing the connection making the request.
-	 * @param containerNode The noid of the new container for this.
+	 * @param containerNoid The noid of the new container for this.
 	 * @param x 			The new horizontal position of the object (if the container is THE_REGION)
 	 * @param y 			The new vertical position in THE_REGION or slot number in the new container.
 	 * @param orientation	The new orientation for this once transfered.
@@ -434,10 +434,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *   (this should never happen, since the object is already out, but we check just in case)
 	 *   
 	 * @param from User 	representing the connection making the request.
-	 * @param containerNode The	noid of the new container for this.
-	 * @param x 			The new horizontal position of the object (if the container is THE_REGION)
-	 * @param y 			The new vertical position in THE_REGION or slot number in the new container.
-	 * @param orientation	The new orientation for this once transfered.
+	 * @param cont			The noid of the new container for this.
+	 * @param pos_x 		The new horizontal position of the object (if the container is THE_REGION)
+	 * @param pos_y 	    The new vertical position in THE_REGION or slot number in the new container.
+	 * @param obj_orient	The new orientation for this once transfered.
 	 */
 	public void generic_PUT (User from, Container cont, int pos_x, int pos_y, int obj_orient) {
 
@@ -645,7 +645,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * Throw this across the room, onto some kind of surface, by noid.
 	 * 
 	 * @param from User		representing the connection making the request.
-	 * @param targetNode	The noid of the new container for this.
+	 * @param target		The noid of the new container for this.
 	 * @param target_x		The new horizontal position for this.
 	 * @param target_y 		The new vertical position for this.
 	 */
@@ -989,7 +989,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * NOTE: PL1 arrays uses 1-based arrays, so historically all
 	 * the bit offset constants are as well.
 	 * We lose the high bit, but we never use it.
-	 * @return
+	 *
+	 * @return boolean array of unpacked bits
 	 */
 	public boolean[] unpackBits(int packedBits) {
 		boolean bits[] = new boolean[32];
@@ -1000,11 +1001,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
-	 * @param bits[] The boolean array to pack into an int.
 	 * NOTE: PL1 arrays uses 1-based arrays, so historically all
 	 * the bit offset constants are as well.
 	 * We lose the high bit, but we never use it. 
-	 * @return
+	 * 
+	 * @param bits The boolean array to pack into an int.
+	 * @return an int made of the the bits
 	 */
 	public int packBits(boolean[] bits) {
 		int result = 0;
@@ -1639,10 +1641,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	
 	/**
 	 * Sends a SYNCHRONOUS (client is waiting) reply message, with additional String value.
-	 * @param from The User/connection that gets the reply.
-	 * @param noid The object waiting for this reply.
-	 * @param attrib The attribute name to be added to the message
-	 * @param value The STRING value of the attribute.
+	 * @param from		The User/connection that gets the reply.
+	 * @param noid		The object waiting for this reply.
+	 * @param attrib	The attribute name to be added to the message
+	 * @param value		The STRING value of the attribute.
 	 */
 	public void send_reply_msg(User from, int noid, String attrib, String value) {
 		JSONLiteral msg = new_reply_msg(noid);
@@ -1654,9 +1656,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/**
 	 * Send simple SYNCHRONOUS reply indicating success or failure.
 	 * 
-	 * @param from The User/connection that gets the reply.
-	 * @param noid The object waiting for this reply.
-	 * @param err The error state byte (NOT boolean), added to the msg as attribute "err"
+	 * @param from	The User/connection that gets the reply.
+	 * @param noid	The object waiting for this reply.
+	 * @param err	The error state byte (NOT boolean), added to the msg as attribute "err"
 	 */
 	public void send_reply_err(User from, int noid, int err) {
 		JSONLiteral msg = new JSONLiteral("reply", EncodeControl.forClient);
@@ -1672,7 +1674,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * 
 	 * @param from The User/connection that gets the reply.
 	 * @param noid The object waiting for this reply.
-	 * @param err The error state byte (NOT boolean)
 	 */
 	public void send_reply_error(User from, int noid) {
 		send_reply_err(from, noid, FALSE);
@@ -1925,12 +1926,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/**
 	 * Send a single-string private message to a specified user-connection.
 	 * 
-	 * @param from The user/connection that instigated this action. Will NOT get a copy of the message.
-	 * @param noid The object that is acting.
-	 * @param to The user/connection that is the recipient of this private message.
-	 * @param op The STRING name of the ASYNCRONOUS request. (See::new_private_msg)
-	 * @param attrib Attribute to add
-	 * @param value String to add
+	 * @param from		The user/connection that instigated this action. Will NOT get a copy of the message.
+	 * @param noid		The object that is acting.
+	 * @param to		The user/connection that is the recipient of this private message.
+	 * @param op		The STRING name of the ASYNCRONOUS request. (See::new_private_msg)
+	 * @param attribute	Attribute to add
+	 * @param value		String to add
 	 */	
 	public void send_private_msg(User from, int noid, User to, String op, String attribute, String value) {
 		JSONLiteral msg = new_private_msg(noid,op);
@@ -1942,12 +1943,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/**
 	 * Send a single-byte private message to a specified user-connection.
 	 * 
-	 * @param from The user/connection that instigated this action. Will NOT get a copy of the message.
-	 * @param noid The object that is acting.
-	 * @param to The user/connection that is the recipient of this private message.
-	 * @param op The STRING name of the ASYNCRONOUS request. (See::new_private_msg)
-	 * @param attrib Attribute to add
-	 * @param value Value to add
+	 * @param from		The user/connection that instigated this action. Will NOT get a copy of the message.
+	 * @param noid		The object that is acting.
+	 * @param to		The user/connection that is the recipient of this private message.
+	 * @param op		The STRING name of the ASYNCRONOUS request. (See::new_private_msg)
+	 * @param attribute Attribute to add
+	 * @param value		Value to add
 	 */	
 	public void send_private_msg(User from, int noid, User to, String op, String attribute, int value) {
 		JSONLiteral msg = new_private_msg(noid,op);
@@ -2075,7 +2076,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/**
 	 * Write the object to the Elko Habitat Database.
 	 * 
-	 * @param object The Habitat Mod to checkpoint.
+	 * @param mod The Habitat Mod to checkpoint.
 	 */
 	public void checkpoint_object(HabitatMod mod) {
 		if (mod.gen_flags[MODIFIED]) { 

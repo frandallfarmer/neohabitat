@@ -44,7 +44,7 @@ public abstract class Container extends HabitatMod {
 	 * 
 	 * @param index	Position in PL1 contents[] array. Now used as a search key for y/position through Elko contents.
 	 * 
-	 * @return
+	 * @return The mod of the item with that noid.
 	 */	
 	public HabitatMod contents(int index) {
 		Iterator<Item> elkoContents = ((BasicObject) this.object()).contents().iterator();		/* TODO refactor with Chip FRF */
