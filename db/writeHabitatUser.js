@@ -8,18 +8,19 @@ const File		    = require('fs');
 
 /** Object holding command line args - parsed by yargs library: npm install yargs */	
 const Argv 		 = require('yargs')
-.usage('\nAdds a user to the NeoHabitat mongodb [option: Saves in .json file]\n\nUsage: $0 --name=USERNAME')
-.example('$0 --name=ShortName', 'Create a new NeoHabitat Avatar object, ref: user-shortname  name:ShortName')
-.example('$0 --name=ExistingName --god --force', 'Set the god bit for an existing avatar-user')
-.option('name',		 { alias: 'n',								describe: 'Mixed case user name with NO whitespace'})
-.option('force',	 { alias: 'f', default:false,				describe: 'Force overwrite of any existing user-avatar'})
-.option('god',		 { alias: 'g', default:false,				describe: 'Set GOD_BIT'})
-.option('body',		 { alise: 'b', default:"male",				describe: 'Avatar body type'})
-.option('help',		 { alias: 'h', 						     	describe: 'Get this usage/help information'})
-.option('savedir',	 { alias: 's',								describe: 'Save as user-NAME.json in this directory. Unspecified = no file.'})
-.demandOption('name')
-.help('help')
-.argv;
+	.usage('\nAdds a user to the NeoHabitat mongodb [option: Saves in .json file]\n\nUsage: $0 --name=USERNAME')
+	.example('$0 --name=ShortName', 'Create a new NeoHabitat Avatar object, ref: user-shortname  name:ShortName')
+	.example('$0 --name=ExistingName --god --force', 'Set the god bit for an existing avatar-user')
+	.option('name',		 { alias: 'n',								describe: 'user name - mixed-case with NO whitespace'})
+	.option('force',	 { alias: 'f', default:false,				describe: 'force overwrite of any existing user-avatar'})
+	.option('god',		 { alias: 'g', default:false,				describe: 'set GOD_BIT'})
+	.option('body',		 { alise: 'b', default:"male",				describe: 'avatar body type'})
+	.option('url',		 { alias: 'u', default:'//localhost/elko',	describe: 'mongodb server url.'})
+	.option('savedir',	 { alias: 's',								describe: 'directory for user-NAME.json. Unspecified == no file'})
+	.demandOption('name')
+	.option('help',		 { alias: 'h', 						     	describe: 'Get this usage/help information'})
+	.help('help')
+	.argv;
 
 function rnd(max) {
 	return Math.floor(Math.random()*max)
@@ -64,7 +65,7 @@ function insertUser(db, callback) {
 			});
 }
 
-var url = 'mongodb://localhost:27017/elko';
+var url = 'mongodb:' + Argv.url;
 
 MongoClient.connect(url, function(err, db) {
 	Assert.equal(null, err);
