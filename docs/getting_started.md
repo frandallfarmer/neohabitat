@@ -202,6 +202,8 @@ Client software can be downloaded here:
 - [Club Caribe disk A (a.k.a. side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
 - [Club Caribe disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
 
+**NOTE:** Make a backup of QuantumLink.d64, as it gets modified with your account information and a link to the Club Caribe game disk.
+
 The **Club Caribe client software is identical to the Habitat software**, so please note this as we continue.
 
 Step 5 - Connect to QuantumLink Reloaded
@@ -290,6 +292,13 @@ After reaching it, press **F7** to bring up the department menu.  Select **Play 
 Select **Start a game (pick your partners)** with the and press **F1** again.
 
 Finally, select **Club Caribe** from the list and press **F1** one last time.
+
+**NOTE:** If **Club Caribe** does NOT appear on the game list, you will first need to patch the QuantumLink disk image..
+- Start VINE booting to the Commodore blue screen.
+- Mount the club-caribe-a.d64 disk image on drive 8
+- LOAD"ADDCARIBE",8,1
+- When prompted, mount your registered QuantumLink.d64 image on drive 8 and continue...
+- It takes quite awhile, but when you are done, you can restart the Launch Habitat step.
 
 You'll be asked to insert **Game Disk 3**, which is **Club Caribe Disk A (club-caribe-a.d64)**.  Attach this disk using the above procedure and hit **Enter**.  After doing so, you can engage Warp Mode to expedite the load process.
 
