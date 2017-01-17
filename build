@@ -4,24 +4,34 @@
 set -eo pipefail
 
 ELKO_VERSION="2.0.4-SNAPSHOT"
+GIT_BASE_DIR=$(git rev-parse --show-toplevel)
 
 # Downloads the latest version of Elkoserver if we have not yet done so.
-if [ ! -e ./lib/elkoserver-${ELKO_VERSION}.jar ]; then
-  mkdir -p lib
+if [ ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}.jar -o \
+     ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-javadoc.jar -o \
+     ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-sources.jar ]; then
+  # Purges local M2 repository.
+  mvn dependency:purge-local-repository -DactTransitively=false -DreResolve=false
+
+  # Downloads latest Elkoserver JARs.
+  mkdir -p ${GIT_BASE_DIR}/lib
   wget -O ./lib/elkoserver-${ELKO_VERSION}.jar \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}.jar
+  wget -O ./lib/elkoserver-${ELKO_VERSION}-javadoc.jar \
+    https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-javadoc.jar
   wget -O ./lib/elkoserver-${ELKO_VERSION}-sources.jar \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-sources.jar
+
+  # Installs the Elkoserver JAR into the local Maven repository.
+  mvn install:install-file \
+    -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
+    -Djavadoc=./lib/elkoserver-${ELKO_VERSION}-javadoc.jar \
+    -Dsources=./lib/elkoserver-${ELKO_VERSION}-sources.jar \
+    -DgroupId=org.elko \
+    -DartifactId=elkoserver \
+    -Dversion="${ELKO_VERSION}" \
+    -Dpackaging=jar \
+    -DgeneratePom=true
 fi
 
-# Installs the Elkoserver JAR into the local Maven repository.
-mvn install:install-file \
-  -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
-  -Dsources=./lib/elkoserver-${ELKO_VERSION}-sources.jar \
-  -DgroupId=org.elko \
-  -DartifactId=elkoserver \
-  -Dversion="${ELKO_VERSION}" \
-  -Dpackaging=jar \
-  -DgeneratePom=true
-
-mvn package
+mvn clean package
