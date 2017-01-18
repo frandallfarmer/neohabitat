@@ -14,15 +14,17 @@
 /* jslint bitwise: true */
 /* jshint esversion: 6 */
 
-const Net		 = require('net');
-const File		 = require('fs');
-/** Object for trace library - npm install winston */
-const Trace		 = require('winston');
-
+const Net		 	= require('net');
+const File		 	= require('fs');
+const Trace		 	= require('winston');
+const MongoClient	= require('mongodb').MongoClient;
+const Assert 		= require('assert');
+const ObjectId 		= require('mongodb').ObjectID;
 
 const DefDefs	= { context:	'context-test',
 		            listen:		'127.0.0.1:1337',
 		            elko:		'127.0.0.1:9000',
+		        	mongo:		'//localhost/elko',
 		            rate:		1200,
 		            trace:		'info'};
 var	 Defaults	= DefDefs;
@@ -32,6 +34,7 @@ try {
 	Defaults = { context:	userDefs.context || DefDefs.context,
 				 listen:	userDefs.listen	 || DefDefs.listen,
 				 elko:		userDefs.elko	 || DefDefs.elko,
+				 mongo:		userDefs.mongo   || DefDefs.mongo,
 				 rate:		userDefs.rate	 || DefDefs.rate,
 				 trace:		userDefs.trace	 || DefDefs.trace};
 } catch (e) {
@@ -41,12 +44,13 @@ try {
 const Argv 		 = require('yargs')
 		.usage('Usage: $0 [options]')
 		.help('help')
-		.option('help',		{ alias: '?', 						     describe: 'Get this usage/help information.'})
+		.option('help',		{ alias: '?', 						     describe: 'Get this usage/help information'})
 		.option('trace', 	{ alias: 't', default: Defaults.trace, 	 describe: 'Trace level name. (see: npm winston)'})
-		.option('context',  { alias: 'c', default: Defaults.context, describe: 'Parameter for entercontext for unknown users.'})
-		.option('listen',   { alias: 'l', default: Defaults.listen,  describe: 'Host:Port to listen for client connections.'})
-		.option('elko',		{ alias: 'e', default: Defaults.elko,    describe: 'Host:Port of the Habitat Elko Server.'})
-		.option('rate',		{ alias: 'r', default: Defaults.rate,	 describe: 'Data rate in bits-per-second for transmitting to c64 clients.'})
+		.option('context',  { alias: 'c', default: Defaults.context, describe: 'Parameter for entercontext for unknown users'})
+		.option('listen',   { alias: 'l', default: Defaults.listen,  describe: 'Host:Port to listen for client connections'})
+		.option('elko',		{ alias: 'e', default: Defaults.elko,    describe: 'Host:Port of the Habitat Elko Server'})
+		.option('mongo',	{ alias: 'm', default: Defaults.mongo,   describe: 'Mongodb server URL'})
+		.option('rate',		{ alias: 'r', default: Defaults.rate,	 describe: 'Data rate in bits-per-second for transmitting to c64 clients'})
 		.argv;
 
 Trace.level 	 = Argv.trace;
@@ -66,7 +70,65 @@ var ListenHost	 = listenaddr[0];
 var ListenPort	 = listenaddr.length > 1 ? parseInt(listenaddr[1]) : 1337;
 var ElkoHost	 = elkoaddr[0];
 var ElkoPort	 = elkoaddr.length > 1   ? parseInt(elkoaddr[1])   : 9000;
+
 var SessionCount = 0;
+var MongoDB = {};
+
+
+function rnd(max) {
+	return Math.floor(Math.random() * max)
+}
+
+function testUser(db, query, callback) {
+	db.collection('odb').findOne(query, callback);
+}
+
+
+function insertUser(db, user, callback) {
+	console.log(JSON.stringify(user));
+	db.collection('odb').updateOne(
+			{ref: user.ref},
+			user,
+			{upsert: true},
+			function(err, result) {
+				Assert.equal(err, null);
+				callback();
+			});
+}
+
+function confirmOrCreateUser(fullName) {
+	MongoClient.connect("mongodb:" + Argv.mongo, function(err, db) {
+		Assert.equal(null, err);
+		var userRef = "user-" + fullName.toLowerCase()
+		console.log(userRef);
+		testUser(db, {ref: userRef}, function(err, result) {
+			if (result === null || Argv.force) {
+				
+				insertUser(db, {
+					"type": "user",
+					"ref": userRef,
+					"name": fullName,
+					"mods": [
+						{
+							"type": "Avatar",
+							"x": 10,
+							"y": 128 + rnd(32),
+							"bodyType": "male",
+							"bankBalance": 5000,
+							"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
+							"nitty_bits": 0
+						}
+						]
+				}, function() {
+					db.close();
+				});
+				
+			} else {
+				db.close();
+			}
+		});
+	});
+}
 
 String.prototype.getBytes = function () {
 	var bytes = [];
@@ -354,9 +416,10 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 			};
 			var longUsername = send.substring(0, colon);
 			if (undefined !== UserDB[longUsername]) {
-				client.userRef   		= UserDB[longUsername].userRef;	 // Lookup user name from comm key
+				client.userRef= UserDB[longUsername].userRef;	 // Lookup user name from comm key
 			} else {
-				client.userRef 			= "user-" + longUsername.toLowerCase();
+				client.userRef = "user-" + longUsername.toLowerCase();
+				confirmOrCreateUser(longUsername);				 // Make sure there's one in the NeoHabitat/Elko database.
 			}
 			Trace.debug(client.sessionName + " (Habitat Client) connected.");
 		}
@@ -809,5 +872,6 @@ Net.createServer(function(client) {
 	createServerConnection(client.port, client.host, client);
 	
 }).listen(ListenPort, ListenHost);
+
 
 Trace.info('Habitat to Elko Bridge listening on ' + ListenHost +':'+ ListenPort);
