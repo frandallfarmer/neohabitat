@@ -8,7 +8,7 @@
   - https://github.com/frandallfarmer/neohabitat
 
 ##Documentation
-  - https://github.com/frandallfarmer/neohabitat/wiki
+  - https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation
 
 ##License
   - MIT License, where applicable. http://en.wikipedia.org/wiki/MIT_License
