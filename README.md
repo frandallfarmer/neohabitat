@@ -4,7 +4,7 @@
 ##Home
   - http://neohabitat.org
 
-##Source
+##Source [![Build Status](https://travis-ci.org/frandallfarmer/neohabitat.svg?branch=master)](https://travis-ci.org/frandallfarmer/neohabitat)
   - https://github.com/frandallfarmer/neohabitat
 
 ##Documentation
