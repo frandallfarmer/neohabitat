@@ -1,0 +1,48 @@
+package org.made.neohabitat.mods;
+
+import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptInteger;
+import org.elkoserver.json.EncodeControl;
+import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
+import org.made.neohabitat.Document;
+
+/**
+ * Habitat Plaque Mod (attached to an Elko Item.)
+ * 
+ * This is a non-portable, READ-only text document. Responds to HELP messages.
+ * 
+ * @author randy
+ *
+ */
+public class Plaque extends Document {
+
+	public int		HabitatClass 	 () { return CLASS_PLAQUE; }
+	public String	HabitatModName	 () { return "Plaque"; }
+	public int		capacity 		 () { return 0; }
+	public int		pc_state_bytes 	 () { return 1; };
+	public boolean	known 			 () { return true; }
+	public boolean	opaque_container () { return false; }
+	public boolean	filler 			 () { return false; }
+
+	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "last_page", "path" })  
+	public Plaque (OptInteger style, OptInteger x, OptInteger y, 
+			OptInteger orientation, OptInteger gr_state,
+			int last_page, String path ) {
+		super(style, x, y,  orientation, gr_state, last_page, path);
+	}
+
+	@Override
+	public JSONLiteral encode(EncodeControl control) {
+		JSONLiteral result = super.encodeMassive(new JSONLiteral(HabitatModName(), control));
+		result.finish();
+		return result;
+	}
+	
+	@JSONMethod
+	public void HELP (User from) {
+		send_reply_msg(from, "PLAQUE: DO reads the plaque.  While reading, pointing at NEXT and pressing the button flips to the next page.");
+		object_say(from, "Similarly, BACK flips to the previous page and QUIT stops reading.");
+	}
+}
+

@@ -553,6 +553,11 @@ var encodeState = {
 			buf.add(container			|| 0);
 			return buf;
 		},
+		document:  function (state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.last_page		|| 1);
+			return buf;
+		},
 		magical: function (state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.magic_type	|| 0);
@@ -616,6 +621,7 @@ var encodeState = {
 			return buf;
 		},
 		Short_sign:	function (state, container, buf) { return (this.Sign	(state, container, buf)); },
+		Plaque:		function (state, container, buf) { return (this.document(state, container, buf)); },
 		Head:		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Tree: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); },

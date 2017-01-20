@@ -298,6 +298,7 @@ this.CLASSES 			= {
 		"Matchbook":49, 49:"Matchbook",
 		"Movie_camera":	52, 52:"Movie_camera",
 		"Paper":	54, 54:"Paper",
+		"Plaque":	55, 55:"Plaque",
 		"Short_sign":56, 56:"Short_sign",
 		"Sign":		57, 57:"Sign",
 		"Plant":	58, 58:"Plant",
@@ -472,6 +473,15 @@ this.translate = {
 				b.add(o.err);
 			}			
 		},
+		READ: {
+			toServer: function(a, m) {
+				m.page = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.nextPage);
+				b.add(o.text.getBytes());
+			},
+ 		},
 		LEAVE: {
 			toServer: function(a, m) {
 				m.reason = a[0];
@@ -496,6 +506,14 @@ this.common = {
 			3:{ op:"THROW"}
 		}
 };
+
+
+this.document	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"READ" }
+		}
+}
 
 this.Region = {
 		clientMessages: {
@@ -589,6 +607,7 @@ this.Box		= this.openable;
 this.Ground		= this.common;
 this.Key		= this.common;
 this.Knick_knack= this.magical;
+this.Plaque		= this.document;
 this.Rock		= this.common;
 this.Short_sign = this.help;
 this.Sign 		= this.help;

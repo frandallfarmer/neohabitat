@@ -1,0 +1,19 @@
+{
+	"type": "item",
+	"ref": "item-library.plaque",
+	"deletable": true,
+	"name": "Test Plaque",
+	"in": "context-library",
+	"mods": [
+		{
+			"type": "Plaque",
+			"style": 0,
+			"x": 80,
+			"y": 80,
+			"orientation": 0,
+			"gr_state": 0,
+			"last_page": 1,
+			"path": ""
+		}
+	]
+}

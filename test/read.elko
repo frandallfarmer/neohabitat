@@ -1,0 +1,6 @@
+{"to":"plaque","op":"READ", "page":1, "Telko": { "delay": 3 }}
+
+{"to":"plaque","op":"READ", "page":0}
+
+{"to":"plaque","op":"READ", "page":2}
+

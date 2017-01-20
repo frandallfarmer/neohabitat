@@ -44,6 +44,11 @@
 		},
 		{
 			"type": "class",
+			"tag": "Plaque",
+			"name": "org.made.neohabitat.mods.Plaque"
+		},
+		{
+			"type": "class",
 			"tag": "Region",
 			"name": "org.made.neohabitat.mods.Region"
 		},
