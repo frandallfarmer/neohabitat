@@ -44,6 +44,7 @@ BASE_ARGS=(
 )
 
 ls -lah
+ls -lah target
 
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
   cd ${GIT_BASE_DIR}/db
