@@ -43,8 +43,10 @@ BASE_ARGS=(
   org.elkoserver.server.context.ContextServerBoot
 )
 
+ls -lah
+
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
-  cd ${GIT_BASE_DIR}
+  cd ${GIT_BASE_DIR}/db
   make db
   cd ..
 fi
