@@ -31,4 +31,4 @@ script:
   - sleep 60
 
   # Executes functional tests:
-  - node test/Telko.js start
+  - cd test && node Telko.js -f chip
