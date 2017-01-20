@@ -2,24 +2,12 @@ sudo: required
 
 language: ruby
 
-services:
-  - docker
+env:
+  VAGRANT_SHOULD_INSTALL_MARIADB: false
 
 before_install:
-  # Ensures that MySQL is stopped before continuing.
-  - sudo service mysql stop
-
   # Runs the build script to ensure the build completes.
-  - ./build
-
-  # Logs the current version of docker-compose.
-  - docker-compose --version
-
-  # You will want this for logging. If one of your containers does not build for
-  # whatever reason it's best to report that now before your tests start
-  # otherwise it can be really tricky to debug why tests are failing sometimes.
-  - docker ps
+  - ./vagrant/build.sh
 
 script:
-  - docker-compose up
   - echo "Success"
