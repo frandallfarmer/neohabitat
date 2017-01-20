@@ -20,7 +20,6 @@ before_install:
   - docker ps
 
 script:
-  - docker-compose build
-  - docker-compose start
+  - docker-compose up
 
   - echo "Success"
