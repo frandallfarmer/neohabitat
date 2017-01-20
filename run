@@ -20,6 +20,7 @@ SHUTDOWN_PASSWORD="${NEOHABITAT_SHUTDOWN_PASSWORD-figleaf}"
 SHOULD_BACKGROUND_BRIDGE="${NEOHABITAT_SHOULD_BACKGROUND_BRIDGE-true}"
 SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE-true}"
 SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT-true}"
+SHOULD_UPDATE_SCHEMA="${NEOHABITAT_SHOULD_UPDATE_SCHEMA-true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
 
 BASE_ARGS=(
@@ -41,6 +42,12 @@ BASE_ARGS=(
   conf.msgdiagnostics=true
   org.elkoserver.server.context.ContextServerBoot
 )
+
+if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
+  cd ${GIT_BASE_DIR}
+  make db
+  cd ..
+fi
 
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then

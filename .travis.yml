@@ -6,6 +6,9 @@ services:
   - docker
 
 before_install:
+  # Ensures that MySQL is stopped before continuing.
+  - sudo service mysql stop
+
   - docker-compose --version
 
   # Setup your application stack. You may need to tweak these commands if you
