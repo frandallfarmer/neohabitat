@@ -11,7 +11,7 @@ function retry()
   local try=$1
   local cmd="${@: 2}"
   [[ $# -le 1 ]] && {
-    echo "Usage $0 <retry_number> <Command>";
+    echo "Usage $0 <retry_number> <command>";
   }
 
   until [[ $n -ge $try ]]
