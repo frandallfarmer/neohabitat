@@ -1,7 +1,7 @@
 #!/bin/bash
 # Starts a Neoclassical Habitat server and Habitat protocol bridge.
 
-set -o pipefail
+set -eo pipefail
 
 trap 'kill %1; kill %2' SIGINT
 
@@ -54,7 +54,7 @@ BASE_ARGS=(
   conf.listen.protocol=tcp
   conf.comm.jsonstrictness=true
   conf.context.entrytimeout=999999
-  conf.context.odb=odb
+  conf.context.odb=mongo
   conf.context.odb.mongo.hostport="${MONGO_HOST}"
   conf.context.objstore=org.elkoserver.objdb.store.mongostore.MongoObjectStore
   conf.context.name="${SERVER_NAME}"
@@ -62,8 +62,6 @@ BASE_ARGS=(
   conf.msgdiagnostics=true
   org.elkoserver.server.context.ContextServerBoot
 )
-
-find .
 
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
   cd ${GIT_BASE_DIR}/db

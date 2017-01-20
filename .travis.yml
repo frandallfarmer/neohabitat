@@ -9,6 +9,7 @@ before_install:
   # Ensures that MySQL is stopped before continuing.
   - sudo service mysql stop
 
+  # Builds everything locally.
   - npm install && ./build
 
   # Logs the current version of docker-compose.
@@ -20,6 +21,14 @@ before_install:
   - docker ps
 
 script:
-  - docker-compose up
+  # Builds all local images.
+  - docker-compose build --pull
 
-  - echo "Success"
+  # Stands up all Docker-based services.
+  - docker-compose up -d
+
+  # Ugly hardwait to ensure that Docker services are up before functional tests execute.
+  - sleep 60
+
+  # Executes functional tests:
+  - cd test && node Telko.js -f chip
