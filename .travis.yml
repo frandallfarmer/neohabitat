@@ -2,6 +2,9 @@ sudo: required
 
 language: ruby
 
+notifications:
+  slack: neohabitat:rLGUstSJGUC2eW9610GfoMBx
+
 services:
   - docker
 
