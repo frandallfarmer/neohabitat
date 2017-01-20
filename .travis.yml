@@ -6,9 +6,6 @@ services:
   - docker
 
 before_install:
-  # Check that docker-compose is now running the latest version (or at least the
-  # one we specified). This is not to be confused with the version we printed
-  # before doing the update.
   - docker-compose --version
 
   # Setup your application stack. You may need to tweak these commands if you
