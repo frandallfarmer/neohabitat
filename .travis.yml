@@ -9,11 +9,11 @@ before_install:
   # Ensures that MySQL is stopped before continuing.
   - sudo service mysql stop
 
-  - docker-compose --version
+  # Runs the build script to ensure the build completes.
+  - ./build
 
-  # Setup your application stack. You may need to tweak these commands if you
-  # doing out-of-the-ordinary docker-compose builds.
-  - docker-compose up
+  # Logs the current version of docker-compose.
+  - docker-compose --version
 
   # You will want this for logging. If one of your containers does not build for
   # whatever reason it's best to report that now before your tests start
@@ -21,4 +21,5 @@ before_install:
   - docker ps
 
 script:
-  - echo "Success!!"
+  - docker-compose up
+  - echo "Success"
