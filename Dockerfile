@@ -40,7 +40,7 @@ RUN npm install -g supervisor
 
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
-RUN npm install && ./build
+RUN rm -rf lib && npm install && ./build
 
 ENTRYPOINT /neohabitat/run
 
