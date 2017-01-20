@@ -1,0 +1,34 @@
+sudo: required
+
+language: ruby
+
+services:
+  - docker
+
+before_install:
+  # Ensures that MySQL is stopped before continuing.
+  - sudo service mysql stop
+
+  # Builds everything locally.
+  - npm install && ./build
+
+  # Logs the current version of docker-compose.
+  - docker-compose --version
+
+  # You will want this for logging. If one of your containers does not build for
+  # whatever reason it's best to report that now before your tests start
+  # otherwise it can be really tricky to debug why tests are failing sometimes.
+  - docker ps
+
+script:
+  # Builds all local images.
+  - docker-compose build --pull
+
+  # Stands up all Docker-based services.
+  - docker-compose up -d
+
+  # Ugly hardwait to ensure that Docker services are up before functional tests execute.
+  - sleep 60
+
+  # Executes functional tests:
+  - cd test && node Telko.js -f chip

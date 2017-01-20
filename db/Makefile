@@ -15,7 +15,7 @@ MONGODB_OBJECTS = $(shell find . -name '*.json')
 # The file that actually gets produced by "make db"
 DBINIT_SCRIPT = ./dbinit.sh
 
-NEOHABITAT_MONGO_HOST := "127.0.0.1"
+NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
 # Make the database setup stuff
 db:
