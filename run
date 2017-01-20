@@ -1,9 +1,29 @@
 #!/bin/bash
 # Starts a Neoclassical Habitat server and Habitat protocol bridge.
 
-set -eo pipefail
+set -o pipefail
 
 trap 'kill %1; kill %2' SIGINT
+
+function retry()
+{
+  local n=0
+  local try=$1
+  local cmd="${@: 2}"
+  [[ $# -le 1 ]] && {
+    echo "Usage $0 <retry_number> <command>";
+  }
+
+  until [[ $n -ge $try ]]
+  do
+    $cmd && break || {
+      echo "Command Fail.."
+      ((n++))
+      echo "retry $n ::"
+      sleep 1;
+    }
+  done
+}
 
 GIT_BASE_DIR=$(git rev-parse --show-toplevel)
 VERSION=$(cat ${GIT_BASE_DIR}/target/classes/version.txt)
@@ -20,6 +40,7 @@ SHUTDOWN_PASSWORD="${NEOHABITAT_SHUTDOWN_PASSWORD-figleaf}"
 SHOULD_BACKGROUND_BRIDGE="${NEOHABITAT_SHOULD_BACKGROUND_BRIDGE-true}"
 SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE-true}"
 SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT-true}"
+SHOULD_UPDATE_SCHEMA="${NEOHABITAT_SHOULD_UPDATE_SCHEMA-true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
 
 BASE_ARGS=(
@@ -42,16 +63,24 @@ BASE_ARGS=(
   org.elkoserver.server.context.ContextServerBoot
 )
 
+find .
+
+if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
+  cd ${GIT_BASE_DIR}/db
+  retry 60 "make db"
+  cd ..
+fi
+
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
   if [ "${SHOULD_BACKGROUND_BRIDGE}" == true ]; then
-    supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
+    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" &
   else
-    supervisor -w bridge -- bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" 
+    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" 
   fi
 fi
 
 # Starts the Habitat Elko server if requested.
 if [ "${SHOULD_RUN_NEOHABITAT}" == true ]; then
-  java -jar target/neohabitat-${VERSION}.jar "${BASE_ARGS[@]}" "${@}"
+  java -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar "${BASE_ARGS[@]}" "${@}"
 fi

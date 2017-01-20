@@ -3,13 +3,14 @@
 # services on an Ubuntu-class node.
 # WARNING: No security is in use here whatsoever; use this in production at your peril.
 
-set -ueo pipefail
+set -eo pipefail
+
+SHOULD_INSTALL_MARIADB="${VAGRANT_SHOULD_INSTALL_MARIADB-true}"
 
 PACKAGES=(
   build-essential
   default-jdk
   git
-  mariadb-server
   maven
   mongodb-org
   mongodb-org-mongos
@@ -19,10 +20,12 @@ PACKAGES=(
   nodejs
 )
 
-# Installs the MariaDB APT repository.
-sudo apt-get install software-properties-common
-sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-sudo add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu xenial main'
+if [ "${SHOULD_INSTALL_MARIADB}" == true ]; then
+  # Installs the MariaDB APT repository.
+  sudo apt-get install software-properties-common
+  sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+  sudo add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu xenial main'
+fi
 
 # Installs the MongoDB APT repository.
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
@@ -37,6 +40,10 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 # Installs all Neohabitat dependencies, forcing noninteractivity to disable prompts.
 export DEBIAN_FRONTEND=noninteractive
 sudo -E apt-get -q -y install "${PACKAGES[@]}"
+if [ "${SHOULD_INSTALL_MARIADB}" == true ]; then
+  sudo -E apt-get -q -y install mariadb-server
+fi
+
 sudo npm install -g supervisor
 
 # Writes a Systemd startup script for MongoDB because the package does not include it.

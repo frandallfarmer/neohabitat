@@ -16,6 +16,7 @@ services:
     volumes:
       - ./data/mongodb:/data/db
     ports:
+      - "27017"
       - "27017:27017"
   neohabitat:
     build: .
@@ -26,11 +27,11 @@ services:
       - NEOHABITAT_MONGO_HOST=mongo:27017
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
     ports:
       - "1337:1337"
       - "9000:9000"
     depends_on:
-      - mariadb
       - mongo
   qlink:
     image: philcollins/qlink
