@@ -21,5 +21,6 @@ before_install:
 
 script:
   - docker-compose up
-
-  - echo "Success"
+#  - sleep 60
+#  - node test/Telko.js 
+#  - echo "Success"
