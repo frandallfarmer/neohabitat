@@ -24,7 +24,7 @@ const ObjectId 		= require('mongodb').ObjectID;
 const DefDefs	= { context:	'context-test',
 		            listen:		'127.0.0.1:1337',
 		            elko:		'127.0.0.1:9000',
-		        	mongo:		'//localhost/elko',
+		        	mongo:		'//127.0.0.1:27017/elko',
 		            rate:		1200,
 		            trace:		'info'};
 var	 Defaults	= DefDefs;
@@ -97,9 +97,10 @@ function insertUser(db, user, callback) {
 }
 
 function confirmOrCreateUser(fullName) {
+	var userRef = "user-" + fullName.toLowerCase()
+	console.log("\nTrying to connect to mongodb:" + Argv.mongo);
 	MongoClient.connect("mongodb:" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
-		var userRef = "user-" + fullName.toLowerCase()
 		console.log(userRef);
 		testUser(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
@@ -128,6 +129,7 @@ function confirmOrCreateUser(fullName) {
 			}
 		});
 	});
+	return userRef;
 }
 
 String.prototype.getBytes = function () {
@@ -414,13 +416,8 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 					client.rawWrite(Buffer.from(escape(msg)));
 				}
 			};
-			var longUsername = send.substring(0, colon);
-			if (undefined !== UserDB[longUsername]) {
-				client.userRef= UserDB[longUsername].userRef;	 // Lookup user name from comm key
-			} else {
-				client.userRef = "user-" + longUsername.toLowerCase();
-				confirmOrCreateUser(longUsername);				 // Make sure there's one in the NeoHabitat/Elko database.
-			}
+			client.userRef = confirmOrCreateUser(send.substring(0, colon));				 // Make sure there's one in the NeoHabitat/Elko database.
+
 			Trace.debug(client.sessionName + " (Habitat Client) connected.");
 		}
 	}
