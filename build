@@ -21,17 +21,17 @@ if [ ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}.jar -o \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-javadoc.jar
   wget -O ./lib/elkoserver-${ELKO_VERSION}-sources.jar \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-sources.jar
-
-  # Installs the Elkoserver JAR into the local Maven repository.
-  mvn install:install-file \
-    -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
-    -Djavadoc=./lib/elkoserver-${ELKO_VERSION}-javadoc.jar \
-    -Dsources=./lib/elkoserver-${ELKO_VERSION}-sources.jar \
-    -DgroupId=org.elko \
-    -DartifactId=elkoserver \
-    -Dversion="${ELKO_VERSION}" \
-    -Dpackaging=jar \
-    -DgeneratePom=true
 fi
+
+# Installs the Elkoserver JAR into the local Maven repository.
+mvn install:install-file \
+  -Dfile=./lib/elkoserver-${ELKO_VERSION}.jar \
+  -Djavadoc=./lib/elkoserver-${ELKO_VERSION}-javadoc.jar \
+  -Dsources=./lib/elkoserver-${ELKO_VERSION}-sources.jar \
+  -DgroupId=org.elko \
+  -DartifactId=elkoserver \
+  -Dversion="${ELKO_VERSION}" \
+  -Dpackaging=jar \
+  -DgeneratePom=true
 
 mvn clean package
