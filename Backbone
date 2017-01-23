@@ -1,0 +1,53 @@
+---
+clusters:
+  # - neohabitatmongo:
+  #     image: mongo
+  #     tag: "3.0"
+  #     ports:
+  #       - port: 27017
+  - neohabitat:
+      image: philcollins/neohabitat
+      environment:
+        NEOHABITAT_MONGO_HOST: 127.0.0.1:27017
+      synapses:
+        - resource: neohabitatmongo
+          protocol: tcp
+          port: 27017
+          remote_port: 27017
+      ports:
+        - port: 1337
+        - port: 9000
+  # - neohabitatqlink:
+  #     image: philcollins/qlink
+  #     environment:
+  #       QLINK_DB_HOST: 127.0.0.1
+  #       QLINK_DB_JDBC_URI: jdbc:mysql://127.0.0.1:3306/qlink
+  #       QLINK_DB_USERNAME: mysos
+  #       QLINK_DB_PASSWORD: "{{ synapse.neohabitatmysql.admin_password }}"
+  #       QLINK_HABITAT_HOST: 127.0.0.1
+  #       QLINK_SHOULD_CREATE_DB: true
+  #     synapses:
+  #       - resource: neohabitat
+  #         protocol: tcp
+  #         port: 1337
+  #         remote_port: 1337
+  #       - resource: neohabitatmysql
+  #         type: database
+  #     ports:
+  #       - port: 5190
+
+# databases:
+#   - neohabitatmysql
+
+# balancers:
+#   - neohabitat:
+#       enable_ssl: false
+#       synapses:
+#         - resource: neohabitatqlink
+#           protocol: tcp
+#           port: 5190
+#           remote_port: 5190
+#         - resource: neohabitat
+#           protocol: tcp
+#           port: 9000
+#           remote_port: 9000
