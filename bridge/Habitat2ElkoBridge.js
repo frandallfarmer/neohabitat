@@ -85,7 +85,6 @@ function testUser(db, query, callback) {
 
 
 function insertUser(db, user, callback) {
-	console.log(JSON.stringify(user));
 	db.collection('odb').updateOne(
 			{ref: user.ref},
 			user,
@@ -98,10 +97,8 @@ function insertUser(db, user, callback) {
 
 function confirmOrCreateUser(fullName) {
 	var userRef = "user-" + fullName.toLowerCase()
-	console.log("\nTrying to connect to mongodb:" + Argv.mongo);
 	MongoClient.connect("mongodb:" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
-		console.log(userRef);
 		testUser(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
 				
@@ -199,7 +196,7 @@ function createServerConnection(port, host, client) {
 				reset = processIncomingElkoBlob(client, server, data);				
 			} catch(err) {
 				Trace.error("\n\n\nServer input processing error captured:\n" +
-							JSON.stringify(err,null,2) +
+							err.message + 
 							"\n...resuming...\n");
 			}
 			if (reset) {				// This connection has been replaced due to context change.
@@ -794,12 +791,13 @@ function parseIncomingElkoServerMessage(client, server, data) {
 
 	// End of Special Cases - parse the reply/broadcast/neighbor/private message as a object-command.
 
+	var split = false;
 	if (o.type === "reply") {
 		var buf = new HabBuf(true, true, client.state.replySeq, o.noid, o.filler);
 		if (undefined !== client.state.replyEncoder) {
-			client.state.replyEncoder(o, buf);
+			split = client.state.replyEncoder(o, buf);
 		}
-		buf.send(client);
+		buf.send(client, split);
 		return;
 	}
 	
@@ -808,9 +806,9 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		o.toClient	= HCode.SERVER_OPS[o.op].toClient;
 		var buf = new HabBuf(true, true, HCode.PHANTOM_REQUEST, o.noid, o.reqno);
 		if (undefined !== o.toClient) {
-			o.toClient(o, buf);
+			split = o.toClient(o, buf);
 		}
-		buf.send(client);
+		buf.send(client, split);
 		return;
 	} else {
 		Trace.warn("Message from server headed to binary client not yet converted. IGNORED:\n");

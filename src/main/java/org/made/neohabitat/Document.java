@@ -16,55 +16,68 @@ import org.elkoserver.server.context.User;
  */
 public abstract class Document extends HabitatMod {
 	
-	/** URL/Path to document body */
-	protected String path = "null.txt";
+	/** Local document body */
+	protected String pages[] = {};
+	/** TODO URL/Path to external resource FUTURE FEATURE */
+	protected String path = "";
 	/** The last page read, shared with client */
 	protected int last_page = 1;
-	/** The page last read in this docuement (by any user/avatar) */
-	protected int current_page = 1;
+	/** The page last read in this document (by any user/avatar) */
+	protected int next_page = 1;
 	
 	public Document (
 			OptInteger style, OptInteger x, OptInteger y,
 			OptInteger orientation, OptInteger gr_state,
-			int last_page, String path ) {
+			int last_page, String pages[], String path ) {
 		super(style, x, y, orientation, gr_state);
-		this.last_page	= last_page;
-		this.path		= path;
+		this.pages		= pages;
+		this.last_page	= (pages.length > 0) ? pages.length : last_page;
+		this.path		= path;		
 	} 
 
-	public JSONLiteral encodeMassive(JSONLiteral result) {
+	public JSONLiteral encodeDocument(JSONLiteral result) {
 		result = super.encodeCommon(result);
 		result.addParameter("last_page", last_page);
-		if ("" != path)	{ result.addParameter("path", path); }
+		if (result.control().toRepository()) {
+			result.addParameter("path", path);
+			result.addParameter("pages", pages);			
+		}
 		return result;
 	}
 
 	@JSONMethod ({"page"})
 	public void READ (User from, OptInteger page) {
 		int page_to_read = page.value(0);
-		if (page_to_read == 0) {
-			page_to_read = current_page;
+		if (page_to_read == 254) {		// aka -1: BACK pressed on UI.
+			page_to_read = Math.max(1, next_page - 2);
+		} else if (page_to_read == 0) {
+			page_to_read = next_page;
 		}
 		if (page_to_read > last_page) {
 			page_to_read = 1;
 		}
-		current_page = page_to_read +1;
-		show_text_page(from, path, page_to_read, current_page);
+		next_page = page_to_read + 1;
+		show_text_page(from, path, page_to_read, next_page);
 	}
-
-	public void show_text_page(User from, String path, int page_to_read, int current_page) {
-		JSONLiteral msg = new_reply_msg(this.noid);
-		msg.addParameter("nextpage", current_page);
+	
+	public void show_text_page(User from, String path, int page_to_read, int next_page) {
+		JSONLiteral msg = new_reply_msg(noid);
+		msg.addParameter("nextpage", next_page);
 		msg.addParameter("text", getTextPage(path, page_to_read));
 		msg.finish();
-		from.send(msg);		
+		from.send(msg);	
 	}
 	
 	/** TBD Read document from path and pagify. Large packets will be managed by the bridge? */
 	private String getTextPage(String path, int page_to_read) {
-		if (path.isEmpty()) {
-			return "<This space left blank>";
-		}
-		return path + " remains unread. TBD.";	
-	}	
+		if (pages.length == 0) {
+			if (path.isEmpty()) {
+				return "<This space left blank>";
+			} else {
+				return path + " remains unread. FEATURE TBD.";
+			}
+		}	
+		return pages[Math.max(Math.min(page_to_read, last_page), 1) - 1];
+	}
+
 }

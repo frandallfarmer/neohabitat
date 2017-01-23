@@ -19,7 +19,6 @@ this.SPLIT_MIDDLE		= 0x40;
 this.SPLIT_END			= 0x80;
 this.SPLIT_MASK			= ~(this.SPLIT_START | this.SPLIT_MIDDLE | this.SPLIT_END) & this.BYTE_MASK ;
 
-
 this.REGION_NOID			= 0;
 this.NORM					= 0;
 
@@ -478,8 +477,9 @@ this.translate = {
 				m.page = a[0];
 			},
 			toClient: function(o, b) {
-				b.add(o.nextPage);
+				b.add(o.nextpage);
 				b.add(o.text.getBytes());
+				return true;		// This reply should be split upon transmission to the client.
 			},
  		},
 		LEAVE: {

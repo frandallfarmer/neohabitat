@@ -306,9 +306,10 @@ public abstract class Magical extends HabitatMod {
 				object_say(from, identifyTarget(target));				
 				String	dump  = target.encode(EncodeControl.forRepository).toString();
 				dump = dump.substring(1, dump.length() - 1);
-				int		start = 0;
+				int		start 		= 0;	// Offset in JSON string dump
+				int		countdown	= 2;	// Word balloons before we give up sending...
 				String 	chunk;
-				while (start < dump.length()) {
+				while (start < dump.length() && countdown > 0) {
 					chunk = dump.substring(start);
 					if (chunk.length() > MAX_WORD_BALLON_LEN) {
 						chunk = chunk.substring(0, MAX_WORD_BALLON_LEN);
@@ -318,6 +319,9 @@ public abstract class Magical extends HabitatMod {
 					}
 					object_say(from, chunk);
 					start += chunk.length();
+					if (--countdown == 0) {
+						object_say(from, "...");
+					}
 				}
 				break;
 			case 't':			// Set text field value

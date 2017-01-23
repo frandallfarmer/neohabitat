@@ -25,16 +25,16 @@ public class Plaque extends Document {
 	public boolean	opaque_container () { return false; }
 	public boolean	filler 			 () { return false; }
 
-	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "last_page", "path" })  
+	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "last_page", "pages", "path" })  
 	public Plaque (OptInteger style, OptInteger x, OptInteger y, 
 			OptInteger orientation, OptInteger gr_state,
-			int last_page, String path ) {
-		super(style, x, y,  orientation, gr_state, last_page, path);
+			int last_page, String pages[], String path ) {
+		super(style, x, y,  orientation, gr_state, last_page, pages, path);
 	}
 
 	@Override
 	public JSONLiteral encode(EncodeControl control) {
-		JSONLiteral result = super.encodeMassive(new JSONLiteral(HabitatModName(), control));
+		JSONLiteral result = super.encodeDocument(new JSONLiteral(HabitatModName(), control));
 		result.finish();
 		return result;
 	}
