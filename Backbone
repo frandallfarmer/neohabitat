@@ -1,10 +1,10 @@
 ---
 clusters:
-  # - neohabitatmongo:
-  #     image: mongo
-  #     tag: "3.0"
-  #     ports:
-  #       - port: 27017
+  - neohabitatmongo:
+      image: mongo
+      tag: "3.0"
+      ports:
+        - port: 27017
   - neohabitat:
       image: philcollins/neohabitat
       environment:
@@ -17,37 +17,38 @@ clusters:
       ports:
         - port: 1337
         - port: 9000
-  # - neohabitatqlink:
-  #     image: philcollins/qlink
-  #     environment:
-  #       QLINK_DB_HOST: 127.0.0.1
-  #       QLINK_DB_JDBC_URI: jdbc:mysql://127.0.0.1:3306/qlink
-  #       QLINK_DB_USERNAME: mysos
-  #       QLINK_DB_PASSWORD: "{{ synapse.neohabitatmysql.admin_password }}"
-  #       QLINK_HABITAT_HOST: 127.0.0.1
-  #       QLINK_SHOULD_CREATE_DB: true
-  #     synapses:
-  #       - resource: neohabitat
-  #         protocol: tcp
-  #         port: 1337
-  #         remote_port: 1337
-  #       - resource: neohabitatmysql
-  #         type: database
-  #     ports:
-  #       - port: 5190
+  - neohabitatqlink:
+      image: philcollins/qlink
+      environment:
+        QLINK_DB_HOST: 127.0.0.1
+        QLINK_DB_JDBC_URI: jdbc:mysql://127.0.0.1:3306/qlink
+        QLINK_DB_USERNAME: mysos
+        QLINK_DB_PASSWORD: "{{ synapse.neohabitatmysql.admin_password }}"
+        QLINK_HABITAT_HOST: 127.0.0.1
+        QLINK_SHOULD_CREATE_DB: true
+        QLINK_SHOULD_PING: true
+      synapses:
+        - resource: neohabitat
+          protocol: tcp
+          port: 1337
+          remote_port: 1337
+        - resource: neohabitatmysql
+          type: database
+      ports:
+        - port: 5190
 
-# databases:
-#   - neohabitatmysql
+databases:
+  - neohabitatmysql
 
-# balancers:
-#   - neohabitat:
-#       enable_ssl: false
-#       synapses:
-#         - resource: neohabitatqlink
-#           protocol: tcp
-#           port: 5190
-#           remote_port: 5190
-#         - resource: neohabitat
-#           protocol: tcp
-#           port: 9000
-#           remote_port: 9000
+balancers:
+  - neohabitat:
+      enable_ssl: false
+      synapses:
+        - resource: neohabitatqlink
+          protocol: tcp
+          port: 5190
+          remote_port: 5190
+        - resource: neohabitat
+          protocol: tcp
+          port: 9000
+          remote_port: 9000
