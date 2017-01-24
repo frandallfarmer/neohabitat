@@ -205,6 +205,12 @@ function createServerConnection(port, host, client) {
 			}
 		});
 
+		// If we see a socket exception, logs it instead of throwing it.
+	  server.on('error', function(err) {
+	    console.log('Caught socket error: ');
+	    console.log(err.stack);
+	  });
+
 		// What if the Elko server breaks the connection? For now we tear the bridge down also.
 		// If we ever bring up a "director" based service, this will need to change on context changes.
 
