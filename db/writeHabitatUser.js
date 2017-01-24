@@ -28,7 +28,7 @@ function rnd(max) {
 
 const NewUser = {
 		"type": "user",
-		"ref": "user-" + Argv.name.toLowerCase(),
+		"ref": "user-" + Argv.name.toLowerCase().replace(/ /g,"_"),
 		"name": Argv.name,
 		"mods": [
 			{

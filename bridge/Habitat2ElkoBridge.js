@@ -96,7 +96,7 @@ function insertUser(db, user, callback) {
 }
 
 function confirmOrCreateUser(fullName) {
-	var userRef = "user-" + fullName.toLowerCase()
+	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
 	MongoClient.connect("mongodb:" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
 		testUser(db, {ref: userRef}, function(err, result) {
