@@ -751,8 +751,9 @@ function parseIncomingElkoServerMessage(client, server, data) {
 			Trace.error("*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***");
 			return;
 		}
-		o.clientMessages = HCode[mod.type].clientMessages;
-		client.state.objects[noid] = o;
+		o.clientMessages              = HCode[mod.type].clientMessages;
+		o.container 				  = client.state.refToNoid[o.to];
+		client.state.objects[noid]    = o;
 		client.state.refToNoid[o.ref] = noid;
 		if (o.className === "Avatar") {
 			client.state.numAvatars++;
