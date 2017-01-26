@@ -183,60 +183,61 @@ function descape(b, skip) {
  * Elko uses a fresh connection for every context/region change.
  */
 function createServerConnection(port, host, client) {
-
 	var server = Net.connect({port: port, host:host}, function() {
 		Trace.debug( "Connecting: " + 
 				client.address().address +':'+ client.address().port +
 				" <-> " +
 				server.address().address + ':'+ server.address().port);
-
-		server.on('data', function(data) {
-			var reset = false;
-			try {
-				reset = processIncomingElkoBlob(client, server, data);				
-			} catch(err) {
-				Trace.error("\n\n\nServer input processing error captured:\n" +
-							err.message + 
-							"\n...resuming...\n");
-			}
-			if (reset) {				// This connection has been replaced due to context change.
-				Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
-				server.destroy();
-			}
-		});
-
-		// If we see a socket exception, logs it instead of throwing it.
-		server.on('error', function(err) {
-			console.log('Caught socket error: ');
-			console.log(err.stack);
-		});
-
-		// What if the Elko server breaks the connection? For now we tear the bridge down also.
-		// If we ever bring up a "director" based service, this will need to change on context changes.
-
-		server.on('end', function() {
-			Trace.debug('Elko port disconnected...');
-			if (client) {
-				Trace.debug("Bridge being shutdown...");
-				client.end();
-			}
-		});
-		
-		client.removeAllListeners('data').on('data', function(data) {
-			try {
-				parseIncomingHabitatClientMessage(client, server, data);				
-			} catch(err) {
-				Trace.error("\n\n\nClient input processing error captured:\n" + 
-							JSON.stringify(err,null,2) +
-							"\n...resuming...\n");
-			}
-		});
-
-		client.removeAllListeners('close').on('close', function(data) {
-			Trace.debug("Habitat client disconnected.");
-			if (server) { server.end();}
-		});
 	});
+	server.on('data', function(data) {
+		var reset = false;
+		try {
+			reset = processIncomingElkoBlob(client, server, data);				
+		} catch(err) {
+			Trace.error("\n\n\nServer input processing error captured:\n" +
+					err.message + 
+			"\n...resuming...\n");
+		}
+		if (reset) {				// This connection has been replaced due to context change.
+			Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
+			server.destroy();
+		}
+	});
+
+	// If we see a socket exception, logs it instead of throwing it.
+	server.on('error', function(err) {
+		Trace.warn("Unable to connect to NeoHabitat Server, terminating client connection.");
+		if (client) {
+			client.end();
+		}
+	});
+
+	// What if the Elko server breaks the connection? For now we tear the bridge down also.
+	// If we ever bring up a "director" based service, this will need to change on context changes.
+
+	server.on('end', function() {
+		Trace.debug('Elko port disconnected...');
+		if (client) {
+			Trace.debug("{Bridge being shutdown...}");
+			client.end();
+		}
+	});
+
+	client.removeAllListeners('data').on('data', function(data) {
+		try {
+			parseIncomingHabitatClientMessage(client, server, data);				
+		} catch(err) {
+			Trace.error("\n\n\nClient input processing error captured:\n" + 
+					JSON.stringify(err,null,2) +
+			"\n...resuming...\n");
+		}
+	});
+
+	client.removeAllListeners('close').on('close', function(data) {
+		Trace.debug("Habitat client disconnected.");
+		if (server) { server.end();}
+	});
+
 }
 
 function isString(data) {
@@ -867,7 +868,7 @@ function processIncomingElkoBlob(client, server, data) {
 //The function passed to net.createServer() becomes the event handler for the 'connection' event
 //The sock object the callback function receives is UNIQUE for each connection
 
-Net.createServer(function(client) {
+const Listener = Net.createServer(function(client) {
 	// We have a Habitat Client connection!
 	client.setEncoding('binary');
 	client.state 		= {};
@@ -878,8 +879,6 @@ Net.createServer(function(client) {
 	
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);
 	createServerConnection(client.port, client.host, client);
-	
 }).listen(ListenPort, ListenHost);
-
 
 Trace.info('Habitat to Elko Bridge listening on ' + ListenHost +':'+ ListenPort);
