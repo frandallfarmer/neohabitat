@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-frontyard.fence",
+	"deletable": false,
+	"name": "Keep off the lawn!",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Fence",
+			"style": 0,
+			"x": 132,
+			"y": 33,
+			"orientation": 0,
+			"gr_state": 0,
+		}
+	]
+}

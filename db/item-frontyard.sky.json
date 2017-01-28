@@ -1,0 +1,16 @@
+{
+	"type": "item",
+	"ref": "item-frontyard.sky",
+	"deletable": true,
+	"name": "Sky behind my house...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 0
+		}
+	]
+}

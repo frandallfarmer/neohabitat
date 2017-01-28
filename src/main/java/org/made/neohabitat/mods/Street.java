@@ -7,23 +7,21 @@ import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.HabitatMod;
 
 /**
- * Habitat Bush Mod (attached to an Elko Item.)
+ * Habitat Street Mod (attached to an Elko Item.)
  * 
- * Bushes don't really do much. Only responds to HELP messages. [The client is
- * supposed to be smart and transform interface commands to *other* objects as
- * needed.]
+ * Streets are scenic on the ground and you can walk on then.
  * 
  * @author randy
  *
  */
-public class Bush extends HabitatMod {
+public class Street extends HabitatMod {
     
     public int HabitatClass() {
-        return CLASS_BUSH;
+        return CLASS_STREET;
     }
     
     public String HabitatModName() {
-        return "Bush";
+        return "Street";
     }
     
     public int capacity() {
@@ -31,7 +29,7 @@ public class Bush extends HabitatMod {
     }
     
     public int pc_state_bytes() {
-        return 0;
+        return 2;
     };
     
     public boolean known() {
@@ -46,16 +44,23 @@ public class Bush extends HabitatMod {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
-    public Bush(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
+    public int width;  
+    public int height;
+        
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state",  "width", "height" })
+    public Street(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+            OptInteger width, OptInteger height) {
         super(style, x, y, orientation, gr_state);
+        this.width  = width.value(0);
+        this.height = height.value(0);
     }
     
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
+        result.addParameter("width", width);
+        result.addParameter("height", height);
         result.finish();
         return result;
-    }
-    
+    }    
 }

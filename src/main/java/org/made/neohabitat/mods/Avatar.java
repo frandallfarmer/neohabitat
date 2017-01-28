@@ -45,7 +45,7 @@ public class Avatar extends Container implements UserMod {
     
     public static final int    XMAX        = 144;
     public static final double XMAXFLOAT   = 144.0;
-
+    
     public static final int DOOR_OFFSET = 12;
     public static final int BUILDING_OFFSET = 28;
     
@@ -82,9 +82,9 @@ public class Avatar extends Container implements UserMod {
      * for this session
      */
     protected static int ConnectionType = CONNECTION_JSON; /*
-                                                            * Soon to default to
-                                                            * CONNECTION_HABITAT
-                                                            */
+     * Soon to default to
+     * CONNECTION_HABITAT
+     */
     
     /**
      * Set the ConnectionType for this user.
@@ -145,7 +145,7 @@ public class Avatar extends Container implements UserMod {
     public Magical    savedMagical    = null;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
-            "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "custom" })
+        "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "custom" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
@@ -196,7 +196,7 @@ public class Avatar extends Container implements UserMod {
         result.finish();
         return result;
     }
-
+    
     
     /** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
     public void objectIsComplete() {
@@ -206,7 +206,7 @@ public class Avatar extends Container implements UserMod {
         // If traveling as a ghost, don't do ANYTHING fancy 
         if (noid == GHOST_NOID)
             return;
-
+        
         // TODO lights_on();
         
         // If walking in, set the new (x,y) based on the old (x,y), the entry
@@ -223,7 +223,7 @@ public class Avatar extends Container implements UserMod {
             rotation = (from_orientation - current_region().orientation + 4) % 4;
             arrival_face = (from_direction + rotation + 2) % 4;
             if (arrival_face == 0) {
-               new_x = XLEFT;
+                new_x = XLEFT;
                 new_activity = FACE_RIGHT;
                 if (rotation == 0)
                     new_y = y;
@@ -257,12 +257,12 @@ public class Avatar extends Container implements UserMod {
                                     new_x = new_x - 16;
                             }                    
                         } else if (obj.HabitatClass() == CLASS_BUILDING) {
-                            //                            Building bldg = (Building) obj;
-                            //                            if (bldg.connection == from_region || bldg.connection.isEmpty()) {
-                            //                                new_x = obj.x + BUILDING_OFFSET;
-                        }                        
-                    }                
-                    // TODO More arrival handling See Comment Block of PL1 below.
+                            Building bldg = (Building) obj;
+                            if (bldg.connection == from_region || bldg.connection.isEmpty()) {
+                                new_x = obj.x + BUILDING_OFFSET;
+                            }
+                        }
+                    }
                 }
             } else if (arrival_face == 2) {
                 new_x = XRIGHT;
@@ -291,14 +291,14 @@ public class Avatar extends Container implements UserMod {
             y = Math.min((new_y & ~FOREGROUND_BIT), current_region().depth) | FOREGROUND_BIT;
             activity = new_activity;
         }
-    
+        
         // TODO If entering on death, penalize the Avatar's tokens, if any 
         else if (transition_type == DEATH_ENTRY) {
             HabitatMod noids[] = current_region().noids;
             for (int i=0; i < noids.length; i++) {
                 HabitatMod obj = noids[i];
-                  if (obj != null && obj.HabitatClass() == CLASS_TOKENS) {
-/*
+                if (obj != null && obj.HabitatClass() == CLASS_TOKENS) {
+                    /*
                       Tokens token = (Tokens) obj;
                       int denom = (token.denom_lo + token.denom_hi * 256) * 50 / 100;
                       token.denom_lo = denom % 256;
@@ -306,9 +306,9 @@ public class Avatar extends Container implements UserMod {
                       if (denom == 0)
                           token.denom_lo = 1;
                       token.gen_flags(MODIFIED) = true;
-*/                      
-                  }
-             }
+                     */                      
+                }
+            }
         }
         
         // If entering via teleport, make sure we're in foreground         
@@ -319,27 +319,27 @@ public class Avatar extends Container implements UserMod {
         }
         
     }
-        
-     private int x_invert(int x) {
-         return (XMAX - x);         
-     }
-     
-     
-     private int y_invert(int y) {
-         return(current_region().depth - y);
-     }
-
-     private int x_scale(int x) {
-         double scale = current_region().depth / XMAXFLOAT;
-         return ((int) scale);
-     }
-     
-     private int y_scale(int y) {
-         double scale = XMAXFLOAT / current_region().depth;
-         return ((int) scale);
-     }
-
-
+    
+    private int x_invert(int x) {
+        return (XMAX - x);         
+    }
+    
+    
+    private int y_invert(int y) {
+        return(current_region().depth - y);
+    }
+    
+    private int x_scale(int x) {
+        double scale = current_region().depth / XMAXFLOAT;
+        return ((int) scale);
+    }
+    
+    private int y_scale(int y) {
+        double scale = XMAXFLOAT / current_region().depth;
+        return ((int) scale);
+    }
+    
+    
     
     /*        
          // If entering on death, penalize the Avatar's tokens, if any 
@@ -367,7 +367,7 @@ public class Avatar extends Container implements UserMod {
               call trace_msg('entry daemon: unknown transition type: ' ||
                    ltrim(transition_type));
          end;
-    */
+     */
     
     /**
      * Verb (Specific): TODO Grabbing from another avatar.
@@ -552,8 +552,8 @@ public class Avatar extends Container implements UserMod {
             case 16: // F8
                 object_say(from, "        You are connected to          ");
                 object_say(from, "   The Neoclassical Habitat Server    ");
-//                object_say(from, "                                     ".substring(BuildVersion.version.length())
-//                       + BuildVersion.version + " ");
+                //                object_say(from, "                                     ".substring(BuildVersion.version.length())
+                //                       + BuildVersion.version + " ");
                 object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
                 object_say(from, "                                      ");
                 object_say(from, "Open source - Join us! NeoHabitat.org ");
@@ -639,26 +639,36 @@ public class Avatar extends Container implements UserMod {
     }
     
     public void avatar_NEWREGION(User from, int direction, int passage_id) {
-        Region      region      = current_region();
-        String      new_region  = "";
-        HabitatMod  passage     = region.noids[passage_id];
+        Region      region          = current_region();
+        String      new_region      = "";
+        HabitatMod  passage         = region.noids[passage_id];
+        int         direction_index = (direction + region.orientation + 2) % 4;
         
-        int direction_index = (direction + region.orientation + 2) % 4;
         if (passage_id != 0 &&
                 passage.HabitatClass() == CLASS_DOOR || 
                 passage.HabitatClass() == CLASS_BUILDING) {
-            Door door = (Door) passage;
-            if (!door.getOpenFlag(OPEN_BIT) || 
-                    door.gen_flags[DOOR_AVATAR_RESTRICTED_BIT]) {
-                send_reply_error(from);
-                return;
+            
+            if (passage.HabitatClass() == CLASS_DOOR) {
+                Door door = (Door) passage;
+                if (!door.getOpenFlag(OPEN_BIT) || 
+                        door.gen_flags[DOOR_AVATAR_RESTRICTED_BIT]) {
+                    send_reply_error(from);
+                    return;
+                } else {
+                    new_region = door.connection;
+                }
+            } else {
+                new_region = ((Building) passage).connection;
             }
-            new_region = door.connection;          
-        } else {
+            
+        }
+        
+        else {
             if (direction >= 0 && direction < 4) {
                 new_region = region.neighbors[direction_index]; // East,  West, North, South
             }
         }
+        
         if (!new_region.isEmpty()) {
             send_neighbor_msg(from, THE_REGION, "WAITFOR_$", "who", this.noid);
             send_reply_success(from);

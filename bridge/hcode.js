@@ -522,7 +522,7 @@ this.translate = {
 		}
 };
 
-this.common = {
+this.portable = {
 		clientMessages:{
 			0:{ op:"HELP" },
 			1:{ op:"GET" },
@@ -636,14 +636,18 @@ this.help		= {
 
 this.Bag		= this.portableContainer;
 this.Box		= this.portableContainer;
-this.Ground		= this.common;
-this.Key		= this.common;
+this.Building	= this.help;
+this.Bush		= this.help;
+this.Ground		= this.portable;
+this.Fence		= this.help;
+this.Key		= this.portable;
 this.Knick_knack= this.magical;
 this.Plaque		= this.document;
-this.Rock		= this.common;
+this.Rock		= this.portable;
 this.Short_sign = this.help;
 this.Sign 		= this.help;
+this.Street		= this.help;
 this.Tree		= this.help;
-this.Wall		= this.common;
+this.Wall		= this.portable;
 
 

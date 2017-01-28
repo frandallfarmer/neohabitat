@@ -7,23 +7,23 @@ import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.HabitatMod;
 
 /**
- * Habitat Bush Mod (attached to an Elko Item.)
+ * Habitat Fence Mod (attached to an Elko Item.)
  * 
- * Bushes don't really do much. Only responds to HELP messages. [The client is
+ * Fences don't really do much. Only responds to HELP messages. [The client is
  * supposed to be smart and transform interface commands to *other* objects as
  * needed.]
  * 
  * @author randy
  *
  */
-public class Bush extends HabitatMod {
+public class Fence extends HabitatMod {
     
     public int HabitatClass() {
-        return CLASS_BUSH;
+        return CLASS_FENCE;
     }
     
     public String HabitatModName() {
-        return "Bush";
+        return "Fence";
     }
     
     public int capacity() {
@@ -47,7 +47,7 @@ public class Bush extends HabitatMod {
     }
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
-    public Bush(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
+    public Fence(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
         super(style, x, y, orientation, gr_state);
     }
     

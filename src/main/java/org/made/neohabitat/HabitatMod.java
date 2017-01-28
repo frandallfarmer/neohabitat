@@ -333,7 +333,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * lots of special cases.
      * 
      * Various ways GET can fail: the Avatar is already holding something OR the
-     * object is not getable OR the object is not accessable OR the object is an
+     * object is not getable OR the object is not accessible OR the object is an
      * open container OR the object is in glue or some other permanent container
      * OR the object is in another Avatar's pockets OR the object is in another
      * Avatar's hands and can't be grabbed OR the Avatar holding the object is

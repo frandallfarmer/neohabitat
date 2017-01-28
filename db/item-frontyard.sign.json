@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-frontyard.sign",
+	"deletable": true,
+	"name": "431 Front Ln.",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Sign",
+			"style": 5,
+			"x": 64,
+			"y": 29,
+			"orientation": 252,
+			"gr_state": 8,
+			"text": "   431                                  "
+		}
+	]
+}

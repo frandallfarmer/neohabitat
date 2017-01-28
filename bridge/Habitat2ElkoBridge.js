@@ -22,36 +22,36 @@ const Assert 		= require('assert');
 const ObjectId 		= require('mongodb').ObjectID;
 
 const DefDefs	= { context:	'context-test',
-		            listen:		'127.0.0.1:1337',
-		            elko:		'127.0.0.1:9000',
-		        	mongo:		'//127.0.0.1:27017/elko',
-		            rate:		1200,
-		            trace:		'info'};
+		listen:		'127.0.0.1:1337',
+		elko:		'127.0.0.1:9000',
+		mongo:		'//127.0.0.1:27017/elko',
+		rate:		1200,
+		trace:		'info'};
 var	 Defaults	= DefDefs;
 
 try {
 	var userDefs = JSON.parse(File.readFileSync("defaults.elko"));
 	Defaults = { context:	userDefs.context || DefDefs.context,
-				 listen:	userDefs.listen	 || DefDefs.listen,
-				 elko:		userDefs.elko	 || DefDefs.elko,
-				 mongo:		userDefs.mongo   || DefDefs.mongo,
-				 rate:		userDefs.rate	 || DefDefs.rate,
-				 trace:		userDefs.trace	 || DefDefs.trace};
+			listen:	userDefs.listen	 || DefDefs.listen,
+			elko:		userDefs.elko	 || DefDefs.elko,
+			mongo:		userDefs.mongo   || DefDefs.mongo,
+			rate:		userDefs.rate	 || DefDefs.rate,
+			trace:		userDefs.trace	 || DefDefs.trace};
 } catch (e) {
 	console.log("Missing/invalid defaults.elko configuration file. Proceeding with factory defaults.");
 }
 
 const Argv 		 = require('yargs')
-		.usage('Usage: $0 [options]')
-		.help('help')
-		.option('help',		{ alias: '?', 						     describe: 'Get this usage/help information'})
-		.option('trace', 	{ alias: 't', default: Defaults.trace, 	 describe: 'Trace level name. (see: npm winston)'})
-		.option('context',  { alias: 'c', default: Defaults.context, describe: 'Parameter for entercontext for unknown users'})
-		.option('listen',   { alias: 'l', default: Defaults.listen,  describe: 'Host:Port to listen for client connections'})
-		.option('elko',		{ alias: 'e', default: Defaults.elko,    describe: 'Host:Port of the Habitat Elko Server'})
-		.option('mongo',	{ alias: 'm', default: Defaults.mongo,   describe: 'Mongodb server URL'})
-		.option('rate',		{ alias: 'r', default: Defaults.rate,	 describe: 'Data rate in bits-per-second for transmitting to c64 clients'})
-		.argv;
+.usage('Usage: $0 [options]')
+.help('help')
+.option('help',		{ alias: '?', 						     describe: 'Get this usage/help information'})
+.option('trace', 	{ alias: 't', default: Defaults.trace, 	 describe: 'Trace level name. (see: npm winston)'})
+.option('context',  { alias: 'c', default: Defaults.context, describe: 'Parameter for entercontext for unknown users'})
+.option('listen',   { alias: 'l', default: Defaults.listen,  describe: 'Host:Port to listen for client connections'})
+.option('elko',		{ alias: 'e', default: Defaults.elko,    describe: 'Host:Port of the Habitat Elko Server'})
+.option('mongo',	{ alias: 'm', default: Defaults.mongo,   describe: 'Mongodb server URL'})
+.option('rate',		{ alias: 'r', default: Defaults.rate,	 describe: 'Data rate in bits-per-second for transmitting to c64 clients'})
+.argv;
 
 Trace.level 	 = Argv.trace;
 
@@ -101,7 +101,7 @@ function confirmOrCreateUser(fullName) {
 		Assert.equal(null, err);
 		testUser(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
-				
+
 				insertUser(db, {
 					"type": "user",
 					"ref": userRef,
@@ -120,7 +120,7 @@ function confirmOrCreateUser(fullName) {
 				}, function() {
 					db.close();
 				});
-				
+
 			} else {
 				db.close();
 			}
@@ -247,7 +247,7 @@ function isString(data) {
 function futureSend(connection, data) {
 	var now  = new Date().getTime();
 	var when = Math.ceil(connection.timeLastSent + connection.lastSentLen * 8 / Argv.rate * Millis);
-	
+
 	connection.lastSentLen = data.length;
 	if (when <= now) {
 		connection.write(data);
@@ -339,7 +339,7 @@ var ContentsVector = function (replySeq, noid, ref) {
 	this.containerRef   = ref;
 	this.containerNoid  = noid;
 	this.replySeq		= (undefined === replySeq) ? HCode.PHANTOM_REQUEST : replySeq;
-	
+
 	this.add = function (o) {
 		var mod = o.obj.mods[0];
 		if (undefined === this.containerRef) {
@@ -378,13 +378,13 @@ function toElko(connection, data) {
 function initializeClientState(client, who, replySeq) {
 	client.sessionName = "" + (++SessionCount);
 	client.state = { user: who || "",
-			         contentsVector: new ContentsVector(replySeq, HCode.REGION_NOID),
-			         objects: [],
-			         refToNoid: {},
-			         numAvatars: 0,
-			         waitingForAvatar: true,
-			         replySeq: replySeq
-			       };
+			contentsVector: new ContentsVector(replySeq, HCode.REGION_NOID),
+			objects: [],
+			refToNoid: {},
+			numAvatars: 0,
+			waitingForAvatar: true,
+			replySeq: replySeq
+	};
 }
 
 /**
@@ -463,7 +463,7 @@ function parseHabitatClientMessage(client, server, data) {
 	var reqNum	= hMsg[3] || 0;
 	var args	= hMsg.slice(4);
 	var msg;
-	
+
 	Trace.debug("client (" + client.sessionName + ") ->  [noid:" + noid +
 			" request:" + reqNum + " ... " + JSON.stringify(args) + "]");
 
@@ -485,24 +485,24 @@ function parseHabitatClientMessage(client, server, data) {
 		if (noid === HCode.REGION_NOID && reqNum === HCode.MESSAGE_DESCRIBE) {
 			// Transform MESSAGE_DESCRIBE to entering a context. Probably not right. FRF TODO
 			var replySeq = (undefined === client.state.nextRegion) ?
-									HCode.PHANTOM_REQUEST : client.state.replySeq;
+					HCode.PHANTOM_REQUEST : client.state.replySeq;
 			var changeContextMessage =	{
-						to:			"session",	
-						op:			"entercontext",
-						context:	client.state.nextRegion || Argv.context,
-						user:		client.userRef
-					};
+					to:			"session",	
+					op:			"entercontext",
+					context:	client.state.nextRegion || Argv.context,
+					user:		client.userRef
+			};
 			Trace.debug("Sending 'entercontext' to " + changeContextMessage.context  +" on behalf of the Habitat client.");
 			toElko(server, JSON.stringify(changeContextMessage));
 			initializeClientState(client, client.userRef, replySeq);
 			return;
-			
+
 		} else {
 			var o	  	= client.state.objects[noid];
 			var op	  	= (undefined === o.clientMessages[reqNum]) ? "UNSUPPORTED" : o.clientMessages[reqNum].op;
 			var ref  	= o.ref;
 			msg   		= {"to":ref, "op":op};   // Default Elko-Habitat message header
-			
+
 			if ("UNSUPPORTED" === op) {
 				Trace.warn("*** Unsupported client message " + reqNum + " for " + ref + ". ***");
 				return;
@@ -533,7 +533,7 @@ function removeNoidFromClient(client, noid) {
 			HCode.MESSAGE_GOAWAY);
 	buf.add(noid);
 	buf.send(client);
-	
+
 	delete client.state.refToNoid[o.ref];
 	delete client.state.objects[noid];
 	if (o.className === "Avatar") {
@@ -621,20 +621,28 @@ var encodeState = {
 			buf.add(state.text.getBytes());
 			return buf;
 		},
-		Short_sign:	function (state, container, buf) { return (this.Sign	(state, container, buf)); },
-		Plaque:		function (state, container, buf) { return (this.document(state, container, buf)); },
-		Head:		function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Tree: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Knick_knack:function (state, container, buf) { return (this.magical (state, container, buf)); },
-		Rock: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
-		Flashlight: function (state, container, buf) { return (this.toggle  (state, container, buf)); },
-		Table:		function (state, container, buf) { return (this.openable(state, container, buf)); },
-		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Street:  function (state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.width);
+			buf.add(state.height);
+			return buf;
+		},
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Building:	function (state, container, buf) { return (this.common	(state, container, buf)); },
+		Bush: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Door:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Fence:		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Flashlight: function (state, container, buf) { return (this.toggle  (state, container, buf)); },
 		Ground:		function (state, container, buf) { return (this.walkable(state, container, buf)); },
-
+		Head:		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Knick_knack:function (state, container, buf) { return (this.magical (state, container, buf)); },
+		Plaque:		function (state, container, buf) { return (this.document(state, container, buf)); },
+		Rock: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
+		Short_sign:	function (state, container, buf) { return (this.Sign	(state, container, buf)); },
+		Table:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Tree: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {
@@ -663,7 +671,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		Trace.warn("JSON.parse faiure server (" + client.sessionName + ") ->  Ignoring: " + JSON.stringify(data) + "\n" + JSON.stringify(e));
 		return;
 	}
-	
+
 	if (o.to === "session") {
 		if (o.op === "exit") {
 			var reason = "Server forced exit [" + o.whycode + "] " + o.why;
@@ -680,7 +688,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		var regionRef = o.to.split("-");
 		var userRef   = o.obj.ref.split("-");
 		UserDB[name] = { regionRef: regionRef[0] + "-" + regionRef[1],
-				         userRef:   userRef[0]   + "-" + userRef[1] };
+				userRef:   userRef[0]   + "-" + userRef[1] };
 		File.writeFile(UFILENAME, JSON.stringify(UserDB, null, 2));
 		client.sessionName += ":" + name;
 		client.avatarNoid   = mod.noid;
@@ -694,8 +702,8 @@ function parseIncomingElkoServerMessage(client, server, data) {
 	if (o.type === "changeContext") {
 		client.state.nextRegion = o.context;	// Save for MESSAGE_DESCRIBE to deal with later.
 		createServerConnection(	client.port, 
-								client.host,
-								client);				// create a new connection for the new context 
+				client.host,
+				client);				// create a new connection for the new context 
 		return true; // Signal this connection to die now that it's obsolete.
 	}
 
@@ -730,7 +738,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 			The bridge will handle this, as this round-trip doesn't involve the 
 		 	Habitat client. See the MESSAGE_DESCRIBE to see the followup... */
 
-	
+
 	if (o.op === "ready") {
 		// Eat this, since Elko thinks the region's done and the avatar will arrive later
 		// Habitat wants the user's avatar as part of the contents vector.
@@ -741,7 +749,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		removeNoidFromClient(client, client.state.refToNoid[o.to]);
 		return;
 	}
-	
+
 	if (o.op === "make") {
 		var mod  = o.obj.mods[0];
 		var noid = mod.noid || 0;
@@ -809,7 +817,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		buf.send(client, split);
 		return;
 	}
-	
+
 	if (undefined !== HCode.SERVER_OPS[o.op]) {
 		o.reqno		= HCode.SERVER_OPS[o.op].reqno;
 		o.toClient	= HCode.SERVER_OPS[o.op].toClient;
@@ -877,7 +885,7 @@ const Listener = Net.createServer(function(client) {
 	client.host 		= ElkoHost;
 	client.timeLastSent	= new Date().getTime();
 	client.lastSentLen	= 0;
-	
+
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);
 	createServerConnection(client.port, client.host, client);
 }).listen(ListenPort, ListenHost);

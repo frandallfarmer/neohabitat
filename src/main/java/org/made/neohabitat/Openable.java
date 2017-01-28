@@ -39,18 +39,13 @@ public abstract class Openable extends Container {
      * to lock/unlock the item.
      */
     protected int     key_hi       = 0;
-
+    
     public Openable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-                    OptInteger open_flags) {
+            OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
         super(style, x, y, orientation, gr_state);
         if (open_flags.value(-1) != -1) {
             this.open_flags = unpackBits(open_flags.value());
         }
-    }
-
-    public Openable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
-        this(style, x, y, orientation, gr_state, open_flags);
         this.key_lo = key_lo.value(0);
         this.key_hi = key_hi.value(0);
     }

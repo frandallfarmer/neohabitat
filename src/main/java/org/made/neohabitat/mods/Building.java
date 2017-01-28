@@ -7,23 +7,22 @@ import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.HabitatMod;
 
 /**
- * Habitat Bush Mod (attached to an Elko Item.)
+ * Habitat Building Mod (attached to an Elko Item.)
  * 
- * Bushes don't really do much. Only responds to HELP messages. [The client is
- * supposed to be smart and transform interface commands to *other* objects as
- * needed.]
+ * Buildings provide portals to other regions.
+ * It has no other feature than to hold a connection reference.
  * 
  * @author randy
  *
  */
-public class Bush extends HabitatMod {
+public class Building extends HabitatMod {
     
     public int HabitatClass() {
-        return CLASS_BUSH;
+        return CLASS_BUILDING;
     }
     
     public String HabitatModName() {
-        return "Bush";
+        return "Building";
     }
     
     public int capacity() {
@@ -46,16 +45,23 @@ public class Bush extends HabitatMod {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
-    public Bush(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
+    /** The region (context-ref) that this door leads to */
+    public String connection;
+    
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state",  "connection" })
+    public Building(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+            String connection) {
         super(style, x, y, orientation, gr_state);
+        this.connection = connection;
     }
     
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
+        if (control.toRepository()) {
+            result.addParameter("connection", connection);
+        }
         result.finish();
         return result;
-    }
-    
+    }    
 }
