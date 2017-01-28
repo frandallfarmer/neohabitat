@@ -50,5 +50,9 @@ balancers:
           remote_port: 5190
         - resource: neohabitat
           protocol: tcp
+          port: 1337
+          remote_port: 1337
+        - resource: neohabitat
+          protocol: tcp
           port: 9000
           remote_port: 9000
