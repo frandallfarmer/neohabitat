@@ -89,7 +89,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     // public int container = 0; containership is managed by Elko - use it's
     // understanding to access the objects
     public int     gr_width    = 0;
-    public boolean gen_flags[] = new boolean[32];
+    public boolean gen_flags[] = new boolean[33];
     
     /**
      * Replaces original global 'position'

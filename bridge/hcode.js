@@ -129,8 +129,18 @@ this.SERVER_OPS = {
 		"BUGOUT$": 				{ reqno: 8 },
 		"CHANGESTATE$": 		{ reqno: 8 },
 		"CHANGESTATE_$": 		{ reqno: 8 },
-		"CLOSE$": 				{ reqno: 12 },
-		"CLOSECONTAINER$":	 	{ reqno: 13 },
+		"CLOSE$": 				{ reqno: 12,
+			toClient: function (o,b) {
+				b.add(o.target);
+				b.add(o.open_flags);
+			}
+		},
+		"CLOSECONTAINER$":	 	{ reqno: 13,
+			toClient: function (o,b) {
+				b.add(o.cont);
+				b.add(o.open_flags);
+			}
+		},
 		"DEPARTING_$": 			{ reqno: 10 },
 		"DEPARTURE_$": 			{ reqno: 11 },
 		"DIAL$": 				{ reqno: 10 },
@@ -180,7 +190,11 @@ this.SERVER_OPS = {
 		"OFFLIGHT$":	 		{ reqno: 8 },
 		"ON$": 					{ reqno: 9 },
 		"ONLIGHT$": 			{ reqno: 9 },
-		"OPEN$": 				{ reqno: 18 },
+		"OPEN$": 				{ reqno: 18,
+			toClient: function (o,b) { 
+				b.add(o.target);
+			}
+		},
 		"OPENCONTAINER$": 		{ reqno: 19 },
 		"ORACLESPEAK_$":	 	{ reqno: 8 },
 		"PAID$":	 			{ reqno: 30 },
@@ -462,6 +476,16 @@ this.translate = {
 				b.add(o.err);
 			}
 		},
+		OPEN:	{
+			toClient: function(o, b) {
+				b.add(o.err);
+			}			
+		},
+		CLOSE:	{
+			toClient: function(o, b) {
+				b.add(o.err);
+			}			
+		},
 		OPENCONTAINER:	{
 			toClient: function(o, b) {
 				b.add(o.err);
@@ -556,7 +580,7 @@ this.Head = {
 		}
 };
 
-this.openable	= { 		
+this.portableContainer	= { 		
 		clientMessages: {
 			0:{ op:"HELP" },
 			1:{ op:"GET" },
@@ -564,6 +588,14 @@ this.openable	= {
 			3:{ op:"THROW" },
 			4:{ op:"CLOSECONTAINER" },
 			5:{ op:"OPENCONTAINER" }
+		}
+};
+
+this.Door	= { 		
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"CLOSE" },
+			5:{ op:"OPEN" }
 		}
 };
 
@@ -602,8 +634,8 @@ this.help		= {
 		}
 };
 
-this.Bag		= this.openable;
-this.Box		= this.openable;
+this.Bag		= this.portableContainer;
+this.Box		= this.portableContainer;
 this.Ground		= this.common;
 this.Key		= this.common;
 this.Knick_knack= this.magical;

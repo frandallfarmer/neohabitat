@@ -632,6 +632,7 @@ var encodeState = {
 		Table:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Door:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Ground:		function (state, container, buf) { return (this.walkable(state, container, buf)); },
 
 };

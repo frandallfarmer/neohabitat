@@ -228,7 +228,8 @@ public interface Constants {
     public static final int      DOOR_GHOST_RESTRICTED_BIT  = 31;
     
     public static final int      THE_REGION                 = 0;
-    
+    public static final int      GHOST_NOID                 = 255;
+
     public static final int      ObjectsPerRegion           = 255;
     public static final int      UsersPerRegion             = 6;
     public static final int      regions_per_process        = 10;
@@ -239,19 +240,8 @@ public interface Constants {
     
     public static final int      Separation_Char            = 144;
     
-    public static final int      C64_HEAP_SIZE              = 16244;                                                  /*
-                                                                                                                       * Ver
-                                                                                                                       * 6
-                                                                                                                       * .
-                                                                                                                       * 3
-                                                                                                                       * -
-                                                                                                                       * 10
-                                                                                                                       * /
-                                                                                                                       * 5
-                                                                                                                       * /
-                                                                                                                       * 87
-                                                                                                                       */
-    
+    public static final int      C64_HEAP_SIZE              = 16244;
+                                                                                                                
     public static final int      FIRST                      = 3;
     public static final int      SECOND                     = 4;
     public static final int      THIRD                      = 5;

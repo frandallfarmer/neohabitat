@@ -6,6 +6,7 @@ import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserMod;
 import org.made.neohabitat.Container;
+import org.made.neohabitat.mods.Door;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Magical;
 import org.elkoserver.json.EncodeControl;
@@ -31,9 +32,22 @@ public class Avatar extends Container implements UserMod {
     public static final int STAND_LEFT  = 251;
     public static final int STAND_RIGHT = 252;
     public static final int STAND       = 129;
+    public static final int FACE_FRONT  = 146;
+    public static final int FACE_BACK   = 143;
     public static final int FACE_LEFT   = 254;
     public static final int FACE_RIGHT  = 255;
     public static final int GENDER_BIT  = 8;
+    public static final int XRIGHT      = 148;
+    public static final int XLEFT       = 12;
+    public static final int YUP         = 159;
+    public static final int YDOWN       = 129;
+    
+    
+    public static final int    XMAX        = 144;
+    public static final double XMAXFLOAT   = 144.0;
+
+    public static final int DOOR_OFFSET = 12;
+    public static final int BUILDING_OFFSET = 28;
     
     public int HabitatClass() {
         return CLASS_AVATAR;
@@ -117,6 +131,12 @@ public class Avatar extends Container implements UserMod {
     public int        dest_x          = 0;
     public int        dest_y          = 0;
     
+    
+    private String     from_region    = "";
+    private int        from_orientation= 0;
+    private int        from_direction  = 0;
+    private int        transition_type = WALK_ENTRY;
+    
     /**
      * Target NOID and magic item saved between events, such as for the GOD TOOL
      * (see Magical.java). This is a transient value and not persisted.
@@ -125,10 +145,11 @@ public class Avatar extends Container implements UserMod {
     public Magical    savedMagical    = null;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
-            "activity", "action", "health", "restrainer", "custom" })
+            "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "custom" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
-            OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, int[] custom) {
+            OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
+            OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction, OptString from_region, int[] custom) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -145,6 +166,10 @@ public class Avatar extends Container implements UserMod {
         this.action = action.value(this.activity);
         this.health = health.value(MAX_HEALTH);
         this.restrainer = restrainer.value(0);
+        this.from_direction = from_direction.value(0);
+        this.from_orientation = from_orientation.value(0);
+        this.transition_type = transition_type.value(WALK_ENTRY);
+        this.from_region = from_region.value("");
         this.custom = custom;
     }
     
@@ -162,9 +187,187 @@ public class Avatar extends Container implements UserMod {
         result.addParameter("health", health);
         result.addParameter("restrainer", restrainer);
         result.addParameter("custom", custom);
+        if (result.control().toRepository()) {
+            result.addParameter("from_region",      from_region);
+            result.addParameter("from_orientation", from_orientation);
+            result.addParameter("from_direction",   from_direction);
+            result.addParameter("transistion_type", transition_type);
+        }
         result.finish();
         return result;
     }
+
+    
+    /** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
+    public void objectIsComplete() {
+        Region.addToNoids(this);
+        /** Was pl1 region_entry_daemon: */
+        
+        // If traveling as a ghost, don't do ANYTHING fancy 
+        if (noid == GHOST_NOID)
+            return;
+
+        // TODO lights_on();
+        
+        // If walking in, set the new (x,y) based on the old (x,y), the entry
+        // direction, the rotation of the region transition, the horizon of the
+        // new region, and so on 
+        int new_x           = x;
+        int new_y           = y & ~FOREGROUND_BIT;
+        int new_activity    = FACE_LEFT;
+        int rotation        = 0;
+        int arrival_face    = 0;
+        
+        if (transition_type == WALK_ENTRY) {
+            y &= ~FOREGROUND_BIT;
+            rotation = (from_orientation - current_region().orientation + 4) % 4;
+            arrival_face = (from_direction + rotation + 2) % 4;
+            if (arrival_face == 0) {
+               new_x = XLEFT;
+                new_activity = FACE_RIGHT;
+                if (rotation == 0)
+                    new_y = y;
+                else if (rotation == 1)
+                    new_y = x_scale(x_invert(x));
+                else if (rotation == 2)
+                    new_y = y_invert(y);
+                else
+                    new_y = x_scale(x);
+            } else if (arrival_face == 1) {
+                new_y = current_region().depth;
+                new_activity = FACE_FRONT;
+                if (rotation == 0)
+                    new_x = x;
+                else if (rotation == 1)
+                    new_x = y_scale(y);
+                else if (rotation == 2)
+                    new_x = x_invert(x);
+                else
+                    new_x = y_scale(y_invert(y));
+                HabitatMod noids[] = current_region().noids;
+                for (int i=0; i < noids.length; i++) {
+                    HabitatMod obj = noids[i];
+                    if (noids[i] != null) {
+                        if (obj.HabitatClass() == CLASS_DOOR) {
+                            Door door = (Door) obj;
+                            if (door.connection.equals(from_region) || door.connection.isEmpty()) {
+                                new_y = obj.y;
+                                new_x = obj.x + DOOR_OFFSET;
+                                if (test_bit(obj.orientation, 1))
+                                    new_x = new_x - 16;
+                            }                    
+                        } else if (obj.HabitatClass() == CLASS_BUILDING) {
+                            //                            Building bldg = (Building) obj;
+                            //                            if (bldg.connection == from_region || bldg.connection.isEmpty()) {
+                            //                                new_x = obj.x + BUILDING_OFFSET;
+                        }                        
+                    }                
+                    // TODO More arrival handling See Comment Block of PL1 below.
+                }
+            } else if (arrival_face == 2) {
+                new_x = XRIGHT;
+                new_activity = FACE_LEFT;
+                if (rotation == 0)
+                    new_y = y;
+                else if (rotation == 1)
+                    new_y = x_scale(x_invert(x));
+                else if (rotation == 2)
+                    new_y = y_invert(y);
+                else
+                    new_y = x_scale(x);
+            } else {
+                new_y = YDOWN;
+                new_activity = FACE_BACK;
+                if (rotation == 0)
+                    new_x = x;
+                else if (rotation == 1)
+                    new_x = y_scale(y);
+                else if (rotation == 2)
+                    new_x = x_invert(x);
+                else
+                    new_x = y_scale(y_invert(y));
+            }
+            x = new_x & 0b11111100;
+            y = Math.min((new_y & ~FOREGROUND_BIT), current_region().depth) | FOREGROUND_BIT;
+            activity = new_activity;
+        }
+    
+        // TODO If entering on death, penalize the Avatar's tokens, if any 
+        else if (transition_type == DEATH_ENTRY) {
+            HabitatMod noids[] = current_region().noids;
+            for (int i=0; i < noids.length; i++) {
+                HabitatMod obj = noids[i];
+                  if (obj != null && obj.HabitatClass() == CLASS_TOKENS) {
+/*
+                      Tokens token = (Tokens) obj;
+                      int denom = (token.denom_lo + token.denom_hi * 256) * 50 / 100;
+                      token.denom_lo = denom % 256;
+                      token.denom_hi = (denom - token.denom_lo) / 256;
+                      if (denom == 0)
+                          token.denom_lo = 1;
+                      token.gen_flags(MODIFIED) = true;
+*/                      
+                  }
+             }
+        }
+        
+        // If entering via teleport, make sure we're in foreground         
+        else if (transition_type == TELEPORT_ENTRY) {
+            y |= FOREGROUND_BIT;
+        } else {
+            trace_msg("ENTRY ERROR: uUnknown transition type: " + transition_type);
+        }
+        
+    }
+        
+     private int x_invert(int x) {
+         return (XMAX - x);         
+     }
+     
+     
+     private int y_invert(int y) {
+         return(current_region().depth - y);
+     }
+
+     private int x_scale(int x) {
+         double scale = current_region().depth / XMAXFLOAT;
+         return ((int) scale);
+     }
+     
+     private int y_scale(int y) {
+         double scale = XMAXFLOAT / current_region().depth;
+         return ((int) scale);
+     }
+
+
+    
+    /*        
+         // If entering on death, penalize the Avatar's tokens, if any 
+         else if (transition_type = DEATH_ENTRY) then do;
+              do i = 0 to 255;
+                   tokenptr = ObjList(i);
+                   if (tokenptr ^= null()) then do;
+                        if (token.class = CLASS_TOKENS) then do;
+                             denom = token.denom_lo + token.denom_hi*256;
+                             denom = divide(denom, 2, 15);
+                             token.denom_hi = divide(denom, 256, 15);
+                             token.denom_lo = mod(denom, 256);
+                             if (denom = 0) then
+                                  token.denom_lo = 1;
+                             token.gen_flags(MODIFIED) = true;
+                        end;
+                   end;
+              end;
+         end;
+        
+         // If entering via teleport, make sure we're in foreground 
+         else if (transition_type = TELEPORT_ENTRY) then do;
+              call set_bit(avatar.y, 8);
+         end; else do;
+              call trace_msg('entry daemon: unknown transition type: ' ||
+                   ltrim(transition_type));
+         end;
+    */
     
     /**
      * Verb (Specific): TODO Grabbing from another avatar.
@@ -289,7 +492,7 @@ public class Avatar extends Container implements UserMod {
      */
     @JSONMethod({ "direction", "passage_id" })
     public void NEWREGION(User from, OptInteger direction, OptInteger passage_id) {
-        avatar_NEWREGION(from, direction.value(1), passage_id.value(1));
+        avatar_NEWREGION(from, direction.value(1), passage_id.value(0));
     }
     
     /**
@@ -436,24 +639,43 @@ public class Avatar extends Container implements UserMod {
     }
     
     public void avatar_NEWREGION(User from, int direction, int passage_id) {
-        Region region = current_region();
-        if (direction >= 1 && direction <= 4) {
-            int direction_index = (direction + region.orientation + 2) % 4;
-            String new_region = region.neighbors[direction_index]; // East,
-                                                                   // West,
-                                                                   // North,
-                                                                   // South
-            if (new_region.length() > 0) {
-                this.send_neighbor_msg(from, THE_REGION, "WAITFOR_$", "who", this.noid);
-                this.send_reply_success(from);
-                JSONLiteral msg = new JSONLiteral("changeContext", EncodeControl.forClient);
-                msg.addParameter("context", new_region);
-                msg.finish();
-                from.send(msg);
+        Region      region      = current_region();
+        String      new_region  = "";
+        HabitatMod  passage     = region.noids[passage_id];
+        
+        int direction_index = (direction + region.orientation + 2) % 4;
+        if (passage_id != 0 &&
+                passage.HabitatClass() == CLASS_DOOR || 
+                passage.HabitatClass() == CLASS_BUILDING) {
+            Door door = (Door) passage;
+            if (!door.getOpenFlag(OPEN_BIT) || 
+                    door.gen_flags[DOOR_AVATAR_RESTRICTED_BIT]) {
+                send_reply_error(from);
                 return;
             }
+            new_region = door.connection;          
+        } else {
+            if (direction >= 0 && direction < 4) {
+                new_region = region.neighbors[direction_index]; // East,  West, North, South
+            }
         }
+        if (!new_region.isEmpty()) {
+            send_neighbor_msg(from, THE_REGION, "WAITFOR_$", "who", this.noid);
+            send_reply_success(from);
+            from_region         = region.obj_id();     // Save exit information in avatar for use on arrival.
+            from_orientation    = region.orientation;
+            from_direction      = direction;
+            transition_type     = WALK_ENTRY;
+            gen_flags[MODIFIED] = true;
+            checkpoint_object(this);
+            JSONLiteral msg = new JSONLiteral("changeContext", EncodeControl.forClient);
+            msg.addParameter("context", new_region);
+            msg.finish();
+            from.send(msg);
+            return;
+        }       
         object_say(from, "There is nowhere to go in that direction.");
         send_reply_error(from);
+        
     }
 }

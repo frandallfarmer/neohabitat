@@ -7,7 +7,7 @@
 		{
 			"type": "Region",
 			"nitty_bits": 3,
-			"neighbors": ["context-test", "", "context-table", ""]
+			"neighbors": ["", "context-table", "context-test", ""]
 		}
 	]
 }

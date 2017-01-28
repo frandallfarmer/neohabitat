@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-library.down.sign",
+	"deletable": true,
+	"name": "Indicate Down Exit",
+	"in": "context-library",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 0,
+			"x": 112,
+			"y": 4,
+			"gr_state": 1,
+			"orientation": 0,
+			"text": "@@@@@@@@@@"
+		}
+	]
+}

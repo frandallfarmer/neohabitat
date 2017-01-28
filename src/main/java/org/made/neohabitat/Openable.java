@@ -23,6 +23,11 @@ public abstract class Openable extends Container {
     /** Flags for open/closed and locked/unlocked states */
     protected boolean open_flags[] = new boolean[32];
     
+    /** open_flags are readable by public */
+    public boolean getOpenFlag(int bitnum) {
+        return open_flags[bitnum];
+    }
+    
     /**
      * Least significant byte in a 16 bit value to match against a key in order
      * to lock/unlock the item.
@@ -60,6 +65,58 @@ public abstract class Openable extends Container {
     }
     
     /**
+     * Verb (Openable): Close [and lock] this object
+     * 
+     * @param from
+     *            User representing the connection making the request.
+     */
+    @JSONMethod
+    public void CLOSE(User from) {
+        /** Was generic_CLOSE */
+        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
+                && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
+        if (open_flags[OPEN_BIT]) {
+            open_flags[OPEN_BIT]        = false;
+            open_flags[UNLOCKED_BIT]    = !have_key;
+            gr_state                    = 0;
+            gen_flags[MODIFIED]         = true;
+            checkpoint_object(this);
+            send_neighbor_msg(from, avatar(from).noid, "CLOSE$", "target", noid, "open_flags", packBits(open_flags));
+            send_reply_success(from);
+        } else {
+            send_reply_error(from);
+        }
+    }
+    
+    /**
+     * Verb (Openable): Open [and unlock] this object.
+     * 
+     * @param from
+     *            User representing the connection making the request.
+     */
+    @JSONMethod
+    public void OPEN(User from) {
+        /** Was generic_OPEN */
+        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
+                && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
+        if (!open_flags[OPEN_BIT] && // OPEN
+                (have_key || open_flags[UNLOCKED_BIT])) {  // Holding Key OR UNLOCKED
+            open_flags[OPEN_BIT]        = true;
+            open_flags[UNLOCKED_BIT]    = true;
+            gr_state                    = 1;
+            gen_flags[MODIFIED]         = true;
+            checkpoint_object(this);
+            send_neighbor_msg(from, avatar(from).noid , "OPEN$", "target", noid);
+            send_reply_success(from);
+        } else {
+            object_say(from, noid, "It is locked.");
+            send_reply_error(from);
+        }
+    }
+    
+    /**
      * Verb (Openable): Close [and lock] this container.
      * 
      * @param from
@@ -67,8 +124,24 @@ public abstract class Openable extends Container {
      */
     @JSONMethod
     public void CLOSECONTAINER(User from) {
-        generic_CLOSECONTAINER(from);
+        /** Was generic_CLOSECONTAINER */
+        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
+                && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
+        
+        if (open_flags[OPEN_BIT]) {
+            open_flags[OPEN_BIT] = false;
+            open_flags[UNLOCKED_BIT] = !have_key;
+            gr_state = 0;
+            gen_flags[MODIFIED] = true;
+            checkpoint_object(this);
+            send_neighbor_msg(from, avatar(from).noid, "CLOSECONTAINER$", "cont", noid, "open_flags", packBits(open_flags));
+            close_container(from);
+            send_reply_success(from);
+        } else
+            send_reply_error(from);
     }
+    
     
     /**
      * Verb (Openable): Open [and unlock] this container.
@@ -78,7 +151,25 @@ public abstract class Openable extends Container {
      */
     @JSONMethod
     public void OPENCONTAINER(User from) {
-        generic_OPENCONTAINER(from);
+        /** Was generic_OPENCONTAINER */
+        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
+                && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
+        if (!open_flags[OPEN_BIT] && // OPEN
+                (have_key || open_flags[UNLOCKED_BIT]) &&   // Holding Key or UNLOCKED
+                container().noid == THE_REGION) {           // AND in the REGION alone.
+            open_flags[OPEN_BIT] = true;
+            open_flags[UNLOCKED_BIT] = true;
+            gr_state = 1;
+            gen_flags[MODIFIED] = true;
+            checkpoint_object(this);
+            send_reply_success(from);
+            get_container_contents(from);
+        } else {
+            object_say(from, noid, "It is locked.");
+            send_reply_error(from); // TODO This reply wasn't here in the
+            // original. Why?
+        }
     }
     
     /**
@@ -109,61 +200,4 @@ public abstract class Openable extends Container {
         }
         send_reply_msg(from, msg);
     }
-    
-    /**
-     * Attempt to open [and lock] this container.
-     * 
-     * @param from
-     *            User representing the connection making the request.
-     */
-    public void generic_OPENCONTAINER(User from) {
-        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
-        boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
-                && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
-        if (!open_flags[OPEN_BIT] && // OPEN
-                (have_key || open_flags[UNLOCKED_BIT]) && // Holding Key OR
-                                                          // UNLOCKED
-                container().noid == THE_REGION) { // IN THE REGION (and nothing
-                                                  // else.)
-            open_flags[OPEN_BIT] = true; // TODO Not sure why setting the
-                                         // following state wasn't here in the
-                                         // original.
-            open_flags[UNLOCKED_BIT] = true;
-            gr_state = 1;
-            gen_flags[MODIFIED] = true;
-            checkpoint_object(this);
-            send_reply_success(from); // TODO This reply wasn't here in the
-                                      // original. Why?
-            get_container_contents(from);
-        } else {
-            object_say(from, noid, "It is locked.");
-            send_reply_error(from); // TODO This reply wasn't here in the
-                                    // original. Why?
-        }
-    }
-    
-    /**
-     * Attempt to close [and lock] this container.
-     * 
-     * @param from
-     *            User representing the connection making the request.
-     */
-    public void generic_CLOSECONTAINER(User from) {
-        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
-        boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
-                && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
-        
-        if (open_flags[OPEN_BIT]) {
-            open_flags[OPEN_BIT] = false;
-            open_flags[UNLOCKED_BIT] = !have_key;
-            gr_state = 0;
-            gen_flags[MODIFIED] = true;
-            checkpoint_object(this);
-            send_neighbor_msg(from, this.noid, "CLOSECONTAINER$", "cont", noid, "open_flags", packBits(open_flags));
-            close_container(from);
-            send_reply_success(from);
-        } else
-            send_reply_error(from);
-    }
-    
-}
+}  
