@@ -2,29 +2,28 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 =======================================================
 
 [![Build Status](https://travis-ci.org/frandallfarmer/neohabitat.svg?branch=master)](https://travis-ci.org/frandallfarmer/neohabitat)
-[![Docker Automated build](https://img.shields.io/docker/automated/philcollins/neohabitat.svg)]()
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
-[![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)]()
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/frandallfarmer/neohabitat/blob/master/LICENSE)
+[![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
 
-We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology, and we'd love it if you joined us!
+We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
 Documentation
-=============
+-------------
 
-If you'd like to contribute to Habitat, you can find some useful developer documentation here:
+If you'd like to contribute to Habitat, developer documentation can be found here:
 
   - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat/blob/master/docs/getting_started.md)
   - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
 
 Slack
-=====
+-----
 
 If you'd like to join the Neohabitat community, come join our Slack: [Neoclassical Habitat](https://neohabitat.slack.com)
 
-If you have any issues when playing Habitat, feel free to ask questions in the #troubleshooting room.
+If you have any issues when playing Habitat, feel free to ask questions in the **#troubleshooting** room.
 
 Play Habitat Now!
-=================
+-----------------
 
 We maintain a demo server running the latest Git master and you can connect to it at any time.
 
@@ -32,8 +31,7 @@ We maintain a demo server running the latest Git master and you can connect to i
 
 With all that out of the way, here's how to get started:
 
-Step 1 - Download and Configure Vice
-------------------------------------
+### Step 1 - Download and Configure Vice
 
 To connect to the Neohabitat server, you'll need to install a C64 emulator and download the necessary client software.  We strongly recommend using [Vice](http://vice-emu.sourceforge.net/):
 
@@ -63,8 +61,7 @@ alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rs
 - Under **Peripherals -> RS232**, set **Device 1 Baud Rate** to the following: ```1200```
 - Save these new settings via **Settings -> Save current Settings**
 
-Step 2 - Download the C64 Clients
----------------------------------
+### Step 2 - Download the C64 Clients
 
 Client software can be downloaded here:
 
@@ -76,8 +73,7 @@ Client software can be downloaded here:
 
 The **Club Caribe client software is identical to the Habitat software**, so please note this as we continue.
 
-Step 3 - Connect to QuantumLink Reloaded
-----------------------------------------
+### Step 3 - Connect to QuantumLink Reloaded
 
 Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via **File -> Attach Disk Image -> Unit #8**.
 
@@ -103,8 +99,7 @@ Press **F1**, and if all goes well, your client will connect to QuantumLink Relo
 
 ![QuantumLink Home Screen](http://toastytech.com/guis/c64gquantumlink.gif)
 
-Step 4 - Launch Habitat
------------------------
+### Step 4 - Launch Habitat
 
 On the Commodore 64, the function keys were placed prominently to the right of the main keyboard and were used heavily by many applications.  As a result, much of the navigation you'll use within QuantumLink will depend upon the usage of function keys.  These are the ones you'll use during your QuantumLink experience:
 
@@ -138,4 +133,4 @@ If all goes well, you'll be brought to the first Habitat screen:
 
 ![Habitat Start Screen](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_start.png)
 
-If so, welcome to Habitat!  You can learn more about how to play with the [official Habitat manual from 1988](https://s3.amazonaws.com/ssalevan/Habitat_Manual_1988.pdf).
+If so, welcome to Habitat!  You can learn more about how to play by reading the [official Habitat manual from 1988](https://s3.amazonaws.com/ssalevan/Habitat_Manual_1988.pdf).
