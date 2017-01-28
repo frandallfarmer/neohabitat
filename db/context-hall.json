@@ -1,0 +1,13 @@
+{
+	"type": "context",
+	"ref": "context-hall",
+	"capacity": 6,
+	"name": "Quantumgrad Popustop hall",
+	"mods": [
+		{
+			"type": "Region",
+			"nitty_bits": 3,
+			"neighbors": ["context-test", "context-test", "", "context-test"]
+		}
+	]
+}

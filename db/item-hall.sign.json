@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-hall.sign",
+	"deletable": true,
+	"name": "A Large Sign",
+	"in": "context-hall",
+	"mods": [
+		{
+			"type": "Sign",
+			"style": 0,
+			"x": 8,
+			"y": 90,
+			"orientation": 0,
+			"gr_state": 1,
+			"text": " 1r4             2r4             3r4    "
+		}
+	]
+}
