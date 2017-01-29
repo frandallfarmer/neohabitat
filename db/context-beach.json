@@ -1,0 +1,13 @@
+{
+	"type": "context",
+	"ref": "context-beach",
+	"capacity": 6,
+	"name": "For getting a tan",
+	"mods": [
+		{
+			"type": "Region",
+			"nitty_bits": 3,
+			"neighbors": ["context-table", "", "", ""]
+		}
+	]
+}
