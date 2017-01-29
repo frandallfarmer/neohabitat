@@ -191,7 +191,7 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("from_region",      from_region);
             result.addParameter("from_orientation", from_orientation);
             result.addParameter("from_direction",   from_direction);
-            result.addParameter("transistion_type", transition_type);
+            result.addParameter("transition_type",	transition_type);
         }
         result.finish();
         return result;
