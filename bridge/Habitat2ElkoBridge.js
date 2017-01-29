@@ -642,7 +642,9 @@ var encodeState = {
 		Short_sign:	function (state, container, buf) { return (this.Sign	(state, container, buf)); },
 		Table:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Tree: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); }
+		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Sky: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Pond: 		function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-beach.sky1",
+	"deletable": false,
+	"name": "Sunny Sky",
+	"in": "context-beach",
+	"mods": [
+		{
+			"type": "Sky",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 0,
+			"gr_state": 0,
+		}
+	]
+}

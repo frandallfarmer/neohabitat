@@ -106,6 +106,16 @@
 			"type": "class",
 			"tag": "Wall",
 			"name": "org.made.neohabitat.mods.Wall"
+		},
+		{
+			"type": "class",
+			"tag": "Sky",
+			"name": "org.made.neohabitat.mods.Sky"
+		},
+		{
+			"type": "class",
+			"tag": "Pond",
+			"name": "org.made.neohabitat.mods.Pond"
 		}
 		]
 }

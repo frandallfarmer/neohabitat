@@ -649,5 +649,8 @@ this.Sign 		= this.help;
 this.Street		= this.help;
 this.Tree		= this.help;
 this.Wall		= this.portable;
+this.Sky		= this.help;
+this.Pond		= this.help;
+
 
 
