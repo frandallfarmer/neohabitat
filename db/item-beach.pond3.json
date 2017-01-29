@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-beach.pond3",
+	"deletable": false,
+	"name": "Pond",
+	"in": "context-beach",
+	"mods": [
+		{
+			"type": "Pond",
+			"style": 0,
+			"x": 68,
+			"y": 12,
+			"orientation": 0,
+			"gr_state": 3,
+		}
+	]
+}
