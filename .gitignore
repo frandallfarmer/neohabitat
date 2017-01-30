@@ -5,6 +5,7 @@ lib/
 log/
 node_modules/
 target/
+hooks/
 .classpath
 .project
 .settings
