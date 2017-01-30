@@ -643,6 +643,8 @@ var encodeState = {
 		Table:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Tree: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Sky: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Pond: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		House_cat: function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Roof: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Couch:    function (state, container, buf) { return (this.common  (state, container, buf)); },
