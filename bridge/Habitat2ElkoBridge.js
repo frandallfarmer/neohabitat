@@ -101,7 +101,7 @@ function confirmOrCreateUser(fullName) {
 		Assert.equal(null, err);
 		testUser(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
-
+				Trace.debug("Inserting user into MongoDB:", userRef);
 				insertUser(db, {
 					"type": "user",
 					"ref": userRef,
@@ -116,12 +116,13 @@ function confirmOrCreateUser(fullName) {
 							"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
 							"nitty_bits": 0
 						}
-						]
+					]
 				}, function() {
+					Trace.debug("Successfully inserted record for user:", userRef);
 					db.close();
 				});
-
 			} else {
+				Trace.debug("Found result for QLink user:", userRef, result);
 				db.close();
 			}
 		});
