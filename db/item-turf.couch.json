@@ -1,0 +1,17 @@
+{
+  "type": "item",
+  "ref": "item-turf.couch",
+  "deletable": false,
+  "name": "Turf couch",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Couch",
+      "style": 0,
+      "x": 44,
+      "y": 132,
+      "orientation": 0,
+      "gr_state": 0
+    }
+  ]
+}

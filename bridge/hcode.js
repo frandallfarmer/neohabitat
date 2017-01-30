@@ -618,6 +618,22 @@ this.Flashlight	= {
 		}		
 };
 
+this.Floor_lamp	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"OFF" },
+			5:{ op:"ON" }
+		}		
+};
+
+this.Chest = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"CLOSECONTAINER" },
+			5:{ op:"OPENCONTAINER" }
+		}
+};
+
 this.magical	= {
 		clientMessages: {
 			0:{ op:"HELP" },
@@ -649,5 +665,8 @@ this.Sign 		= this.help;
 this.Street		= this.help;
 this.Tree		= this.help;
 this.Wall		= this.portable;
-
-
+this.House_cat = this.help;
+this.Roof = this.help;
+this.Couch = this.help;
+this.Window = this.help;
+this.Chair = this.help;

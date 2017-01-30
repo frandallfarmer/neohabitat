@@ -1,0 +1,14 @@
+{
+  "type": "context",
+  "ref": "context-turf",
+  "capacity": 6,
+  "name": "Sample Habitat Turf",
+  "mods": [
+    {
+      "type": "Region",
+      "nitty_bits": 3,
+      "lighting": 0,
+      "neighbors": ["", "", "", ""]
+    }
+  ]
+}

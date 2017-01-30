@@ -1,0 +1,18 @@
+{
+  "type": "item",
+  "ref": "item-turf.chest",
+  "deletable": true,
+  "name": "Turf chest",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Chest",
+      "style": 0,
+      "x": 8,
+      "y": 26,
+      "orientation": 8,
+      "gr_state": 0,
+      "open_flags": 2
+    }
+  ]
+}
