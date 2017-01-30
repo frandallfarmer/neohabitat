@@ -72,9 +72,9 @@ fi
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
   if [ "${SHOULD_BACKGROUND_BRIDGE}" == true ]; then
-    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}" &
+    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}" -t debug &
   else
-    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}"
+    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}" -t debug
   fi
 fi
 
