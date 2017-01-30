@@ -566,7 +566,7 @@ var encodeState = {
 		},
 		massive: function (state, container, buf) {
 			buf = this.common(state, container, buf);
-//			buf.add(state.mass|| 0);
+			buf.add(state.mass || 0);
 			return buf;
 		},
 		toggle: function (state, container, buf) {
@@ -645,12 +645,12 @@ var encodeState = {
 		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Sky: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Pond: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
-		House_cat: function (state, container, buf) { return (this.common  (state, container, buf)); },
+		House_cat:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Roof: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Couch:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Couch:      function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Floor_lamp: function (state, container, buf) { return (this.toggle  (state, container, buf)); },
-		Window:   function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Chair:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Window:     function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Chair:      function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); }
 };
 

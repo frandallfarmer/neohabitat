@@ -26,9 +26,8 @@ public abstract class Massive extends HabitatMod {
     
     public JSONLiteral encodeMassive(JSONLiteral result) {
         result = super.encodeCommon(result);
-        if (0 != mass) {
-            result.addParameter("mass", mass);
-        }
+        
+        result.addParameter("mass", mass);
         return result;
     }
     
