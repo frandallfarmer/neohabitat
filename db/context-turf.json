@@ -8,6 +8,7 @@
       "type": "Region",
       "nitty_bits": 3,
       "lighting": 0,
+      "orientation": 2,
       "neighbors": ["", "", "", ""]
     }
   ]

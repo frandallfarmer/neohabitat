@@ -1,8 +1,8 @@
 {
 	"type": "item",
-	"ref": "item-hall.door.test2",
+	"ref": "item-hall.door.turf",
 	"deletable": true,
-	"name": "Door to Test2",
+	"name": "Door to Turf",
 	"in": "context-hall",
 	"mods": [
 		{
@@ -13,7 +13,7 @@
 			"orientation": 148,
 			"gr_state": 0,
 			"open_flags": 2,
-			"connection": "context-test"
+			"connection": "context-turf"
 		}
 	]
 }
