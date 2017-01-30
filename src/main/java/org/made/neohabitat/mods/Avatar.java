@@ -43,6 +43,9 @@ public class Avatar extends Container implements UserMod {
     public static final int YDOWN       = 129;
     
     
+    public static final int	STAND_UP	= 0;
+    public static final int	SIT_DOWN	= 1;
+    
     public static final int    XMAX        = 144;
     public static final double XMAXFLOAT   = 144.0;
     
@@ -524,10 +527,55 @@ public class Avatar extends Container implements UserMod {
      * @param from
      *            User representing the connection making the request.
      */
-    @JSONMethod
-    public void SIT(User from) {
-        unsupported_reply(from, noid, "Avatar.SIT not implemented yet.");
+    @JSONMethod({"up_or_down", "seat_id"})
+    public void SITORSTAND(User from, int up_or_down, int seat_id) {
+    	
+    	if (up_or_down <= SIT_DOWN) {		// TOFO FRF This is always for now until we can work with Elko for a fix.
+            unsupported_reply(from, noid, "This furniture has a sign that reads 'Do not sit here. Under repair'.");
+    		return;
+    	}	
+   	
+    	/** Historically was avatar_SITORSTAND in original pl1 */
+    	Region		region	= current_region();
+    	HabitatMod	seat	= region.noids[seat_id];
+    	int			noid    = this.noid;
+    	if (seat != null) {
+    		if (seat.HabitatClass() == CLASS_CHAIR || seat.HabitatClass()  == CLASS_COUCH ||
+    				seat.HabitatClass()  == CLASS_BED) {
+    			if (up_or_down == STAND_UP) {
+    				if (noid == seat_id) {
+    					if (!change_containers(this, region, 0, false)) {
+    						send_reply_msg(from, 0, "err", FALSE, "slot", 0);
+    						return;
+    					}
+    					activity = STAND;
+    					gen_flags[MODIFIED] = true;
+    					checkpoint_object(this);
+						send_reply_msg(from, 0, "err", TRUE, "slot", 0);
+						this.send_neighbor_msg(from, noid, "SIT$", "up_or_down", STAND_UP, "cont", seat_id, "slot", 0);
+    					return;
+    				}
+    			} else {
+    				Container cont = (Container) seat;
+    				for (int i=0; i < cont.capacity(); i++) {
+    					if (cont.contents(i) == null) {
+    						if (!change_containers(this,  cont, i, true)) {
+        						send_reply_msg(from, 0, "err", FALSE, "slot", 0);
+    							return;
+    						}
+    						send_reply_msg(from, 0, "err", TRUE, "slot", i);
+    						this.send_neighbor_msg(from, noid, "SIT$", "up_or_down", SIT_DOWN, "cont", seat_id, "slot", 0);
+    						return;
+    					}
+    				}
+    			}
+    		}
+    	}     
+		this.send_reply_msg(from, 0, "err", FALSE, "slot", 0);
     }
+
+
+
     
     /**
      * Verb (Specific): TODO Touch another avatar.

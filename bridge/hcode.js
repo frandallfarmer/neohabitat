@@ -232,7 +232,13 @@ this.SERVER_OPS = {
 		"SCAN$":	 			{ reqno: 8 },
 		"SELL$": 				{ reqno: 9 },
 		"SEXCHANGE$": 			{ reqno: 8 },
-		"SIT$": 				{ reqno: 16 },
+		"SIT$": 				{ reqno: 16,
+			toClient: function (o,b) {
+				b.add(o.up_or_down);
+				b.add(o.cont);
+				b.add(o.slot);
+			}
+		},
 		"SPEAK$":	 			{ reqno: 14, 
 			toClient: function (o,b) {
 				b.add(o.text.getBytes());
@@ -445,6 +451,16 @@ this.translate = {
 				b.add(o.x);
 				b.add(o.y);
 				b.add(o.how);
+			}
+		},
+		SITORSTAND: {
+			toServer: function(a,m) {
+				m.up_or_down	= a[0];
+				m.seat_id		= a[1];
+			},
+			toClient: function(o,b) {
+				b.add(o.err);
+				b.add(o.slot);
 			}
 		},
 		FNKEY:		{
@@ -667,8 +683,8 @@ this.Tree		= this.help;
 this.Wall		= this.portable;
 this.Sky		= this.help;
 this.Pond		= this.help;
-this.House_cat = this.help;
-this.Roof = this.help;
-this.Couch = this.help;
-this.Window = this.help;
-this.Chair = this.help;
+this.House_cat 	= this.help;
+this.Roof		= this.help;
+this.Couch		= this.help;
+this.Window 	= this.help;
+this.Chair		= this.help;
