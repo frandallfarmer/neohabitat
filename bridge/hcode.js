@@ -356,7 +356,7 @@ this.CLASSES 			= {
 		"Floor_lamp":139, 139:"Floor_lamp",
 		"Fortune_machine":140, 140:"Fortune_machine",
 		"Fountain":	141, 141:"Fountain",
-		"Fouse_cat":143, 143:"Fouse_cat",
+		"House_cat":143, 143:"House_cat",
 		"Hot_tub":	144, 144:"Hot_tub",
 		"Jukebox":	145, 145:"Jukebox",
 		"Pond":		147, 147:"Pond",
