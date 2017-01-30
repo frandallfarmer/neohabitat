@@ -108,7 +108,6 @@
 			"name": "org.made.neohabitat.mods.Wall"
 		},
 		{
-			"type": "class",
 			"tag": "Sky",
 			"name": "org.made.neohabitat.mods.Sky"
 		},
@@ -116,6 +115,41 @@
 			"type": "class",
 			"tag": "Pond",
 			"name": "org.made.neohabitat.mods.Pond"
+		},
+		{
+			"type": "class",
+			"tag": "House_cat",
+			"name": "org.made.neohabitat.mods.House_cat"
+		},
+		{
+			"type": "class",
+			"tag": "Roof",
+			"name": "org.made.neohabitat.mods.Roof"
+		},
+		{
+			"type": "class",
+			"tag": "Couch",
+			"name": "org.made.neohabitat.mods.Couch"
+		},
+		{
+			"type": "class",
+			"tag": "Floor_lamp",
+			"name": "org.made.neohabitat.mods.Floor_lamp"
+		},
+		{
+			"type": "class",
+			"tag": "Window",
+			"name": "org.made.neohabitat.mods.Window"
+		},
+		{
+			"type": "class",
+			"tag": "Chair",
+			"name": "org.made.neohabitat.mods.Chair"
+		},
+		{
+			"type": "class",
+			"tag": "Chest",
+			"name": "org.made.neohabitat.mods.Chest"
 		}
-		]
+	]
 }

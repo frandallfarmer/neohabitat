@@ -1,0 +1,3 @@
+{"to":"ME","op":"NEWREGION","direction":2, "Telko": {"delay": 2}}
+
+{"to":"session","op":"entercontext","context":"context-turf","user":"$USER"}

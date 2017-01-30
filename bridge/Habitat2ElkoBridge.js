@@ -97,7 +97,7 @@ function insertUser(db, user, callback) {
 
 function confirmOrCreateUser(fullName) {
 	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
-	MongoClient.connect("mongodb:" + Argv.mongo, function(err, db) {
+	MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
 		testUser(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
@@ -228,8 +228,8 @@ function createServerConnection(port, host, client) {
 			parseIncomingHabitatClientMessage(client, server, data);				
 		} catch(err) {
 			Trace.error("\n\n\nClient input processing error captured:\n" + 
-					JSON.stringify(err,null,2) +
-			"\n...resuming...\n");
+					JSON.stringify(err,null,2) + "\n" +
+					err.stack + "\n...resuming...\n");
 		}
 	});
 
@@ -645,6 +645,13 @@ var encodeState = {
 		Wall: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Sky: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Pond: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		House_cat: function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Roof: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Couch:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Floor_lamp: function (state, container, buf) { return (this.toggle  (state, container, buf)); },
+		Window:   function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Chair:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {
