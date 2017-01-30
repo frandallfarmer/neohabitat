@@ -43,15 +43,24 @@ public class Roof extends HabitatMod {
     public boolean filler() {
         return false;
     }
+    
+    private	int	base	= 0;
+    private int pattern	= 0;
+   
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
-    public Roof(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "base", "pattern" })
+    public Roof(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    		OptInteger base, OptInteger pattern) {
         super(style, x, y, orientation, gr_state);
+        this.base		= base.value(0);
+        this.pattern	= pattern.value(0);
     }
 
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
+        result.addParameter("base", base);
+        result.addParameter("pattern", pattern);
         result.finish();
         return result;
     }
