@@ -652,7 +652,9 @@ var encodeState = {
 		Floor_lamp: function (state, container, buf) { return (this.toggle  (state, container, buf)); },
 		Window:     function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Chair:      function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); }
+		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
+		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

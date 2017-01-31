@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-beach.plant1",
+	"deletable": true,
+	"name": "Plant",
+	"in": "context-beach",
+	"mods": [
+		{
+			"type": "Plant",
+			"style": 1,
+			"x": 36,
+			"y": 136,
+			"orientation": 16,
+			"mass": 0,
+		}
+	]
+}

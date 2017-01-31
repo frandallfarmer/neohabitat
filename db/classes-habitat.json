@@ -150,6 +150,16 @@
 			"type": "class",
 			"tag": "Chest",
 			"name": "org.made.neohabitat.mods.Chest"
+		},
+		{
+			"type": "class",
+			"tag": "Plant",
+			"name": "org.made.neohabitat.mods.Plant"
+		},
+		{
+			"type": "class",
+			"tag": "Flag",
+			"name": "org.made.neohabitat.mods.Flag"
 		}
 	]
 }

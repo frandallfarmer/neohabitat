@@ -7,23 +7,23 @@ import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.Massive;
 
 /**
- * Habitat Rock Mod (attached to an Elko Item.)
+ * Habitat Plant Mod (attached to an Elko Item.)
  * 
- * Rock can get picked up and thrown. Responds to HELP messages. It *may* be portable
+ * Plants can get picked up and thrown. Responds to HELP messages. It *may* be portable
  * based on how Massive it is. Otherwise the client is supposed to be smart and
  * transform interface commands to *other* objects as needed.
  * 
- * @author randy
+ * @author matt
  *
  */
-public class Rock extends Massive {
+public class Plant extends Massive {
     
     public int HabitatClass() {
-        return CLASS_ROCK;
+        return CLASS_PLANT;
     }
     
     public String HabitatModName() {
-        return "Rock";
+        return "Plant";
     }
     
     public int capacity() {
@@ -47,7 +47,7 @@ public class Rock extends Massive {
     }
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "mass" })
-    public Rock(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Plant(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger mass) {
         super(style, x, y, orientation, gr_state, mass);
     }
