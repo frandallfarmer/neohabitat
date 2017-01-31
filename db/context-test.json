@@ -5,8 +5,8 @@
 	"name": "Neohabitat Project Hub",
 	"mods": [
 		{
-			"town_dir": "here",
-			"port_dir": "nowhere",
+			"town_dir": "(here)",
+			"port_dir": "nowhere to be found",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["context-library", "context-table", "", ""]

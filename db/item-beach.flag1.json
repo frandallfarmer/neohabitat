@@ -7,11 +7,11 @@
 	"mods": [
 		{
 			"type": "Flag",
-			"style": 1,
-			"x": 56,
-			"y": 136,
-			"orientation": 16,
-			"mass": 0,
+			"x": 64,
+			"y": 148,
+			"style": 0,
+			"orientation": 64,
+			"mass": 0
 		}
 	]
 }
