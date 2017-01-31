@@ -1260,12 +1260,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @return Is the object portable?
      */
     public boolean getable(HabitatMod object) {
-        if (object.HabitatClass() == CLASS_ROCK || object
-                .HabitatClass() == CLASS_FLAG) { /*
-                                                  * TODO OLD BUG? The
-                                                  * struct_flag.pl1 does not
-                                                  * have 'mass', but 'state'
-                                                  */
+        if (object.HabitatClass() == CLASS_ROCK 
+                || object.HabitatClass() == CLASS_FLAG 
+                || object.HabitatClass() == CLASS_PLANT) {
             return (((Massive) object).mass == 0);
         }
         return (true);

@@ -688,3 +688,5 @@ this.Roof		= this.help;
 this.Couch		= this.help;
 this.Window 	= this.help;
 this.Chair		= this.help;
+this.Plant		= this.portable;
+this.Flag		= this.portable;
