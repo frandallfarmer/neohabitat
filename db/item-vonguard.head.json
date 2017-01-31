@@ -1,0 +1,14 @@
+{
+	"type": "item",
+	"ref": "item-vonguard.head.json",
+	"name": "Alex's Head",
+	"in": "user-vonguard",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 57,
+			"orientation": 48,
+			"y":6
+		}
+	]
+}

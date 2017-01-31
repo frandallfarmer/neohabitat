@@ -1,0 +1,7 @@
+{"to":"session", "op":"entercontext", "user":"user-vonguard", "Telko": { "delay": 2, "logtime": true } }
+
+{"to":"ME","op":"POSTURE","pose":141, "Telko": { "delay": 1 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"I... AM... $ME.name$!", "Telko": { "delay": 2 } }
+
+
