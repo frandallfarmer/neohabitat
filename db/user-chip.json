@@ -9,7 +9,8 @@
 			"y": 130,
 			"bodyType": "male",
 			"bankBalance": 10000,
-			"custom": [68, 68]
+			"custom": [68, 68],
+			"nitty_bits": 8
 		}
-	]
+		]
 }

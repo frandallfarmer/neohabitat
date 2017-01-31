@@ -79,7 +79,7 @@ function rnd(max) {
 	return Math.floor(Math.random() * max)
 }
 
-function testUser(db, query, callback) {
+function findOne(db, query, callback) {
 	db.collection('odb').findOne(query, callback);
 }
 
@@ -95,11 +95,35 @@ function insertUser(db, user, callback) {
 			});
 }
 
+function addDefaultHead(db, userRef, fullName) {
+	headRef = "item-" + userRef.substring(5)+".head";
+	db.collection('odb').insertOne({
+				"ref": headRef,
+				"type": "item",
+				"name": "Default head for " + fullName,
+				"in":userRef,
+				"mods": [
+					{
+						"type": "Head",
+						"y": 6,
+						"style": rnd(220),
+						"orient": rnd(3) * 8
+					}
+				]
+			}, function(err, result) {
+				Assert.equal(err, null);
+				if (result === null) {
+					Trace.debug("Unable to add " + headRef + " for " + userRef);
+				}
+			}
+	)
+}
+
 function confirmOrCreateUser(fullName) {
 	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
 	MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
-		testUser(db, {ref: userRef}, function(err, result) {
+		findOne(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
 				Trace.debug("Inserting user into MongoDB:", userRef);
 				insertUser(db, {
@@ -119,6 +143,7 @@ function confirmOrCreateUser(fullName) {
 					]
 				}, function() {
 					Trace.debug("Successfully inserted record for user:", userRef);
+					addDefaultHead(db, userRef, fullName);
 					db.close();
 				});
 			} else {

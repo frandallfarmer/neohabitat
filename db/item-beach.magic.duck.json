@@ -1,9 +1,9 @@
 {
 	"type": "item",
-	"ref": "item-test.magic.jump",
+	"ref": "item-beach.magic.duck",
 	"deletable": true,
-	"name": "Makes other avatars jump..",
-	"in": "context-test",
+	"name": "Magic Rubber Duckie.",
+	"in": "context-beach",
 	"mods": [
 		{
 			"type": "Knick_knack",

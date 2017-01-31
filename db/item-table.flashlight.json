@@ -1,0 +1,14 @@
+{
+	"type": "item",
+	"ref": "item-table.flashlight",
+	"deletable": true,
+	"name": "Blue Flashlight",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Flashlight",
+			"y": 0
+		}
+	]
+}
+

@@ -1,17 +1,15 @@
 {
 	"type": "item",
-	"ref": "item-test.head.girl",
+	"ref": "item-janet.head",
 	"deletable": true,
-	"name": "Default Female Head",
-	"in": "context-test",
+	"name": "Janet's Head",
+	"in": "user-janet",
 	"mods": [
 		{
 			"type": "Head",
 			"style": 2,
-			"x": 132,
-			"y": 80,
-			"orientation": 8,
-			"gr_state": 1
+			"y": 6,
+			"orientation": 8
 		}
-	]
+		]
 }

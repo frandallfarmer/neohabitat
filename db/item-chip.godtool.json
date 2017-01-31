@@ -1,18 +1,17 @@
 {
 	"type": "item",
-	"ref": "item-table.magic.godtool",
+	"ref": "item-chip.godtool",
 	"deletable": true,
 	"name": "Tool to rule the universe.",
-	"in": "context-table",
+	"in": "user-chip",
 	"mods": [
 		{
 			"type": "Knick_knack",
 			"style": 2,
-			"x": 70,
-			"y": 138,
+			"y": 1,
 			"orientation": 8,
 			"magic_type": 17,
 			"charges": 255
 		}
-	]
+		]
 }

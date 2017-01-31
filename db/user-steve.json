@@ -1,15 +1,15 @@
 {
-  "type": "user",
-  "ref": "user-steve",
-  "name": "Steve",
-  "mods": [
-    {
-      "type": "Avatar",
-      "x": 100,
-      "y": 130,
-      "bodyType": "male",
-      "bankBalance": 2000,
-      "custom": [68, 68]
-    }
-  ]
+	"type": "user",
+	"ref": "user-steve",
+	"name": "Steve",
+	"mods": [{
+		"type": "Avatar",
+		"x": 100,
+		"y": 130,
+		"bodyType": "male",
+		"bankBalance": 2000,
+		"custom": [68, 68],
+		"nitty_bits": 8
+	}
+	]
 }

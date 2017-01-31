@@ -1,15 +1,14 @@
 {
 	"type": "item",
-	"ref": "item-library.magic.godtool",
+	"ref": "item-randy.godtool",
 	"deletable": true,
 	"name": "Tool to rule the universe.",
-	"in": "context-library",
+	"in": "user-randy",
 	"mods": [
 		{
 			"type": "Knick_knack",
 			"style": 2,
-			"x": 70,
-			"y": 138,
+			"y": 1,
 			"orientation": 8,
 			"magic_type": 17,
 			"charges": 255
