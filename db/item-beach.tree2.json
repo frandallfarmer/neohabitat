@@ -1,15 +1,15 @@
 {
 	"type": "item",
-	"ref": "item-beach.ground",
+	"ref": "item-beach.tree2",
 	"deletable": true,
-	"name": "Sand",
+	"name": "Tree",
 	"in": "context-beach",
 	"mods": [
 		{
-			"type": "Ground",
-			"style": 0,
-			"x": 0,
-			"y": 4,
+			"type": "Tree",
+			"style": 2,
+			"x": 112,
+			"y": 26,
 			"orientation": 188
 		}
 	]
