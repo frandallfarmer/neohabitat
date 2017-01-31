@@ -1,0 +1,13 @@
+{
+	"type": "item",
+	"ref": "item-rassilon.head.json",
+	"name": "Rassilon's Head",
+	"in": "user-rassilon",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 100,
+			"y":6
+		}
+	]
+}
