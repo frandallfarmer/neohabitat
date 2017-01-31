@@ -7,10 +7,10 @@ import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.Massive;
 
 /**
- * Habitat Plant Mod (attached to an Elko Item.)
+ * Habitat Flag Mod (attached to an Elko Item.)
  * 
- * Plants can get picked up and thrown. Responds to HELP messages. It *may* be portable
- * based on how Massive it is. Otherwise the client is supposed to be smart and
+ * Flags can get picked up and thrown. But not placed in containers. Responds to HELP messages. 
+ * It *may* be portable based on how Massive it is. Otherwise the client is supposed to be smart and
  * transform interface commands to *other* objects as needed.
  * 
  * @author matt
