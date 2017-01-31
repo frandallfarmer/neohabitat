@@ -9,7 +9,7 @@
 			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
-			"neighbors": ["context-table", "", "", ""]
+			"neighbors": ["context-frontyard", "", "", ""]
 		}
 	]
 }
