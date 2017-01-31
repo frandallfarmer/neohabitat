@@ -2,9 +2,11 @@
 	"type": "context",
 	"ref": "context-beach",
 	"capacity": 6,
-	"name": "For getting a tan",
+	"name": "The Beach, a good place for getting a tan",
 	"mods": [
 		{
+			"town_dir": "right",
+			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["context-table", "", "", ""]

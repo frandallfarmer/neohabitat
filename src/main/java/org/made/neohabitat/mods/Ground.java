@@ -4,6 +4,7 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
 import org.made.neohabitat.Walkable;
 
 /**
@@ -60,4 +61,26 @@ public class Ground extends Walkable {
         return result;
     }
     
+    
+   @JSONMethod
+    public void HELP(User from) {
+    	     String name_str = current_region().object().name();
+    	     String help_str = "";
+    	     if (name_str.isEmpty()) 
+    	          help_str = "This region has no name";
+    	     else
+    	          help_str = "This region is " + name_str;
+    	     
+    	     if (!current_region().town_dir.isEmpty()) 
+    	          help_str = help_str + ".  The nearest town is " +
+    	               current_region().town_dir;
+    	               
+    	     if (!current_region().port_dir.isEmpty()) 
+    	          help_str = help_str + ".  The nearest teleport booth is " +
+    	               current_region().port_dir;
+    	     
+    	     help_str = help_str + ".";
+    	        send_reply_msg(from, help_str);
+ 	        
+    }    
 }

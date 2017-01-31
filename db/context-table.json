@@ -2,9 +2,11 @@
 	"type": "context",
 	"ref": "context-table",
 	"capacity": 6,
-	"name": "For testing basic contents handling",
+	"name": "The Nexus",
 	"mods": [
 		{
+			"town_dir": "up",
+			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["", "context-frontyard", "context-beach", ""]

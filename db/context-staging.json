@@ -5,6 +5,8 @@
 	"name": "Put Objects Here if they are not working yet...",
 	"mods": [
 		{
+			"town_dir": "nowhere",
+			"port_dir": "everywhere",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["context-staging","context-staging","context-staging","context-staging" ]

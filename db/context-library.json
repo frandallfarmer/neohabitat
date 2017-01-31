@@ -2,9 +2,11 @@
 	"type": "context",
 	"ref": "context-library",
 	"capacity": 6,
-	"name": "For testing document handling",
+	"name": "City Library",
 	"mods": [
 		{
+			"town_dir": "here",
+			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["", "context-table", "context-test", ""]

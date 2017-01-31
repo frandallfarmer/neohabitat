@@ -2,9 +2,11 @@
 	"type": "context",
 	"ref": "context-test",
 	"capacity": 6,
-	"name": "Second Region",
+	"name": "Neohabitat Project Hub",
 	"mods": [
 		{
+			"town_dir": "here",
+			"port_dir": "nowhere",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["context-library", "context-table", "", ""]

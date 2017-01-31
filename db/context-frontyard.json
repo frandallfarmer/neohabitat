@@ -5,6 +5,8 @@
 	"name": "Our House, in the middle of the street...",
 	"mods": [
 		{
+			"town_dir": "up",
+			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
 			"neighbors": ["context-hall", "", "context-hall", ""]

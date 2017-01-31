@@ -73,10 +73,17 @@ public class Region extends Container implements ContextMod, Constants {
     public HabitatMod noids[]      = new HabitatMod[256];
     /** Connecting region numbers in the 4 ordinal directions */
     public String     neighbors[]  = { "", "", "", "" };
+    /** Direction to nearest Town */
+    public String	  town_dir     = "";
+    /** Direciton to nearest Teleport Booth */
+    public String	  port_dir     = "";
+
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting", "neighbors" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting", "town_dir", "port_dir", "neighbors" })
     Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger nitty_bits, OptInteger depth, OptInteger lighting, String[] neighbors) {
+            OptInteger nitty_bits, OptInteger depth, OptInteger lighting, 
+            OptString town_dir, OptString port_dir, 
+            String[] neighbors) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -84,6 +91,8 @@ public class Region extends Container implements ContextMod, Constants {
         this.depth = depth.value(DEFAULT_REGION_DEPTH);
         this.lighting = lighting.value(1);
         this.neighbors = neighbors;
+        this.town_dir = town_dir.value("");
+        this.port_dir = port_dir.value("");
     }
     
     @Override
@@ -100,6 +109,10 @@ public class Region extends Container implements ContextMod, Constants {
         result.addParameter("depth", depth);
         result.addParameter("lighting", lighting);
         result.addParameter("neighbors", neighbors);
+        if (control.toRepository()) {
+        	result.addParameter("town_dir", town_dir);
+        	result.addParameter("port_dir", port_dir);
+        }
         result.finish();
         return result;
     }
