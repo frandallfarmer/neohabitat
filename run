@@ -1,12 +1,11 @@
 #!/bin/bash
 # Starts a Neoclassical Habitat server and Habitat protocol bridge.
 
-set -eo pipefail
+set -o pipefail
 
 trap 'kill %1; kill %2' SIGINT
 
-function retry()
-{
+function retry() {
   local n=0
   local try=$1
   local cmd="${@: 2}"
