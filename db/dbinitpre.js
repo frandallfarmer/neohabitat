@@ -1,0 +1,1 @@
+db.odb.remove({});
