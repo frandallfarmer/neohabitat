@@ -2,7 +2,7 @@
 clusters:
   - neohabitatmongo:
       image: mongo
-      tag: "3.0"
+      tag: "3.4"
       ports:
         - port: 27017
   - neohabitat:
