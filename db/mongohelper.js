@@ -21,12 +21,20 @@ function eremove(ref) { return db.odb.remove({ref:ref}); }
 
 function esave(obj) { return db.odb.save(obj); }
 
-function eupdate(obj) {
+function eupdateOne(obj) {
     var o = eget(obj.ref);
     if (o !== null) {
         obj._id = o._id;
     }
     esave(obj);
+}
+function eupdate(obj) {
+	if (obj instanceof Array) {
+		obj.forEach(function (o) { eupdateOne(o); } );
+	} else {
+		eupdateOne(obj);
+	}
+
 }
 
 function boxquery(lat, lon, range) {

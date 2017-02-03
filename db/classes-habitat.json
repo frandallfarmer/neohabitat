@@ -158,6 +158,16 @@
 		},
 		{
 			"type": "class",
+			"tag": "Trapezoid",
+			"name": "org.made.neohabitat.mods.Trapezoid"
+		},
+		{
+			"type": "class",
+			"tag": "Super_trapezoid",
+			"name": "org.made.neohabitat.mods.Super_trapezoid"
+		},
+		{
+			"type": "class",
 			"tag": "Flag",
 			"name": "org.made.neohabitat.mods.Flag"
 		}

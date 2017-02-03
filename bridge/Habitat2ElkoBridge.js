@@ -612,6 +612,16 @@ var encodeState = {
 //			buf.add(state.flat_type	|| 0);			 TODO Check to see if this is a server only property.
 			return buf;
 		}, 
+		polygonal: function (state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.trapezoid_type	|| 0);
+			buf.add(state.upper_left_x		|| 0);
+			buf.add(state.upper_right_x		|| 0);
+			buf.add(state.lower_left_x		|| 0);
+			buf.add(state.lower_right_x		|| 0);
+			buf.add(state.height			|| 0);
+			return buf;
+		},
 		Region: function (state, container, buf) {
 			if (undefined === buf) {
 				buf = new HabBuf();
@@ -653,6 +663,12 @@ var encodeState = {
 			buf.add(state.height);
 			return buf;
 		},
+		Super_trapezoid: function (state, container, buf) {
+			buf = this.polygonal(state, container, buf);
+			buf.add(state.pattern_x_size);
+			buf.add(state.pattern_y_size);
+			buf.add(state.pattern);
+		},
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Building:	function (state, container, buf) { return (this.common	(state, container, buf)); },
@@ -679,7 +695,9 @@ var encodeState = {
 		Chair:      function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
-		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); }
+		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
+		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); }
+
 };
 
 function habitatEncodeElkoModState (state, container, buf) {
