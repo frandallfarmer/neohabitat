@@ -17,6 +17,13 @@ clusters:
       ports:
         - port: 1337
         - port: 9000
+  - neohabitatslackin:
+      image: chk1/slackin
+      environment:
+        SLACK_ORG: neohabitat
+        SLACK_TOKEN: "{{ vault.slack_token }}"
+      ports:
+        - port: 3000
   - neohabitatqlink:
       image: philcollins/qlink
       environment:
@@ -41,6 +48,12 @@ databases:
   - neohabitatmysql
 
 balancers:
+  - join-neohabitat:
+      enable_ssl: false
+      synapses:
+        - resource: neohabitatslackin
+          protocol: http
+          remote_port: 3000
   - neohabitat:
       enable_ssl: false
       synapses:
