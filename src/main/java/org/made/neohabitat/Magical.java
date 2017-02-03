@@ -361,11 +361,7 @@ public abstract class Magical extends HabitatMod {
                         msg.addParameter("value", workstring);
                         msg.finish();
                         context().send(msg);
-                        if (textlen == 40) {
-                            ((org.made.neohabitat.mods.Sign) target).text = workstring;
-                        } else {
-                            ((org.made.neohabitat.mods.Short_sign) target).text = workstring;
-                        }
+                        ((Poster) target).setTextBytes(workstring);
                         target.gen_flags[MODIFIED] = true;
                     }
                     break;

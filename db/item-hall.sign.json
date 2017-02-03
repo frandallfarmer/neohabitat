@@ -12,7 +12,9 @@
 			"y": 90,
 			"orientation": 0,
 			"gr_state": 1,
-			"text": " 1r4             2r4             3r4    "
+			"text": " 1r4             2r4             3r4    ",
+			"ascii": []
+
 		}
 	]
 }

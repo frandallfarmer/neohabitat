@@ -48,7 +48,7 @@ public class Super_trapezoid extends Polygonal {
     /** The dimensions of the texture block and the EXACTLY 32 byte in the repeating texture for the client to render with */
     private int	pattern_x_size	= 4;
     private int	pattern_y_size	= 8;
-    private int	pattern[] 		= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
+    private int	pattern[] 		= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "trapezoid_type",  "upper_left_x", "upper_right_x", "lower_left_x", "lower_right_x",  "height", "pattern_x_size", "pattern_y_size", "pattern"})    
     public Super_trapezoid(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,

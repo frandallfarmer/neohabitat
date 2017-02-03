@@ -654,7 +654,7 @@ var encodeState = {
 		},
 		Sign:  function (state, container, buf) {
 			buf = this.common(state, container, buf);
-			buf.add(state.text.getBytes());
+			buf.add(state.ascii);
 			return buf;
 		},
 		Street:  function (state, container, buf) {

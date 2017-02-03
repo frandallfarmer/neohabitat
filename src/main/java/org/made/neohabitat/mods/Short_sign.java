@@ -5,7 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
-import org.made.neohabitat.HabitatMod;
+import org.made.neohabitat.Poster;
 
 /**
  * Habitat Short_sign Mod (attached to an Elko Item.)
@@ -15,7 +15,7 @@ import org.made.neohabitat.HabitatMod;
  * @author randy
  *
  */
-public class Short_sign extends HabitatMod {
+public class Short_sign extends Poster {
     
     public int HabitatClass() {
         return CLASS_SHORT_SIGN;
@@ -45,22 +45,16 @@ public class Short_sign extends HabitatMod {
         return false;
     }
     
-    /** The message to display on this short sign */
-    public String text;
-    
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "text" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "text", "ascii"})
     public Short_sign(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptString text) {
-        super(style, x, y, orientation, gr_state);
-        this.text = text.value("[Missing!]");
+            OptString text, int[] ascii) {
+        super(style, x, y, orientation, gr_state, text, ascii, 10);
     }
     
     @Override
     public JSONLiteral encode(EncodeControl control) {
-        JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-        result.addParameter("text", text);
+        JSONLiteral result = super.encodePoster(new JSONLiteral(HabitatModName(), control));
         result.finish();
         return result;
     }
-    
 }

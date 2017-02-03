@@ -11,7 +11,9 @@
 			"x": 0,
 			"y": 32,
 			"orientation": 168,
-			"text": "<<<< HEADS"
+			"text": "<<<< HEADS",
+			"ascii": []
+
 		}
 	]
 }

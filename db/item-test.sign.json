@@ -12,7 +12,9 @@
 			"y": 76,
 			"orientation": 0,
 			"gr_state": 1,
-			"text": "The Neoclassical Habitat Server Project."
+			"text": "The Neoclassical Habitat Server Project.",
+			"ascii": []
+
 		}
 	]
 }

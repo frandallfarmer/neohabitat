@@ -11,7 +11,9 @@
 			"x": 116,
 			"y": 32,
 			"orientation": 168,
-			"text": "Library >>"
+			"text": "Library >>",
+			"ascii": []
+
 		}
 	]
 }

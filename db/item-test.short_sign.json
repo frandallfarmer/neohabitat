@@ -11,7 +11,9 @@
 			"x": 60,
 			"y": 112,
 			"orientation": 140,
-			"text": " The MADE "
+			"text": " The MADE ",
+			"ascii": []
+
 		}
 	]
 }
