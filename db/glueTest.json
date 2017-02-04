@@ -14,10 +14,10 @@
         "open_flags": 0,
         "key_lo": 0,
         "key_hi": 0,
-        "xo1": 254,
-        "yo1": 0,
-        "xo2": 0,
-        "yo2": 217
+        "x_offset_1": 254,
+        "y_offset_1": 0,
+        "x_offset_2": 0,
+        "y_offset_2": 217
       }
     ]
   },
