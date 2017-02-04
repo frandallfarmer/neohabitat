@@ -673,18 +673,18 @@ var encodeState = {
 		},
 		Glue: function (state, container, buf) {
 			buf = this.openable(state, container, buf);
-			buf.add(state.xo1);
-			buf.add(state.yo1);
-			buf.add(state.xo2);
-			buf.add(state.yo2);
-			buf.add(state.xo3);
-			buf.add(state.yo3);
-			buf.add(state.xo4);
-			buf.add(state.yo4);
-			buf.add(state.xo5);
-			buf.add(state.yo5);
-			buf.add(state.xo6);
-			buf.add(state.yo6);
+			buf.add(state.x_offset_1 || 0 );
+			buf.add(state.y_offset_1 || 0 );
+			buf.add(state.x_offset_2 || 0 );
+			buf.add(state.y_offset_2 || 0 );
+			buf.add(state.x_offset_3 || 0 );
+			buf.add(state.y_offset_3 || 0 );
+			buf.add(state.x_offset_4 || 0 );
+			buf.add(state.y_offset_4 || 0 );
+			buf.add(state.x_offset_5 || 0 );
+			buf.add(state.y_offset_5 || 0 );
+			buf.add(state.x_offset_6 || 0 );
+			buf.add(state.y_offset_6 || 0 );
 			return buf;
 		},
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
