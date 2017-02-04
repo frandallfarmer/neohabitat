@@ -44,6 +44,11 @@
 		},
 		{
 			"type": "class",
+			"tag": "Glue",
+			"name": "org.made.neohabitat.mods.Glue"
+		},
+		{
+			"type": "class",
 			"tag": "Ground",
 			"name": "org.made.neohabitat.mods.Ground"
 		},

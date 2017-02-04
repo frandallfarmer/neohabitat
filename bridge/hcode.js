@@ -670,6 +670,7 @@ this.Bag				= this.portableContainer;
 this.Box				= this.portableContainer;
 this.Building			= this.help;
 this.Bush				= this.help;
+this.Glue				= this.help;
 this.Ground				= this.portable;
 this.Fence				= this.help;
 this.Key				= this.portable;
@@ -692,3 +693,4 @@ this.Plant				= this.portable;
 this.Flag				= this.portable;
 this.Trapezoid			= this.help;
 this.Super_trapezoid 	= this.help;
+

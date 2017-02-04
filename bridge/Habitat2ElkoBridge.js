@@ -645,6 +645,7 @@ var encodeState = {
 			buf.add(state.health	|| 255);
 			buf.add(state.restrainer||   0);
 			buf.add(state.custom	||  [0, 0]);
+			return buf;
 		},
 		Key: function (state, container, buf) {
 			buf = this.common(state, container, buf);
@@ -668,6 +669,23 @@ var encodeState = {
 			buf.add(state.pattern_x_size);
 			buf.add(state.pattern_y_size);
 			buf.add(state.pattern);
+			return buf;
+		},
+		Glue: function (state, container, buf) {
+			buf = this.openable(state, container, buf);
+			buf.add(state.xo1);
+			buf.add(state.yo1);
+			buf.add(state.xo2);
+			buf.add(state.yo2);
+			buf.add(state.xo3);
+			buf.add(state.yo3);
+			buf.add(state.xo4);
+			buf.add(state.yo4);
+			buf.add(state.xo5);
+			buf.add(state.yo5);
+			buf.add(state.xo6);
+			buf.add(state.yo6);
+			return buf;
 		},
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },

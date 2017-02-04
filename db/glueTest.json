@@ -1,0 +1,61 @@
+[
+  {
+    "type": "item",
+    "ref": "item-glueTest",
+    "name": ".",
+    "in": "context-library",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 48,
+        "y": 144,
+        "orientation": 0,
+        "gr_state": 1,
+        "open_flags": 0,
+        "key_lo": 0,
+        "key_hi": 0,
+        "xo1": 254,
+        "yo1": 0,
+        "xo2": 0,
+        "yo2": 217
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap.glueTest",
+    "in": "item-glueTest",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 0,
+        "y": 0,
+        "orientation": 204,
+        "trapezoid_type": 2,
+        "upper_left_x": 0,
+        "upper_right_x": 19,
+        "lower_left_x": 0,
+        "lower_right_x": 19,
+        "height": 173
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-knick_knack.glueTest",
+    "deletable": true,
+    "name": ".",
+    "in": "item-glueTest",
+    "mods": [
+      {
+        "type": "Knick_knack",
+        "style": 11,
+        "x": 1,
+        "y": 1,
+        "orientation": 0,
+        "magic_type": 0
+      }
+    ]
+  }
+]
