@@ -1,0 +1,112 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_1c",
+  "capacity": 6,
+  "name": "The Beach, Surfin' USA!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_1b", 
+        "", 
+        "context-beach_2a", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_1c",
+    "name": "Ground",
+    "in": "context-beach_1c",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_1c",
+    "name": "Sky",
+    "in": "context-beach_1c",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-bush1.context-beach_1c",
+    "name": "Bush",
+    "in": "context-beach_1c",
+    "mods": [
+      {
+        "type": "Bush",
+        "style": 4,
+        "x": 12,
+        "y": 132,
+        "orientation": 56
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-bush2.context-beach_1c",
+    "name": "Bush",
+    "in": "context-beach_1c",
+    "mods": [
+      {
+        "type": "Bush",
+        "style": 4,
+        "x": 116,
+        "y": 132,
+        "orientation": 56,
+        "gr_state": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_1c",
+    "name": "Tree",
+    "in": "context-beach_1c",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 40,
+        "y": 32,
+        "orientation": 17,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky2.context-beach_1c",
+    "name": "Sky",
+    "in": "context-beach_1c",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 244
+      }
+    ]
+  }
+]

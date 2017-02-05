@@ -9,7 +9,7 @@
 			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
-			"neighbors": ["context-hall", "", "context-beach", ""]
+			"neighbors": ["context-hall", "", "context-beach_0a", ""]
 		}
 	]
 }

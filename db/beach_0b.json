@@ -1,0 +1,111 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_0b",
+  "capacity": 6,
+  "name": "The Beach, Digital sunscreen SPF 10 at the ready",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_0a", 
+        "", 
+        "context-beach_0c", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_0b",
+    "name": "Ground",
+    "in": "context-beach_0b",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 1,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall1.context-beach_0b",
+    "name": "Wall",
+    "in": "context-beach_0b",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 244
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall2.context-beach_0b",
+    "name": "Wall",
+    "in": "context-beach_0b",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_0b",
+    "name": "Tree",
+    "in": "context-beach_0b",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 24,
+        "y": 26,
+        "orientation": 16
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_0b",
+    "name": "Tree",
+    "in": "context-beach_0b",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 124,
+        "y": 25,
+        "orientation": 32
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree3.context-beach_0b",
+    "name": "Tree",
+    "in": "context-beach_0b",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 24,
+        "y": 26,
+        "orientation": 17
+      }
+    ]
+  }
+]
