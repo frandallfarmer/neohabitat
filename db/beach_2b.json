@@ -1,0 +1,128 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_2b",
+  "capacity": 6,
+  "name": "The Beach, Not a nude beach!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_2a", 
+        "", 
+        "context-beach_2c", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_2b",
+    "name": "Ground",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_2b",
+    "name": "Sky",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_2b",
+    "name": "Tree",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 52,
+        "y": 138,
+        "orientation": 236
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky2.context-beach_2b",
+    "name": "Cloud",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 11,
+        "x": 108,
+        "y": 100,
+        "orientation": 140
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant1.context-beach_2b",
+    "name": "Plant",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 1,
+        "x": 24,
+        "y": 138,
+        "orientation": 16,
+        "mass": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant2.context-beach_2b",
+    "name": "Plant",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 1,
+        "x": 120,
+        "y": 144,
+        "orientation": 49,
+        "mass": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_2b",
+    "name": "Tree",
+    "in": "context-beach_2b",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 28,
+        "y": 30,
+        "orientation": 236
+      }
+    ]
+  }
+]

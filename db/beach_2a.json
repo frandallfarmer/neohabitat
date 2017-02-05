@@ -10,9 +10,9 @@
       "port_dir": "",
       "type": "Region",
       "nitty_bits": 3,
-      "neighbors": ["context-beach_1c", 
+      "neighbors": ["context-beach_1g", 
         "", 
-        "", 
+        "context-beach_2b", 
         ""
       ]
     }
@@ -99,23 +99,6 @@
   },
   {
     "type": "item",
-    "ref": "item-rock1.context-beach_2a",
-    "deletable": true,
-    "name": "Rock",
-    "in": "context-beach_2a",
-    "mods": [
-      {
-        "type": "Rock",
-        "style": 1,
-        "x": 96,
-        "y": 136,
-        "orientation": 16,
-        "mass": 0,
-      }
-    ]
-  },
-  {
-    "type": "item",
     "ref": "item-tree1.context-beach_2a",
     "deletable": true,
     "name": "Tree",
@@ -193,40 +176,5 @@
         "orientation": 244,
       }
     ]
-  },
-  {
-    "type": "item",
-    "ref": "item-flag1.context-beach_2a",
-    "deletable": true,
-    "name": "Flag",
-    "in": "context-beach_2a",
-    "mods": [
-      {
-        "type": "Flag",
-        "x": 64,
-        "y": 148,
-        "style": 0,
-        "orientation": 64,
-        "mass": 0
-      }
-    ]
-  },
-  {
-    "type": "item",
-    "ref": "item-magicduck.context-beach_2a",
-    "deletable": true,
-    "name": "Magic Rubber Duckie.",
-    "in": "context-beach_2a",
-    "mods": [
-      {
-        "type": "Knick_knack",
-        "style": 7,
-        "x": 50,
-        "y": 138,
-        "orientation": 16,
-        "magic_type": 2,
-        "charges": 255
-      }
-    ]
-  },
+  }
 ]

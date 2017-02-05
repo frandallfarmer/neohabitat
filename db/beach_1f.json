@@ -1,0 +1,142 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_1f",
+  "capacity": 6,
+  "name": "The Beach, Hope thats not a rain cloud!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_1e", 
+        "", 
+        "context-beach_1g", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_1f",
+    "name": "Ground",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_1f",
+    "name": "Sky",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_1f",
+    "name": "Tree",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 36,
+        "y": 144,
+        "orientation": 189
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-pond1.context-beach_1f",
+    "name": "Pond",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Pond",
+        "x": 24,
+        "y": 5,
+        "orientation": 0,
+        "gr_state": 3,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant1.context-beach_1f",
+    "name": "Plant",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 1,
+        "x": 36,
+        "y": 136,
+        "orientation": 16,
+        "mass": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_1f",
+    "name": "Tree",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 112,
+        "y": 26,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky2.context-beach_1f",
+    "name": "Sky",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 244
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree3.context-beach_1f",
+    "name": "Tree",
+    "in": "context-beach_1f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 84,
+        "y": 32,
+        "orientation": 197
+      }
+    ]
+  }
+]
