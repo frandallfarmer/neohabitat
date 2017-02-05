@@ -1,0 +1,307 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_1g",
+  "capacity": 6,
+  "name": "The Beach, Somebody has been living here!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_1f", 
+        "", 
+        "context-beach_2a", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_1g",
+    "name": "Ground",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_1g",
+    "name": "Sky",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock1.context-beach_1g",
+    "name": "Rock",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 92,
+        "y": 138,
+        "orientation": 16,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock2.context-beach_1g",
+    "name": "Rock",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 100,
+        "y": 146,
+        "orientation": 32,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock3.context-beach_1g",
+    "name": "Rock",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 108,
+        "y": 145,
+        "orientation": 32,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock4.context-beach_1g",
+    "name": "Rock",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 116,
+        "y": 139,
+        "orientation": 72,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock5.context-beach_1g",
+    "name": "Rock",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 112,
+        "y": 131,
+        "orientation": 88,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock6.context-beach_1g",
+    "name": "Rock",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 100,
+        "y": 131,
+        "orientation": 88,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 56,
+        "y": 29,
+        "orientation": 0
+      }
+    ]
+  }, 
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 60,
+        "y": 39,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree3.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 64,
+        "y": 49,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree4.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 68,
+        "y": 59,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree5.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 72,
+        "y": 70,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree6.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 76,
+        "y": 80,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree7.context-beach_1g",
+    "name": "Tree",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 80,
+        "y": 90,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap1.context-beach_1g",
+    "in": "context-beach_1g",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 112,
+        "y": 162,
+        "orientation": 16,
+        "trapezoid_type": 0,
+        "upper_left_x": 243,
+        "upper_right_x": 246,
+        "lower_left_x": 6,
+        "lower_right_x": 10,
+        "height": 179
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap2.context-beach_1g",
+    "in": "context-beach_1g",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 100,
+        "y": 10,
+        "orientation": 148,
+        "trapezoid_type": 3,
+        "upper_left_x": 0,
+        "upper_right_x": 16,
+        "lower_left_x": 0,
+        "lower_right_x": 16,
+        "height": 10
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky2.context-beach_1g",
+    "name": "Cloud",
+    "in": "context-beach_1g",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 244
+      }
+    ]
+  }
+]

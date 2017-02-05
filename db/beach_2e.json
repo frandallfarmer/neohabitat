@@ -1,0 +1,113 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_2e",
+  "capacity": 6,
+  "name": "The Beach, Lovely and sunny!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_2d", 
+        "", 
+        "context-beach_2f", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_2e",
+    "name": "Ground",
+    "in": "context-beach_2e",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_2e",
+    "name": "Sky",
+    "in": "context-beach_2e",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_2e",
+    "name": "Tree",
+    "in": "context-beach_2e",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 40,
+        "y": 82,
+        "orientation": 237,
+        "gr_state": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-bush1.context-beach_2e",
+    "name": "Bush",
+    "in": "context-beach_2e",
+    "mods": [
+      {
+        "type": "Bush",
+        "style": 4,
+        "x": 4,
+        "y": 131,
+        "orientation": 8
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_2e",
+    "name": "Tree",
+    "in": "context-beach_2e",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 112,
+        "y": 134,
+        "orientation": 197
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree3.context-beach_2e",
+    "name": "Tree",
+    "in": "context-beach_2e",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 44,
+        "y": 32,
+        "orientation": 237,
+        "gr_state": 1
+      }
+    ]
+  }
+]

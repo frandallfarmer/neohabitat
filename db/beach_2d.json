@@ -1,0 +1,145 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_2d",
+  "capacity": 6,
+  "name": "The Beach, I need a cold drink!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_2c", 
+        "", 
+        "context-beach_2e", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_2d",
+    "name": "Ground",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_2d",
+    "name": "Sky",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_2d",
+    "name": "Tree",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 80,
+        "y": 32,
+        "orientation": 237,
+        "gr_state": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock1.context-beach_2d",
+    "name": "Rock",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 0,
+        "x": 24,
+        "y": 147,
+        "orientation": 0,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_2d",
+    "name": "Tree",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 112,
+        "y": 134,
+        "orientation": 172
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree3.context-beach_2d",
+    "name": "Tree",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 44,
+        "y": 32,
+        "orientation": 237
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree4.context-beach_2d",
+    "name": "Tree",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 80,
+        "y": 72,
+        "orientation": 237,
+        "gr_state": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant1.context-beach_2d",
+    "name": "Plant",
+    "in": "context-beach_2d",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 2,
+        "x": 120,
+        "y": 129,
+        "orientation": 16,
+        "mass": 1
+      }
+    ]
+  }
+]

@@ -1,0 +1,127 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_1d",
+  "capacity": 6,
+  "name": "The Beach, Lets build a raft!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_1c", 
+        "", 
+        "context-beach_1e", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_1d",
+    "name": "Ground",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_1d",
+    "name": "Sky",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-bush1.context-beach_1d",
+    "name": "Bush",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Bush",
+        "style": 4,
+        "x": 32,
+        "y": 132,
+        "orientation": 56,
+        "gr_state": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_1d",
+    "name": "Tree",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 24,
+        "y": 21,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky2.context-beach_1d",
+    "name": "Sun",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 10,
+        "x": 132,
+        "y": 238,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_1d",
+    "name": "Tree",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 36,
+        "y": 21,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky3.context-beach_1d",
+    "name": "Sky",
+    "in": "context-beach_1d",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 244
+      }
+    ]
+  }
+]

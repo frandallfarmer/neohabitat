@@ -1,0 +1,128 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_2f",
+  "capacity": 6,
+  "name": "The Beach, The End!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_2e", 
+        "", 
+        "context-frontyard", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_2f",
+    "name": "Ground",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_2f",
+    "name": "Sky",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_2f",
+    "name": "Tree",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 72,
+        "y": 82,
+        "orientation": 237,
+        "gr_state": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_2f",
+    "name": "Tree",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 8,
+        "y": 10,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree3.context-beach_2f",
+    "name": "Tree",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 16,
+        "y": 10,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree4.context-beach_2f",
+    "name": "Tree",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 76,
+        "y": 32,
+        "orientation": 237,
+        "gr_state": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree5.context-beach_2f",
+    "name": "Tree",
+    "in": "context-beach_2f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 7,
+        "x": 28,
+        "y": 11,
+        "orientation": 0
+      }
+    ]
+  }  
+]

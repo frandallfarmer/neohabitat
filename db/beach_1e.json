@@ -1,0 +1,128 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_1e",
+  "capacity": 6,
+  "name": "The Beach, Hope thats not a rain cloud!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_1d", 
+        "", 
+        "context-beach_1f", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_1e",
+    "name": "Ground",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 0,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky1.context-beach_1e",
+    "name": "Sky",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_1e",
+    "name": "Tree",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 76,
+        "y": 138,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky2.context-beach_1e",
+    "name": "Cloud",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 11,
+        "x": 24,
+        "y": 100,
+        "orientation": 140
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant1.context-beach_1e",
+    "name": "Plant",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 1,
+        "x": 24,
+        "y": 138,
+        "orientation": 16,
+        "mass": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant2.context-beach_1e",
+    "name": "Plant",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 1,
+        "x": 120,
+        "y": 144,
+        "orientation": 49,
+        "mass": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sky3.context-beach_1e",
+    "name": "Sky",
+    "in": "context-beach_1e",
+    "mods": [
+      {
+        "type": "Sky",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 244
+      }
+    ]
+  }
+]
