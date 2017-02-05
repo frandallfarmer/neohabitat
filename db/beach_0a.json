@@ -1,0 +1,66 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_0a",
+  "capacity": 6,
+  "name": "The Beach, a good place for getting a tan",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-frontyard", 
+        "", 
+        "context-beach_0b", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_0a",
+    "name": "Ground",
+    "in": "context-beach_0a",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 1,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall1.context-beach_0a",
+    "name": "Wall",
+    "in": "context-beach_0a",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 244
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall2.context-beach_0a",
+    "name": "Wall",
+    "in": "context-beach_0a",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 0
+      }
+    ]
+  }
+]

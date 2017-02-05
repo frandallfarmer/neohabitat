@@ -1,0 +1,128 @@
+[
+  {
+  "type": "context",
+  "ref": "context-beach_0f",
+  "capacity": 6,
+  "name": "The Beach, Rocky!",
+  "mods": [
+    {
+      "town_dir": "right",
+      "port_dir": "",
+      "type": "Region",
+      "nitty_bits": 3,
+      "neighbors": ["context-beach_0e", 
+        "", 
+        "context-beach_1a", 
+        ""
+      ]
+    }
+  ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.context-beach_0f",
+    "name": "Ground",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 1,
+        "x": 0,
+        "y": 4,
+        "orientation": 188
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall1.context-beach_0f",
+    "name": "Wall",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": 244
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall2.context-beach_0f",
+    "name": "Wall",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 7,
+        "x": 0,
+        "y": 2,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-rock1.context-beach_0f",
+    "name": "Rock",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Rock",
+        "style": 1,
+        "x": 24,
+        "y": 147,
+        "orientation": 0,
+        "mass": 1,
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.context-beach_0f",
+    "name": "Tree",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 100,
+        "y": 134,
+        "orientation": 80
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.context-beach_0f",
+    "name": "Tree",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 2,
+        "x": 44,
+        "y": 26,
+        "orientation": 17
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-plant1.context-beach_0f",
+    "name": "Plant",
+    "in": "context-beach_0f",
+    "mods": [
+      {
+        "type": "Plant",
+        "style": 2,
+        "x": 128,
+        "y": 148,
+        "orientation": 88,
+        "mass": 1
+      }
+    ]
+  }
+]

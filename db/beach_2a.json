@@ -1,7 +1,7 @@
 [
   {
   "type": "context",
-  "ref": "context-beach",
+  "ref": "context-beach_2a",
   "capacity": 6,
   "name": "The Beach, a good place for getting a tan",
   "mods": [
@@ -10,7 +10,7 @@
       "port_dir": "",
       "type": "Region",
       "nitty_bits": 3,
-      "neighbors": ["context-frontyard", 
+      "neighbors": ["context-beach_1c", 
         "", 
         "", 
         ""
@@ -20,10 +20,10 @@
   },
   {
     "type": "item",
-    "ref": "item-ground.context_beach_2a",
+    "ref": "item-ground.context-beach_2a",
     "deletable": true,
     "name": "Sand",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Ground",
@@ -36,9 +36,9 @@
   },
   {
     "type": "item",
-    "ref": "item-plant1.context_beach_2a",
+    "ref": "item-plant1.context-beach_2a",
     "name": "Plant",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Plant",
@@ -52,10 +52,10 @@
   },
   {
     "type": "item",
-    "ref": "item-pond1.context_beach_2a",
+    "ref": "item-pond1.context-beach_2a",
     "deletable": false,
     "name": "Pond",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Pond",
@@ -68,9 +68,9 @@
   },
   {
     "type": "item",
-    "ref": "item-pond2.context_beach_2a",
+    "ref": "item-pond2.context-beach_2a",
     "name": "Pond",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Pond",
@@ -83,10 +83,10 @@
   },
   {
     "type": "item",
-    "ref": "item-pond3.context_beach_2a",
+    "ref": "item-pond3.context-beach_2a",
     "deletable": false,
     "name": "Pond",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Pond",
@@ -99,10 +99,10 @@
   },
   {
     "type": "item",
-    "ref": "item-rock1.context_beach_2a",
+    "ref": "item-rock1.context-beach_2a",
     "deletable": true,
     "name": "Rock",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Rock",
@@ -116,10 +116,10 @@
   },
   {
     "type": "item",
-    "ref": "item-tree1.context_beach_2a",
+    "ref": "item-tree1.context-beach_2a",
     "deletable": true,
     "name": "Tree",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Tree",
@@ -132,10 +132,10 @@
   },
   {
     "type": "item",
-    "ref": "item-tree2.context_beach_2a",
+    "ref": "item-tree2.context-beach_2a",
     "deletable": true,
     "name": "Tree",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Tree",
@@ -148,10 +148,10 @@
   },
   {
     "type": "item",
-    "ref": "item-tree3.context_beach_2a",
+    "ref": "item-tree3.context-beach_2a",
     "deletable": true,
     "name": "Tree",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Tree",
@@ -164,10 +164,10 @@
   },
   {
     "type": "item",
-    "ref": "item-sky1.context_beach_2a",
+    "ref": "item-sky1.context-beach_2a",
     "deletable": false,
     "name": "Sunny Sky",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Sky",
@@ -180,10 +180,10 @@
   },
   {
     "type": "item",
-    "ref": "item-sky2.context_beach_2a",
+    "ref": "item-sky2.context-beach_2a",
     "deletable": false,
     "name": "Sunny Sky",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Sky",
@@ -196,10 +196,10 @@
   },
   {
     "type": "item",
-    "ref": "item-flag1.context_beach_2a",
+    "ref": "item-flag1.context-beach_2a",
     "deletable": true,
     "name": "Flag",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Flag",
@@ -213,10 +213,10 @@
   },
   {
     "type": "item",
-    "ref": "item-magicduck.context_beach_2a",
+    "ref": "item-magicduck.context-beach_2a",
     "deletable": true,
     "name": "Magic Rubber Duckie.",
-    "in": "context-beach",
+    "in": "context-beach_2a",
     "mods": [
       {
         "type": "Knick_knack",
