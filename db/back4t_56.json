@@ -156,20 +156,5 @@
     "type": "item", 
     "name": "Sign", 
     "in": "context-back4t_56"
-  }, 
-  {
-    "ref": "item-paper7a3c.context-back4t_56", 
-    "mods": [
-      {
-        "y": 144, 
-        "x": 52, 
-        "type": "Paper", 
-        "orientation": 0, 
-        "gr_state": 1
-      }
-    ], 
-    "type": "item", 
-    "name": "Paper", 
-    "in": "context-back4t_56"
   }
 ]
