@@ -74,10 +74,18 @@ class Mod(object):
 
 
 class Region(object):
-  def __init__(self, name, params={}, mods=[], parse_results=None):
+  def __init__(self, name, params=None, mods=None, parse_results=None):
     self.name = name
-    self.params = params
-    self.mods = mods
+    
+    if params is None:
+      self.params = {}
+    else:
+      self.params = params
+    
+    if mods is None:
+      self.mods = []
+    else:
+      self.mods = mods
 
     if parse_results is not None:
       # It's much easier to work with the pure Python representation of a
@@ -101,7 +109,6 @@ class Region(object):
 
   @classmethod
   def from_parse_results(cls, name, parse_results):
-    print name, parse_results
     region = cls(name=name, parse_results=parse_results)
     region._parse_params_from_results()
     region._parse_mods_from_results()
@@ -180,6 +187,7 @@ class Region(object):
       'mods': [region_mod]
     }
 
-    region_contents = [region_context]
-    region_contents.extend(self.mods)
+    self.mods
+
+    region_contents = [region_context] + self.mods
     return region_contents

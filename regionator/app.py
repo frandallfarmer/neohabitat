@@ -3,6 +3,7 @@ from __future__ import print_function
 import argparse
 import json
 import os
+import pdb
 
 from glob import glob
 
@@ -29,13 +30,12 @@ ARG_PARSER.add_argument(
 def convert_file(rdl_file, output_dir):
   print(' - Converting RDL file: {0}'.format(rdl_file))
   new_region = Region.from_rdl_file(rdl_file)
-  print(new_region.name)
   output_filename = os.path.join(output_dir,
     os.path.basename(rdl_file).replace('rdl', 'json'))
   print(' - Successfully parsed RDL file {0}, outputting to {1}'.format(rdl_file,
       output_filename))
   with open(output_filename, 'w') as output_file:
-    output_file.write(json.dumps(new_region, indent=4))
+    output_file.write(json.dumps(new_region, indent=2))
   print(' - Successfully converted RDL file {0}!'.format(rdl_file))
 
 
