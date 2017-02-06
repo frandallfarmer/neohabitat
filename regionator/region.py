@@ -166,18 +166,18 @@ class Region(object):
       'nitty_bits': 3,
       'neighbors': ['', '', '', ''],
     }
-    if 'north' in self.params:
+    if 'east' in self.params:
       region_mod['neighbors'][0] = 'context-{0}'.format(
-          self.params['north'].split('.')[0])
+          self.params['east'].split('.')[0])
     if 'south' in self.params:
       region_mod['neighbors'][1] = 'context-{0}'.format(
           self.params['south'].split('.')[0])
     if 'west' in self.params:
       region_mod['neighbors'][2] = 'context-{0}'.format(
           self.params['west'].split('.')[0])
-    if 'east' in self.params:
+    if 'north' in self.params:
       region_mod['neighbors'][3] = 'context-{0}'.format(
-          self.params['east'].split('.')[0])
+          self.params['north'].split('.')[0])
 
     region_context = {
       'type': 'context',
@@ -186,8 +186,6 @@ class Region(object):
       'name': DEFAULT_REGIONATOR_NAME,
       'mods': [region_mod]
     }
-
-    self.mods
 
     region_contents = [region_context] + self.mods
     return region_contents
