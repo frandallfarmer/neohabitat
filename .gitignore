@@ -10,6 +10,7 @@ hooks/
 .project
 .settings
 *.log
+*.pyc
 context.*
 dependency-reduced-pom.xml
 neohabitat.iml
