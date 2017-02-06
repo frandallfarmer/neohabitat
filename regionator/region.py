@@ -74,10 +74,18 @@ class Mod(object):
 
 
 class Region(object):
-  def __init__(self, name, params={}, mods=[], parse_results=None):
+  def __init__(self, name, params=None, mods=None, parse_results=None):
     self.name = name
-    self.params = params
-    self.mods = mods
+    
+    if params is None:
+      self.params = {}
+    else:
+      self.params = params
+    
+    if mods is None:
+      self.mods = []
+    else:
+      self.mods = mods
 
     if parse_results is not None:
       # It's much easier to work with the pure Python representation of a
@@ -101,7 +109,6 @@ class Region(object):
 
   @classmethod
   def from_parse_results(cls, name, parse_results):
-    print name, parse_results
     region = cls(name=name, parse_results=parse_results)
     region._parse_params_from_results()
     region._parse_mods_from_results()
@@ -159,18 +166,18 @@ class Region(object):
       'nitty_bits': 3,
       'neighbors': ['', '', '', ''],
     }
-    if 'north' in self.params:
+    if 'east' in self.params:
       region_mod['neighbors'][0] = 'context-{0}'.format(
-          self.params['north'].split('.')[0])
+          self.params['east'].split('.')[0])
     if 'south' in self.params:
       region_mod['neighbors'][1] = 'context-{0}'.format(
           self.params['south'].split('.')[0])
     if 'west' in self.params:
       region_mod['neighbors'][2] = 'context-{0}'.format(
           self.params['west'].split('.')[0])
-    if 'east' in self.params:
+    if 'north' in self.params:
       region_mod['neighbors'][3] = 'context-{0}'.format(
-          self.params['east'].split('.')[0])
+          self.params['north'].split('.')[0])
 
     region_context = {
       'type': 'context',
@@ -180,6 +187,5 @@ class Region(object):
       'mods': [region_mod]
     }
 
-    region_contents = [region_context]
-    region_contents.extend(self.mods)
+    region_contents = [region_context] + self.mods
     return region_contents
