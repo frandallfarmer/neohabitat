@@ -39,7 +39,7 @@ def convert_file(rdl_file, output_dir):
 
 
 def convert_files_in_dir(input_dir, output_dir):
-  for rdl_file in glob('{0}/*.rdl'.format(input_dir)):
+  for rdl_file in glob(os.path.join(input_dir, '*.rdl')):
     convert_file(rdl_file, output_dir)
 
 
