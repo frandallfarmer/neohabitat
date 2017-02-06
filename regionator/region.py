@@ -1,4 +1,5 @@
 import json
+import os
 import uuid
 
 from json import JSONEncoder
@@ -92,7 +93,7 @@ class Region(object):
   def from_rdl_file(cls, rdl_file):
     # For now, we'll assume a 1-to-1 mapping between the region file name and the name
     # of the region
-    region_name = rdl_file.split('.')[0]
+    region_name = os.path.basename(rdl_file.split('.')[-2])
     with open(rdl_file, 'r') as rdlfile:
       rdlfile_text = rdlfile.read()
       results = parser.region.parseString(rdlfile_text)
@@ -100,6 +101,7 @@ class Region(object):
 
   @classmethod
   def from_parse_results(cls, name, parse_results):
+    print name, parse_results
     region = cls(name=name, parse_results=parse_results)
     region._parse_params_from_results()
     region._parse_mods_from_results()
