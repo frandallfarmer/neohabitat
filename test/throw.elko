@@ -1,0 +1,10 @@
+{"to":"rock", "op":"GET", "Telko": { "delay": 2 }}
+
+{"to":"rock","op":"THROW","target":6,"x":31,"y":141}
+{"to":"ME","op":"WALK","x":52,"y":140,"how":0, "Telko": { "delay": 7 }}
+{"to":"rock","op":"GET", "Telko": { "delay": 2 }}
+{"to":"rock","op":"THROW","target":6,"x":144,"y":141}
+{"to":"ME","op":"WALK","x":124,"y":140,"how":1, "Telko": { "delay": 7 }}
+{"to":"rock","op":"GET", "Telko": { "delay": 2 }}
+
+{"to":"rock","op":"PUT","containerNoid":"$ME.noid","x":127,"y":170,"orientation":0}
