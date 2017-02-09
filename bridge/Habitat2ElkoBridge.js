@@ -687,6 +687,11 @@ var encodeState = {
 			buf.add(state.y_offset_6 || 0 );
 			return buf;
 		},
+		Flat: function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.flat_type || 0);
+			return buf;
+		},
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Building:	function (state, container, buf) { return (this.common	(state, container, buf)); },
@@ -714,7 +719,7 @@ var encodeState = {
 		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
-		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf));},
+		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 

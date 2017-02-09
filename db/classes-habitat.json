@@ -180,6 +180,11 @@
 			"type": "class",
 			"tag": "Flag",
 			"name": "org.made.neohabitat.mods.Flag"
+		},
+		{
+			"type": "class",
+			"tag": "Flat",
+			"name": "org.made.neohabitat.mods.Flat"
 		}
 	]
 }
