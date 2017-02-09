@@ -264,10 +264,15 @@ public interface Constants {
     
     public static final int      OPERATE                    = 152;
     
-    public static final int      AUTO_TELEPORT_DIR          = 4;
     public static final int      WALK_ENTRY                 = 0;
     public static final int      TELEPORT_ENTRY             = 1;
     public static final int      DEATH_ENTRY                = 2;
+    
+    public static final int		 WEST						= 0;
+    public static final int		 EAST						= 1;
+    public static final int		 NORTH						= 2;
+    public static final int		 SOUTH						= 3;
+    public static final int      AUTO_TELEPORT_DIR          = 4;
     
     public static final int      SIT_GROUND                 = 132;
     public static final int      SIT_CHAIR                  = 133;

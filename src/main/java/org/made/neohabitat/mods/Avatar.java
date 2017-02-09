@@ -135,10 +135,11 @@ public class Avatar extends Container implements UserMod {
     public int        dest_y          = 0;
     
     
-    private String     from_region    = "";
-    private int        from_orientation= 0;
-    private int        from_direction  = 0;
-    private int        transition_type = WALK_ENTRY;
+    private String     from_region		= "";
+    private String     to_region		= "";	   
+    private int        from_orientation	= 0;
+    private int        from_direction	= 0;
+    private int        transition_type	= WALK_ENTRY;
     
     /**
      * Target NOID and magic item saved between events, such as for the GOD TOOL
@@ -148,11 +149,12 @@ public class Avatar extends Container implements UserMod {
     public Magical    savedMagical    = null;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
-        "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "custom" })
+        "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region", "custom" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
-            OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction, OptString from_region, int[] custom) {
+            OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
+            OptString from_region, OptString to_region, int[] custom) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -173,6 +175,7 @@ public class Avatar extends Container implements UserMod {
         this.from_orientation = from_orientation.value(0);
         this.transition_type = transition_type.value(WALK_ENTRY);
         this.from_region = from_region.value("");
+        this.to_region = to_region.value("");
         this.custom = custom;
     }
     
@@ -192,6 +195,7 @@ public class Avatar extends Container implements UserMod {
         result.addParameter("custom", custom);
         if (result.control().toRepository()) {
             result.addParameter("from_region",      from_region);
+            result.addParameter("to_region",      	to_region);
             result.addParameter("from_orientation", from_orientation);
             result.addParameter("from_direction",   from_direction);
             result.addParameter("transition_type",	transition_type);
@@ -689,10 +693,11 @@ public class Avatar extends Container implements UserMod {
     public void avatar_NEWREGION(User from, int direction, int passage_id) {
         Region      region          = current_region();
         String      new_region      = "";
+        int			entry_type		= WALK_ENTRY;
         HabitatMod  passage         = region.noids[passage_id];
         int         direction_index = (direction + region.orientation + 2) % 4;
         
-        if (passage_id != 0 &&
+        if (direction != AUTO_TELEPORT_DIR && passage_id != 0 &&
                 passage.HabitatClass() == CLASS_DOOR || 
                 passage.HabitatClass() == CLASS_BUILDING) {
             
@@ -714,26 +719,44 @@ public class Avatar extends Container implements UserMod {
         else {
             if (direction >= 0 && direction < 4) {
                 new_region = region.neighbors[direction_index]; // East,  West, North, South
+            } else {     // direction == AUTO_TELEPORT_DIR 
+            	new_region = to_region;
+            	entry_type = TELEPORT_ENTRY;
+            	direction  = WEST; // TODO Randy needs to revisit this little hack to prevent a loop..
             }
         }
         
         if (!new_region.isEmpty()) {
             send_neighbor_msg(from, THE_REGION, "WAITFOR_$", "who", this.noid);
             send_reply_success(from);
-            from_region         = region.obj_id();     // Save exit information in avatar for use on arrival.
-            from_orientation    = region.orientation;
-            from_direction      = direction;
-            transition_type     = WALK_ENTRY;
-            gen_flags[MODIFIED] = true;
-            checkpoint_object(this);
-            JSONLiteral msg = new JSONLiteral("changeContext", EncodeControl.forClient);
-            msg.addParameter("context", new_region);
-            msg.finish();
-            from.send(msg);
+            change_regions(new_region, direction, entry_type);
             return;
         }       
         object_say(from, "There is nowhere to go in that direction.");
-        send_reply_error(from);
+        send_reply_error(from); 
+    }
+    
+    public void change_regions(String contextRef, int direction, int type) {
+    	Region	region		= current_region();
+    	User	who			= (User) this.object();
+    	
+    	// TODO change_regions exceptions! see region.pl1
+    	
+        to_region			= contextRef;    	
+        from_region         = region.obj_id();     // Save exit information in avatar for use on arrival.
+        from_orientation    = region.orientation;
+        from_direction      = direction;
+        transition_type     = type;
+        gen_flags[MODIFIED] = true;
+        checkpoint_object(this);
         
+    	if (direction == AUTO_TELEPORT_DIR) {
+    		send_private_msg(who, THE_REGION, who, "AUTO_TELEPORT_$", "direction", direction);
+    	} else {
+    		JSONLiteral msg = new JSONLiteral("changeContext", EncodeControl.forClient);
+    		msg.addParameter("context", contextRef);
+    		msg.finish();
+    		who.send(msg);
+    	}
     }
 }

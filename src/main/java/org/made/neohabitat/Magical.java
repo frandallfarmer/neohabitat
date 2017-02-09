@@ -8,6 +8,7 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.mods.Avatar;
+import org.made.neohabitat.mods.Region;
 
 /**
  * an Elko Habitat superclass to handle magic state and specific behaviors.
@@ -265,13 +266,15 @@ public abstract class Magical extends HabitatMod {
             send_reply_error(from);
             return;
         }
-        send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", GOD_TOOL_PROMPT + " ");
         int len = request_string.length();
         if (len > 0) {
             char command = request_string.charAt(0);
             int arg = 1;
             if (len > 1 && Pattern.matches("[0-9]+", request_string.substring(1))) {
                 arg = Integer.parseInt(request_string.substring(1));
+            }
+            if (command != 'j') {
+            	send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", GOD_TOOL_PROMPT + " ");
             }
             switch (command) {
                 case ARROW_R: // Move right 1 or more pixels
@@ -377,12 +380,27 @@ public abstract class Magical extends HabitatMod {
                         }
                     }
                     break;
+                case 'j':
+                	String context = request_string.substring(1);
+                	if (context.indexOf('-') == -1) {
+                		context = "context-" + context;
+                	}
+                	context = context.replace('{', '_');			// There is no underscore in VICE
+                    send_reply_error(from);							// Need to clear the GOD MODE flag on the client.
+                    avatar.savedMagical = null;
+                    avatar.savedTarget = null;              	
+                	avatar.x = 80;
+                	avatar.y = 132;
+                	avatar.markAsChanged();
+                	avatar.change_regions(context, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+                	break;
                 case '?':
                 case 'h':
-                    object_say(from, "?-hlp, l-list, d-dump, f-fore, b-back");
-                    object_say(from, "o-flip, c#-color, p#-pattern, n#-noid");
-                    object_say(from, "s#-gr.state, " + (char) ARROW_U + (char) ARROW_D + (char) ARROW_L + (char) ARROW_R
-                            + "#-move, tSetSignText");
+                    object_say(from, "?-help l-list d-dump f-forgrnd b-back");
+                    object_say(from, "o-flip  c#-color  p#-pattern  n#-noid");
+                    object_say(from, "s#-gr.state  " + (char) ARROW_U + (char) ARROW_D + (char) ARROW_L + (char) ARROW_R
+                            + "#-move jCONTEXT-jump");
+                    object_say(from, "tTEXT - sign                         ");
                     break;
             }
             return;

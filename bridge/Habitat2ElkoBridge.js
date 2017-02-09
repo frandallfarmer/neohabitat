@@ -234,7 +234,7 @@ function createServerConnection(port, host, client) {
 	server.on('error', function(err) {
 		Trace.warn("Unable to connect to NeoHabitat Server, terminating client connection.");
 		if (client) {
-			client.end();
+			client.end(); 
 		}
 	});
 
@@ -261,13 +261,23 @@ function createServerConnection(port, host, client) {
 
 	client.removeAllListeners('close').on('close', function(data) {
 		Trace.debug("Habitat client disconnected.");
-		if (server) { server.end();}
+		if (server) { 
+			server.end(); 
+		}
 	});
 
 }
 
 function isString(data) {
 	return (typeof data === 'string' || data instanceof String);
+}
+
+function guardedWrite(connection, msg) {
+	try {
+		connection.rawWrite(msg);
+	} catch (e) {
+		Trace.warn(e.toString());
+	}
 }
 
 function futureSend(connection, data) {
@@ -281,7 +291,7 @@ function futureSend(connection, data) {
 	} else {
 		var delay = Math.ceil(Math.max(0, (when - now)));
 		var msg = (isString(data)) ? data : Buffer.from(escape(data));
-		setTimeout(function () { connection.rawWrite(msg); }, delay);
+		setTimeout(function () { guardedWrite(connection, msg); }, delay);
 		connection.timeLastSent = when;
 	}
 }
@@ -965,7 +975,11 @@ const Listener = Net.createServer(function(client) {
 	client.lastSentLen	= 0;
 
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);
-	createServerConnection(client.port, client.host, client);
+	try {
+		createServerConnection(client.port, client.host, client);
+	} catch (e) {
+		Trace.error(e.toString());
+	}
 }).listen(ListenPort, ListenHost);
 
 Trace.info('Habitat to Elko Bridge listening on ' + ListenHost +':'+ ListenPort);

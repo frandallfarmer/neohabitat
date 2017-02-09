@@ -115,7 +115,11 @@ this.SERVER_OPS = {
 		},
 		"ARRIVAL_$": 			{ reqno: 9 },
 		"ATTACK$": 				{ reqno: 9 },
-		"AUTO_TELEPORT_$": 		{ reqno: 21 },
+		"AUTO_TELEPORT_$": 		{ reqno: 21,
+			toClient: function (o, b) {
+				b.add(o.direction);
+			}
+		},
 		"BASH$": 				{ reqno: 10 },
 		"BEEP$": 				{ reqno: 8 },
 		"BLAST$": 				{ reqno: 8 },

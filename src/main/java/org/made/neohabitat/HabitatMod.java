@@ -1,6 +1,7 @@
 package org.made.neohabitat;
 
 import org.elkoserver.server.context.BasicObject;
+import org.elkoserver.server.context.Context;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Mod;
 import org.elkoserver.server.context.Msg;
@@ -1362,6 +1363,23 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     }
     
     /**
+     * goto_new_region -- Transfer the avatar to someplace else.
+     * 
+     * Provided as syntactic sugar for easy class migration.
+     * 
+     * @param avatar The avatar mod of the user that is being sent someplace else
+     * @param contextRef The elko ref for the new region
+     * @param direction	WEST, EAST, NORTH, SOUTH, AUTO_TELEPORT_DIR
+     * @param transition_type WALK_ENTRY, TELEPORT_ENTRY, DEATH_ENTRY
+     */
+
+    public void goto_new_region(Avatar avatar, String contextRef, int direction, int transition_type) {
+    	// This used to be more complicated - Elko's ever-context-change-is-a-new-connection makes this easy.
+    	// We just ask the bridge to call us back for a new region.
+    	avatar.change_regions(contextRef, direction, transition_type);
+    }
+    
+    /**
      * Are we standing next to the object so we can manipulate it properly?
      * 
      * @param object
@@ -1373,6 +1391,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         /* TODO Mising parameter? */
         return true;
     }
+    
     
     /**
      * change_containers -- Move an object from one container to another.
