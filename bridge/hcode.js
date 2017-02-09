@@ -700,4 +700,5 @@ this.Plant				= this.portable;
 this.Flag				= this.portable;
 this.Trapezoid			= this.help;
 this.Super_trapezoid 	= this.help;
+this.Hot_tub		 	= this.help;
 
