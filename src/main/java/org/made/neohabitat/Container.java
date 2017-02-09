@@ -96,11 +96,14 @@ public abstract class Container extends HabitatMod {
         /* Original code was in regionproc.pl1 - ELKO handles this now */
         // TODO Client Memory Management and several messages are missing from
         // this interim implementation
+    	
+    	/* TODO Opaque container handling        
         if (Avatar.getConnectionType() == CONNECTION_JSON) {
             Iterable<Item> stuff = ((Item) this.object()).contents();
             for (Item item : stuff) {
                 context().send(Msg.msgDelete(item));
             }
         }
+        */
     }
 }

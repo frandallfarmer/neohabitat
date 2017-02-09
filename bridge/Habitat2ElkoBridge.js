@@ -720,8 +720,7 @@ var encodeState = {
 		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); },
-
-
+		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

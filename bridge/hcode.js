@@ -248,7 +248,14 @@ this.SERVER_OPS = {
 		"SPRAY$": 				{ reqno: 8 },
 		"TAKE$":		 		{ reqno: 8 },
 		"TAKEMESSAGE$":		 	{ reqno: 8 },
-		"THROW$": 				{ reqno: 24 },
+		"THROW$": 				{ reqno: 24,
+			toClient: function (o,b) {
+				b.add(o.obj);
+				b.add(o.x);
+				b.add(o.y);
+				b.add(o.hit);
+			}
+		},
 		"THROWAWAY$": 			{ reqno: 8 },
 		"TRANSFORM$": 			{ reqno: 8 },
 		"UNHOOK$": 				{ reqno: 15 },
@@ -694,4 +701,5 @@ this.Flag				= this.portable;
 this.Trapezoid			= this.help;
 this.Super_trapezoid 	= this.help;
 this.Flat				= this.help;
+this.Hot_tub		 	= this.help;
 

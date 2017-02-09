@@ -59,6 +59,11 @@
 		},
 		{
 			"type": "class",
+			"tag": "Hot_tub",
+			"name": "org.made.neohabitat.mods.Hot_tub"
+		},
+		{
+			"type": "class",
 			"tag": "Key",
 			"name": "org.made.neohabitat.mods.Key"
 		},		
