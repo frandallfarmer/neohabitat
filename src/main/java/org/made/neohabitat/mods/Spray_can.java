@@ -68,7 +68,9 @@ public class Spray_can extends HabitatMod {
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-        result.addParameter("charge", this.charge);
+        if (result.control().toRepository()) {
+            result.addParameter("charge", this.charge);
+        }
         result.finish();
         return result;
     }
