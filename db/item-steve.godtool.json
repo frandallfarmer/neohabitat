@@ -12,6 +12,14 @@
 			"orientation": 8,
 			"magic_type": 17,
 			"charges": 255
-		}
-		]
+		},
+		{
+      "type": "Spray_can",
+      "style": 0,
+      "x": 10,
+      "y": 0,
+      "gr_state": 0,
+      "orientation": 64
+    }
+	]
 }

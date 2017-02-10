@@ -185,6 +185,11 @@
 			"type": "class",
 			"tag": "Flat",
 			"name": "org.made.neohabitat.mods.Flat"
+		},
+		{
+			"type": "class",
+			"tag": "Spray_can",
+			"name": "org.made.neohabitat.mods.Spray_can"
 		}
 	]
 }
