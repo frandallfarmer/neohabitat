@@ -6,8 +6,6 @@
 /* jslint bitwise: true */
 /* jshint esversion: 6 */
 
-const Trace		 	= require('winston');
-
 this.MICROCOSM_ID_BYTE	= 0x55;
 this.ESCAPE_CHAR		= 0x5D;
 this.END_OF_MESSAGE		= 0x0D;
@@ -154,7 +152,6 @@ this.SERVER_OPS = {
 		"FAKESHOOT$": 			{ reqno: 8 },
 		"FIDDLE_$": 			{ reqno: 12,
 			toClient: function (o,b) {
-				Trace.debug("FIDDLE INPUT:", o);
 				b.add(o.target);
 				b.add(o.offset);
 				b.add(o.argCount);
@@ -561,7 +558,6 @@ this.translate = {
 				m.limb = a[0];
 			},
 			toClient: function(o, b) {
-				Trace.debug("SPRAY RESP:", o);
 				b.add(o.success);
 				b.add(o.custom_1);
 				b.add(o.custom_2);
