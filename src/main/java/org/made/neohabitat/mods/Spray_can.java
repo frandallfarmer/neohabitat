@@ -115,6 +115,12 @@ public class Spray_can extends HabitatMod {
         int newPattern = getPattern();
         Avatar curAvatar = avatar(from);
 
+        // Doesn't spray if we're not holding the sprayer.
+        if (!holding(curAvatar, this)) {
+            send_reply_msg(from, noid, "success", 0, "custom_1", curAvatar.custom[0], "custom_2", curAvatar.custom[1]);
+            return;
+        }
+
         // Doesn't spray if we've run out of charges.
         if (charge <= 0) {
             send_reply_msg(from, noid, "success", 0, "custom_1", curAvatar.custom[0], "custom_2", curAvatar.custom[1]);
@@ -164,8 +170,9 @@ public class Spray_can extends HabitatMod {
             curAvatar.checkpoint_object(curAvatar);
             if (charge == 0) {
                 object_say(from, noid, "This sprayer has run out.");
-                send_goaway_msg(noid);
-                destroy_object(this);
+                // TODO(steve): Uncomment when object deletion is implemented.
+                //send_goaway_msg(noid);
+                //destroy_object(this);
             } else {
                 checkpoint_object(this);
             }
