@@ -56,13 +56,13 @@ public class Spray_can extends HabitatMod {
     public static final int ARM_LIMB = 2;
     public static final int FACE_LIMB = 3;
 
-    protected int charge = 4;
+    protected int charge = 10;
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "charge" })
     public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
                      OptInteger gr_state, OptInteger charge) {
         super(style, x, y, orientation, gr_state);
-        this.charge = charge.value(4);
+        this.charge = charge.value(10);
     }
 
     @Override
@@ -78,22 +78,6 @@ public class Spray_can extends HabitatMod {
     protected int getPattern() {
         // PL/1 translation: pattern = and_bit(self.orientation, '0000000001111000'b);
         return this.orientation & 0x78;
-    }
-
-    /**
-     * Tells the region to spray an avatar with the provided customization.
-     *
-     * @param noid
-     * @param custom_1
-     * @param custom_2
-     */
-    protected void send_spray_msg(int noid, int custom_1, int custom_2) {
-        JSONLiteral msg = new_broadcast_msg(noid, "SPRAY$");
-        msg.addParameter("noid", noid);
-        msg.addParameter("custom_1", custom_1);
-        msg.addParameter("custom_2", custom_2);
-        msg.finish();
-        context().send(msg);
     }
 
     @JSONMethod
@@ -165,20 +149,25 @@ public class Spray_can extends HabitatMod {
                 }
                 break;
         }
-        send_reply_msg(from, noid, "success", success ? TRUE : FALSE, "custom_1", curAvatar.custom[0], "custom_2",
-            curAvatar.custom[1]);
+        send_reply_msg(from, noid,
+        		"SPRAY_SUCCESS", success ? TRUE : FALSE,
+        		"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
+        		"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
+        
         if (success) {
-            send_spray_msg(curAvatar.noid, curAvatar.custom[0], curAvatar.custom[1]);
+        	this.send_neighbor_msg(from, noid, "SPRAY$",
+        			"SPRAY_SPRAYEE", curAvatar.noid,
+        			"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
+        			"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
             charge--;
             gen_flags[MODIFIED] = true;
+            checkpoint_object(this);
             curAvatar.checkpoint_object(curAvatar);
             if (charge == 0) {
                 object_say(from, noid, "This sprayer has run out.");
                 // TODO(steve): Uncomment when object deletion is implemented.
                 //send_goaway_msg(noid);
                 //destroy_object(this);
-            } else {
-                checkpoint_object(this);
             }
         }
     }

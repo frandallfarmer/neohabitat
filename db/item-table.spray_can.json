@@ -3,13 +3,12 @@
   "ref": "item-library.spray_can",
   "deletable": true,
   "name": "Spray Can",
-  "in": "context-table",
+  "in": "item-table.table",
   "mods": [
     {
       "type": "Spray_can",
       "style": 0,
-      "x": 80,
-      "y": 80,
+      "y": 3,
       "gr_state": 0,
       "orientation": 64
     }

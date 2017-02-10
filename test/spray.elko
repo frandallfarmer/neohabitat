@@ -1,0 +1,26 @@
+
+<table
+
+{"to":"ME","op":"WALK","x":104,"y":139,"how":0, "Telko": { "delay": 7 }}
+
+{"to":"spray_can","op":"GET", "Telko": { "delay": 4 }}
+
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 2 }}
+
+{"to":"spray_can","op":"SPRAY","limb":2, "Telko": { "delay": 7 }}
+
+{"to":"ME","op":"POSTURE","pose":254, "Telko": { "delay": 2 }}
+
+{"to":"spray_can","op":"PUT","containerNoid":8,"x":8,"y":139,"orientation":1, "Telko": { "delay": 4 }}
+
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 2 }}
+
+{"to":"spraycan","op":"GET", "Telko": { "delay": 4 } }
+
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 2 }}
+
+{"to":"spraycan","op":"SPRAY","limb":2, "Telko": { "delay": 7 }}
+
+{"to":"ME","op":"POSTURE","pose":255, "Telko": { "delay": 2 }}
+
+{"to":"spraycan","op":"PUT","containerNoid":"$ME.noid","x":105,"y":176,"orientation":0}

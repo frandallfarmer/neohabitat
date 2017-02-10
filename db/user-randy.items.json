@@ -1,0 +1,47 @@
+[
+	{
+		"type": "item",
+		"ref": "item-randy.spraycan",
+		"deletable": true,
+		"name": "Stylin' body paint",
+		"in": "user-randy",
+		"mods": [
+			{
+				"type": "Spray_can",
+				"y": 0,
+				"orientation": 8,
+				"charge": 255
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-randy.godtool",
+		"deletable": true,
+		"name": "Tool to rule the universe.",
+		"in": "user-randy",
+		"mods": [
+			{
+				"type": "Knick_knack",
+				"style": 2,
+				"y": 1,
+				"orientation": 8,
+				"magic_type": 17,
+				"charges": 255
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-randy.head",
+		"name": "Randy's Head",
+		"in": "user-randy",
+		"mods": [
+			{
+				"type": "Head",
+				"style": 151,
+				"y":6
+			}
+			]
+	}
+	]

@@ -255,9 +255,9 @@ this.SERVER_OPS = {
 		"SPEAKFORTUNE$":	 	{ reqno: 10 },
 		"SPRAY$": 				{ reqno: 8,
 			toClient: function (o,b) {
-				b.add(o.noid);
-				b.add(o.custom_1);
-				b.add(o.custom_2);
+				b.add(o.SPRAY_SPRAYEE);
+				b.add(o.SPRAY_CUSTOMIZE_0);
+				b.add(o.SPRAY_CUSTOMIZE_1);
 			}
 		},
 		"TAKE$":		 		{ reqno: 8 },
@@ -562,9 +562,9 @@ this.translate = {
 				m.limb = a[0];
 			},
 			toClient: function(o, b) {
-				b.add(o.success);
-				b.add(o.custom_1);
-				b.add(o.custom_2);
+				b.add(o.SPRAY_SUCCESS);
+				b.add(o.SPRAY_CUSTOMIZE_0);
+				b.add(o.SPRAY_CUSTOMIZE_1);
 			}
 		}
 };
