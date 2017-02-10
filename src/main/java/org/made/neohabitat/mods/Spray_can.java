@@ -117,13 +117,15 @@ public class Spray_can extends HabitatMod {
 
         // Doesn't spray if we're not holding the sprayer.
         if (!holding(curAvatar, this)) {
-            send_reply_msg(from, noid, "success", 0, "custom_1", curAvatar.custom[0], "custom_2", curAvatar.custom[1]);
+            send_reply_msg(from, noid, "success", FALSE, "custom_1", curAvatar.custom[0], "custom_2",
+                curAvatar.custom[1]);
             return;
         }
 
         // Doesn't spray if we've run out of charges.
         if (charge <= 0) {
-            send_reply_msg(from, noid, "success", 0, "custom_1", curAvatar.custom[0], "custom_2", curAvatar.custom[1]);
+            send_reply_msg(from, noid, "success", FALSE, "custom_1", curAvatar.custom[0], "custom_2",
+                curAvatar.custom[1]);
             object_say(from, noid, "This sprayer has run out.");
             return;
         }
@@ -161,7 +163,7 @@ public class Spray_can extends HabitatMod {
                 }
                 break;
         }
-        send_reply_msg(from, noid, "success", success ? 1 : 0, "custom_1", curAvatar.custom[0], "custom_2",
+        send_reply_msg(from, noid, "success", success ? TRUE : FALSE, "custom_1", curAvatar.custom[0], "custom_2",
             curAvatar.custom[1]);
         if (success) {
             send_spray_msg(curAvatar.noid, curAvatar.custom[0], curAvatar.custom[1]);
