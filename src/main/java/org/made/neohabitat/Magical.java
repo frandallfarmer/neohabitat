@@ -245,8 +245,7 @@ public abstract class Magical extends HabitatMod {
     
     private void modify_variable(User from, HabitatMod target, int offset, int new_value) {
         target.gen_flags[MODIFIED] = true;
-        send_broadcast_msg(THE_REGION, "FIDDLE_$", "target", target.noid, "offset", offset, "argCount", 1, "value",
-                new_value);
+        send_fiddle_msg(THE_REGION, target.noid, offset, new_value);
     }
     
     /**
@@ -400,8 +399,11 @@ public abstract class Magical extends HabitatMod {
                     object_say(from, "o-flip  c#-color  p#-pattern  n#-noid");
                     object_say(from, "s#-gr.state  " + (char) ARROW_U + (char) ARROW_D + (char) ARROW_L + (char) ARROW_R
                             + "#-move jCONTEXT-jump");
-                    object_say(from, "tTEXT - sign                         ");
+                    object_say(from, "tTEXT - sign                null-exit");
                     break;
+            }
+            if (target.gen_flags[MODIFIED]) {
+            	target.checkpoint_object(target);
             }
             return;
         }

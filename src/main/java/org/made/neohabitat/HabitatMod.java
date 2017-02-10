@@ -431,8 +431,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         
         /* If getting a compass, match its orientation to the current region */
         if (selfClass == CLASS_COMPASS) {
-            int args[] = { noid, C64_GR_STATE_OFFSET, 1, current_region().orientation };
-            send_fiddle_msg(noid, args);
+            this.send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);            
         }
         send_reply_success(from); // Yes, your GET request succeeded.
         send_neighbor_msg(from, avatar(from).noid, "GET$", "target", noid, "how", how); // Animate
@@ -1578,19 +1577,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     
     /**
      * Send a fiddle message to the entire region. The client does all the work.
-     * 
-     * @param noid
-     * @param args
-     */
-    public void send_fiddle_msg(int noid, int[] args) {
-        JSONLiteral msg = new_broadcast_msg(noid, "FIDDLE_$");
-        msg.addParameter("args", args);
-        msg.finish();
-        context().send(msg);
-    }
-
-    /**
-     * Send a fiddle message to the entire region. The client does all the work.
      *
      * @param noid
      * @param args
@@ -1607,6 +1593,19 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         msg.finish();
         context().send(msg);
+    }
+   
+    
+    /**
+     * Fiddle message with only a single arg...
+     * 
+     * @param noid
+     * @param target
+     * @param offset
+     * @param arg
+     */
+    public void send_fiddle_msg(int noid, int target, int offset, int arg) {
+    	send_fiddle_msg(noid, target, offset, new int[]{ arg });
     }
 
     /**

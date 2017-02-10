@@ -145,7 +145,7 @@ public class Spray_can extends HabitatMod {
                     curHead.orientation = (curHead.orientation & 0x87) | newPattern;
                     curHead.gen_flags[MODIFIED] = true;
                     curHead.checkpoint_object(curHead);
-                    send_fiddle_msg(0, curHead.noid, C64_ORIENT_OFFSET, new int[]{curHead.orientation});
+                    send_fiddle_msg(THE_REGION, curHead.noid, C64_ORIENT_OFFSET, new int[]{curHead.orientation});
                 }
                 break;
         }
