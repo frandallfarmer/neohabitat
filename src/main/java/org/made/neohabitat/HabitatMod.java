@@ -1576,12 +1576,16 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @param noid
      * @param args
      */
-    public void send_fiddle_msg(int noid, int offset, int[] args) {
+    public void send_fiddle_msg(int noid, int target, int offset, int[] args) {
         JSONLiteral msg = new_broadcast_msg(noid, "FIDDLE_$");
-        msg.addParameter("target", noid);
+        msg.addParameter("target", target);
         msg.addParameter("offset", offset);
         msg.addParameter("argCount", args.length);
-        msg.addParameter("value", args);
+        if (args.length > 1) {
+            msg.addParameter("value", args);
+        } else {
+            msg.addParameter("value", args[0]);
+        }
         msg.finish();
         context().send(msg);
     }

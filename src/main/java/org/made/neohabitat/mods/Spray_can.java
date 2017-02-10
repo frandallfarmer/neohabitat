@@ -114,12 +114,15 @@ public class Spray_can extends HabitatMod {
         int curLimb = limb.value(TORSO_LIMB);
         int newPattern = getPattern();
         Avatar curAvatar = avatar(from);
+
+        // Doesn't spray if we've run out of charges.
         if (charge <= 0) {
             send_reply_msg(from, noid, "success", 0, "custom_1", curAvatar.custom[0], "custom_2", curAvatar.custom[1]);
             object_say(from, noid, "This sprayer has run out.");
             return;
         }
 
+        // Applies the pattern represented by this Spray Can.
         boolean success = false;
         switch(curLimb) {
             case TORSO_LIMB:
@@ -148,7 +151,7 @@ public class Spray_can extends HabitatMod {
                     curHead.orientation = (curHead.orientation & 0x87) | newPattern;
                     curHead.gen_flags[MODIFIED] = true;
                     curHead.checkpoint_object(curHead);
-                    send_fiddle_msg(curHead.noid, C64_ORIENT_OFFSET, new int[]{curHead.orientation});
+                    send_fiddle_msg(0, curHead.noid, C64_ORIENT_OFFSET, new int[]{curHead.orientation});
                 }
                 break;
         }
@@ -161,9 +164,8 @@ public class Spray_can extends HabitatMod {
             curAvatar.checkpoint_object(curAvatar);
             if (charge == 0) {
                 object_say(from, noid, "This sprayer has run out.");
-                // TODO: Uncomment when object deletion is implemented.
-                // send_goaway_msg(noid);
-                // destroy_object(this);
+                send_goaway_msg(noid);
+                destroy_object(this);
             } else {
                 checkpoint_object(this);
             }
