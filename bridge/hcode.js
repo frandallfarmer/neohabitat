@@ -559,6 +559,12 @@ this.translate = {
 		SPRAY: {
 			toServer: function(a, m) {
 				m.limb = a[0];
+			},
+			toClient: function(o, b) {
+				Trace.debug("SPRAY RESP:", o);
+				b.add(o.success);
+				b.add(o.custom_1);
+				b.add(o.custom_2);
 			}
 		}
 };

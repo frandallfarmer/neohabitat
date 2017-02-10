@@ -58,6 +58,21 @@ public class Spray_can extends HabitatMod {
 
     protected int charge = 4;
 
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "charge" })
+    public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
+                     OptInteger gr_state, OptInteger charge) {
+        super(style, x, y, orientation, gr_state);
+        this.charge = charge.value(4);
+    }
+
+    @Override
+    public JSONLiteral encode(EncodeControl control) {
+        JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
+        result.addParameter("charge", this.charge);
+        result.finish();
+        return result;
+    }
+
     protected int getPattern() {
         // PL/1 translation: pattern = and_bit(self.orientation, '0000000001111000'b);
         return this.orientation & 0x78;
@@ -77,21 +92,6 @@ public class Spray_can extends HabitatMod {
         msg.addParameter("custom_2", custom_2);
         msg.finish();
         context().send(msg);
-    }
-
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "charge" })
-    public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-                     OptInteger gr_state, OptInteger charge) {
-        super(style, x, y, orientation, gr_state);
-        this.charge = charge.value(4);
-    }
-
-    @Override
-    public JSONLiteral encode(EncodeControl control) {
-        JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-        result.addParameter("charge", this.charge);
-        result.finish();
-        return result;
     }
 
     @JSONMethod
@@ -114,6 +114,12 @@ public class Spray_can extends HabitatMod {
         int curLimb = limb.value(TORSO_LIMB);
         int newPattern = getPattern();
         Avatar curAvatar = avatar(from);
+        if (charge <= 0) {
+            send_reply_msg(from, noid, "success", 0, "custom_1", curAvatar.custom[0], "custom_2", curAvatar.custom[1]);
+            object_say(from, noid, "This sprayer has run out.");
+            return;
+        }
+
         boolean success = false;
         switch(curLimb) {
             case TORSO_LIMB:
@@ -146,7 +152,8 @@ public class Spray_can extends HabitatMod {
                 }
                 break;
         }
-        send_reply_success(from);
+        send_reply_msg(from, noid, "success", success ? 1 : 0, "custom_1", curAvatar.custom[0], "custom_2",
+            curAvatar.custom[1]);
         if (success) {
             send_spray_msg(curAvatar.noid, curAvatar.custom[0], curAvatar.custom[1]);
             charge--;
@@ -154,8 +161,9 @@ public class Spray_can extends HabitatMod {
             curAvatar.checkpoint_object(curAvatar);
             if (charge == 0) {
                 object_say(from, noid, "This sprayer has run out.");
-                send_goaway_msg(noid);
-                destroy_object(this);
+                // TODO: Uncomment when object deletion is implemented.
+                // send_goaway_msg(noid);
+                // destroy_object(this);
             } else {
                 checkpoint_object(this);
             }
