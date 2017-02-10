@@ -174,7 +174,11 @@ this.SERVER_OPS = {
 				b.add(o.how);
 			}
 		},
-		"GOAWAY_$": 			{ reqno: 9 },
+		"GOAWAY_$": 			{ reqno: 9,
+			toClient: function (o,b) {
+				b.add(o.noid);
+			}
+		},
 		"GRAB$": 				{ reqno: 16 },
 		"GRABFROM$": 			{ reqno: 17 },
 		"HANG$": 				{ reqno: 11 },
@@ -249,7 +253,13 @@ this.SERVER_OPS = {
 			}
 		},
 		"SPEAKFORTUNE$":	 	{ reqno: 10 },
-		"SPRAY$": 				{ reqno: 8 },
+		"SPRAY$": 				{ reqno: 8,
+			toClient: function (o,b) {
+				b.add(o.noid);
+				b.add(o.custom_1);
+				b.add(o.custom_2);
+			}
+		},
 		"TAKE$":		 		{ reqno: 8 },
 		"TAKEMESSAGE$":		 	{ reqno: 8 },
 		"THROW$": 				{ reqno: 24,
@@ -546,6 +556,16 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.err);
 			}
+		},
+		SPRAY: {
+			toServer: function(a, m) {
+				m.limb = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.success);
+				b.add(o.custom_1);
+				b.add(o.custom_2);
+			}
 		}
 };
 
@@ -643,6 +663,16 @@ this.Flashlight	= {
 			4:{ op:"OFF" },
 			5:{ op:"ON" }
 		}		
+};
+
+this.Spray_can = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"SPRAY" }
+		}
 };
 
 this.Floor_lamp	= {

@@ -1582,14 +1582,45 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @param noid
      * @param args
      */
-    
     public void send_fiddle_msg(int noid, int[] args) {
         JSONLiteral msg = new_broadcast_msg(noid, "FIDDLE_$");
         msg.addParameter("args", args);
         msg.finish();
         context().send(msg);
     }
-    
+
+    /**
+     * Send a fiddle message to the entire region. The client does all the work.
+     *
+     * @param noid
+     * @param args
+     */
+    public void send_fiddle_msg(int noid, int target, int offset, int[] args) {
+        JSONLiteral msg = new_broadcast_msg(noid, "FIDDLE_$");
+        msg.addParameter("target", target);
+        msg.addParameter("offset", offset);
+        msg.addParameter("argCount", args.length);
+        if (args.length > 1) {
+            msg.addParameter("value", args);
+        } else {
+            msg.addParameter("value", args[0]);
+        }
+        msg.finish();
+        context().send(msg);
+    }
+
+    /**
+     * Tells the region to get rid of an object at the provided noid.
+     *
+     * @param noid
+     */
+    public void send_goaway_msg(int noid) {
+        JSONLiteral msg = new_broadcast_msg(noid, "GOAWAY_$");
+        msg.addParameter("noid", noid);
+        msg.finish();
+        context().send(msg);
+    }
+
     /**
      * Temporary scaffolding for incremental development of the server. Call
      * this to say "not ready yet!" and reply with an error code. Hopefully the
@@ -2597,5 +2628,17 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             mod.gen_flags[MODIFIED] = false;
         }
     }
-    
+
+    /**
+     * Deletes an object from the Elko Habitat Database.
+     *
+     * @param mod
+     *            The Habitat Mod to delete.
+     */
+    public void destroy_object(HabitatMod mod) {
+        BasicObject object = mod.object();
+        object.markAsDeleted();
+        object.checkpoint();
+    }
+
 }

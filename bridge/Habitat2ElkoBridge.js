@@ -702,6 +702,7 @@ var encodeState = {
 			buf.add(state.flat_type || 0);
 			return buf;
 		},
+		Spray_can: function(state, container, buf) { return (this.common(state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Building:	function (state, container, buf) { return (this.common	(state, container, buf)); },

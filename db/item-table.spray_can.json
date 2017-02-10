@@ -1,0 +1,17 @@
+{
+  "type": "item",
+  "ref": "item-library.spray_can",
+  "deletable": true,
+  "name": "Spray Can",
+  "in": "context-table",
+  "mods": [
+    {
+      "type": "Spray_can",
+      "style": 0,
+      "x": 80,
+      "y": 80,
+      "gr_state": 0,
+      "orientation": 64
+    }
+  ]
+}
