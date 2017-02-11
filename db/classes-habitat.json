@@ -44,6 +44,11 @@
 		},
 		{
 			"type": "class",
+			"tag": "Fountain",
+			"name": "org.made.neohabitat.mods.Fountain"
+		},
+		{
+			"type": "class",
 			"tag": "Glue",
 			"name": "org.made.neohabitat.mods.Glue"
 		},

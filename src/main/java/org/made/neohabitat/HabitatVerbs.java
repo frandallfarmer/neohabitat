@@ -1,6 +1,7 @@
 package org.made.neohabitat;
 
 import org.elkoserver.foundation.json.OptInteger;
+import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.GeneralMod;
 import org.elkoserver.server.context.User;
 
@@ -31,7 +32,7 @@ public interface HabitatVerbs extends GeneralMod, Constants {
     
     public void HELP(User from);
     
-    public void ASK(User from);
+    public void ASK(User from, OptString text);
     
     public void GET(User from);
     
@@ -41,6 +42,5 @@ public interface HabitatVerbs extends GeneralMod, Constants {
     
     public void DO(User from);
     
-    public void RDO(User from);
-    
+    public void RDO(User from);    
 }
