@@ -18,7 +18,7 @@ If you'd like to contribute to Habitat, developer documentation can be found her
 Slack
 -----
 
-If you'd like to join the Neohabitat community, come join our Slack: [Neoclassical Habitat](https://neohabitat.slack.com)
+If you'd like to join the Neohabitat community, come join our Slack: [Neoclassical Habitat](http://slack.neohabitat.org/)
 
 If you have any issues when playing Habitat, feel free to ask questions in the **#troubleshooting** room.
 
