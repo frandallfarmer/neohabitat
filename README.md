@@ -12,7 +12,7 @@ Documentation
 
 If you'd like to contribute to Habitat, developer documentation can be found here:
 
-  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat/blob/master/docs/getting_started.md)
+  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
   - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
 
 Slack
