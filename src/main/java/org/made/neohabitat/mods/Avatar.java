@@ -9,6 +9,7 @@ import org.made.neohabitat.Container;
 import org.made.neohabitat.mods.Door;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Magical;
+import org.made.neohabitat.Seating;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 
@@ -134,7 +135,11 @@ public class Avatar extends Container implements UserMod {
     public int        dest_x          = 0;
     public int        dest_y          = 0;
     
-    
+    /** This is workaround - replacing the containership-based original model for seating used by the original Habtiat */
+    public int		  sittingIn			= 0;
+    public int		  sittingSlot		= 0;
+    public int		  sittingAction		= AV_ACT_sit_front;
+        
     private String     from_region		= "";
     private String     to_region		= "";	   
     private int        from_orientation	= 0;
@@ -148,8 +153,10 @@ public class Avatar extends Container implements UserMod {
     public HabitatMod savedTarget     = null;
     public Magical    savedMagical    = null;
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
-        "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region", "custom" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", 
+    	"stun_count", "bankBalance", "activity", "action", "health", "restrainer",
+    	"transition_type", "from_orientation", "from_direction", "from_region",
+    	"to_region", "custom" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
@@ -199,6 +206,15 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("from_orientation", from_orientation);
             result.addParameter("from_direction",   from_direction);
             result.addParameter("transition_type",	transition_type);
+        }
+        if (result.control().toClient() && sittingIn != 0) {
+        	result.addParameter("sittingIn", sittingIn);
+        	result.addParameter("sittingSlot", sittingSlot);
+        	result.addParameter("sittingAction", sittingAction);
+			// Having a non-persistent client-only variables is unusual.
+        	// This is a work around because the client expects a seated avatar to be "contained" by the seat
+        	// That's terrible, so the workaround is to say that seating is live-session-only.
+        	// This prevents a LOT of problems since objects can change state/existence between sessions.
         }
         result.finish();
         return result;
@@ -534,48 +550,54 @@ public class Avatar extends Container implements UserMod {
     @JSONMethod({"up_or_down", "seat_id"})
     public void SITORSTAND(User from, int up_or_down, int seat_id) {
     	
-    	if (up_or_down <= SIT_DOWN) {		// TOFO FRF This is always for now until we can work with Elko for a fix.
-            unsupported_reply(from, noid, "This furniture has a sign that reads 'Do not sit here. Under repair'.");
-    		return;
-    	}	
+//    	if (up_or_down <= SIT_DOWN) {		// TOFO FRF This is always for now until we can work with Elko for a fix.
+//            unsupported_reply(from, noid, "This furniture has a sign that reads 'Do not sit here. Under repair'.");
+//    		return;
+//    	}	
    	
     	/** Historically was avatar_SITORSTAND in original pl1 */
     	Region		region	= current_region();
-    	HabitatMod	seat	= region.noids[seat_id];
-    	int			noid    = this.noid;
+    	Seating		seat	= (Seating) region.noids[seat_id];
+    	int			slot	= -1;
     	if (seat != null) {
-    		if (seat.HabitatClass() == CLASS_CHAIR || seat.HabitatClass()  == CLASS_COUCH ||
-    				seat.HabitatClass()  == CLASS_BED) {
+    		if (isSeating(seat)) {
     			if (up_or_down == STAND_UP) {
-    				if (noid == seat_id) {
-    					if (!change_containers(this, region, 0, false)) {
-    						send_reply_msg(from, 0, "err", FALSE, "slot", 0);
+    				if (sittingIn == seat_id) {
+    					slot = sittingSlot;
+    					if (seat.sitters[slot] != noid) {
+    						send_reply_msg(from, noid, "err", FALSE, "slot", 0);
     						return;
     					}
-    					activity = STAND;
-    					gen_flags[MODIFIED] = true;
+    					activity 			= STAND;
+    					sittingIn			= 0;
+    					seat.sitters[slot]	= 0;
+    					gen_flags[MODIFIED] = true;    					
     					checkpoint_object(this);
-						send_reply_msg(from, 0, "err", TRUE, "slot", 0);
-						this.send_neighbor_msg(from, noid, "SIT$", "up_or_down", STAND_UP, "cont", seat_id, "slot", 0);
+						send_reply_msg(from, noid, "err", TRUE, "slot", 0);
+						send_neighbor_msg(from, noid, "SIT$", "up_or_down", STAND_UP, "cont", seat_id, "slot", 0);
     					return;
     				}
     			} else {
     				Container cont = (Container) seat;
-    				for (int i=0; i < cont.capacity(); i++) {
-    					if (cont.contents(i) == null) {
-    						if (!change_containers(this,  cont, i, true)) {
+    				for (slot = 0; slot < cont.capacity(); slot++) {
+    					if (cont.contents(slot) == null && seat.sitters[slot] == 0) {
+    						if (sittingIn != 0) {
         						send_reply_msg(from, 0, "err", FALSE, "slot", 0);
     							return;
     						}
-    						send_reply_msg(from, 0, "err", TRUE, "slot", i);
-    						this.send_neighbor_msg(from, noid, "SIT$", "up_or_down", SIT_DOWN, "cont", seat_id, "slot", 0);
+    						seat.sitters[slot]	= noid;
+    						sittingIn		= seat.noid;
+    						sittingSlot		= slot;
+    						sittingAction	= ((seat.style & 1) == 1) ? AV_ACT_sit_chair : AV_ACT_sit_front;
+    						send_reply_msg(from, noid, "err", TRUE, "slot", slot);
+    						send_neighbor_msg(from, noid, "SIT$", "up_or_down", SIT_DOWN, "cont", seat_id, "slot", slot);
     						return;
     					}
     				}
     			}
     		}
     	}     
-		this.send_reply_msg(from, 0, "err", FALSE, "slot", 0);
+		send_reply_msg(from, noid, "err", FALSE, "slot", 0);
     }
 
 

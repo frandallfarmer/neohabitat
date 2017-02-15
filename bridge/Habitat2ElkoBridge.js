@@ -903,8 +903,17 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		client.state.refToNoid[o.ref] = o.noid;
 		if (o.className === "Avatar") {
 			client.state.numAvatars++;
+			if (!o.you) {
+				if (mod.sittingIn == "") {
+					o.container = 0;
+				} else {
+					o.container 	= mod.sittingIn;			// Pretend this avatar is contained by the seat.
+					mod.y			= mod.sittingSlot;
+					mod.activity	= mod.sittingAction;
+					mod.action		= mod.sittingAction;
+				}
+			}
 			if (!o.you && !client.state.waitingForAvatar) { // Async avatar arrival wants to bunch up contents.
-				o.container					= 0;
 				client.state.otherNoid		= o.noid;
 				client.state.otherRef		= o.ref;
 				client.state.otherContents.push(o);

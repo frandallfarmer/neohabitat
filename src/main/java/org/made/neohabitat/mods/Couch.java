@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.Openable;
+import org.made.neohabitat.Seating;
 
 /**
  * Habitat Couch Mod
@@ -13,7 +14,7 @@ import org.made.neohabitat.Openable;
  *
  * @author steve
  */
-public class Couch extends Openable {
+public class Couch extends Seating {
 
     public int		HabitatClass 	 () { return CLASS_COUCH; }
     public String	HabitatModName	 () { return "Couch"; }
@@ -32,7 +33,7 @@ public class Couch extends Openable {
 
     @Override
     public JSONLiteral encode(EncodeControl control) {
-        JSONLiteral result = super.encodeOpenable(new JSONLiteral(HabitatModName(), control));
+        JSONLiteral result = super.encodeSeating(new JSONLiteral(HabitatModName(), control));
         result.finish();
         return result;
     }

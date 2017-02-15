@@ -2641,4 +2641,26 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         object.checkpoint();
     }
 
+    /**
+     * Is the the mod a Seating Class, requiring special handling?
+     * See org.neohabitat.Seating
+     * 
+     * @param mod The mod being tested
+     * @return true if seating.
+     */
+    public boolean isSeating(HabitatMod mod) {
+    	return (mod.HabitatClass() == CLASS_COUCH ||
+    			mod.HabitatClass() == CLASS_CHAIR ||
+    			mod.HabitatClass() == CLASS_CHAIR);
+    }  
+    
+    /**
+     * Is this mod a Seating Class, requiring special handling?
+     * See org.neohabitat.Seating
+     * 
+     * @return true if seating.
+     */    
+    public boolean isSeating() {
+    	return isSeating(this);
+    }
 }

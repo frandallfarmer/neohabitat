@@ -1,0 +1,7 @@
+{"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: Dibs on the Chair!", "Telko": { "delay": 2 }}
+
+{"to":"ME","op":"WALK","x":100,"y":129,"how":1, "Telko": { "delay": 10 } }
+
+{"to":"ME","op":"SITORSTAND","up_or_down":1,"seat_id":1, "Telko": { "delay": 30 } }
+
+{"to":"ME","op":"SITORSTAND","up_or_down":0,"seat_id":1, "Telko": { "delay": 2 } }
