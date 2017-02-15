@@ -119,13 +119,37 @@ function addDefaultHead(db, userRef, fullName) {
 	)
 }
 
+
+function addDefaultTokens(db, userRef, fullName) {
+	tokenRef = "item-" + userRef.substring(5)+".tokens";
+	db.collection('odb').insertOne({
+		"ref": tokenRef,
+		"type": "item",
+		"name": "Money for " + fullName,
+		"in":userRef,
+		"mods": [
+			{
+				"type": "Tokens",
+				"y": 0,
+				"denom_lo": 0,
+				"denom_hi": 4
+			}
+		]
+	}, function(err, result) {
+		Assert.equal(err, null);
+		if (result === null) {
+			Trace.debug("Unable to add " + tokenRef + " for " + userRef);
+		}
+	}
+	)
+}
+
 function confirmOrCreateUser(fullName) {
 	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
 	MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
 		findOne(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
-				Trace.debug("Inserting user into MongoDB:", userRef);
 				insertUser(db, {
 					"type": "user",
 					"ref": userRef,
@@ -142,12 +166,11 @@ function confirmOrCreateUser(fullName) {
 						}
 						]
 				}, function() {
-					Trace.debug("Successfully inserted record for user:", userRef);
 					addDefaultHead(db, userRef, fullName);
+					addDefaultTokens(db, userRef, fullName);
 					db.close();
 				});
 			} else {
-				Trace.debug("Found result for QLink user:", userRef, result);
 				db.close();
 			}
 		});
