@@ -137,17 +137,14 @@ public class Avatar extends Container implements UserMod {
     public int        dest_x          = 0;
     public int        dest_y          = 0;
     
-<<<<<<< HEAD
     /** This is workaround - replacing the containership-based original model for seating used by the original Habtiat */
     public int		  sittingIn			= 0;
     public int		  sittingSlot		= 0;
     public int		  sittingAction		= AV_ACT_sit_front;
         
-=======
     public String     turf            = "context-test";
     
     
->>>>>>> 5ee0ad9b603643a6fbc077a652adcae511ae2c20
     private String     from_region		= "";
     private String     to_region		= "";	   
     private int        from_orientation	= 0;
@@ -161,16 +158,9 @@ public class Avatar extends Container implements UserMod {
     public HabitatMod savedTarget     = null;
     public Magical    savedMagical    = null;
     
-<<<<<<< HEAD
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", 
-    	"stun_count", "bankBalance", "activity", "action", "health", "restrainer",
-    	"transition_type", "from_orientation", "from_direction", "from_region",
-    	"to_region", "custom" })
-=======
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
         "turf", "custom" })
->>>>>>> 5ee0ad9b603643a6fbc077a652adcae511ae2c20
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 

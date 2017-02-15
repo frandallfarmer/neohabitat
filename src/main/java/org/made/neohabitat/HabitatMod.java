@@ -2642,7 +2642,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         object.markAsDeleted();
         object.checkpoint();
     }
-<<<<<<< HEAD
 
     /**
      * Is the the mod a Seating Class, requiring special handling?
@@ -2666,7 +2665,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public boolean isSeating() {
     	return isSeating(this);
     }
-=======
     
     /**
      * Originally coded as lights_on in helpers.pl1, this method ensures
@@ -2691,7 +2689,5 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     			compass.gen_flags[MODIFIED] = true;
     		}
     	}
-    }
-    
->>>>>>> 5ee0ad9b603643a6fbc077a652adcae511ae2c20
+    }    
 }
