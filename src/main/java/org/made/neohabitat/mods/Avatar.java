@@ -766,19 +766,4 @@ public class Avatar extends Container implements UserMod {
     		who.send(msg);
     	}
     }
-    
-    public void drop_object_in_hand() {
-    	if (contents(HANDS) != null) {
-    		HabitatMod obj = contents(HANDS);
-    		obj.x = 8;
-    		obj.y = 130;
-    		obj.gen_flags[MODIFIED] = true;
-    		obj.checkpoint_object(obj);
-    		send_broadcast_msg(THE_REGION, "CHANGE_CONTAINERS_$",
-    			"CONTAINER", THE_REGION,
-    			"X", obj.x,
-    			"Y", obj.y);
-    		change_containers(this, current_region(), obj.y, true);
-    	}
-    }
 }
