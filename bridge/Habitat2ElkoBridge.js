@@ -107,9 +107,9 @@ function addDefaultHead(db, userRef, fullName) {
 				"type": "Head",
 				"y": 6,
 				"style": rnd(220),
-				"orient": rnd(3) * 8
+				"orientation": rnd(3) * 8
 			}
-			]
+		]
 	}, function(err, result) {
 		Assert.equal(err, null);
 		if (result === null) {
@@ -744,8 +744,8 @@ var encodeState = {
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state,container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); }
-
+		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Compass:   function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

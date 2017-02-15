@@ -195,6 +195,11 @@
 			"type": "class",
 			"tag": "Spray_can",
 			"name": "org.made.neohabitat.mods.Spray_can"
+		},
+		{
+			"type": "class",
+			"tag": "Compass",
+			"name": "org.made.neohabitat.mods.Compass"
 		}
 	]
 }

@@ -12,6 +12,7 @@ import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.User;
 import org.elkoserver.util.trace.Trace;
 import org.made.neohabitat.mods.Avatar;
+import org.made.neohabitat.mods.Compass;
 import org.made.neohabitat.mods.Flashlight;
 import org.made.neohabitat.mods.Region;
 import org.elkoserver.json.EncodeControl;
@@ -432,6 +433,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         
         /* If getting a compass, match its orientation to the current region */
         if (selfClass == CLASS_COMPASS) {
+        	this.gr_state = current_region().orientation;
             this.send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);            
         }
         send_reply_success(from); // Yes, your GET request succeeded.
@@ -2640,6 +2642,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         object.markAsDeleted();
         object.checkpoint();
     }
+<<<<<<< HEAD
 
     /**
      * Is the the mod a Seating Class, requiring special handling?
@@ -2663,4 +2666,32 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public boolean isSeating() {
     	return isSeating(this);
     }
+=======
+    
+    /**
+     * Originally coded as lights_on in helpers.pl1, this method ensures
+     * that necessary side effects are applied whenever an Avatar is built.
+     * 
+     * @param who
+     * 			  The avatar upon which to perform in-hands side effects.
+     */
+    public void in_hands_side_effects(Avatar who) {
+    	if (who.contents(HANDS) != null) {
+    		HabitatMod inHands = who.contents(HANDS);
+    		if (inHands.HabitatClass() == CLASS_FLASHLIGHT) {
+    			Flashlight flashlight = (Flashlight) inHands;
+    			Region curRegion = current_region();
+    			if (flashlight.on == TRUE) {
+    				curRegion.lighting += 1;
+    				send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "SUCCESS", 1);
+    			}
+    		} else if (inHands.HabitatClass() == CLASS_COMPASS) {
+    			Compass compass = (Compass) inHands;
+    			compass.gr_state = current_region().orientation;
+    			compass.gen_flags[MODIFIED] = true;
+    		}
+    	}
+    }
+    
+>>>>>>> 5ee0ad9b603643a6fbc077a652adcae511ae2c20
 }
