@@ -2644,9 +2644,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     }
     
     /**
-     * Originally coded as lights_on in helpers.pl1
+     * Originally coded as lights_on in helpers.pl1, this method ensures
+     * that necessary side effects are applied whenever an Avatar is built.
+     * 
      * @param who
-     * 			  
+     * 			  The avatar upon which to perform in-hands side effects.
      */
     public void in_hands_side_effects(Avatar who) {
     	if (who.contents(HANDS) != null) {
