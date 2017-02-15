@@ -904,7 +904,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		if (o.className === "Avatar") {
 			client.state.numAvatars++;
 			if (!o.you) {
-				if (mod.sittingIn == "") {
+				if (undefined == mod.sittingIn || mod.sittingIn == "") {
 					o.container = 0;
 				} else {
 					o.container 	= mod.sittingIn;			// Pretend this avatar is contained by the seat.
