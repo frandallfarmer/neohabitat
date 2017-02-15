@@ -200,6 +200,11 @@
 			"type": "class",
 			"tag": "Compass",
 			"name": "org.made.neohabitat.mods.Compass"
+		},
+		{
+			"type": "class",
+			"tag": "Tokens",
+			"name": "org.made.neohabitat.mods.Tokens"
 		}
 	]
 }

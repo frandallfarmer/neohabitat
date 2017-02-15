@@ -714,7 +714,13 @@ var encodeState = {
 			buf.add(state.flat_type || 0);
 			return buf;
 		},
-		Spray_can:  function (state, container, buf) { return (this.common(state, container, buf)); },
+		Tokens:  function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.denom_lo);
+			buf.add(state.denom_hi);
+			return buf;
+		},
+		Spray_can:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Building:	function (state, container, buf) { return (this.common	(state, container, buf)); },
@@ -745,7 +751,7 @@ var encodeState = {
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state,container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Compass:   function (state, container, buf) { return (this.common  (state, container, buf)); }
+		Compass:    function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

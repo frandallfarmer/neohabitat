@@ -722,6 +722,16 @@ this.Fountain = {
 		}
 }
 
+this.Tokens = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"PAY" },
+		}
+}
+
 this.magical	= {
 		clientMessages: {
 			0:{ op:"HELP" },
