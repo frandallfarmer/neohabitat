@@ -234,7 +234,11 @@ this.SERVER_OPS = {
 		"REMOVE$":				{ reqno: 29 },
 		"RESET$": 				{ reqno: 9 },
 		"RETURN$": 				{ reqno: 1 },
-		"CHANGELIGHT_$": 		{ reqno: 13 },
+		"CHANGELIGHT_$": 		{ reqno: 13,
+			toClient: function (o, b) {
+				b.add(o.SUCCESS);
+			}
+		},
 		"ROLL$": 				{ reqno: 8 },
 		"RUB$": 				{ reqno: 9 },
 		"SCAN$":	 			{ reqno: 8 },
@@ -566,6 +570,11 @@ this.translate = {
 				b.add(o.SPRAY_CUSTOMIZE_0);
 				b.add(o.SPRAY_CUSTOMIZE_1);
 			}
+		},
+		DIRECT: {
+			toClient: function(o, b) {
+				b.add(o.text.getBytes());
+			}
 		}
 };
 
@@ -684,11 +693,21 @@ this.Floor_lamp	= {
 };
 
 this.Chest = {
-		clientMessages: {
-			0:{ op:"HELP" },
-			4:{ op:"CLOSECONTAINER" },
-			5:{ op:"OPENCONTAINER" }
-		}
+	clientMessages: {
+		0:{ op:"HELP" },
+		4:{ op:"CLOSECONTAINER" },
+		5:{ op:"OPENCONTAINER" }
+	}
+};
+
+this.Compass = {
+	clientMessages: {
+		0:{ op:"HELP" },
+		1:{ op:"GET" },
+		2:{ op:"PUT" },
+		3:{ op:"THROW" },
+		4:{ op:"DIRECT" }
+	}
 };
 
 this.magical	= {
@@ -736,4 +755,3 @@ this.Trapezoid			= this.help;
 this.Super_trapezoid 	= this.help;
 this.Flat				= this.help;
 this.Hot_tub		 	= this.help;
-

@@ -221,8 +221,7 @@ function createServerConnection(port, host, client) {
 			reset = processIncomingElkoBlob(client, server, data);				
 		} catch(err) {
 			Trace.error("\n\n\nServer input processing error captured:\n" +
-					err.message + 
-			"\n...resuming...\n");
+					err.message + "\n" + err.stack + "\n...resuming...\n");
 		}
 		if (reset) {				// This connection has been replaced due to context change.
 			Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
@@ -731,7 +730,8 @@ var encodeState = {
 		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); },
-		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); }
+		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Compass:  function(state, container, buf) { return (this.common(state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {
