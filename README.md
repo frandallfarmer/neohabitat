@@ -4,6 +4,7 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 [![Build Status](https://travis-ci.org/frandallfarmer/neohabitat.svg?branch=master)](https://travis-ci.org/frandallfarmer/neohabitat)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/frandallfarmer/neohabitat/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
+[![Slack](http://slack.neohabitat.org/badge.svg)](http://slack.neohabitat.org/)
 
 We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
@@ -12,13 +13,13 @@ Documentation
 
 If you'd like to contribute to Habitat, developer documentation can be found here:
 
-  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat/blob/master/docs/getting_started.md)
+  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
   - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
 
 Slack
 -----
 
-If you'd like to join the Neohabitat community, come join our Slack: [Neoclassical Habitat](https://neohabitat.slack.com)
+If you'd like to join the Neohabitat community, come join our Slack: [Neoclassical Habitat](http://slack.neohabitat.org/)
 
 If you have any issues when playing Habitat, feel free to ask questions in the **#troubleshooting** room.
 

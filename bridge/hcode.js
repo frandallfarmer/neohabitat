@@ -457,7 +457,12 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.esp);
 			} 
-		},		   
+		},
+		ASK:	{
+			toServer: function(a, m) {
+				m.text 	= String.fromCharCode.apply(null, a);
+			},
+		},
 		POSTURE: { 
 			toServer: function(a, m) {
 				m.pose = a[0];
@@ -709,6 +714,13 @@ this.Compass = {
 		4:{ op:"DIRECT" }
 	}
 };
+
+this.Fountain = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"ASK" },
+		}
+}
 
 this.magical	= {
 		clientMessages: {

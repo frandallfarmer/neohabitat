@@ -98,24 +98,24 @@ function insertUser(db, user, callback) {
 function addDefaultHead(db, userRef, fullName) {
 	headRef = "item-" + userRef.substring(5)+".head";
 	db.collection('odb').insertOne({
-				"ref": headRef,
-				"type": "item",
-				"name": "Default head for " + fullName,
-				"in":userRef,
-				"mods": [
-					{
-						"type": "Head",
-						"y": 6,
-						"style": rnd(220),
-						"orient": rnd(3) * 8
-					}
-				]
-			}, function(err, result) {
-				Assert.equal(err, null);
-				if (result === null) {
-					Trace.debug("Unable to add " + headRef + " for " + userRef);
-				}
+		"ref": headRef,
+		"type": "item",
+		"name": "Default head for " + fullName,
+		"in":userRef,
+		"mods": [
+			{
+				"type": "Head",
+				"y": 6,
+				"style": rnd(220),
+				"orient": rnd(3) * 8
 			}
+			]
+	}, function(err, result) {
+		Assert.equal(err, null);
+		if (result === null) {
+			Trace.debug("Unable to add " + headRef + " for " + userRef);
+		}
+	}
 	)
 }
 
@@ -140,7 +140,7 @@ function confirmOrCreateUser(fullName) {
 							"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
 							"nitty_bits": 0
 						}
-					]
+						]
 				}, function() {
 					Trace.debug("Successfully inserted record for user:", userRef);
 					addDefaultHead(db, userRef, fullName);
@@ -221,7 +221,9 @@ function createServerConnection(port, host, client) {
 			reset = processIncomingElkoBlob(client, server, data);				
 		} catch(err) {
 			Trace.error("\n\n\nServer input processing error captured:\n" +
-					err.message + "\n" + err.stack + "\n...resuming...\n");
+					err.message + "\n" +
+					err.stack   + "\n" +
+					"...resuming...\n");
 		}
 		if (reset) {				// This connection has been replaced due to context change.
 			Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
@@ -366,15 +368,18 @@ var HabBuf = function (start, end, seq, noid, reqNum) {
 	};
 };
 
-var ContentsVector = function (replySeq, noid, ref) {
+var ContentsVector = function (replySeq, noid, ref, type) {
 	this.container		= new HabBuf();
 	this.noids			= [];
 	this.objects		= new HabBuf();
 	this.containers		= {};
 	this.containerRef   = ref;
 	this.containerNoid  = noid;
-	this.replySeq		= (undefined === replySeq) ? HCode.PHANTOM_REQUEST : replySeq;
-
+	this.replySeq		= (undefined === replySeq)	? HCode.PHANTOM_REQUEST : replySeq;
+	this.type			= (undefined === type)		? HCode.MESSAGE_DESCRIBE : type;
+	if (undefined !== noid) {
+		this.containers[noid] = this;
+	}	
 	this.add = function (o) {
 		var mod = o.obj.mods[0];
 		if (undefined === this.containerRef) {
@@ -395,9 +400,13 @@ var ContentsVector = function (replySeq, noid, ref) {
 				true,
 				this.replySeq,
 				HCode.REGION_NOID,
-				HCode.MESSAGE_DESCRIBE);
-		this.container.data[4] = client.state.avatar.noid;	// TODO Remove this little magic
-		buf.add(this.container.data);
+				this.type);
+		if (this.type == HCode.MESSAGE_DESCRIBE) {
+			if (this.container.data[4] == -1) {
+				this.container.data[4] = client.state.avatar.noid;	// TODO Remove this little magic
+			}
+			buf.add(this.container.data);
+		}
 		buf.add(this.noids);
 		buf.add(0);
 		buf.add(this.objects.data);
@@ -418,6 +427,10 @@ function initializeClientState(client, who, replySeq) {
 			refToNoid: {},
 			numAvatars: 0,
 			waitingForAvatar: true,
+			waitingForAvatarContents: false,
+			otherContents: [],
+			otherNoid: 0,
+			otherRef: "",
 			replySeq: replySeq
 	};
 }
@@ -701,7 +714,7 @@ var encodeState = {
 			buf.add(state.flat_type || 0);
 			return buf;
 		},
-		Spray_can: function(state, container, buf) { return (this.common(state, container, buf)); },
+		Spray_can:  function (state, container, buf) { return (this.common(state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Building:	function (state, container, buf) { return (this.common	(state, container, buf)); },
@@ -731,6 +744,7 @@ var encodeState = {
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Compass:  function(state, container, buf) { return (this.common(state, container, buf)); }
 };
 
@@ -768,6 +782,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 				diagnosticMessage(client, reason, client.avatarNoid);
 			}
 			Trace.warn(reason);
+			return;
 		}
 	}
 
@@ -779,31 +794,68 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		UserDB[name] = { regionRef: regionRef[0] + "-" + regionRef[1],
 				userRef:   userRef[0]   + "-" + userRef[1] };
 		File.writeFile(UFILENAME, JSON.stringify(UserDB, null, 2));
-		client.sessionName += ":" + name;
-		client.avatarNoid   = mod.noid;
-		if (client.json) { // We might have to tell the server that the avatar is visible - emulating C64 client behavior.
-			toElko(server, JSON.stringify({ to:o.to, op:"FINGER_IN_QUE"}));
-			toElko(server, JSON.stringify({ to:o.to, op:"I_AM_HERE"}));			
-		}
+		client.sessionName 				+= ":" + name;
+		client.avatarNoid   			= mod.noid;
+		client.waitingForAvatarContents = true;
 	}
 
 
 	if (o.type === "changeContext") {
-		client.state.nextRegion = o.context;	// Save for MESSAGE_DESCRIBE to deal with later.
-		createServerConnection(	client.port, 
-				client.host,
-				client);				// create a new connection for the new context 
-		return true; // Signal this connection to die now that it's obsolete.
+		client.state.nextRegion = o.context;						// Save for MESSAGE_DESCRIBE to deal with later.
+		createServerConnection(	client.port, client.host, client);	// create a new connection for the new context 
+		return true; 												// Signal this connection to die now that it's obsolete.
 	}
 
-	// JSON client is just a relay...
+	if (o.op === "ready") {
+		if (client.state.waitingForAvatarContents) {
+			client.state.waitingForAvatar 		  = false;
+			client.state.waitingForAvatarContents = false;
+			if (client.json) { // We might have to tell the server that the avatar is visible - emulating C64 client behavior.
+				toElko(server, JSON.stringify({ to:o.to, op:"FINGER_IN_QUE"}));
+				toElko(server, JSON.stringify({ to:o.to, op:"I_AM_HERE"}));
+				return;
+			}
+			for (var i = 0; i < client.state.objects.length; i++) {
+				if (undefined !== client.state.objects[i]) {
+					client.state.contentsVector.add(client.state.objects[i]);
+				}
+			}
+			Trace.debug(client.state.user + " known as object ref " + client.state.ref + " in region/context " + client.state.region + ".");
+			client.state.contentsVector.send(client);
+			client.state.contentsVector =  new ContentsVector(); 		// May be used by HEREIS/makes after region arrival
+			if (client.state.numAvatars === 1) {
+				var caughtUpMessage = new HabBuf(true, true, HCode.PHANTOM_REQUEST, HCode.REGION_NOID, HCode.MESSAGE_CAUGHT_UP);
+				caughtUpMessage.add(1);			// TRUE
+				caughtUpMessage.send(client);
+			}
+			return;
+		}
+		if (client.state.otherNoid) {		// Other avatar needs to go out as one package.			
+			for (var i = 0; i < client.state.otherContents.length; i++) {
+				if (undefined !== client.state.otherContents[i]) {
+					client.state.contentsVector.add(client.state.otherContents[i]);
+				}
+			}
+			client.state.contentsVector.send(client);
+			client.state.otherContents	= [];
+			client.state.otherNoid		= 0;
+			client.state.otherRef		= "";
+			client.state.contentsVector = new ContentsVector();
+			return;
+		}
+		// Eat this, since Elko thinks the region's done and the avatar will arrive later
+		// Habitat wants the user's avatar as part of the contents vector.
+		return;
+	}
+
+//	JSON client is just a relay...
 	if (client.json) {
 		Trace.debug("server (" + client.sessionName + ") -> "  + JSON.stringify(o) + " -> client (" + client.sessionName + ")");
 		toHabitat(client, o);
 		return;
 	}
 
-	// NEXT UP, TRANSFORM ANY LOGIC
+//	NEXT UP, TRANSFORM ANY LOGIC
 
 	/* Mapping change region (choosing a canonical direction) to change context
 	   is awkward. Habitat wants to send a NEWREGION command and a canonical
@@ -828,11 +880,6 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		 	Habitat client. See the MESSAGE_DESCRIBE to see the followup... */
 
 
-	if (o.op === "ready") {
-		// Eat this, since Elko thinks the region's done and the avatar will arrive later
-		// Habitat wants the user's avatar as part of the contents vector.
-		return;
-	}
 
 	if (o.op === "delete") {
 		removeNoidFromClient(client, client.state.refToNoid[o.to]);
@@ -847,55 +894,58 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		o.className		 = mod.type;
 		o.classNumber	 = HCode.CLASSES[mod.type] || 0;
 		if (undefined === HCode[mod.type]) {
-			Trace.error("*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***");
+			Trace.error("\n\n*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***\n\n");
 			return;
 		}
 		o.clientMessages              = HCode[mod.type].clientMessages;
 		o.container 				  = client.state.refToNoid[o.to];
 		client.state.objects[noid]    = o;
-		client.state.refToNoid[o.ref] = noid;
+		client.state.refToNoid[o.ref] = o.noid;
 		if (o.className === "Avatar") {
 			client.state.numAvatars++;
+			if (!o.you && !client.state.waitingForAvatar) { // Async avatar arrival wants to bunch up contents.
+				o.container					= 0;
+				client.state.otherNoid		= o.noid;
+				client.state.otherRef		= o.ref;
+				client.state.otherContents.push(o);
+				client.state.contentsVector	= 
+					new ContentsVector(HCode.PHANTOM_REQUEST, HCode.REGION_NOID, o.to, HCode.MESSAGE_HEREIS);
+				return;
+			}
 		}
 		if (client.state.waitingForAvatar) {
 			if (o.you) {
-				client.state.ref    	= o.obj.ref;
-				client.state.region 	= o.to;
-				client.state.avatar		= mod;				
-				for (var i = 0; i < client.state.objects.length; i++) {
-					if (undefined !== client.state.objects[i]) {
-						client.state.contentsVector.add(client.state.objects[i]);
-					}
-				}
-				Trace.debug(client.state.user + " known as object ref " + client.state.ref + " in region/context " + client.state.region + ".");
-				client.state.contentsVector.send(client);
-				client.state.contentsVector   =  new ContentsVector(); 		// May be used by HEREIS/makes after region arrival
-				client.state.waitingForAvatar = false;
-				if (client.state.numAvatars === 1) {
-					var caughtUpMessage = new HabBuf(true, true, HCode.PHANTOM_REQUEST, HCode.REGION_NOID, HCode.MESSAGE_CAUGHT_UP);
-					caughtUpMessage.add(1);			// TRUE
-					caughtUpMessage.send(client);
-				}
+				client.state.ref    					= o.ref;
+				client.state.region 					= o.to;
+				client.state.avatar						= mod;
+				client.state.waitingForAvatarContents	= true;
+				// The next "ready" will build the full contents vector and send it to the client.
 			}
-		} else {
-			Trace.debug("server (" + client.sessionName + ")  make -> HEREIS");
-			var buf = new HabBuf(
-					true,
-					true,
-					HCode.PHANTOM_REQUEST,
-					HCode.REGION_NOID,
-					HCode.MESSAGE_HEREIS);
-			buf.add(o.noid);
-			buf.add(o.classNumber);
-			buf.add(0);
-			habitatEncodeElkoModState(mod, o.container, buf);
-			buf.add(0);
-			buf.send(client, true);
+			return;
 		}
+		if (client.state.otherNoid != 0) {		// Keep building other's content list.
+			o.container							= client.state.otherNoid;
+			client.state.otherContents.push(o);	// This will get sent on "ready"
+			return
+		}
+		// Otherwise this is a simple object that can be sent out one thing at a time.
+		Trace.debug("server (" + client.sessionName + ")  make -> HEREIS");
+		var buf = new HabBuf(
+				true,
+				true,
+				HCode.PHANTOM_REQUEST,
+				HCode.REGION_NOID,
+				HCode.MESSAGE_HEREIS);
+		buf.add(o.noid);
+		buf.add(o.classNumber);
+		buf.add(0);
+		habitatEncodeElkoModState(mod, o.container, buf);
+		buf.add(0);
+		buf.send(client, true);
 		return;
 	}
 
-	// End of Special Cases - parse the reply/broadcast/neighbor/private message as a object-command.
+//	End of Special Cases - parse the reply/broadcast/neighbor/private message as a object-command.
 
 	var split = false;
 	if (o.type === "reply") {

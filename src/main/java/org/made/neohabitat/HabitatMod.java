@@ -8,6 +8,7 @@ import org.elkoserver.server.context.Msg;
 import org.elkoserver.server.context.ObjectCompletionWatcher;
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
+import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.User;
 import org.elkoserver.util.trace.Trace;
 import org.made.neohabitat.mods.Avatar;
@@ -255,8 +256,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @param from
      *            User representing the connection making the request.
      */
-    @JSONMethod
-    public void ASK(User from) {
+    @JSONMethod ({"text"})
+    public void ASK(User from, OptString text) {
         illegal(from, this.HabitatModName() + ".ASK");
     }
     
