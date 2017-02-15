@@ -46,15 +46,26 @@ public class Tokens extends HabitatMod {
         return false;
     }
     
-    /** Static accessor to get the value of any Tokens object */
-    public static int tget(Tokens token) {
-    	return token.denom_hi * 256 + token.denom_lo;
-    }
-    
+
     /** denom_hi * 256 + denom_lo is the value of this token., 0 value tokens will self-destruct */
     private	int	denom_lo	= 0;
     private int denom_hi	= 0;
-        
+    
+    /**
+     * Get the value of the token.
+     * 
+     * @param token
+     * @return
+     */
+    public int tget() {
+    	return denom_hi * 256 + denom_lo;
+    }
+    
+    public void tset(int amount) {
+    	denom_lo = amount % 256;
+    	denom_hi = (amount - denom_lo) / 256 ;
+    }
+    
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "denom_lo", "denom_hi" })
     public Tokens(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int denom_lo, int denom_hi) {
         super(style, x, y, orientation, gr_state);
@@ -73,7 +84,7 @@ public class Tokens extends HabitatMod {
     
     @JSONMethod
     public void HELP(User from) {
-    	this.send_reply_msg(from, "$" + Tokens.tget(this) + " token.  Choose DO to make change (remainder will be put back in your pocket)." );
+    	this.send_reply_msg(from, "$" + tget() + " token.  Choose DO to make change (remainder will be put back in your pocket)." );
     }
     
     @JSONMethod
@@ -92,12 +103,40 @@ public class Tokens extends HabitatMod {
     }
     
     @JSONMethod ({"target_id", "amount_lo", "amount_hi" })
-    public void PAY(User from, int target_id, int amount_lo, int amount_hi) {
+    public void PAYTO(User from, int target_id, int amount_lo, int amount_hi) {
+		object_say(from,  "Unimplemented functionality. Join us to get this finished!");
     	this.send_reply_error(from);
     } 
     
     @JSONMethod ({"amount_lo", "amount_hi"})
     public void SPLIT(User from, int amount_lo, int amount_hi) {
+		object_say(from,  "Unimplemented functionality. Join us to get this finished!");
     	this.send_reply_error(from);
-    }      
+    }
+    
+    /** 
+     * Spend some of a user's hard-earned tokens - assuming he's holding them and has enough.
+     * Call as as Static method: Tokens.spend()
+     * 
+     * @param from The user spending the tokens (and waiting for an answer)
+     * @param amount The number of tokens to spend.
+     * @return
+     */
+    public static int spend(User from, int amount) {
+    	Avatar avatar = (Avatar) from.getMod(Avatar.class);
+    	HabitatMod held = avatar.heldObject();
+    	if (held.HabitatClass() == CLASS_TOKENS) {
+    		Tokens tokens= (Tokens) held;
+    		int tvalue = tokens.tget();
+    		if (tvalue >= amount) {
+    			tvalue -= amount;
+    			tokens.tset(tvalue);
+    			if (tvalue == 0) {
+    				tokens.destroy_object(tokens);
+    			}
+    			return TRUE;
+    		}
+    	}
+    	return FALSE;    	
+    }
 }

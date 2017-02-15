@@ -1,0 +1,14 @@
+{
+	"type": "item",
+	"ref": "item-library.coke",
+	"deletable": true,
+	"name": "Choke Machine",
+	"in": "context-library",
+	"mods": [
+		{
+			"type": "Coke_machine",
+			"x": 120,
+			"y": 30,
+		}
+	]
+}

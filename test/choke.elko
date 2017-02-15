@@ -1,0 +1,4 @@
+{"to":"ME","op":"WALK","x":148,"y":157,"how":0, "Telko": { "delay": 5}}
+{"to":"ME","op":"POSTURE","pose":254}
+{"to":"tokens","op":"GET"}
+{"to":"coke","op":"PAY"}

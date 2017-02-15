@@ -1,7 +1,7 @@
 [
 	{
 		"type": "item",
-		"ref": "item-randy.tokens",
+		"ref": "item-randy.cash",
 		"deletable": true,
 		"name": "Money!",
 		"in": "user-randy",

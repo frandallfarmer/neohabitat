@@ -1245,6 +1245,37 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         return (null != inHands && inHands.noid == object.noid);
     }
     
+    
+    /**
+     * Returns the HabitatMod of the item held in the avatar's hand.
+     * 
+     * @param avatar
+     * @return
+     */
+    public HabitatMod heldObject(Avatar avatar) {
+    	return avatar.contents(HANDS);
+    }
+    
+    
+    /**
+     * Returns the HabitatMod of the item held in the user's avatar's hand.
+     * 
+     * @param from
+     * @return
+     */
+    public HabitatMod heldObject(User from) {
+    	return heldObject(avatar(from));
+    }
+    
+    /**
+     * Returns the HabitatMod of the item held in *this* avatar object.
+     * 
+     * @return
+     */
+    public HabitatMod heldObject() {
+    	return heldObject((Avatar) this);
+    }
+    
     /**
      * wearing -- Return true iff the avatar is wearing (head slot) a given
      * object.

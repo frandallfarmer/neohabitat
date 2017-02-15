@@ -78,7 +78,7 @@ public abstract class Openable extends Container {
     @JSONMethod
     public void CLOSE(User from) {
         /** Was generic_CLOSE */
-        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        HabitatMod held = heldObject(from);
         boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
                 && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
         if (open_flags[OPEN_BIT]) {
@@ -103,7 +103,7 @@ public abstract class Openable extends Container {
     @JSONMethod
     public void OPEN(User from) {
         /** Was generic_OPEN */
-        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        HabitatMod held = heldObject(from);
         boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
                 && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
         if (!open_flags[OPEN_BIT] && // OPEN
@@ -130,7 +130,7 @@ public abstract class Openable extends Container {
     @JSONMethod
     public void CLOSECONTAINER(User from) {
         /** Was generic_CLOSECONTAINER */
-        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        HabitatMod held = heldObject(from);
         boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
                 && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
         
@@ -157,7 +157,7 @@ public abstract class Openable extends Container {
     @JSONMethod
     public void OPENCONTAINER(User from) {
         /** Was generic_OPENCONTAINER */
-        HabitatMod held = ((Container) avatar(from)).contents(HANDS);
+        HabitatMod held = heldObject(from);
         boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
                 && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
         if (!open_flags[OPEN_BIT] && // OPEN
