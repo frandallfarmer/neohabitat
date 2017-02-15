@@ -66,7 +66,7 @@ public class Tokens extends HabitatMod {
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         result.addParameter("denom_lo", denom_lo);
-        result.addParameter("demon_hi", denom_hi);
+        result.addParameter("denom_hi", denom_hi);
         result.finish();
         return result;
     }
@@ -90,5 +90,14 @@ public class Tokens extends HabitatMod {
     public void THROW(User from, int target, int x, int y) {
         generic_THROW(from, target, x, y);
     }
-        
+    
+    @JSONMethod ({"target_id", "amount_lo", "amount_hi" })
+    public void PAY(User from, int target_id, int amount_lo, int amount_hi) {
+    	this.send_reply_error(from);
+    } 
+    
+    @JSONMethod ({"amount_lo", "amount_hi"})
+    public void SPLIT(User from, int amount_lo, int amount_hi) {
+    	this.send_reply_error(from);
+    }      
 }

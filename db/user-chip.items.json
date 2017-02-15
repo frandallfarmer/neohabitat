@@ -1,6 +1,21 @@
 [
 	{
 		"type": "item",
+		"ref": "item-chip.tokens",
+		"deletable": true,
+		"name": "Money!",
+		"in": "user-chip",
+		"mods": [
+			{
+				"type": "Tokens",
+				"y": 0,
+				"denom_hi":0,
+				"denom_lo":100
+			}
+			]
+	},
+	{
+		"type": "item",
 		"ref": "item-chip.spraycan",
 		"deletable": true,
 		"name": "Stylin' body paint",
@@ -8,7 +23,7 @@
 		"mods": [
 			{
 				"type": "Spray_can",
-				"y": 0,
+				"y": 1,
 				"orientation": 32,
 				"charge": 255
 			}
@@ -24,7 +39,7 @@
 			{
 				"type": "Knick_knack",
 				"style": 2,
-				"y": 1,
+				"y": 2,
 				"orientation": 8,
 				"magic_type": 17,
 				"charges": 255
@@ -41,7 +56,7 @@
 			{
 				"type": "Rock",
 				"style": 1,
-				"y": 2,
+				"y": 3,
 				"orientation": 8,
 				"mass": 0
 			}

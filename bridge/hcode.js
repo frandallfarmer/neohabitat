@@ -580,6 +580,25 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.text.getBytes());
 			}
+		},
+		PAY: {
+			toServer: function(a,m) {
+				m.target_id	= a[0];
+				m.amount_lo = a[1];
+				m.amount_hi = a[2];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		SPLIT: {
+			toServer: function(a,m) {
+				m.amount_lo = a[0];
+				m.amount_hi = a[1];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
 		}
 };
 
@@ -729,6 +748,7 @@ this.Tokens = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"PAY" },
+			5:{ op:"SPLIT" }
 		}
 }
 
