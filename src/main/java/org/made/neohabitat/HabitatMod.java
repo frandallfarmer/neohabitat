@@ -2,10 +2,17 @@ package org.made.neohabitat;
 
 import org.elkoserver.server.context.BasicObject;
 import org.elkoserver.server.context.Context;
+import org.elkoserver.server.context.Contextor;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Mod;
 import org.elkoserver.server.context.Msg;
 import org.elkoserver.server.context.ObjectCompletionWatcher;
+import org.elkoserver.server.context.Position;
+
+import java.math.BigInteger;
+import java.util.Random;
+import java.util.UUID;
+
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
@@ -172,14 +179,18 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      *            animation/graphic state default:0
      */
     
-    public HabitatMod(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
-        this.style = style.value(0);
-        this.x = x.value(0);
-        this.y = y.value(0);
-        this.orientation = orientation.value(0);
-        this.gr_state = gr_state.value(0);
+    public HabitatMod(int style, int x, int y, int orientation, int gr_state) {
+        this.style 			= style;
+        this.x				= x;
+        this.y 				= y;
+        this.orientation 	= orientation;
+        this.gr_state 		= gr_state;
     }
     
+    public HabitatMod(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
+        this(style.value(0), x.value(0), y.value(0), orientation.value(0), gr_state.value(0));
+    }
+        
     public void objectIsComplete() {
         Region.addToNoids(this);
     }
@@ -2720,5 +2731,29 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     			compass.gen_flags[MODIFIED] = true;
     		}
     	}
-    }    
+    }
+    
+    /**
+     * Spawn a Habitat Object out of thin air.
+     * 
+     * @param name		The name to give the object.
+     * @param mod		The Habitat Type/Elko Mod, well formed and ready to attach.
+     * @param container The container that will hold the object when it arrives. null == region/context.
+     * @return
+     */
+    
+    public Item create_object(String name, HabitatMod mod, Container container) {
+    	Item item = null;
+    	if (container != null) {
+        	item = container.object().createItem(name, true, true);
+    	} else {
+    		item = context().createItem(name, true, true);
+    	}
+    	if (item != null) {
+    		mod.attachTo(item);
+    		mod.objectIsComplete();
+    		item.checkpoint();
+    	}
+    	return item;
+    }
 }

@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.BasicObject;
+import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.HabitatMod;
 
@@ -73,6 +75,12 @@ public class Tokens extends HabitatMod {
         this.denom_hi = denom_hi;
     }
     
+    public Tokens(int style, int x, int y, int orientation, int gr_state, int denom_lo, int denom_hi) {
+        super(style, x, y, orientation, gr_state);
+        this.denom_lo = denom_lo;
+        this.denom_hi = denom_hi;
+    }
+    
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
@@ -104,14 +112,70 @@ public class Tokens extends HabitatMod {
     
     @JSONMethod ({"target_id", "amount_lo", "amount_hi" })
     public void PAYTO(User from, int target_id, int amount_lo, int amount_hi) {
-		object_say(from,  "Unimplemented functionality. Join us to get this finished!");
-    	this.send_reply_error(from);
+    	int			amount		= amount_lo + amount_hi * 256;
+    	int			old_amount	= tget();
+    	HabitatMod	target  	= current_region().noids[target_id];
+    	if (target.HabitatClass() == CLASS_AVATAR) {
+    		Avatar avatar	= avatar(from);
+    		Avatar other	= (Avatar) target;
+    		if (this.empty_handed(other)) {
+    			if (spend(amount) == TRUE) {
+    				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, amount_lo, amount_hi);
+    				Item item = create_object("money", tokens, other);
+    				if (item == null) {
+    					send_reply_err(from, noid, BOING_FAILURE);
+    					return;
+    				}
+    				JSONLiteral itemLiteral = item.encode(EncodeControl.forClient);
+    				// Tell the neighbors about the new tokens and how to deduct the giver
+    				JSONLiteral msg = new_neighbor_msg(avatar.noid, "PAID$");
+    		        msg.addParameter("amount_lo",	amount_lo);
+    		        msg.addParameter("amount_hi",	amount_hi);
+    		        msg.addParameter("object",		itemLiteral);
+    		        msg.finish();
+    		        context().sendToNeighbors(from, msg);
+    		        // Reply including the new tokens
+    		        msg = new_reply_msg(noid);
+    		        msg.addParameter("success",		TRUE);
+    		        msg.addParameter("amount_lo",	amount_lo);
+    		        msg.addParameter("amount_hi",	amount_hi);
+    		        msg.addParameter("object",		itemLiteral);
+    		        msg.finish();
+    		        from.send(msg);
+    				if (old_amount == amount) {
+    					send_neighbor_msg(from, THE_REGION, "GO_AWAY$", "noid", noid);
+    				}
+    				return;
+    			}
+    		}
+    	}
+    	send_reply_error(from);
     } 
-    
+
     @JSONMethod ({"amount_lo", "amount_hi"})
     public void SPLIT(User from, int amount_lo, int amount_hi) {
 		object_say(from,  "Unimplemented functionality. Join us to get this finished!");
     	this.send_reply_error(from);
+    }
+    
+    /** 
+     * Spend some of this objects tokens.
+     * 
+     * @param from The user spending the tokens (and waiting for an answer)
+     * @param amount The number of tokens to spend.
+     * @return
+     */
+    public int spend(int amount) {
+		int tvalue = tget();
+		if (tvalue >= amount) {
+			tvalue -= amount;
+			tset(tvalue);
+			if (tvalue == 0) {
+				destroy_object(this);
+			}
+			return TRUE;
+		}
+		return FALSE;
     }
     
     /** 
@@ -127,15 +191,7 @@ public class Tokens extends HabitatMod {
     	HabitatMod held = avatar.heldObject();
     	if (held.HabitatClass() == CLASS_TOKENS) {
     		Tokens tokens= (Tokens) held;
-    		int tvalue = tokens.tget();
-    		if (tvalue >= amount) {
-    			tvalue -= amount;
-    			tokens.tset(tvalue);
-    			if (tvalue == 0) {
-    				tokens.destroy_object(tokens);
-    			}
-    			return TRUE;
-    		}
+    		return tokens.spend(amount);
     	}
     	return FALSE;    	
     }
