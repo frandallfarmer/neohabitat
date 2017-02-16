@@ -1,7 +1,7 @@
 [
 	{
 		"type": "item",
-		"ref": "item-chip.tokens",
+		"ref": "item-chiptokens",
 		"deletable": true,
 		"name": "Money!",
 		"in": "user-chip",
@@ -16,7 +16,7 @@
 	},
 	{
 		"type": "item",
-		"ref": "item-chip.spraycan",
+		"ref": "item-chipspraycan",
 		"deletable": true,
 		"name": "Stylin' body paint",
 		"in": "user-chip",
@@ -31,7 +31,7 @@
 	},
 	{
 		"type": "item",
-		"ref": "item-chip.godtool",
+		"ref": "item-chipgodtool",
 		"deletable": true,
 		"name": "Tool to rule the universe.",
 		"in": "user-chip",
@@ -48,7 +48,7 @@
 	},
 	{
 		"type": "item",
-		"ref": "item-chip.rock",
+		"ref": "item-chiprock",
 		"deletable": true,
 		"name": "Chip's Rock",
 		"in": "user-chip",
@@ -64,7 +64,7 @@
 	},
 	{
 		"type": "item",
-		"ref": "item-chip.head",
+		"ref": "item-chiphead",
 		"name": "Chips's Head",
 		"in": "user-chip",
 		"mods": [

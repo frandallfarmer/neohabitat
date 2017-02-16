@@ -205,7 +205,14 @@ this.SERVER_OPS = {
 		},
 		"OPENCONTAINER$": 		{ reqno: 19 },
 		"ORACLESPEAK_$":	 	{ reqno: 8 },
-		"PAID$":	 			{ reqno: 30 },
+		"PAID$":	 			{ reqno: 30,
+			toClient: function (o, b, client) {
+				b.add(o.payer);
+				b.add(o.amount_lo);
+				b.add(o.amount_hi);
+				b.add(client.backdoor.vectorize(client, o.object, o.container));
+			}
+		},
 		"PAY$": 				{ reqno: 8,
 			toClient: function (o,b) { 
 				b.add(o.amount_lo);
@@ -592,8 +599,11 @@ this.translate = {
 				m.amount_lo = a[1];
 				m.amount_hi = a[2];
 			},
-			toClient: function(o, b) {
-				b.add(o.err);
+			toClient: function(o, b, client) {
+				b.add(o.success);
+				b.add(o.amount_lo);
+				b.add(o.amount_hi);
+				b.add(client.backdoor.vectorize(client, o.object, o.container));
 			}
 		},
 		PAY: {

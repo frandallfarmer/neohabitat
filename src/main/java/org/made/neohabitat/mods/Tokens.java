@@ -116,7 +116,7 @@ public class Tokens extends HabitatMod {
     	int			old_amount	= tget();
     	HabitatMod	target  	= current_region().noids[target_id];
     	if (target.HabitatClass() == CLASS_AVATAR) {
-    		Avatar avatar	= avatar(from);
+    		Avatar payer	= avatar(from);
     		Avatar other	= (Avatar) target;
     		if (this.empty_handed(other)) {
     			if (spend(amount) == TRUE) {
@@ -128,9 +128,11 @@ public class Tokens extends HabitatMod {
     				}
     				JSONLiteral itemLiteral = item.encode(EncodeControl.forClient);
     				// Tell the neighbors about the new tokens and how to deduct the giver
-    				JSONLiteral msg = new_neighbor_msg(avatar.noid, "PAID$");
+    				JSONLiteral msg = new_neighbor_msg(other.noid, "PAID$");
+    				msg.addParameter("payer", 		payer.noid);
     		        msg.addParameter("amount_lo",	amount_lo);
     		        msg.addParameter("amount_hi",	amount_hi);
+    		        msg.addParameter("container",   other.object().ref());
     		        msg.addParameter("object",		itemLiteral);
     		        msg.finish();
     		        context().sendToNeighbors(from, msg);
@@ -139,6 +141,7 @@ public class Tokens extends HabitatMod {
     		        msg.addParameter("success",		TRUE);
     		        msg.addParameter("amount_lo",	amount_lo);
     		        msg.addParameter("amount_hi",	amount_hi);
+    		        msg.addParameter("container",   other.object().ref());
     		        msg.addParameter("object",		itemLiteral);
     		        msg.finish();
     		        from.send(msg);

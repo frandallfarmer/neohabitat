@@ -391,6 +391,41 @@ var HabBuf = function (start, end, seq, noid, reqNum) {
 	};
 };
 
+var unpackHabitatObject = function (client, o, containerRef) {
+	var mod  			= o.obj.mods[0];
+	
+	o.noid				= mod.noid || 0;
+	o.mod				= mod;
+	o.ref			 	= o.obj.ref;
+	o.className		 	= mod.type;
+	o.classNumber	 	= HCode.CLASSES[mod.type] || 0;	
+	
+	if (undefined === HCode[mod.type]) {
+		Trace.error("\n\n*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***\n\n");
+		return false;
+	}
+
+	o.clientMessages 	= HCode[mod.type].clientMessages;
+	o.container 	 	= client.state.refToNoid[containerRef] || 0;
+	
+    client.state.objects[o.noid]    = o;
+	client.state.refToNoid[o.ref]	= o.noid;
+	return true;
+}
+ 
+var vectorize = function (client, newObj , containerRef) {
+	var o = {obj: newObj};		
+	if (!unpackHabitatObject(client, o , containerRef)) return null;	
+
+	var buf = new HabBuf();
+	buf.add(o.noid);
+	buf.add(o.classNumber);
+	buf.add(0);
+	habitatEncodeElkoModState(o.mod, o.container, buf);
+	buf.add(0);
+	return buf.data;
+}
+
 var ContentsVector = function (replySeq, noid, ref, type) {
 	this.container		= new HabBuf();
 	this.noids			= [];
@@ -919,19 +954,9 @@ function parseIncomingElkoServerMessage(client, server, data) {
 
 	if (o.op === "make") {
 		var mod  = o.obj.mods[0];
-		var noid = mod.noid || 0;
-		o.noid			 = noid;
-		o.ref			 = o.obj.ref;
-		o.className		 = mod.type;
-		o.classNumber	 = HCode.CLASSES[mod.type] || 0;
-		if (undefined === HCode[mod.type]) {
-			Trace.error("\n\n*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***\n\n");
-			return;
-		}
-		o.clientMessages              = HCode[mod.type].clientMessages;
-		o.container 				  = client.state.refToNoid[o.to];
-		client.state.objects[noid]    = o;
-		client.state.refToNoid[o.ref] = o.noid;
+		
+		if (!unpackHabitatObject(client, o, o.to)) return;
+				
 		if (o.className === "Avatar") {
 			client.state.numAvatars++;
 			if (!o.you) {
@@ -991,7 +1016,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 	if (o.type === "reply") {
 		var buf = new HabBuf(true, true, client.state.replySeq, o.noid, o.filler);
 		if (undefined !== client.state.replyEncoder) {
-			split = client.state.replyEncoder(o, buf);
+			split = client.state.replyEncoder(o, buf, client);
 		}
 		buf.send(client, split);
 		return;
@@ -1002,7 +1027,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		o.toClient	= HCode.SERVER_OPS[o.op].toClient;
 		var buf = new HabBuf(true, true, HCode.PHANTOM_REQUEST, o.noid, o.reqno);
 		if (undefined !== o.toClient) {
-			split = o.toClient(o, buf);
+			split = o.toClient(o, buf, client);
 		}
 		buf.send(client, split);
 		return;
@@ -1064,6 +1089,7 @@ const Listener = Net.createServer(function(client) {
 	client.host 		= ElkoHost;
 	client.timeLastSent	= new Date().getTime();
 	client.lastSentLen	= 0;
+	client.backdoor		= {vectorize: vectorize}
 
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);
 	try {
