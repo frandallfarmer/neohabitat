@@ -114,13 +114,23 @@ this.SERVER_OPS = {
 			}
 		},
 		"ARRIVAL_$": 			{ reqno: 9 },
-		"ATTACK$": 				{ reqno: 9 },
+		"ATTACK$": 				{ reqno: 9,
+			toClient: function (o, b) {
+				b.add(o.ATTACK_TARGET);
+				b.add(o.ATTACK_DAMAGE);
+			}
+		},
 		"AUTO_TELEPORT_$": 		{ reqno: 21,
 			toClient: function (o, b) {
 				b.add(o.direction);
 			}
 		},
-		"BASH$": 				{ reqno: 10 },
+		"BASH$": 				{ reqno: 10,
+			toClient: function (o, b) {
+				b.add(o.BASH_TARGET);
+				b.add(o.BASH_SUCCESS);
+			}
+		},
 		"BEEP$": 				{ reqno: 8 },
 		"BLAST$": 				{ reqno: 8 },
 		"CAUGHT_UP_$":	 		{ reqno: 17,
@@ -129,7 +139,14 @@ this.SERVER_OPS = {
 			},
 		},
 		"CHANGE$": 				{ reqno: 8 },
-		"CHANGE_CONTAINERS_$":	{ reqno: 19 },
+		"CHANGE_CONTAINERS_$":	{ reqno: 19,
+			toClient: function (o, b) {
+				b.add(o.object_noid);
+				b.add(o.container_noid);
+				b.add(o.x);
+				b.add(o.y);
+			}
+		},
 		"BUGOUT$": 				{ reqno: 8 },
 		"CHANGESTATE$": 		{ reqno: 8 },
 		"CHANGESTATE_$": 		{ reqno: 8 },
@@ -558,7 +575,7 @@ this.translate = {
 				b.add(o.nextpage);
 				b.add(o.text.getBytes());
 				return true;		// This reply should be split upon transmission to the client.
-			},
+			}
  		},
 		LEAVE: {
 			toServer: function(a, m) {
@@ -589,6 +606,15 @@ this.translate = {
 				b.add(o.text.getBytes());
 			}
 		},
+		ATTACK: {
+			toServer: function(a, m) {
+				m.pointed_noid = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.ATTACK_result);
+				b.add(o.ATTACK_target);
+			}
+		},
 		PAYTO: {
 			toServer: function(a,m) {
 				m.target_id	= a[0];
@@ -611,6 +637,14 @@ this.translate = {
 			toServer: function(a,m) {
 				m.amount_lo = a[0];
 				m.amount_hi = a[1];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		STUN: {
+			toServer: function(a,m) {
+				m.target = a[0];
 			},
 			toClient: function(o, b) {
 				b.add(o.err);
@@ -768,6 +802,15 @@ this.Tokens = {
 		}
 }
 
+this.Stun_gun = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			5:{ op:"STUN" }
+		}
+}
+
 this.Coke_machine = {
 		clientMessages: {
 			0:{ op:"HELP" },
@@ -783,6 +826,15 @@ this.magical	= {
 			3:{ op:"THROW" },
 			4:{ op:"MAGIC" }
 		}		
+};
+
+this.weapon = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			5:{ op:"ATTACK" }
+		}
 };
 
 this.help		= { 
@@ -820,3 +872,6 @@ this.Trapezoid			= this.help;
 this.Super_trapezoid 	= this.help;
 this.Flat				= this.help;
 this.Hot_tub		 	= this.help;
+this.Gun       = this.weapon;
+this.Knife   = this.weapon;
+this.Club   = this.weapon;

@@ -50,8 +50,8 @@ public class Tokens extends HabitatMod {
     
 
     /** denom_hi * 256 + denom_lo is the value of this token., 0 value tokens will self-destruct */
-    private	int	denom_lo	= 0;
-    private int denom_hi	= 0;
+    public int denom_lo = 0;
+    public int denom_hi = 0;
     
     /**
      * Get the value of the token.

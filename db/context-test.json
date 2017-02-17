@@ -8,7 +8,7 @@
 			"town_dir": "",
 			"port_dir": "missing",
 			"type": "Region",
-			"nitty_bits": 3,
+			"nitty_bits": 2,
 			"neighbors": ["context-library", "context-table", "", ""]
 		}
 	]

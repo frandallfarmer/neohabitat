@@ -143,8 +143,7 @@ public class Avatar extends Container implements UserMod {
     public int		  sittingAction		= AV_ACT_sit_front;
         
     public String     turf            = "context-test";
-    
-    
+        
     private String     from_region		= "";
     private String     to_region		= "";	   
     private int        from_orientation	= 0;
@@ -211,6 +210,7 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("from_orientation", from_orientation);
             result.addParameter("from_direction",   from_direction);
             result.addParameter("transition_type",	transition_type);
+            result.addParameter("turf", turf);
         }
         if (result.control().toClient() && sittingIn != 0) {
         	result.addParameter("sittingIn", sittingIn);
@@ -246,7 +246,8 @@ public class Avatar extends Container implements UserMod {
         int new_activity    = FACE_LEFT;
         int rotation        = 0;
         int arrival_face    = 0;
-        
+
+        trace_msg("Avatar %s called objectIsComplete, transition_type=%d", obj_id(), transition_type);
         if (transition_type == WALK_ENTRY) {
             y &= ~FOREGROUND_BIT;
             rotation = (from_orientation - current_region().orientation + 4) % 4;
@@ -319,29 +320,8 @@ public class Avatar extends Container implements UserMod {
             x = new_x & 0b11111100;
             y = Math.min((new_y & ~FOREGROUND_BIT), current_region().depth) | FOREGROUND_BIT;
             activity = new_activity;
-        }
-        
-        // TODO If entering on death, penalize the Avatar's tokens, if any 
-        else if (transition_type == DEATH_ENTRY) {
-            HabitatMod noids[] = current_region().noids;
-            for (int i=0; i < noids.length; i++) {
-                HabitatMod obj = noids[i];
-                if (obj != null && obj.HabitatClass() == CLASS_TOKENS) {
-                    /*
-                      Tokens token = (Tokens) obj;
-                      int denom = (token.denom_lo + token.denom_hi * 256) * 50 / 100;
-                      token.denom_lo = denom % 256;
-                      token.denom_hi = (denom - token.denom_lo) / 256;
-                      if (denom == 0)
-                          token.denom_lo = 1;
-                      token.gen_flags(MODIFIED) = true;
-                     */                      
-                }
-            }
-        }
-        
-        // If entering via teleport, make sure we're in foreground         
-        else if (transition_type == TELEPORT_ENTRY) {
+        } else if (transition_type == TELEPORT_ENTRY) {
+            // If entering via teleport, make sure we're in foreground
             y |= FOREGROUND_BIT;
         } else {
             trace_msg("ENTRY ERROR: uUnknown transition type: " + transition_type);
@@ -500,7 +480,21 @@ public class Avatar extends Container implements UserMod {
         int destination_x = x.value(80);
         int destination_y = y.value(10) | FOREGROUND_BIT;
         int walk_how = how.value(0);
-        
+
+        if (stun_count > 0) {
+            stun_count -= 1;
+            send_reply_msg(from, this.noid, "x", this.x, "y", this.y, "how", walk_how);
+            if (stun_count >= 2) {
+                send_private_msg(from, this.noid, from, "SPEAK$", "I can't move.  I am stunned.");
+            } else if (stun_count == 1) {
+                send_private_msg(from, this.noid, from, "SPEAK$", "I am still stunned.");
+            } else {
+                send_private_msg(from, this.noid, from, "SPEAK$", "The stun effect is wearing off now.");
+            }
+            checkpoint_object(this);
+            return;
+        }
+
         if ((destination_y & ~FOREGROUND_BIT) > current_region().depth) {
             destination_y = current_region().depth | FOREGROUND_BIT;
         }
@@ -767,7 +761,10 @@ public class Avatar extends Container implements UserMod {
     public void change_regions(String contextRef, int direction, int type) {
     	Region	region		= current_region();
     	User	who			= (User) this.object();
-    	
+
+        trace_msg("Avatar %s changing regions to context=%s, direction=%d, type=%d", obj_id(),
+            contextRef, direction, type);
+
     	// TODO change_regions exceptions! see region.pl1
     	
         to_region			= contextRef;    	
@@ -787,4 +784,21 @@ public class Avatar extends Container implements UserMod {
     		who.send(msg);
     	}
     }
+    
+	public void drop_object_in_hand() {
+		if (contents(HANDS) != null) {
+			HabitatMod obj = contents(HANDS);
+			obj.x = 8;
+			obj.y = 130;
+			obj.gen_flags[MODIFIED] = true;
+			obj.change_containers(obj, current_region(), obj.y, true);
+			// For C64-side implementation, see line 110 of actions.m.
+			send_broadcast_msg(THE_REGION, "CHANGE_CONTAINERS_$",
+				"object_noid", obj.noid,
+				"container_noid", THE_REGION,
+				"x", obj.x,
+				"y", obj.y);
+		}
+	}
+
 }
