@@ -159,11 +159,7 @@ this.SERVER_OPS = {
 				b.add(o.target);
 				b.add(o.offset);
 				b.add(o.argCount);
-				if (o.argCount > 1) {
-					b.add(o.value.getBytes());
-				} else {
-					b.add(o.value);
-				}
+				b.add(o.value);
 			}
 		},
 		"FILL$": 				{ reqno: 8 },
@@ -176,7 +172,7 @@ this.SERVER_OPS = {
 		},
 		"GOAWAY_$": 			{ reqno: 9,
 			toClient: function (o,b) {
-				b.add(o.noid);
+				b.add(o.target);
 			}
 		},
 		"GRAB$": 				{ reqno: 16 },

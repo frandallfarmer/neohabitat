@@ -146,7 +146,8 @@ public class Tokens extends HabitatMod {
     		        msg.finish();
     		        from.send(msg);
     				if (old_amount == amount) {
-    					send_neighbor_msg(from, THE_REGION, "GO_AWAY$", "noid", noid);
+    					send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", noid);
+    					destroy_object(this);
     				}
     				return;
     			}
