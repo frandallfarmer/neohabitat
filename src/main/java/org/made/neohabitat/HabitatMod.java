@@ -2752,7 +2752,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *               The Avatar to terminate.
 	 */
 	public void kill_avatar(Avatar victim) {
-			for (int i = 0; i < victim.capacity() - 1; i++) {
+		for (int i = 0; i < victim.capacity() - 1; i++) {
 			if (victim.contents(i) != null) {
 				if (i == HANDS) {
 					victim.drop_object_in_hand();
@@ -2773,22 +2773,22 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		// Penalize the victim's tokens if they are holding any.
 		trace_msg("Avatar %s is transitioning on DEATH_ENTRY", obj_id());
 		for (int i = 0; i < victim.capacity() - 1; i++) {
-				HabitatMod curMod = victim.contents(i);
-				if (curMod != null && curMod.HabitatClass() == CLASS_TOKENS) {
-						Tokens token = (Tokens) curMod;
-						int denom = (token.denom_lo + token.denom_hi * 256) * 50 / 100;
-						trace_msg(
-								"Found tokens on DEATH_ENTRY for Avatar %s, denom_lo=%d, denom_hi=%d, denom=%d",
-								obj_id(), token.denom_lo, token.denom_hi, denom);
-						token.denom_lo = denom % 256;
-						token.denom_hi = (denom - token.denom_lo) / 256;
-						if (denom == 0)
-								token.denom_lo = 1;
-						token.gen_flags[MODIFIED] = true;
-						token.checkpoint_object(token);
-						trace_msg("New tokens on DEATH_ENTRY for Avatar %s, denom_lo=%d, denom_hi=%d", obj_id(),
-										token.denom_lo, token.denom_hi);
-				}
+			HabitatMod curMod = victim.contents(i);
+			if (curMod != null && curMod.HabitatClass() == CLASS_TOKENS) {
+				Tokens token = (Tokens) curMod;
+				int denom = (token.denom_lo + token.denom_hi * 256) * 50 / 100;
+				trace_msg(
+					"Found tokens on DEATH_ENTRY for Avatar %s, denom_lo=%d, denom_hi=%d, denom=%d",
+					obj_id(), token.denom_lo, token.denom_hi, denom);
+				token.denom_lo = denom % 256;
+				token.denom_hi = (denom - token.denom_lo) / 256;
+				if (denom == 0)
+					token.denom_lo = 1;
+				token.gen_flags[MODIFIED] = true;
+				token.checkpoint_object(token);
+				trace_msg("New tokens on DEATH_ENTRY for Avatar %s, denom_lo=%d, denom_hi=%d", obj_id(),
+					token.denom_lo, token.denom_hi);
+			}
 		}
 
 		victim.change_regions(victim.turf, AUTO_TELEPORT_DIR, DEATH_ENTRY);
