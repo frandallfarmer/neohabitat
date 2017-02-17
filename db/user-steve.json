@@ -46,5 +46,20 @@
 				"charges": 255
 			}
 		]
+	},
+	{
+		"type": "item",
+		"ref": "item-steve.compass",
+		"deletable": true,
+		"name": "Compass",
+		"in": "user-steve",
+		"mods": [
+			{
+				"type": "Compass",
+				"style": 0,
+				"y": 1,
+				"orientation": 0
+			}
+		]
 	}
 ]

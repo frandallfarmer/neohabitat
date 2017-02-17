@@ -203,6 +203,16 @@
 		},
 		{
 			"type": "class",
+			"tag": "Gun",
+			"name": "org.made.neohabitat.mods.Gun"
+		},
+		{
+			"type": "class",
+			"tag": "Knife",
+			"name": "org.made.neohabitat.mods.Knife"
+		},
+		{
+			"type": "class",
 			"tag": "Tokens",
 			"name": "org.made.neohabitat.mods.Tokens"
 		},
@@ -210,6 +220,16 @@
 			"type": "class",
 			"tag": "Coke_machine",
 			"name": "org.made.neohabitat.mods.Coke_machine"
+		},
+		{
+			"type": "class",
+			"tag": "Club",
+			"name": "org.made.neohabitat.mods.Club"
+		},
+		{
+			"type": "class",
+			"tag": "Stun_gun",
+			"name": "org.made.neohabitat.mods.Stun_gun"
 		}
 	]
 }

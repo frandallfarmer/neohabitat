@@ -806,12 +806,15 @@ var encodeState = {
 		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
-		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state,container, buf)); },
+		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Compass:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Knife:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Club:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Stun_gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
 		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Compass:    function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Coke_machine:function (state, container, buf){ return (this.common  (state, container, buf)); }
-
+		Coke_machine:function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

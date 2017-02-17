@@ -82,7 +82,7 @@ public class Region extends Container implements ContextMod, Constants {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting", "town_dir", "port_dir", "neighbors" })
     Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptInteger depth, OptInteger lighting, 
-            OptString town_dir, OptString port_dir, 
+            OptString town_dir, OptString port_dir,
             String[] neighbors) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {

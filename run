@@ -35,14 +35,17 @@ BRIDGE_PORT="${NEOHABITAT_BRIDGE_PORT-1337}"
 SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
 SERVER_BIND="${NEOHABITAT_SERVER_PORT-0.0.0.0}"
+DEBUGGER_PORT="${NEOHABITAT_DEBUGGER_PORT-1898}"
 SHUTDOWN_PASSWORD="${NEOHABITAT_SHUTDOWN_PASSWORD-figleaf}"
 SHOULD_BACKGROUND_BRIDGE="${NEOHABITAT_SHOULD_BACKGROUND_BRIDGE-true}"
+SHOULD_ENABLE_DEBUGGER="${NEOHABITAT_SHOULD_ENABLE_DEBUGGER-false}"
 SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE-true}"
 SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT-true}"
 SHOULD_UPDATE_SCHEMA="${NEOHABITAT_SHOULD_UPDATE_SCHEMA-true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
 
 BASE_ARGS=(
+  org.elkoserver.server.context.ContextServerBoot
   trace_cont=DEBUG
   trace_comm=EVENT
   # Forcibly logs to stdout to comply with 12 Factor App guidelines.
@@ -59,8 +62,14 @@ BASE_ARGS=(
   conf.context.name="${SERVER_NAME}"
   conf.context.shutdownpassword="${SHUTDOWN_PASSWORD}"
   conf.msgdiagnostics=true
-  org.elkoserver.server.context.ContextServerBoot
 )
+
+JVM_ARGS=()
+
+if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
+  echo " - Enabling JMX debugging for Neohabitat..."
+  JVM_ARGS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUGGER_PORT}")
+fi
 
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
   cd ${GIT_BASE_DIR}/db
@@ -79,5 +88,6 @@ fi
 
 # Starts the Habitat Elko server if requested.
 if [ "${SHOULD_RUN_NEOHABITAT}" == true ]; then
-  java -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar "${BASE_ARGS[@]}" "${@}"
+  echo " - Running Neohabitat Elko server with args: ${BASE_ARGS[@]}"
+  java "${JVM_ARGS[@]}" -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar "${BASE_ARGS[@]}" "${@}"
 fi

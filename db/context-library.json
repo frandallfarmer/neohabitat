@@ -8,7 +8,7 @@
 			"town_dir": "here",
 			"port_dir": "",
 			"type": "Region",
-			"nitty_bits": 3,
+			"nitty_bits": 2,
 			"neighbors": ["context-back4t_01", "context-table", "context-test", ""]
 		}
 	]

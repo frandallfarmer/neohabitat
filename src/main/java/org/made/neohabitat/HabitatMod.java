@@ -26,6 +26,9 @@ import org.made.neohabitat.mods.Tokens;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 
+import java.util.Formatter;
+import java.util.UUID;
+
 // TODO CHIP? Should we assureSameContext (and other elko patterns) assuming ill behaving clients? If so, how and when?
 
 /**
@@ -729,11 +732,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		context().sendToNeighbors(from, msg);
 
 		/* TODO Opaque container handling        
-        if (Avatar.getConnectionType() == CONNECTION_JSON) {
-            if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(cont, y)) {
-                context().sendToNeighbors(from, Msg.msgDelete(this.object()));
-            }
-        }
+				if (Avatar.getConnectionType() == CONNECTION_JSON) {
+						if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(cont, y)) {
+								context().sendToNeighbors(from, Msg.msgDelete(this.object()));
+						}
+				}
 		 */       
 		send_reply_msg(from, noid, "err", TRUE, "pos", this.y);
 
@@ -879,11 +882,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		/* TODO Opaque container handling        
 
-        if (Avatar.getConnectionType() == CONNECTION_JSON) {
-            if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(target, y)) {
-                context().sendToNeighbors(from, Msg.msgDelete(this.object()));
-            }
-        }
+				if (Avatar.getConnectionType() == CONNECTION_JSON) {
+						if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(target, y)) {
+								context().sendToNeighbors(from, Msg.msgDelete(this.object()));
+						}
+				}
 		 */
 
 		send_throw_reply(from, noid, target.noid, new_x, new_y, TRUE);
@@ -1541,14 +1544,16 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * end heap_space_available;
 	 */
 
-	/**
+	/*
 	 * Dump a string to the debugging server log.
 	 * 
 	 * @param msg
-	 *            The message to log.
+	 *            The message to log, with optional java.util.Formatter options (%s, %d, etc.)
+	 * @param args
+	 *            Parameters to format into the string
 	 */
-	public void trace_msg(String msg) {
-		Trace.trace("habitat").warningm(msg);
+	public void trace_msg(String msg, Object... args) {
+		Trace.trace("habitat").warningm(new Formatter().format(msg, args).toString());
 	}
 
 	/**
@@ -2741,6 +2746,55 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Terminates an avatar with extreme prejudice.
+	 * 
+	 * @param victim
+	 *               The Avatar to terminate.
+	 */
+	public void kill_avatar(Avatar victim) {
+			for (int i = 0; i < victim.capacity() - 1; i++) {
+			if (victim.contents(i) != null) {
+				if (i == HANDS) {
+					victim.drop_object_in_hand();
+				} else if (i != HEAD && i != MAIL_SLOT) {
+					// TODO(steve): Uncomment once object deletion works.
+					//destroy_object(victim.contents(i));
+				}
+			}
+		}
+
+		victim.x = 80;
+		victim.y = 132;
+		victim.health = 255;
+		victim.bankBalance = Math.round(((float) victim.bankBalance) * 0.8f);
+		victim.stun_count = 0;
+		victim.gen_flags[MODIFIED] = true;
+
+		// Penalize the victim's tokens if they are holding any.
+		trace_msg("Avatar %s is transitioning on DEATH_ENTRY", obj_id());
+		for (int i = 0; i < victim.capacity() - 1; i++) {
+				HabitatMod curMod = victim.contents(i);
+				if (curMod != null && curMod.HabitatClass() == CLASS_TOKENS) {
+						Tokens token = (Tokens) curMod;
+						int denom = (token.denom_lo + token.denom_hi * 256) * 50 / 100;
+						trace_msg(
+								"Found tokens on DEATH_ENTRY for Avatar %s, denom_lo=%d, denom_hi=%d, denom=%d",
+								obj_id(), token.denom_lo, token.denom_hi, denom);
+						token.denom_lo = denom % 256;
+						token.denom_hi = (denom - token.denom_lo) / 256;
+						if (denom == 0)
+								token.denom_lo = 1;
+						token.gen_flags[MODIFIED] = true;
+						token.checkpoint_object(token);
+						trace_msg("New tokens on DEATH_ENTRY for Avatar %s, denom_lo=%d, denom_hi=%d", obj_id(),
+										token.denom_lo, token.denom_hi);
+				}
+		}
+
+		victim.change_regions(victim.turf, AUTO_TELEPORT_DIR, DEATH_ENTRY);
+	}
+
+	/**
 	 * Spawn a Habitat Object out of thin air.
 	 * 
 	 * @param name		The name to give the object.
@@ -2748,7 +2802,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * @param container The container that will hold the object when it arrives. null == region/context.
 	 * @return
 	 */
-
 	public Item create_object(String name, HabitatMod mod, Container container) {
 		Item item = null;
 		if (container != null) {
