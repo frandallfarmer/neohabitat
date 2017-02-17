@@ -2,11 +2,11 @@
   "type": "item",
   "ref": "item-library.gun",
   "deletable": true,
-  "name": "Stun_gun",
+  "name": "Gun",
   "in": "item-table.table",
   "mods": [
     {
-      "type": "Stun_gun",
+      "type": "Gun",
       "style": 0,
       "x": 2,
       "y": 1,

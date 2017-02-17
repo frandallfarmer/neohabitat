@@ -731,13 +731,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		msg.finish();
 		context().sendToNeighbors(from, msg);
 
-		/* TODO Opaque container handling        
-				if (Avatar.getConnectionType() == CONNECTION_JSON) {
-						if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(cont, y)) {
-								context().sendToNeighbors(from, Msg.msgDelete(this.object()));
-						}
+/* TODO Opaque container handling        
+		if (Avatar.getConnectionType() == CONNECTION_JSON) {
+				if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(cont, y)) {
+						context().sendToNeighbors(from, Msg.msgDelete(this.object()));
 				}
-		 */       
+		}
+ */       
 		send_reply_msg(from, noid, "err", TRUE, "pos", this.y);
 
 		/* If putting into a pawn machine, announce the value of the object */
@@ -880,14 +880,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		send_neighbor_msg(from, avatar.noid, "THROW$", "obj", noid, "x", new_x, "y", new_y, "hit", TRUE);
 
-		/* TODO Opaque container handling        
+/* TODO Opaque container handling        
 
-				if (Avatar.getConnectionType() == CONNECTION_JSON) {
-						if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(target, y)) {
-								context().sendToNeighbors(from, Msg.msgDelete(this.object()));
-						}
+		if (Avatar.getConnectionType() == CONNECTION_JSON) {
+				if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(target, y)) {
+						context().sendToNeighbors(from, Msg.msgDelete(this.object()));
 				}
-		 */
+		}
+ */
 
 		send_throw_reply(from, noid, target.noid, new_x, new_y, TRUE);
 

@@ -6,8 +6,6 @@
 /* jslint bitwise: true */
 /* jshint esversion: 6 */
 
-const Trace		 	= require('winston');
-
 this.MICROCOSM_ID_BYTE	= 0x55;
 this.ESCAPE_CHAR		= 0x5D;
 this.END_OF_MESSAGE		= 0x0D;
@@ -143,8 +141,6 @@ this.SERVER_OPS = {
 		"CHANGE$": 				{ reqno: 8 },
 		"CHANGE_CONTAINERS_$":	{ reqno: 19,
 			toClient: function (o, b) {
-				Trace.debug("Changing container: noid=%s, contnoid=%s, x=%d, y=%d",
-					o.object_noid, o.container_noid, o.x, o.y);
 				b.add(o.object_noid);
 				b.add(o.container_noid);
 				b.add(o.x);
