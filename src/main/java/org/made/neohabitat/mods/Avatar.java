@@ -480,7 +480,21 @@ public class Avatar extends Container implements UserMod {
         int destination_x = x.value(80);
         int destination_y = y.value(10) | FOREGROUND_BIT;
         int walk_how = how.value(0);
-        
+
+        if (stun_count > 0) {
+            stun_count -= 1;
+            send_reply_msg(from, this.noid, "x", this.x, "y", this.y, "how", walk_how);
+            if (stun_count >= 2) {
+                send_private_msg(from, this.noid, from, "SPEAK$", "I can't move.  I am stunned.");
+            } else if (stun_count == 1) {
+                send_private_msg(from, this.noid, from, "SPEAK$", "I am still stunned.");
+            } else {
+                send_private_msg(from, this.noid, from, "SPEAK$", "The stun effect is wearing off now.");
+            }
+            checkpoint_object(this);
+            return;
+        }
+
         if ((destination_y & ~FOREGROUND_BIT) > current_region().depth) {
             destination_y = current_region().depth | FOREGROUND_BIT;
         }
