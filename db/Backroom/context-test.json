@@ -3,6 +3,7 @@
 	"ref": "context-test",
 	"capacity": 6,
 	"name": "Neohabitat Project Hub",
+	"aliases": ["pop-hub", "pop-test"],
 	"mods": [
 		{
 			"town_dir": "",

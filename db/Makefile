@@ -17,13 +17,18 @@ DBINIT_SCRIPT = ./dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
+TELEPORTDB = ./db-teleports.json
+
 # Make the database setup stuff
 db:
+	rm -f $(TELEPORTDB)
+	echo '{ "ref" : "teleports", "type" : "map", "map" : {' > $(TELEPORTDB)
+	$(foreach F,$(MONGODB_OBJECTS), node dumpTeleportEntries.js < $(F) >> $(TELEPORTDB);)
+	echo ' " End Of Directory": "eod" } }' >> $(TELEPORTDB)
 	rm -f $(DBINIT_SCRIPT)
 	echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	echo 'mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js <<ENDINITS' >> $(DBINIT_SCRIPT)
 	cat dbinitpre.js >> $(DBINIT_SCRIPT)
-#	$(foreach F,$(MONGODB_OBJECTS), echo "eupdate("`sed -e 's/\\\/\\\\\\\\/' -e 's/\\$$/\\\\$$/' < $(F)`")" >> $(DBINIT_SCRIPT);)
 	$(foreach F,$(MONGODB_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
 	cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	echo 'ENDINITS' >> $(DBINIT_SCRIPT)

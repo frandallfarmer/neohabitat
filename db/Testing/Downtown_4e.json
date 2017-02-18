@@ -4,6 +4,7 @@
     "capacity": 6, 
     "type": "context", 
     "name": "Plaza Southwest", 
+    "aliases": ["pop-plaza","pop-downtown","pop-fountain"],
     "mods": [
       {
         "town_dir": "", 
