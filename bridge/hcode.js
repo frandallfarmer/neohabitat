@@ -195,14 +195,18 @@ this.SERVER_OPS = {
 		"GRAB$": 				{ reqno: 16 },
 		"GRABFROM$": 			{ reqno: 17 },
 		"HANG$": 				{ reqno: 11 },
-		"HEREIS_$":		 		{ reqno: 8 },
+		"HEREIS_$":		 		{ reqno: 8,
+			toClient: function (o, b, client) {
+				b.add(client.backdoor.vectorize(client, o.object, o.container));
+			}
+		},
 		"HUNGUP$": 				{ reqno: 12 },
 		"LOAD$": 				{ reqno: 8 },
 		"MAILARRIVED$":		 	{ reqno: 8 },
 		"MUNCH$": 				{ reqno: 8 },
 		"NEWHEAD$":	 			{ reqno: 31 },
 		"OBJECTSPEAK_$":	 	{ reqno: 15, 
-			toClient: function (o,b) { 
+			toClient: function (o,b) {				
 				b.add(o.speaker);
 				b.add(o.text.getBytes());
 			}
@@ -233,7 +237,12 @@ this.SERVER_OPS = {
 			}
 		},
 		"PAYTO$":	 			{ reqno: 8 },
-		"PLAY_$": 				{ reqno: 14 },
+		"PLAY_$": 				{ reqno: 14,
+			toClient: function (o,b) {
+				b.add(o.sfx_number);
+				b.add(o.from_noid);
+			}
+		},
 		"POSTURE$": 			{ reqno: 20,
 			toClient: function (o,b) { 
 				b.add(o.new_posture);
@@ -505,7 +514,9 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.x);
 				b.add(o.y);
-				b.add(o.how);
+				if ('how' in o) {
+					b.add(o.how);
+				}
 			}
 		},
 		SITORSTAND: {
@@ -631,6 +642,11 @@ this.translate = {
 		PAY: {
 			toClient: function(o, b) {
 				b.add(o.err);
+				b.add(o.amount_lo);
+				b.add(o.amount_hi);
+				if ('text' in o) {
+					b.add(o.text.getBytes());
+				}
 			}
 		},
 		SPLIT: {
@@ -648,6 +664,25 @@ this.translate = {
 			},
 			toClient: function(o, b) {
 				b.add(o.err);
+			}
+		},
+		DEPOSIT: {
+			toServer: function(a, m) {
+				m.token_noid = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		WITHDRAW: {
+			toServer: function(a, m) {
+				m.amount_lo = a[0];
+				m.amount_hi = a[1];
+			},
+			toClient: function(o, b) {
+				b.add(o.amount_lo);
+				b.add(o.amount_hi);
+				b.add(o.result_code);
 			}
 		}
 };
@@ -774,6 +809,22 @@ this.Chest = {
 	}
 };
 
+this.Countertop = {
+	clientMessages: {
+		0:{ op:"HELP" },
+		4:{ op:"CLOSECONTAINER" },
+		5:{ op:"OPENCONTAINER" }
+	}
+};
+
+this.Bed = {
+	clientMessages: {
+		0:{ op:"HELP" },
+		4:{ op:"CLOSECONTAINER" },
+		5:{ op:"OPENCONTAINER" }
+	}
+};
+
 this.Compass = {
 	clientMessages: {
 		0:{ op:"HELP" },
@@ -789,7 +840,7 @@ this.Fountain = {
 			0:{ op:"HELP" },
 			4:{ op:"ASK" },
 		}
-}
+};
 
 this.Tokens = {
 		clientMessages: {
@@ -800,7 +851,7 @@ this.Tokens = {
 			4:{ op:"PAYTO" },
 			5:{ op:"SPLIT" }
 		}
-}
+};
 
 this.Stun_gun = {
 		clientMessages: {
@@ -809,14 +860,29 @@ this.Stun_gun = {
 			2:{ op:"PUT" },
 			5:{ op:"STUN" }
 		}
-}
+};
 
 this.Coke_machine = {
 		clientMessages: {
 			0:{ op:"HELP" },
 			4:{ op:"PAY" }
 		}
-}
+};
+
+this.Fortune_machine = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"PAY" }
+		}
+};
+
+this.Atm	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"DEPOSIT" },
+			2:{ op:"WITHDRAW" }
+		}
+};
 
 this.magical	= {
 		clientMessages: {
@@ -875,3 +941,4 @@ this.Hot_tub		 	= this.help;
 this.Gun       = this.weapon;
 this.Knife   = this.weapon;
 this.Club   = this.weapon;
+this.Streetlamp = this.help;

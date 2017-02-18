@@ -126,8 +126,7 @@ public abstract class Weapon extends HabitatMod {
 	
 	public int damage_object(HabitatMod object) {
 		if (damageable(object)) {
-			// TODO(steve): Uncomment when object deletion works.
-			//destroy_object(object);
+			destroy_object(object);
 			return DESTROY;
 		} else {
 			return FALSE;

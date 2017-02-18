@@ -814,7 +814,12 @@ var encodeState = {
 		Club:  function(state, container, buf) { return (this.common(state, container, buf)); },
 		Stun_gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
 		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Coke_machine:function (state, container, buf) { return (this.common  (state, container, buf)); }
+		Coke_machine:function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Fortune_machine: function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Streetlamp: function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Bed:      function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Countertop:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Atm:      function (state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

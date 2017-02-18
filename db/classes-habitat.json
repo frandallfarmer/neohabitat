@@ -230,6 +230,31 @@
 			"type": "class",
 			"tag": "Stun_gun",
 			"name": "org.made.neohabitat.mods.Stun_gun"
+		},
+		{
+			"type": "class",
+			"tag": "Fortune_machine",
+			"name": "org.made.neohabitat.mods.Fortune_machine"
+		},
+		{
+			"type": "class",
+			"tag": "Streetlamp",
+			"name": "org.made.neohabitat.mods.Streetlamp"
+		},
+		{
+			"type": "class",
+			"tag": "Bed",
+			"name": "org.made.neohabitat.mods.Bed"
+		},
+		{
+			"type": "class",
+			"tag": "Countertop",
+			"name": "org.made.neohabitat.mods.Countertop"
+		},
+		{
+			"type": "class",
+			"tag": "Atm",
+			"name": "org.made.neohabitat.mods.Atm"
 		}
 	]
 }

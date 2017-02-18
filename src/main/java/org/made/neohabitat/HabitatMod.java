@@ -1,17 +1,11 @@
 package org.made.neohabitat;
 
 import org.elkoserver.server.context.BasicObject;
-import org.elkoserver.server.context.Context;
-import org.elkoserver.server.context.Contextor;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Mod;
-import org.elkoserver.server.context.Msg;
 import org.elkoserver.server.context.ObjectCompletionWatcher;
-import org.elkoserver.server.context.Position;
 
-import java.math.BigInteger;
 import java.util.Random;
-import java.util.UUID;
 
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
@@ -104,6 +98,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	// understanding to access the objects
 	public int     gr_width    = 0;
 	public boolean gen_flags[] = new boolean[33];
+
+	/* Provides an initialized random number generator for any derived classes. */
+	protected Random rand = new Random();
 
 	/**
 	 * Replaces original global 'position'
@@ -912,7 +909,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				"i", /* 1 -- avatar */
 				"i", /* 2 -- amulet */
 				"-", /* 3 */
-				"ATM: DO displays account balance.  GET withdraws tokens.  PUT deposits tokens into your account.", /*
+				"Atm: DO displays account balance.  GET withdraws tokens.  PUT deposits tokens into your account.", /*
 				 * 4
 				 * --
 				 * atm
@@ -1577,6 +1574,22 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * An ghost sends a string message to its User.
+	 *
+	 * @param to
+	 *            User the message is going to.
+	 * @param noid
+	 *            The object speaking to the user.
+	 * @param text
+	 *            What the object wants to say.
+	 */
+	public void ghost_say(User to, int noid, String text) {
+		send_private_msg(to, THE_REGION, to, "OBJECTSPEAK_$",
+				"speaker", noid,
+				"text", text);
+	}
+
+	/**
 	 * An object sends a string message to a specific user
 	 * 
 	 * @param to
@@ -1621,6 +1634,20 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		msg.addParameter("speaker", noid);
 		msg.finish();
 		context().send(msg);
+	}
+
+	/**
+	 * An object sends a string message to a User's neighbors
+	 *
+	 * @param noid
+	 *            The object speaking to the User's neighbors.
+	 * @param text
+	 *            What the object wants to say.
+	 */
+	public void object_say_to_neighbors(User from, int noid, String text) {
+		send_neighbor_msg(from, THE_REGION, "OBJECTSPEAK_$",
+			"speaker", noid,
+			"text", text);
 	}
 
 	/**
@@ -1669,13 +1696,24 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/**
 	 * Tells the region to get rid of an object at the provided noid.
 	 *
-	 * @param noid
+	 * @param noid object noid to eliminate
 	 */
 	public void send_goaway_msg(int noid) {
 		JSONLiteral msg = new_broadcast_msg(THE_REGION, "GOAWAY_$");
 		msg.addParameter("target", noid);
 		msg.finish();
 		context().send(msg);
+	}
+
+	/**
+	 * Tells the clients of the neighbors of an avatar to get rid of
+	 * an object.
+	 *
+	 * @param noid object noid to eliminate
+	 */
+	public void send_neighbor_goaway_msg(User from, int noid) {
+		send_neighbor_msg(from, THE_REGION, "GOAWAY_$",
+			"target", noid);
 	}
 
 	/**
@@ -2074,6 +2112,43 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Sends a SYNCHRONOUS (client is waiting) reply message, with addition
+	 * attributes/values.
+	 *
+	 * @param from
+	 *            The User/connection that gets the reply.
+	 * @param noid
+	 *            The object waiting for this reply.
+	 * @param a1
+	 *            First attribute to add
+	 * @param v1
+	 *            First value to add
+	 * @param a2
+	 *            Second attribute to add
+	 * @param v2
+	 *            Second value to add
+	 * @param a3
+	 *            Third attribute to add
+	 * @param v3
+	 *            Third value to add
+	 * @param a4
+	 *            Fourth attribute to add
+	 * @param v4
+	 *            Fourth value to add
+	 *
+	 **/
+	public void send_reply_msg(User from, int noid, String a1, int v1, String a2, int v2, String a3, int v3, String a4,
+							   String v4) {
+		JSONLiteral msg = new_reply_msg(noid);
+		msg.addParameter(a1, v1);
+		msg.addParameter(a2, v2);
+		msg.addParameter(a3, v3);
+		msg.addParameter(a4, v4);
+		msg.finish();
+		from.send(msg);
+	}
+
+	/**
 	 * Sends a SYNCHRONOUS (client is waiting) reply message, with additional
 	 * String value.
 	 * 
@@ -2276,6 +2351,36 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 */
 
 	public void send_neighbor_msg(User from, int noid, String op, String a1, int v1, String a2, int v2) {
+		JSONLiteral msg = new_neighbor_msg(noid, op);
+		msg.addParameter(a1, v1);
+		msg.addParameter(a2, v2);
+		msg.finish();
+		context().sendToNeighbors(from, msg);
+	}
+
+	/**
+	 * Sends a ASYNCHRONOUS message to all the neighbors (other
+	 * user/connections) in a region with additional parameters.
+	 *
+	 * @param from
+	 *            The user/connection that is acting, and the only one that will
+	 *            NOT get the message.
+	 * @param noid
+	 *            The object that is broadcasting.
+	 * @param op
+	 *            The STRING name of the ASYNCRONOUS request.
+	 *            (See::new_neighbor_msg)
+	 * @param a1
+	 *            First attribute to add
+	 * @param v1
+	 *            First value to add
+	 * @param a2
+	 *            Second attribute to add
+	 * @param v2
+	 *            Second value to add
+	 */
+
+	public void send_neighbor_msg(User from, int noid, String op, String a1, int v1, String a2, String v2) {
 		JSONLiteral msg = new_neighbor_msg(noid, op);
 		msg.addParameter(a1, v1);
 		msg.addParameter(a2, v2);
@@ -2631,6 +2736,38 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Send a private message with additional parameters to a specified
+	 * user-connection.
+	 *
+	 * @param from
+	 *            The user/connection that instigated this action. Will NOT get
+	 *            a copy of the message.
+	 * @param noid
+	 *            The object that is acting.
+	 * @param to
+	 *            The user/connection that is the recipient of this private
+	 *            message.
+	 * @param op
+	 *            The STRING name of the ASYNCRONOUS request.
+	 *            (See::new_private_msg)
+	 * @param a1
+	 *            First attribute to add
+	 * @param v1
+	 *            First value to add
+	 * @param a2
+	 *            Second attribute to add
+	 * @param v2
+	 *            Second value to add
+	 */
+	public void send_private_msg(User from, int noid, User to, String op, String a1, int v1, String a2, String v2) {
+		JSONLiteral msg = new_private_msg(noid, op);
+		msg.addParameter(a1, v1);
+		msg.addParameter(a2, v2);
+		msg.finish();
+		to.send(msg);
+	}
+
+	/**
 	 * Clear a bit in an integer.
 	 * 
 	 * @param val
@@ -2746,6 +2883,27 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Originally coded as lights_off in helpers.pl1, this method ensures
+	 * that necessary side effects are applied whenever an Avatar becomes a ghost.
+	 *
+	 * @param who
+	 * 			  The Avatar upon which to perform in-hands side effects during ghosting.
+	 */
+	public void to_ghost_side_effects(Avatar who) {
+		if (who.contents(HANDS) != null) {
+			HabitatMod inHands = who.contents(HANDS);
+			if (inHands.HabitatClass() == CLASS_FLASHLIGHT) {
+				Flashlight flashlight = (Flashlight) inHands;
+				Region curRegion = current_region();
+				if (flashlight.on == TRUE) {
+					curRegion.lighting -= 1;
+					send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "SUCCESS", -1);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Terminates an avatar with extreme prejudice.
 	 * 
 	 * @param victim
@@ -2815,5 +2973,83 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			item.checkpoint();
 		}
 		return item;
+	}
+
+	/**
+	 * Returns the SFX number (offset + id) for a provided id.
+	 *
+	 * @param sfxId The SFX ID number (like 6, or 10, etc.)
+	 * @return the SFX offset (128) + sfxId
+     */
+	public int sfx_number(int sfxId) {
+		return 128 + sfxId;
+	}
+
+
+	/**
+	 * Adds a UUID4 random identifier to a given name, joining with a -.
+	 *
+	 * @param name Name to append UUID4 to
+	 * @return name-UUID4
+     */
+	public String with_uuid(String name) {
+		return String.format("%s-%s", name, UUID.randomUUID());
+	}
+
+	/**
+	 * Announces a new object to a Region.
+	 *
+	 * @param obj The new HabitatMod to announce.
+     */
+	public void announce_object(Item obj, HabitatMod container) {
+		JSONLiteral itemLiteral = obj.encode(EncodeControl.forClient);
+		JSONLiteral announceBroadcast = new_broadcast_msg(THE_REGION, "HEREIS_$");
+		announceBroadcast.addParameter("object", itemLiteral);
+		announceBroadcast.addParameter("container", container.object().ref());
+		announceBroadcast.finish();
+		trace_msg("Announcing object in container %s: %s", container.object().ref(), itemLiteral.sendableString());
+		context().send(announceBroadcast);
+	}
+
+	/**
+	 * Pays the provided amount of Tokens to the specified Avatar.
+	 *
+	 * @param who The Avatar to pay Tokens to.
+	 * @param amount The amount of Tokens to pay the Avatar.
+     * @return TRUE or FALSE, depending upon success/failure
+     */
+	public int pay_to(Avatar who, int amount) {
+		HabitatMod handContents = who.contents(HANDS);
+		Tokens tokens;
+		if (empty_handed(who)) {
+			tokens = new Tokens(0, 0, HANDS, 0, 0, 0, 0);
+			tokens.tset(amount);
+			Item obj = create_object("money", tokens, who);
+			trace_msg("Created tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
+			announce_object(obj, who);
+		} else if (handContents.HabitatClass() == CLASS_TOKENS) {
+			tokens = (Tokens) handContents;
+			amount += tokens.tget();
+			if (amount > 65535) {
+				trace_msg("Tokens for Avatar %s > 65535: %d", who.obj_id(), amount);
+				return FALSE;
+			}
+			trace_msg("Updated tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
+			tokens.tset(amount);
+		} else {
+			tokens = new Tokens(0, who.x, who.y, 0, 0, 0, 0);
+			tokens.tset(amount);
+			trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", current_region().obj_id(),
+				who.obj_id(), tokens.tget());
+			Item item = create_object(with_uuid("money"), tokens, current_region());
+			if (item == null) {
+				trace_msg("FAILED to create tokens in region %s for Avatar %s", current_region().obj_id(),
+					who.obj_id());
+				return FALSE;
+			}
+			announce_object(item, current_region());
+		}
+		tokens.gen_flags[MODIFIED] = true;
+		return TRUE;
 	}
 }
