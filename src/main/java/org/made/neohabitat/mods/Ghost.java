@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.elkoserver.server.context.UserMod;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -14,7 +15,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Ghost extends HabitatMod {
+public class Ghost extends HabitatMod implements UserMod {
 
     public int HabitatClass() {
         return CLASS_GHOST;

@@ -156,14 +156,16 @@ public class Fortune_machine extends Coinop {
 
     @JSONMethod
     public void PAY(User from) {
+        Avatar avatar = avatar(from);
         int	success = Tokens.spend(from, FORTUNE_COST);
         String text;
         if (success == TRUE) {
             text = getFortune();
             // TODO(steve): Uncomment once bank_account_balance is working.
-//            send_neighbor_msg(from, noid, "PAY$",
-//                "amount_lo", FORTUNE_COST,
-//                "amount_hi", 0);
+            send_neighbor_msg(from, noid, "PAY$",
+                "payer", avatar.noid,
+                "amount_lo", FORTUNE_COST,
+                "amount_hi", 0);
             send_neighbor_msg(from, THE_REGION, "PLAY_$",
                 "sfx_number", sfx_number(FORTUNE_SFX_ID),
                 "from_noid", noid);

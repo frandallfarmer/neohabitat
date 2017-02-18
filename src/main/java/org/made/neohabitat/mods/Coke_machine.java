@@ -69,7 +69,10 @@ public class Coke_machine extends Coinop {
     	int		success = Tokens.spend(from, COKE_COST);
     	if (success == TRUE) {
     		addToTake(COKE_COST);
-    		send_neighbor_msg(from, noid, "PAY$", "amount_lo", COKE_COST, "amount_hi", 0);
+    		send_neighbor_msg(from, noid, "PAY$",
+                "payer", avatar.noid,
+                "amount_lo", COKE_COST,
+                "amount_hi", 0);
     		send_neighbor_msg(from, avatar.noid, "POSTURE$", "new_posture", OPERATE);
     	} else {
     		object_say(from,  "You don't have enough money.  A Choke costs $" +  COKE_COST +  ".");
