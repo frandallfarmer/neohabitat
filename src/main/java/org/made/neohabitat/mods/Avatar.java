@@ -332,6 +332,8 @@ public class Avatar extends Container implements UserMod {
         		x = to_x;
         		y = to_y;
         	} else {
+        		x = 8;
+           	 	y = 130;
         		 HabitatMod noids[] = current_region().noids;
                  for (int i=0; i < noids.length; i++) {
                      HabitatMod obj = noids[i];

@@ -152,21 +152,9 @@ public class Teleport extends Coinop {
     }
     
     public String lookupTeleportDestination(String key) {
-    	switch (key) {
-    	case "pop-downtown":
-    		return "context-Downtown_4e";
-    	case "pop-fountain":
-    		return "context-Downtown_4e";
-    	case "pop-plazasw":
-    		return "context-Downtown_4e";
-    	case "pop-heads":
-    		return "context-test";
-    	case "pop-library":
-    		return "context-library";
-    	}
-    	return null;    	
-//    	Map directory = (Map) context().getStaticObject("teleports");
-//    	return (String) directory.get(squish(key));
+    	@SuppressWarnings("unchecked")
+    	Map<String, String> directory = (Map<String, String>) context().getStaticObject("teleports");
+    	return (String) directory.get(squish(key));
     }
 
    

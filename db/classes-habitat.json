@@ -1,240 +1,245 @@
 {
-  "ref": "classes",
-  "type": "classes",
-  "classes": [
-    {
-      "type": "class",
-      "tag": "Avatar",
-      "name": "org.made.neohabitat.mods.Avatar"
-    },
-    {
-      "type": "class",
-      "tag": "Bag",
-      "name": "org.made.neohabitat.mods.Bag"
-    },
-    {
-      "type": "class",
-      "tag": "Box",
-      "name": "org.made.neohabitat.mods.Box"
-    },
-    {
-      "type": "class",
-      "tag": "Building",
-      "name": "org.made.neohabitat.mods.Building"
-    },
-    {
-      "type": "class",
-      "tag": "Bush",
-      "name": "org.made.neohabitat.mods.Bush"
-    },
-    {
-      "type": "class",
-      "tag": "Door",
-      "name": "org.made.neohabitat.mods.Door"
-    },
-    {
-      "type": "class",
-      "tag": "Fence",
-      "name": "org.made.neohabitat.mods.Fence"
-    },
-    {
-      "type": "class",
-      "tag": "Flashlight",
-      "name": "org.made.neohabitat.mods.Flashlight"
-    },
-    {
-      "type": "class",
-      "tag": "Fountain",
-      "name": "org.made.neohabitat.mods.Fountain"
-    },
-    {
-      "type": "class",
-      "tag": "Glue",
-      "name": "org.made.neohabitat.mods.Glue"
-    },
-    {
-      "type": "class",
-      "tag": "Ground",
-      "name": "org.made.neohabitat.mods.Ground"
-    },
-    {
-      "type": "class",
-      "tag": "Head",
-      "name": "org.made.neohabitat.mods.Head"
-    },
-    {
-      "type": "class",
-      "tag": "Hot_tub",
-      "name": "org.made.neohabitat.mods.Hot_tub"
-    },
-    {
-      "type": "class",
-      "tag": "Key",
-      "name": "org.made.neohabitat.mods.Key"
-    },
-    {
-      "type": "class",
-      "tag": "Knick_knack",
-      "name": "org.made.neohabitat.mods.Knick_knack"
-    },
-    {
-      "type": "class",
-      "tag": "Plaque",
-      "name": "org.made.neohabitat.mods.Plaque"
-    },
-    {
-      "type": "class",
-      "tag": "Region",
-      "name": "org.made.neohabitat.mods.Region"
-    },
-    {
-      "type": "class",
-      "tag": "Rock",
-      "name": "org.made.neohabitat.mods.Rock"
-    },
-    {
-      "type": "class",
-      "tag": "Street",
-      "name": "org.made.neohabitat.mods.Street"
-    },
-    {
-      "type": "class",
-      "tag": "Table",
-      "name": "org.made.neohabitat.mods.Table"
-    },
-    {
-      "type": "class",
-      "tag": "Tree",
-      "name": "org.made.neohabitat.mods.Tree"
-    },
-    {
-      "type": "class",
-      "tag": "Sign",
-      "name": "org.made.neohabitat.mods.Sign"
-    },
-    {
-      "type": "class",
-      "tag": "Short_sign",
-      "name": "org.made.neohabitat.mods.Short_sign"
-    },
-    {
-      "type": "class",
-      "tag": "Wall",
-      "name": "org.made.neohabitat.mods.Wall"
-    },
-    {
-      "tag": "Sky",
-      "name": "org.made.neohabitat.mods.Sky"
-    },
-    {
-      "type": "class",
-      "tag": "Pond",
-      "name": "org.made.neohabitat.mods.Pond"
-    },
-    {
-      "type": "class",
-      "tag": "House_cat",
-      "name": "org.made.neohabitat.mods.House_cat"
-    },
-    {
-      "type": "class",
-      "tag": "Roof",
-      "name": "org.made.neohabitat.mods.Roof"
-    },
-    {
-      "type": "class",
-      "tag": "Couch",
-      "name": "org.made.neohabitat.mods.Couch"
-    },
-    {
-      "type": "class",
-      "tag": "Floor_lamp",
-      "name": "org.made.neohabitat.mods.Floor_lamp"
-    },
-    {
-      "type": "class",
-      "tag": "Window",
-      "name": "org.made.neohabitat.mods.Window"
-    },
-    {
-      "type": "class",
-      "tag": "Chair",
-      "name": "org.made.neohabitat.mods.Chair"
-    },
-    {
-      "type": "class",
-      "tag": "Chest",
-      "name": "org.made.neohabitat.mods.Chest"
-    },
-    {
-      "type": "class",
-      "tag": "Plant",
-      "name": "org.made.neohabitat.mods.Plant"
-    },
-    {
-      "type": "class",
-      "tag": "Trapezoid",
-      "name": "org.made.neohabitat.mods.Trapezoid"
-    },
-    {
-      "type": "class",
-      "tag": "Super_trapezoid",
-      "name": "org.made.neohabitat.mods.Super_trapezoid"
-    },
-    {
-      "type": "class",
-      "tag": "Flag",
-      "name": "org.made.neohabitat.mods.Flag"
-    },
-    {
-      "type": "class",
-      "tag": "Flat",
-      "name": "org.made.neohabitat.mods.Flat"
-    },
-    {
-      "type": "class",
-      "tag": "Spray_can",
-      "name": "org.made.neohabitat.mods.Spray_can"
-    },
-    {
-      "type": "class",
-      "tag": "Compass",
-      "name": "org.made.neohabitat.mods.Compass"
-    },
-    {
-      "type": "class",
-      "tag": "Gun",
-      "name": "org.made.neohabitat.mods.Gun"
-    },
-    {
-      "type": "class",
-      "tag": "Knife",
-      "name": "org.made.neohabitat.mods.Knife"
-    },
-    {
-      "type": "class",
-      "tag": "Tokens",
-      "name": "org.made.neohabitat.mods.Tokens"
-    },
-    {
-      "type": "class",
-      "tag": "Coke_machine",
-      "name": "org.made.neohabitat.mods.Coke_machine"
-    },
-    {
-      "type": "class",
-      "tag": "Club",
-      "name": "org.made.neohabitat.mods.Club"
-    },
-    {
-      "type": "class",
-      "tag": "Stun_gun",
-      "name": "org.made.neohabitat.mods.Stun_gun"
-    },
-    {
-      "type": "class",
-      "tag": "Teleport",
-      "name": "org.made.neohabitat.mods.Teleport"
-    }
-  ]
+	"ref": "classes",
+	"type": "classes",
+	"classes": [
+		{
+			"type" : "class",
+			"tag" : "map",
+			"name" : "org.elkoserver.server.context.statics.StaticStringMap"
+		},
+		{
+			"type": "class",
+			"tag": "Avatar",
+			"name": "org.made.neohabitat.mods.Avatar"
+		},
+		{
+			"type": "class",
+			"tag": "Bag",
+			"name": "org.made.neohabitat.mods.Bag"
+		},
+		{
+			"type": "class",
+			"tag": "Box",
+			"name": "org.made.neohabitat.mods.Box"
+		},
+		{
+			"type": "class",
+			"tag": "Building",
+			"name": "org.made.neohabitat.mods.Building"
+		},
+		{
+			"type": "class",
+			"tag": "Bush",
+			"name": "org.made.neohabitat.mods.Bush"
+		},
+		{
+			"type": "class",
+			"tag": "Door",
+			"name": "org.made.neohabitat.mods.Door"
+		},
+		{
+			"type": "class",
+			"tag": "Fence",
+			"name": "org.made.neohabitat.mods.Fence"
+		},
+		{
+			"type": "class",
+			"tag": "Flashlight",
+			"name": "org.made.neohabitat.mods.Flashlight"
+		},
+		{
+			"type": "class",
+			"tag": "Fountain",
+			"name": "org.made.neohabitat.mods.Fountain"
+		},
+		{
+			"type": "class",
+			"tag": "Glue",
+			"name": "org.made.neohabitat.mods.Glue"
+		},
+		{
+			"type": "class",
+			"tag": "Ground",
+			"name": "org.made.neohabitat.mods.Ground"
+		},
+		{
+			"type": "class",
+			"tag": "Head",
+			"name": "org.made.neohabitat.mods.Head"
+		},
+		{
+			"type": "class",
+			"tag": "Hot_tub",
+			"name": "org.made.neohabitat.mods.Hot_tub"
+		},
+		{
+			"type": "class",
+			"tag": "Key",
+			"name": "org.made.neohabitat.mods.Key"
+		},
+		{
+			"type": "class",
+			"tag": "Knick_knack",
+			"name": "org.made.neohabitat.mods.Knick_knack"
+		},
+		{
+			"type": "class",
+			"tag": "Plaque",
+			"name": "org.made.neohabitat.mods.Plaque"
+		},
+		{
+			"type": "class",
+			"tag": "Region",
+			"name": "org.made.neohabitat.mods.Region"
+		},
+		{
+			"type": "class",
+			"tag": "Rock",
+			"name": "org.made.neohabitat.mods.Rock"
+		},
+		{
+			"type": "class",
+			"tag": "Street",
+			"name": "org.made.neohabitat.mods.Street"
+		},
+		{
+			"type": "class",
+			"tag": "Table",
+			"name": "org.made.neohabitat.mods.Table"
+		},
+		{
+			"type": "class",
+			"tag": "Tree",
+			"name": "org.made.neohabitat.mods.Tree"
+		},
+		{
+			"type": "class",
+			"tag": "Sign",
+			"name": "org.made.neohabitat.mods.Sign"
+		},
+		{
+			"type": "class",
+			"tag": "Short_sign",
+			"name": "org.made.neohabitat.mods.Short_sign"
+		},
+		{
+			"type": "class",
+			"tag": "Wall",
+			"name": "org.made.neohabitat.mods.Wall"
+		},
+		{
+			"tag": "Sky",
+			"name": "org.made.neohabitat.mods.Sky"
+		},
+		{
+			"type": "class",
+			"tag": "Pond",
+			"name": "org.made.neohabitat.mods.Pond"
+		},
+		{
+			"type": "class",
+			"tag": "House_cat",
+			"name": "org.made.neohabitat.mods.House_cat"
+		},
+		{
+			"type": "class",
+			"tag": "Roof",
+			"name": "org.made.neohabitat.mods.Roof"
+		},
+		{
+			"type": "class",
+			"tag": "Couch",
+			"name": "org.made.neohabitat.mods.Couch"
+		},
+		{
+			"type": "class",
+			"tag": "Floor_lamp",
+			"name": "org.made.neohabitat.mods.Floor_lamp"
+		},
+		{
+			"type": "class",
+			"tag": "Window",
+			"name": "org.made.neohabitat.mods.Window"
+		},
+		{
+			"type": "class",
+			"tag": "Chair",
+			"name": "org.made.neohabitat.mods.Chair"
+		},
+		{
+			"type": "class",
+			"tag": "Chest",
+			"name": "org.made.neohabitat.mods.Chest"
+		},
+		{
+			"type": "class",
+			"tag": "Plant",
+			"name": "org.made.neohabitat.mods.Plant"
+		},
+		{
+			"type": "class",
+			"tag": "Trapezoid",
+			"name": "org.made.neohabitat.mods.Trapezoid"
+		},
+		{
+			"type": "class",
+			"tag": "Super_trapezoid",
+			"name": "org.made.neohabitat.mods.Super_trapezoid"
+		},
+		{
+			"type": "class",
+			"tag": "Flag",
+			"name": "org.made.neohabitat.mods.Flag"
+		},
+		{
+			"type": "class",
+			"tag": "Flat",
+			"name": "org.made.neohabitat.mods.Flat"
+		},
+		{
+			"type": "class",
+			"tag": "Spray_can",
+			"name": "org.made.neohabitat.mods.Spray_can"
+		},
+		{
+			"type": "class",
+			"tag": "Compass",
+			"name": "org.made.neohabitat.mods.Compass"
+		},
+		{
+			"type": "class",
+			"tag": "Gun",
+			"name": "org.made.neohabitat.mods.Gun"
+		},
+		{
+			"type": "class",
+			"tag": "Knife",
+			"name": "org.made.neohabitat.mods.Knife"
+		},
+		{
+			"type": "class",
+			"tag": "Tokens",
+			"name": "org.made.neohabitat.mods.Tokens"
+		},
+		{
+			"type": "class",
+			"tag": "Coke_machine",
+			"name": "org.made.neohabitat.mods.Coke_machine"
+		},
+		{
+			"type": "class",
+			"tag": "Club",
+			"name": "org.made.neohabitat.mods.Club"
+		},
+		{
+			"type": "class",
+			"tag": "Stun_gun",
+			"name": "org.made.neohabitat.mods.Stun_gun"
+		},
+		{
+			"type": "class",
+			"tag": "Teleport",
+			"name": "org.made.neohabitat.mods.Teleport"
+		}
+		]
 }
