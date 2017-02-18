@@ -61,5 +61,19 @@
         "orientation": 0
       }
     ]
+  },
+  {
+    "type": "item",
+    "ref": "item-pcollins.tokens",
+    "name": "Money for Pcollins",
+    "in": "user-pcollins",
+    "mods": [
+      {
+        "type": "Tokens",
+        "y": 0,
+        "denom_lo": 0,
+        "denom_hi": 4
+      }
+    ]
   }
 ]

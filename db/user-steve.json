@@ -61,5 +61,19 @@
 				"orientation": 0
 			}
 		]
-	}
+	},
+  {
+    "type": "item",
+    "ref": "item-steve.tokens",
+    "name": "Money for Steve",
+    "in": "user-steve",
+    "mods": [
+      {
+        "type": "Tokens",
+        "y": 0,
+        "denom_lo": 0,
+        "denom_hi": 4
+      }
+    ]
+  }
 ]

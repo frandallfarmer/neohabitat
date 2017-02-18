@@ -179,7 +179,11 @@ this.SERVER_OPS = {
 				b.add(o.value);
 			}
 		},
-		"FILL$": 				{ reqno: 8 },
+		"FILL$": 				{ reqno: 8,
+			toClient: function (o,b) {
+				b.add(o.AVATAR_NOID);
+			}
+		},
 		"FLUSH$": 				{ reqno: 8 },
 		"GET$": 				{ reqno: 15,
 			toClient: function (o,b) {
@@ -195,14 +199,18 @@ this.SERVER_OPS = {
 		"GRAB$": 				{ reqno: 16 },
 		"GRABFROM$": 			{ reqno: 17 },
 		"HANG$": 				{ reqno: 11 },
-		"HEREIS_$":		 		{ reqno: 8 },
+		"HEREIS_$":		 		{ reqno: 8,
+			toClient: function (o, b, client) {
+				b.add(client.backdoor.vectorize(client, o.object, o.container));
+			}
+		},
 		"HUNGUP$": 				{ reqno: 12 },
 		"LOAD$": 				{ reqno: 8 },
 		"MAILARRIVED$":		 	{ reqno: 8 },
 		"MUNCH$": 				{ reqno: 8 },
 		"NEWHEAD$":	 			{ reqno: 31 },
 		"OBJECTSPEAK_$":	 	{ reqno: 15, 
-			toClient: function (o,b) { 
+			toClient: function (o,b) {				
 				b.add(o.speaker);
 				b.add(o.text.getBytes());
 			}
@@ -227,19 +235,34 @@ this.SERVER_OPS = {
 			}
 		},
 		"PAY$": 				{ reqno: 8,
-			toClient: function (o,b) { 
+			toClient: function (o,b) {
 				b.add(o.amount_lo);
 				b.add(o.amount_hi);
 			}
 		},
-		"PAYTO$":	 			{ reqno: 8 },
-		"PLAY_$": 				{ reqno: 14 },
+		"PAYTO$":	 			{ reqno: 8,
+			toClient: function (o,b) {
+				b.add(o.payer);
+				b.add(o.amount_lo);
+				b.add(o.amount_hi);
+			}
+		},
+		"PLAY_$": 				{ reqno: 14,
+			toClient: function (o,b) {
+				b.add(o.sfx_number);
+				b.add(o.from_noid);
+			}
+		},
 		"POSTURE$": 			{ reqno: 20,
 			toClient: function (o,b) { 
 				b.add(o.new_posture);
 			}
 		},
-		"POUR$": 				{ reqno: 9 },
+		"POUR$": 				{ reqno: 9,
+			toClient: function (o,b) {
+				b.add(o.AVATAR_NOID);
+			}
+		},
 		"PROMPT_USER_$": 		{ reqno: 20,
 			toClient: function (o,b) { 
 				b.add(o.text.getBytes());
@@ -507,7 +530,9 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.x);
 				b.add(o.y);
-				b.add(o.how);
+				if ('how' in o) {
+					b.add(o.how);
+				}
 			}
 		},
 		SITORSTAND: {
@@ -635,6 +660,9 @@ this.translate = {
 				b.add(o.err);
 				b.add(o.amount_lo);
 				b.add(o.amount_hi);
+				if ('text' in o) {
+					b.add(o.text.getBytes());
+				}
 			}
 		},
 		SPLIT: {
@@ -654,10 +682,36 @@ this.translate = {
 				b.add(o.err);
 			}
 		},
+		DEPOSIT: {
+			toServer: function(a, m) {
+				m.token_noid = a[0];
+			}
+    },
 		ZAPTO: {
 			toServer: function(a,m) {
 				m.port_number = String.fromCharCode.apply(null, a);
 			},
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		WITHDRAW: {
+			toServer: function(a, m) {
+				m.amount_lo = a[0];
+				m.amount_hi = a[1];
+			},
+			toClient: function(o, b) {
+				b.add(o.amount_lo);
+				b.add(o.amount_hi);
+				b.add(o.result_code);
+			}
+		},
+		FILL: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		POUR: {
 			toClient: function(o, b) {
 				b.add(o.err);
 			}
@@ -786,6 +840,22 @@ this.Chest = {
 	}
 };
 
+this.Countertop = {
+	clientMessages: {
+		0:{ op:"HELP" },
+		4:{ op:"CLOSECONTAINER" },
+		5:{ op:"OPENCONTAINER" }
+	}
+};
+
+this.Bed = {
+	clientMessages: {
+		0:{ op:"HELP" },
+		4:{ op:"CLOSECONTAINER" },
+		5:{ op:"OPENCONTAINER" }
+	}
+};
+
 this.Compass = {
 	clientMessages: {
 		0:{ op:"HELP" },
@@ -801,7 +871,7 @@ this.Fountain = {
 			0:{ op:"HELP" },
 			4:{ op:"ASK" },
 		}
-}
+};
 
 this.Teleport = {
 		clientMessages: {
@@ -820,7 +890,7 @@ this.Tokens = {
 			4:{ op:"PAYTO" },
 			5:{ op:"SPLIT" }
 		}
-}
+};
 
 this.Stun_gun = {
 		clientMessages: {
@@ -829,14 +899,39 @@ this.Stun_gun = {
 			2:{ op:"PUT" },
 			5:{ op:"STUN" }
 		}
-}
+};
 
 this.Coke_machine = {
 		clientMessages: {
 			0:{ op:"HELP" },
 			4:{ op:"PAY" }
 		}
-}
+};
+
+this.Fortune_machine = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"PAY" }
+		}
+};
+
+this.Atm	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"DEPOSIT" },
+			2:{ op:"WITHDRAW" }
+		}
+};
+
+this.Bottle  = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			4:{ op:"FILL" },
+			5:{ op:"POUR" }
+		}
+};
 
 this.magical	= {
 		clientMessages: {
@@ -895,3 +990,4 @@ this.Hot_tub		 	= this.help;
 this.Gun       = this.weapon;
 this.Knife   = this.weapon;
 this.Club   = this.weapon;
+this.Streetlamp = this.help;

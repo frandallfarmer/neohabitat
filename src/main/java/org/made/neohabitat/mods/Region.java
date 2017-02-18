@@ -31,7 +31,10 @@ public class Region extends Container implements ContextMod, Constants {
     public static final int DEFAULT_REGION_DEPTH = 32; // TODO What is the
                                                        // correct default region
                                                        // depth?
-    
+
+    /** The default maximum number of avatars for a Region. */
+    public static final int DEFAULT_MAX_AVATARS = 6;
+
     public int HabitatClass() {
         return CLASS_REGION;
     }
@@ -66,6 +69,9 @@ public class Region extends Container implements ContextMod, Constants {
     public int        lighting     = 1;
     /** The horizon line for the region to clip avatar motion */
     public int        depth        = DEFAULT_REGION_DEPTH;
+    /** The maximum number of Avatars that can be in this Region */
+    public int        max_avatars  = DEFAULT_MAX_AVATARS;
+
     /**
      * This is an array holding all the Mods for all the Users and Items in this
      * room.
@@ -78,11 +84,11 @@ public class Region extends Container implements ContextMod, Constants {
     /** Direciton to nearest Teleport Booth */
     public String	  port_dir     = "";
 
-    
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting", "town_dir", "port_dir", "neighbors" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
+        "town_dir", "port_dir", "max_avatars", "neighbors" })
     Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptInteger depth, OptInteger lighting, 
-            OptString town_dir, OptString port_dir,
+            OptString town_dir, OptString port_dir, OptInteger max_avatars,
             String[] neighbors) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {
@@ -90,6 +96,7 @@ public class Region extends Container implements ContextMod, Constants {
         }
         this.depth = depth.value(DEFAULT_REGION_DEPTH);
         this.lighting = lighting.value(1);
+        this.max_avatars = max_avatars.value(DEFAULT_MAX_AVATARS);
         this.neighbors = neighbors;
         this.town_dir = town_dir.value("");
         this.port_dir = port_dir.value("");
@@ -110,6 +117,7 @@ public class Region extends Container implements ContextMod, Constants {
         result.addParameter("lighting", lighting);
         result.addParameter("neighbors", neighbors);
         if (control.toRepository()) {
+            result.addParameter("max_avatars", max_avatars);
         	result.addParameter("town_dir", town_dir);
         	result.addParameter("port_dir", port_dir);
         }
@@ -215,5 +223,5 @@ public class Region extends Container implements ContextMod, Constants {
             return;
         }
     }
-    
+
 }

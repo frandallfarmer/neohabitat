@@ -116,7 +116,7 @@ public class Spray_can extends HabitatMod {
             return;
         }
 
-        // Applies the pattern represented by this Spray Can.
+        // Applies the pattern represented by this Spray Can to the Avatar's selected limb.
         boolean success = false;
         switch(curLimb) {
             case TORSO_LIMB:
@@ -140,6 +140,7 @@ public class Spray_can extends HabitatMod {
             case FACE_LIMB:
                 HabitatMod curHeadObj = curAvatar.contents(Avatar.HEAD);
                 if (curHeadObj != null && curHeadObj instanceof Head) {
+                    // If we're modifying the Avatar's Head, applies Head-specific pattern change logic.
                     success = true;
                     Head curHead = (Head) curHeadObj;
                     curHead.orientation = (curHead.orientation & 0x87) | newPattern;
@@ -149,25 +150,27 @@ public class Spray_can extends HabitatMod {
                 }
                 break;
         }
+
+        // Tells the Avatar's client whether the spray was a success and what the Avatar's new custom[] is.
         send_reply_msg(from, noid,
-        		"SPRAY_SUCCESS", success ? TRUE : FALSE,
-        		"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
-        		"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
+            "SPRAY_SUCCESS", success ? TRUE : FALSE,
+        	"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
+        	"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
         
         if (success) {
+            // The spray succeeded, so tells the Avatar's neighbors about the change and handles charge reduction.
         	this.send_neighbor_msg(from, noid, "SPRAY$",
-        			"SPRAY_SPRAYEE", curAvatar.noid,
-        			"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
-        			"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
+        		"SPRAY_SPRAYEE", curAvatar.noid,
+        		"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
+        		"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
             charge--;
             gen_flags[MODIFIED] = true;
             checkpoint_object(this);
             curAvatar.checkpoint_object(curAvatar);
             if (charge == 0) {
                 object_say(from, noid, "This sprayer has run out.");
-                // TODO(steve): Uncomment when object deletion is implemented.
-                //send_goaway_msg(noid);
-                //destroy_object(this);
+                send_goaway_msg(noid);
+                destroy_object(this);
             }
         }
     }

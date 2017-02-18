@@ -793,6 +793,11 @@ var encodeState = {
 			buf.add(state.denom_hi);
 			return buf;
 		},
+		Bottle:  function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.filled);
+      return buf;
+  		},
 		Teleport: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.activeState || 0);
@@ -828,13 +833,20 @@ var encodeState = {
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state,container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Compass:  	function (state, container, buf) { return (this.common	(state, container, buf)); },
-		Gun:  		function (state, container, buf) { return (this.common	(state, container, buf)); },
-		Knife:  	function (state, container, buf) { return (this.common	(state, container, buf)); },
-		Club:  		function (state, container, buf) { return (this.common	(state, container, buf)); },
-		Stun_gun:	function (state, container, buf) { return (this.common	(state, container, buf)); },
-		Fountain:	function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Coke_machine:function(state, container, buf) { return (this.common  (state, container, buf)); }
+
+		Compass:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Knife:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Club:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Stun_gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
+		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Coke_machine:function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Fortune_machine: function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Streetlamp: function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Bed:      function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Countertop:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Atm:      function (state, container, buf) { return (this.common  (state, container, buf)); }
+
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

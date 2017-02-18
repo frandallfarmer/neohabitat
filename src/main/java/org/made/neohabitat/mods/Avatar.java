@@ -376,36 +376,6 @@ public class Avatar extends Container implements UserMod {
         return ((int) scale);
     }
     
-    
-    
-    /*        
-         // If entering on death, penalize the Avatar's tokens, if any 
-         else if (transition_type = DEATH_ENTRY) then do;
-              do i = 0 to 255;
-                   tokenptr = ObjList(i);
-                   if (tokenptr ^= null()) then do;
-                        if (token.class = CLASS_TOKENS) then do;
-                             denom = token.denom_lo + token.denom_hi*256;
-                             denom = divide(denom, 2, 15);
-                             token.denom_hi = divide(denom, 256, 15);
-                             token.denom_lo = mod(denom, 256);
-                             if (denom = 0) then
-                                  token.denom_lo = 1;
-                             token.gen_flags(MODIFIED) = true;
-                        end;
-                   end;
-              end;
-         end;
-        
-         // If entering via teleport, make sure we're in foreground 
-         else if (transition_type = TELEPORT_ENTRY) then do;
-              call set_bit(avatar.y, 8);
-         end; else do;
-              call trace_msg('entry daemon: unknown transition type: ' ||
-                   ltrim(transition_type));
-         end;
-     */
-    
     /**
      * Verb (Specific): TODO Grabbing from another avatar.
      * 
@@ -481,30 +451,6 @@ public class Avatar extends Container implements UserMod {
      */
     @JSONMethod({ "x", "y", "how" })
     public void WALK(User from, OptInteger x, OptInteger y, OptInteger how) {
-        
-        // object_say(from, noid, "Avatar.WALK not implemented yet.");
-        
-        /*
-         * declare destination_x binary(15); declare destination_y binary(15);
-         * declare flip_path bit(1) aligned;
-         * 
-         * x = rank(request(FIRST)); y = rank(request(SECOND)); walk_how =
-         * rank(request(THIRD)); if (selfptr ^= avatarptr) then do;
-         * destination_x = avatar.x; destination_y = avatar.y; end; else if
-         * (avatar.stun_count > 0) then do; avatar.stun_count =
-         * avatar.stun_count - 1; call r_msg_3(avatar.x, avatar.y, walk_how); if
-         * (avatar.stun_count >= 2) then call p_msg_s(selfptr, selfptr, SPEAK$,
-         * 'I can''t move. I am stunned.'); else if (avatar.stun_count = 1) then
-         * call p_msg_s(selfptr, selfptr, SPEAK$, 'I am still stunned.'); else
-         * call p_msg_s(selfptr, selfptr, SPEAK$, 'The stun effect is wearing
-         * off now.'); return; end; else do; call check_path(THE_REGION, x, y,
-         * destination_x, destination_y, flip_path); if (flip_path) then call
-         * set_bit(walk_how, 8); else call clear_bit(walk_how, 8); if
-         * (destination_x ^= self.x | destination_y ^= self.y) then do; self.x =
-         * destination_x; self.y = destination_y; call n_msg_3(selfptr, WALK$,
-         * destination_x, destination_y, walk_how); end; end; call
-         * r_msg_3(destination_x, destination_y, walk_how);
-         */
         int destination_x = x.value(80);
         int destination_y = y.value(10) | FOREGROUND_BIT;
         int walk_how = how.value(0);
@@ -556,7 +502,7 @@ public class Avatar extends Container implements UserMod {
     public void DISCORPORATE(User from) {
         unsupported_reply(from, noid, "Avatar.DISCORPORATE not implemented yet.");
     }
-    
+
     /**
      * Verb (Specific): TODO Send a point-to-point message to another
      * user/avatar.
@@ -819,8 +765,11 @@ public class Avatar extends Container implements UserMod {
     		who.send(msg);
     	}
     }
-    
-	public void drop_object_in_hand() {
+
+    /**
+     * Drops whatever item is in the current Avatar's hands.
+     */
+    public void drop_object_in_hand() {
 		if (contents(HANDS) != null) {
 			HabitatMod obj = contents(HANDS);
 			obj.x = 8;
@@ -835,5 +784,32 @@ public class Avatar extends Container implements UserMod {
 				"y", obj.y);
 		}
 	}
+
+    /**
+     * Returns true if the Avatar is holding an item of the provided class.
+     *
+     * @param habitat_class The Habitat class to check against.
+     * @return true/false whether the Avatar is holding an item of the provideed class
+     */
+    public boolean holding_class(int habitat_class) {
+        HabitatMod obj = contents(HANDS);
+        if (obj != null) {
+            return obj.HabitatClass() == habitat_class;
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the Avatar is holding a restricted object.
+     *
+     * @return true/false whether the Avatar is holding a restricted object
+     */
+    public boolean holding_restricted_object() {
+        HabitatMod obj = contents(HANDS);
+        if (obj != null) {
+            return obj.gen_flags[RESTRICTED];
+        }
+        return false;
+    }
 
 }
