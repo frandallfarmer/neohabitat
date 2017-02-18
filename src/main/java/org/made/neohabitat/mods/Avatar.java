@@ -348,36 +348,6 @@ public class Avatar extends Container implements UserMod {
         return ((int) scale);
     }
     
-    
-    
-    /*        
-         // If entering on death, penalize the Avatar's tokens, if any 
-         else if (transition_type = DEATH_ENTRY) then do;
-              do i = 0 to 255;
-                   tokenptr = ObjList(i);
-                   if (tokenptr ^= null()) then do;
-                        if (token.class = CLASS_TOKENS) then do;
-                             denom = token.denom_lo + token.denom_hi*256;
-                             denom = divide(denom, 2, 15);
-                             token.denom_hi = divide(denom, 256, 15);
-                             token.denom_lo = mod(denom, 256);
-                             if (denom = 0) then
-                                  token.denom_lo = 1;
-                             token.gen_flags(MODIFIED) = true;
-                        end;
-                   end;
-              end;
-         end;
-        
-         // If entering via teleport, make sure we're in foreground 
-         else if (transition_type = TELEPORT_ENTRY) then do;
-              call set_bit(avatar.y, 8);
-         end; else do;
-              call trace_msg('entry daemon: unknown transition type: ' ||
-                   ltrim(transition_type));
-         end;
-     */
-    
     /**
      * Verb (Specific): TODO Grabbing from another avatar.
      * 
@@ -513,7 +483,7 @@ public class Avatar extends Container implements UserMod {
             to_ghost_side_effects(this);
         }*/
     }
-    
+
     /**
      * Verb (Specific): TODO Send a point-to-point message to another
      * user/avatar.

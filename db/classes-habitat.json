@@ -255,6 +255,11 @@
 			"type": "class",
 			"tag": "Atm",
 			"name": "org.made.neohabitat.mods.Atm"
+		},
+		{
+			"type": "class",
+			"tag": "Bottle",
+			"name": "org.made.neohabitat.mods.Bottle"
 		}
 	]
 }

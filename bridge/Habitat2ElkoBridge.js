@@ -778,6 +778,11 @@ var encodeState = {
 			buf.add(state.denom_hi);
 			return buf;
 		},
+		Bottle:  function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.filled);
+			return buf;
+		},
 		Spray_can:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },

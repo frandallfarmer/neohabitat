@@ -179,7 +179,11 @@ this.SERVER_OPS = {
 				b.add(o.value);
 			}
 		},
-		"FILL$": 				{ reqno: 8 },
+		"FILL$": 				{ reqno: 8,
+			toClient: function (o,b) {
+				b.add(o.AVATAR_NOID);
+			}
+		},
 		"FLUSH$": 				{ reqno: 8 },
 		"GET$": 				{ reqno: 15,
 			toClient: function (o,b) {
@@ -249,7 +253,11 @@ this.SERVER_OPS = {
 				b.add(o.new_posture);
 			}
 		},
-		"POUR$": 				{ reqno: 9 },
+		"POUR$": 				{ reqno: 9,
+			toClient: function (o,b) {
+				b.add(o.AVATAR_NOID);
+			}
+		},
 		"PROMPT_USER_$": 		{ reqno: 20,
 			toClient: function (o,b) { 
 				b.add(o.text.getBytes());
@@ -685,6 +693,16 @@ this.translate = {
 				b.add(o.amount_hi);
 				b.add(o.result_code);
 			}
+		},
+		FILL: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		POUR: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
 		}
 };
 
@@ -882,6 +900,16 @@ this.Atm	= {
 			0:{ op:"HELP" },
 			1:{ op:"DEPOSIT" },
 			2:{ op:"WITHDRAW" }
+		}
+};
+
+this.Bottle  = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			4:{ op:"FILL" },
+			5:{ op:"POUR" }
 		}
 };
 
