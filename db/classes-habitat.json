@@ -266,9 +266,10 @@
 			"tag": "Bottle",
 			"name": "org.made.neohabitat.mods.Bottle"
 		},
+		{
+			"type": "class",
 			"tag": "Teleport",
 			"name": "org.made.neohabitat.mods.Teleport"
-
 		}
 		]
 }
