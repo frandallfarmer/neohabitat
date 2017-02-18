@@ -59,9 +59,9 @@ const HCode		 = require('./hcode');
 const Millis	 = 1000;
 const UFILENAME	= "./usersDB.json";
 
-var	  UserDB = {};
+var	  Users = {};
 try {
-	UserDB	= JSON.parse(File.readFileSync(UFILENAME));
+	Users	= JSON.parse(File.readFileSync(UFILENAME));
 } catch (e) { /* do nothing */ }
 
 var listenaddr	 = Argv.listen.split(":");
@@ -231,12 +231,15 @@ function descape(b, skip) {
 /*
  * Elko uses a fresh connection for every context/region change.
  */
-function createServerConnection(port, host, client) {
+function createServerConnection(port, host, client, immediate, context) {
 	var server = Net.connect({port: port, host:host}, function() {
 		Trace.debug( "Connecting: " + 
 				client.address().address +':'+ client.address().port +
 				" <-> " +
 				server.address().address + ':'+ server.address().port);
+		if (immediate) {
+			enterContext(client, server, context);
+		}
 	});
 	server.on('data', function(data) {
 		var reset = false;
@@ -478,7 +481,8 @@ function toElko(connection, data) {
 }
 
 function initializeClientState(client, who, replySeq) {
-	client.sessionName = "" + (++SessionCount);
+	++SessionCount;
+	client.sessionName = "" + SessionCount;
 	client.state = { user: who || "",
 			contentsVector: new ContentsVector(replySeq, HCode.REGION_NOID),
 			objects: [],
@@ -589,20 +593,17 @@ function parseHabitatClientMessage(client, server, data) {
 		}
 
 		if (noid === HCode.REGION_NOID && reqNum === HCode.MESSAGE_DESCRIBE) {
-			// Transform MESSAGE_DESCRIBE to entering a context. Probably not right. FRF TODO
-			var replySeq = (undefined === client.state.nextRegion) ?
-					HCode.PHANTOM_REQUEST : client.state.replySeq;
-			var changeContextMessage =	{
-					to:			"session",	
-					op:			"entercontext",
-					context:	client.state.nextRegion || Argv.context,
-					user:		client.userRef
-			};
-			Trace.debug("Sending 'entercontext' to " + changeContextMessage.context  +" on behalf of the Habitat client.");
-			toElko(server, JSON.stringify(changeContextMessage));
-			initializeClientState(client, client.userRef, replySeq);
+			// After a (re)connection, only the first request for a contents vector is valid
+			var context;
+			if (undefined === client.state.nextRegion) {
+				context = Argv.context;
+			} else if (client.state.nextRegion !== "") {
+				context = client.state.nextRegion;
+			} else {
+				return;	// Ignore this request, the client is hanging but a changecontext/immdiate message is coming to fix this.
+			}
+			enterContext(client, server, context);
 			return;
-
 		} else {
 			var o	  	= client.state.objects[noid];
 			var op	  	= (undefined === o.clientMessages[reqNum]) ? "UNSUPPORTED" : o.clientMessages[reqNum].op;
@@ -627,6 +628,20 @@ function parseHabitatClientMessage(client, server, data) {
 		Trace.debug(JSON.stringify(msg) + " -> server (" + client.sessionName + ")");
 	}
 	return;
+}
+
+function enterContext(client, server, context) {
+	var replySeq = (undefined === context) ? HCode.PHANTOM_REQUEST : client.state.replySeq;
+	var enterContextMessage =	{
+			to:			"session",	
+			op:			"entercontext",
+			context:	context,
+			user:		client.userRef
+	}
+	Trace.debug("Sending 'entercontext' to " + enterContextMessage.context  +" on behalf of the Habitat client.");
+	toElko(server, JSON.stringify(enterContextMessage));
+	initializeClientState(client, client.userRef, replySeq);
+	client.state.nextRegion = "";
 }
 
 function removeNoidFromClient(client, noid) {
@@ -778,6 +793,11 @@ var encodeState = {
 			buf.add(state.denom_hi);
 			return buf;
 		},
+		Teleport: function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.activeState || 0);
+			return buf;
+		},
 		Spray_can:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },
@@ -806,15 +826,15 @@ var encodeState = {
 		Chest:		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Plant: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
-		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state, container, buf)); },
+		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state,container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Compass:  function(state, container, buf) { return (this.common(state, container, buf)); },
-		Gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
-		Knife:  function(state, container, buf) { return (this.common(state, container, buf)); },
-		Club:  function(state, container, buf) { return (this.common(state, container, buf)); },
-		Stun_gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
-		Fountain:   function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Coke_machine:function (state, container, buf) { return (this.common  (state, container, buf)); }
+		Compass:  	function (state, container, buf) { return (this.common	(state, container, buf)); },
+		Gun:  		function (state, container, buf) { return (this.common	(state, container, buf)); },
+		Knife:  	function (state, container, buf) { return (this.common	(state, container, buf)); },
+		Club:  		function (state, container, buf) { return (this.common	(state, container, buf)); },
+		Stun_gun:	function (state, container, buf) { return (this.common	(state, container, buf)); },
+		Fountain:	function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Coke_machine:function(state, container, buf) { return (this.common  (state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {
@@ -860,9 +880,10 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		var mod       = o.obj.mods[0];
 		var regionRef = o.to.split("-");
 		var userRef   = o.obj.ref.split("-");
-		UserDB[name] = { regionRef: regionRef[0] + "-" + regionRef[1],
-				userRef:   userRef[0]   + "-" + userRef[1] };
-		File.writeFile(UFILENAME, JSON.stringify(UserDB, null, 2));
+		Users[name] = {
+				regionRef:   regionRef[0] + "-" + regionRef[1],
+				userRef:     userRef[0]   + "-" + userRef[1] };
+		File.writeFile(UFILENAME, JSON.stringify(Users, null, 2));
 		client.sessionName 				+= ":" + name;
 		client.avatarNoid   			= mod.noid;
 		client.waitingForAvatarContents = true;
@@ -870,9 +891,11 @@ function parseIncomingElkoServerMessage(client, server, data) {
 
 
 	if (o.type === "changeContext") {
-		client.state.nextRegion = o.context;						// Save for MESSAGE_DESCRIBE to deal with later.
-		createServerConnection(	client.port, client.host, client);	// create a new connection for the new context 
-		return true; 												// Signal this connection to die now that it's obsolete.
+		client.state.nextRegion = o.context;		// Save for MESSAGE_DESCRIBE to deal with later.
+		var immediate = o.immediate || false;			// Force enterContext after reconnect? aka Client has prematurely sent MESSAGE_DESCRIBE and we ignored it.
+		createServerConnection(client.port, client.host, client, immediate, o.context); 
+													// create a new connection for the new context
+		return true; 								// Signal this connection to die now that it's obsolete.
 	}
 
 	if (o.op === "ready") {

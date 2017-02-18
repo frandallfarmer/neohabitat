@@ -448,8 +448,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		/* If getting a compass, match its orientation to the current region */
 		if (selfClass == CLASS_COMPASS) {
-			this.gr_state = current_region().orientation;
-			this.send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);            
+			gr_state = current_region().orientation;
+			send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);            
 		}
 		send_reply_success(from); // Yes, your GET request succeeded.
 		send_neighbor_msg(from, avatar(from).noid, "GET$", "target", noid, "how", how); // Animate
@@ -1417,6 +1417,27 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		return (container(object).noid == THE_REGION && object.x == avatar(user).x && object.y == avatar(user).y);
 	}
 
+	
+	/**
+	 * goto_new_region -- Transfer the avatar to someplace else.
+	 * 
+	 * Provided as syntactic sugar for easy class migration.
+	 * 
+	 * @param avatar The avatar mod of the user that is being sent someplace else
+	 * @param contextRef The elko ref for the new region
+	 * @param direction	WEST, EAST, NORTH, SOUTH, AUTO_TELEPORT_DIR
+	 * @param transition_type WALK_ENTRY, TELEPORT_ENTRY, DEATH_ENTRY
+	 * @param x Position on arrival (0 means the avatar should choose)
+	 * @param y Position on arrival (0 means the avatar should choose)
+	 */
+
+	public void goto_new_region(Avatar avatar, String contextRef, int direction, int transition_type, int x, int y) {
+		// This used to be more complicated - Elko's ever-context-change-is-a-new-connection makes this easy.
+		// We just ask the bridge to call us back for a new region.
+		avatar.change_regions(contextRef, direction, transition_type, x, y);
+	}
+
+	
 	/**
 	 * goto_new_region -- Transfer the avatar to someplace else.
 	 * 
@@ -1431,7 +1452,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	public void goto_new_region(Avatar avatar, String contextRef, int direction, int transition_type) {
 		// This used to be more complicated - Elko's ever-context-change-is-a-new-connection makes this easy.
 		// We just ask the bridge to call us back for a new region.
-		avatar.change_regions(contextRef, direction, transition_type);
+		goto_new_region(avatar, contextRef, direction, transition_type, 0, 0);
 	}
 
 	/**
@@ -1632,15 +1653,16 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	public void object_broadcast(String text) {
 		object_broadcast(this.noid, text);
 	}
-
+	
 	/**
-	 * Send a fiddle message to the entire region. The client does all the work.
-	 *
-	 * @param noid
+	 * All fiddle message share the same arguments. This adds those no matter what the message routing type.
+	 * 
+	 * @param msg
+	 * @param target
+	 * @param offset
 	 * @param args
 	 */
-	public void send_fiddle_msg(int noid, int target, int offset, int[] args) {
-		JSONLiteral msg = new_broadcast_msg(noid, "FIDDLE_$");
+	public void compose_fiddle_msg(JSONLiteral msg, int target, int offset, int[] args) {
 		msg.addParameter("target", target);
 		msg.addParameter("offset", offset);
 		msg.addParameter("argCount", args.length);
@@ -1650,6 +1672,77 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			msg.addParameter("value", args[0]);
 		}
 		msg.finish();
+		return;
+	}
+
+	/**
+	 * Send a point to point (aka private) fiddle message.
+	 * 
+	 * @param from
+	 * @param to
+	 * @param noid
+	 * @param target
+	 * @param offset
+	 * @param args
+	 */
+	public void send_private_fiddle_msg(User from, User to, int noid, int target, int offset, int[] args) {
+		JSONLiteral msg = new_private_msg(noid, "FIDDLE_$");
+		compose_fiddle_msg(msg, target, offset, args);
+		to.send(msg);
+	}
+
+	/**
+	 * Send private fiddle message with only one arg
+	 * 
+	 * @param from
+	 * @param to
+	 * @param noid
+	 * @param target
+	 * @param offset
+	 * @param arg
+	 */
+	public void send_private_fiddle_msg(User from, User to, int noid, int target, int offset, int arg) {
+		send_private_fiddle_msg(from, to, noid, target, offset, new int[]{ arg });
+	}
+
+	/**
+	 * Send neighbors a fiddle message.
+	 * 
+	 * @param from
+	 * @param noid
+	 * @param target
+	 * @param offset
+	 * @param args
+	 */
+	public void send_neighbor_fiddle_msg(User from, int noid, int target, int offset, int[] args) {
+		JSONLiteral msg = new_neighbor_msg(noid, "FIDDLE_$");
+		compose_fiddle_msg(msg, target, offset, args);
+		context().sendToNeighbors(from, msg);
+	}		
+	
+	/**
+	 * Send the neighbors a fiddle messgae with only one arg.
+	 * 
+	 * @param from
+	 * @param noid
+	 * @param target
+	 * @param offset
+	 * @param arg
+	 */
+	public void send_neighbor_fiddle_msg(User from, int noid, int target, int offset, int arg) {
+		send_neighbor_fiddle_msg(from, noid, target, offset, new int[]{ arg });
+	}	
+	
+	
+	/**
+	 * Send a fiddle message to the entire region. The client does all the work.
+	 *
+	 * @param noid
+	 * @param args
+	 */
+	public void send_fiddle_msg(int noid, int target, int offset, int[] args) {
+		JSONLiteral msg = new_broadcast_msg(noid, "FIDDLE_$");
+		compose_fiddle_msg(msg, target, offset, args);
 		context().send(msg);
 	}
 
