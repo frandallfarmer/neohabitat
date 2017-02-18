@@ -1574,22 +1574,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
-	 * An ghost sends a string message to its User.
-	 *
-	 * @param to
-	 *            User the message is going to.
-	 * @param noid
-	 *            The object speaking to the user.
-	 * @param text
-	 *            What the object wants to say.
-	 */
-	public void ghost_say(User to, int noid, String text) {
-		send_private_msg(to, THE_REGION, to, "OBJECTSPEAK_$",
-				"speaker", noid,
-				"text", text);
-	}
-
-	/**
 	 * An object sends a string message to a specific user
 	 * 
 	 * @param to

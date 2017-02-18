@@ -224,20 +224,4 @@ public class Region extends Container implements ContextMod, Constants {
         }
     }
 
-    /**
-     * Returns the total number of Ghosts in the provided region.
-     *
-     * @return int representing total number of Ghosts.
-     */
-    public int ghost_count() {
-        int count = 0;
-        for (int i = 0; i < capacity(); i++) {
-            HabitatMod mod = contents(i);
-            if (mod != null && mod.HabitatClass() == CLASS_GHOST) {
-                count++;
-            }
-        }
-        return count;
-    }
-
 }
