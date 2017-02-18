@@ -473,15 +473,6 @@ public class Avatar extends Container implements UserMod {
     @JSONMethod
     public void DISCORPORATE(User from) {
         unsupported_reply(from, noid, "Avatar.DISCORPORATE not implemented yet.");
-        /*if (holding_class(CLASS_MAGIC_LAMP)) {
-            // TODO(steve): Implement when Magic_lamp exists.
-        } else if (holding_restricted_object()) {
-            object_say(from, noid, "You can't turn into a ghost while you are holding that.");
-            send_reply_error(from);
-            return;
-        } else {
-            to_ghost_side_effects(this);
-        }*/
     }
 
     /**
