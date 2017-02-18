@@ -1,0 +1,16 @@
+{
+	"type": "item",
+	"ref": "item-staging.ground",
+	"deletable": true,
+	"name": "Ground",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 228
+		}
+	]
+}

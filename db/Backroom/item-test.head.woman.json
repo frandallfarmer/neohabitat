@@ -1,0 +1,17 @@
+{
+	"type": "item",
+	"ref": "item-test.head.woman",
+	"deletable": true,
+	"name": "Woman Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 21,
+			"x": 110,
+			"y": 80,
+			"orientation": 32,
+			"gr_state": 1
+		}
+	]
+}

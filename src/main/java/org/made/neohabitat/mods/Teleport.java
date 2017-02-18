@@ -127,6 +127,8 @@ public class Teleport extends Coinop {
     				(HabitatClass() == CLASS_TELEPORT) ?
     				"There is no such place.  Please check the area code and address and try again." :
     				"There is no such floor.  Please check the number and try again.");
+    	} else if (destination.equals(context().ref())) {
+    			object_say(from, "Malfunction! You may not teleport to the same location.");
     	} else {
     		Avatar avatar = avatar(from);
     		if (adjacent(avatar) && 

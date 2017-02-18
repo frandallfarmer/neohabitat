@@ -1,0 +1,17 @@
+{
+	"type": "context",
+	"ref": "context-turf",
+	"capacity": 6,
+	"name": "Steve's Turf",
+	"mods": [
+		{
+			"town_dir": "through the door",
+			"port_dir": "",
+			"type": "Region",
+			"nitty_bits": 3,
+			"lighting": 0,
+			"orientation": 2,
+			"neighbors": ["", "", "", ""]
+		}
+		]
+}

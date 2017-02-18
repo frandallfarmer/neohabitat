@@ -1,0 +1,15 @@
+{
+	"type": "context",
+	"ref": "context-library",
+	"capacity": 6,
+	"name": "City Library",
+	"mods": [
+		{
+			"town_dir": "here",
+			"port_dir": "",
+			"type": "Region",
+			"nitty_bits": 2,
+			"neighbors": ["context-back4t_01", "context-table", "context-test", ""]
+		}
+	]
+}

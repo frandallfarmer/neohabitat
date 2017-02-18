@@ -1,0 +1,20 @@
+{
+	"type": "item",
+	"ref": "item-test.down.sign",
+	"deletable": true,
+	"name": "Indicate Down Exit",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 0,
+			"x": 14,
+			"y": 5,
+			"gr_state": 1,
+			"orientation": 0,
+			"text": " הההההההה ",
+			"ascii": []
+
+		}
+	]
+}

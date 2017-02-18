@@ -1,0 +1,16 @@
+{
+	"type": "item",
+	"ref": "item-library.wall",
+	"deletable": true,
+	"name": "Wall for Contents Testing",
+	"in": "context-library",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 144
+		}
+	]
+}

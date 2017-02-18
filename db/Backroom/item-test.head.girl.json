@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-janet.head",
+	"deletable": true,
+	"name": "Janet's Head",
+	"in": "user-janet",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 2,
+			"y": 6,
+			"orientation": 8
+		}
+		]
+}
