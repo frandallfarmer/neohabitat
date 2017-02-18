@@ -66,6 +66,8 @@ public class Tokens extends HabitatMod {
     public void tset(int amount) {
     	denom_lo = amount % 256;
     	denom_hi = (amount - denom_lo) / 256 ;
+    	gen_flags[MODIFIED] = true;
+    	checkpoint_object(this);
     }
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "denom_lo", "denom_hi" })
