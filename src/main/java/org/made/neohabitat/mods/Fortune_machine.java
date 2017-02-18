@@ -160,13 +160,16 @@ public class Fortune_machine extends Coinop {
         String text;
         if (success == TRUE) {
             text = getFortune();
-            send_neighbor_msg(from, noid, "PAY$",
-                "amount_lo", FORTUNE_COST,
-                "amount_hi", 0);
+            // TODO(steve): Uncomment once bank_account_balance is working.
+//            send_neighbor_msg(from, noid, "PAY$",
+//                "amount_lo", FORTUNE_COST,
+//                "amount_hi", 0);
             send_neighbor_msg(from, THE_REGION, "PLAY_$",
                 "sfx_number", sfx_number(FORTUNE_SFX_ID),
                 "from_noid", noid);
-            object_say_to_neighbors(from, noid, text);
+            send_neighbor_msg(from, THE_REGION, "OBJECTSPEAK_$",
+                "speaker", noid,
+                "text", text);
             addToTake(FORTUNE_COST);
         } else {
             text = String.format("You don't have enough money.  Fortunes cost $%d.", FORTUNE_COST);
