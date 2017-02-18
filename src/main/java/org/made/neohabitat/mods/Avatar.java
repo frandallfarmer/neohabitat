@@ -148,6 +148,8 @@ public class Avatar extends Container implements UserMod {
     private String     to_region		= "";	   
     private int        from_orientation	= 0;
     private int        from_direction	= 0;
+    private int		   to_x				= 0;
+    private int		   to_y				= 0;
     private int        transition_type	= WALK_ENTRY;
     
     /**
@@ -159,12 +161,13 @@ public class Avatar extends Container implements UserMod {
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
-        "turf", "custom" })
+        "to_x", "to_y", "turf", "custom" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
             OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
-            OptString from_region, OptString to_region, OptString turf, int[] custom) {
+            OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
+            OptString turf, int[] custom) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -186,6 +189,8 @@ public class Avatar extends Container implements UserMod {
         this.transition_type = transition_type.value(WALK_ENTRY);
         this.from_region = from_region.value("");
         this.to_region = to_region.value("");
+        this.to_x = to_x.value(0);
+        this.to_y = to_y.value(0);
         this.turf = turf.value(DEFAULT_TURF);
         this.custom = custom;
     }
@@ -207,6 +212,8 @@ public class Avatar extends Container implements UserMod {
         if (result.control().toRepository()) {
             result.addParameter("from_region",      from_region);
             result.addParameter("to_region",      	to_region);
+            result.addParameter("to_x",		      	to_x);
+            result.addParameter("to_y",		      	to_y);
             result.addParameter("from_orientation", from_orientation);
             result.addParameter("from_direction",   from_direction);
             result.addParameter("transition_type",	transition_type);
@@ -321,6 +328,27 @@ public class Avatar extends Container implements UserMod {
             y = Math.min((new_y & ~FOREGROUND_BIT), current_region().depth) | FOREGROUND_BIT;
             activity = new_activity;
         } else if (transition_type == TELEPORT_ENTRY) {
+        	if ( 0 != to_y) {
+        		x = to_x;
+        		y = to_y;
+        	} else {
+        		x = 8;
+           	 	y = 130;
+        		 HabitatMod noids[] = current_region().noids;
+                 for (int i=0; i < noids.length; i++) {
+                     HabitatMod obj = noids[i];
+                     if (noids[i] != null) {
+                         if (obj.HabitatClass() == CLASS_TELEPORT) {
+                        	 x = obj.x + 8;
+                        	 y = obj.y + 3;
+                         }
+                         if (obj.HabitatClass() == CLASS_ELEVATOR) {
+                        	 x = obj.x + 12;
+                        	 y = obj.y -  5;
+                         }
+                     }
+                 }
+        	}
             // If entering via teleport, make sure we're in foreground
             y |= FOREGROUND_BIT;
         } else {
@@ -705,6 +733,10 @@ public class Avatar extends Container implements UserMod {
     }
     
     public void change_regions(String contextRef, int direction, int type) {
+    	change_regions(contextRef, direction, type, 0, 0);
+    }
+    
+    public void change_regions(String contextRef, int direction, int type, int x, int y) {
     	Region	region		= current_region();
     	User	who			= (User) this.object();
 
@@ -713,7 +745,9 @@ public class Avatar extends Container implements UserMod {
 
     	// TODO change_regions exceptions! see region.pl1
     	
-        to_region			= contextRef;    	
+        to_region			= contextRef;    
+        to_x				= x;
+        to_y				= y;
         from_region         = region.obj_id();     // Save exit information in avatar for use on arrival.
         from_orientation    = region.orientation;
         from_direction      = direction;
@@ -726,6 +760,7 @@ public class Avatar extends Container implements UserMod {
     	} else {
     		JSONLiteral msg = new JSONLiteral("changeContext", EncodeControl.forClient);
     		msg.addParameter("context", contextRef);
+    		msg.addParameter("immediate", (type == TELEPORT_ENTRY && direction == EAST));
     		msg.finish();
     		who.send(msg);
     	}

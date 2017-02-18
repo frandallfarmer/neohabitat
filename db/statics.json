@@ -1,6 +1,7 @@
 {
+	"type": "statics",
 	"ref": "statics",
 	"statics": [
-	],
-	"type": "statics"
+        {  "key" : "teleports", "ref" : "teleports" }
+	]
 }

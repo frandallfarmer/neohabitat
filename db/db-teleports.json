@@ -1,0 +1,19 @@
+{
+        "ref" : "teleports",
+        "type" : "map",
+        "map" : {
+            "pop-downtown" 		: "context-Downtown_4e",
+            "pop-fountain"		: "context-Downtown_4e",
+            "pop-plaza" 		: "context-Downtown_4e",
+            "pop-plazane" 		: "context-Downtown_4e",
+            "pop-plazanw" 		: "context-Downtown_4e",
+            "pop-plazasw" 		: "context-Downtown_4e",
+            "pop-plazase" 		: "context-Downtown_4e",
+            "pop-heads" 		: "context-test",
+            "pop-test"	 		: "context-test",
+            "pop-hub"			: "context-table",
+            "pop-table"			: "context-table",
+            "pop-library"		: "context-library",
+            "pop-books"			: "context-library"            	
+        }
+}

@@ -11,9 +11,7 @@ import org.made.neohabitat.Massive;
 /**
  * Habitat Coke_machine Mod (attached to an Elko Item.)
  * 
- * Coke_machine can get picked up and thrown. Responds to HELP messages. It *may* be portable
- * based on how Massive it is. Otherwise the client is supposed to be smart and
- * transform interface commands to *other* objects as needed.
+ * Eats tokens and gives nothing in return. A joke object.
  * 
  * @author randy
  *

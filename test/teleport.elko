@@ -1,0 +1,10 @@
+{"to":"ME",		"op":"WALK","x":32,"y":146,"how":3, "Telko": { "delay": 2}}
+{"to":"chiptokens",	"op":"GET"}
+{"to":"chiptokens",	"op":"HELP"}
+{"to":"teleport",	"op":"PAY"}
+{"to":"chiptokens",	"op":"HELP"}
+{"to":"chiptokens",	"op":"PUT","containerNoid":"$ME.noid"}
+{"to":"teleport",	"op":"ZAPTO","port_number":"downtown"}
+
+
+

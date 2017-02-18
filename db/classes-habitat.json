@@ -3,6 +3,11 @@
 	"type": "classes",
 	"classes": [
 		{
+			"type" : "class",
+			"tag" : "map",
+			"name" : "org.elkoserver.server.context.statics.StaticStringMap"
+		},
+		{
 			"type": "class",
 			"tag": "Avatar",
 			"name": "org.made.neohabitat.mods.Avatar"
@@ -26,7 +31,7 @@
 			"type": "class",
 			"tag": "Bush",
 			"name": "org.made.neohabitat.mods.Bush"
-		},	
+		},
 		{
 			"type": "class",
 			"tag": "Door",
@@ -71,7 +76,7 @@
 			"type": "class",
 			"tag": "Key",
 			"name": "org.made.neohabitat.mods.Key"
-		},		
+		},
 		{
 			"type": "class",
 			"tag": "Knick_knack",
@@ -260,6 +265,10 @@
 			"type": "class",
 			"tag": "Bottle",
 			"name": "org.made.neohabitat.mods.Bottle"
+		},
+			"tag": "Teleport",
+			"name": "org.made.neohabitat.mods.Teleport"
+
 		}
-	]
+		]
 }

@@ -344,7 +344,9 @@ this.SERVER_OPS = {
 		"WIND$": 				{ reqno: 8 },
 		"WISH$": 				{ reqno: 8 },
 		"ZAPIN$":	 			{ reqno: 9 },
-		"ZAPTO$": 				{ reqno: 10 }
+		"ZAPTO$": 				{ reqno: 10,
+			toClient: function (o,b) { /* no args */ } 
+		}
 };
 
 this.CLASSES 			= {		
@@ -401,7 +403,7 @@ this.CLASSES 			= {
 		"Sky":		69, 69:"Sky",
 		"Stereo":	70, 70:"Stereo",
 		"Tape":		71, 71:"Tape",
-		"Teleport_booth":74, 74:"Teleport_booth",
+		"Teleport":	74, 74:"Teleport",
 		"Ticket":	75, 75:"Ticket",
 		"Tokens":	76, 76:"Tokens",
 		"Wall":		80, 80:"Wall",
@@ -683,6 +685,11 @@ this.translate = {
 		DEPOSIT: {
 			toServer: function(a, m) {
 				m.token_noid = a[0];
+			}
+    },
+		ZAPTO: {
+			toServer: function(a,m) {
+				m.port_number = String.fromCharCode.apply(null, a);
 			},
 			toClient: function(o, b) {
 				b.add(o.err);
@@ -865,6 +872,14 @@ this.Fountain = {
 			4:{ op:"ASK" },
 		}
 };
+
+this.Teleport = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"PAY" },
+			5:{ op:"ZAPTO" }
+		}
+}
 
 this.Tokens = {
 		clientMessages: {

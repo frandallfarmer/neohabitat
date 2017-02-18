@@ -9,8 +9,8 @@
 			{
 				"type": "Tokens",
 				"y": 0,
-				"denom_hi":0,
-				"denom_lo":100
+				"denom_hi":4,
+				"denom_lo":0
 			}
 			]
 	},
