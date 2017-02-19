@@ -1,11 +1,11 @@
 package org.made.neohabitat.mods;
 
-        import org.elkoserver.foundation.json.JSONMethod;
-        import org.elkoserver.foundation.json.OptInteger;
-        import org.elkoserver.json.EncodeControl;
-        import org.elkoserver.json.JSONLiteral;
-        import org.elkoserver.server.context.User;
-        import org.made.neohabitat.Openable;
+import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptInteger;
+import org.elkoserver.json.EncodeControl;
+import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
+import org.made.neohabitat.Openable;
 
 /**
  * Habitat Chest Mod
