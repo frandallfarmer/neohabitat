@@ -137,6 +137,8 @@ public class Tokens extends HabitatMod {
     		        msg.addParameter("container",   other.object().ref());
     		        msg.addParameter("object",		itemLiteral);
     		        msg.finish();
+                    trace_msg("Sending new Tokens context to neighbors, context=%s, from=%s, msg=%s",
+                        context(), from, msg);
     		        context().sendToNeighbors(from, msg);
     		        // Reply including the new tokens
     		        msg = new_reply_msg(noid);
@@ -160,14 +162,70 @@ public class Tokens extends HabitatMod {
 
     @JSONMethod ({"amount_lo", "amount_hi"})
     public void SPLIT(User from, int amount_lo, int amount_hi) {
-		object_say(from,  "Unimplemented functionality. Join us to get this finished!");
-    	this.send_reply_error(from);
+        Avatar avatar = avatar(from);
+
+        // If the amount specified is greater than the total tokens, or if them
+        // amount of tokens
+        int amount = amount_lo + amount_hi*256;
+        if (amount >= tget() || amount == 0) {
+            send_reply_error(from);
+            return;
+        }
+
+        // Looks for any Tokens the Avatar is holding.
+        int pos_y = -1;
+        int token_at = -1;
+        for (int i=0;i < avatar.capacity() - 3; i++) {
+            HabitatMod avatarMod = avatar.contents(i);
+            if (avatarMod == null) {
+                if (pos_y == -1) {
+                    pos_y = i;
+                }
+            } else {
+                if (avatarMod.HabitatClass() == CLASS_TOKENS) {
+                    token_at = i;
+                }
+            }
+        }
+
+        // Handles the split logic, depending upon whether the Avatar is holding
+        // Tokens or not.
+        int big_denom;
+        if (token_at != -1) {
+            pos_y = token_at;
+            Tokens avatarTokens = (Tokens) avatar.contents(pos_y);
+            big_denom = avatarTokens.tget() + tget() - amount;
+            if (big_denom > 65536) {
+                send_reply_error(from);
+                return;
+            }
+            avatarTokens.tset(big_denom);
+            send_fiddle_msg(THE_REGION, avatarTokens.noid, C64_TOKEN_DENOM_OFFSET,
+                new int[]{ avatarTokens.denom_lo, avatarTokens.denom_hi });
+        } else {
+            big_denom = tget() - amount;
+            if (big_denom > 65536 || pos_y == -1) {
+                send_reply_error(from);
+                return;
+            }
+            Tokens tokens = new Tokens(0, 0, pos_y, 0, 0, big_denom % 256, big_denom / 256);
+            Item item = create_object("money", tokens, avatar);
+            if (item == null) {
+                send_reply_error(from);
+                return;
+            }
+            announce_object(item, avatar);
+        }
+
+        tset(amount);
+        send_fiddle_msg(THE_REGION, noid, C64_TOKEN_DENOM_OFFSET,
+            new int[]{ denom_lo, denom_hi });
+        send_reply_success(from);
     }
-    
+
     /** 
      * Spend some of this objects tokens.
      * 
-     * @param from The user spending the tokens (and waiting for an answer)
      * @param amount The number of tokens to spend.
      * @return
      */

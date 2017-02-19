@@ -161,7 +161,6 @@ public class Fortune_machine extends Coinop {
         String text;
         if (success == TRUE) {
             text = getFortune();
-            // TODO(steve): Uncomment once bank_account_balance is working.
             send_neighbor_msg(from, noid, "PAYTO$",
                 "payer", avatar.noid,
                 "amount_lo", FORTUNE_COST,
