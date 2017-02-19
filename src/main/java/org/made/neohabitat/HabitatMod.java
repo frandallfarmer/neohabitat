@@ -21,7 +21,6 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 
 import java.util.Formatter;
-import java.util.UUID;
 
 // TODO CHIP? Should we assureSameContext (and other elko patterns) assuming ill behaving clients? If so, how and when?
 
@@ -1742,9 +1741,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 */
 	public void send_neighbor_fiddle_msg(User from, int noid, int target, int offset, int arg) {
 		send_neighbor_fiddle_msg(from, noid, target, offset, new int[]{ arg });
-	}	
-	
-	
+	}
+
 	/**
 	 * Send a fiddle message to the entire region. The client does all the work.
 	 *
@@ -3062,17 +3060,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		return 128 + sfxId;
 	}
 
-
-	/**
-	 * Adds a UUID4 random identifier to a given name, joining with a -.
-	 *
-	 * @param name Name to append UUID4 to
-	 * @return name-UUID4
-     */
-	public String with_uuid(String name) {
-		return String.format("%s-%s", name, UUID.randomUUID());
-	}
-
 	/**
 	 * Announces a new object to a Region.
 	 *
@@ -3115,15 +3102,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			tokens.tset(amount);
 		} else {
 			tokens = new Tokens(0, who.x, who.y, 0, 0, 0, 0);
-			tokens.tset(amount);
 			trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", current_region().obj_id(),
 				who.obj_id(), tokens.tget());
-			Item item = create_object(with_uuid("money"), tokens, current_region());
+			Item item = create_object("money", tokens, current_region());
 			if (item == null) {
 				trace_msg("FAILED to create tokens in region %s for Avatar %s", current_region().obj_id(),
 					who.obj_id());
 				return FALSE;
 			}
+			tokens.tset(amount);
 			announce_object(item, current_region());
 		}
 		tokens.gen_flags[MODIFIED] = true;
