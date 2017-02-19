@@ -2,7 +2,6 @@
 	{
 		"type": "item",
 		"ref": "item-randytokens",
-		"deletable": true,
 		"name": "Money!",
 		"in": "user-randy",
 		"mods": [
@@ -17,7 +16,6 @@
 	{
 		"type": "item",
 		"ref": "item-randyspraycan",
-		"deletable": true,
 		"name": "Stylin' body paint",
 		"in": "user-randy",
 		"mods": [
@@ -32,7 +30,6 @@
 	{
 		"type": "item",
 		"ref": "item-randygodtool",
-		"deletable": true,
 		"name": "Tool to rule the universe.",
 		"in": "user-randy",
 		"mods": [

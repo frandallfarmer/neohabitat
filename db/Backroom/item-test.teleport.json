@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.teleport",
-	"deletable": true,
 	"name": "Pop-Heads Port",
 	"in": "context-test",
 	"mods": [

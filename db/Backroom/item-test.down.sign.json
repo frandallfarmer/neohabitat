@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.down.sign",
-	"deletable": true,
 	"name": "Indicate Down Exit",
 	"in": "context-test",
 	"mods": [

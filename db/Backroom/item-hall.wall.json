@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-hall.wall",
-	"deletable": true,
 	"name": "Wall for Hall",
 	"in": "context-hall",
 	"mods": [

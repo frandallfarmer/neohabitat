@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-table.door.heads",
-	"deletable": true,
 	"name": "Door to Heads",
 	"in": "context-table",
 	"mods": [

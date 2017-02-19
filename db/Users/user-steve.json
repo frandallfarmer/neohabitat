@@ -18,7 +18,6 @@
 	{
 		"type": "item",
 		"ref": "item-steve.head",
-		"deletable": true,
 		"name": "Steve's Head",
 		"in": "user-steve",
 		"mods": [
@@ -33,7 +32,6 @@
 	{
 		"type": "item",
 		"ref": "item-steve.godtool",
-		"deletable": true,
 		"name": "Tool to rule the universe.",
 		"in": "user-steve",
 		"mods": [
@@ -50,7 +48,6 @@
 	{
 		"type": "item",
 		"ref": "item-steve.compass",
-		"deletable": true,
 		"name": "Compass",
 		"in": "user-steve",
 		"mods": [

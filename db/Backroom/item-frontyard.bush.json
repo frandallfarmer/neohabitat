@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-frontyard.bush",
-	"deletable": true,
 	"name": "Landscaping...",
 	"in": "context-frontyard",
 	"mods": [

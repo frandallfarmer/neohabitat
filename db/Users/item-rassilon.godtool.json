@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-rassilon.godtool",
-	"deletable": true,
 	"name": "Tool to rule the universe.",
 	"in": "user-rassilon",
 	"mods": [

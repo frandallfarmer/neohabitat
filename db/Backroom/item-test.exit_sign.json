@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.exit_sign",
-	"deletable": true,
 	"name": "Exit the region sign...",
 	"in": "context-test",
 	"mods": [

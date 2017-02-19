@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-staging.wall",
-	"deletable": true,
 	"name": "Wall",
 	"in": "context-staging",
 	"mods": [

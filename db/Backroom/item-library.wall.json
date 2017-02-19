@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-library.wall",
-	"deletable": true,
 	"name": "Wall for Contents Testing",
 	"in": "context-library",
 	"mods": [

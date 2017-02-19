@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-table.door.library",
-	"deletable": true,
 	"name": "Door to Library",
 	"in": "context-table",
 	"mods": [

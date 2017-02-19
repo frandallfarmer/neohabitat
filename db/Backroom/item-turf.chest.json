@@ -1,7 +1,6 @@
 {
   "type": "item",
   "ref": "item-turf.chest",
-  "deletable": true,
   "name": "Turf chest",
   "in": "context-turf",
   "mods": [

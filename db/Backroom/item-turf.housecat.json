@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-turf.housecat",
-	"deletable": true,
 	"name": "Housecat",
 	"in": "context-turf",
 	"mods": [

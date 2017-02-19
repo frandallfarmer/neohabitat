@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.head.melvin",
-	"deletable": true,
 	"name": "Melvin Head",
 	"in": "context-test",
 	"mods": [

@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-library.plaque",
-	"deletable": true,
 	"name": "Test Plaque",
 	"in": "context-library",
 	"mods": [

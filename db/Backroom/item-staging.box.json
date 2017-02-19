@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-staging.box",
-	"deletable": true,
 	"name": "Lockbox",
 	"in": "context-staging",
 	"mods": [

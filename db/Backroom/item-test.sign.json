@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.sign",
-	"deletable": true,
 	"name": "A Large Sign",
 	"in": "context-test",
 	"mods": [

@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-hall.door.test",
-	"deletable": true,
 	"name": "Door to Test",
 	"in": "context-hall",
 	"mods": [

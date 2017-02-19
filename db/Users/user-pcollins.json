@@ -18,7 +18,6 @@
   {
     "type": "item",
     "ref": "item-pcollins.head",
-    "deletable": true,
     "name": "Pcollins's Head",
     "in": "user-pcollins",
     "mods": [
@@ -33,7 +32,6 @@
   {
     "type": "item",
     "ref": "item-pcollins.godtool",
-    "deletable": true,
     "name": "Tool to rule the universe.",
     "in": "user-pcollins",
     "mods": [
@@ -50,7 +48,6 @@
   {
     "type": "item",
     "ref": "item-pcollins.compass",
-    "deletable": true,
     "name": "Compass",
     "in": "user-pcollins",
     "mods": [

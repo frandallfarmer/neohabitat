@@ -34,3 +34,7 @@ db:
 	echo 'ENDINITS' >> $(DBINIT_SCRIPT)
 	chmod +x $(DBINIT_SCRIPT)
 	$(DBINIT_SCRIPT)
+	
+deletables:
+	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
+

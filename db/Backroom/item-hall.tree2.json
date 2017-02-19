@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-hall.tree2",
-	"deletable": true,
 	"name": "Tree",
 	"in": "context-hall",
 	"mods": [

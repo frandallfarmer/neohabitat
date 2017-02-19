@@ -2,7 +2,6 @@
 	{
 		"type": "item",
 		"ref": "item-steve.godtool",
-		"deletable": true,
 		"name": "Tool to rule the universe.",
 		"in": "user-steve",
 		"mods": [
@@ -19,7 +18,6 @@
 	{
 		"type": "item",
 		"ref": "item-steve.spraycan",
-		"deletable": true,
 		"name": "Stylin' body paint",
 		"in": "user-steve",
 		"mods": [

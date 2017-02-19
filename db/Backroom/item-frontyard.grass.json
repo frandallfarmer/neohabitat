@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-frontyard.grass",
-	"deletable": true,
 	"name": "Green Grass in the front of my house...",
 	"in": "context-frontyard",
 	"mods": [

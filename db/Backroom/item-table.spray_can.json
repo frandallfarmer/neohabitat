@@ -1,7 +1,6 @@
 {
   "type": "item",
   "ref": "item-library.spray_can",
-  "deletable": true,
   "name": "Spray Can",
   "in": "item-table.table",
   "mods": [

@@ -1,7 +1,6 @@
 {
   "type": "item",
   "ref": "item-library.gun",
-  "deletable": true,
   "name": "Gun",
   "in": "item-table.table",
   "mods": [

@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-frontyard.street",
-	"deletable": true,
 	"name": "Street that our house is in the middle of...",
 	"in": "context-frontyard",
 	"mods": [

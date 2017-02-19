@@ -1,7 +1,6 @@
 {
   "type": "item",
   "ref": "item-turf.ground",
-  "deletable": false,
   "name": "Turf ground",
   "in": "context-turf",
   "mods": [

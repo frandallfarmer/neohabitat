@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-hall.ground",
-	"deletable": true,
 	"name": "Ground for Hall",
 	"in": "context-hall",
 	"mods": [

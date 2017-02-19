@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.head.woman",
-	"deletable": true,
 	"name": "Woman Head",
 	"in": "context-test",
 	"mods": [

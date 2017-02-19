@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-library.ground",
-	"deletable": true,
 	"name": "Ground for Contents Testing",
 	"in": "context-library",
 	"mods": [

@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-janet.head",
-	"deletable": true,
 	"name": "Janet's Head",
 	"in": "user-janet",
 	"mods": [

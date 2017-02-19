@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.wall",
-	"deletable": true,
 	"name": "Wall",
 	"in": "context-test",
 	"mods": [

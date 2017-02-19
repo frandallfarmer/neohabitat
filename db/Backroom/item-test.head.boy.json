@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.head.boy",
-	"deletable": true,
 	"name": "Default Male Head",
 	"in": "context-test",
 	"mods": [

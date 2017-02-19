@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-library.exit.sign",
-	"deletable": true,
 	"name": "Exit the region sign...",
 	"in": "context-library",
 	"mods": [

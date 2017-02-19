@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-table.ground",
-	"deletable": true,
 	"name": "Ground for Contents Testing",
 	"in": "context-table",
 	"mods": [

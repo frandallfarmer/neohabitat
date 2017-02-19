@@ -1,7 +1,6 @@
 {
   "type": "item",
   "ref": "item-table.compass",
-  "deletable": true,
   "name": "Compass",
   "in": "item-table.table",
   "mods": [

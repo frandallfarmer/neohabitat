@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-hall.door.turf",
-	"deletable": true,
 	"name": "Door to Turf",
 	"in": "context-hall",
 	"mods": [

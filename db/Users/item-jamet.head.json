@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.head.girl",
-	"deletable": true,
 	"name": "Default Female Head",
 	"in": "context-test",
 	"mods": [

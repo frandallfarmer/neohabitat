@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-stu.godtool",
-	"deletable": true,
 	"name": "Tool to rule the universe.",
 	"in": "user-stu",
 	"mods": [

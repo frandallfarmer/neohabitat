@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-chest.chainsaw",
-	"deletable": true,
 	"name": "A Chainsaw knick knack.",
 	"in": "item-turf.chest",
 	"mods": [

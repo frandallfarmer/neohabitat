@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-frontyard.building",
-	"deletable": false,
 	"name": "Front of Our House, in the middle of the street...",
 	"in": "context-frontyard",
 	"mods": [

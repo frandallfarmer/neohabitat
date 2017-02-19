@@ -1,7 +1,6 @@
 {
   "type": "item",
   "ref": "item-turf.chair",
-  "deletable": false,
   "name": "Turf chair",
   "in": "context-turf",
   "mods": [

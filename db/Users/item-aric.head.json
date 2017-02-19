@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-aric.head",
-	"deletable": true,
 	"name": "Aric's Head",
 	"in": "user-aric",
 	"mods": [

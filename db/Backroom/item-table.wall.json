@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-table.wall",
-	"deletable": true,
 	"name": "Wall for Contents Testing",
 	"in": "context-table",
 	"mods": [

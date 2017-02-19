@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.head.sheriff",
-	"deletable": true,
 	"name": "Sherif Head",
 	"in": "context-test",
 	"mods": [

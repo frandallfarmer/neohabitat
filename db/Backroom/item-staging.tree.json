@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-staging.tree",
-	"deletable": true,
 	"name": "Tree",
 	"in": "context-staging",
 	"mods": [

@@ -2,7 +2,6 @@
 	{
 		"type": "item",
 		"ref": "item-chiptokens",
-		"deletable": true,
 		"name": "Money!",
 		"in": "user-chip",
 		"mods": [
@@ -17,7 +16,6 @@
 	{
 		"type": "item",
 		"ref": "item-chipspraycan",
-		"deletable": true,
 		"name": "Stylin' body paint",
 		"in": "user-chip",
 		"mods": [
@@ -32,7 +30,6 @@
 	{
 		"type": "item",
 		"ref": "item-chipgodtool",
-		"deletable": true,
 		"name": "Tool to rule the universe.",
 		"in": "user-chip",
 		"mods": [
@@ -49,7 +46,6 @@
 	{
 		"type": "item",
 		"ref": "item-chiprock",
-		"deletable": true,
 		"name": "Chip's Rock",
 		"in": "user-chip",
 		"mods": [

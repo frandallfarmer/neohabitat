@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-table.down.sign",
-	"deletable": true,
 	"name": "Indicate Down Exit",
 	"in": "context-table",
 	"mods": [

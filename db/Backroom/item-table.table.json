@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-table.table",
-	"deletable": true,
 	"name": "Test Table",
 	"in": "context-table",
 	"mods": [

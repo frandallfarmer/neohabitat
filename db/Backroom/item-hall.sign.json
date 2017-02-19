@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-hall.sign",
-	"deletable": true,
 	"name": "A Large Sign",
 	"in": "context-hall",
 	"mods": [

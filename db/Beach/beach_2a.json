@@ -21,7 +21,6 @@
   {
     "type": "item",
     "ref": "item-ground.context-beach_2a",
-    "deletable": true,
     "name": "Sand",
     "in": "context-beach_2a",
     "mods": [
@@ -53,7 +52,6 @@
   {
     "type": "item",
     "ref": "item-pond1.context-beach_2a",
-    "deletable": false,
     "name": "Pond",
     "in": "context-beach_2a",
     "mods": [
@@ -84,7 +82,6 @@
   {
     "type": "item",
     "ref": "item-pond3.context-beach_2a",
-    "deletable": false,
     "name": "Pond",
     "in": "context-beach_2a",
     "mods": [
@@ -100,7 +97,6 @@
   {
     "type": "item",
     "ref": "item-tree1.context-beach_2a",
-    "deletable": true,
     "name": "Tree",
     "in": "context-beach_2a",
     "mods": [
@@ -116,7 +112,6 @@
   {
     "type": "item",
     "ref": "item-tree2.context-beach_2a",
-    "deletable": true,
     "name": "Tree",
     "in": "context-beach_2a",
     "mods": [
@@ -132,7 +127,6 @@
   {
     "type": "item",
     "ref": "item-tree3.context-beach_2a",
-    "deletable": true,
     "name": "Tree",
     "in": "context-beach_2a",
     "mods": [
@@ -148,7 +142,6 @@
   {
     "type": "item",
     "ref": "item-sky1.context-beach_2a",
-    "deletable": false,
     "name": "Sunny Sky",
     "in": "context-beach_2a",
     "mods": [
@@ -164,7 +157,6 @@
   {
     "type": "item",
     "ref": "item-sky2.context-beach_2a",
-    "deletable": false,
     "name": "Sunny Sky",
     "in": "context-beach_2a",
     "mods": [

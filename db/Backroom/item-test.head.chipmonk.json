@@ -1,7 +1,6 @@
 {
 	"type": "item",
 	"ref": "item-test.head.chipmonk",
-	"deletable": true,
 	"name": "Chipmonk Head",
 	"in": "context-test",
 	"mods": [
