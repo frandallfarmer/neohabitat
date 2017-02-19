@@ -253,7 +253,16 @@ function createServerConnection(port, host, client, immediate, context) {
 		}
 		if (reset) {				// This connection has been replaced due to context change.
 			Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
-			server.destroy();
+
+			// Make sure any outgoing messages have been sent...
+			var now  = new Date().getTime();
+			var when = Math.ceil(client.timeLastSent + client.lastSentLen * 8 / Argv.rate * Millis);
+			if (when <= now) {
+				server.destroy();
+			} else {
+				var delay = Math.ceil(Math.max(0, (when - now)));
+				setTimeout(function () { server.destroy(); }, delay);
+			}		
 		}
 	});
 

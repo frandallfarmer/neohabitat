@@ -1,3 +1,4 @@
+[
 {
 	"type": "context",
 	"ref": "context-library",
@@ -12,4 +13,21 @@
 			"neighbors": ["context-back4t_01", "context-table", "context-test", ""]
 		}
 	]
-}
+},
+{
+    "ref": "item-trashcan",
+    "mods": [
+      {    	  	
+    	"type": "Garbage_can",
+        "y": 132,
+        "x": 120,
+        "orientation": 224,
+        "gr_state": 1,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Garbage_can",
+    "in": "context-library"
+  }
+]

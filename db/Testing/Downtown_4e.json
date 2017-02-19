@@ -1,128 +1,137 @@
 [
   {
-    "ref": "context-Downtown_4e", 
-    "capacity": 6, 
-    "type": "context", 
-    "name": "Plaza Southwest", 
-    "aliases": ["pop-plaza","pop-downtown","pop-fountain"],
+    "ref": "context-Downtown_4e",
+    "capacity": 6,
+    "type": "context",
+    "name": "Plaza Southwest",
+    "aliases": [
+      "pop-plaza",
+      "pop-downtown",
+      "pop-fountain"
+    ],
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
-        "type": "Region", 
-        "neighbors": ["","","",""], 
+        "town_dir": "",
+        "port_dir": "",
+        "type": "Region",
+        "neighbors": [
+          "",
+          "",
+          "",
+          ""
+        ],
         "nitty_bits": 3
       }
     ]
-  }, 
+  },
   {
-    "ref": "item-ground3c1b.context-Downtown_4e", 
+    "ref": "item-ground3c1b.context-Downtown_4e",
     "mods": [
       {
-        "y": 4, 
-        "x": 72, 
-        "style": 1, 
-        "type": "Ground", 
+        "y": 4,
+        "x": 72,
+        "style": 1,
+        "type": "Ground",
         "orientation": 104
       }
-    ], 
-    "type": "item", 
-    "name": "Ground", 
-    "in": "context-Downtown_4e"
-  }, 
-  {
-    "ref": "item-sky6924.context-Downtown_4e", 
-    "mods": [
-      {
-        "y": 0, 
-        "x": 0, 
-        "style": 4, 
-        "type": "Sky", 
-        "orientation": 244
-      }
-    ], 
-    "type": "item", 
-    "name": "Sky", 
+    ],
+    "type": "item",
+    "name": "Ground",
     "in": "context-Downtown_4e"
   },
   {
-    "ref": "item-teleport4d1a.context-Downtown_4e", 
+    "ref": "item-sky6924.context-Downtown_4e",
     "mods": [
       {
-        "y": 143, 
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Sky",
+        "orientation": 244
+      }
+    ],
+    "type": "item",
+    "name": "Sky",
+    "in": "context-Downtown_4e"
+  },
+  {
+    "ref": "item-teleport4d1a.context-Downtown_4e",
+    "mods": [
+      {
+        "y": 143,
         "x": 24,
         "type": "Teleport",
         "orientation": 0,
-		"address": "Pop-Plaza SW        "
+        "address": "Pop-Plaza SW        "
       }
-    ], 
-    "type": "item", 
-    "name": "Teleport", 
+    ],
+    "type": "item",
+    "name": "Teleport",
     "in": "context-Downtown_4e"
-  }, 
+  },
   {
-    "ref": "item-sky8cb5.context-Downtown_4e", 
+    "ref": "item-sky8cb5.context-Downtown_4e",
     "mods": [
       {
-        "y": 2, 
-        "x": 0, 
-        "style": 7, 
-        "type": "Sky", 
+        "y": 2,
+        "x": 0,
+        "style": 7,
+        "type": "Sky",
         "orientation": 172
       }
-    ], 
-    "type": "item", 
-    "name": "Sky", 
+    ],
+    "type": "item",
+    "name": "Sky",
     "in": "context-Downtown_4e"
-  }, 
+  },
   {
-    "ref": "item-trapezoidabf9.context-Downtown_4e", 
+    "ref": "item-trapezoidabf9.context-Downtown_4e",
     "mods": [
       {
-        "y": 3, 
+        "y": 3,
         "x": 0,
-        "trapezoid_type": 2, 
-        "upper_left_x": 0, 
-        "upper_right_x": 160, 
-        "lower_left_x": 0, 
-        "lower_right_x": 160, 
-        "height": 47, 
-        "type": "Trapezoid", 
+        "trapezoid_type": 2,
+        "upper_left_x": 0,
+        "upper_right_x": 160,
+        "lower_left_x": 0,
+        "lower_right_x": 160,
+        "height": 47,
+        "type": "Trapezoid",
         "orientation": 220
       }
-    ], 
-    "type": "item", 
-    "name": "Trapezoid", 
+    ],
+    "type": "item",
+    "name": "Trapezoid",
     "in": "context-Downtown_4e"
-  }, 
+  },
   {
-    "ref": "item-street7800.context-Downtown_4e", 
+    "ref": "item-street7800.context-Downtown_4e",
     "mods": [
       {
-        "orientation": 8, 
-        "type": "Street", 
-        "gr_state": 5, 
-        "y": 4, 
+        "orientation": 8,
+        "type": "Street",
+        "gr_state": 5,
+        "y": 4,
         "x": 64
       }
-    ], 
-    "type": "item", 
-    "name": "Street", 
+    ],
+    "type": "item",
+    "name": "Street",
     "in": "context-Downtown_4e"
-  }, 
+  },
   {
-    "ref": "item-streete99d.context-Downtown_4e", 
+    "ref": "item-streete99d.context-Downtown_4e",
     "mods": [
       {
-        "orientation": 8, 
-        "type": "Street", 
-        "gr_state": 4, 
-        "y": 24, 
+        "orientation": 8,
+        "type": "Street",
+        "gr_state": 4,
+        "y": 24,
         "x": 68
       }
-    ], 
-    "type": "item", 
-    "name": "Street", 
+    ],
+    "type": "item",
+    "name": "Street",
     "in": "context-Downtown_4e"
   }
 ]
