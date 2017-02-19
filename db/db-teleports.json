@@ -1,9 +1,0 @@
-{ "ref" : "teleports", "type" : "map", "map" : {
-"pop-hub":"context-test",
-"pop-test":"context-test",
-"pop-heads":"context-test",
-"pop-plaza":"context-Downtown_4e",
-"pop-downtown":"context-Downtown_4e",
-"pop-fountain":"context-Downtown_4e",
-"pop-plazasw":"context-Downtown_4e",
- " End Of Directory": "eod" } }
