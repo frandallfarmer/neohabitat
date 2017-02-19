@@ -106,4 +106,16 @@ public abstract class Container extends HabitatMod {
         }
         */
     }
+
+    /**
+     * Destroys and deletes all contents of this Container.
+     */
+    public void destroy_contents() {
+        for (int i=0; i < capacity(); i++) {
+            HabitatMod mod = this.contents(i);
+            if (mod != null) {
+                destroy_object(mod);
+            }
+        }
+    }
 }

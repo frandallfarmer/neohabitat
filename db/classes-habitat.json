@@ -270,6 +270,26 @@
 			"type": "class",
 			"tag": "Teleport",
 			"name": "org.made.neohabitat.mods.Teleport"
+		},
+		{
+			"type": "class",
+			"tag": "Dropbox",
+			"name": "org.made.neohabitat.mods.Dropbox"
+		},
+		{
+			"type": "class",
+			"tag": "Garbage_can",
+			"name": "org.made.neohabitat.mods.Garbage_can"
+		},
+		{
+			"type": "class",
+			"tag": "Picture",
+			"name": "org.made.neohabitat.mods.Picture"
+		},
+		{
+			"type": "class",
+			"tag": "Sex_changer",
+			"name": "org.made.neohabitat.mods.Sex_changer"
 		}
-		]
+	]
 }

@@ -1,14 +1,14 @@
 {
 	"type": "item",
-	"ref": "item-library.coke",
+	"ref": "item-library.garbage",
 	"deletable": true,
-	"name": "Choke Machine",
+	"name": "Garbager",
 	"in": "context-library",
 	"mods": [
 		{
-			"type": "Coke_machine",
+			"type": "Garbage_can",
 			"x": 120,
-			"y": 30,
+			"y": 30
 		}
 	]
 }
