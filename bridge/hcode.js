@@ -291,7 +291,11 @@ this.SERVER_OPS = {
 		"RUB$": 				{ reqno: 9 },
 		"SCAN$":	 			{ reqno: 8 },
 		"SELL$": 				{ reqno: 9 },
-		"SEXCHANGE$": 			{ reqno: 8 },
+		"SEXCHANGE$": 			{ reqno: 8,
+			toClient: function (o,b) {
+				b.add(o.AVATAR_NOID);
+			}
+		},
 		"SIT$": 				{ reqno: 16,
 			toClient: function (o,b) {
 				b.add(o.up_or_down);
@@ -715,6 +719,16 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.err);
 			}
+		},
+		SEXCHANGE: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
+		FLUSH: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
 		}
 };
 
@@ -723,7 +737,7 @@ this.portable = {
 			0:{ op:"HELP" },
 			1:{ op:"GET" },
 			2:{ op:"PUT" },
-			3:{ op:"THROW"}
+			3:{ op:"THROW" }
 		}
 };
 
@@ -923,6 +937,27 @@ this.Atm	= {
 		}
 };
 
+this.Sex_changer = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"SEXCHANGE" }
+		}
+};
+
+this.Garbage_can = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			6:{ op:"FLUSH" }
+		}
+};
+
+this.Dropbox = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			5:{ op:"SENDMAIL" }
+		}
+};
+
 this.Bottle  = {
 		clientMessages: {
 			0:{ op:"HELP" },
@@ -991,3 +1026,4 @@ this.Gun       = this.weapon;
 this.Knife   = this.weapon;
 this.Club   = this.weapon;
 this.Streetlamp = this.help;
+this.Picture = this.portable;

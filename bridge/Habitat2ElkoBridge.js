@@ -797,10 +797,15 @@ var encodeState = {
 			buf = this.common(state, container, buf);
 			buf.add(state.filled);
       return buf;
-  		},
+  	},
 		Teleport: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.activeState || 0);
+			return buf;
+		},
+		Picture: function (state, container, buf) {
+			buf = this.massive(state, container, buf);
+			buf.add(state.picture || 0);
 			return buf;
 		},
 		Spray_can:  function (state, container, buf) { return (this.common  (state, container, buf)); },
@@ -833,7 +838,6 @@ var encodeState = {
 		Flag: 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Trapezoid: 	function (state, container, buf) { return (this.polygonal(state,container, buf)); },
 		Hot_tub:    function (state, container, buf) { return (this.common  (state, container, buf)); },
-
 		Compass:  function(state, container, buf) { return (this.common(state, container, buf)); },
 		Gun:  function(state, container, buf) { return (this.common(state, container, buf)); },
 		Knife:  function(state, container, buf) { return (this.common(state, container, buf)); },
@@ -845,8 +849,10 @@ var encodeState = {
 		Streetlamp: function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bed:      function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Countertop:		function (state, container, buf) { return (this.openable(state, container, buf)); },
-		Atm:      function (state, container, buf) { return (this.common  (state, container, buf)); }
-
+		Atm:      function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Sex_changer:  function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Dropbox:  function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Garbage_can: function (state, container, buf) { return (this.openable(state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

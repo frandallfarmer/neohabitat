@@ -36,20 +36,19 @@ public abstract class Oracular extends HabitatMod {
 
 	/**
 	 * Verb (Specific): TODO Ask of the Oracle!
-	 * 
+	 *
 	 * @param from
 	 *            User representing the connection making the request.
 	 * @param text
 	 *            The string to ask!
 	 */
-
 	public void generic_ASK(User from, OptString text) {
 		String question = text.value("");
 		Avatar avatar   = (Avatar) from.getMod(Avatar.class);
 		if (question.toLowerCase().indexOf("to:") == 0) {
 			object_say(from, "I don't do ESP.  Point somewhere else.");
 		} else {
-			if (question.length() < 4) 
+			if (question.length() < 4)
 				question = " " + question + " ";
 			object_say(from, avatar.noid, question);
 			message_to_god(this, avatar, question);
