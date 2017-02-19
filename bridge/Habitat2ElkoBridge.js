@@ -852,7 +852,8 @@ var encodeState = {
 		Atm:      function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Sex_changer:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Dropbox:  function (state, container, buf) { return (this.common  (state, container, buf)); },
-		Garbage_can: function (state, container, buf) { return (this.openable(state, container, buf)); }
+		Garbage_can: function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Display_case: function (state, container, buf) { return (this.openable(state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

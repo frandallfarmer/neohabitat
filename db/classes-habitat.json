@@ -290,6 +290,11 @@
 			"type": "class",
 			"tag": "Sex_changer",
 			"name": "org.made.neohabitat.mods.Sex_changer"
+		},
+		{
+			"type": "class",
+			"tag": "Display_case",
+			"name": "org.made.neohabitat.mods.Display_case"
 		}
 	]
 }

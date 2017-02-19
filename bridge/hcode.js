@@ -968,6 +968,14 @@ this.Bottle  = {
 		}
 };
 
+this.Display_case	= { 		
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"CLOSECONTAINER" },
+			5:{ op:"OPENCONTAINER" }
+		}
+};
+
 this.magical	= {
 		clientMessages: {
 			0:{ op:"HELP" },
