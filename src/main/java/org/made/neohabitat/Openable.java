@@ -54,7 +54,20 @@ public abstract class Openable extends Container {
         this.key_lo = key_lo.value(0);
         this.key_hi = key_hi.value(0);
     }
-    
+
+    public Openable(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags) {
+        super(style, x, y, orientation, gr_state);
+        this.open_flags = open_flags;
+    }
+
+    public Openable(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags,
+        int key_lo, int key_hi) {
+        super(style, x, y, orientation, gr_state);
+        this.open_flags = open_flags;
+        this.key_lo = key_lo;
+        this.key_hi = key_hi;
+    }
+
     public JSONLiteral encodeOpenable(JSONLiteral result) {
         result = super.encodeCommon(result);
         if (0 != packBits(open_flags)) {

@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Weapon;
 
 /**
@@ -13,7 +15,7 @@ import org.made.neohabitat.Weapon;
  *
  * @author steve
  */
-public class Club extends Weapon {
+public class Club extends Weapon implements Copyable {
 
     public int HabitatClass() {
         return CLASS_CLUB;
@@ -46,6 +48,15 @@ public class Club extends Weapon {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
     public Club(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
         super(style, x, y, orientation, gr_state);
+    }
+
+    public Club(int style, int x, int y, int orientation, int gr_state) {
+        super(style, x, y, orientation, gr_state);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Club(style, x, y, orientation, gr_state);
     }
 
     @Override

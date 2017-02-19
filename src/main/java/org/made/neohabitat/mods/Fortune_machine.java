@@ -6,6 +6,8 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Coinop;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 
 /**
  * Habitat Fortune_machine Mod
@@ -14,7 +16,7 @@ import org.made.neohabitat.Coinop;
  *
  * @author steve
  */
-public class Fortune_machine extends Coinop {
+public class Fortune_machine extends Coinop implements Copyable {
 
     public int HabitatClass() {
         return CLASS_FORTUNE_MACHINE;
@@ -145,6 +147,15 @@ public class Fortune_machine extends Coinop {
     public Fortune_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
         OptInteger gr_state, OptInteger take) {
         super(style, x, y, orientation, gr_state, take);
+    }
+
+    public Fortune_machine(int style, int x, int y, int orientation, int gr_state, int take) {
+        super(style, x, y, orientation, gr_state, take);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Fortune_machine(style, x, y, orientation, gr_state, take);
     }
 
     @Override

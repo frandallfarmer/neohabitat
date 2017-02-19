@@ -34,6 +34,10 @@ public abstract class Weapon extends HabitatMod {
 		super(style, x, y, orientation, gr_state);
 	}
 
+	public Weapon(int style, int x, int y, int orientation, int gr_state) {
+		super(style, x, y, orientation, gr_state);
+	}
+
 	@JSONMethod
 	public void HELP(User from) {
 		generic_HELP(from);

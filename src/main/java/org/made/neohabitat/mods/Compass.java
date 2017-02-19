@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 
@@ -16,7 +17,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Compass extends HabitatMod {
+public class Compass extends HabitatMod implements Copyable {
 
     public int HabitatClass() {
         return CLASS_COMPASS;
@@ -50,6 +51,15 @@ public class Compass extends HabitatMod {
     public Compass(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
                    OptInteger gr_state) {
         super(style, x, y, orientation, gr_state);
+    }
+
+    public Compass(int style, int x, int y, int orientation, int gr_state) {
+        super(style, x, y, orientation, gr_state);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Compass(style, x, y, orientation, gr_state);
     }
 
     @Override

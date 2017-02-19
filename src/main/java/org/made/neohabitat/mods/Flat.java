@@ -4,6 +4,7 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 
@@ -15,7 +16,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Flat extends HabitatMod {
+public class Flat extends HabitatMod implements Copyable {
 
     public int HabitatClass() {
         return CLASS_FLAT;
@@ -49,9 +50,19 @@ public class Flat extends HabitatMod {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "flat_type" })
     public Flat(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-                OptInteger flat_type) {
+        OptInteger flat_type) {
         super(style, x, y, orientation, gr_state);
         this.flat_type = flat_type.value(0);
+    }
+
+    public Flat(int style, int x, int y, int orientation, int gr_state, int flat_type) {
+        super(style, x, y, orientation, gr_state);
+        this.flat_type = flat_type;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Flat(style, x, y, orientation, gr_state, flat_type);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.BasicObject;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -18,7 +19,7 @@ import org.made.neohabitat.HabitatMod;
  * @author Randy
  *
  */
-public class Tokens extends HabitatMod {
+public class Tokens extends HabitatMod implements Copyable {
     
     public int HabitatClass() {
         return CLASS_TOKENS;
@@ -82,7 +83,12 @@ public class Tokens extends HabitatMod {
         this.denom_lo = denom_lo;
         this.denom_hi = denom_hi;
     }
-    
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Tokens(style, x, y, orientation, gr_state, denom_lo, denom_hi);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));

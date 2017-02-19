@@ -5,6 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Switch;
 
 /**
@@ -14,7 +16,7 @@ import org.made.neohabitat.Switch;
  *
  * @author steve
  */
-public class Floor_lamp extends Switch {
+public class Floor_lamp extends Switch implements Copyable {
 
     public int HabitatClass() {
         return CLASS_FLOOR_LAMP;
@@ -48,6 +50,15 @@ public class Floor_lamp extends Switch {
     public Floor_lamp(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
                       OptInteger on) {
         super(style, x, y, orientation, gr_state, on);
+    }
+
+    public Floor_lamp(int style, int x, int y, int orientation, int gr_state, int on) {
+        super(style, x, y, orientation, gr_state, on);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Floor_lamp(style, x, y, orientation, gr_state, on);
     }
 
     @Override

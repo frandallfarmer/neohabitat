@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -14,7 +15,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Dropbox extends HabitatMod {
+public class Dropbox extends HabitatMod implements Copyable {
 
     public int HabitatClass() {
         return CLASS_DROPBOX;
@@ -47,6 +48,15 @@ public class Dropbox extends HabitatMod {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
     public Dropbox(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
         super(style, x, y, orientation, gr_state);
+    }
+
+    public Dropbox(int style, int x, int y, int orientation, int gr_state) {
+        super(style, x, y, orientation, gr_state);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Dropbox(style, x, y, orientation, gr_state);
     }
 
     @Override

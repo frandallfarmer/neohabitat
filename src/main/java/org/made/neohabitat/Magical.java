@@ -47,7 +47,19 @@ public abstract class Magical extends HabitatMod {
         this.magic_data4 = magic_data4.value(0);
         this.magic_data5 = magic_data5.value(0);
     }
-    
+
+    public Magical(int style, int x, int y, int orientation, int gr_state, int magic_type, int charges, int magic_data,
+        int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
+        super(style, x, y, orientation, gr_state);
+        this.magic_type = magic_type;
+        this.charges = charges;
+        this.magic_data = magic_data;
+        this.magic_data2 = magic_data2;
+        this.magic_data3 = magic_data3;
+        this.magic_data4 = magic_data4;
+        this.magic_data5 = magic_data5;
+    }
+
     public JSONLiteral encodeMagical(JSONLiteral result) {
         result = super.encodeCommon(result);
         if (0 != magic_type) {

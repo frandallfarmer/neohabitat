@@ -723,7 +723,12 @@ var encodeState = {
 			}
 			var bal = state.bankBalance ||  0;
 			buf.add(state.terrain_type	||  0);
-			buf.add(state.lighting		||  1);
+			// Sets default Region lighting at 1 if no lighting specified.
+			if (state.lighting === undefined) {
+				buf.add(1);
+			} else {
+				buf.add(state.lighting);
+			}
 			buf.add(state.depth			|| 32);
 			buf.add(state.region_class	||  0);
 			buf.add(state.Who_am_I		|| -1);    	

@@ -5,6 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Walkable;
 
 /**
@@ -18,7 +20,7 @@ import org.made.neohabitat.Walkable;
  *
  */
 
-public class Ground extends Walkable {
+public class Ground extends Walkable implements Copyable {
     
     public int HabitatClass() {
         return CLASS_GROUND;
@@ -53,7 +55,16 @@ public class Ground extends Walkable {
             OptInteger flat_type) {
         super(style, x, y, orientation, gr_state, flat_type.value(GROUND_FLAT));
     }
-    
+
+    public Ground(int style, int x, int y, int orientation, int gr_state, int flat_type) {
+        super(style, x, y, orientation, gr_state, flat_type);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Ground(style, x, y, orientation, gr_state, flat_type);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeWalkable(new JSONLiteral(HabitatModName(), control));

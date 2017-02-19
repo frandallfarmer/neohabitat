@@ -9,6 +9,7 @@ import org.elkoserver.server.context.ContextMod;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Constants;
 import org.made.neohabitat.Container;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -25,7 +26,7 @@ import org.made.neohabitat.HabitatMod;
  *
  */
 
-public class Region extends Container implements ContextMod, Constants {
+public class Region extends Container implements Copyable, ContextMod, Constants {
     
     /** The default depth for a region. */
     public static final int DEFAULT_REGION_DEPTH = 32; // TODO What is the
@@ -86,10 +87,10 @@ public class Region extends Container implements ContextMod, Constants {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
         "town_dir", "port_dir", "max_avatars", "neighbors" })
-    Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger nitty_bits, OptInteger depth, OptInteger lighting, 
-            OptString town_dir, OptString port_dir, OptInteger max_avatars,
-            String[] neighbors) {
+    public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+        OptInteger nitty_bits, OptInteger depth, OptInteger lighting,
+        OptString town_dir, OptString port_dir, OptInteger max_avatars,
+        String[] neighbors) {
         super(style, x, y, orientation, gr_state);
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -101,7 +102,25 @@ public class Region extends Container implements ContextMod, Constants {
         this.town_dir = town_dir.value("");
         this.port_dir = port_dir.value("");
     }
-    
+
+    public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, int depth, int lighting,
+        String town_dir, String port_dir, int max_avatars, String[] neighbors) {
+        super(style, x, y, orientation, gr_state);
+        this.nitty_bits = nitty_bits;
+        this.depth = depth;
+        this.lighting = lighting;
+        this.max_avatars = max_avatars;
+        this.neighbors = neighbors;
+        this.town_dir = town_dir;
+        this.port_dir = port_dir;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Region(style, x, y, orientation, gr_state, nitty_bits, depth, lighting, town_dir, port_dir,
+            max_avatars, neighbors);
+    }
+
     @Override
     public void objectIsComplete() {
         this.noids[0] = this;

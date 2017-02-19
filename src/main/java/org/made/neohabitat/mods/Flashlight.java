@@ -5,6 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Switch;
 
 /**
@@ -15,7 +17,7 @@ import org.made.neohabitat.Switch;
  * @author randy
  *
  */
-public class Flashlight extends Switch {
+public class Flashlight extends Switch implements Copyable {
     
     public int HabitatClass() {
         return CLASS_FLASHLIGHT;
@@ -50,7 +52,16 @@ public class Flashlight extends Switch {
             OptInteger on) {
         super(style, x, y, orientation, gr_state, on);
     }
-    
+
+    public Flashlight(int style, int x, int y, int orientation, int gr_state, int on) {
+        super(style, x, y, orientation, gr_state, on);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Flashlight(style, x, y, orientation, gr_state, on);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeLighting(new JSONLiteral(HabitatModName(), control));

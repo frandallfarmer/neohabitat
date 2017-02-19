@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -15,7 +16,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Bottle extends HabitatMod {
+public class Bottle extends HabitatMod implements Copyable {
 
     public int HabitatClass() {
         return CLASS_BOTTLE;
@@ -52,6 +53,16 @@ public class Bottle extends HabitatMod {
         OptInteger gr_state, OptInteger filled) {
         super(style, x, y, orientation, gr_state);
         this.filled = filled.value(FALSE);
+    }
+
+    public Bottle(int style, int x, int y, int orientation, int gr_state, int filled) {
+        super(style, x, y, orientation, gr_state);
+        this.filled = filled;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Bottle(style, x, y, orientation, gr_state, filled);
     }
 
     @Override

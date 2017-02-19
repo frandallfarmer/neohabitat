@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Massive;
 
 /**
@@ -16,7 +18,7 @@ import org.made.neohabitat.Massive;
  * @author randy
  *
  */
-public class Rock extends Massive {
+public class Rock extends Massive implements Copyable {
     
     public int HabitatClass() {
         return CLASS_ROCK;
@@ -48,10 +50,19 @@ public class Rock extends Massive {
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "mass" })
     public Rock(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger mass) {
+        OptInteger mass) {
         super(style, x, y, orientation, gr_state, mass);
     }
-    
+
+    public Rock(int style, int x, int y, int orientation, int gr_state, int mass) {
+        super(style, x, y, orientation, gr_state, mass);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Rock(style, x, y, orientation, gr_state, mass);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeMassive(new JSONLiteral(HabitatModName(), control));

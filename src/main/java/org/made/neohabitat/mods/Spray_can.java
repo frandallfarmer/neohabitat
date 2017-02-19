@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 
@@ -17,7 +18,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Spray_can extends HabitatMod {
+public class Spray_can extends HabitatMod implements Copyable {
 
     public int HabitatClass() {
         return CLASS_SPRAY_CAN;
@@ -60,9 +61,19 @@ public class Spray_can extends HabitatMod {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "charge" })
     public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-                     OptInteger gr_state, OptInteger charge) {
+        OptInteger gr_state, OptInteger charge) {
         super(style, x, y, orientation, gr_state);
         this.charge = charge.value(10);
+    }
+
+    public Spray_can(int style, int x, int y, int orientation, int gr_state, int charge) {
+        super(style, x, y, orientation, gr_state);
+        this.charge = charge;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Spray_can(style, x, y, orientation, gr_state, charge);
     }
 
     @Override

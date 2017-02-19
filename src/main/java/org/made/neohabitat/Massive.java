@@ -25,7 +25,12 @@ public abstract class Massive extends HabitatMod {
         super(style, x, y, orientation, gr_state);
         this.mass = mass.value(0);
     }
-    
+
+    public Massive(int style, int x, int y, int orientation, int gr_state, int mass) {
+        super(style, x, y, orientation, gr_state);
+        this.mass = mass;
+    }
+
     public JSONLiteral encodeMassive(JSONLiteral result) {
         result = super.encodeCommon(result);
         

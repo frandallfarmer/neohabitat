@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Openable;
 
 /**
@@ -15,7 +17,7 @@ import org.made.neohabitat.Openable;
  *
  */
 
-public class Table extends Openable {
+public class Table extends Openable implements Copyable {
     
     public int HabitatClass() {
         return CLASS_TABLE;
@@ -50,7 +52,16 @@ public class Table extends Openable {
             OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
         super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
     }
-    
+
+    public Table(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags, int key_lo, int key_hi) {
+        super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Table(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeOpenable(new JSONLiteral(HabitatModName(), control));

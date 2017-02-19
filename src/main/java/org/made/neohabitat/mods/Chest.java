@@ -5,6 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Openable;
 
 /**
@@ -15,7 +17,7 @@ import org.made.neohabitat.Openable;
  *
  * @author steve
  */
-public class Chest extends Openable {
+public class Chest extends Openable implements Copyable {
 
     public int HabitatClass() {
         return CLASS_CHEST;
@@ -49,6 +51,15 @@ public class Chest extends Openable {
     public Chest(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
                  OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
         super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+    }
+
+    public Chest(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags, int key_lo, int key_hi) {
+        super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Chest(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
     }
 
     @Override

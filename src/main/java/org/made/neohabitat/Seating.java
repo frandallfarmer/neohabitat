@@ -31,6 +31,10 @@ public abstract class Seating extends Openable {
 		super(style, x, y, orientation, gr_state, open_flags);
 	}
 
+	public Seating(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags) {
+		super(style, x, y, orientation, gr_state, open_flags);
+	}
+
 	public JSONLiteral encodeSeating(JSONLiteral result) {
 		result = super.encodeOpenable(result); 
 		if (result.control().toClient()) {
