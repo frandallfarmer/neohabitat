@@ -28,7 +28,7 @@ public abstract class Coinop extends HabitatMod {
 		super(style, x, y, orientation, gr_state);
 		this.take = take;
 	}
-
+	
 	public JSONLiteral encodeCoinop(JSONLiteral result) {
 		result = super.encodeCommon(result);
 		if (result.control().toRepository()) {

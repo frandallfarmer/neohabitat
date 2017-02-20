@@ -6,6 +6,7 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
+import org.made.neohabitat.Walkable;
 
 
 /**
@@ -16,7 +17,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Flat extends HabitatMod implements Copyable {
+public class Flat extends Walkable implements Copyable {
 
     public int HabitatClass() {
         return CLASS_FLAT;
@@ -51,13 +52,11 @@ public class Flat extends HabitatMod implements Copyable {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "flat_type" })
     public Flat(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
         OptInteger flat_type) {
-        super(style, x, y, orientation, gr_state);
-        this.flat_type = flat_type.value(0);
+        super(style, x, y, orientation, gr_state, flat_type.value(0));
     }
 
     public Flat(int style, int x, int y, int orientation, int gr_state, int flat_type) {
-        super(style, x, y, orientation, gr_state);
-        this.flat_type = flat_type;
+        super(style, x, y, orientation, gr_state, flat_type);
     }
 
     @Override
@@ -67,8 +66,7 @@ public class Flat extends HabitatMod implements Copyable {
 
     @Override
     public JSONLiteral encode(EncodeControl control) {
-        JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-        result.addParameter("flat_type", this.flat_type);
+        JSONLiteral result = super.encodeWalkable(new JSONLiteral(HabitatModName(), control));
         result.finish();
         return result;
     }

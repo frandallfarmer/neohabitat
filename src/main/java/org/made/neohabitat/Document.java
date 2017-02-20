@@ -29,14 +29,16 @@ public abstract class Document extends HabitatMod {
     public Document(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             int last_page, String pages[], String path) {
         super(style, x, y, orientation, gr_state);
-        this.pages = pages;
-        this.last_page = (pages.length > 0) ? pages.length : last_page;
-        this.path = path;
+        setDocumentState((pages.length > 0) ? pages.length : last_page, pages, path);
     }
 
     public Document(int style, int x, int y, int orientation, int gr_state, int last_page,
         String[] pages, String path) {
         super(style, x, y, orientation, gr_state);
+        setDocumentState(last_page, pages, path);
+    }
+    
+    protected void setDocumentState(int last_page, String[] pages, String path) {
         this.pages = pages;
         this.last_page = last_page;
         this.path = path;

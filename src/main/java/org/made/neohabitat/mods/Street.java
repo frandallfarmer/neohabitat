@@ -52,16 +52,20 @@ public class Street extends HabitatMod implements Copyable {
     public Street(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger width, OptInteger height) {
         super(style, x, y, orientation, gr_state);
-        this.width  = width.value(0);
-        this.height = height.value(0);
+        setStreetState(width.value(0), height.value(0));
+
     }
 
     public Street(int style, int x, int y, int orientation, int gr_state, int width, int height) {
         super(style, x, y, orientation, gr_state);
+        setStreetState(width, height);
+    }
+    
+    protected void setStreetState(int width, int height) {
         this.width  = width;
         this.height = height;
     }
-
+ 
     @Override
     public HabitatMod copyThisMod() {
         return new Street(style, x, y, orientation, gr_state, width, height);

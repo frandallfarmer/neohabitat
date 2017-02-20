@@ -74,16 +74,20 @@ public class Tokens extends HabitatMod implements Copyable {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "denom_lo", "denom_hi" })
     public Tokens(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int denom_lo, int denom_hi) {
         super(style, x, y, orientation, gr_state);
-        this.denom_lo = denom_lo;
-        this.denom_hi = denom_hi;
+        setTokensState(denom_lo, denom_hi);
+
     }
     
     public Tokens(int style, int x, int y, int orientation, int gr_state, int denom_lo, int denom_hi) {
         super(style, x, y, orientation, gr_state);
+        setTokensState(denom_lo, denom_hi);
+    }
+    
+    protected void setTokensState(int denom_lo, int denom_hi) {
         this.denom_lo = denom_lo;
         this.denom_hi = denom_hi;
     }
-
+ 
     @Override
     public HabitatMod copyThisMod() {
         return new Tokens(style, x, y, orientation, gr_state, denom_lo, denom_hi);

@@ -67,12 +67,15 @@ public class Teleport extends Coinop implements Copyable {
     public Teleport(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
 		OptInteger activeState,  OptInteger take, String address) {
         super(style, x, y, orientation, gr_state, take);
-        this.activeState = activeState.value(PORT_READY);
-        this.address = address;
+        setTeleportState(activeState.value(PORT_READY), address);
     }
 
 	public Teleport(int style, int x, int y, int orientation, int gr_state, int activeState, int take, String address) {
 		super(style, x, y, orientation, gr_state, take);
+		setTeleportState(activeState, address);
+	}
+	
+	protected void setTeleportState(int activeState, String address) {
 		this.activeState = activeState;
 		this.address = address;
 	}

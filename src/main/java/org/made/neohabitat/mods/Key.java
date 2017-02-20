@@ -66,16 +66,20 @@ public class Key extends HabitatMod implements Copyable {
     public Key(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger key_number_lo, OptInteger key_number_hi) {
         super(style, x, y, orientation, gr_state);
-        this.key_number_lo = key_number_lo.value(0);
-        this.key_number_hi = key_number_hi.value(0);
+        setKeyState (key_number_lo.value(0), key_number_hi.value(0));
+
     }
 
     public Key(int style, int x, int y, int orientation, int gr_state, int key_number_lo, int key_number_hi) {
         super(style, x, y, orientation, gr_state);
+        setKeyState (key_number_lo, key_number_hi);
+    }
+    
+    protected void setKeyState (int key_number_lo, int key_number_hi) {
         this.key_number_lo = key_number_lo;
         this.key_number_hi = key_number_hi;
     }
-
+    
     @Override
     public HabitatMod copyThisMod() {
         return new Key(style, x, y, orientation, gr_state, key_number_lo, key_number_hi);

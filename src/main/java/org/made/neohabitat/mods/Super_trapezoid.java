@@ -48,8 +48,8 @@ public class Super_trapezoid extends Polygonal implements Copyable {
     }
 
     /** The dimensions of the texture block and the EXACTLY 32 byte in the repeating texture for the client to render with */
-    private int	pattern_x_size	= 4;
-    private int	pattern_y_size	= 8;
+    private int	pattern_x_size	= 3;
+    private int	pattern_y_size	= 7;
     private int	pattern[] 		= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "trapezoid_type",  "upper_left_x", "upper_right_x", "lower_left_x", "lower_right_x",  "height", "pattern_x_size", "pattern_y_size", "pattern"})    
@@ -58,15 +58,17 @@ public class Super_trapezoid extends Polygonal implements Copyable {
         OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height,
         OptInteger pattern_x_size, OptInteger pattern_y_size, int[] pattern) {
         super(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
-        this.pattern_x_size = pattern_x_size.value(4);
-        this.pattern_y_size = pattern_y_size.value(8);
-        this.pattern = pattern;
+        setPatternState(pattern_x_size.value(3), pattern_y_size.value(7), pattern);
     }
 
     public Super_trapezoid(int style, int x, int y, int orientation, int gr_state, int trapezoid_type,
         int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height, int pattern_x_size,
         int pattern_y_size, int[] pattern) {
         super(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
+        setPatternState(pattern_x_size, pattern_y_size, pattern);
+    }
+    
+    protected void setPatternState(int pattern_x_size, int pattern_y_size, int[] pattern) {
         this.pattern_x_size = pattern_x_size;
         this.pattern_y_size = pattern_y_size;
         this.pattern = pattern;

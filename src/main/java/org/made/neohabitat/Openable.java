@@ -43,27 +43,37 @@ public abstract class Openable extends Container {
     public Openable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
                     OptInteger open_flags) {
         super(style, x, y, orientation, gr_state);
-        if (open_flags.value(-1) != -1) {
-            this.open_flags = unpackBits(open_flags.value());
-        }
+        setOpenableState(open_flags.value(-1));
     }
 
     public Openable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
         this(style, x, y, orientation, gr_state, open_flags);
-        this.key_lo = key_lo.value(0);
-        this.key_hi = key_hi.value(0);
+        setKeyedState(key_lo.value(0), key_hi.value(0));
     }
 
     public Openable(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags) {
         super(style, x, y, orientation, gr_state);
-        this.open_flags = open_flags;
+        setOpenableState(open_flags);
     }
 
     public Openable(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags,
         int key_lo, int key_hi) {
-        super(style, x, y, orientation, gr_state);
+        this(style, x, y, orientation, gr_state, open_flags);
+        setKeyedState(key_lo, key_hi);
+    }
+    
+    protected void setOpenableState(int open_flags) {
+    	if (open_flags != -1) {
+    		setOpenableState(unpackBits(open_flags));
+    	}    
+    }
+    
+    protected void setOpenableState(boolean[] open_flags) {
         this.open_flags = open_flags;
+    }
+
+    protected void setKeyedState(int key_lo, int key_hi) {
         this.key_lo = key_lo;
         this.key_hi = key_hi;
     }
