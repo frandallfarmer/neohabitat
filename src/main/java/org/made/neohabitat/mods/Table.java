@@ -49,7 +49,7 @@ public class Table extends Openable implements Copyable {
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags", "key_lo", "key_hi" })
     public Table(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
+        OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
         super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
     }
 

@@ -26,7 +26,7 @@ import org.made.neohabitat.HabitatMod;
  *
  */
 
-public class Region extends Container implements Copyable, ContextMod, Constants {
+public class Region extends Container implements ContextMod, Constants {
     
     /** The default depth for a region. */
     public static final int DEFAULT_REGION_DEPTH = 32; // TODO What is the
@@ -113,12 +113,6 @@ public class Region extends Container implements Copyable, ContextMod, Constants
         this.neighbors = neighbors;
         this.town_dir = town_dir;
         this.port_dir = port_dir;
-    }
-
-    @Override
-    public HabitatMod copyThisMod() {
-        return new Region(style, x, y, orientation, gr_state, nitty_bits, depth, lighting, town_dir, port_dir,
-            max_avatars, neighbors);
     }
 
     @Override

@@ -28,8 +28,8 @@ public class Bed extends Seating implements Copyable {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags"})
     public Bed(OptInteger style, OptInteger x, OptInteger y,
-                 OptInteger orientation, OptInteger gr_state,
-                 OptInteger open_flags) {
+        OptInteger orientation, OptInteger gr_state,
+        OptInteger open_flags) {
         super(style, x, y, orientation, gr_state, open_flags);
     }
 

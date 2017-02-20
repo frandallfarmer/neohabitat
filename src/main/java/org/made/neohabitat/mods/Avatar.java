@@ -21,7 +21,7 @@ import org.elkoserver.json.JSONLiteral;
  *
  */
 
-public class Avatar extends Container implements Copyable, UserMod {
+public class Avatar extends Container implements UserMod {
     
     public static final int SIT_GROUND  = 132;
     public static final int SIT_CHAIR   = 133;
@@ -214,13 +214,6 @@ public class Avatar extends Container implements Copyable, UserMod {
         this.to_y = to_y;
         this.turf = turf;
         this.custom = custom;
-    }
-
-    @Override
-    public HabitatMod copyThisMod() {
-        return new Avatar(style, x, y, orientation, gr_state, nitty_bits, bodyType, stun_count, bankBalance, activity,
-            action, health, restrainer, transition_type, from_orientation, from_direction, from_region, to_region,
-            to_x, to_y, turf, custom);
     }
 
     @Override
