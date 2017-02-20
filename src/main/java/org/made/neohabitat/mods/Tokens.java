@@ -131,7 +131,7 @@ public class Tokens extends HabitatMod implements Copyable {
     		Avatar payer	= avatar(from);
     		Avatar other	= (Avatar) target;
     		if (this.empty_handed(other)) {
-    			if (spend(amount) == TRUE) {
+    			if (spend(amount, false) == TRUE) {
     				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, amount_lo, amount_hi);
     				Item item = create_object("money", tokens, other);
     				if (item == null) {
@@ -203,15 +203,15 @@ public class Tokens extends HabitatMod implements Copyable {
         int big_denom;
         if (token_at != -1) {
             pos_y = token_at;
-            Tokens avatarTokens = (Tokens) avatar.contents(pos_y);
-            big_denom = avatarTokens.tget() + tget() - amount;
-            if (big_denom > 65536) {
+            Tokens pocketTokens = (Tokens) avatar.contents(pos_y);
+            big_denom = pocketTokens.tget() + tget() - amount;
+            if (big_denom > 65535) {
                 send_reply_error(from);
                 return;
             }
-            avatarTokens.tset(big_denom);
-            send_fiddle_msg(THE_REGION, avatarTokens.noid, C64_TOKEN_DENOM_OFFSET,
-                new int[]{ avatarTokens.denom_lo, avatarTokens.denom_hi });
+            pocketTokens.tset(big_denom);
+            send_fiddle_msg(THE_REGION, pocketTokens.noid, C64_TOKEN_DENOM_OFFSET,
+                new int[]{ pocketTokens.denom_lo, pocketTokens.denom_hi });
         } else {
             big_denom = tget() - amount;
             if (big_denom > 65536 || pos_y == -1) {
@@ -237,14 +237,15 @@ public class Tokens extends HabitatMod implements Copyable {
      * Spend some of this objects tokens.
      * 
      * @param amount The number of tokens to spend.
+     * @param flag that the client is going to remove the token if the value is 0, so the server must do the same.
      * @return
      */
-    public int spend(int amount) {
+    public int spend(int amount, boolean destroy) {
 		int tvalue = tget();
 		if (tvalue >= amount) {
 			tvalue -= amount;
 			tset(tvalue);
-			if (tvalue == 0) {
+			if (destroy && tvalue == 0) {
 				destroy_object(this);
 			}
 			return TRUE;
@@ -265,7 +266,7 @@ public class Tokens extends HabitatMod implements Copyable {
     	HabitatMod held = avatar.heldObject();
     	if (held.HabitatClass() == CLASS_TOKENS) {
     		Tokens tokens= (Tokens) held;
-    		return tokens.spend(amount);
+    		return tokens.spend(amount, true);	// Will self-destruct if out of tokens.
     	}
     	return FALSE;    	
     }

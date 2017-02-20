@@ -1,5 +1,5 @@
 {"to":"chiptokens","op":"GET", "Telko": { "delay": 2}}
 {"to":"chiptokens","op":"HELP"}
-{"to":"chiptokens","op":"PAYTO","target_id":"$randy.noid","amount_lo":1,"amount_hi":0}
+{"to":"chiptokens","op":"SPLIT","amount_lo":1,"amount_hi":0}
 {"to":"chiptokens","op":"HELP"}
-{"to":"chiptokens","op":"PUT","containerNoid":"$ME.noid","x":127,"y":170,"orientation":0}
+{"to":"chiptokens","op":"PAYTO","target_id":"$randy.noid","amount_lo":1,"amount_hi":0}
