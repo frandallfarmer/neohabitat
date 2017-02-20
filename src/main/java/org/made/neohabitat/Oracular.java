@@ -26,6 +26,11 @@ public abstract class Oracular extends HabitatMod {
 		this.live = live.value(0);
 	}
 
+	public Oracular(int style, int x, int y, int orientation, int gr_state, int live) {
+		super(style, x, y, orientation, gr_state);
+		this.live = live;
+	}
+
 	public JSONLiteral encodeOracular(JSONLiteral result) {
 		result = super.encodeCommon(result);
 		if (result.control().toRepository()) {

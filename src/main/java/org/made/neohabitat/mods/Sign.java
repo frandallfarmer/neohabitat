@@ -5,6 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Poster;
 
 /**
@@ -15,7 +17,7 @@ import org.made.neohabitat.Poster;
  * @author randy
  *
  */
-public class Sign extends Poster {
+public class Sign extends Poster implements Copyable {
     
     public int HabitatClass() {
         return CLASS_SIGN;
@@ -50,7 +52,16 @@ public class Sign extends Poster {
             OptString text, int[] ascii) {
         super(style, x, y, orientation, gr_state, text, ascii, 40);
     }
-    
+
+    public Sign(int style, int x, int y, int orientation, int gr_state, int[] ascii) {
+        super(style, x, y, orientation, gr_state, ascii);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Sign(style, x, y, orientation, gr_state, ascii);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodePoster(new JSONLiteral(HabitatModName(), control));

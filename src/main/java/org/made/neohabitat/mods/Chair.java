@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Openable;
 import org.made.neohabitat.Seating;
 
@@ -14,7 +16,7 @@ import org.made.neohabitat.Seating;
  *
  * @author steve
  */
-public class Chair extends Seating {
+public class Chair extends Seating implements Copyable {
 
     public int		HabitatClass 	 () { return CLASS_CHAIR; }
     public String	HabitatModName	 () { return "Chair"; }
@@ -26,9 +28,17 @@ public class Chair extends Seating {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags"})
     public Chair(OptInteger style, OptInteger x, OptInteger y,
-                 OptInteger orientation, OptInteger gr_state,
-                 OptInteger open_flags) {
+        OptInteger orientation, OptInteger gr_state, OptInteger open_flags) {
         super(style, x, y, orientation, gr_state, open_flags);
+    }
+
+    public Chair(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags) {
+        super(style, x, y, orientation, gr_state, open_flags);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Chair(style, x, y, orientation, gr_state, open_flags);
     }
 
     @Override

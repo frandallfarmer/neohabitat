@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Massive;
 
 /**
@@ -14,7 +16,7 @@ import org.made.neohabitat.Massive;
  *
  * @author steve
  */
-public class Picture extends Massive {
+public class Picture extends Massive implements Copyable {
 
     public int HabitatClass() {
         return CLASS_PICTURE;
@@ -52,6 +54,16 @@ public class Picture extends Massive {
         OptInteger picture) {
         super(style, x, y, orientation, gr_state, mass);
         this.picture = picture.value(0);
+    }
+
+    public Picture(int style, int x, int y, int orientation, int gr_state, int mass, int picture) {
+        super(style, x, y, orientation, gr_state, mass);
+        this.picture = picture;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Picture(style, x, y, orientation, gr_state, mass, picture);
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 
@@ -16,7 +17,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author steve
  */
-public class Stun_gun extends HabitatMod {
+public class Stun_gun extends HabitatMod implements Copyable {
 
 	public int HabitatClass() {
 		return CLASS_STUN_GUN;
@@ -48,8 +49,17 @@ public class Stun_gun extends HabitatMod {
 
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
 	public Stun_gun(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-					 OptInteger gr_state) {
+		OptInteger gr_state) {
 		super(style, x, y, orientation, gr_state);
+	}
+
+	public Stun_gun(int style, int x, int y, int orientation, int gr_state) {
+		super(style, x, y, orientation, gr_state);
+	}
+
+	@Override
+	public HabitatMod copyThisMod() {
+		return new Stun_gun(style, x, y, orientation, gr_state);
 	}
 
 	@Override

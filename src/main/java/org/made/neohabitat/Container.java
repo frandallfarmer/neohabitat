@@ -32,7 +32,11 @@ public abstract class Container extends HabitatMod {
     public Container(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
         super(style, x, y, orientation, gr_state);
     }
-    
+
+    public Container(int style, int x, int y, int orientation, int gr_state) {
+        super(style, x, y, orientation, gr_state);
+    }
+
     public JSONLiteral encodeContainer(JSONLiteral result) {
         result = super.encodeCommon(result);
         return result;

@@ -6,6 +6,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Magical;
 
 /**
@@ -18,7 +20,7 @@ import org.made.neohabitat.Magical;
  *
  */
 
-public class Knick_knack extends Magical {
+public class Knick_knack extends Magical implements Copyable {
     
     public int HabitatClass() {
         return CLASS_KNICK_KNACK;
@@ -69,7 +71,19 @@ public class Knick_knack extends Magical {
          * magical
          */
     }
-    
+
+    public Knick_knack(int style, int x, int y, int orientation, int gr_state, int magic_type, int charges,
+        int magic_data, int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
+        super(style, x, y, orientation, gr_state, magic_type, charges, magic_data, magic_data2, magic_data3,
+                magic_data4, magic_data5);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Knick_knack(style, x, y, orientation, gr_state, magic_type, charges, magic_data, magic_data2,
+            magic_data3, magic_data4, magic_data5);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeMagical(new JSONLiteral(HabitatModName(), control));

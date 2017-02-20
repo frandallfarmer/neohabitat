@@ -5,6 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Openable;
 
 /**
@@ -16,7 +18,7 @@ import org.made.neohabitat.Openable;
  *
  */
 
-public class Bag extends Openable {
+public class Bag extends Openable implements Copyable {
     
     public int HabitatClass() {
         return CLASS_BAG;
@@ -51,7 +53,16 @@ public class Bag extends Openable {
             OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
         super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
     }
-    
+
+    public Bag(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags, int key_lo, int key_hi) {
+        super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Bag(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeOpenable(new JSONLiteral(HabitatModName(), control));

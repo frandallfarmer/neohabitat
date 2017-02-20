@@ -4,6 +4,8 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Polygonal;
 
 /**
@@ -15,7 +17,7 @@ import org.made.neohabitat.Polygonal;
  * @author randy
  *
  */
-public class Super_trapezoid extends Polygonal {
+public class Super_trapezoid extends Polygonal implements Copyable {
     
     public int HabitatClass() {
         return CLASS_SUPER_TRAPEZOID;
@@ -52,15 +54,30 @@ public class Super_trapezoid extends Polygonal {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "trapezoid_type",  "upper_left_x", "upper_right_x", "lower_left_x", "lower_right_x",  "height", "pattern_x_size", "pattern_y_size", "pattern"})    
     public Super_trapezoid(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger trapezoid_type, OptInteger upper_left_x,  OptInteger upper_right_x,
-            OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height,
-            OptInteger pattern_x_size, OptInteger pattern_y_size, int[] pattern) {
+        OptInteger trapezoid_type, OptInteger upper_left_x,  OptInteger upper_right_x,
+        OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height,
+        OptInteger pattern_x_size, OptInteger pattern_y_size, int[] pattern) {
         super(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
         this.pattern_x_size = pattern_x_size.value(4);
         this.pattern_y_size = pattern_y_size.value(8);
         this.pattern = pattern;
     }
-    
+
+    public Super_trapezoid(int style, int x, int y, int orientation, int gr_state, int trapezoid_type,
+        int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height, int pattern_x_size,
+        int pattern_y_size, int[] pattern) {
+        super(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
+        this.pattern_x_size = pattern_x_size;
+        this.pattern_y_size = pattern_y_size;
+        this.pattern = pattern;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Super_trapezoid(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x,
+            lower_left_x, lower_right_x, height, pattern_x_size, pattern_y_size, pattern);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodePolygonal(new JSONLiteral(HabitatModName(), control));

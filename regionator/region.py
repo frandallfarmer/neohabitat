@@ -18,11 +18,13 @@ JSONEncoder.default = _default
 
 
 class Mod(object):
-  def __init__(self, region, identifier, params={}, additional_params={}):
+  def __init__(self, region, identifier, params={}, additional_params={},
+      contained_mods=[]):
     self.region = region
     self.identifier = identifier
     self.params = params
     self.additional_params = additional_params
+    self.contained_mods = contained_mods
     self.id = str(uuid.uuid4())[:4]
 
   def __repr__(self):

@@ -33,7 +33,15 @@ public abstract class Document extends HabitatMod {
         this.last_page = (pages.length > 0) ? pages.length : last_page;
         this.path = path;
     }
-    
+
+    public Document(int style, int x, int y, int orientation, int gr_state, int last_page,
+        String[] pages, String path) {
+        super(style, x, y, orientation, gr_state);
+        this.pages = pages;
+        this.last_page = last_page;
+        this.path = path;
+    }
+
     public JSONLiteral encodeDocument(JSONLiteral result) {
         result = super.encodeCommon(result);
         result.addParameter("last_page", last_page);

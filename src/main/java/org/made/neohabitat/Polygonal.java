@@ -35,7 +35,18 @@ public abstract class Polygonal extends HabitatMod {
         this.lower_right_x  = lower_right_x.value(0);
         this.height		    = height.value(0);
     }
-    
+
+    public Polygonal(int style, int x, int y, int orientation, int gr_state, int trapezoid_type, int upper_left_x,
+        int upper_right_x, int lower_left_x, int lower_right_x, int height) {
+        super(style, x, y, orientation, gr_state);
+        this.trapezoid_type = trapezoid_type;
+        this.upper_left_x	= upper_left_x;
+        this.upper_right_x	= upper_right_x;
+        this.lower_left_x   = lower_left_x;
+        this.lower_right_x  = lower_right_x;
+        this.height		    = height;
+    }
+
     public JSONLiteral encodePolygonal(JSONLiteral result) {
         result = super.encodeCommon(result);        
         result.addParameter("trapezoid_type", trapezoid_type);

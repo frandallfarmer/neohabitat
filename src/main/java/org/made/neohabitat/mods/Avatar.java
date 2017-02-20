@@ -5,11 +5,8 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserMod;
-import org.made.neohabitat.Container;
+import org.made.neohabitat.*;
 import org.made.neohabitat.mods.Door;
-import org.made.neohabitat.HabitatMod;
-import org.made.neohabitat.Magical;
-import org.made.neohabitat.Seating;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 
@@ -194,7 +191,31 @@ public class Avatar extends Container implements UserMod {
         this.turf = turf.value(DEFAULT_TURF);
         this.custom = custom;
     }
-    
+
+    public Avatar(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, String bodyType,
+        int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
+        int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
+        String turf, int[] custom) {
+        super(style, x, y, orientation, gr_state);
+        this.nitty_bits = nitty_bits;
+        this.bodyType = bodyType;
+        this.stun_count = stun_count;
+        this.bankBalance = bankBalance;
+        this.activity = activity;
+        this.action = action;
+        this.health = health;
+        this.restrainer = restrainer;
+        this.transition_type = transition_type;
+        this.from_orientation = from_orientation;
+        this.from_direction = from_direction;
+        this.from_region = from_region;
+        this.to_region = to_region;
+        this.to_x = to_x;
+        this.to_y = to_y;
+        this.turf = turf;
+        this.custom = custom;
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));

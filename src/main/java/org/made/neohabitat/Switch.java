@@ -27,7 +27,12 @@ public abstract class Switch extends HabitatMod {
         super(style, x, y, orientation, gr_state);
         this.on = on.value(FALSE);
     }
-    
+
+    public Switch(int style, int x, int y, int orientation, int gr_state, int on) {
+        super(style, x, y, orientation, gr_state);
+        this.on = on;
+    }
+
     /**
      * Change the state of a switch to OFF, and if it's a lighting source,
      * update the Region lighting level.

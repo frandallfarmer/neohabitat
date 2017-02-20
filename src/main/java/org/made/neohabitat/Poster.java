@@ -19,7 +19,7 @@ import org.elkoserver.json.JSONLiteral;
 public abstract class Poster extends HabitatMod {
 
 	/** The message to display on this sign */
-	private int ascii[];
+	protected int ascii[];
 	
 	public void setTextBytes(String text) {
 		for (int i = 0; i < text.length() && i < ascii.length; i++) {
@@ -37,6 +37,11 @@ public abstract class Poster extends HabitatMod {
 		} else {
 			System.arraycopy(ascii, 0, this.ascii, 0, Math.min(ascii.length, this.ascii.length));
 		}
+	}
+
+	public Poster(int style, int x, int y, int orientation, int gr_state, int[] ascii) {
+		super(style, x, y, orientation, gr_state);
+		this.ascii = ascii;
 	}
 
 	public JSONLiteral encodePoster(JSONLiteral result) {

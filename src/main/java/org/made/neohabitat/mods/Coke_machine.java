@@ -6,6 +6,8 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Coinop;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Massive;
 
 /**
@@ -16,7 +18,7 @@ import org.made.neohabitat.Massive;
  * @author randy
  *
  */
-public class Coke_machine extends Coinop {
+public class Coke_machine extends Coinop implements Copyable {
     
     public int HabitatClass() {
         return CLASS_COKE_MACHINE;
@@ -51,7 +53,16 @@ public class Coke_machine extends Coinop {
             OptInteger take) {
         super(style, x, y, orientation, gr_state, take);
     }
-    
+
+    public Coke_machine(int style, int x, int y, int orientation, int gr_state, int take) {
+        super(style, x, y, orientation, gr_state, take);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Coke_machine(style, x, y, orientation, gr_state, take);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCoinop(new JSONLiteral(HabitatModName(), control));

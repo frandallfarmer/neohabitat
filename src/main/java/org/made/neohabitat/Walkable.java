@@ -24,12 +24,17 @@ public abstract class Walkable extends HabitatMod {
         super(style, x, y, orientation, gr_state);
         this.flat_type = flat_type;
     }
-    
+
     public Walkable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger flat_type) {
         this(style, x, y, orientation, gr_state, flat_type.value(0));
     }
-    
+
+    public Walkable(int style, int x, int y, int orientation, int gr_state, int flat_type) {
+        super(style, x, y, orientation, gr_state);
+        this.flat_type = flat_type;
+    }
+
     public JSONLiteral encodeWalkable(JSONLiteral result) {
         result = super.encodeCommon(result);
         if (0 != flat_type) {

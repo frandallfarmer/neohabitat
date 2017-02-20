@@ -11,6 +11,7 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Coinop;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Massive;
 
@@ -22,7 +23,7 @@ import org.made.neohabitat.Massive;
  * @author randy
  *
  */
-public class Teleport extends Coinop {
+public class Teleport extends Coinop implements Copyable {
     
     public int HabitatClass() {
         return CLASS_TELEPORT;
@@ -64,12 +65,23 @@ public class Teleport extends Coinop {
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "activeState", "take", "address"})
     public Teleport(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger activeState,  OptInteger take, String address) {
+		OptInteger activeState,  OptInteger take, String address) {
         super(style, x, y, orientation, gr_state, take);
-        this.activeState	= activeState.value(PORT_READY);
-        this.address		= address;
+        this.activeState = activeState.value(PORT_READY);
+        this.address = address;
     }
-    
+
+	public Teleport(int style, int x, int y, int orientation, int gr_state, int activeState, int take, String address) {
+		super(style, x, y, orientation, gr_state, take);
+		this.activeState = activeState;
+		this.address = address;
+	}
+
+	@Override
+	public HabitatMod copyThisMod() {
+		return new Teleport(style, x, y, orientation, gr_state, activeState, take, address);
+	}
+
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCoinop(new JSONLiteral(HabitatModName(), control));
         result.addParameter("activeState", activeState);

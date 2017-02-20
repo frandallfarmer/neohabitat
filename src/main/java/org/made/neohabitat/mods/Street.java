@@ -4,6 +4,7 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -14,7 +15,7 @@ import org.made.neohabitat.HabitatMod;
  * @author randy
  *
  */
-public class Street extends HabitatMod {
+public class Street extends HabitatMod implements Copyable {
     
     public int HabitatClass() {
         return CLASS_STREET;
@@ -54,7 +55,18 @@ public class Street extends HabitatMod {
         this.width  = width.value(0);
         this.height = height.value(0);
     }
-    
+
+    public Street(int style, int x, int y, int orientation, int gr_state, int width, int height) {
+        super(style, x, y, orientation, gr_state);
+        this.width  = width;
+        this.height = height;
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Street(style, x, y, orientation, gr_state, width, height);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));

@@ -6,6 +6,8 @@ import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
+import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Oracular;
 
 /**
@@ -16,7 +18,7 @@ import org.made.neohabitat.Oracular;
  * @author randy
  *
  */
-public class Fountain extends Oracular {
+public class Fountain extends Oracular implements Copyable {
     
     public int HabitatClass() {
         return CLASS_FOUNTAIN;
@@ -51,7 +53,16 @@ public class Fountain extends Oracular {
             OptInteger live) {
         super(style, x, y, orientation, gr_state, live);
     }
-    
+
+    public Fountain(int style, int x, int y, int orientation, int gr_state, int live) {
+        super(style, x, y, orientation, gr_state, live);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Fountain(style, x, y, orientation, gr_state, live);
+    }
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeOracular(new JSONLiteral(HabitatModName(), control));

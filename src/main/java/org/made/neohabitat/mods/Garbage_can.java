@@ -6,6 +6,7 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Container;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Openable;
 
@@ -17,7 +18,7 @@ import org.made.neohabitat.Openable;
  *
  * @author steve
  */
-public class Garbage_can extends Openable {
+public class Garbage_can extends Openable implements Copyable {
 
     public int HabitatClass() {
         return CLASS_GARBAGE_CAN;
@@ -52,6 +53,16 @@ public class Garbage_can extends Openable {
         OptInteger orientation, OptInteger gr_state, OptInteger open_flags,
         OptInteger key_hi, OptInteger key_lo) {
         super(style, x, y, orientation, gr_state, open_flags, key_hi, key_lo);
+    }
+
+    public Garbage_can(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags, int key_hi,
+        int key_lo) {
+        super(style, x, y, orientation, gr_state, open_flags, key_hi, key_lo);
+    }
+
+    @Override
+    public HabitatMod copyThisMod() {
+        return new Garbage_can(style, x, y, orientation, gr_state, open_flags, key_hi, key_lo);
     }
 
     @Override
