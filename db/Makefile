@@ -9,19 +9,22 @@
 # Instructions:
 # make db            - Make MongoDB setup scripts
 
+# JSON static files to load 
+TELEPORTDB = ./db-teleports.json
+
+DATABASE_OBJECTS = $(TELEPORTDB)
+
 # JSON object definitions supplied by the various components
-MONGODB_OBJECTS = $(shell find . -name '*.json')
+MONGODB_OBJECTS = $(shell find . -name '*.json') $(DATABASE_OBJECTS)
 
 # The file that actually gets produced by "make db"
 DBINIT_SCRIPT = ./dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
-TELEPORTDB = ./db-teleports.json
-
 # Make the database setup stuff
 db:
-	rm -f $(TELEPORTDB)
+	rm -f  $(DATABASE_OBJECTS)
 	echo '{ "ref" : "teleports", "type" : "map", "map" : {' > $(TELEPORTDB)
 	$(foreach F,$(MONGODB_OBJECTS), node dumpTeleportEntries.js < $(F) >> $(TELEPORTDB);)
 	echo ' " End Of Directory": "eod" } }' >> $(TELEPORTDB)
