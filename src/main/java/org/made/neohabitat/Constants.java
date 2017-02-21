@@ -274,6 +274,11 @@ public interface Constants {
     public static final int		 SOUTH						= 3;
     public static final int      AUTO_TELEPORT_DIR          = 4;
     
+    public static final int		 MAP_NORTH					= 0;
+    public static final int		 MAP_EAST					= 1;
+    public static final int		 MAP_SOUTH					= 2;
+    public static final int	     MAP_WEST					= 3;
+    
     public static final int      SIT_GROUND                 = 132;
     public static final int      SIT_CHAIR                  = 133;
     public static final int      SIT_FRONT                  = 157;

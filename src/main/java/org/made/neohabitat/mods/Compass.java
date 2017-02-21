@@ -89,27 +89,11 @@ public class Compass extends HabitatMod implements Copyable {
         generic_THROW(from, target, x, y);
     }
 
+    public final static char DIRECTION_ARROWS[] = { (char)124, (char)126, (char)125, (char)127 };
+    
     @JSONMethod
     public void DIRECT(User from) {
-        String response = "WEST: ";
-        switch(gr_state) {
-            case 0:
-                response += (char)124;
-                break;
-            case 1:
-                response += (char)126;
-                break;
-            case 2:
-                response += (char)125;
-                break;
-            case 3:
-                response += (char)127;
-                break;
-            default:
-                response += '?';
-                break;
-        }
-        send_reply_msg(from, response);
+        send_reply_msg(from, "WEST: " + DIRECTION_ARROWS[gr_state]);
     }
 
 }

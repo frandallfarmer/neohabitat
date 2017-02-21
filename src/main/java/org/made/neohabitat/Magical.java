@@ -94,6 +94,8 @@ public abstract class Magical extends HabitatMod {
     /** The number of magical methods available. NOTE: This is expandable */
     private final static int NUMBER_OF_MAGICS = 29; /* This should grow! */
     
+    private final static int MAGIC_GOD_TOOL	  = 17;
+    
     /**
      * Verb (Magical): Activate any magic on this, if there are charges left.
      * 
@@ -161,7 +163,7 @@ public abstract class Magical extends HabitatMod {
             case 16:
                 magic_default(from, targetMod);
                 break;
-            case 17:
+            case MAGIC_GOD_TOOL:
                 god_tool(from, targetMod);
                 break;
             case 18:
@@ -263,6 +265,17 @@ public abstract class Magical extends HabitatMod {
     private void modify_variable(User from, HabitatMod target, int offset, int new_value) {
         target.gen_flags[MODIFIED] = true;
         send_fiddle_msg(THE_REGION, target.noid, offset, new_value);
+    }
+    
+    /**
+     * Is the magical object actually a GOD TOOL?
+     * 
+     * @param magic
+     * @return
+     */
+    
+    static public boolean isGodTool(Magical magic) {
+    	return (magic.magic_type == MAGIC_GOD_TOOL);
     }
     
     /**

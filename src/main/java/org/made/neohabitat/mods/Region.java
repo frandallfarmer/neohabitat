@@ -11,6 +11,7 @@ import org.made.neohabitat.Constants;
 import org.made.neohabitat.Container;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
+import org.made.neohabitat.Magical;
 
 /**
  * Habitat Region Mod (attached to a Elko Context)
@@ -203,12 +204,13 @@ public class Region extends Container implements ContextMod, Constants {
      * @param from
      *            The client connection that has "caught up" loading the
      *            contents vector it just received.
-     */
+     */ 
     @JSONMethod
     public void I_AM_HERE(User from) {
-        Avatar who = avatar(from);
-        who.gr_state &= ~INVISIBLE;
-        this.send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
+    	Avatar who = avatar(from);
+    	who.gr_state &= ~INVISIBLE;
+    	who.showDebugInfo(from);
+    	send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
     }
     
     /**
