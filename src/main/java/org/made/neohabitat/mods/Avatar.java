@@ -660,32 +660,36 @@ public class Avatar extends Container implements UserMod {
     
     private boolean alreadyShown = false;
     
+    private String stripContextDash(String s) {
+    	return (s.indexOf("context-") == 0) ? s.substring(8) : s;
+    }
+    
     public void showDebugInfo(User from) {
     	if (!alreadyShown) {
     		if (nitty_bits[GOD_FLAG] &&
     				contents(HANDS) instanceof Magical  &&
     				Magical.isGodTool((Magical) contents(HANDS))) {
     			Region region = current_region();
-    			String msg = context().ref() + "(W" + Compass.DIRECTION_ARROWS[region.orientation]+") ";
+    			String msg = stripContextDash(context().ref()) + "(W" + Compass.DIRECTION_ARROWS[region.orientation]+") ";
     			int arrow = (region.orientation + 3) % 4;
     			if (!region.neighbors[MAP_NORTH].isEmpty()) {
     				msg += "N" + Compass.DIRECTION_ARROWS[arrow];
-    				msg += region.neighbors[MAP_NORTH] + " ";
+    				msg += stripContextDash(region.neighbors[MAP_NORTH]) + " ";
     			}
     			arrow = ++arrow % 4;
     			if (!region.neighbors[MAP_WEST].isEmpty()) {
     				msg += "W" + Compass.DIRECTION_ARROWS[arrow];
-    				msg += region.neighbors[MAP_WEST] + " ";
+    				msg += stripContextDash(region.neighbors[MAP_WEST]) + " ";
     			}
     			arrow = ++arrow % 4;
     			if (!region.neighbors[MAP_SOUTH].isEmpty()) {
     				msg += "S" + Compass.DIRECTION_ARROWS[arrow];
-    				msg += region.neighbors[MAP_SOUTH] + " ";
+    				msg += stripContextDash(region.neighbors[MAP_SOUTH]) + " ";
     			}
     			arrow = ++arrow % 4;
     			if (!region.neighbors[MAP_EAST].isEmpty()) {
     				msg += "E" + Compass.DIRECTION_ARROWS[arrow];
-    				msg += region.neighbors[MAP_EAST] + " ";
+    				msg += stripContextDash(region.neighbors[MAP_EAST]) + " ";
     			}
     			this.object_say(from, msg);
     			alreadyShown = true;
