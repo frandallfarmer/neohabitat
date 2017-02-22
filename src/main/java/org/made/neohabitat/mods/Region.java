@@ -239,4 +239,21 @@ public class Region extends Container implements ContextMod, Constants {
         }
     }
 
+    public void describeRegion(User from, int noid) {
+	     String name_str = object().name();
+	     String help_str = "";
+	     if (name_str.isEmpty()) 
+	          help_str = "This region has no name";
+	     else
+	          help_str = "This region is " + name_str;
+	     
+	     if (!town_dir.isEmpty()) 
+	          help_str += ".  The nearest town is " + town_dir;
+	               
+	     if (!port_dir.isEmpty()) 
+	          help_str += ".  The nearest teleport booth is " + port_dir;
+	     
+	     help_str += ".";
+	        send_reply_msg(from, noid, "text", help_str);
+    }
 }

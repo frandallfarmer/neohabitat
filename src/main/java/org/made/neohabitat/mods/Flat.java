@@ -4,6 +4,7 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Walkable;
@@ -70,5 +71,14 @@ public class Flat extends Walkable implements Copyable {
         result.finish();
         return result;
     }
-
+    
+    @Override
+    @JSONMethod
+    public void HELP(User from) {
+       if (flat_type == GROUND_FLAT) {
+    	   current_region().describeRegion(from, noid);
+       } else {
+    	   generic_HELP(from);
+       }
+    } 
 }

@@ -1,7 +1,9 @@
 package org.made.neohabitat;
 
+import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
 
 /**
  * an Elko Habitat superclass to handle trapezoid types
@@ -63,5 +65,15 @@ public abstract class Polygonal extends HabitatMod {
         result.addParameter("height"		, height);
         return result;
     }
+    
+    @Override
+    @JSONMethod
+    public void HELP(User from) {
+       if (trapezoid_type == GROUND_FLAT) {
+    	   current_region().describeRegion(from, noid);
+       } else {
+    	   generic_HELP(from);
+       }
+    } 
     
   }

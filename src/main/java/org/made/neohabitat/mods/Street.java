@@ -4,6 +4,7 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
@@ -78,5 +79,11 @@ public class Street extends HabitatMod implements Copyable {
         result.addParameter("height", height);
         result.finish();
         return result;
-    }    
+    }
+    
+    @Override
+    @JSONMethod
+    public void HELP(User from) {
+	   current_region().describeRegion(from, noid); 	        
+    } 
 }
