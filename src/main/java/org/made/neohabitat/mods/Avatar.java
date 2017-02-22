@@ -661,7 +661,8 @@ public class Avatar extends Container implements UserMod {
     private boolean alreadyShown = false;
     
     private String stripContextDash(String s) {
-    	return (s.indexOf("context-") == 0) ? s.substring(8) : s;
+    	s = (s.indexOf("context-") == 0) ? s.substring(8) : s;
+    	return s.replace('_',  '{');
     }
     
     public void showDebugInfo(User from) {
