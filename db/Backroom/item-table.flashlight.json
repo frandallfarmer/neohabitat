@@ -6,8 +6,8 @@
 	"mods": [
 		{
 			"type": "Flashlight",
-			"y": 0
+			"y": 2
 		}
-	]
+		]
 }
 

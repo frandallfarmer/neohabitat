@@ -1,16 +1,13 @@
 {
-  "type": "item",
-  "ref": "item-table.compass",
-  "name": "Compass",
-  "in": "item-table.table",
-  "mods": [
-    {
-      "type": "Compass",
-      "style": 0,
-      "y": 0,
-      "x": 5,
-      "gr_state": 0,
-      "orientation": 16
-    }
-  ]
+	"type": "item",
+	"ref": "item-table.compass",
+	"name": "Compass",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Compass",
+			"y": 0,
+			"orientation": 16
+		}
+		]
 }
