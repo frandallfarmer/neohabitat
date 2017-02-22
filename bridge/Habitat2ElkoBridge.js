@@ -795,6 +795,11 @@ var encodeState = {
 			buf.add(state.x_offset_6 || 0 );
 			buf.add(state.y_offset_6 || 0 );
 			return buf;
+		}, 
+		Die:  function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.state || 0);
+			return buf; 
 		},
 		Flat: function(state, container, buf) {
 			buf = this.common(state, container, buf);
