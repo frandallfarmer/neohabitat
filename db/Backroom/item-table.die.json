@@ -1,0 +1,17 @@
+{
+  "type": "item",
+  "ref": "item-library.die",
+  "name": "Die",
+  "in": "item-table.table",
+  "mods": [
+    {
+      "type": "Die",
+      "style": 0,
+	  "x": 3,
+	  "y": 1,
+      "gr_state": 1,
+      "orientation": 64,
+	  "state":	1 
+    }
+  ]
+}
