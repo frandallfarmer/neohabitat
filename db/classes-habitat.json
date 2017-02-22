@@ -34,6 +34,11 @@
 		},
 		{
 			"type": "class",
+			"tag": "Die",
+			"name": "org.made.neohabitat.mods.Die"
+		},
+		{
+			"type": "class",
 			"tag": "Door",
 			"name": "org.made.neohabitat.mods.Door"
 		},
@@ -102,7 +107,7 @@
 			"tag": "Street",
 			"name": "org.made.neohabitat.mods.Street"
 		},
-		{
+		{	
 			"type": "class",
 			"tag": "Table",
 			"name": "org.made.neohabitat.mods.Table"
