@@ -1,0 +1,142 @@
+[
+  {
+    "ref": "context-Downtown_6j", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Lefty's", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+		  "context-Downtown_6k",
+          "context-Downtown_7j", 
+          "", 
+          "context-Downtown_5j"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wallc00a.context-Downtown_6j", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_6j"
+  }, 
+  {
+    "ref": "item-ground536f.context-Downtown_6j", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_6j"
+  }, 
+  {
+    "ref": "item-doore03a.context-Downtown_6j", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 40,
+        "type": "Door",
+        "open_flags": 0,		
+        "orientation": 228,
+		"connection": "context-test"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_6j"
+  }, 
+  {
+    "ref": "item-signbd7e.context-Downtown_6j", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 0, 
+        "ascii": [
+          76, 
+          101, 
+          102, 
+          116, 
+          121, 
+          39, 
+          115, 
+          134, 
+          76, 
+          111, 
+          99, 
+          115, 
+          109, 
+          105, 
+          116, 
+          104, 
+          101, 
+          114, 
+          121, 
+          134, 
+          83, 
+          101, 
+          99, 
+          117, 
+          114, 
+          105, 
+          116, 
+          121, 
+          134, 
+          83, 
+          112, 
+          101, 
+          99, 
+          105, 
+          97, 
+          108, 
+          105, 
+          115, 
+          116, 
+          134
+        ], 
+        "gr_state": 2, 
+        "y": 178, 
+        "x": 76, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_6j"
+  }, 
+  {
+    "ref": "item-street58bc.context-Downtown_6j", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_6j"
+  }
+]

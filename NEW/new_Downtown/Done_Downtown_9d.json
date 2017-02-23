@@ -1,0 +1,94 @@
+[
+  {
+    "ref": "context-Downtown_9d", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Auditorium B", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "context-Downtown_8e",
+          "", 
+          "", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundb7a6.context-Downtown_9d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9d"
+  }, 
+  {
+    "ref": "item-super_trapezoid268f.context-Downtown_9d", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 160, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 127, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 3,
+        "pattern": [		
+          86, 
+          149, 
+          89, 
+          101, 
+          101, 
+          89, 
+          149, 
+          86, 
+          89, 
+          89, 
+          101, 
+          165, 
+          89, 
+          89, 
+          102, 
+          101, 
+          89, 
+          89, 
+          105, 
+          101, 
+          89, 
+          89, 
+          101, 
+          101, 
+          86, 
+          165, 
+          101, 
+          101, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 180
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9d"
+  }
+]

@@ -1,0 +1,187 @@
+[
+  {
+    "ref": "context-Downtown_4d", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "La Vous New", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 3,		
+        "neighbors": [
+		  "context-Downtown_4e",
+          "context-Downtown_5d", 
+          "context-Downtown_4c", 
+          "context-Downtown_3d"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall39ac.context-Downtown_4d", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4d"
+  }, 
+  {
+    "ref": "item-ground9bde.context-Downtown_4d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4d"
+  }, 
+  {
+    "ref": "item-door4557.context-Downtown_4d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "y": 32, 
+        "x": 56,
+		"open_flags": 0,
+		"connection": "context-test",
+        "type": "Door"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_4d"
+  }, 
+  {
+    "ref": "item-sign9cc9.context-Downtown_4d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          128, 
+          76, 
+          97, 
+          134, 
+          32, 
+          128, 
+          86, 
+          111, 
+          117, 
+          115, 
+          134, 
+          32, 
+          32, 
+          78, 
+          101, 
+          119, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 70, 
+        "x": 20, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_4d"
+  }, 
+  {
+    "ref": "item-doordbd0.context-Downtown_4d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 1,  
+        "y": 32, 
+        "x": 96,
+		"open_flags": 0,
+		"connection": "context-test",
+        "type": "Door"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_4d"
+  }, 
+  {
+    "ref": "item-short_sign44be.context-Downtown_4d", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 244, 
+        "ascii": [
+          82, 
+          111, 
+          100, 
+          101, 
+          111, 
+          32, 
+          68, 
+          114, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 21, 
+        "x": 124, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4d"
+  }, 
+  {
+    "ref": "item-street1a62.context-Downtown_4d", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_4d"
+  }
+]

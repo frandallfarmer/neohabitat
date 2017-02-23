@@ -1,0 +1,16 @@
+{
+	"type": "item",
+	"ref": "item-stu.godtool",
+	"name": "Tool to rule the universe.",
+	"in": "user-stu",
+	"mods": [
+		{
+			"type": "Knick_knack",
+			"style": 2,
+			"y": 1,
+			"orientation": 8,
+			"magic_type": 17,
+			"charges": 255
+		}
+	]
+}

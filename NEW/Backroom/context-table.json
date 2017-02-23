@@ -1,0 +1,15 @@
+{
+	"type": "context",
+	"ref": "context-table",
+	"capacity": 6,
+	"name": "The Nexus",
+	"mods": [
+		{
+			"town_dir": "through either door",
+			"port_dir": "",
+			"type": "Region",
+			"nitty_bits": 2,
+			"neighbors": ["", "context-frontyard", "", ""]
+		}
+	]
+}

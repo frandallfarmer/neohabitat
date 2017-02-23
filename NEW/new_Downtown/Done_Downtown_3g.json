@@ -1,0 +1,200 @@
+[
+  {
+    "ref": "context-Downtown_3g", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "General Store", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 0,
+        "neighbors": [
+		  "context-Downtown_3h",
+          "context-Downtown_4g", 
+          "context-Downtown_3f", 
+          "context-Downtown_2g"         
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wallc30c.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-ground6b0e.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-door071c.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 64, 
+        "open_flags": 0, 
+        "type": "Door",
+		"connection": "context-Downtown_2g",
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-windowb9cb.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 16, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-fortune_machinee911.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 44, 
+        "type": "Fortune_machine", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fortune_machine", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-fortune_machine3627.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 104, 
+        "type": "Fortune_machine", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fortune_machine", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-street8fcc.context-Downtown_3g", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-sign232b.context-Downtown_3g", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          32, 
+          32, 
+          71, 
+          69, 
+          78, 
+          69, 
+          82, 
+          65, 
+          76, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 108, 
+        "x": 32, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3g"
+  }, 
+  {
+    "ref": "item-windowa45b.context-Downtown_3g", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 124, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3g"
+  }
+]

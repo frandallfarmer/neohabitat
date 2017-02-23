@@ -1,0 +1,258 @@
+[
+  {
+    "ref": "context-Downtown_3d", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Fine Furniture", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "context-Downtown_3e",
+          "context-Downtown_4d", 
+          "context-Downtown_3c", 
+          "context-Downtown_2d"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundd974.context-Downtown_3d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-sign03db.context-Downtown_3d", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "ascii": [
+          128, 
+          32, 
+          133, 
+          70, 
+          73, 
+          78, 
+          69, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 80, 
+        "x": 40, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-window4f10.context-Downtown_3d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 34, 
+        "x": 100, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-window1397.context-Downtown_3d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 34, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-wall4f78.context-Downtown_3d", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-doorf3a5.context-Downtown_3d", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 4,
+        "type": "Door",
+		"open_flags": 0,
+        "orientation": 140,
+		"connection": "context-test"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-windowe902.context-Downtown_3d", 
+    "mods": [
+      {
+        "y": 65, 
+        "x": 132, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-windowe185.context-Downtown_3d", 
+    "mods": [
+      {
+        "y": 65, 
+        "x": 100, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-street79d5.context-Downtown_3d", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 13, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3d"
+  }, 
+  {
+    "ref": "item-signa0d3.context-Downtown_3d", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "ascii": [
+          32, 
+          70, 
+          85, 
+          82, 
+          78, 
+          73, 
+          84, 
+          85, 
+          82, 
+          69, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 65, 
+        "x": 40, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3d"
+  }
+]

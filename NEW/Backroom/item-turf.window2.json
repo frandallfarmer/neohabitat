@@ -1,0 +1,16 @@
+{
+  "type": "item",
+  "ref": "item-turf.window2",
+  "name": "Turf window 2",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Window",
+      "style": 1,
+      "x": 88,
+      "y": 56,
+      "orientation": 56,
+      "gr_state": 20
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+	"type": "context",
+	"ref": "context-test",
+	"capacity": 6,
+	"name": "Neohabitat Project Hub",
+	"aliases": ["pop-hub", "pop-test"],
+	"mods": [
+		{
+			"town_dir": "",
+			"port_dir": "missing",
+			"type": "Region",
+			"nitty_bits": 2,
+			"neighbors": ["context-library", "context-table", "", ""]
+		}
+	]
+}

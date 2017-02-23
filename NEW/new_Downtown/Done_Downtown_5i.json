@@ -1,0 +1,210 @@
+[
+  {
+    "ref": "context-Downtown_5i", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Hall of Records Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+		  "",
+		  "",
+          "", 
+          "context-Downtown_5h"                
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundf46f.context-Downtown_5i", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-wall86a3.context-Downtown_5i", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-chaircb9f.context-Downtown_5i", 
+    "mods": [
+      {
+        "y": 152, 
+        "x": 72, 
+        "style": 2,
+        "open_flags": 3,		
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-trapezoid9111.context-Downtown_5i", 
+    "mods": [
+      {
+        "y": 151, 
+        "x": 72, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 14, 
+        "lower_left_x": 248, 
+        "lower_right_x": 21, 
+        "height": 41, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-sign5ae5.context-Downtown_5i", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 120, 
+        "x": 96, 
+        "ascii": [
+          84, 
+          72, 
+          69, 
+          32, 
+          71, 
+          82, 
+          69, 
+          65, 
+          84, 
+          134, 
+          32, 
+          66, 
+          79, 
+          79, 
+          75, 
+          32, 
+          79, 
+          70, 
+          134, 
+          32, 
+          82, 
+          69, 
+          67, 
+          79, 
+          82, 
+          68, 
+          83, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-picture397a.context-Downtown_5i", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Picture",
+		"mass": 1,
+        "gr_state": 1, 
+        "y": 100, 
+        "x": 92
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-picture7f81.context-Downtown_5i", 
+    "mods": [
+      {
+        "orientation": 17, 
+        "type": "Picture",
+		"mass": 1,		
+        "gr_state": 1, 
+        "y": 100, 
+        "x": 92
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-picture1c17.context-Downtown_5i", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Picture",
+		"mass": 1,		
+        "gr_state": 4, 
+        "y": 93, 
+        "x": 92
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Downtown_5i"
+  }, 
+  {
+    "ref": "item-pictured54a.context-Downtown_5i", 
+    "mods": [
+      {
+        "orientation": 17, 
+        "type": "Picture",
+		"mass": 1,		
+        "gr_state": 4, 
+        "y": 93, 
+        "x": 92
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Downtown_5i"
+  }
+]

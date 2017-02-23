@@ -1,0 +1,14 @@
+{
+	"type": "item",
+	"ref": "item-stu.head.json",
+	"name": "Stu's Head",
+	"in": "user-stu",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 52,
+			"orientation": 8,
+			"y":6
+		}
+	]
+}

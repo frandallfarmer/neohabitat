@@ -1,0 +1,266 @@
+[
+  {
+    "ref": "context-Downtown_7i", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Library", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "context-Downtown_7j",
+          "context-Downtown_8i", 
+          "context-Downtown_7h", 
+          "",           
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground0cd8.context-Downtown_7i", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-super_trapezoidad56.context-Downtown_7i", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 160,
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 127, 
+        "pattern_x_size": 1, 
+        "pattern_y_size":15,
+		"pattern": [
+          89, 
+          85, 
+          85, 
+          89, 
+          85, 
+          85, 
+          149, 
+          85, 
+          86, 
+          86, 
+          85, 
+          85, 
+          85, 
+          101, 
+          101, 
+          85, 
+          85, 
+          149, 
+          89, 
+          85, 
+          85, 
+          89, 
+          149, 
+          85, 
+          85, 
+          85, 
+          85, 
+          149, 
+          101, 
+          85, 
+          85, 
+          89
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-street1baf.context-Downtown_7i", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-door7aec.context-Downtown_7i", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 16,
+        "open_flags": 0,		
+        "type": "Door", 
+        "orientation": 140,
+		"connection": "context-test"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-window7c2b.context-Downtown_7i", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 106, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-window1c8f.context-Downtown_7i", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 106, 
+        "x": 52, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-window2d2e.context-Downtown_7i", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 106, 
+        "x": 84, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-windowdec5.context-Downtown_7i", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 106, 
+        "x": 116, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-sign4642.context-Downtown_7i", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 93, 
+        "x": 68, 
+        "ascii": [
+          32, 
+          80, 
+          111, 
+          112, 
+          117, 
+          108, 
+          111, 
+          112, 
+          111, 
+          108, 
+          105, 
+          115, 
+          134, 
+          133, 
+          76, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          89, 
+          134, 
+          32, 
+          73, 
+          32, 
+          32, 
+          32, 
+          82, 
+          134, 
+          32, 
+          32, 
+          66, 
+          32, 
+          65, 
+          134, 
+          32, 
+          32, 
+          32, 
+          82, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7i"
+  }, 
+  {
+    "ref": "item-trapezoid551f.context-Downtown_7i", 
+    "mods": [
+      {
+        "y": 52, 
+        "x": 96, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 212, 
+        "upper_right_x": 47, 
+        "lower_left_x": 255, 
+        "lower_right_x": 4, 
+        "height": 172, 
+        "type": "Trapezoid", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_7i"
+  }
+]

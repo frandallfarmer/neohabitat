@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-table.door.heads",
+	"name": "Door to Heads",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Door",
+			"style": 0,
+			"x": 20,
+			"y": 32,
+			"orientation": 192,
+			"gr_state": 0,
+			"open_flags": 2,
+			"connection": "context-test"
+		}
+	]
+}

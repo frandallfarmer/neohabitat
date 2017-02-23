@@ -1,0 +1,117 @@
+[
+  {
+    "ref": "context-Downtown_4f", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Plaza West", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+          "context-Downtown_4g", 
+          "context-Downtown_5f", 
+          "context-Downtown_4e", 
+          "context-Downtown_3f"
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundd77e.context-Downtown_4f", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4f"
+  }, 
+  {
+    "ref": "item-skyc51d.context-Downtown_4f", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_4f"
+  }, 
+  {
+    "ref": "item-street8f4f.context-Downtown_4f", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 24, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_4f"
+  }, 
+  {
+    "ref": "item-sky2969.context-Downtown_4f", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Sky", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_4f"
+  }, 
+  {
+    "ref": "item-trapezoid66f4.context-Downtown_4f", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 0, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 160, 
+        "lower_left_x": 0, 
+        "lower_right_x": 160, 
+        "height": 47, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_4f"
+  }, 
+  {
+    "ref": "item-streetlampfcc1.context-Downtown_4f", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 72, 
+        "type": "Streetlamp", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_4f"
+  }
+]

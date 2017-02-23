@@ -1,0 +1,216 @@
+[
+  {
+    "ref": "context-Downtown_5d", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Kerri's Knick Knacks", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 3,		
+        "neighbors": [
+		  "context-Downtown_5e",
+          "context-Downtown_6d", 
+          "context-Downtown_5c", 
+          "context-Downtown_4d"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wallf1af.context-Downtown_5d", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-ground3c82.context-Downtown_5d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-window997f.context-Downtown_5d", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 56, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-window0cae.context-Downtown_5d", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 92, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-door4540.context-Downtown_5d", 
+    "mods": [
+      {
+        "style": 1,
+        "orientation": 0, 
+        "y": 32, 
+        "x": 16,
+		"open_flags": 0,
+		"connection": "context-test",
+        "type": "Door"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-window756b.context-Downtown_5d", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 128, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-street948f.context-Downtown_5d", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-sign01de.context-Downtown_5d", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 188, 
+        "ascii": [
+          32, 
+          75, 
+          101, 
+          114, 
+          114, 
+          105, 
+          39, 
+          115, 
+          32, 
+          75, 
+          110, 
+          105, 
+          99, 
+          107, 
+          32, 
+          75, 
+          110, 
+          97, 
+          99, 
+          107, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 56, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_5d"
+  }, 
+  {
+    "ref": "item-short_sign0575.context-Downtown_5d", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 244, 
+        "ascii": [
+          82, 
+          111, 
+          100, 
+          101, 
+          111, 
+          32, 
+          68, 
+          114, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 21, 
+        "x": 124, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_5d"
+  }
+]

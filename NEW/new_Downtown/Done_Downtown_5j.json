@@ -1,0 +1,260 @@
+[
+  {
+    "ref": "context-Downtown_5j", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Kelly's Bar and Grill", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 1,		
+        "neighbors": [
+		  "context-Downtown_5k",
+          "context-Downtown_6j", 
+          "", 
+          "context-Downtown_4j"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall773a.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-grounda627.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-door4065.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 116, 
+        "open_flags": 0, 
+        "type": "Door",
+        "connection": "context-Downtown_5l",		
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-windowa5d9.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 20, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-bottle4943.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 84, 
+        "filled": 0, 
+        "type": "Bottle", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-bottle22a7.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 108, 
+        "filled": 0, 
+        "type": "Bottle", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-streete56d.context-Downtown_5j", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-bottled093.context-Downtown_5j", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Bottle", 
+        "gr_state": 1, 
+        "y": 156, 
+        "x": 92, 
+        "filled": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-streetlampdeb4.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 152, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 81
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-tree361c.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 8, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-sign8fbd.context-Downtown_5j", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          75, 
+          69, 
+          76, 
+          76, 
+          89, 
+          39, 
+          83, 
+          32, 
+          66, 
+          65, 
+          82, 
+          32, 
+          65, 
+          78, 
+          68, 
+          32, 
+          71, 
+          82, 
+          73, 
+          76, 
+          76, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 100, 
+        "x": 20, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-windowdd7b.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 56, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_5j"
+  }, 
+  {
+    "ref": "item-window0837.context-Downtown_5j", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 92, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_5j"
+  }
+]

@@ -1,0 +1,232 @@
+[
+  {
+    "ref": "context-Downtown_4h", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Meeting Hall", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 1,		
+        "neighbors": [
+		  "context-Downtown_4i",
+          "context-Downtown_5h", 
+          "context-Downtown_4g", 
+          "context-Downtown_4g"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground8ecc.context-Downtown_4h", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-wallca0a.context-Downtown_4h", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-sign9d9d.context-Downtown_4h", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 148, 
+        "ascii": [
+          133, 
+          77, 
+          101, 
+          101, 
+          116, 
+          105, 
+          110, 
+          103, 
+          133, 
+          128, 
+          133, 
+          72, 
+          97, 
+          108, 
+          108, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 48, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-window67dd.context-Downtown_4h", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 59, 
+        "x": 88, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-window5191.context-Downtown_4h", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-door7c51.context-Downtown_4h", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 16, 
+        "open_flags": 0, 
+        "type": "Door", 
+        "orientation": 244,
+		"connection": "context-Downtown_4h"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-coke_machinedc8d.context-Downtown_4h", 
+    "mods": [
+      {
+        "y": 24, 
+        "x": 124, 
+        "type": "Coke_machine", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Coke_machine", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-street5017.context-Downtown_4h", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-windowc681.context-Downtown_4h", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 59, 
+        "x": 56, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_4h"
+  }, 
+  {
+    "ref": "item-short_sign2030.context-Downtown_4h", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 140, 
+        "ascii": [
+          65, 
+          100, 
+          109, 
+          105, 
+          110, 
+          32, 
+          65, 
+          118, 
+          32, 
+          32
+        ], 
+        "gr_state": 7, 
+        "y": 129, 
+        "x": 136, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4h"
+  }
+]

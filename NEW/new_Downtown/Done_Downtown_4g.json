@@ -1,0 +1,133 @@
+[
+  {
+    "ref": "context-Downtown_4g", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Plaza Northwest", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+          "context-Downtown_4h", 
+          "context-Downtown_5g", 
+          "context-Downtown_4f", 
+          "context-Downtown_5g"
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground5ef5.context-Downtown_4g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 184, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4g"
+  }, 
+  {
+    "ref": "item-sky65db.context-Downtown_4g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_4g"
+  }, 
+  {
+    "ref": "item-teleport9b0a.context-Downtown_4g", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 104, 
+        "address": "Pop-Plaza NW", 
+        "type": "Teleport", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Downtown_4g"
+  }, 
+  {
+    "ref": "item-sky46d0.context-Downtown_4g", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Sky", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_4g"
+  }, 
+  {
+    "ref": "item-trapezoid8b23.context-Downtown_4g", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 0,
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 160, 
+        "lower_left_x": 0, 
+        "lower_right_x": 160, 
+        "height": 47, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_4g"
+  }, 
+  {
+    "ref": "item-streeta24f.context-Downtown_4g", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 5, 
+        "y": 4, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_4g"
+  }, 
+  {
+    "ref": "item-street5378.context-Downtown_4g", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 3, 
+        "y": 24, 
+        "x": 60
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_4g"
+  }
+]

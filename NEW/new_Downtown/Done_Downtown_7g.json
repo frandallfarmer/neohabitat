@@ -1,0 +1,425 @@
+[
+  {
+    "ref": "context-Downtown_7g", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Arcade", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "context-Downtown_7h",
+          "context-Downtown_8g", 
+          "context-Downtown_7f", 
+          "context-Downtown_6g"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wallf6fe.context-Downtown_7g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-ground5f74.context-Downtown_7g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-bushd4ea.context-Downtown_7g", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 16, 
+        "gr_state": 2, 
+        "y": 30, 
+        "x": 24, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-trapezoid70a9.context-Downtown_7g", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 100, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "lower_right_x": 19, 
+        "height": 96, 
+        "type": "Trapezoid", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-sign8c5c.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 126, 
+        "x": 100, 
+        "ascii": [
+          133, 
+          131, 
+          129, 
+          65, 
+          134, 
+          82, 
+          134, 
+          67, 
+          134, 
+          65, 
+          134, 
+          68, 
+          134, 
+          69, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-signfcfd.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 6, 
+        "y": 254, 
+        "x": 96, 
+        "ascii": [
+          133, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          32, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-signa3a2.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 7, 
+        "y": 250, 
+        "x": 96, 
+        "ascii": [
+          133, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          32, 
+          137, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-signae27.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 8, 
+        "y": 246, 
+        "x": 96, 
+        "ascii": [
+          133, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          134, 
+          134, 
+          46, 
+          138, 
+          138, 
+          32, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          137, 
+          137, 
+          136, 
+          46, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-doorb6fb.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "type": "Door", 
+        "y": 33, 
+        "x": 52,
+		"open_flags": 0,
+		"connection": "context-Downtown_8g"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-signa5c2.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 115, 
+        "x": 4, 
+        "ascii": [
+          32, 
+          128, 
+          70, 
+          82, 
+          69, 
+          69, 
+          134, 
+          80, 
+          65, 
+          82, 
+          75, 
+          73, 
+          78, 
+          71, 
+          134, 
+          32, 
+          32, 
+          128, 
+          73, 
+          78, 
+          134, 
+          32, 
+          128, 
+          82, 
+          69, 
+          65, 
+          82, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-trapezoid7833.context-Downtown_7g", 
+    "mods": [
+      {
+        "y": 81, 
+        "x": 4, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 31, 
+        "lower_left_x": 0, 
+        "lower_right_x": 31, 
+        "height": 167, 
+        "type": "Trapezoid", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_7g"
+  }, 
+  {
+    "ref": "item-streetcbb4.context-Downtown_7g", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 138, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_7g"
+  }
+]

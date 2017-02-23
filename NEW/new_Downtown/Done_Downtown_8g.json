@@ -1,0 +1,125 @@
+[
+  {
+    "ref": "context-Downtown_8g", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Arcade Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "",
+          "", 
+          "", 
+          "context-Downtown_7g"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundba97.context-Downtown_8g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_8g"
+  }, 
+  {
+    "ref": "item-skyb369.context-Downtown_8g", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 60, 
+        "style": 9, 
+        "type": "Sky", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_8g"
+  }, 
+  {
+    "ref": "item-signb7cb.context-Downtown_8g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 108, 
+        "x": 8, 
+        "ascii": [
+          67, 
+          72, 
+          69, 
+          83, 
+          83, 
+          32, 
+          133, 
+          124, 
+          134, 
+          134, 
+          136, 
+          126, 
+          133, 
+          67, 
+          72, 
+          69, 
+          67, 
+          75, 
+          69, 
+          82, 
+          83, 
+          134, 
+          134, 
+          136, 
+          136, 
+          66, 
+          65, 
+          67, 
+          75, 
+          71, 
+          65, 
+          77, 
+          77, 
+          79, 
+          78, 
+          128, 
+          133, 
+          127, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_8g"
+  }, 
+  {
+    "ref": "item-wall8342.context-Downtown_8g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_8g"
+  }
+]

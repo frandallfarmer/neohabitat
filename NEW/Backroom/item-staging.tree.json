@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-staging.tree",
+	"name": "Tree",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Tree",
+			"style": 9,
+			"x": 40,
+			"y": 32,
+			"orientation": 0
+		}
+	]
+}

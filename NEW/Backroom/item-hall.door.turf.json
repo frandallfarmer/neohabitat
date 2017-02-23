@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-hall.door.turf",
+	"name": "Door to Turf",
+	"in": "context-hall",
+	"mods": [
+		{
+			"type": "Door",
+			"style": 0,
+			"x": 68,
+			"y": 33,
+			"orientation": 148,
+			"gr_state": 0,
+			"open_flags": 2,
+			"connection": "context-turf"
+		}
+	]
+}

@@ -1,0 +1,486 @@
+[
+  {
+    "ref": "context-Downtown_1q", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Gammon Board", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 2,		
+        "neighbors": [
+		  "context-Downtown_1r",
+          "", 
+          "context-Downtown_1p", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-trapezoid8fe1.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 24, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 251, 
+        "upper_right_x": 5, 
+        "lower_left_x": 0, 
+        "lower_right_x": 0, 
+        "height": 51,
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoidc719.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 32, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 255, 
+        "upper_right_x": 9, 
+        "lower_left_x": 4, 
+        "lower_right_x": 4, 
+        "height": 51,
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid6e01.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 24, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52,
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoida016.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 36, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoidbc84.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 48, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid5f70.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 60, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoidee64.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 72, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid5daa.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 104, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid8216.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 116, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 53, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid200c.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 128, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid5940.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 140, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoidf513.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 152,
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 251, 
+        "lower_right_x": 5, 
+        "height": 52, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid112b.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 84, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 10, 
+        "lower_left_x": 0, 
+        "lower_right_x": 10, 
+        "height": 126, 
+        "type": "Trapezoid", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-short_sign475f.context-Downtown_1q", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 93, 
+        "x": 84, 
+        "ascii": [
+          133, 
+          131, 
+          66, 
+          134, 
+          65, 
+          134, 
+          82, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid755b.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 44, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 255, 
+        "upper_right_x":  9, 
+        "lower_left_x": 4, 
+        "lower_right_x": 4, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid0d0d.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 56, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 255, 
+        "upper_right_x": 9, 
+        "lower_left_x": 4, 
+        "lower_right_x": 4, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid9647.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 68, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 255, 
+        "upper_right_x": 9, 
+        "lower_left_x": 4, 
+        "lower_right_x": 4, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid833b.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 104, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 251, 
+        "upper_right_x": 5, 
+        "lower_left_x": 0, 
+        "lower_right_x": 0, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoideae3.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 116, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 251, 
+        "upper_right_x": 5, 
+        "lower_left_x": 0, 
+        "lower_right_x": 0, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoid9580.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 128, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 251, 
+        "upper_right_x": 5, 
+        "lower_left_x": 0, 
+        "lower_right_x": 0, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoidd2a5.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 140, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 251, 
+        "upper_right_x": 5, 
+        "lower_left_x": 0, 
+        "lower_right_x": 0, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-trapezoide877.context-Downtown_1q", 
+    "mods": [
+      {
+        "y": 77, 
+        "x": 152, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 251, 
+        "upper_right_x": 5, 
+        "lower_left_x": 0, 
+        "lower_right_x": 0, 
+        "height": 51, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1q"
+  }, 
+  {
+    "ref": "item-flat4d99.context-Downtown_1q", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 228, 
+        "flat_type": 2, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Downtown_1q"
+  }
+]

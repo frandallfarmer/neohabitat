@@ -1,0 +1,289 @@
+[
+  {
+    "ref": "context-Downtown_8c", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Quizshows Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "",
+          "", 
+          "", 
+          "context-Downtown_7c"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground433f.context-Downtown_8c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-super_trapezoid44f3.context-Downtown_8c", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 160,
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 112, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 1,
+        "pattern": [		
+          170, 
+          85, 
+          85, 
+          85, 
+          86, 
+          165, 
+          101, 
+          101, 
+          89, 
+          89, 
+          101, 
+          165, 
+          89, 
+          89, 
+          102, 
+          101, 
+          89, 
+          89, 
+          105, 
+          101, 
+          89, 
+          89, 
+          101, 
+          101, 
+          86, 
+          165, 
+          101, 
+          101, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-signa6c3.context-Downtown_8c", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 172, 
+        "ascii": [
+          81, 
+          117, 
+          105, 
+          122, 
+          83, 
+          104, 
+          111, 
+          119, 
+          115, 
+          128, 
+          73, 
+          110, 
+          99, 
+          134, 
+          32, 
+          32, 
+          80, 
+          114, 
+          101, 
+          115, 
+          101, 
+          110, 
+          116, 
+          115, 
+          58, 
+          134, 
+          131, 
+          84, 
+          114, 
+          105, 
+          118, 
+          105, 
+          97, 
+          128, 
+          52, 
+          128, 
+          89, 
+          111, 
+          117, 
+          33
+        ], 
+        "gr_state": 2, 
+        "y": 88, 
+        "x": 4, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-trapezoidcfef.context-Downtown_8c", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 96, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "lower_right_x": 19, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-signb69b.context-Downtown_8c", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 84, 
+        "x": 4, 
+        "ascii": [
+          133, 
+          131, 
+          89, 
+          111, 
+          117, 
+          114, 
+          32, 
+          32, 
+          128, 
+          35, 
+          49, 
+          32, 
+          32, 
+          32, 
+          35, 
+          50, 
+          32, 
+          32, 
+          32, 
+          35, 
+          51, 
+          32, 
+          32, 
+          136, 
+          136, 
+          134, 
+          72, 
+          111, 
+          115, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-trapezoid2259.context-Downtown_8c", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 56, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "lower_right_x": 19, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-trapezoid9ace.context-Downtown_8c", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 136, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "lower_right_x": 19, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_8c"
+  }, 
+  {
+    "ref": "item-trapezoided24.context-Downtown_8c", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 12, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "lower_right_x": 19, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_8c"
+  }
+]

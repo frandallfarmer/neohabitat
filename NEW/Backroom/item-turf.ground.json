@@ -1,0 +1,16 @@
+{
+  "type": "item",
+  "ref": "item-turf.ground",
+  "name": "Turf ground",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Ground",
+      "style": 1,
+      "x": 0,
+      "y": 4,
+      "orientation": 220,
+      "gr_state": 0
+    }
+  ]
+}

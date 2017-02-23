@@ -1,0 +1,17 @@
+{
+  "type": "item",
+  "ref": "item-turf.floorlamp",
+  "name": "Turf lamp",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Floor_lamp",
+      "style": 0,
+      "x": 100,
+      "y": 133,
+      "orientation": 8,
+      "gr_state": 0,
+      "on": 1
+    }
+  ]
+}

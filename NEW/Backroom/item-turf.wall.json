@@ -1,0 +1,16 @@
+{
+  "type": "item",
+  "ref": "item-turf.wall",
+  "name": "Turf wall",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Wall",
+      "style": 4,
+      "x": 0,
+      "y": 0,
+      "orientation": 244,
+      "gr_state": 0
+    }
+  ]
+}

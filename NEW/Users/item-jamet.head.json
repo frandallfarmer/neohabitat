@@ -1,0 +1,16 @@
+{
+	"type": "item",
+	"ref": "item-test.head.girl",
+	"name": "Default Female Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 2,
+			"x": 132,
+			"y": 80,
+			"orientation": 8,
+			"gr_state": 1
+		}
+	]
+}

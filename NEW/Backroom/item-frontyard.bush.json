@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-frontyard.bush",
+	"name": "Landscaping...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Bush",
+			"style": 1,
+			"x": 4,
+			"y": 49,
+			"orientation": 188
+		}
+	]
+}

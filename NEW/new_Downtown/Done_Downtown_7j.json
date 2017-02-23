@@ -1,0 +1,184 @@
+[
+  {
+    "ref": "context-Downtown_7j", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "For Rent W", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+		  "",
+          "", 
+          "context-Downtown_7i", 
+          "context-Downtown_6j"           
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall5f31.context-Downtown_7j", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-ground9afb.context-Downtown_7j", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-signba24.context-Downtown_7j", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 8, 
+        "ascii": [
+          84, 
+          104, 
+          105, 
+          115, 
+          32, 
+          115, 
+          112, 
+          97, 
+          99, 
+          101, 
+          134, 
+          131, 
+          32, 
+          70, 
+          111, 
+          114, 
+          32, 
+          82, 
+          101, 
+          110, 
+          116, 
+          134, 
+          132, 
+          40, 
+          67, 
+          105, 
+          116, 
+          121, 
+          32, 
+          72, 
+          97, 
+          108, 
+          108, 
+          41, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 3, 
+        "y": 66, 
+        "x": 20, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-streetlamp084f.context-Downtown_7j", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-teleportd6a2.context-Downtown_7j", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 112, 
+        "address": "Pop-Downtown", 
+        "type": "Teleport", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-short_sign0d69.context-Downtown_7j", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          107, 
+          105, 
+          100, 
+          32, 
+          82, 
+          111, 
+          119, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 116, 
+        "x": 4, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-street858e.context-Downtown_7j", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 7, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_7j"
+  }
+]

@@ -1,0 +1,265 @@
+[
+  {
+    "ref": "context-Downtown_7h", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Broadway Bank", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "context-Downtown_7i",
+          "", 
+          "context-Downtown_7g", 
+          "context-Downtown_6h"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundbd37.context-Downtown_7h", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-super_trapezoidb4e0.context-Downtown_7h", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 160,
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 127, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 15,
+        "pattern": [		
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          86, 
+          149, 
+          89, 
+          101, 
+          89, 
+          101, 
+          101, 
+          89, 
+          101, 
+          89, 
+          101, 
+          89, 
+          101, 
+          89, 
+          89, 
+          101, 
+          89, 
+          101, 
+          86, 
+          149, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-atm0267.context-Downtown_7h", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 104, 
+        "type": "Atm", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Atm", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-atm1bf8.context-Downtown_7h", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 36, 
+        "type": "Atm", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Atm", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-streetlampd9d5.context-Downtown_7h", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 124, 
+        "type": "Streetlamp", 
+        "orientation": 24, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-street1b6d.context-Downtown_7h", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 13, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-signc61e.context-Downtown_7h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 119, 
+        "x": 8, 
+        "ascii": [
+          133, 
+          131, 
+          66, 
+          114, 
+          111, 
+          97, 
+          100, 
+          119, 
+          97, 
+          121, 
+          134, 
+          97, 
+          134, 
+          110, 
+          134, 
+          107, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-short_sign50bb.context-Downtown_7h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 9, 
+        "y": 247, 
+        "x": 8, 
+        "ascii": [
+          133, 
+          131, 
+          66, 
+          114, 
+          111, 
+          97, 
+          100, 
+          119, 
+          97, 
+          121
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_7h"
+  }, 
+  {
+    "ref": "item-short_sign645b.context-Downtown_7h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 14, 
+        "y": 247, 
+        "x": 8, 
+        "ascii": [
+          133, 
+          131, 
+          66, 
+          134, 
+          97, 
+          134, 
+          110, 
+          134, 
+          107, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_7h"
+  }
+]

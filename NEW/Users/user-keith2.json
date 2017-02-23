@@ -1,0 +1,16 @@
+{
+	"type": "user",
+	"ref": "user-keith2",
+	"name": "Keith2",
+	"mods": [
+		{
+			"type": "Avatar",
+			"x": 0,
+			"y": 150,			
+			"bodyType": "male",
+			"bankBalance": 10000,
+			"custom": [17, 17],
+			"nitty_bits": 8
+		}
+		]
+}

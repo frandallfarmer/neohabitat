@@ -1,0 +1,224 @@
+[
+  {
+    "ref": "context-Downtown_6h", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "City Hall", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [		  
+		  "context-Downtown_6i",
+          "context-Downtown_7h", 
+          "context-Downtown_6g",           
+		  "context-Downtown_5h"
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundb028.context-Downtown_6h", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-super_trapezoid83e9.context-Downtown_6h", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 160,
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 127, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 15,
+        "pattern": [		
+          170, 
+          170, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          170, 
+          170, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-doore19b.context-Downtown_6h", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 68, 
+        "open_flags": 0, 
+        "type": "Door", 
+        "orientation": 220,
+		"connection": "context-Downtown_6i"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-short_sign6eee.context-Downtown_6h", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 140, 
+        "ascii": [
+          65, 
+          100, 
+          109, 
+          105, 
+          110, 
+          32, 
+          65, 
+          118, 
+          32, 
+          32
+        ], 
+        "gr_state": 7, 
+        "y": 129, 
+        "x": 140, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-street7ccd.context-Downtown_6h", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-short_signbb17.context-Downtown_6h", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 140, 
+        "ascii": [
+          32, 
+          67, 
+          105, 
+          116, 
+          121, 
+          32, 
+          72, 
+          97, 
+          108, 
+          108
+        ], 
+        "y": 104, 
+        "x": 56, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-flag6c63.context-Downtown_6h", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 116, 
+        "mass": 1, 
+        "type": "Flag", 
+        "orientation": 57
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-flag8bd1.context-Downtown_6h", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 56, 
+        "mass": 1, 
+        "type": "Flag", 
+        "orientation": 81
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-Downtown_6h"
+  }, 
+  {
+    "ref": "item-dropbox5fd3.context-Downtown_6h", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 16, 
+        "type": "Dropbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Dropbox", 
+    "in": "context-Downtown_6h"
+  }
+]
