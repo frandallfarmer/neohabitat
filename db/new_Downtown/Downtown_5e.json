@@ -11,10 +11,10 @@
         "port_dir": "", 
         "type": "Region", 
         "neighbors": [
-		  "context-Downtown_5f",
-          "context-Downtown_6e", 
-          "context-Downtown_5d", 
-          "context-Downtown_4e"          
+          "context-Downtown_5f",
+          "context-Downtown_6e",
+          "context-Downtown_5d",
+          "context-Downtown_4e"
         ], 
         "nitty_bits": 3
       }

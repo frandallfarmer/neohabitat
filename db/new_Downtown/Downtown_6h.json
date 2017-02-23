@@ -6,15 +6,15 @@
     "name": "City Hall", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 1,
-        "neighbors": [		  
-		  "context-Downtown_6i",
-          "context-Downtown_7h", 
-          "context-Downtown_6g",           
-		  "context-Downtown_5h"
+        "orientation": 1,
+        "neighbors": [
+          "context-Downtown_6i",
+          "context-Downtown_7h",
+          "context-Downtown_6g",
+          "context-Downtown_5h"
         ], 
         "nitty_bits": 3
       }

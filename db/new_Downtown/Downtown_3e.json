@@ -9,17 +9,17 @@
         "town_dir": "", 
         "port_dir": "", 
         "type": "Region",
-		"orientation": 0,
+        "orientation": 0,
         "neighbors": [
-		  "context-Downtown_3f",
-          "context-Downtown_4e", 
-          "context-Downtown_3d", 
-          ""          
+          "context-Downtown_3f",
+          "context-Downtown_4e",
+          "context-Downtown_3d",
+          ""
         ], 
         "nitty_bits": 3
       }
     ]
-  }, 
+  },
   {
     "ref": "item-walldca4", 
     "mods": [

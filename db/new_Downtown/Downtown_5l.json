@@ -6,20 +6,20 @@
     "name": "Kelly's Bar Backroom", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 1,
+        "orientation": 1,
         "neighbors": [
-		  "context-Downtown_3j",
-          "", 
-          "", 
-          "context-Downtown_5k"          
+          "context-Downtown_3j",
+          "",
+          "",
+          "context-Downtown_5k"
         ], 
         "nitty_bits": 3
       }
     ]
-  }, 
+  },
   {
     "ref": "item-walla38f", 
     "mods": [

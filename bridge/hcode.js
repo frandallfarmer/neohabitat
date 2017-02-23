@@ -699,6 +699,9 @@ this.translate = {
 		DEPOSIT: {
 			toServer: function(a, m) {
 				m.token_noid = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
 			}
     },
 		ZAPTO: {

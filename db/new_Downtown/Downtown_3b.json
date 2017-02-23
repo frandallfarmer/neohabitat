@@ -11,7 +11,7 @@
         "type": "Region",
         "orientation": 3,		
         "neighbors": [
-		  "context-Downtown_3c",
+          "context-Downtown_3c",
           "context-Downtown_4b", 
           "", 
           ""         

@@ -6,15 +6,15 @@
     "name": "Body Paints", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-        "orientation": 3,		
+        "orientation": 3,
         "neighbors": [
-		  "context-Downtown_6e",
-          "context-Downtown_7d", 
-          "context-Downtown_6c", 
-          "context-Downtown_5d"          
+          "context-Downtown_6e",
+          "context-Downtown_7d",
+          "context-Downtown_6c",
+          "context-Downtown_5d"
         ], 
         "nitty_bits": 3
       }

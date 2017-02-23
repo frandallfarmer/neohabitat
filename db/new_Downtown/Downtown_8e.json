@@ -6,15 +6,15 @@
     "name": "Auditorium Lobby", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 2,
+        "orientation": 2,
         "neighbors": [
-		  "context-Downtown_7e",
-		  "context-Downtown_9f",
-          "", 
-          "context-Downtown_9d"                   
+          "context-Downtown_9f",
+          "",
+          "context-Downtown_9d",
+          "context-Downtown_7e"
         ], 
         "nitty_bits": 3
       }

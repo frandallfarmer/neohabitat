@@ -6,15 +6,15 @@
     "name": "La Vous New", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-        "orientation": 3,		
+        "orientation": 3,
         "neighbors": [
-		  "context-Downtown_4e",
-          "context-Downtown_5d", 
-          "context-Downtown_4c", 
-          "context-Downtown_3d"          
+          "context-Downtown_4e",
+          "context-Downtown_5d",
+          "context-Downtown_4c",
+          "context-Downtown_3d"
         ], 
         "nitty_bits": 3
       }

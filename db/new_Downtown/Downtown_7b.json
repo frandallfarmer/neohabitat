@@ -9,12 +9,12 @@
         "town_dir": "", 
         "port_dir": "", 
         "type": "Region",
-		"orientation": 3,
+        "orientation": 3,
         "neighbors": [
-		  "context-Downtown_7c",
-          "", 
-          "context-Downtown_7a", 
-          "context-Downtown_6b"          
+          "context-Downtown_7c",
+          "",
+          "context-Downtown_7a",
+          "context-Downtown_6b"
         ], 
         "nitty_bits": 3
       }
