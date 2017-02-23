@@ -6,15 +6,15 @@
     "name": "Library Purple", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 2,
+        "orientation": 2,
         "neighbors": [
-		  "context-Downtown_9h",
-          "", 
-          "", 
-          ""          
+          "context-Downtown_9h",
+          "",
+          "",
+          ""
         ], 
         "nitty_bits": 3
       }

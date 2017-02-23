@@ -11,10 +11,10 @@
         "type": "Region",
         "orientation": 2,		
         "neighbors": [
-		  "context-Downtown_1r",
+          "context-Downtown_1r",
           "", 
           "context-Downtown_1p", 
-          ""          
+          ""
         ], 
         "nitty_bits": 3
       }

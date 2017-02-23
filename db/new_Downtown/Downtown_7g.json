@@ -6,15 +6,15 @@
     "name": "Arcade", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 2,
+        "orientation": 2,
         "neighbors": [
-		  "context-Downtown_7h",
-          "context-Downtown_8g", 
-          "context-Downtown_7f", 
-          "context-Downtown_6g"          
+          "context-Downtown_7h",
+          "context-Downtown_8g",
+          "context-Downtown_7f",
+          "context-Downtown_6g"
         ], 
         "nitty_bits": 3
       }

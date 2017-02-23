@@ -6,15 +6,15 @@
     "name": "Plaza Northeast", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 0,
+        "orientation": 0,
         "neighbors": [
-		  "context-Downtown_6h",
-          "context-Downtown_7g", 
-          "context-Downtown_6f", 
-          "context-Downtown_5g"          
+          "context-Downtown_6h",
+          "context-Downtown_7g",
+          "context-Downtown_6f",
+          "context-Downtown_5g"
         ], 
         "nitty_bits": 3
       }

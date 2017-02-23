@@ -6,15 +6,15 @@
     "name": "Kerri's Knick Knacks", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-        "orientation": 3,		
+        "orientation": 3,
         "neighbors": [
-		  "context-Downtown_5e",
-          "context-Downtown_6d", 
-          "context-Downtown_5c", 
-          "context-Downtown_4d"          
+          "context-Downtown_5e",
+          "context-Downtown_6d",
+          "context-Downtown_5c",
+          "context-Downtown_4d"
         ], 
         "nitty_bits": 3
       }

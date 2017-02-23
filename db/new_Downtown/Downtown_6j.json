@@ -6,15 +6,15 @@
     "name": "Lefty's", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
-		"orientation": 1,
+        "orientation": 1,
         "neighbors": [
-		  "context-Downtown_6k",
-          "context-Downtown_7j", 
-          "", 
-          "context-Downtown_5j"          
+          "context-Downtown_6k",
+          "context-Downtown_7j",
+          "",
+          "context-Downtown_5j"
         ], 
         "nitty_bits": 3
       }

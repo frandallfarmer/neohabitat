@@ -80,6 +80,7 @@ public class Atm extends HabitatMod implements Copyable {
 
     public void atm_DEPOSIT(User from, HabitatMod mod) {
         Avatar avatar = avatar(from);
+        trace_msg("Avatar %s attempting to deposit mod: %s", from.ref(), mod);
         int success;
         if (holding(avatar, mod) && mod.HabitatClass() == CLASS_TOKENS) {
             Tokens tokens = (Tokens) mod;
@@ -96,8 +97,10 @@ public class Atm extends HabitatMod implements Copyable {
             success = FALSE;
         }
         if (success == TRUE) {
+            trace_msg("Avatar %s successfully deposited mod: %s", from.ref(), mod);
             send_reply_success(from);
         } else {
+            trace_msg("Avatar %s unsuccessfully deposited mod: %s", from.ref(), mod);
             send_reply_error(from);
         }
     }

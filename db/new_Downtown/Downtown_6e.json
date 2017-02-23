@@ -6,16 +6,16 @@
     "name": "Plaza Southeast", 
     "mods": [
       {
-        "town_dir": "", 
-        "port_dir": "", 
+        "town_dir": "",
+        "port_dir": "",
         "type": "Region",
         "orientation": 0,		
         "neighbors": [
-		  "context-Downtown_6f",
+          "context-Downtown_6f",
           "context-Downtown_7e", 
           "context-Downtown_6d", 
-          "context-Downtown_5e"          
-        ], 
+          "context-Downtown_5e"  
+        ],
         "nitty_bits": 3
       }
     ]

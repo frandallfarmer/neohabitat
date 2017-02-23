@@ -9,19 +9,19 @@
         "town_dir": "", 
         "port_dir": "", 
         "type": "Region",
-        "orientation": 0,		
+        "orientation": 0,
         "neighbors": [
-		  "context-Downtown_3e",
-          "context-Downtown_4d", 
-          "context-Downtown_3c", 
-          "context-Downtown_2d"          
+          "context-Downtown_3e",
+          "context-Downtown_4d",
+          "context-Downtown_3c",
+          "context-Downtown_2d"
         ], 
         "nitty_bits": 3
       }
     ]
   }, 
   {
-    "ref": "item-groundd974", 
+    "ref": "item-groundd974",
     "mods": [
       {
         "y": 4, 

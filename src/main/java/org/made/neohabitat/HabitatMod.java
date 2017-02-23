@@ -3087,8 +3087,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		Tokens tokens;
 		if (empty_handed(who)) {
 			tokens = new Tokens(0, 0, HANDS, 0, 0, 0, 0);
-			tokens.tset(amount);
 			Item obj = create_object("money", tokens, who);
+			tokens.tset(amount);
 			trace_msg("Created tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
 			announce_object(obj, who);
 		} else if (handContents.HabitatClass() == CLASS_TOKENS) {
