@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Downtown_9f", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Auditorium A", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "",
+          "", 
+          "context-Downtown_8e", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground4997.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-super_trapezoide9bb.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 160,
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 127, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 0,
+        "pattern": [		
+          153, 
+          85, 
+          85, 
+          85, 
+          86, 
+          165, 
+          101, 
+          101, 
+          89, 
+          89, 
+          101, 
+          165, 
+          89, 
+          89, 
+          102, 
+          101, 
+          89, 
+          89, 
+          105, 
+          101, 
+          89, 
+          89, 
+          101, 
+          101, 
+          86, 
+          165, 
+          101, 
+          101, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-chair0973.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 20, 
+        "style": 1,
+        "open_flags": 3,		
+        "type": "Chair", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-chair4853.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 96,
+        "open_flags": 3,		
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-chair42ee.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 72,
+        "open_flags": 3,		
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-chair1c49.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 48,
+        "open_flags": 3,		
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-chaire31a.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 120,
+        "open_flags": 3,		
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9f"
+  }, 
+  {
+    "ref": "item-floor_lamp3b54.context-Downtown_9f", 
+    "mods": [
+      {
+        "y": 26, 
+        "x": 132, 
+        "on": 1, 
+        "type": "Floor_lamp", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Downtown_9f"
+  }
+]

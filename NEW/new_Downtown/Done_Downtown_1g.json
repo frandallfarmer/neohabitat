@@ -1,0 +1,127 @@
+[
+  {
+    "ref": "context-Downtown_1g", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Sandy's A", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		"context-Downtown_1h",
+          "", 
+          "", 
+          "",           
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground5c98.context-Downtown_1g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1g"
+  }, 
+  {
+    "ref": "item-hot_tub3383.context-Downtown_1g", 
+    "mods": [
+      {
+        "y": 8, 
+        "x": 16, 
+        "type": "Hot_tub", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Hot_tub", 
+    "in": "context-Downtown_1g"
+  }, 
+  {
+    "ref": "item-hot_tub2c98.context-Downtown_1g", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 16, 
+        "type": "Hot_tub", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Hot_tub", 
+    "in": "context-Downtown_1g"
+  }, 
+  {
+    "ref": "item-streetc084.context-Downtown_1g", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "type": "Street", 
+        "gr_state": 4, 
+        "y": 8, 
+        "x": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_1g"
+  }, 
+  {
+    "ref": "item-wall77ff.context-Downtown_1g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1g"
+  }, 
+  {
+    "ref": "item-tree254e.context-Downtown_1g", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 0, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Downtown_1g"
+  }, 
+  {
+    "ref": "item-tree23b5.context-Downtown_1g", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 80, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 33
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Downtown_1g"
+  }
+]

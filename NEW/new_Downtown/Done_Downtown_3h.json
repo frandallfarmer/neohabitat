@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Downtown_3h", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Sandy's Spas", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "context-Downtown_1h",   
+		  "context-Downtown_3i",
+          "context-Downtown_4h", 
+          "context-Downtown_3g"                 
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall3a09.context-Downtown_3h", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-grounde91c.context-Downtown_3h", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-doorb072.context-Downtown_3h", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 64, 
+        "open_flags": 2, 
+        "type": "Door",
+        "connection": "context-Downtown_1h",		
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-window22f0.context-Downtown_3h", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 40, 
+        "type": "Window", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-street437d.context-Downtown_3h", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 13, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-streetlampf8cb.context-Downtown_3h", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-sign01ce.context-Downtown_3h", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          32, 
+          83, 
+          65, 
+          78, 
+          68, 
+          89, 
+          39, 
+          83, 
+          32, 
+          83, 
+          80, 
+          65, 
+          83, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 108, 
+        "x": 32, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3h"
+  }, 
+  {
+    "ref": "item-window79ff.context-Downtown_3h", 
+    "mods": [
+      {
+        "y": 51, 
+        "x": 96, 
+        "type": "Window", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3h"
+  }
+]

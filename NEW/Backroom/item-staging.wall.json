@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-staging.wall",
+	"name": "Wall",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 196
+		}
+	]
+}

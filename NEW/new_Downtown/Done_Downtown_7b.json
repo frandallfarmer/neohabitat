@@ -1,0 +1,170 @@
+[
+  {
+    "ref": "context-Downtown_7b", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Stock Market", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 3,
+        "neighbors": [
+		  "context-Downtown_7c",
+          "", 
+          "context-Downtown_7a", 
+          "context-Downtown_6b"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-walle7f9.context-Downtown_7b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_7b"
+  }, 
+  {
+    "ref": "item-groundb982.context-Downtown_7b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7b"
+  }, 
+  {
+    "ref": "item-sign9999.context-Downtown_7b", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 252, 
+        "ascii": [
+          80, 
+          111, 
+          112, 
+          117, 
+          108, 
+          111, 
+          112, 
+          111, 
+          108, 
+          105, 
+          115, 
+          133, 
+          134, 
+          134, 
+          83, 
+          116, 
+          111, 
+          99, 
+          107, 
+          134, 
+          77, 
+          97, 
+          114, 
+          107, 
+          101, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 64, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7b"
+  }, 
+  {
+    "ref": "item-doorb061.context-Downtown_7b", 
+    "mods": [
+      {
+        "y": 34, 
+        "x": 68, 
+        "open_flags": 0, 
+        "type": "Door",
+        "connection": "context-Downtown_7b",		
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_7b"
+  }, 
+  {
+    "ref": "item-short_sign0417.context-Downtown_7b", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          52, 
+          50, 
+          110, 
+          100, 
+          32, 
+          83, 
+          116, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 114, 
+        "x": 124, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_7b"
+  }, 
+  {
+    "ref": "item-streetc4ac.context-Downtown_7b", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 8, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_7b"
+  }
+]

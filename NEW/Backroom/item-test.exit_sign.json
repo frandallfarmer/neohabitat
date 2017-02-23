@@ -1,0 +1,18 @@
+{
+	"type": "item",
+	"ref": "item-test.exit_sign",
+	"name": "Exit the region sign...",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 4,
+			"x": 116,
+			"y": 32,
+			"orientation": 168,
+			"text": "Library >>",
+			"ascii": []
+
+		}
+	]
+}

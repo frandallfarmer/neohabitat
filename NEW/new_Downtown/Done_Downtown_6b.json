@@ -1,0 +1,359 @@
+[
+  {
+    "ref": "context-Downtown_6b", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Costellos", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 3,		
+        "neighbors": [
+		  "",
+          "context-Downtown_7b", 
+          "context-Downtown_6a", 
+          "context-Downtown_5b",           
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground54e1.context-Downtown_6b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-wall9b7d.context-Downtown_6b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-door5967.context-Downtown_6b", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "open_flags": 2,
+        "y": 32, 
+        "x": 52,
+        "connection": "context-Downtown_6a",		
+        "type": "Door"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-window8ca7.context-Downtown_6b", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 8, 
+        "type": "Window", 
+        "orientation": 228, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-window63b1.context-Downtown_6b", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 24, 
+        "type": "Window", 
+        "orientation": 228, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-windowd879.context-Downtown_6b", 
+    "mods": [
+      {
+        "y": 79, 
+        "x": 24, 
+        "type": "Window", 
+        "orientation": 228, 
+        "gr_state": 5
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-window4529.context-Downtown_6b", 
+    "mods": [
+      {
+        "y": 79, 
+        "x": 36, 
+        "type": "Window", 
+        "orientation": 229, 
+        "gr_state": 5
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-sign4c8b.context-Downtown_6b", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 110, 
+        "x": 8, 
+        "ascii": [
+          128, 
+          84, 
+          111, 
+          110, 
+          105, 
+          116, 
+          101, 
+          134, 
+          128, 
+          32, 
+          79, 
+          110, 
+          108, 
+          121, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_6b"
+  },
+  {
+    "type": "item",
+    "ref": "item-glue.Downtown_6b",
+    "in": "context-Downtown_6b",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 8,
+        "y": 194,
+        "gr_state": 1,
+		"open_flags": 3,
+        "x_offset_1": 0,
+        "y_offset_1": 0,
+        "x_offset_2": 0,
+        "y_offset_2": 0,
+        "x_offset_3": 0,
+        "y_offset_3": 0,
+        "x_offset_4": 0,
+        "y_offset_4": 0,
+        "x_offset_5": 0,
+        "y_offset_5": 0,
+        "x_offset_6": 0,
+        "y_offset_6": 0
+      }
+    ]
+  },  
+  {
+    "ref": "item-headec38.context-Downtown_6b", 
+    "mods": [
+      {
+        "style": 31, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Head"
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-glue.Downtown_6b"
+  }, 
+  {
+    "ref": "item-signacd4.context-Downtown_6b", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 76, 
+        "ascii": [
+          133, 
+          131, 
+          67, 
+          79, 
+          83, 
+          84, 
+          69, 
+          76, 
+          76, 
+          79, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-signdc9f.context-Downtown_6b", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 12, 
+        "y": 251, 
+        "x": 76, 
+        "ascii": [
+          133, 
+          131, 
+          67, 
+          79, 
+          83, 
+          84, 
+          69, 
+          76, 
+          32, 
+          79, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_6b"
+  }, 
+  {
+    "ref": "item-street3404.context-Downtown_6b", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_6b"
+  }
+]

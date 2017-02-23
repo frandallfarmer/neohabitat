@@ -1,0 +1,334 @@
+[
+  {
+    "ref": "context-Downtown_5b", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Tivolli's Garden", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 3,		
+        "neighbors": [
+		  "",
+          "context-Downtown_6b", 
+          "context-Downtown_5a", 
+          "context-Downtown_4b",           
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundafea.context-Downtown_5b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_5b"
+  }, 
+  {
+    "ref": "item-super_trapezoid6ad8.context-Downtown_5b", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 160, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 127, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 15,
+        "pattern": [		
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          84, 
+          5, 
+          84, 
+          69, 
+          65, 
+          80, 
+          69, 
+          20, 
+          68, 
+          68, 
+          69, 
+          20, 
+          65, 
+          80, 
+          84, 
+          69, 
+          84, 
+          5, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+         ],		  
+        "type": "Super_trapezoid", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_5b"
+  }, 
+  {
+    "ref": "item-streetc0be.context-Downtown_5b", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_5b"
+  }, 
+  {
+    "ref": "item-door65fe.context-Downtown_5b", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 8, 
+        "open_flags": 2,		
+        "type": "Door", 
+        "orientation": 236,
+		"connection": "context-Downtown_5a"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_5b"
+  }, 
+  {
+    "ref": "item-sign3320.context-Downtown_5b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 244, 
+        "ascii": [
+          46, 
+          46, 
+          46, 
+          84, 
+          105, 
+          118, 
+          111, 
+          108, 
+          108, 
+          105, 
+          39, 
+          115, 
+          32, 
+          71, 
+          97, 
+          114, 
+          100, 
+          101, 
+          110, 
+          46, 
+          46, 
+          46, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 40, 
+        "x": 48, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_5b"
+  }, 
+  {
+    "ref": "item-trapezoid3acb.context-Downtown_5b", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 52, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 0, 
+        "upper_right_x": 83, 
+        "lower_left_x": 0, 
+        "lower_right_x": 83, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_5b"
+  },
+  {
+    "type": "item",
+    "ref": "item-glue.Downtown_5b",
+    "in": "context-Downtown_5b",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 44,
+        "y": 64,
+        "gr_state": 1,
+		"open_flags": 3,
+        "x_offset_1": 0,
+        "y_offset_1": 0,
+        "x_offset_2": 0,
+        "y_offset_2": 248,
+        "x_offset_3": 16,
+        "y_offset_3": 249,
+        "x_offset_4": 9,
+        "y_offset_4": 249,
+        "x_offset_5": 12,
+        "y_offset_5": 247,
+        "x_offset_6": 5,
+        "y_offset_6": 243
+      }
+    ]
+  },  
+  {
+    "ref": "item-trapezoidae40.context-Downtown_5b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0,
+        "trapezoid_type": 1, 
+        "upper_left_x": 0, 
+        "upper_right_x": 83, 
+        "lower_left_x": 0, 
+        "lower_right_x": 83, 
+        "height": 144, 
+        "type": "Trapezoid", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "item-glue.Downtown_5b"
+  }, 
+  {
+    "ref": "item-planta24d.context-Downtown_5b", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 148, 
+        "mass": 1, 
+        "y": 5, 
+        "x": 5,
+        "gr_width": 20,		
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-glue.Downtown_5b"
+  }, 
+  {
+    "ref": "item-plant8a6a.context-Downtown_5b", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "mass": 1, 
+        "y": 1, 
+        "x": 1,
+        "gr_width": 20,		
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-glue.Downtown_5b"
+  }, 
+  {
+    "ref": "item-plant024c.context-Downtown_5b", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 189, 
+        "mass": 1, 
+        "y": 2, 
+        "x": 2,
+        "gr_width": 20,		
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-glue.Downtown_5b"
+  }, 
+  {
+    "ref": "item-plant7539.context-Downtown_5b", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 173, 
+        "mass": 1, 
+        "y": 4, 
+        "x": 4,
+        "gr_width": 20,		
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-glue.Downtown_5b"
+  }, 
+  {
+    "ref": "item-plant43cd.context-Downtown_5b", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "mass": 1, 
+        "type": "Plant",
+        "gr_width": 20,		
+        "orientation": 237
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-glue.Downtown_5b"
+  }
+]

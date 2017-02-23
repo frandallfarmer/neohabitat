@@ -1,0 +1,95 @@
+[
+  {
+    "ref": "context-Downtown_5f", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Plaza Fountain", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "context-Downtown_5g",
+          "context-Downtown_6f", 
+          "context-Downtown_5e", 
+          "context-Downtown_4f"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-groundc1ff.context-Downtown_5f", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_5f"
+  }, 
+  {
+    "ref": "item-sky8ac5.context-Downtown_5f", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_5f"
+  }, 
+  {
+    "ref": "item-flag9196.context-Downtown_5f", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 20,
+        "type": "Flag", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-Downtown_5f"
+  }, 
+  {
+    "ref": "item-fountain909f.context-Downtown_5f", 
+    "mods": [
+      {
+        "y": 26, 
+        "x": 64, 
+        "type": "Fountain", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Fountain", 
+    "in": "context-Downtown_5f"
+  }, 
+  {
+    "ref": "item-sky88c0.context-Downtown_5f", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Sky", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_5f"
+  }
+]

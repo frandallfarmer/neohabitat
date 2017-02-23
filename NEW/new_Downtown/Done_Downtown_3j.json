@@ -1,0 +1,200 @@
+[
+  {
+    "ref": "context-Downtown_3j", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Geeks Rule!", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+		  "",
+          "context-Downtown_4j", 
+          "context-Downtown_3i", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall4ded.context-Downtown_3j", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-groundc186.context-Downtown_3j", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-sign10ab.context-Downtown_3j", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          71, 
+          69, 
+          69, 
+          75, 
+          83, 
+          134, 
+          82, 
+          85, 
+          76, 
+          69, 
+          33, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 4, 
+        "y": 97, 
+        "x": 108, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-short_sign02db.context-Downtown_3j", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          107, 
+          105, 
+          100, 
+          32, 
+          82, 
+          111, 
+          119, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 111, 
+        "x": 120, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-bottlebfdd.context-Downtown_3j", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 120, 
+        "filled": 0, 
+        "type": "Bottle", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-bottle710e.context-Downtown_3j", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Bottle", 
+        "gr_state": 1, 
+        "y": 155, 
+        "x": 116, 
+        "filled": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-tree7043.context-Downtown_3j", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 76, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-street3d65.context-Downtown_3j", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 8, 
+        "y": 7, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3j"
+  }
+]

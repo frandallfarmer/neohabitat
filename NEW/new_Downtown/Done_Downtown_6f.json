@@ -1,0 +1,102 @@
+[
+  {
+    "ref": "context-Downtown_6f", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Plaza East", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "context-Downtown_6g",
+          "context-Downtown_7f", 
+          "context-Downtown_6e", 
+          "context-Downtown_5f"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-flat3af3.context-Downtown_6f", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "flat_type": 2, 
+        "type": "Flat", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Downtown_6f"
+  }, 
+  {
+    "ref": "item-sky1659.context-Downtown_6f", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_6f"
+  }, 
+  {
+    "ref": "item-trapezoid076f.context-Downtown_6f", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 4, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 249, 
+        "upper_right_x": 155, 
+        "lower_left_x": 248, 
+        "lower_right_x": 155, 
+        "height": 21, 
+        "type": "Trapezoid", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_6f"
+  }, 
+  {
+    "ref": "item-streetlampebf0.context-Downtown_6f", 
+    "mods": [
+      {
+        "y": 160, 
+        "x": 72, 
+        "type": "Streetlamp", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_6f"
+  }, 
+  {
+    "ref": "item-streetb32e.context-Downtown_6f", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_6f"
+  }
+]

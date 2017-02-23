@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-frontyard.grass",
+	"name": "Green Grass in the front of my house...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 7,
+			"x": 0,
+			"y": 2,
+			"orientation": 168
+		}
+	]
+}

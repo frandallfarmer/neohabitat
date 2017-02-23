@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-hall.tree2",
+	"name": "Tree",
+	"in": "context-hall",
+	"mods": [
+		{
+			"type": "Tree",
+			"style": 6,
+			"x": 116,
+			"y": 29,
+			"orientation": 33
+		}
+	]
+}

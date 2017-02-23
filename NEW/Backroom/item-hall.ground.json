@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-hall.ground",
+	"name": "Ground for Hall",
+	"in": "context-hall",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 56
+		}
+	]
+}

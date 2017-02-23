@@ -1,0 +1,155 @@
+[
+  {
+    "ref": "context-Downtown_5l", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Kelly's Bar Backroom", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+		  "context-Downtown_3j",
+          "", 
+          "", 
+          "context-Downtown_5k"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-walla38f.context-Downtown_5l", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_5l"
+  }, 
+  {
+    "ref": "item-grounda7f3.context-Downtown_5l", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_5l"
+  }, 
+  {
+    "ref": "item-doorc08f.context-Downtown_5l", 
+    "mods": [
+      {
+        "y": 34, 
+        "x": 32, 
+        "open_flags": 0, 
+        "type": "Door", 
+        "orientation": 80,
+		"connection": "context-Downtown_5l"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_5l"
+  }, 
+  {
+    "ref": "item-door6075.context-Downtown_5l", 
+    "mods": [
+      {
+        "y": 34, 
+        "x": 88, 
+        "open_flags": 0, 
+        "type": "Door", 
+        "orientation": 81,
+		"connection": "context-Downtown_5l"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_5l"
+  }, 
+  {
+    "ref": "item-short_sign4ccb.context-Downtown_5l", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "ascii": [
+          32, 
+          32, 
+          128, 
+          77, 
+          69, 
+          78, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 80, 
+        "x": 4, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_5l"
+  }, 
+  {
+    "ref": "item-short_sign767d.context-Downtown_5l", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "ascii": [
+          32, 
+          128, 
+          87, 
+          79, 
+          77, 
+          69, 
+          78, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 80, 
+        "x": 100, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_5l"
+  }, 
+  {
+    "ref": "item-sex_changer41fb.context-Downtown_5l", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 124, 
+        "type": "Sex_changer", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sex_changer", 
+    "in": "context-Downtown_5l"
+  }
+]

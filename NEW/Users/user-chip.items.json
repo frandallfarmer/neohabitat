@@ -1,0 +1,75 @@
+[
+	{
+		"type": "item",
+		"ref": "item-chiptokens",
+		"name": "Money!",
+		"in": "user-chip",
+		"mods": [
+			{
+				"type": "Tokens",
+				"y": 0,
+				"denom_hi":4,
+				"denom_lo":0
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-chipspraycan",
+		"name": "Stylin' body paint",
+		"in": "user-chip",
+		"mods": [
+			{
+				"type": "Spray_can",
+				"y": 1,
+				"orientation": 32,
+				"charge": 255
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-chipgodtool",
+		"name": "Tool to rule the universe.",
+		"in": "user-chip",
+		"mods": [
+			{
+				"type": "Knick_knack",
+				"style": 2,
+				"y": 2,
+				"orientation": 8,
+				"magic_type": 17,
+				"charges": 255
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-chiprock",
+		"name": "Chip's Rock",
+		"in": "user-chip",
+		"mods": [
+			{
+				"type": "Rock",
+				"style": 1,
+				"y": 3,
+				"orientation": 8,
+				"mass": 0
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-chiphead",
+		"name": "Chips's Head",
+		"in": "user-chip",
+		"mods": [
+			{
+				"type": "Head",
+				"style": 108,
+				"y": 6,
+				"orientation": 16
+			}
+			]
+	}
+	]

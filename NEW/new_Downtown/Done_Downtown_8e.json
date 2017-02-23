@@ -1,0 +1,262 @@
+[
+  {
+    "ref": "context-Downtown_8e", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Auditorium Lobby", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 2,
+        "neighbors": [
+		  "context-Downtown_7e",
+		  "context-Downtown_9f",
+          "", 
+          "context-Downtown_9d"                   
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground468c.context-Downtown_8e", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_8e"
+  }, 
+  {
+    "ref": "item-super_trapezoid5b48.context-Downtown_8e", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 160, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 96, 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "lower_right_x": 0, 
+        "height": 112, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 1,
+        "pattern": [		
+          170, 
+          85, 
+          85, 
+          85, 
+          86, 
+          165, 
+          101, 
+          101, 
+          89, 
+          89, 
+          101, 
+          165, 
+          89, 
+          89, 
+          102, 
+          101, 
+          89, 
+          89, 
+          105, 
+          101, 
+          89, 
+          89, 
+          101, 
+          101, 
+          86, 
+          165, 
+          101, 
+          101, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_8e"
+  }, 
+  {
+    "ref": "item-short_signaf88.context-Downtown_8e", 
+    "mods": [
+      {
+        "y": 72, 
+        "x": 4, 
+        "ascii": [
+          133, 
+          131, 
+          126, 
+          128, 
+          97, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Short_sign", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_8e"
+  }, 
+  {
+    "ref": "item-short_signde13.context-Downtown_8e", 
+    "mods": [
+      {
+        "y": 72, 
+        "x": 132, 
+        "ascii": [
+          133, 
+          131, 
+          98, 
+          128, 
+          127, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Short_sign", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_8e"
+  }, 
+  {
+    "ref": "item-sign6f44.context-Downtown_8e", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 156, 
+        "ascii": [
+          82, 
+          111, 
+          111, 
+          109, 
+          32, 
+          97, 
+          58, 
+          134, 
+          84, 
+          97, 
+          108, 
+          107, 
+          32, 
+          83, 
+          104, 
+          111, 
+          119, 
+          115, 
+          134, 
+          70, 
+          111, 
+          114, 
+          117, 
+          109, 
+          115, 
+          134, 
+          83, 
+          46, 
+          73, 
+          46, 
+          71, 
+          46, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 80, 
+        "x": 52, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_8e"
+  }, 
+  {
+    "ref": "item-signb8c0.context-Downtown_8e", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 236, 
+        "ascii": [
+          82, 
+          111, 
+          111, 
+          109, 
+          32, 
+          98, 
+          58, 
+          134, 
+          79, 
+          112, 
+          101, 
+          114, 
+          97, 
+          134, 
+          80, 
+          108, 
+          97, 
+          121, 
+          115, 
+          134, 
+          77, 
+          105, 
+          109, 
+          101, 
+          32, 
+          84, 
+          114, 
+          111, 
+          117, 
+          112, 
+          101, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 40, 
+        "x": 52, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_8e"
+  }
+]

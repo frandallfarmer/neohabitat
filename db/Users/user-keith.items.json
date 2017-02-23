@@ -1,0 +1,63 @@
+[
+	{
+		"type": "item",
+		"ref": "item-keith.spraycan",
+		"deletable": true,
+		"name": "Stylin' body paint",
+		"in": "user-keith",
+		"mods": [
+			{
+				"type": "Spray_can",
+				"y": 0,
+				"orientation": 8,
+				"charge": 255
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-keith.godtool",
+		"deletable": true,
+		"name": "Tool to rule the universe.",
+		"in": "user-keith",
+		"mods": [
+			{
+				"type": "Knick_knack",
+				"style": 2,
+				"y": 1,
+				"orientation": 8,
+				"magic_type": 17,
+				"charges": 255
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-keith.head",
+		"name": "Keith's Head",
+		"in": "user-keith",
+		"mods": [
+			{
+				"type": "Head",
+				"style": 160,
+				"y":6
+			}
+			]
+	},
+	{
+		"type": "item",
+		"ref": "item-keith.compass",
+		"name": "Keith's Compass",
+		"in": "user-keith",
+		"mods": [
+			{
+				"type": "Compass",
+				"style": 0,
+				"gr_state": 0,
+				"y": 2,
+				"orientation":16
+			}
+			]
+	}
+	
+	]

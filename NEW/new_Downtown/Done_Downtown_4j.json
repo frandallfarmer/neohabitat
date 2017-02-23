@@ -1,0 +1,99 @@
+[
+  {
+    "ref": "context-Downtown_4j", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Pawnshop", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+		  "context-Downtown_4k",
+          "context-Downtown_5j", 
+          "", 
+          "context-Downtown_3j"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-walle497.context-Downtown_4j", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4j"
+  }, 
+  {
+    "ref": "item-ground9547.context-Downtown_4j", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4j"
+  }, 
+  {
+    "ref": "item-doord46e.context-Downtown_4j", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 20, 
+        "open_flags": 0, 
+        "type": "Door",
+        "connection": "context-Downtown_4j",		
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_4j"
+  }, 
+  {
+    "ref": "item-streetf2ea.context-Downtown_4j", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_4j"
+  }, 
+  {
+    "ref": "item-garbage_can3eb0.context-Downtown_4j", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 132, 
+        "open_flags": 3, 
+        "type": "Garbage_can", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-Downtown_4j"
+  }
+]

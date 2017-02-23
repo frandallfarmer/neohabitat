@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-frontyard.ground",
+	"name": "Street in front of where I live...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 8
+		}
+	]
+}

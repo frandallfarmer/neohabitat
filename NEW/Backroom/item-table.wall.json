@@ -1,0 +1,15 @@
+{
+	"type": "item",
+	"ref": "item-table.wall",
+	"name": "Wall for Contents Testing",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 152
+		}
+	]
+}

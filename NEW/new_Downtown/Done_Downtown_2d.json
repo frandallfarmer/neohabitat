@@ -1,0 +1,68 @@
+[
+  {
+    "ref": "context-Downtown_2d", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "For Rent F Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "",
+          "context-Downtown_3d", 
+          "", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground455e.context-Downtown_2d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_2d"
+  }, 
+  {
+    "ref": "item-countertop1896.context-Downtown_2d", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 56, 
+        "open_flags": 3, 
+        "type": "Countertop", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_2d"
+  }, 
+  {
+    "ref": "item-wall0eac.context-Downtown_2d", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_2d"
+  }
+]

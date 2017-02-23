@@ -1,0 +1,14 @@
+{
+	"type": "item",
+	"ref": "item-aric.head",
+	"name": "Aric's Head",
+	"in": "user-aric",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 160,
+			"y": 6,
+			"orientation": 112
+		}
+		]
+}

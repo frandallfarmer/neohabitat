@@ -1,0 +1,387 @@
+[
+  {
+    "ref": "context-Downtown_6a", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Costellos Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 3,		
+        "neighbors": [
+		  "context-Downtown_6b",
+          "", 
+          "", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall8261.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-trapezoid465e.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 24, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 16, 
+        "upper_right_x": 83, 
+        "lower_left_x": 0, 
+        "lower_right_x": 109, 
+        "height": 17, 
+        "type": "Trapezoid", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-trapezoid4947.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 24,
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 109, 
+        "lower_left_x": 0, 
+        "lower_right_x": 109, 
+        "height": 13, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-super_trapezoid7c94.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 160, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 225, 
+        "upper_right_x": 0, 
+        "lower_left_x": 246, 
+        "lower_right_x": 0, 
+        "height": 224, 
+        "pattern_x_size": 3, 
+        "pattern_y_size": 7,
+        "pattern": [		
+          149, 
+          85, 
+          149, 
+          85, 
+          165, 
+          86, 
+          165, 
+          86, 
+          153, 
+          89, 
+          153, 
+          89, 
+          150, 
+          165, 
+          150, 
+          165, 
+          149, 
+          85, 
+          149, 
+          85, 
+          165, 
+          86, 
+          165, 
+          86, 
+          153, 
+          89, 
+          153, 
+          89, 
+          150, 
+          165, 
+          150, 
+          165
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-groundcdba.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_6a"
+  },
+  {
+    "type": "item",
+    "ref": "item-glue.Downtown_6a",
+    "in": "context-Downtown_6a",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 36,
+        "y": 176,
+        "gr_state": 1,
+		"open_flags": 3,
+        "x_offset_1": 255,
+        "y_offset_1": 0,
+        "x_offset_2": 0,
+        "y_offset_2": 253,
+        "x_offset_3": 0,
+        "y_offset_3": 219,
+        "x_offset_4": 0,
+        "y_offset_4": 0,
+        "x_offset_5": 0,
+        "y_offset_5": 0,
+        "x_offset_6": 0,
+        "y_offset_6": 0
+      }
+    ]
+  },  
+  {
+    "ref": "item-trapezoid821b.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0,
+        "trapezoid_type": 0, 
+        "upper_left_x": 2, 
+        "upper_right_x": 5, 
+        "lower_left_x":  0, 
+        "lower_right_x": 7, 
+        "height": 3, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "item-glue.Downtown_6a"
+  }, 
+  {
+    "ref": "item-trapezoid6b4f.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1,
+        "trapezoid_type": 0, 
+        "upper_left_x": 255, 
+        "upper_right_x": 0, 
+        "lower_left_x": 255, 
+        "lower_right_x": 0, 
+        "height": 44, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "item-glue.Downtown_6a"
+  }, 
+  {
+    "ref": "item-knick_knack82ba.context-Downtown_6a", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 0, 
+        "magic_type": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Knick_knack"
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.Downtown_6a"
+  }, 
+  {
+    "ref": "item-trapezoidd3ac.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 115, 
+        "x": 8, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 9, 
+        "lower_left_x": 0, 
+        "lower_right_x": 6, 
+        "height": 138, 
+        "type": "Trapezoid", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-trapezoid94a6.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 115, 
+        "x": 136,
+        "trapezoid_type": 0, 
+        "upper_left_x": 254, 
+        "upper_right_x": 7, 
+        "lower_left_x": 1, 
+        "lower_right_x": 8, 
+        "height": 138, 
+        "type": "Trapezoid", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-chair3580.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 8, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-chair7723.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 28, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-super_trapezoid0025.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 0,
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 28, 
+        "lower_left_x": 0, 
+        "lower_right_x": 13, 
+        "height": 224, 
+        "pattern_x_size": 3, 
+        "pattern_y_size": 7,
+        "pattern": [		
+          149, 
+          85, 
+          149, 
+          85, 
+          165, 
+          86, 
+          165, 
+          86, 
+          153, 
+          89, 
+          153, 
+          89, 
+          150, 
+          165, 
+          150, 
+          165, 
+          149, 
+          85, 
+          149, 
+          85, 
+          165, 
+          86, 
+          165, 
+          86, 
+          153, 
+          89, 
+          153, 
+          89, 
+          150, 
+          165, 
+          150, 
+          165
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-chair6ca3.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 116, 
+        "style": 3, 
+        "type": "Chair", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_6a"
+  }, 
+  {
+    "ref": "item-chair6735.context-Downtown_6a", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 136, 
+        "style": 3, 
+        "type": "Chair", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_6a"
+  }
+]

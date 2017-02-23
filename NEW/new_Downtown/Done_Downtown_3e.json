@@ -1,0 +1,172 @@
+[
+  {
+    "ref": "context-Downtown_3e", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Bobs Bank", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+		"orientation": 0,
+        "neighbors": [
+		  "context-Downtown_3f",
+          "context-Downtown_4e", 
+          "context-Downtown_3d", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-walldca4.context-Downtown_3e", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3e"
+  }, 
+  {
+    "ref": "item-groundc5a6.context-Downtown_3e", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3e"
+  }, 
+  {
+    "ref": "item-atm4a93.context-Downtown_3e", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 76, 
+        "type": "Atm", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Atm", 
+    "in": "context-Downtown_3e"
+  }, 
+  {
+    "ref": "item-streetlamp9a3f.context-Downtown_3e", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 8, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_3e"
+  }, 
+  {
+    "ref": "item-garbage_can0abb.context-Downtown_3e", 
+    "mods": [
+      {
+        "orientation": 220, 
+        "type": "Garbage_can", 
+        "gr_state": 1, 
+        "y": 24, 
+        "x": 32, 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-Downtown_3e"
+  }, 
+  {
+    "ref": "item-street92af.context-Downtown_3e", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3e"
+  }, 
+  {
+    "ref": "item-sign7a89.context-Downtown_3e", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "ascii": [
+          137, 
+          139, 
+          131, 
+          32, 
+          66, 
+          111, 
+          98, 
+          39, 
+          115, 
+          134, 
+          128, 
+          85, 
+          45, 
+          66, 
+          97, 
+          110, 
+          107, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 3, 
+        "y": 74, 
+        "x": 104, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3e"
+  }
+]

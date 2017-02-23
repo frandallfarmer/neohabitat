@@ -1,0 +1,68 @@
+[
+  {
+    "ref": "context-Downtown_2c", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "For Rent A Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "",
+          "context-Downtown_3c", 
+          "", 
+          ""          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground43b2.context-Downtown_2c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_2c"
+  }, 
+  {
+    "ref": "item-countertop0cd6.context-Downtown_2c", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 56,
+		"open_flags": 3,
+        "type": "Countertop", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_2c"
+  }, 
+  {
+    "ref": "item-wall44ab.context-Downtown_2c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_2c"
+  }
+]

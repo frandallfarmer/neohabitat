@@ -1,0 +1,205 @@
+[
+  {
+    "ref": "context-Downtown_3c", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "For Rent A", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+		  "context-Downtown_3d",
+          "context-Downtown_4c", 
+          "context-Downtown_3b", 
+          "context-Downtown_2c"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground100e.context-Downtown_3c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-wall3540.context-Downtown_3c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-doorbe2f.context-Downtown_3c", 
+    "mods": [
+      {
+	    "type": "Door",
+        "style": 1,
+		"x": 20, 
+		"y": 32, 
+        "orientation": 252, 
+        "open_flags": 0,
+		"connection": "context-test"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-window92d6.context-Downtown_3c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 83, 
+        "x": 112, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-window2f73.context-Downtown_3c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 45, 
+        "x": 112, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-window9dbd.context-Downtown_3c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 83, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-window2c25.context-Downtown_3c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 83, 
+        "x": 92, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-windowf37d.context-Downtown_3c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 45, 
+        "x": 92, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-windowe855.context-Downtown_3c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 45, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-signacf0.context-Downtown_3c", 
+    "mods": [
+      {
+        "y": 73, 
+        "x": 52, 
+        "ascii": [
+          70, 
+          79, 
+          82, 
+          134, 
+          82, 
+          69, 
+          78, 
+          84
+        ], 
+        "type": "Sign", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3c"
+  }, 
+  {
+    "ref": "item-street21fd.context-Downtown_3c", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3c"
+  }
+]
