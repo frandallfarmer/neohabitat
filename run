@@ -32,6 +32,8 @@ DEBUG_PORT="${NEOHABITAT_DEBUG_PORT-1985}"
 MONGO_HOST="${NEOHABITAT_MONGO_HOST-127.0.0.1:27017}"
 BRIDGE_HOST="${NEOHABITAT_BRIDGE_HOST-0.0.0.0}"
 BRIDGE_PORT="${NEOHABITAT_BRIDGE_PORT-1337}"
+DEFAULT_CONTEXT="${NEOHABITAT_DEFAULT_CONTEXT-context-test}"
+SCHEMA_DIR="${NEOHABITAT_SCHEMA_DIR-db}"
 SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME-neohabitat}"
 SERVER_BIND="${NEOHABITAT_SERVER_PORT-0.0.0.0}"
@@ -72,7 +74,7 @@ if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
 fi
 
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
-  cd ${GIT_BASE_DIR}/db
+  cd ${GIT_BASE_DIR}/${NEOHABITAT_SCHEMA_DIR}
   retry 60 "make db"
   cd ..
 fi
@@ -80,9 +82,9 @@ fi
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
   if [ "${SHOULD_BACKGROUND_BRIDGE}" == true ]; then
-    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}/elko" -t debug &
+    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}/elko" -c "${DEFAULT_CONTEXT}" -t debug &
   else
-    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}/elko" -t debug
+    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}/elko" -c "${DEFAULT_CONTEXT}" -t debug
   fi
 fi
 

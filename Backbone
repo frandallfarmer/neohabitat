@@ -9,6 +9,7 @@ clusters:
       image: philcollins/neohabitat
       environment:
         NEOHABITAT_MONGO_HOST: 127.0.0.1:27017
+        NEOHABITAT_SCHEMA_DIR: NEW
       synapses:
         - resource: neohabitatmongo
           protocol: tcp
