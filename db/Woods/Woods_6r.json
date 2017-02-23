@@ -20,7 +20,7 @@
     ]
   }, 
   {
-    "ref": "item-groundf7a8.context-Woods_6r", 
+    "ref": "item-groundf7a8", 
     "mods": [
       {
         "y": 4, 
@@ -34,7 +34,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-sky4278.context-Woods_6r", 
+    "ref": "item-sky4278", 
     "mods": [
       {
         "y": 0, 
@@ -49,7 +49,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-street06f5.context-Woods_6r", 
+    "ref": "item-street06f5", 
     "mods": [
       {
         "orientation": 80, 
@@ -64,7 +64,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-bushad9d.context-Woods_6r", 
+    "ref": "item-bushad9d", 
     "mods": [
       {
         "style": 3, 
@@ -80,7 +80,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-tree9a90.context-Woods_6r", 
+    "ref": "item-tree9a90", 
     "mods": [
       {
         "y": 133, 
@@ -95,7 +95,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-tree8652.context-Woods_6r", 
+    "ref": "item-tree8652", 
     "mods": [
       {
         "y": 40, 
@@ -110,7 +110,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-treef339.context-Woods_6r", 
+    "ref": "item-treef339", 
     "mods": [
       {
         "y": 42, 
@@ -125,7 +125,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-tree2d22.context-Woods_6r", 
+    "ref": "item-tree2d22", 
     "mods": [
       {
         "y": 42, 
@@ -140,7 +140,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-bushac9e.context-Woods_6r", 
+    "ref": "item-bushac9e", 
     "mods": [
       {
         "style": 3, 
@@ -156,7 +156,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-bush7642.context-Woods_6r", 
+    "ref": "item-bush7642", 
     "mods": [
       {
         "style": 3, 
@@ -172,7 +172,7 @@
     "in": "context-Woods_6r"
   }, 
   {
-    "ref": "item-signb181.context-Woods_6r", 
+    "ref": "item-signb181", 
     "mods": [
       {
         "orientation": 0, 

@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-ground43b2.context-Downtown_2c", 
+    "ref": "item-ground43b2", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_2c"
   }, 
   {
-    "ref": "item-countertop0cd6.context-Downtown_2c", 
+    "ref": "item-countertop0cd6", 
     "mods": [
       {
         "y": 144, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_2c"
   }, 
   {
-    "ref": "item-wall44ab.context-Downtown_2c", 
+    "ref": "item-wall44ab", 
     "mods": [
       {
         "y": 0, 

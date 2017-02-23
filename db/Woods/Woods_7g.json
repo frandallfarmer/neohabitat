@@ -20,7 +20,7 @@
     ]
   }, 
   {
-    "ref": "item-ground8dd5.context-Woods_7g", 
+    "ref": "item-ground8dd5", 
     "mods": [
       {
         "y": 4, 
@@ -34,7 +34,7 @@
     "in": "context-Woods_7g"
   }, 
   {
-    "ref": "item-skybd05.context-Woods_7g", 
+    "ref": "item-skybd05", 
     "mods": [
       {
         "y": 0, 
@@ -49,7 +49,7 @@
     "in": "context-Woods_7g"
   }, 
   {
-    "ref": "item-ground1abd.context-Woods_7g", 
+    "ref": "item-ground1abd", 
     "mods": [
       {
         "y": 4, 
@@ -63,7 +63,7 @@
     "in": "context-Woods_7g"
   }, 
   {
-    "ref": "item-short_sign459f.context-Woods_7g", 
+    "ref": "item-short_sign459f", 
     "mods": [
       {
         "style": 5, 
@@ -91,7 +91,7 @@
     "in": "context-Woods_7g"
   }, 
   {
-    "ref": "item-garbage_can20bb.context-Woods_7g", 
+    "ref": "item-garbage_can20bb", 
     "mods": [
       {
         "y": 144, 

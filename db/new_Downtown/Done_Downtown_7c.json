@@ -22,7 +22,7 @@
   },
   {
     "type": "item",
-    "ref": "item-ground.context-Downtown_7c",
+    "ref": "item-ground",
     "in": "context-Downtown_7c",
     "name": ".",
     "mods": [
@@ -37,7 +37,7 @@
   },
   {
     "type": "item",
-    "ref": "item-street.context-Downtown_7c",
+    "ref": "item-street",
     "in": "context-Downtown_7c",
     "name": ".",
     "mods": [
@@ -51,7 +51,7 @@
   },
   {
     "type": "item",
-    "ref": "item-door.context-Downtown_7c",
+    "ref": "item-door",
     "in": "context-Downtown_7c",
     "name": ".",
     "mods": [

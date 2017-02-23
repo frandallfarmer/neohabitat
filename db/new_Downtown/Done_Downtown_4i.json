@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-grounda8de.context-Downtown_4i", 
+    "ref": "item-grounda8de", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_4i"
   }, 
   {
-    "ref": "item-walle547.context-Downtown_4i", 
+    "ref": "item-walle547", 
     "mods": [
       {
         "y": 0, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_4i"
   }, 
   {
-    "ref": "item-signd2d2.context-Downtown_4i", 
+    "ref": "item-signd2d2", 
     "mods": [
       {
         "style": 1, 
@@ -108,7 +108,7 @@
     "in": "context-Downtown_4i"
   }, 
   {
-    "ref": "item-sign0d6c.context-Downtown_4i", 
+    "ref": "item-sign0d6c", 
     "mods": [
       {
         "style": 1, 
@@ -165,7 +165,7 @@
     "in": "context-Downtown_4i"
   }, 
   {
-    "ref": "item-signb5d4.context-Downtown_4i", 
+    "ref": "item-signb5d4", 
     "mods": [
       {
         "style": 1, 
@@ -222,7 +222,7 @@
     "in": "context-Downtown_4i"
   }, 
   {
-    "ref": "item-coke_machinead21.context-Downtown_4i", 
+    "ref": "item-coke_machinead21", 
     "mods": [
       {
         "y": 24, 
@@ -263,7 +263,7 @@
     ]
   },  
   {
-    "ref": "item-trapezoid552f.context-Downtown_4i", 
+    "ref": "item-trapezoid552f", 
     "mods": [
       {
         "y": 0, 
@@ -283,7 +283,7 @@
     "in": "item-glue.Downtown_4i"
   }, 
   {
-    "ref": "item-knick_knack638e.context-Downtown_4i", 
+    "ref": "item-knick_knack638e", 
     "mods": [
       {
         "style": 11, 

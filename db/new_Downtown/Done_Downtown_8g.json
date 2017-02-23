@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-groundba97.context-Downtown_8g", 
+    "ref": "item-groundba97", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_8g"
   }, 
   {
-    "ref": "item-skyb369.context-Downtown_8g", 
+    "ref": "item-skyb369", 
     "mods": [
       {
         "y": 32, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_8g"
   }, 
   {
-    "ref": "item-signb7cb.context-Downtown_8g", 
+    "ref": "item-signb7cb", 
     "mods": [
       {
         "orientation": 0, 
@@ -108,7 +108,7 @@
     "in": "context-Downtown_8g"
   }, 
   {
-    "ref": "item-wall8342.context-Downtown_8g", 
+    "ref": "item-wall8342", 
     "mods": [
       {
         "y": 0, 

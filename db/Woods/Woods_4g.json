@@ -20,7 +20,7 @@
     ]
   }, 
   {
-    "ref": "item-groundf47b.context-Woods_4g", 
+    "ref": "item-groundf47b", 
     "mods": [
       {
         "y": 4, 
@@ -34,7 +34,7 @@
     "in": "context-Woods_4g"
   }, 
   {
-    "ref": "item-sky48af.context-Woods_4g", 
+    "ref": "item-sky48af", 
     "mods": [
       {
         "y": 0, 
@@ -49,7 +49,7 @@
     "in": "context-Woods_4g"
   }, 
   {
-    "ref": "item-bush84b4.context-Woods_4g", 
+    "ref": "item-bush84b4", 
     "mods": [
       {
         "y": 141, 
