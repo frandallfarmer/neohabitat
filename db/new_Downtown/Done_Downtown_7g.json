@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-wallf6fe.context-Downtown_7g", 
+    "ref": "item-wallf6fe", 
     "mods": [
       {
         "y": 0, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-ground5f74.context-Downtown_7g", 
+    "ref": "item-ground5f74", 
     "mods": [
       {
         "y": 4, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-bushd4ea.context-Downtown_7g", 
+    "ref": "item-bushd4ea", 
     "mods": [
       {
         "style": 4, 
@@ -67,7 +67,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-trapezoid70a9.context-Downtown_7g", 
+    "ref": "item-trapezoid70a9", 
     "mods": [
       {
         "y": 32, 
@@ -87,7 +87,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-sign8c5c.context-Downtown_7g", 
+    "ref": "item-sign8c5c", 
     "mods": [
       {
         "orientation": 0, 
@@ -144,7 +144,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-signfcfd.context-Downtown_7g", 
+    "ref": "item-signfcfd", 
     "mods": [
       {
         "orientation": 0, 
@@ -201,7 +201,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-signa3a2.context-Downtown_7g", 
+    "ref": "item-signa3a2", 
     "mods": [
       {
         "orientation": 0, 
@@ -258,7 +258,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-signae27.context-Downtown_7g", 
+    "ref": "item-signae27", 
     "mods": [
       {
         "orientation": 0, 
@@ -315,7 +315,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-doorb6fb.context-Downtown_7g", 
+    "ref": "item-doorb6fb", 
     "mods": [
       {
         "orientation": 204, 
@@ -331,7 +331,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-signa5c2.context-Downtown_7g", 
+    "ref": "item-signa5c2", 
     "mods": [
       {
         "orientation": 0, 
@@ -388,7 +388,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-trapezoid7833.context-Downtown_7g", 
+    "ref": "item-trapezoid7833", 
     "mods": [
       {
         "y": 81, 
@@ -408,7 +408,7 @@
     "in": "context-Downtown_7g"
   }, 
   {
-    "ref": "item-streetcbb4.context-Downtown_7g", 
+    "ref": "item-streetcbb4", 
     "mods": [
       {
         "orientation": 8, 

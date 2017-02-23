@@ -20,7 +20,7 @@
     ]
   }, 
   {
-    "ref": "item-ground6dc0.context-Woods_5u", 
+    "ref": "item-ground6dc0", 
     "mods": [
       {
         "y": 4, 
@@ -34,7 +34,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-wall2704.context-Woods_5u", 
+    "ref": "item-wall2704", 
     "mods": [
       {
         "y": 0, 
@@ -49,7 +49,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-trapezoidfc41.context-Woods_5u", 
+    "ref": "item-trapezoidfc41", 
     "mods": [
       {
         "y": 32, 
@@ -69,7 +69,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-super_trapezoid0d74.context-Woods_5u", 
+    "ref": "item-super_trapezoid0d74", 
     "mods": [
       {
         "y": 104, 
@@ -125,7 +125,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-window2b01.context-Woods_5u", 
+    "ref": "item-window2b01", 
     "mods": [
       {
         "style": 2, 
@@ -141,7 +141,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-window70e9.context-Woods_5u", 
+    "ref": "item-window70e9", 
     "mods": [
       {
         "style": 2, 
@@ -157,7 +157,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-window705c.context-Woods_5u", 
+    "ref": "item-window705c", 
     "mods": [
       {
         "y": 53, 
@@ -172,7 +172,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-bush4e80.context-Woods_5u", 
+    "ref": "item-bush4e80", 
     "mods": [
       {
         "y": 151, 
@@ -187,7 +187,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-bush218b.context-Woods_5u", 
+    "ref": "item-bush218b", 
     "mods": [
       {
         "style": 3, 
@@ -203,7 +203,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-bush40f0.context-Woods_5u", 
+    "ref": "item-bush40f0", 
     "mods": [
       {
         "y": 151, 
@@ -218,7 +218,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-trapezoid6f53.context-Woods_5u", 
+    "ref": "item-trapezoid6f53", 
     "mods": [
       {
         "y": 32, 
@@ -238,7 +238,7 @@
     "in": "context-Woods_5u"
   }, 
   {
-    "ref": "item-sign34a3.context-Woods_5u", 
+    "ref": "item-sign34a3", 
     "mods": [
       {
         "style": 3, 

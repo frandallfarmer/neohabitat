@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-groundc1ff.context-Downtown_5f", 
+    "ref": "item-groundc1ff", 
     "mods": [
       {
         "y": 4, 
@@ -35,7 +35,7 @@
     "in": "context-Downtown_5f"
   }, 
   {
-    "ref": "item-sky8ac5.context-Downtown_5f", 
+    "ref": "item-sky8ac5", 
     "mods": [
       {
         "y": 0, 
@@ -50,7 +50,7 @@
     "in": "context-Downtown_5f"
   }, 
   {
-    "ref": "item-flag9196.context-Downtown_5f", 
+    "ref": "item-flag9196", 
     "mods": [
       {
         "y": 158, 
@@ -64,7 +64,7 @@
     "in": "context-Downtown_5f"
   }, 
   {
-    "ref": "item-fountain909f.context-Downtown_5f", 
+    "ref": "item-fountain909f", 
     "mods": [
       {
         "y": 26, 
@@ -78,7 +78,7 @@
     "in": "context-Downtown_5f"
   }, 
   {
-    "ref": "item-sky88c0.context-Downtown_5f", 
+    "ref": "item-sky88c0", 
     "mods": [
       {
         "y": 2, 

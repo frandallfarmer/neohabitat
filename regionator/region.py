@@ -62,8 +62,7 @@ class Mod(object):
 
   @property
   def neohabitat_ref(self):
-    return 'item-{0}{1}.{2}'.format(self.identifier, self.id,
-        self.region.neohabitat_context)
+    return 'item-{0}{1}'.format(self.identifier, self.id)
 
   def to_json(self):
     return {

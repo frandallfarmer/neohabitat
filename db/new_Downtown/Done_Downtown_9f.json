@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-ground4997.context-Downtown_9f", 
+    "ref": "item-ground4997", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-super_trapezoide9bb.context-Downtown_9f", 
+    "ref": "item-super_trapezoide9bb", 
     "mods": [
       {
         "y": 1, 
@@ -92,7 +92,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-chair0973.context-Downtown_9f", 
+    "ref": "item-chair0973", 
     "mods": [
       {
         "y": 138, 
@@ -108,7 +108,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-chair4853.context-Downtown_9f", 
+    "ref": "item-chair4853", 
     "mods": [
       {
         "y": 148, 
@@ -123,7 +123,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-chair42ee.context-Downtown_9f", 
+    "ref": "item-chair42ee", 
     "mods": [
       {
         "y": 148, 
@@ -138,7 +138,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-chair1c49.context-Downtown_9f", 
+    "ref": "item-chair1c49", 
     "mods": [
       {
         "y": 148, 
@@ -153,7 +153,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-chaire31a.context-Downtown_9f", 
+    "ref": "item-chaire31a", 
     "mods": [
       {
         "y": 148, 
@@ -168,7 +168,7 @@
     "in": "context-Downtown_9f"
   }, 
   {
-    "ref": "item-floor_lamp3b54.context-Downtown_9f", 
+    "ref": "item-floor_lamp3b54", 
     "mods": [
       {
         "y": 26, 

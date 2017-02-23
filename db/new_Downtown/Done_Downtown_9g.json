@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-ground2d6b.context-Downtown_9g", 
+    "ref": "item-ground2d6b", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-chairfc97.context-Downtown_9g", 
+    "ref": "item-chairfc97", 
     "mods": [
       {
         "y": 141, 
@@ -50,7 +50,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-chairce0a.context-Downtown_9g", 
+    "ref": "item-chairce0a", 
     "mods": [
       {
         "y": 132, 
@@ -65,7 +65,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-short_sign1a1b.context-Downtown_9g", 
+    "ref": "item-short_sign1a1b", 
     "mods": [
       {
         "style": 5, 
@@ -93,7 +93,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-wallfdce.context-Downtown_9g", 
+    "ref": "item-wallfdce", 
     "mods": [
       {
         "y": 0, 
@@ -108,7 +108,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-chaire2f0.context-Downtown_9g", 
+    "ref": "item-chaire2f0", 
     "mods": [
       {
         "y": 141, 
@@ -122,7 +122,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-sign3517.context-Downtown_9g", 
+    "ref": "item-sign3517", 
     "mods": [
       {
         "orientation": 0, 
@@ -179,7 +179,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-short_signa68c.context-Downtown_9g", 
+    "ref": "item-short_signa68c", 
     "mods": [
       {
         "orientation": 0, 
@@ -206,7 +206,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-chaira236.context-Downtown_9g", 
+    "ref": "item-chaira236", 
     "mods": [
       {
         "y": 132, 
@@ -221,7 +221,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-short_signfe12.context-Downtown_9g", 
+    "ref": "item-short_signfe12", 
     "mods": [
       {
         "orientation": 0, 
@@ -248,7 +248,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-chair84da.context-Downtown_9g", 
+    "ref": "item-chair84da", 
     "mods": [
       {
         "y": 132, 
@@ -263,7 +263,7 @@
     "in": "context-Downtown_9g"
   }, 
   {
-    "ref": "item-chair7ff3.context-Downtown_9g", 
+    "ref": "item-chair7ff3", 
     "mods": [
       {
         "y": 132, 

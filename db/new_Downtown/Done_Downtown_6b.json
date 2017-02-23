@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-ground54e1.context-Downtown_6b", 
+    "ref": "item-ground54e1", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-wall9b7d.context-Downtown_6b", 
+    "ref": "item-wall9b7d", 
     "mods": [
       {
         "y": 0, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-door5967.context-Downtown_6b", 
+    "ref": "item-door5967", 
     "mods": [
       {
         "style": 1, 
@@ -68,7 +68,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-window8ca7.context-Downtown_6b", 
+    "ref": "item-window8ca7", 
     "mods": [
       {
         "y": 49, 
@@ -83,7 +83,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-window63b1.context-Downtown_6b", 
+    "ref": "item-window63b1", 
     "mods": [
       {
         "y": 56, 
@@ -98,7 +98,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-windowd879.context-Downtown_6b", 
+    "ref": "item-windowd879", 
     "mods": [
       {
         "y": 79, 
@@ -113,7 +113,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-window4529.context-Downtown_6b", 
+    "ref": "item-window4529", 
     "mods": [
       {
         "y": 79, 
@@ -128,7 +128,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-sign4c8b.context-Downtown_6b", 
+    "ref": "item-sign4c8b", 
     "mods": [
       {
         "orientation": 0, 
@@ -212,7 +212,7 @@
     ]
   },  
   {
-    "ref": "item-headec38.context-Downtown_6b", 
+    "ref": "item-headec38", 
     "mods": [
       {
         "style": 31, 
@@ -228,7 +228,7 @@
     "in": "item-glue.Downtown_6b"
   }, 
   {
-    "ref": "item-signacd4.context-Downtown_6b", 
+    "ref": "item-signacd4", 
     "mods": [
       {
         "orientation": 0, 
@@ -285,7 +285,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-signdc9f.context-Downtown_6b", 
+    "ref": "item-signdc9f", 
     "mods": [
       {
         "orientation": 0, 
@@ -342,7 +342,7 @@
     "in": "context-Downtown_6b"
   }, 
   {
-    "ref": "item-street3404.context-Downtown_6b", 
+    "ref": "item-street3404", 
     "mods": [
       {
         "orientation": 8, 

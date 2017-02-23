@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-wall8261.context-Downtown_6a", 
+    "ref": "item-wall8261", 
     "mods": [
       {
         "y": 0, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-trapezoid465e.context-Downtown_6a", 
+    "ref": "item-trapezoid465e", 
     "mods": [
       {
         "y": 46, 
@@ -56,7 +56,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-trapezoid4947.context-Downtown_6a", 
+    "ref": "item-trapezoid4947", 
     "mods": [
       {
         "y": 33, 
@@ -76,7 +76,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-super_trapezoid7c94.context-Downtown_6a", 
+    "ref": "item-super_trapezoid7c94", 
     "mods": [
       {
         "y": 32, 
@@ -132,7 +132,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-groundcdba.context-Downtown_6a", 
+    "ref": "item-groundcdba", 
     "mods": [
       {
         "y": 4, 
@@ -173,7 +173,7 @@
     ]
   },  
   {
-    "ref": "item-trapezoid821b.context-Downtown_6a", 
+    "ref": "item-trapezoid821b", 
     "mods": [
       {
         "y": 0, 
@@ -193,7 +193,7 @@
     "in": "item-glue.Downtown_6a"
   }, 
   {
-    "ref": "item-trapezoid6b4f.context-Downtown_6a", 
+    "ref": "item-trapezoid6b4f", 
     "mods": [
       {
         "y": 1, 
@@ -213,7 +213,7 @@
     "in": "item-glue.Downtown_6a"
   }, 
   {
-    "ref": "item-knick_knack82ba.context-Downtown_6a", 
+    "ref": "item-knick_knack82ba", 
     "mods": [
       {
         "style": 11, 
@@ -229,7 +229,7 @@
     "in": "item-glue.Downtown_6a"
   }, 
   {
-    "ref": "item-trapezoidd3ac.context-Downtown_6a", 
+    "ref": "item-trapezoidd3ac", 
     "mods": [
       {
         "y": 115, 
@@ -249,7 +249,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-trapezoid94a6.context-Downtown_6a", 
+    "ref": "item-trapezoid94a6", 
     "mods": [
       {
         "y": 115, 
@@ -269,7 +269,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-chair3580.context-Downtown_6a", 
+    "ref": "item-chair3580", 
     "mods": [
       {
         "y": 135, 
@@ -284,7 +284,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-chair7723.context-Downtown_6a", 
+    "ref": "item-chair7723", 
     "mods": [
       {
         "y": 129, 
@@ -299,7 +299,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-super_trapezoid0025.context-Downtown_6a", 
+    "ref": "item-super_trapezoid0025", 
     "mods": [
       {
         "y": 32, 
@@ -355,7 +355,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-chair6ca3.context-Downtown_6a", 
+    "ref": "item-chair6ca3", 
     "mods": [
       {
         "y": 135, 
@@ -370,7 +370,7 @@
     "in": "context-Downtown_6a"
   }, 
   {
-    "ref": "item-chair6735.context-Downtown_6a", 
+    "ref": "item-chair6735", 
     "mods": [
       {
         "y": 129, 

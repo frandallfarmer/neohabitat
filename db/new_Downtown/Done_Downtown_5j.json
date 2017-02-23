@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-wall773a.context-Downtown_5j", 
+    "ref": "item-wall773a", 
     "mods": [
       {
         "y": 0, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-grounda627.context-Downtown_5j", 
+    "ref": "item-grounda627", 
     "mods": [
       {
         "y": 4, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-door4065.context-Downtown_5j", 
+    "ref": "item-door4065", 
     "mods": [
       {
         "y": 33, 
@@ -67,7 +67,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-windowa5d9.context-Downtown_5j", 
+    "ref": "item-windowa5d9", 
     "mods": [
       {
         "y": 51, 
@@ -81,7 +81,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-bottle4943.context-Downtown_5j", 
+    "ref": "item-bottle4943", 
     "mods": [
       {
         "y": 153, 
@@ -96,7 +96,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-bottle22a7.context-Downtown_5j", 
+    "ref": "item-bottle22a7", 
     "mods": [
       {
         "y": 155, 
@@ -111,7 +111,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-streete56d.context-Downtown_5j", 
+    "ref": "item-streete56d", 
     "mods": [
       {
         "orientation": 8, 
@@ -126,7 +126,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-bottled093.context-Downtown_5j", 
+    "ref": "item-bottled093", 
     "mods": [
       {
         "orientation": 0, 
@@ -142,7 +142,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-streetlampdeb4.context-Downtown_5j", 
+    "ref": "item-streetlampdeb4", 
     "mods": [
       {
         "y": 131, 
@@ -157,7 +157,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-tree361c.context-Downtown_5j", 
+    "ref": "item-tree361c", 
     "mods": [
       {
         "y": 158, 
@@ -172,7 +172,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-sign8fbd.context-Downtown_5j", 
+    "ref": "item-sign8fbd", 
     "mods": [
       {
         "style": 4, 
@@ -230,7 +230,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-windowdd7b.context-Downtown_5j", 
+    "ref": "item-windowdd7b", 
     "mods": [
       {
         "y": 51, 
@@ -244,7 +244,7 @@
     "in": "context-Downtown_5j"
   }, 
   {
-    "ref": "item-window0837.context-Downtown_5j", 
+    "ref": "item-window0837", 
     "mods": [
       {
         "y": 51, 

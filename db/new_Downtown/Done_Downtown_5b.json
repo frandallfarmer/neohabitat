@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-groundafea.context-Downtown_5b", 
+    "ref": "item-groundafea", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_5b"
   }, 
   {
-    "ref": "item-super_trapezoid6ad8.context-Downtown_5b", 
+    "ref": "item-super_trapezoid6ad8", 
     "mods": [
       {
         "y": 1, 
@@ -92,7 +92,7 @@
     "in": "context-Downtown_5b"
   }, 
   {
-    "ref": "item-streetc0be.context-Downtown_5b", 
+    "ref": "item-streetc0be", 
     "mods": [
       {
         "orientation": 8, 
@@ -107,7 +107,7 @@
     "in": "context-Downtown_5b"
   }, 
   {
-    "ref": "item-door65fe.context-Downtown_5b", 
+    "ref": "item-door65fe", 
     "mods": [
       {
         "y": 33, 
@@ -123,7 +123,7 @@
     "in": "context-Downtown_5b"
   }, 
   {
-    "ref": "item-sign3320.context-Downtown_5b", 
+    "ref": "item-sign3320", 
     "mods": [
       {
         "style": 4, 
@@ -181,7 +181,7 @@
     "in": "context-Downtown_5b"
   }, 
   {
-    "ref": "item-trapezoid3acb.context-Downtown_5b", 
+    "ref": "item-trapezoid3acb", 
     "mods": [
       {
         "y": 64, 
@@ -228,7 +228,7 @@
     ]
   },  
   {
-    "ref": "item-trapezoidae40.context-Downtown_5b", 
+    "ref": "item-trapezoidae40", 
     "mods": [
       {
         "y": 0, 
@@ -248,7 +248,7 @@
     "in": "item-glue.Downtown_5b"
   }, 
   {
-    "ref": "item-planta24d.context-Downtown_5b", 
+    "ref": "item-planta24d", 
     "mods": [
       {
         "style": 1, 
@@ -265,7 +265,7 @@
     "in": "item-glue.Downtown_5b"
   }, 
   {
-    "ref": "item-plant8a6a.context-Downtown_5b", 
+    "ref": "item-plant8a6a", 
     "mods": [
       {
         "style": 2, 
@@ -282,7 +282,7 @@
     "in": "item-glue.Downtown_5b"
   }, 
   {
-    "ref": "item-plant024c.context-Downtown_5b", 
+    "ref": "item-plant024c", 
     "mods": [
       {
         "style": 2, 
@@ -299,7 +299,7 @@
     "in": "item-glue.Downtown_5b"
   }, 
   {
-    "ref": "item-plant7539.context-Downtown_5b", 
+    "ref": "item-plant7539", 
     "mods": [
       {
         "style": 1, 
@@ -316,7 +316,7 @@
     "in": "item-glue.Downtown_5b"
   }, 
   {
-    "ref": "item-plant43cd.context-Downtown_5b", 
+    "ref": "item-plant43cd", 
     "mods": [
       {
         "y": 3, 

@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-walldca4.context-Downtown_3e", 
+    "ref": "item-walldca4", 
     "mods": [
       {
         "y": 0, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_3e"
   }, 
   {
-    "ref": "item-groundc5a6.context-Downtown_3e", 
+    "ref": "item-groundc5a6", 
     "mods": [
       {
         "y": 4, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_3e"
   }, 
   {
-    "ref": "item-atm4a93.context-Downtown_3e", 
+    "ref": "item-atm4a93", 
     "mods": [
       {
         "y": 64, 
@@ -66,7 +66,7 @@
     "in": "context-Downtown_3e"
   }, 
   {
-    "ref": "item-streetlamp9a3f.context-Downtown_3e", 
+    "ref": "item-streetlamp9a3f", 
     "mods": [
       {
         "y": 133, 
@@ -81,7 +81,7 @@
     "in": "context-Downtown_3e"
   }, 
   {
-    "ref": "item-garbage_can0abb.context-Downtown_3e", 
+    "ref": "item-garbage_can0abb", 
     "mods": [
       {
         "orientation": 220, 
@@ -97,7 +97,7 @@
     "in": "context-Downtown_3e"
   }, 
   {
-    "ref": "item-street92af.context-Downtown_3e", 
+    "ref": "item-street92af", 
     "mods": [
       {
         "orientation": 8, 
@@ -112,7 +112,7 @@
     "in": "context-Downtown_3e"
   }, 
   {
-    "ref": "item-sign7a89.context-Downtown_3e", 
+    "ref": "item-sign7a89", 
     "mods": [
       {
         "style": 1, 

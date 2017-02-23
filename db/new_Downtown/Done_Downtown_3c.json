@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-ground100e.context-Downtown_3c", 
+    "ref": "item-ground100e", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-wall3540.context-Downtown_3c", 
+    "ref": "item-wall3540", 
     "mods": [
       {
         "y": 0, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-doorbe2f.context-Downtown_3c", 
+    "ref": "item-doorbe2f", 
     "mods": [
       {
 	    "type": "Door",
@@ -68,7 +68,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-window92d6.context-Downtown_3c", 
+    "ref": "item-window92d6", 
     "mods": [
       {
         "style": 1, 
@@ -84,7 +84,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-window2f73.context-Downtown_3c", 
+    "ref": "item-window2f73", 
     "mods": [
       {
         "style": 1, 
@@ -100,7 +100,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-window9dbd.context-Downtown_3c", 
+    "ref": "item-window9dbd", 
     "mods": [
       {
         "style": 1, 
@@ -116,7 +116,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-window2c25.context-Downtown_3c", 
+    "ref": "item-window2c25", 
     "mods": [
       {
         "style": 1, 
@@ -132,7 +132,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-windowf37d.context-Downtown_3c", 
+    "ref": "item-windowf37d", 
     "mods": [
       {
         "style": 1, 
@@ -148,7 +148,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-windowe855.context-Downtown_3c", 
+    "ref": "item-windowe855", 
     "mods": [
       {
         "style": 1, 
@@ -164,7 +164,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-signacf0.context-Downtown_3c", 
+    "ref": "item-signacf0", 
     "mods": [
       {
         "y": 73, 
@@ -188,7 +188,7 @@
     "in": "context-Downtown_3c"
   }, 
   {
-    "ref": "item-street21fd.context-Downtown_3c", 
+    "ref": "item-street21fd", 
     "mods": [
       {
         "orientation": 8, 

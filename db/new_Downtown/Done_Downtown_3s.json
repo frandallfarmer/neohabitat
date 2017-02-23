@@ -21,7 +21,7 @@
     ]
   }, 
   {
-    "ref": "item-groundbb4b.context-Downtown_3s", 
+    "ref": "item-groundbb4b", 
     "mods": [
       {
         "y": 4, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_3s"
   }, 
   {
-    "ref": "item-walla0a8.context-Downtown_3s", 
+    "ref": "item-walla0a8", 
     "mods": [
       {
         "y": 0, 
@@ -51,7 +51,7 @@
     "in": "context-Downtown_3s"
   }, 
   {
-    "ref": "item-super_trapezoide2fb.context-Downtown_3s", 
+    "ref": "item-super_trapezoide2fb", 
     "mods": [
       {
         "y": 0, 
@@ -107,7 +107,7 @@
     "in": "context-Downtown_3s"
   }, 
   {
-    "ref": "item-super_trapezoide0ce.context-Downtown_3s", 
+    "ref": "item-super_trapezoide0ce", 
     "mods": [
       {
         "y": 1, 
@@ -163,7 +163,7 @@
     "in": "context-Downtown_3s"
   }, 
   {
-    "ref": "item-super_trapezoidb2d2.context-Downtown_3s", 
+    "ref": "item-super_trapezoidb2d2", 
     "mods": [
       {
         "y": 1, 
@@ -219,7 +219,7 @@
     "in": "context-Downtown_3s"
   }, 
   {
-    "ref": "item-super_trapezoid17d9.context-Downtown_3s", 
+    "ref": "item-super_trapezoid17d9", 
     "mods": [
       {
         "y": 1, 
@@ -275,7 +275,7 @@
     "in": "context-Downtown_3s"
   }, 
   {
-    "ref": "item-super_trapezoid4253.context-Downtown_3s", 
+    "ref": "item-super_trapezoid4253", 
     "mods": [
       {
         "y": 1, 

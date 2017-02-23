@@ -8,7 +8,9 @@ clusters:
   - neohabitat:
       image: philcollins/neohabitat
       environment:
+        NEOHABITAT_DEFAULT_CONTEXT: context-Downtown_5f
         NEOHABITAT_MONGO_HOST: 127.0.0.1:27017
+        NEOHABITAT_SCHEMA_DIR: db
       synapses:
         - resource: neohabitatmongo
           protocol: tcp

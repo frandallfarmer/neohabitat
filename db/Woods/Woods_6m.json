@@ -20,7 +20,7 @@
     ]
   }, 
   {
-    "ref": "item-ground7838.context-Woods_6m", 
+    "ref": "item-ground7838", 
     "mods": [
       {
         "y": 4, 
@@ -34,7 +34,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-sky825a.context-Woods_6m", 
+    "ref": "item-sky825a", 
     "mods": [
       {
         "y": 0, 
@@ -49,7 +49,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-streeta1cb.context-Woods_6m", 
+    "ref": "item-streeta1cb", 
     "mods": [
       {
         "orientation": 80, 
@@ -64,7 +64,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-treef0ef.context-Woods_6m", 
+    "ref": "item-treef0ef", 
     "mods": [
       {
         "y": 130, 
@@ -79,7 +79,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-tree9648.context-Woods_6m", 
+    "ref": "item-tree9648", 
     "mods": [
       {
         "y": 133, 
@@ -94,7 +94,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-tree17ae.context-Woods_6m", 
+    "ref": "item-tree17ae", 
     "mods": [
       {
         "y": 40, 
@@ -109,7 +109,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-tree081b.context-Woods_6m", 
+    "ref": "item-tree081b", 
     "mods": [
       {
         "y": 42, 
@@ -124,7 +124,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-treeaadd.context-Woods_6m", 
+    "ref": "item-treeaadd", 
     "mods": [
       {
         "y": 42, 
@@ -139,7 +139,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-treeb78b.context-Woods_6m", 
+    "ref": "item-treeb78b", 
     "mods": [
       {
         "y": 36, 
@@ -154,7 +154,7 @@
     "in": "context-Woods_6m"
   }, 
   {
-    "ref": "item-treee03d.context-Woods_6m", 
+    "ref": "item-treee03d", 
     "mods": [
       {
         "y": 40, 
