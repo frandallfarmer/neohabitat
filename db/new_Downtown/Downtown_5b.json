@@ -112,10 +112,11 @@
       {
         "y": 33, 
         "x": 8, 
-        "open_flags": 2,		
+        "open_flags": 3,
+        "gr_state": 1,		
         "type": "Door", 
         "orientation": 236,
-		"connection": "context-Downtown_5a"
+		    "connection": "context-Downtown_5a"
       }
     ], 
     "type": "item", 
