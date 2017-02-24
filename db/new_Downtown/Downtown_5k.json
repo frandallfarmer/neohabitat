@@ -51,6 +51,21 @@
     "in": "context-Downtown_5k"
   },
   {
+    "ref": "item-countertoppu06", 
+    "mods": [
+      {
+        "y": 144,
+        "x": 20,
+        "type": "Countertop",
+        "orientation": 252,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Countertop",
+    "in": "context-Downtown_5k"
+  },
+  {
     "ref": "item-countertop3yc6", 
     "mods": [
       {
