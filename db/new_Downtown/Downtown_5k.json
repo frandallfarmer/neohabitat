@@ -1,0 +1,308 @@
+[
+  {
+    "ref": "context-Downtown_5k", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Kelly's Bar and Grill Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 1,   
+        "neighbors": [
+          "",
+          "context-Downtown_5l",
+          "context-Downtown_5j",
+          ""
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall9ad1", 
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 5,
+        "type": "Wall",
+        "orientation": 148
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-Downtown_5k"
+  }, 
+  {
+    "ref": "item-ground8xd7", 
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 204
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-countertoppu06", 
+    "mods": [
+      {
+        "y": 144,
+        "x": 20,
+        "type": "Countertop",
+        "orientation": 252,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Countertop",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-countertop3yc6", 
+    "mods": [
+      {
+        "y": 144,
+        "x": 60,
+        "type": "Countertop",
+        "orientation": 252,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Countertop",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-countertopq8t2", 
+    "mods": [
+      {
+        "y": 144,
+        "x": 100,
+        "type": "Countertop",
+        "orientation": 252,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Countertop",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-countertopq8t2", 
+    "mods": [
+      {
+        "y": 144,
+        "x": 100,
+        "type": "Countertop",
+        "orientation": 252,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Countertop",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-display_casex013", 
+    "mods": [
+      {
+        "y": 43,
+        "x": 24,
+        "type": "Display_case",
+        "orientation": 16,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Display_case",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-signz63l", 
+    "mods": [
+      {
+        "y": 65,
+        "x": 80,
+        "style": 2,
+        "gr_state": 1,
+        "type": "Sign",
+        "orientation": 16,
+        "ascii": [
+          139,
+          32,
+          79,
+          78,
+          69,
+          134,
+          139,
+          32,
+          87,
+          65,
+          89,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32
+        ]
+      }
+    ],
+    "type": "item",
+    "name": "Sign",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-gluet14t", 
+    "mods": [
+      {
+        "y": 53,
+        "x": 44,
+        "gr_state": 1,
+        "type": "Glue",
+        "orientation": 0,
+        "open_flags": 0,
+        "key_hi": 0,
+        "key_lo": 0,
+        "x_offset_1": 255,
+        "y_offset_1": 222,
+        "x_offset_2": 250,
+        "y_offset_2": 222,
+        "x_offset_3": 250,
+        "y_offset_3": 1,
+        "x_offset_4": 252,
+        "y_offset_4": 1,
+        "x_offset_5": 254,
+        "y_offset_5": 0,
+        "x_offset_6": 0,
+        "y_offset_6": 255
+      }
+    ],
+    "type": "item",
+    "name": "Glue",
+    "in": "context-Downtown_5k"
+  },
+  {
+    "ref": "item-knick_knacks10s", 
+    "mods": [
+      {
+        "y": 1,
+        "x": 1,
+        "style": 1,
+        "type": "Knick_knack",
+        "orientation": 0
+      }
+    ],
+    "type": "item",
+    "name": "Knick_knack",
+    "in": "item-gluet14t"
+  },
+  {
+    "ref": "item-knick_knackz439", 
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 1,
+        "type": "Knick_knack",
+        "orientation": 1
+      }
+    ],
+    "type": "item",
+    "name": "Knick_knack",
+    "in": "item-gluet14t"
+  },
+  {
+    "ref": "item-knick_knackp04t", 
+    "mods": [
+      {
+        "y": 2,
+        "x": 2,
+        "style": 3,
+        "type": "Knick_knack",
+        "orientation": 0
+      }
+    ],
+    "type": "item",
+    "name": "Knick_knack",
+    "in": "item-gluet14t"
+  },
+  {
+    "ref": "item-knick_knackr809", 
+    "mods": [
+      {
+        "y": 3,
+        "x": 3,
+        "style": 3,
+        "type": "Knick_knack",
+        "orientation": 48
+      }
+    ],
+    "type": "item",
+    "name": "Knick_knack",
+    "in": "item-gluet14t"
+  },
+  {
+    "ref": "item-bottle4610", 
+    "mods": [
+      {
+        "y": 4,
+        "x": 4,
+        "gr_state": 1,
+        "type": "Bottle",
+        "orientation": 8,
+        "filled": 1
+      }
+    ],
+    "type": "item",
+    "name": "Bottle",
+    "in": "item-gluet14t"
+  },
+  {
+    "ref": "item-bottlet0z4", 
+    "mods": [
+      {
+        "y": 5,
+        "x": 5,
+        "gr_state": 1,
+        "type": "Bottle",
+        "orientation": 0,
+        "filled": 1
+      }
+    ],
+    "type": "item",
+    "name": "Bottle",
+    "in": "item-gluet14t"
+  }
+]
