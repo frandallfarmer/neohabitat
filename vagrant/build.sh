@@ -9,6 +9,7 @@ SHOULD_INSTALL_MARIADB="${VAGRANT_SHOULD_INSTALL_MARIADB-true}"
 
 PACKAGES=(
   build-essential
+  curl
   default-jdk
   git
   maven

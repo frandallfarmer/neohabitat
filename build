@@ -13,17 +13,17 @@ mvn dependency:purge-local-repository -DactTransitively=false -DreResolve=false
 
 # Downloads the latest version of Elkoserver if we have not yet done so.
 if [ ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}.jar ]; then
-  wget -O ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}.jar \
+  curl -o ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}.jar \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}.jar
 fi
 
 if [ ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-javadoc.jar ]; then
-  wget -O ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-javadoc.jar \
+  curl -o ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-javadoc.jar \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-javadoc.jar
 fi
 
 if [ ! -f ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-sources.jar ]; then
-  wget -O ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-sources.jar \
+  curl -o ${GIT_BASE_DIR}/lib/elkoserver-${ELKO_VERSION}-sources.jar \
     https://s3.amazonaws.com/ssalevan/Elko/elkoserver-${ELKO_VERSION}-sources.jar
 fi
 
