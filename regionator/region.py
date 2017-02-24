@@ -16,6 +16,7 @@ ORIENTATION_TO_ID = {
   'FACE_SOUTH': 3,
 }
 
+
 def _default(self, obj):
     return getattr(obj.__class__, "to_json", _default.default)(obj)
 
@@ -68,7 +69,7 @@ class Mod(object):
 
   @property
   def neohabitat_ref(self):
-    return 'item-{0}{1}'.format(self.identifier, self.id)
+    return 'item-{0}{1}.{2}'.format(self.identifier, self.id, self.region.)
 
   def to_json(self):
     return {
@@ -185,7 +186,7 @@ class Region(object):
     if 'west' in self.params:
       region_mod['neighbors'][3] = 'context-{0}'.format(
           self.params['west'].split('.')[0])
-    if orientation in self.params and self.params['orientation'] in ORIENTATION_TO_ID:
+    if 'orientation' in self.params and self.params['orientation'] in ORIENTATION_TO_ID:
       region_mod['orientation'] = ORIENTATION_TO_ID[self.params['orientation']]
 
     region_context = {
