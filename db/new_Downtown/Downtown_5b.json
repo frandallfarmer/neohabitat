@@ -116,7 +116,7 @@
         "gr_state": 1,		
         "type": "Door", 
         "orientation": 236,
-		    "connection": "context-Downtown_5a"
+        "connection": "context-Downtown_5a"
       }
     ], 
     "type": "item", 
