@@ -74,7 +74,7 @@ if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
 fi
 
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
-  cd ${GIT_BASE_DIR}/${NEOHABITAT_SCHEMA_DIR}
+  cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
   retry 60 "make db"
   cd ..
 fi
