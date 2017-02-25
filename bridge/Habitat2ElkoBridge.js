@@ -471,9 +471,14 @@ var ContentsVector = function (replySeq, noid, ref, type) {
 				this.replySeq,
 				HCode.REGION_NOID,
 				this.type);
-		if (this.type == HCode.MESSAGE_DESCRIBE) {
+		if (this.type == HCode.MESSAGE_DESCRIBE) { 
 			if (this.container.data[4] == -1) {
-				this.container.data[4] = client.state.avatar.noid;	// TODO Remove this little magic
+				av = client.state.avatar; // Since the region arrives before the avatar, we need to fix some state...
+				this.container.data[4] = av.noid; 
+				this.container.data[8] = ((av.bankBalance & 0xFF000000) >> 24);
+				this.container.data[7] = ((av.bankBalance & 0x00FF0000) >> 16);
+				this.container.data[6] = ((av.bankBalance & 0x0000FF00) >> 8);
+				this.container.data[5] = ((av.bankBalance & 0x000000FF));
 			}
 			buf.add(this.container.data);
 		}
@@ -741,10 +746,10 @@ var encodeState = {
 			buf.add(state.depth			|| 32);
 			buf.add(state.region_class	||  0);
 			buf.add(state.Who_am_I		|| -1);    	
-			buf.add((bal & 0xFF000000) >> 6);
-			buf.add((bal & 0x00FF0000) >> 4);
-			buf.add((bal & 0x0000FF00) >> 2);
-			buf.add((bal & 0x000000FF));
+			buf.add(0); // Bank account balance is managed once we get the avatar object for this connection.
+			buf.add(0);
+			buf.add(0);
+			buf.add(0);
 			return buf;
 		},
 		Avatar: function (state, container, buf) {
