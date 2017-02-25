@@ -3,11 +3,11 @@
     "ref": "context-Downtown_3c", 
     "capacity": 6, 
     "type": "context", 
-    "name": "For Rent A", 
+    "name": "For Rent" , 
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "", 
+        "port_dir": "~", 
         "type": "Region",
         "orientation": 0,
         "neighbors": [

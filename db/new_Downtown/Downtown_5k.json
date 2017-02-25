@@ -3,11 +3,11 @@
     "ref": "context-Downtown_5k", 
     "capacity": 6, 
     "type": "context", 
-    "name": "Kelly's Bar and Grill Interior", 
+    "name": "Kelly's Bar and Grill", 
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "", 
+        "port_dir": "~", 
         "type": "Region",
         "orientation": 1,   
         "neighbors": [
