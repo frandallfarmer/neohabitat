@@ -48,8 +48,6 @@ public class Flat extends Walkable implements Copyable {
         return false;
     }
 
-    protected int flat_type = 0;
-
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "flat_type" })
     public Flat(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
         OptInteger flat_type) {
