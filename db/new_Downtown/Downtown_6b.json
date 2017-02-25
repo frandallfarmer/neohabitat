@@ -3,11 +3,11 @@
     "ref": "context-Downtown_6b", 
     "capacity": 6, 
     "type": "context", 
-    "name": "Costellos", 
+    "name": "Costello's", 
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "", 
+        "port_dir": "", 
         "type": "Region",
         "orientation": 3,		
         "neighbors": [

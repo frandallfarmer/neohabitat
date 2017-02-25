@@ -3,11 +3,11 @@
     "ref": "context-Downtown_3j", 
     "capacity": 6, 
     "type": "context", 
-    "name": "Geeks Rule!", 
+    "name": "Maine St & Skid Row", 
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "", 
+        "port_dir": "~", 
         "type": "Region",
         "orientation": 1,
         "neighbors": [

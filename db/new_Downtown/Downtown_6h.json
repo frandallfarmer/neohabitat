@@ -7,7 +7,7 @@
     "mods": [
       {
         "town_dir": "",
-        "port_dir": "",
+        "port_dir": "}",
         "type": "Region",
         "orientation": 1,
         "neighbors": [
