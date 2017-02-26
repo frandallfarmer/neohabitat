@@ -49,6 +49,7 @@ public class Die extends HabitatMod {
     }
     
 	public int state = 6; //See struct_die.incl.pl1
+	Random rand = new Random();
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "state" })
     public Die(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int state ) {
@@ -90,13 +91,15 @@ public class Die extends HabitatMod {
     /*
      * Note for beginners:
      * For a greater understanding of this code please look at
-     * class_die.pl1 and die_do.m in the original habitat code
+     * class_die.pl1 and die_do.m in the original source code.
+     * You can find the original code and documentation at-
+     * https://github.com/Museum-of-Art-and-Digital-Entertainment/habitat
      */
     @JSONMethod
 	public void ROLL(User from) {
-      gr_state = new Random().nextInt(state) + 1;
+      gr_state = rand.nextInt(state) + 1;
 	  gen_flags[MODIFIED] = true;
-	  send_neighbor_msg(from, THE_REGION, "PLAY_$", "sfx_number", sfx_number(128+0), "from_noid", noid);
+	  send_neighbor_msg(from, THE_REGION, "PLAY_$", "sfx_number", sfx_number(6), "from_noid", noid);
 	  send_neighbor_msg(from, noid, "ROLL$", "state", gr_state);
 	  send_reply_msg(from, noid, "ROLL_STATE", gr_state);
     }
