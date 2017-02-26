@@ -1,1 +1,1 @@
-db.odb.remove({}); 
+
