@@ -22,10 +22,13 @@ DBINIT_SCRIPT = ./dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
-clean: nuke all
+clean: nuke all help
+
+help:
 	@echo ""
 	@echo "Valid 'make' targets are 'teleports', 'regions', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
 	@echo "Mongo output is in .errs"
+	@echo ""
 
 regions:
 	@echo "Building Regions, Avatars, and Objects"
@@ -65,6 +68,7 @@ all: teleports regions
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
+
 
 
 
