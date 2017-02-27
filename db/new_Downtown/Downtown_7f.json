@@ -1,142 +1,239 @@
 [
-  {
-    "ref": "context-Downtown_7f", 
-    "capacity": 6, 
-    "type": "context", 
-    "name": "Broadway Cross", 
-    "mods": [
-      {
-        "town_dir": "", 
-        "port_dir": "", 
-        "type": "Region",
-        "orientation": 0,
-        "neighbors": [
-          "context-Downtown_7g",
-          "", 
-          "context-Downtown_7e", 
-          "context-Downtown_6f"
-        ], 
-        "nitty_bits": 3
-      }
-    ]
-  }, 
-  {
-    "ref": "item-sky9ac0", 
-    "mods": [
-      {
-        "y": 0, 
-        "x": 0, 
-        "style": 4, 
-        "type": "Sky", 
-        "orientation": 0
-      }
-    ], 
-    "type": "item", 
-    "name": "Sky", 
-    "in": "context-Downtown_7f"
-  }, 
-  {
-    "ref": "item-ground60a2", 
-    "mods": [
-      {
-        "y": 4, 
-        "x": 0, 
-        "style": 1, 
-        "type": "Ground", 
-        "orientation": 228
-      }
-    ], 
-    "type": "item", 
-    "name": "Ground", 
-    "in": "context-Downtown_7f"
-  }, 
-  {
-    "ref": "item-street3c3a", 
-    "mods": [
-      {
-        "orientation": 8, 
-        "type": "Street", 
-        "gr_state": 13, 
-        "y": 11, 
-        "x": 68
-      }
-    ], 
-    "type": "item", 
-    "name": "Street", 
-    "in": "context-Downtown_7f"
-  }, 
-  {
-    "ref": "item-flag82d6", 
-    "mods": [
-      {
-        "y": 137, 
-        "x": 24, 
-        "mass": 1,
-		"gr_width": 4,
-        "type": "Flag", 
-        "orientation": 204
-      }
-    ], 
-    "type": "item", 
-    "name": "Flag", 
-    "in": "context-Downtown_7f"
-  }, 
-  {
-    "ref": "item-sky65e2", 
-    "mods": [
-      {
-        "y": 0, 
-        "x": 0, 
-        "type": "Sky", 
-        "orientation": 220
-      }
-    ], 
-    "type": "item", 
-    "name": "Sky", 
-    "in": "context-Downtown_7f"
-  }, 
-  {
-    "ref": "item-flaga55f", 
-    "mods": [
-      {
-        "y": 137, 
-        "x": 132, 
-        "mass": 1,
-        "gr_width": 4,		
-        "type": "Flag", 
-        "orientation": 244
-      }
-    ], 
-    "type": "item", 
-    "name": "Flag", 
-    "in": "context-Downtown_7f"
-  }, 
-  {
-    "ref": "item-short_signe1e7", 
-    "mods": [
-      {
-        "style": 5, 
-        "orientation": 236, 
-        "ascii": [
-          66, 
-          114, 
-          111, 
-          97, 
-          100, 
-          119, 
-          97, 
-          121, 
-          32, 
-          32
-        ], 
-        "gr_state": 7, 
-        "y": 129, 
-        "x": 136, 
-        "type": "Short_sign"
-      }
-    ], 
-    "type": "item", 
-    "name": "Short_sign", 
-    "in": "context-Downtown_7f"
-  }
-]
+	{
+		"ref": "context-Downtown_7f", 
+		"capacity": 6, 
+		"type": "context", 
+		"name": "Broadway Cross", 
+		"mods": [
+			{
+				"town_dir": "", 
+				"port_dir": "", 
+				"type": "Region",
+				"orientation": 0,
+				"neighbors": [
+					"context-Downtown_7g",
+					"", 
+					"context-Downtown_7e", 
+					"context-Downtown_6f"
+					], 
+					"nitty_bits": 3
+			}
+			]
+	}, 
+	{
+		"ref": "item-sky9ac0", 
+		"mods": [
+			{
+				"y": 0, 
+				"x": 0, 
+				"style": 4, 
+				"type": "Sky", 
+				"orientation": 0
+			}
+			], 
+			"type": "item", 
+			"name": "Sky", 
+			"in": "context-Downtown_7f"
+	}, 
+	{
+		"ref": "item-ground60a2", 
+		"mods": [
+			{
+				"y": 4, 
+				"x": 0, 
+				"style": 1, 
+				"type": "Ground", 
+				"orientation": 228
+			}
+			], 
+			"type": "item", 
+			"name": "Ground", 
+			"in": "context-Downtown_7f"
+	}, 
+	{
+		"type": "item",
+		"ref": "item-warningsign.downtown7f",
+		"in": "context-Downtown_7f",
+		"name": "Warning Sign",
+		"mods": [
+			{
+				"type": "Glue",
+				"x": 0,
+				"y": 128,
+				"gr_state": 1,
+				"open_flags": 3,
+				"x_offset_1": 254,
+				"y_offset_1": 248,
+				"x_offset_2": 254,
+				"y_offset_2": 0,
+				"x_offset_3": 254,
+				"y_offset_3": 0,
+				"x_offset_4": 0,
+				"y_offset_4": 0,
+				"x_offset_5": 0,
+				"y_offset_5": 0,
+				"x_offset_6": 0,
+				"y_offset_6": 0
+			}
+			]
+	},  
+	{
+		"ref": "item-warningtape.downtown7f",
+		"mods": [
+			{
+				"y": 0,
+				"trapezoid_type": 2,
+				"upper_left_x": 60,
+				"upper_right_x": 103,
+				"lower_left_x": 60,
+				"lower_right_x": 103,
+				"height": 16,
+				"pattern_x_size": 1,
+				"pattern_y_size": 7,
+				"pattern": [
+					170, 85,
+					106,149,
+					90,165,
+					86,169,
+					85,170,
+					149,106,
+					165, 90,
+					169, 86,
+					0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+					],
+					"type": "Super_trapezoid",
+					"orientation": 184
+			}
+			],
+			"type": "item",
+			"name": "Warning Sign",
+			"in": "item-warningsign.downtown7f"
+	},
+	{
+		"ref": "item-leftSignSupport.downtown7f", 
+		"mods": [
+			{
+				"y": 1,
+				"trapezoid_type": 2, 
+				"upper_left_x": 64, 
+				"upper_right_x": 66, 
+				"lower_left_x": 64,
+				"lower_right_x": 66, 
+				"height": 12, 
+				"type": "Trapezoid", 
+				"orientation": 200
+			}
+			],
+			"type": "item",
+			"name": "Warning Sign",
+			"in": "item-warningsign.downtown7f"
+	},
+	{
+		"ref": "item-rightSignSupport.downtown7f", 
+		"mods": [
+			{
+				"y": 2,
+				"trapezoid_type": 2, 
+				"upper_left_x": 96, 
+				"upper_right_x": 98, 
+				"lower_left_x": 96,
+				"lower_right_x": 98, 
+				"height": 12, 
+				"type": "Trapezoid", 
+				"orientation": 200
+			}
+			],
+			"type": "item",
+			"name": "Warning Sign",
+			"in": "item-warningsign.downtown7f"
+	},
+	{
+		"ref": "item-street3c3a", 
+		"mods": [
+			{
+				"orientation": 8, 
+				"type": "Street", 
+				"gr_state": 13, 
+				"y": 11, 
+				"x": 68
+			}
+			], 
+			"type": "item", 
+			"name": "Street", 
+			"in": "context-Downtown_7f"
+	}, 
+	{
+		"ref": "item-flag82d6", 
+		"mods": [
+			{
+				"y": 137, 
+				"x": 24, 
+				"mass": 1,
+				"gr_width": 4,
+				"type": "Flag", 
+				"orientation": 204
+			}
+			], 
+			"type": "item", 
+			"name": "Flag", 
+			"in": "context-Downtown_7f"
+	}, 
+	{
+		"ref": "item-sky65e2", 
+		"mods": [
+			{
+				"y": 0, 
+				"x": 0, 
+				"type": "Sky", 
+				"orientation": 220
+			}
+			], 
+			"type": "item", 
+			"name": "Sky", 
+			"in": "context-Downtown_7f"
+	}, 
+	{
+		"ref": "item-flaga55f", 
+		"mods": [
+			{
+				"y": 137, 
+				"x": 132, 
+				"mass": 1,
+				"gr_width": 4,		
+				"type": "Flag", 
+				"orientation": 244
+			}
+			], 
+			"type": "item", 
+			"name": "Flag", 
+			"in": "context-Downtown_7f"
+	}, 
+	{
+		"ref": "item-short_signe1e7", 
+		"mods": [
+			{
+				"style": 5, 
+				"orientation": 236, 
+				"ascii": [
+					66, 
+					114, 
+					111, 
+					97, 
+					100, 
+					119, 
+					97, 
+					121, 
+					32, 
+					32
+					], 
+					"gr_state": 7, 
+					"y": 129, 
+					"x": 136, 
+					"type": "Short_sign"
+			}
+			], 
+			"type": "item", 
+			"name": "Short_sign", 
+			"in": "context-Downtown_7f"
+	}
+	]

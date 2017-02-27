@@ -52,7 +52,10 @@ public class Super_trapezoid extends Polygonal implements Copyable {
     private int	pattern_y_size	= 7;
     private int	pattern[] 		= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "trapezoid_type",  "upper_left_x", "upper_right_x", "lower_left_x", "lower_right_x",  "height", "pattern_x_size", "pattern_y_size", "pattern"})    
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", 
+    	"trapezoid_type",  "upper_left_x", "upper_right_x", 
+    	"lower_left_x", "lower_right_x",  "height",
+    	"pattern_x_size", "pattern_y_size", "pattern"})    
     public Super_trapezoid(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
         OptInteger trapezoid_type, OptInteger upper_left_x,  OptInteger upper_right_x,
         OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height,
