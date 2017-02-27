@@ -1,0 +1,62 @@
+	{
+		"ref": "item-TBD.downtown4b", 
+		"mods": [
+			{
+				"type": "Sign",
+				"y": 70,
+				"x": 4,
+				"gr_state": 5, 
+				"ascii": [
+					32,		133,	131,	84, 
+					66,		68,		32,		32,
+					32, 	32, 	32, 	32, 
+					32, 	32, 	32, 	32, 
+					32, 	32, 	32, 	32, 
+					32, 	32, 	32, 	32,
+					32, 	32, 	32, 	32,
+					32, 	32, 	32, 	32,
+					32, 	32, 	32, 	32,
+					32, 	32, 	32, 	32
+					]
+			}
+			], 
+			"type": "item", 
+			"name": "Sign", 
+			"in": "context-Downtown_4b"
+	},
+	  {
+		"ref": "item-TBDback.downtown4b" , 
+		"mods": [
+			{
+				"y": 48, 
+				"x": 8, 
+				"trapezoid_type": 0, 
+				"upper_left_x": 0, 
+				"upper_right_x": 27, 
+				"lower_left_x": 0, 
+				"lower_right_x": 27, 
+				"height": 160, 
+				"pattern_x_size": 1,
+				"pattern_y_size": 7,
+				"pattern": [
+					170,	85,
+					106,	149,
+					90,		165,
+					86,		169,
+					85,		170,
+					149,	106,
+					165,	90,
+					169,	86,
+					0,	0,	0,	0,
+					0,	0,	0,	0,
+					0,	0,	0,	0,
+					0,	0,	0,	0
+					],
+					"type": "Super_trapezoid",
+					"orientation": 176
+			}
+			], 
+	    "type": "item", 
+	    "name": "Trapezoid", 
+		"in": "context-Downtown_4b"
+	  }, 
