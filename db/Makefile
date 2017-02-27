@@ -37,7 +37,6 @@ regions:
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@$(foreach F,$(MONGODB_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@echo 'ENDINITS' >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
 	
 teleports:
