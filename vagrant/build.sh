@@ -74,7 +74,7 @@ npm install --no-bin-links
 
 # Installs Neohabitat MongoDB schema and models.
 cd /neohabitat/db
-make clean
+make db
 
 # Clones the QuantumLink Reloaded codebase.
 cd /neohabitat
