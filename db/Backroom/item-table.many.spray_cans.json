@@ -1,13 +1,72 @@
+[
 {
 	"type": "item",
-	"ref": "item-library.spray_can",
+	"ref": "item-library.spray_canblue",
 	"name": "Spray Can",
-	"in": "item-table.table",
+	"in": "context-table",
 	"mods": [
 		{
 			"type": "Spray_can",
-			"y": 4,
-			"orientation": 64
+			"x": 10,
+			"y": 130,
+			"orientation": 0
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_canblack",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 40,
+			"y": 130,
+			"orientation": 8
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_canskin",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 70,
+			"y": 130,
+			"orientation": 16
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_can24",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 100,
+			"y": 130,
+			"orientation": 24
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_can32",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 130,
+			"y": 130,
+			"orientation": 32
 		}
 		]
 }
+]
