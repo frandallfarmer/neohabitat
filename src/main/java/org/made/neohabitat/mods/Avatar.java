@@ -108,7 +108,7 @@ public class Avatar extends Container implements UserMod {
         return ConnectionType;
     }
     
-    /** The body type for the avatar TODO */
+    /** The body type for the avatar TODO IGNORED FOR NOW */
     protected String  bodyType        = "male";
     /** A collection of server-side Avatar status flags */
     public boolean    nitty_bits[]    = new boolean[32];
@@ -169,12 +169,12 @@ public class Avatar extends Container implements UserMod {
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
         }
-        this.bodyType = bodyType.value("male");
-        if ("female".equals(this.bodyType)) {
-            this.orientation = this.set_bit(this.orientation, GENDER_BIT);
-        } else {
-            this.orientation = this.clear_bit(this.orientation, GENDER_BIT);
-        }
+//        this.bodyType = bodyType.value("male");
+//        if ("female".equals(this.bodyType)) {
+//            this.orientation = this.set_bit(this.orientation, GENDER_BIT);
+//        } else {
+//            this.orientation = this.clear_bit(this.orientation, GENDER_BIT);
+//        }
         this.stun_count = stun_count.value(0);
         this.bankBalance = bankBalance.value(0);
         this.activity = activity.value(STAND_FRONT);
