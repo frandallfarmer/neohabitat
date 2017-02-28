@@ -76,3 +76,7 @@ balancers:
           protocol: tcp
           port: 1898
           remote_port: 1898
+        - resource: neohabitatmongo
+          protocol: tcp
+          port: 27017
+          remote_port: 27017
