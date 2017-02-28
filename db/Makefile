@@ -22,52 +22,21 @@ DBINIT_SCRIPT = ./dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
-clean: nuke all help
-
-help:
-	@echo ""
-	@echo "Valid 'make' targets are 'teleports', 'regions', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
-	@echo "Mongo output is in .errs"
-	@echo ""
-
-regions:
-	@echo "Building Regions, Avatars, and Objects"
-	@rm -f $(DBINIT_SCRIPT)
-	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
-	@cp dbinitpre.js $(DBINIT_SCRIPT)
-	@$(foreach F,$(MONGODB_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
-	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
-
-teleports:
-	@echo "Building Teleport Directory"
-	@rm -f $(TELEPORTDB)
-	@echo '{ "ref" : "teleports", "type" : "map", "map" : {' > $(TELEPORTDB)
-	@$(foreach F,$(MONGODB_OBJECTS), node dumpTeleportEntries.js < $(F) >> $(TELEPORTDB);)
-	@echo ' " End Of Directory": "eod" } }' >> $(TELEPORTDB)
-	@cp dbinitpre.js $(DBINIT_SCRIPT)
-	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $(TELEPORTDB) >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
-	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
-
-%.o: %.json
-	@echo "Updating" $*.json "in the database"
-	@cp dbinitpre.js $(DBINIT_SCRIPT)
-	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $*.json >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
-	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
-	@tail -3 .errs
-
-nuke:
-	@echo "Nuking database"
-	@rm -f  $(DATABASE_OBJECTS) .errs	
-	@echo 'db.odb.remove({});' | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
-
-all: teleports regions
-
+# Make the database setup stuff
+db:
+	rm -f  $(DATABASE_OBJECTS)
+	echo '{ "ref" : "teleports", "type" : "map", "map" : {' > $(TELEPORTDB)
+	$(foreach F,$(MONGODB_OBJECTS), node dumpTeleportEntries.js < $(F) >> $(TELEPORTDB);)
+	echo ' " End Of Directory": "eod" } }' >> $(TELEPORTDB)
+	rm -f $(DBINIT_SCRIPT)
+	echo '#!/bin/bash' > $(DBINIT_SCRIPT)
+	echo 'mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js <<ENDINITS' >> $(DBINIT_SCRIPT)
+	cat dbinitpre.js >> $(DBINIT_SCRIPT)
+	$(foreach F,$(MONGODB_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
+	cat dbinitpost.js >> $(DBINIT_SCRIPT)
+	echo 'ENDINITS' >> $(DBINIT_SCRIPT)
+	chmod +x $(DBINIT_SCRIPT)
+	$(DBINIT_SCRIPT)
+	
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
-
-
-
-

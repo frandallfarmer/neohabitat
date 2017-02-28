@@ -11,7 +11,7 @@ clusters:
         NEOHABITAT_DEFAULT_CONTEXT: context-Downtown_5f
         NEOHABITAT_MONGO_HOST: 127.0.0.1:27017
         NEOHABITAT_SCHEMA_DIR: db
-        NEOHABITAT_SHOULD_ENABLE_DEBUGGER: "false"
+        NEOHABITAT_SHOULD_ENABLE_DEBUGGER: "true"
       synapses:
         - resource: neohabitatmongo
           protocol: tcp
@@ -72,3 +72,11 @@ balancers:
           protocol: tcp
           port: 9000
           remote_port: 9000
+        - resource: neohabitat
+          protocol: tcp
+          port: 1898
+          remote_port: 1898
+        - resource: neohabitatmongo
+          protocol: tcp
+          port: 27017
+          remote_port: 27017
