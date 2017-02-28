@@ -75,7 +75,7 @@ public class Coke_machine extends Coinop implements Copyable {
     @JSONMethod
     public void PAY(User from) {
     	Avatar	avatar = (Avatar) from.getMod(Avatar.class);
-    	int		success = Tokens.spend(from, COKE_COST);
+    	int		success = Tokens.spend(from, COKE_COST, Tokens.CLIENT_DESTROYS_TOKEN);
     	if (success == TRUE) {
     		addToTake(COKE_COST);
     		send_neighbor_msg(from, noid, "PAY$",
