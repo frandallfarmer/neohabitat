@@ -8,7 +8,7 @@
 			"x": 0,
 			"y": 130,			
 			"bodyType": "male",
-			"bankBalance": 500,
+			"bankBalance": 50000,
 			"custom": [170, 119],
 			"nitty_bits": 8
 		}

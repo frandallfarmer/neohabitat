@@ -160,7 +160,7 @@ function confirmOrCreateUser(fullName) {
 							"x": 10,
 							"y": 128 + rnd(32),
 							"bodyType": "male",
-							"bankBalance": 5000,
+							"bankBalance": 50000,
 							"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
 							"nitty_bits": 0
 						}

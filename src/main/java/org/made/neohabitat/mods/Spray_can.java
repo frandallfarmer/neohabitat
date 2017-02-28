@@ -57,13 +57,13 @@ public class Spray_can extends HabitatMod implements Copyable {
     public static final int ARM_LIMB = 2;
     public static final int FACE_LIMB = 3;
 
-    protected int charge = 10;
+    protected int charge = 100;
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "charge" })
     public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
         OptInteger gr_state, OptInteger charge) {
         super(style, x, y, orientation, gr_state);
-        this.charge = charge.value(10);
+        this.charge = charge.value(100);
     }
 
     public Spray_can(int style, int x, int y, int orientation, int gr_state, int charge) {
