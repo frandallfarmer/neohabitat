@@ -82,7 +82,7 @@ public class Sex_changer extends HabitatMod implements Copyable {
             }
         }
         sexChangingAvatar.gen_flags[MODIFIED] = true;
-        checkpoint_object(sexChangingAvatar);
+        sexChangingAvatar.checkpoint_object(sexChangingAvatar);
         send_neighbor_msg(from, noid, "SEXCHANGE$",
             "AVATAR_NOID", sexChangingAvatar.noid);
         send_reply_success(from);
