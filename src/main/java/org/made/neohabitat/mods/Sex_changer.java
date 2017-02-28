@@ -83,12 +83,13 @@ public class Sex_changer extends HabitatMod implements Copyable {
                 trace_msg("Bit 8 is cleared on sex changing Avatar %s; setting it", sexChangingAvatar.object().ref());
                 sexChangingAvatar.orientation = set_bit(sexChangingAvatar.orientation, 8);
             }
+            send_neighbor_msg(from, noid, "SEXCHANGE$",
+                "AVATAR_NOID", sexChangingAvatar.noid);
         }
         trace_msg("New sex-changed Avatar orientation: %d", sexChangingAvatar.orientation);
         sexChangingAvatar.gen_flags[MODIFIED] = true;
         sexChangingAvatar.checkpoint_object(sexChangingAvatar);
-        send_neighbor_msg(from, noid, "SEXCHANGE$",
-            "AVATAR_NOID", sexChangingAvatar.noid);
+
         send_reply_success(from);
     }
 
