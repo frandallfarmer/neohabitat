@@ -1,0 +1,13 @@
+{
+	"type": "item",
+	"ref": "item-library.spray_can",
+	"name": "Spray Can",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"y": 4,
+			"orientation": 64
+		}
+		]
+}

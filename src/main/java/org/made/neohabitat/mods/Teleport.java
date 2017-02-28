@@ -107,7 +107,7 @@ public class Teleport extends Coinop implements Copyable {
     	int success = FALSE;
     	if (activeState == PORT_READY) {
     		Avatar	avatar = (Avatar) from.getMod(Avatar.class);
-    		success = Tokens.spend(from, TELEPORT_COST);		
+    		success = Tokens.spend(from, TELEPORT_COST, Tokens.CLIENT_DESTROYS_TOKEN);		
     		if (success == TRUE) {
     			addToTake(TELEPORT_COST);
     			activeState			= PORT_ACTIVE;

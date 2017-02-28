@@ -131,7 +131,7 @@ public class Tokens extends HabitatMod implements Copyable {
     		Avatar payer	= avatar(from);
     		Avatar other	= (Avatar) target;
     		if (this.empty_handed(other)) {
-    			if (spend(amount, false) == TRUE) {
+    			if (spend(amount, SERVER_DESTROYS_TOKEN) == TRUE) {
     				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, amount_lo, amount_hi);
     				Item item = create_object("money", tokens, other);
     				if (item == null) {
@@ -233,11 +233,15 @@ public class Tokens extends HabitatMod implements Copyable {
         send_reply_success(from);
     }
 
+    
+    public static final boolean	CLIENT_DESTROYS_TOKEN = true;
+    public static final boolean SERVER_DESTROYS_TOKEN = false;
+    
     /** 
      * Spend some of this objects tokens.
      * 
      * @param amount The number of tokens to spend.
-     * @param flag that the client is going to remove the token if the value is 0, so the server must do the same.
+     * @param flag that the *client* is going to remove the token if the value is 0, so the server must do it silently.
      * @return
      */
     public int spend(int amount, boolean destroy) {
@@ -246,7 +250,7 @@ public class Tokens extends HabitatMod implements Copyable {
 			tvalue -= amount;
 			tset(tvalue);
 			if (destroy && tvalue == 0) {
-				destroy_object(this);
+				destroy_object(this);		// does not inform client.
 			}
 			return TRUE;
 		}
@@ -259,14 +263,15 @@ public class Tokens extends HabitatMod implements Copyable {
      * 
      * @param from The user spending the tokens (and waiting for an answer)
      * @param amount The number of tokens to spend.
+     * @param flag that the client is going to remove the token if the value is 0, so the server must do the same.
      * @return
      */
-    public static int spend(User from, int amount) {
+    public static int spend(User from, int amount, boolean destroy) {
     	Avatar avatar = (Avatar) from.getMod(Avatar.class);
     	HabitatMod held = avatar.heldObject();
     	if (held.HabitatClass() == CLASS_TOKENS) {
     		Tokens tokens= (Tokens) held;
-    		return tokens.spend(amount, true);	// Will self-destruct if out of tokens.
+    		return tokens.spend(amount, destroy);
     	}
     	return FALSE;    	
     }

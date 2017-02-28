@@ -168,7 +168,7 @@ public class Fortune_machine extends Coinop implements Copyable {
     @JSONMethod
     public void PAY(User from) {
         Avatar avatar = avatar(from);
-        int	success = Tokens.spend(from, FORTUNE_COST);
+        int	success = Tokens.spend(from, FORTUNE_COST, Tokens.CLIENT_DESTROYS_TOKEN);
         String text;
         if (success == TRUE) {
             text = getFortune();
@@ -185,6 +185,9 @@ public class Fortune_machine extends Coinop implements Copyable {
             addToTake(FORTUNE_COST);
         } else {
             text = String.format("You don't have enough money.  Fortunes cost $%d.", FORTUNE_COST);
+            // NOTE: Due to a client error in fortune_machine_put.m, this string is never seen.
+            // Per the "CLIENT IS CANON" rule of our restoration project, the server may not attempt
+            // to compensate for this error. The message was never seen in 1986.
         }
         send_reply_msg(from, noid,
             "err", success,
