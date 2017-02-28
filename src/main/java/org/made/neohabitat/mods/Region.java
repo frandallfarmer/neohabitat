@@ -123,7 +123,8 @@ public class Region extends Container implements ContextMod, Constants {
     
     @Override
     public JSONLiteral encode(EncodeControl control) {
-        JSONLiteral result = new JSONLiteral(HabitatModName(), control);
+        JSONLiteral result = new JSONLiteral(HabitatModName(), control); // Normally I would call encodeCommon() but don't want to bother with the extraneous fields.
+        result.addParameter("orientation", orientation);
         if (packBits(nitty_bits) != 0) {
             result.addParameter("nitty_bits", packBits(nitty_bits));
         }
