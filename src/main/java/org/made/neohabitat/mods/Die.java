@@ -100,8 +100,8 @@ public class Die extends HabitatMod {
       gr_state = rand.nextInt(state) + 1;
 	  gen_flags[MODIFIED] = true;
 	  send_neighbor_msg(from, THE_REGION, "PLAY_$", "sfx_number", sfx_number(6), "from_noid", noid);
-	  send_neighbor_msg(from, noid, "ROLL$", "state", gr_state);
-	  send_reply_msg(from, noid, "ROLL_STATE", gr_state);
+	  send_neighbor_msg(from, noid, "ROLL$", "state", gr_state); //Look at "ROLL$" in hcode.js
+	  send_reply_msg(from, noid, "ROLL_STATE", gr_state); //Look at ROLL: in hcode.js 
     }
 
 }
