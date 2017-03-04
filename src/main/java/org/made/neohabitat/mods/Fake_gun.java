@@ -55,9 +55,14 @@ public class Fake_gun extends HabitatMod
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "state" })
 	public Fake_gun(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int state) {
 		super(style, x, y, orientation, gr_state);
-	    	this.state = state;
+	    this.state = state;
 	}
-
+	
+	public Fake_gun(int style, int x, int y, int orientation, int gr_state, int state) {
+        super(style, x, y, orientation, gr_state);
+        this.state = state;
+	}
+	
 	@Override
 	public JSONLiteral encode(EncodeControl control) {
 		JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));

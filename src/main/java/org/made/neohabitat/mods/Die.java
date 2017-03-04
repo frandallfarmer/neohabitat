@@ -57,6 +57,11 @@ public class Die extends HabitatMod {
         this.state = state;
     }
     
+    public Die(int style, int x, int y, int orientation, int gr_state, int state) {
+        super(style, x, y, orientation, gr_state);
+        this.state = state;
+    }
+    
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
