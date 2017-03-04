@@ -15,6 +15,22 @@
 	]
 },
 {
+    "ref": "item-fake_gun",
+    "mods": [
+      {    	  	
+    	"type": "Fake_gun",
+        "y": 20,
+        "x": 100,
+        "gr_state": 0,
+		"orientation": 8,
+		"state":	0 
+      }
+    ],
+    "type": "item",
+    "name": "Fake Gun",
+    "in": "context-library"
+  },
+{
     "ref": "item-trashcan",
     "mods": [
       {    	  	
