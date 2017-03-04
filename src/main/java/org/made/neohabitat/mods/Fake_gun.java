@@ -55,20 +55,20 @@ public class Fake_gun extends HabitatMod
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "state" })
 	public Fake_gun(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int state) {
 		super(style, x, y, orientation, gr_state);
-	    this.state = state;
+	    	this.state = state;
 	}
 
 	@Override
 	public JSONLiteral encode(EncodeControl control) {
 		JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-	    result.addParameter("state", state);
-	    result.finish();
+	    	result.addParameter("state", state);
+	    	result.finish();
 		return result;
 	}
 	
-	@JSONMethod
+    @JSONMethod
     public void HELP(User from) {
-		generic_HELP(from);
+	generic_HELP(from);
     }
 	
 
@@ -90,7 +90,7 @@ public class Fake_gun extends HabitatMod
     }
     
     @JSONMethod
-	public void FAKESHOOT(User from) {
+    public void FAKESHOOT(User from) {
     	Avatar curAvatar = avatar(from);
     	if (holding(curAvatar, this) && (state == FAKE_GUN_READY)){
     		state = FAKE_GUN_FIRED;
@@ -102,11 +102,10 @@ public class Fake_gun extends HabitatMod
     	else
     		success = false;
     	send_reply_msg(from, noid, "FAKESHOOT_SUCCESS", (success) ? TRUE : FALSE); //r_msg_1(success); 
-    	  
     }
     
     @JSONMethod
-	public void RESET(User from) {
+    public void RESET(User from) {
     	Avatar curAvatar = avatar(from);
     	if (holding(curAvatar, this) && (state == FAKE_GUN_FIRED)){
     		state = FAKE_GUN_READY;
