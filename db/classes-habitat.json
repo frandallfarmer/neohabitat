@@ -49,6 +49,11 @@
 		},
 		{
 			"type": "class",
+			"tag": "Fake_gun",
+			"name": "org.made.neohabitat.mods.Fake_gun"
+		},
+		{
+			"type": "class",
 			"tag": "Flashlight",
 			"name": "org.made.neohabitat.mods.Flashlight"
 		},

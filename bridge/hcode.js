@@ -170,7 +170,11 @@ this.SERVER_OPS = {
 		"DRIVE$": 				{ reqno: 8 },
 		"EXPIRE_$": 			{ reqno: 9 },
 		"EXPLODE_$": 			{ reqno: 8 },
-		"FAKESHOOT$": 			{ reqno: 8 },
+		"FAKESHOOT$": 			{ reqno: 8,
+			toClient: function (o,b) { 
+				b.add(o.state);
+			}
+		},
 		"FIDDLE_$": 			{ reqno: 12,
 			toClient: function (o,b) {
 				b.add(o.target);
@@ -280,7 +284,11 @@ this.SERVER_OPS = {
 		},
 		"REINCARNATE$":		 	{ reqno: 23 },
 		"REMOVE$":				{ reqno: 29 },
-		"RESET$": 				{ reqno: 9 },
+		"RESET$": 				{ reqno: 9,
+			toClient: function (o,b) { 
+				b.add(o.state);
+			}
+		},
 		"RETURN$": 				{ reqno: 1 },
 		"CHANGELIGHT_$": 		{ reqno: 13,
 			toClient: function (o, b) {
@@ -603,6 +611,11 @@ this.translate = {
 				b.add(o.err);
 			}			
 		},
+		FAKESHOOT: { 
+ 			toClient: function(o, b) {
+ 				b.add(o.FAKESHOOT_SUCCESS); 
+ 			}
+		},		
 		READ: {
 			toServer: function(a, m) {
 				m.page = a[0];
@@ -613,6 +626,11 @@ this.translate = {
 				return true;		// This reply should be split upon transmission to the client.
 			}
  		},
+		RESET: { 
+ 			toClient: function(o, b) {
+ 				b.add(o.RESET_SUCCESS); 
+ 			}
+		},		
 		ROLL: { 
  			toClient: function(o, b) {
  				b.add(o.ROLL_STATE); 
@@ -838,6 +856,17 @@ this.Table	= {
 			4:{ op:"CLOSECONTAINER" },
 			5:{ op:"OPENCONTAINER" }
 		}
+};
+
+this.Fake_gun = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"FAKESHOOT" },
+			5:{ op:"RESET" }
+		}		
 };
 
 this.Flashlight	= {

@@ -806,6 +806,11 @@ var encodeState = {
 			buf.add(state.state || 0);
 			return buf; 
 		},
+		Fake_gun: function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.state || 0);
+			return buf; 
+		},
 		Flat: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.flat_type || 0);
