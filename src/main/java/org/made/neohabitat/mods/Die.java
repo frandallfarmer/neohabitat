@@ -7,6 +7,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -18,7 +19,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author TheCarlSaganExpress
  */
-public class Die extends HabitatMod {
+public class Die extends HabitatMod implements Copyable {
     
     public int HabitatClass() {
         return CLASS_DIE;
@@ -61,6 +62,11 @@ public class Die extends HabitatMod {
         super(style, x, y, orientation, gr_state);
         this.state = state;
     }
+    
+    @Override
+	public HabitatMod copyThisMod() {
+    	return new Die(style, x, y, orientation, gr_state, state);
+	}
     
     @Override
     public JSONLiteral encode(EncodeControl control) {
@@ -108,5 +114,4 @@ public class Die extends HabitatMod {
 	  send_neighbor_msg(from, noid, "ROLL$", "state", gr_state); //Look at "ROLL$" in hcode.js
 	  send_reply_msg(from, noid, "ROLL_STATE", gr_state); //Look at ROLL: in hcode.js 
     }
-
 }

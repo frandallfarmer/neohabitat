@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
 /**
@@ -16,7 +17,7 @@ import org.made.neohabitat.HabitatMod;
  *
  * @author TheCarlSaganExpress
  */
-public class Fake_gun extends HabitatMod
+public class Fake_gun extends HabitatMod implements Copyable
 {
 	
 	public int HabitatClass() {
@@ -64,6 +65,11 @@ public class Fake_gun extends HabitatMod
 	}
 	
 	@Override
+	public HabitatMod copyThisMod() {
+		return new Fake_gun(style, x, y, orientation, gr_state, state);
+	}
+	
+	@Override
 	public JSONLiteral encode(EncodeControl control) {
 		JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
 	    	result.addParameter("state", state);
@@ -71,56 +77,56 @@ public class Fake_gun extends HabitatMod
 		return result;
 	}
 	
-       @JSONMethod
-       public void HELP(User from) {
-		generic_HELP(from);
-    	}
+    @JSONMethod
+    public void HELP(User from) {
+    	generic_HELP(from);
+    }
 	
 
-       @JSONMethod
-       public void GET(User from) {
-       	        generic_GET(from);
-    	}
+    @JSONMethod
+    public void GET(User from) {
+       	generic_GET(from);
+    }
 
 
-    	@JSONMethod({ "containerNoid", "x", "y", "orientation" })
-    	public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
-    	    	generic_PUT(from, containerNoid.value(THE_REGION), avatar(from).x, avatar(from).y, avatar(from).orientation);
-   	 }
+    @JSONMethod({ "containerNoid", "x", "y", "orientation" })
+    public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
+    	generic_PUT(from, containerNoid.value(THE_REGION), avatar(from).x, avatar(from).y, avatar(from).orientation);
+   	}
     
 
-    	@JSONMethod({ "target", "x", "y" })
-    	public void THROW(User from, int target, int x, int y) {
-        	generic_THROW(from, target, x, y);
-    	}
+    @JSONMethod({ "target", "x", "y" })
+    public void THROW(User from, int target, int x, int y) {
+        generic_THROW(from, target, x, y);
+    }
     
-    	@JSONMethod
-    	public void FAKESHOOT(User from) {
-    		Avatar curAvatar = avatar(from);
-    		if (holding(curAvatar, this) && (state == FAKE_GUN_READY)){
-    			state = FAKE_GUN_FIRED;
-    			gr_state = FAKE_GUN_FIRED;
-    			gen_flags[MODIFIED] = true;
-    			send_neighbor_msg(from, noid, "FAKESHOOT$", "state", state); //n_msg_0(selfptr, FAKESHOOT$);
-    			success = true;
-    		}
-    		else
-    			success = false;
-    		send_reply_msg(from, noid, "FAKESHOOT_SUCCESS", (success) ? TRUE : FALSE); //r_msg_1(success); 
-   	 }
-    
-    	@JSONMethod
-    	public void RESET(User from) {
-    		Avatar curAvatar = avatar(from);
-    		if (holding(curAvatar, this) && (state == FAKE_GUN_FIRED)){
-    			state = FAKE_GUN_READY;
-    			gr_state = FAKE_GUN_READY;
-    			gen_flags[MODIFIED] = true;
-    			send_neighbor_msg(from, noid, "RESET$", "state", state); //n_msg_0(selfptr, RESET$);
-    			success = true;
-    		}
-    		else
-    			success = false;
-    		send_reply_msg(from, noid, "RESET_SUCCESS", (success) ? TRUE : FALSE); //call r_msg_1(success);
+    @JSONMethod
+    public void FAKESHOOT(User from) {
+    	Avatar curAvatar = avatar(from);
+    	if (holding(curAvatar, this) && (state == FAKE_GUN_READY)){
+    		state = FAKE_GUN_FIRED;
+    		gr_state = FAKE_GUN_FIRED;
+    		gen_flags[MODIFIED] = true;
+    		send_neighbor_msg(from, noid, "FAKESHOOT$", "state", state); //n_msg_0(selfptr, FAKESHOOT$);
+    		success = true;
     	}
+    	else
+    		success = false;
+    	send_reply_msg(from, noid, "FAKESHOOT_SUCCESS", (success) ? TRUE : FALSE); //r_msg_1(success); 
+   	}
+    
+    @JSONMethod
+    public void RESET(User from) {
+    	Avatar curAvatar = avatar(from);
+    	if (holding(curAvatar, this) && (state == FAKE_GUN_FIRED)){
+    		state = FAKE_GUN_READY;
+    		gr_state = FAKE_GUN_READY;
+    		gen_flags[MODIFIED] = true;
+    		send_neighbor_msg(from, noid, "RESET$", "state", state); //n_msg_0(selfptr, RESET$);
+    		success = true;
+    	}
+    	else
+    		success = false;
+    	send_reply_msg(from, noid, "RESET_SUCCESS", (success) ? TRUE : FALSE); //call r_msg_1(success);
+    }
 }
