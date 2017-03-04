@@ -22,8 +22,8 @@
         "y": 20,
         "x": 100,
         "gr_state": 0,
-		"orientation": 8,
-		"state":	0 
+	"orientation": 8,
+	"state":	0 
       }
     ],
     "type": "item",
