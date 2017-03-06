@@ -128,7 +128,8 @@ public class Key extends HabitatMod implements Copyable {
      */
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
-        generic_PUT(from, containerNoid.value(THE_REGION), avatar(from).x, avatar(from).y, avatar(from).orientation);
+        generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
+        		orientation.value(avatar(from).orientation));
     }
     
     /**
