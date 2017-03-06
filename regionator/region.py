@@ -101,11 +101,13 @@ class Mod(object):
       'type': 'item',
       'ref': self.neohabitat_ref,
       'name': self.neohabitat_name,
-      'in': self.region.neohabitat_context,
       'mods': [self.neohabitat_mod],
     }
     if self.parent is not None:
-      json_mod['container'] = self.parent.neohabitat_ref
+      json_mod['in'] = self.parent.neohabitat_ref
+    else:
+      json_mod['in'] = self.region.neohabitat_context
+
     return json_mod
 
 
