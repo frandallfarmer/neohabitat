@@ -67,7 +67,3 @@ all: teleports regions
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
-
-
-
-

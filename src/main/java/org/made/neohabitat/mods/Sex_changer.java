@@ -75,16 +75,21 @@ public class Sex_changer extends HabitatMod implements Copyable {
 
     public void sex_changer_SEXCHANGE(User from, Avatar sexChangingAvatar) {
         if (adjacent(sexChangingAvatar)) {
+            trace_msg("Avatar %s is adjacent to sex changer: %s", sexChangingAvatar.object().ref(), object().ref());
             if (test_bit(sexChangingAvatar.orientation, 8)) {
+                trace_msg("Bit 8 is set on sex changing Avatar %s; clearing it", sexChangingAvatar.object().ref());
                 sexChangingAvatar.orientation = clear_bit(sexChangingAvatar.orientation, 8);
             } else {
+                trace_msg("Bit 8 is cleared on sex changing Avatar %s; setting it", sexChangingAvatar.object().ref());
                 sexChangingAvatar.orientation = set_bit(sexChangingAvatar.orientation, 8);
             }
+            send_neighbor_msg(from, noid, "SEXCHANGE$",
+                "AVATAR_NOID", sexChangingAvatar.noid);
         }
+        trace_msg("New sex-changed Avatar orientation: %d", sexChangingAvatar.orientation);
         sexChangingAvatar.gen_flags[MODIFIED] = true;
-        checkpoint_object(sexChangingAvatar);
-        send_neighbor_msg(from, noid, "SEXCHANGE$",
-            "AVATAR_NOID", sexChangingAvatar.noid);
+        sexChangingAvatar.checkpoint_object(sexChangingAvatar);
+
         send_reply_success(from);
     }
 

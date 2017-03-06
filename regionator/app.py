@@ -19,6 +19,13 @@ ARG_PARSER.add_argument(
     help='files or directories to read',
 )
 ARG_PARSER.add_argument(
+    '--mod_index',
+    dest='mod_index',
+    default='./mod_index.yml',
+    help='location of the Mod translation index YAML',
+)
+
+ARG_PARSER.add_argument(
     '--output_dir',
     dest='output_dir',
     default='.',
