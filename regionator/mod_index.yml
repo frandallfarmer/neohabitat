@@ -1,0 +1,133 @@
+# This index maps a conversion from a numeric mod parameter field to its respective
+# Neohabitat JSON object parameter.
+
+# PLEASE NOTE: This file will not contain definitions for all Mods; only those with
+# additional fields indexed with numeric identifiers will be tracked here.
+
+# Common types:
+document: &document
+  8: last_page
+
+magical: &magical
+  8: magic_type
+
+massive: &massive
+  8: mass
+
+openable: &openable
+  8: open_flags
+  9: key_lo
+  10: key_hi
+
+polygonal: &polygonal
+  8: trapezoid_type
+  9: upper_left_x
+  10: upper_right_x
+  11: lower_left_x
+  12: lower_right_x
+  13: height
+
+toggle: &toggle
+  8: "on"
+
+# Concrete Mod objects:
+Bag:
+  <<: *openable
+
+Box:
+  <<: *openable
+
+Bottle:
+  8: filled
+
+Chest:
+  <<: *openable
+
+Countertop:
+  <<: *openable
+
+Die:
+  8: state
+
+Display_case:
+  <<: *openable
+
+Door:
+  <<: *openable
+
+Flag:
+  <<: *massive
+
+Flashlight:
+  <<: *toggle
+
+Flat:
+  8: flat_type
+
+Floor_light:
+  <<: *toggle
+
+Garbage_can:
+  <<: *openable
+
+Glue:
+  8: x_offset_1
+  9: y_offset_1
+  10: x_offset_2
+  11: y_offset_2
+  12: x_offset_3
+  13: y_offset_3
+  14: x_offset_4
+  15: y_offset_4
+  16: x_offset_5
+  17: y_offset_5
+  18: x_offset_6
+  19: y_offset_6
+
+Key:
+  8: key_number_lo
+  9: key_number_hi
+
+Knick_knack:
+  <<: *magical
+
+Plant:
+  <<: *massive
+
+Plaque:
+  <<: *document
+
+Picture:
+  8: picture
+
+Rock:
+  <<: *massive
+
+Short_sign:
+  CHOMP: ascii
+
+Sign:
+  CHOMP: ascii
+
+Street:
+  8: width
+  9: height
+
+Super_trapezoid:
+  <<: *polygonal
+  14: pattern_x_size
+  15: pattern_y_size
+  CHOMP: pattern
+
+Table:
+  <<: *openable
+
+Teleport:
+  8: activeState
+
+Tokens:
+  8: denom_lo
+  9: denom_hi
+
+Trapezoid:
+  <<: *polygonal
