@@ -17,6 +17,9 @@ DATABASE_OBJECTS = $(TELEPORTDB)
 # JSON object definitions supplied by the various components
 MONGODB_OBJECTS = $(shell find . -name '*.json') $(DATABASE_OBJECTS)
 
+# JSON objects for just the text documents
+TEXT_OBJECTS = $(shell find ./Text -name '*.json')
+
 # The file that actually gets produced by "make db"
 DBINIT_SCRIPT = ./dbinit.sh
 
@@ -26,12 +29,21 @@ clean: nuke all help
 
 help:
 	@echo ""
-	@echo "Valid 'make' targets are 'teleports', 'regions', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
+	@echo "Valid 'make' targets are 'teleports', 'text', 'regions', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
 	@echo "Mongo output is in .errs"
 	@echo ""
 
+text:
+	@echo "Building Text documents"
+	@rm -f $(DBINIT_SCRIPT)
+	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
+	@cp dbinitpre.js $(DBINIT_SCRIPT)
+	@$(foreach F,$(TEXT_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
+	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
+	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
+
 regions:
-	@echo "Building Regions, Avatars, and Objects"
+	@echo "Building Regions, Avatars, Objects, and Text"
 	@rm -f $(DBINIT_SCRIPT)
 	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
