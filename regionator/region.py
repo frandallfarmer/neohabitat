@@ -67,7 +67,7 @@ class Mod(object):
       for index, mod_key in translator.items():
         if str(index) != 'CHOMP':
           if str(index) in self.additional_params:
-            mod_json[mod_key] = self.additional_params[str(index)]
+            mod_json[mod_key] = int(self.additional_params[str(index)])
           chomp_start_key += 1
       # If a CHOMP key has been specified, chomps all remaining additional params into
       # the specified field.
