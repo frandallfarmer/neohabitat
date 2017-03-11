@@ -6,13 +6,9 @@
 	"mods": [
 		{
 			"type": "Plaque",
-			"style": 0,
 			"x": 80,
 			"y": 80,
-			"orientation": 0,
-			"gr_state": 0,
 			"last_page": 1,
-			"path": "",
 			"pages": [ 
 				"Habitat Weekly Rant   Volume 1, number 1" +
 				"    Monday, pub date here, 1986 A.C.    " +

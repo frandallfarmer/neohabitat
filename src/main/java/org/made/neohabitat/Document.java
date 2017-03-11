@@ -1,9 +1,19 @@
 package org.made.neohabitat;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
+import org.elkoserver.foundation.json.OptString;
+import org.elkoserver.json.JSONArray;
+import org.elkoserver.json.JSONDecodingException;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.json.JSONObject;
 import org.elkoserver.server.context.User;
+import org.elkoserver.util.ArgRunnable;
+import org.elkoserver.util.trace.Trace;
+import org.made.neohabitat.mods.Region;
 
 /**
  * an Elko Habitat superclass to text documents.
@@ -17,8 +27,11 @@ import org.elkoserver.server.context.User;
  */
 public abstract class Document extends HabitatMod {
     
+	private static final String NO_PAGES[]		= {};
+	private static final String MISSING_PAGES[]	= new String[] { "[Missing Document]" };
+	
     /** Local document body */
-    protected String pages[]   = {};
+    protected String pages[]   = NO_PAGES;
     /** TODO URL/Path to external resource FUTURE FEATURE */
     protected String path      = "";
     /** The last page read, shared with client */
@@ -27,9 +40,11 @@ public abstract class Document extends HabitatMod {
     protected int    next_page = 1;
     
     public Document(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            int last_page, String pages[], String path) {
+            int last_page, String pages[], OptString path) {
         super(style, x, y, orientation, gr_state);
-        setDocumentState((pages.length > 0) ? pages.length : last_page, pages, path);
+        setDocumentState( (pages != null && pages.length > 0) ? pages.length : last_page,
+        		 		  (pages != null && pages.length > 0) ? pages        : MISSING_PAGES,
+        				  path.value(""));
     }
 
     public Document(int style, int x, int y, int orientation, int gr_state, int last_page,
@@ -39,17 +54,52 @@ public abstract class Document extends HabitatMod {
     }
     
     protected void setDocumentState(int last_page, String[] pages, String path) {
-        this.pages = pages;
-        this.last_page = last_page;
-        this.path = path;
+		this.last_page	= last_page;
+		this.path		= path;	
+		this.pages 		= pages;
     }
-
+    
+    /** If the text for this document is on disk, we have to go and get that now... */
+    public void objectIsComplete() {
+		super.objectIsComplete();
+		if (!path.isEmpty()) {
+			// Get the text for this document from the DB.
+	        JSONObject findPattern = new JSONObject();
+	        findPattern.addProperty("ref", path);
+			context().contextor().queryObjects(findPattern, null, 1, finishTextRead);
+    	}
+    }
+    
+    protected ArgRunnable finishTextRead = new ArgRunnable() {
+		@Override
+		public void run(Object obj) {
+			if (null == obj) {
+				pages = MISSING_PAGES;
+			} else {
+				try {
+					Object[] 			args 		= (Object[]) obj;
+					JSONArray 			textBlocks	= ((JSONObject) args[0]).getArray("pages");
+					Iterator<Object>	textPage 	= textBlocks.iterator();
+					for (int i = 0 ; i < textBlocks.size() ; i++) {
+						pages[i] = (String) textPage.next();
+					}
+				} catch (JSONDecodingException e) {
+					e.printStackTrace();
+					pages = MISSING_PAGES;
+				}
+			}
+		}
+    };
+    
     public JSONLiteral encodeDocument(JSONLiteral result) {
         result = super.encodeCommon(result);
         result.addParameter("last_page", last_page);
         if (result.control().toRepository()) {
-            result.addParameter("path", path);
-            result.addParameter("pages", pages);
+        	if (path.isEmpty()) {
+                result.addParameter("pages", pages);
+        	} else {
+        		result.addParameter("path", path);
+        	}
         }
         return result;
     }
@@ -77,18 +127,7 @@ public abstract class Document extends HabitatMod {
         from.send(msg);
     }
     
-    /**
-     * TBD Read document from path and pagify. Large packets will be managed by
-     * the bridge?
-     */
     private String getTextPage(String path, int page_to_read) {
-        if (pages.length == 0) {
-            if (path.isEmpty()) {
-                return "<This space left blank>";
-            } else {
-                return path + " remains unread. FEATURE TBD.";
-            }
-        }
         return pages[Math.max(Math.min(page_to_read, last_page), 1) - 1];
     }
     

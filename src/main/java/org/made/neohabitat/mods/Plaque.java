@@ -2,6 +2,7 @@ package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
+import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
@@ -49,7 +50,7 @@ public class Plaque extends Document implements Copyable {
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "last_page", "pages", "path" })
     public Plaque(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            int last_page, String pages[], String path) {
+            int last_page, String pages[], OptString path) {
         super(style, x, y, orientation, gr_state, last_page, pages, path);
     }
 
