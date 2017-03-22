@@ -270,6 +270,9 @@ function createServerConnection(port, host, client, immediate, context) {
 	server.on('error', function(err) {
 		Trace.warn("Unable to connect to NeoHabitat Server, terminating client connection.");
 		if (client) {
+			if (client.userName) {
+				Users[client.userName].online = false;
+			}
 			client.end(); 
 		}
 	});
@@ -281,6 +284,9 @@ function createServerConnection(port, host, client, immediate, context) {
 		Trace.debug('Elko port disconnected...');
 		if (client) {
 			Trace.debug("{Bridge being shutdown...}");
+			if (client.userName) {
+				Users[client.userName].online = false;
+			}
 			client.end();
 		}
 	});
@@ -618,6 +624,24 @@ function parseHabitatClientMessage(client, server, data) {
 			}
 			enterContext(client, server, context);
 			return;
+		} else if (noid === client.avatarNoid && reqNum === 14 /* FNKEY */ && args[0] == 11 /* F3 */) {
+			// Special case - bridge handles Current Users Online list.
+			var msg = { type:"private",  noid:0, op:"OBJECTSPEAK_$", text:"" , speaker:noid };
+			for (name in Users) {
+				if (Users[name].online) {
+					msg.text += (name + "            ").substring(0,12);
+					if (msg.text.length > 35) {
+						encodeAndSendClientMessage(client, msg);
+						msg.text = "";
+					}
+				}
+			}
+			if (msg.text.length) {
+				msg.text = (msg.text + "                        ").substring(0,36);
+				encodeAndSendClientMessage(client, msg);
+			}
+			encodeAndSendClientMessage(client, {type:"reply", noid:noid, filler:0, err:0} );
+			return;
 		} else {
 			var o	  	= client.state.objects[noid];
 			var op	  	= (undefined === o.clientMessages[reqNum]) ? "UNSUPPORTED" : o.clientMessages[reqNum].op;
@@ -929,10 +953,13 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		var regionRef = o.to.split("-");
 		var userRef   = o.obj.ref.split("-");
 		Users[name] = {
-				regionRef:   regionRef[0] + "-" + regionRef[1],
-				userRef:     userRef[0]   + "-" + userRef[1] };
+				regionRef:	regionRef[0] + "-" + regionRef[1],
+				userRef:    userRef[0]   + "-" + userRef[1],
+				online:		false};
 		File.writeFile(UFILENAME, JSON.stringify(Users, null, 2));
+		Users[name].online 				= true;
 		client.sessionName 				+= ":" + name;
+		client.userName					= name;
 		client.avatarNoid   			= mod.noid;
 		client.waitingForAvatarContents = true;
 	}
@@ -1085,7 +1112,10 @@ function parseIncomingElkoServerMessage(client, server, data) {
 	}
 
 //	End of Special Cases - parse the reply/broadcast/neighbor/private message as a object-command.
+	encodeAndSendClientMessage(client, o); 
+}
 
+function encodeAndSendClientMessage(client, o) {	
 	var split = false;
 	if (o.type === "reply") {
 		var buf = new HabBuf(true, true, client.state.replySeq, o.noid, o.filler);
