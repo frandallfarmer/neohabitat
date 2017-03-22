@@ -926,6 +926,15 @@ function diagnosticMessage(client, text, noid) {
 	msg.send(client);
 }
 
+function checkpointUsers() {
+	var save = {};
+	for (key in Users) {
+		save[key] = ({regionRef:Users[key].regionRef, userRef:Users[key].userRef});
+	}
+	File.writeFile(UFILENAME, JSON.stringify(save, null, 2));
+}
+
+
 function parseIncomingElkoServerMessage(client, server, data) {
 	var o = {};
 
@@ -955,9 +964,8 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		Users[name] = {
 				regionRef:	regionRef[0] + "-" + regionRef[1],
 				userRef:    userRef[0]   + "-" + userRef[1],
-				online:		false};
-		File.writeFile(UFILENAME, JSON.stringify(Users, null, 2));
-		Users[name].online 				= true;
+				online:		true};
+		checkpointUsers();
 		client.sessionName 				+= ":" + name;
 		client.userName					= name;
 		client.avatarNoid   			= mod.noid;
