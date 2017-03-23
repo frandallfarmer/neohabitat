@@ -45,6 +45,6 @@ after_success:
         docker push ${DOCKER_USERNAME}/neohabitat;
 
         curl -o ./spinecli.tgz https://bin.equinox.io/c/jSZ5ZhbDXZ9/spine-cli-stable-linux-amd64.tgz && tar xvzf spinecli.tgz;
-        ./spine deploy;
+        ./spine cluster deploy neohabitat;
       fi
     fi
