@@ -37,10 +37,10 @@ script:
   - cd test && node Telko.js -f chip
 
 after_success:
-  # Pushes the Docker image.
+  # Pushes the Docker image then deploys it to Spine.
   - if [ "${TRAVIS_BRANCH}" == "master" ]; then
       if [[ "${SPINE_DEPLOY}" == true ]]; then
-        cd ${TRAVIS_BUILD_DIR}
+        cd ${TRAVIS_BUILD_DIR};
         docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
         docker push ${DOCKER_USERNAME}/neohabitat;
 
