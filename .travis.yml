@@ -35,3 +35,15 @@ script:
 
   # Executes functional tests:
   - cd test && node Telko.js -f chip
+
+after_success:
+  # Pushes the Docker image.
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      if [[ "$SPINE_DEPLOY" == true ]]; then
+        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+        docker push ${DOCKER_USERNAME}/neohabitat;
+
+        curl -o ./spinecli.tgz https://bin.equinox.io/c/jSZ5ZhbDXZ9/spine-cli-stable-linux-amd64.tgz && tar xvzf spinecli.tgz;
+        ./spine deploy;
+      fi
+    fi
