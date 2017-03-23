@@ -31,12 +31,13 @@ var	 Defaults	= DefDefs;
 
 try {
 	var userDefs = JSON.parse(File.readFileSync("defaults.elko"));
-	Defaults = { context:	userDefs.context || DefDefs.context,
-			listen:	userDefs.listen	 || DefDefs.listen,
-			elko:		userDefs.elko	 || DefDefs.elko,
-			mongo:		userDefs.mongo   || DefDefs.mongo,
-			rate:		userDefs.rate	 || DefDefs.rate,
-			trace:		userDefs.trace	 || DefDefs.trace};
+	Defaults = {
+			context:	userDefs.context	|| DefDefs.context,
+			listen:		userDefs.listen	 	|| DefDefs.listen,
+			elko:		userDefs.elko		|| DefDefs.elko,
+			mongo:		userDefs.mongo  	|| DefDefs.mongo,
+			rate:		userDefs.rate		|| DefDefs.rate,
+			trace:		userDefs.trace		|| DefDefs.trace};
 } catch (e) {
 	console.log("Missing/invalid defaults.elko configuration file. Proceeding with factory defaults.");
 }
@@ -109,7 +110,7 @@ function addDefaultHead(db, userRef, fullName) {
 				"style": rnd(220),
 				"orientation": rnd(3) * 8
 			}
-		]
+			]
 	}, function(err, result) {
 		Assert.equal(err, null);
 		if (result === null) {
@@ -134,7 +135,7 @@ function addDefaultTokens(db, userRef, fullName) {
 				"denom_lo": 0,
 				"denom_hi": 4
 			}
-		]
+			]
 	}, function(err, result) {
 		Assert.equal(err, null);
 		if (result === null) {
@@ -249,7 +250,7 @@ function createServerConnection(port, host, client, immediate, context) {
 			Trace.error("\n\n\nServer input processing error captured:\n" +
 					err.message + "\n" +
 					err.stack   + "\n" +
-					"...resuming...\n");
+			"...resuming...\n");
 		}
 		if (reset) {				// This connection has been replaced due to context change.
 			Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
@@ -411,13 +412,13 @@ var HabBuf = function (start, end, seq, noid, reqNum) {
 
 var unpackHabitatObject = function (client, o, containerRef) {
 	var mod  			= o.obj.mods[0];
-	
+
 	o.noid				= mod.noid || 0;
 	o.mod				= mod;
 	o.ref			 	= o.obj.ref;
 	o.className		 	= mod.type;
 	o.classNumber	 	= HCode.CLASSES[mod.type] || 0;	
-	
+
 	if (undefined === HCode[mod.type]) {
 		Trace.error("\n\n*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***\n\n");
 		return false;
@@ -425,12 +426,12 @@ var unpackHabitatObject = function (client, o, containerRef) {
 
 	o.clientMessages 	= HCode[mod.type].clientMessages;
 	o.container 	 	= client.state.refToNoid[containerRef] || 0;
-	
-    client.state.objects[o.noid]    = o;
+
+	client.state.objects[o.noid]    = o;
 	client.state.refToNoid[o.ref]	= o.noid;
 	return true;
 }
- 
+
 var vectorize = function (client, newObj , containerRef) {
 	var o = {obj: newObj};		
 	if (!unpackHabitatObject(client, o , containerRef)) return null;	
@@ -611,60 +612,134 @@ function parseHabitatClientMessage(client, server, data) {
 		if (seq !== HCode.PHANTOM_REQUEST) {
 			client.state.replySeq = seq;	// Save sequence number sent by the client for use with any reply.
 		}
-
-		if (noid === HCode.REGION_NOID && reqNum === HCode.MESSAGE_DESCRIBE) {
-			// After a (re)connection, only the first request for a contents vector is valid
-			var context;
-			if (undefined === client.state.nextRegion) {
-				context = Argv.context;
-			} else if (client.state.nextRegion !== "") {
-				context = client.state.nextRegion;
-			} else {
-				return;	// Ignore this request, the client is hanging but a changecontext/immdiate message is coming to fix this.
+		if (noid === HCode.REGION_NOID) {
+			if (reqNum === HCode.MESSAGE_DESCRIBE) {
+				// After a (re)connection, only the first request for a contents vector is valid
+				var context;
+				if (undefined === client.state.nextRegion) {
+					context = Argv.context;
+				} else if (client.state.nextRegion !== "") {
+					context = client.state.nextRegion;
+				} else {
+					return;	// Ignore this request, the client is hanging but a changecontext/immdiate message is coming to fix this.
+				}
+				enterContext(client, server, context);
+				return;
 			}
-			enterContext(client, server, context);
-			return;
-		} else if (noid === client.avatarNoid && reqNum === 14 /* FNKEY */ && args[0] == 11 /* F3 */) {
-			// Special case - bridge handles Current Users Online list.
-			var msg = { type:"private",  noid:0, op:"OBJECTSPEAK_$", text:"" , speaker:noid };
-			for (name in Users) {
-				if (Users[name].online) {
-					msg.text += (name + "            ").substring(0,12);
-					if (msg.text.length > 35) {
-						encodeAndSendClientMessage(client, msg);
-						msg.text = "";
-					}
+			if (reqNum === HCode.MESSAGE_PROMPT_REPLY) {
+				var text = String.fromCharCode.apply(null, args);
+				var esp	 = (text.substring(0, "ESP:".length) == "ESP:");
+				var name;
+				if (esp) {
+					text = text.substring("ESP:".length);
+					if (!text.length) {
+						// Exit ESP mode
+						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 0 });
+						client.ESPTarget = null;
+						return;
+					} else {
+						name = client.ESPTarget;
+						if (Users[name] && Users[name].online) {
+							encodeAndSendClientMessage(
+									Users[name].client, 
+									{ type:"private", 
+										noid:0,
+										op:"OBJECTSPEAK_$",
+										text: "ESP from " + client.userName + ": ",
+										speaker:Users[name].client.avatarNoid});
+							if (text.length < 4 ) {
+								text = " " + text + " ";
+							}
+							encodeAndSendClientMessage(
+									Users[name].client, 
+									{ type:"private", 
+										noid:0,
+										op:"OBJECTSPEAK_$",
+										text: text,
+										speaker:Users[name].client.avatarNoid});							
+							encodeAndSendClientMessage(client, { type:"private", noid: 0, op:"PROMPT_USER_$", text:"ESP: "});
+							return;
+						} else {
+							// Target dropped offline, end ESP.
+							encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 0 });
+							encodeAndSendClientMessage(client, { type:"private", noid:0, op:"OBJECTSPEAK_$", text: name + " left Habitat.", speaker: client.avatarNoid});
+							client.ESPTarget = null;
+							return;
+						}
+					}	
 				}
 			}
-			if (msg.text.length) {
-				msg.text = (msg.text + "                        ").substring(0,36);
-				encodeAndSendClientMessage(client, msg);
-			}
-			encodeAndSendClientMessage(client, {type:"reply", noid:noid, filler:0, err:0} );
-			return;
-		} else {
-			var o	  	= client.state.objects[noid];
-			var op	  	= (undefined === o.clientMessages[reqNum]) ? "UNSUPPORTED" : o.clientMessages[reqNum].op;
-			var ref  	= o.ref;
-			msg   		= {"to":ref, "op":op};   // Default Elko-Habitat message header
-
-			if ("UNSUPPORTED" === op) {
-				Trace.warn("*** Unsupported client message " + reqNum + " for " + ref + ". ***");
+		}
+		if (noid === client.avatarNoid) {						// Special short-circuit cross-region avatar commands: ESP and User List
+			if (reqNum === 14 && args[0] == 11) { // 14 == FNKEY  11 == F3
+				// Special case - bridge handles Current Users Online list.
+				var msg = { type:"private",  noid:0, op:"OBJECTSPEAK_$", text:"" , speaker:noid };
+				for (name in Users) {
+					if (Users[name].online) {
+						msg.text += (name + "            ").substring(0,12);
+						if (msg.text.length > 35) {
+							encodeAndSendClientMessage(client, msg);
+							msg.text = "";
+						}
+					}
+				}
+				if (msg.text.length) {
+					msg.text = (msg.text + "                        ").substring(0,36);
+					encodeAndSendClientMessage(client, msg);
+				}
+				encodeAndSendClientMessage(client, {type:"reply", noid:noid, filler:0, err:0} );
 				return;
 			}
 
-			if (undefined !== HCode.translate[op]) {
-				client.state.replyEncoder = HCode.translate[op].toClient;
-				if (undefined !== HCode.translate[op].toServer) {
-					HCode.translate[op].toServer(args, msg);
+			if (reqNum === 7) {  // 7 == SPEAK
+				var esp	 = args[0];
+				var text = String.fromCharCode.apply(null, args.slice(1));
+				var name;
+				if (text.toLowerCase().substring(0,3) == "to:") {
+					name = findUser(text.substring(3));
+					if (name.length === 0) {
+						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 0 });
+						return;
+					}
+					if (Users[name] && Users[name].online) {
+						client.ESPTarget = name;
+						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 1 }); // Enter ESP mode
+						encodeAndSendClientMessage(client, { type:"private", noid: 0, op:"PROMPT_USER_$", text:"ESP: "});
+						return;
+					} else {
+						encodeAndSendClientMessage(client, { type:"private", noid:noid, op:"SPEAK$", text:"Cannot contact " + name + "."});
+						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 0 }); // Could not find user online
+						return;
+					}
 				}
 			}
 		}
 	}
+
+	// All special cases are resolved. If we get here, we wanted to send the message as-is to the server to handle.
+
+	var o	  	= client.state.objects[noid];
+	var op	  	= (undefined === o.clientMessages[reqNum]) ? "UNSUPPORTED" : o.clientMessages[reqNum].op;
+	var ref  	= o.ref;
+	msg   		= {"to":ref, "op":op};   // Default Elko-Habitat message header
+
+	if ("UNSUPPORTED" === op) {
+		Trace.warn("*** Unsupported client message " + reqNum + " for " + ref + ". ***");
+		return;
+	}
+
+	if (undefined !== HCode.translate[op]) {
+		client.state.replyEncoder = HCode.translate[op].toClient;
+		if (undefined !== HCode.translate[op].toServer) {
+			HCode.translate[op].toServer(args, msg);
+		}
+	}
+
 	if (msg) {
 		toElko(server, JSON.stringify(msg));
 		Trace.debug(JSON.stringify(msg) + " -> server (" + client.sessionName + ")");
 	}
+
 	return;
 }
 
@@ -849,8 +924,8 @@ var encodeState = {
 		Bottle:  function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.filled);
-      return buf;
-  	},
+			return buf;
+		},
 		Teleport: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.activeState || 0);
@@ -934,6 +1009,16 @@ function checkpointUsers() {
 	File.writeFile(UFILENAME, JSON.stringify(save, null, 2));
 }
 
+function findUser(name) {
+	name = name.toLowerCase();
+	for (key in Users) {
+		if (name == key.toLowerCase()) {
+			return key;
+		}
+	}
+	return name;
+}
+
 
 function parseIncomingElkoServerMessage(client, server, data) {
 	var o = {};
@@ -964,6 +1049,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		Users[name] = {
 				regionRef:	regionRef[0] + "-" + regionRef[1],
 				userRef:    userRef[0]   + "-" + userRef[1],
+				client:		client,
 				online:		true};
 		checkpointUsers();
 		client.sessionName 				+= ":" + name;
@@ -977,7 +1063,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		client.state.nextRegion = o.context;		// Save for MESSAGE_DESCRIBE to deal with later.
 		var immediate = o.immediate || false;			// Force enterContext after reconnect? aka Client has prematurely sent MESSAGE_DESCRIBE and we ignored it.
 		createServerConnection(client.port, client.host, client, immediate, o.context); 
-													// create a new connection for the new context
+		// create a new connection for the new context
 		return true; 								// Signal this connection to die now that it's obsolete.
 	}
 
@@ -1063,9 +1149,9 @@ function parseIncomingElkoServerMessage(client, server, data) {
 
 	if (o.op === "make") {
 		var mod  = o.obj.mods[0];
-		
+
 		if (!unpackHabitatObject(client, o, o.to)) return;
-				
+
 		if (o.className === "Avatar") {
 			client.state.numAvatars++;
 			if (!o.you) {
@@ -1123,7 +1209,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 	encodeAndSendClientMessage(client, o); 
 }
 
-function encodeAndSendClientMessage(client, o) {	
+function encodeAndSendClientMessage(client, o) {
 	var split = false;
 	if (o.type === "reply") {
 		var buf = new HabBuf(true, true, client.state.replySeq, o.noid, o.filler);

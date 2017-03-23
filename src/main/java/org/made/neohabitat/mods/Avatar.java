@@ -446,20 +446,19 @@ public class Avatar extends Container implements UserMod {
     }
     
     /**
-     * Verb (Specific): TODO Speak to the region/ESP to another user
+     * Verb (Specific)
      * 
      * @param from
      *            User representing the connection making the request.
      * @param esp
      *            Byte flag indicating that ESP message mode is active on the
-     *            client.
+     *            client (NOTE: ESP is implemented in the Bridge.)
      * @param text
      *            The string to speak...
      */
     @JSONMethod({ "esp", "text" })
     public void SPEAK(User from, OptInteger esp, OptString text) {
         int in_esp = esp.value(FALSE);
-        /* TODO ESP logic Missing */
         send_broadcast_msg(this.noid, "SPEAK$", text.value("(missing text)"));
         send_reply_msg(from, this.noid, "esp", in_esp);
     }
@@ -533,7 +532,7 @@ public class Avatar extends Container implements UserMod {
      */
     @JSONMethod
     public void ESP(User from) {
-        unsupported_reply(from, noid, "Avatar.ESP not implemented yet.");
+        unsupported_reply(from, noid, "Avatar.ESP implmented for clients in the bridge. JSON support TBD.");
     }
     
     /**
