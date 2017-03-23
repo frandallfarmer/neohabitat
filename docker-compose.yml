@@ -20,6 +20,7 @@ services:
       - "27017:27017"
   neohabitat:
     build: .
+    image: philcollins/neohabitat
     privileged: true
     volumes:
       - .:/neohabitat
