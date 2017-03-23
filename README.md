@@ -41,7 +41,7 @@ To connect to the Neohabitat server, you'll need to install a C64 emulator and d
 Download the latest Windows Vice emulator from the above link then make the following configuration changes:
 
 - Go to **Settings –> RS232 Settings**:
-  - Set **RS232 Device 1** to the following: **34.198.66.157:5190**
+  - Set **RS232 Device 1** to the following: **52.87.109.252:5190**
 - Go to **Settings –> Cart I/O Settings –> RS232 Userport settings**:
   - Enable **RS232 Userport** and **Userport Device RS232 Device 1**
   - Set **Userport baud rate** to the following: **1200**
@@ -58,7 +58,7 @@ alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rs
 ```
 
 - Launch Vice via the above alias then go to **Settings -> Resource Inspector**
-- Under **Peripherals -> RS232**, set **Device 1** to the following: ```|nc 34.198.66.157 5190```
+- Under **Peripherals -> RS232**, set **Device 1** to the following: ```|nc neohabitat.demo.spi.ne 5190```
 - Under **Peripherals -> RS232**, set **Device 1 Baud Rate** to the following: ```1200```
 - Save these new settings via **Settings -> Save current Settings**
 
