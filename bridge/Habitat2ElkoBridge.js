@@ -696,14 +696,14 @@ function parseHabitatClientMessage(client, server, data) {
 				var text = String.fromCharCode.apply(null, args.slice(1));
 				var name;
 				if (text.toLowerCase().substring(0,3) == "to:") {
-					name = findUser(text.substring(3));
+					name = findUser(text.substring(3).trim());
 					if (name.length === 0) {
 						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 0 });
 						return;
 					}
 					if (Users[name] && Users[name].online) {
 						client.ESPTarget = name;
-						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 1 }); // Enter ESP mode
+						encodeAndSendClientMessage(client, { type:"reply", noid:noid, esp: 0 }); // Enter ESP mode
 						encodeAndSendClientMessage(client, { type:"private", noid: 0, op:"PROMPT_USER_$", text:"ESP: "});
 						return;
 					} else {
