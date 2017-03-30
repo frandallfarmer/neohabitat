@@ -64,7 +64,7 @@ public class Drugs extends HabitatMod implements Copyable
 	public Drugs(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptInteger count, OptInteger effect) {
 		super(style, x, y, orientation, gr_state);
 		this.count = count.value(3);
-		this.effect = effect.value(1);
+		this.effect = effect.value(0);
 	 
 	}
 	
@@ -82,7 +82,10 @@ public class Drugs extends HabitatMod implements Copyable
 	@Override
 	public JSONLiteral encode(EncodeControl control) {
 		JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-		result.addParameter("count", count);	
+		result.addParameter("count", count);
+		if (control.toRepository()) {
+	        	result.addParameter("effect", effect);
+	    	}
 		result.finish();
 		return result;
 	}
@@ -108,7 +111,7 @@ public class Drugs extends HabitatMod implements Copyable
 
     	@JSONMethod({ "target", "x", "y" })
     	public void THROW(User from, int target, int x, int y) {
-    	    generic_THROW(from, target, x, y);
+    	    	generic_THROW(from, target, x, y);
     	}
     
     
@@ -147,6 +150,7 @@ public class Drugs extends HabitatMod implements Copyable
     	Avatar curAvatar = avatar(from);
     	curAvatar.health = 255;
     	object_say(from, curAvatar.noid, "I feel much better now.");
+	checkpoint_object(this);
     }
     
     
