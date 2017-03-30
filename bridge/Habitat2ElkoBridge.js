@@ -905,6 +905,11 @@ var encodeState = {
 			buf.add(state.state || 0);
 			return buf; 
 		},
+		Drugs:  function(state, container, buf) {
+ 			buf = this.common(state, container, buf);
+ 			buf.add(state.count || 0);
+ 			return buf; 
+ 		},
 		Fake_gun: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.state || 0);

@@ -15,19 +15,20 @@
 	]
 },
 {
-    "ref": "item-fake_gun",
+      "ref": "item-drugs",
     "mods": [
-      {    	  	
-    	"type": "Fake_gun",
-        "y": 20,
-        "x": 100,
-        "gr_state": 0,
-	"orientation": 8,
-	"state":	0 
-      }
+		{    	  	
+			"type": "Drugs",
+			"y": 20,
+			"x": 100,
+			"gr_state": 0,
+			"orientation": 8,
+			"count":	3,
+			"effect": 2
+		}
     ],
     "type": "item",
-    "name": "Fake Gun",
+    "name": "Drugs",
     "in": "context-library"
   },
 {

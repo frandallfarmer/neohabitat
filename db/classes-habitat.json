@@ -43,6 +43,11 @@
 			"name": "org.made.neohabitat.mods.Door"
 		},
 		{
+  			"type": "class",
+ 			"tag": "Drugs",
+ 			"name": "org.made.neohabitat.mods.Drugs"
+ 		},
+		{
 			"type": "class",
 			"tag": "Fence",
 			"name": "org.made.neohabitat.mods.Fence"
