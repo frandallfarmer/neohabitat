@@ -53,10 +53,10 @@ public class Drugs extends HabitatMod implements Copyable
 	public int count = 3; //See struct_drugs.incl.pl1
 	public int effect = NUMBER_OF_DRUG_EFFECTS; //Variables with /*Host Private:*/ variables should not be encoded
 	public static final String[] drug_help = new String[] {
-			"",										  /* Blank space for initialization */
-			"Healing pills: good for what ails you.", /* 1 -- heal_avatar */
-			"DANGER!!  POISON!!",					  /* 2 -- poison_avatar */
-			"Darkening tablets."					  /* 3 -- turn_avatar_black */
+			"",						/* Blank space for initialization */
+			"Healing pills: good for what ails you.", 	/* 1 -- heal_avatar */
+			"DANGER!!  POISON!!",				/* 2 -- poison_avatar */
+			"Darkening tablets."				/* 3 -- turn_avatar_black */
 	};
 	
 	
@@ -69,9 +69,9 @@ public class Drugs extends HabitatMod implements Copyable
 	}
 	
 	public Drugs(int style, int x, int y, int orientation, int gr_state, int count, int effect) {
-        super(style, x, y, orientation, gr_state);
-        this.count = count;
-        this.effect = effect;
+        	super(style, x, y, orientation, gr_state);
+        	this.count = count;
+        	this.effect = effect;
 	}
 	
 	@Override
@@ -87,35 +87,35 @@ public class Drugs extends HabitatMod implements Copyable
 		return result;
 	}
 	
-    @JSONMethod
-    public void HELP(User from) {
-    	drugs_HELP(from);
-    }
+   	@JSONMethod
+    	public void HELP(User from) {
+    		drugs_HELP(from);
+    	}
 	
 
-    @JSONMethod
-    public void GET(User from) {
-       	generic_GET(from);
-    }
+    	@JSONMethod
+    	public void GET(User from) {
+       		generic_GET(from);
+    	}
 
 
-    @JSONMethod({ "containerNoid", "x", "y", "orientation" })
-    public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
-    	generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
+    	@JSONMethod({ "containerNoid", "x", "y", "orientation" })
+    	public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
+    		generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
     			orientation.value(avatar(from).orientation));
    	}
     
 
-    @JSONMethod({ "target", "x", "y" })
-    public void THROW(User from, int target, int x, int y) {
-        generic_THROW(from, target, x, y);
-    }
+    	@JSONMethod({ "target", "x", "y" })
+    	public void THROW(User from, int target, int x, int y) {
+    	    generic_THROW(from, target, x, y);
+    	}
     
     
-    @JSONMethod
-    public void TAKE(User from){ 
-    	Avatar curAvatar = avatar(from);
-    	if((effect < 1) || (NUMBER_OF_DRUG_EFFECTS < effect)){
+    	@JSONMethod
+    	public void TAKE(User from){ 
+    		Avatar curAvatar = avatar(from);
+    		if((effect < 1) || (NUMBER_OF_DRUG_EFFECTS < effect)){
    		 	trace_msg("drugs_TAKE: drug object ", noid, "has illegal effect #", effect);
     	}
     	else if (holding(curAvatar, this) && count > 0){
@@ -135,10 +135,10 @@ public class Drugs extends HabitatMod implements Copyable
     		break;
     	case 2:
     		poison_avatar(from);
-   	 		break;
+   	 	break;
     	case 3:
-   	 		turn_avatar_black(from);
-   	 		break;
+   	 	turn_avatar_black(from);
+   	 	break;
     	}
     }
     	
