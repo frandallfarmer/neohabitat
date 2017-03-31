@@ -151,6 +151,7 @@ public class Drugs extends HabitatMod implements Copyable
     	curAvatar.health = 255;
     	object_say(from, curAvatar.noid, "I feel much better now.");
 	checkpoint_object(this);
+	curAvatar.checkpoint_object(curAvatar);
     }
     
     
