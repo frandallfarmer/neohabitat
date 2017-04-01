@@ -38,6 +38,9 @@ RUN yum -y install \
 # Installs Node dependencies.
 RUN npm install -g supervisor
 
+# Adds a container log tailing utility.
+RUN printf '#!/bin/bash\ncat /proc/$(pgrep java)/fd/{1,2} /proc/$(pgrep -f node)/fd/{1,2}' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
+
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
 RUN rm -rf lib && npm install && ./build
