@@ -627,7 +627,20 @@ public class Avatar extends Container implements UserMod {
                 object_say(from, "Open source - Join us! NeoHabitat.org ");
                 send_reply_success(from);
                 break;
-            case 11: // F3 & F4 (List last dozen users)
+            case 11: // F3 & F4 (Users list)
+            	String balloon = "";				// TODO Limit to las dozen.
+            	for (String name: Region.NameToUser.keySet()) {
+            		balloon += (Region.NameToUser.get(name).name() + "            ").substring(0, 12);
+            		if (balloon.length() > 35) {
+            			object_say(from, balloon);
+            			balloon = "";
+            		}
+                }
+            	if (!balloon.isEmpty()) {
+        			object_say(from, (balloon + "                        ").substring(0,36));
+            	}
+            	send_reply_success(from);
+            	break;
             case 13: // F5 & F6 (Change Skin Color)
             default:
                 unsupported_reply(from, noid, "Avatar.FNKEY not implemented yet.");

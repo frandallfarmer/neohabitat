@@ -1,17 +1,21 @@
 package org.made.neohabitat.mods;
 
+import java.util.Hashtable;
+
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.Context;
 import org.elkoserver.server.context.ContextMod;
 import org.elkoserver.server.context.User;
+import org.elkoserver.server.context.UserWatcher;
 import org.made.neohabitat.Constants;
 import org.made.neohabitat.Container;
-import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
-import org.made.neohabitat.Magical;
+
+
 
 /**
  * Habitat Region Mod (attached to a Elko Context)
@@ -20,22 +24,23 @@ import org.made.neohabitat.Magical;
  * is the "room" logic, controlling how things interact with each other - not on
  * a Item to Item or User to User basis, but when interacting between multiple
  * objects in the region.
- *
- * TODO Region Behavior
  * 
  * @author randy
  *
  */
 
-public class Region extends Container implements ContextMod, Constants {
+public class Region extends Container implements UserWatcher, ContextMod, Constants {
     
     /** The default depth for a region. */
-    public static final int DEFAULT_REGION_DEPTH = 32; // TODO What is the
-                                                       // correct default region
-                                                       // depth?
+    public static final int DEFAULT_REGION_DEPTH = 32;
 
     /** The default maximum number of avatars for a Region. */
     public static final int DEFAULT_MAX_AVATARS = 6;
+    
+    /** Statics are shared amongst all regions */
+
+    /** All the currently logged in user names for ESP lookup */
+    public static Hashtable<String, User> NameToUser = new Hashtable<String, User>();    
 
     public int HabitatClass() {
         return CLASS_REGION;
@@ -77,15 +82,15 @@ public class Region extends Container implements ContextMod, Constants {
     /**
      * This is an array holding all the Mods for all the Users and Items in this
      * room.
-     */ // TODO Abstract this away! FRF */
+     */
     public HabitatMod noids[]      = new HabitatMod[256];
     /** Connecting region numbers in the 4 ordinal directions */
     public String     neighbors[]  = { "", "", "", "" };
     /** Direction to nearest Town */
     public String	  town_dir     = "";
     /** Direciton to nearest Teleport Booth */
-    public String	  port_dir     = "";
-
+    public String	  port_dir     = "";    
+    
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
         "town_dir", "port_dir", "max_avatars", "neighbors" })
     public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
@@ -118,7 +123,28 @@ public class Region extends Container implements ContextMod, Constants {
 
     @Override
     public void objectIsComplete() {
+        ((Context) this.object()).registerUserWatcher((UserWatcher) this);
         this.noids[0] = this;
+    }
+
+    public void noteUserArrival(User who) {
+    	Region.addUser(who);
+    }
+    
+    public void noteUserDeparture(User who) {
+    	Region.removeUser(who);
+    }
+        
+    public static void addUser(User from) {
+    	NameToUser.put(from.name().toLowerCase(), from);
+    }
+    
+    public static void removeUser(User from) {
+    	NameToUser.remove(from.name().toLowerCase());
+    }
+    
+    public static User getUserByName(String name) {
+    	return (User) NameToUser.get(name.toLowerCase());
     }
     
     @Override
@@ -146,6 +172,7 @@ public class Region extends Container implements ContextMod, Constants {
      * @param mod
      */
     public static int addToNoids(HabitatMod mod) {
+    	//TODO: Missing limit! OVERFLOW/LOOP POSSIBLE. FRF
         int noid = 1;
         HabitatMod[] noids = mod.current_region().noids;
         while (null != noids[noid]) {

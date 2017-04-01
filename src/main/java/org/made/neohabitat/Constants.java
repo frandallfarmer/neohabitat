@@ -169,8 +169,8 @@ public interface Constants {
     public static final int      FALSE                      = 0;
     public static final int      BOING_FAILURE              = 2;
     public static final int      TRUE                       = 1;
-    /* %replace false by '0'b omitted to avoid conflict. FRF */
-    /* %replace true by '1'b omitted to avoid conflict. FRF */
+    /* public static final int		 false 		 = '0'b omitted to avoid conflict. FRF */
+    /* public static final int		 true 		 = '1'b omitted to avoid conflict. FRF */
     public static final int      TEXT_LENGTH                = 256;
     public static final int      PAPER_LENGTH               = 640;
     
@@ -574,6 +574,31 @@ public interface Constants {
     public static final int      sign_char_cursor_left      = cursor_left;
     public static final int      sign_char_cursor_up        = cursor_up;
     public static final int      sign_char_cursor_down      = cursor_down;
+    
+    public static final int		 HS$lifetime          		 =   1;
+    public static final int		 HS$max_lifetime      		 =   2;
+    public static final int		 HS$deaths            		 =   3;
+    public static final int		 HS$treasures         		 =   4;
+    public static final int		 HS$mail_send_count   		 =   5;
+    public static final int		 HS$mail_recv_count   		 =   6;
+    public static final int		 HS$grabs             		 =   7;
+    public static final int		 HS$kills             		 =   8;
+    public static final int		 HS$escapes           		 =   9;
+    public static final int		 HS$body_changes      		 =  10;
+    public static final int		 HS$max_wealth        		 =  11;
+    public static final int		 HS$travel            		 =  12;
+    public static final int		 HS$max_travel        		 =  13;
+    public static final int		 HS$teleports         		 =  14;
+    public static final int		 HS$explored          		 =  15;
+    public static final int		 HS$online_time       		 =  16;
+    public static final int		 HS$talkcount         		 =  17;
+    public static final int		 HS$wealth            		 =  18;
+    public static final int		 HS$ghost_count       		 =  19;
+    public static final int		 HS$esp_send_count    		 =  20;
+    public static final int		 HS$esp_recv_count    		 =  21;
+    public static final int		 HS$requests          		 =  22;
+    public static final int		 HS$MAX						 = HS$requests;
+    
     
     public static final String[] CLIENT_ERRORS              = { "user_requested_dump", "memory_full", "memory_fault",
             "memory_corrupt", "indirect_address_error", "bad_image_state", "no_room_for_head", "indirect_address_jmp",

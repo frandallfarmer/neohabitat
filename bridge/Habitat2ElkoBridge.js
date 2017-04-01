@@ -670,27 +670,7 @@ function parseHabitatClientMessage(client, server, data) {
 				}
 			}
 		}
-		if (noid === client.avatarNoid) {						// Special short-circuit cross-region avatar commands: ESP and User List
-			if (reqNum === 14 && args[0] == 11) { // 14 == FNKEY  11 == F3
-				// Special case - bridge handles Current Users Online list.
-				var msg = { type:"private",  noid:0, op:"OBJECTSPEAK_$", text:"" , speaker:noid };
-				for (name in Users) {
-					if (Users[name].online) {
-						msg.text += (name + "            ").substring(0,12);
-						if (msg.text.length > 35) {
-							encodeAndSendClientMessage(client, msg);
-							msg.text = "";
-						}
-					}
-				}
-				if (msg.text.length) {
-					msg.text = (msg.text + "                        ").substring(0,36);
-					encodeAndSendClientMessage(client, msg);
-				}
-				encodeAndSendClientMessage(client, {type:"reply", noid:noid, filler:0, err:0} );
-				return;
-			}
-
+		if (noid === client.avatarNoid) {						// Special short-circuit cross-region avatar commands: ESP
 			if (reqNum === 7) {  // 7 == SPEAK
 				var esp	 = args[0];
 				var text = String.fromCharCode.apply(null, args.slice(1));
