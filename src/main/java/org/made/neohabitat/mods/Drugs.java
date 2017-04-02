@@ -119,86 +119,68 @@ public class Drugs extends HabitatMod implements Copyable
     	public void TAKE(User from){ 
     		Avatar curAvatar = avatar(from);
     		if((effect < 1) || (NUMBER_OF_DRUG_EFFECTS < effect)){
-   		 	trace_msg("drugs_TAKE: drug object ", noid, "has illegal effect #", effect);
-    	}
-    	else if (holding(curAvatar, this) && count > 0){
-    		count -= 1;
-    		gen_flags[MODIFIED] = true;
-    		send_neighbor_msg(from, curAvatar.noid, "TAKE$");
-    		send_reply_msg(from, noid, "TAKE_SUCCESS", TRUE);
-    		if(count <= 0){
-    			destroy_object(this);
-    			object_say(from, noid, "All gone!");
+   			trace_msg("drugs_TAKE: drug object ", noid, "has illegal effect #", effect);
     		}
+    		else if (holding(curAvatar, this) && count > 0){
+    		    count -= 1;
+    		    gen_flags[MODIFIED] = true;
+    		    send_neighbor_msg(from, curAvatar.noid, "TAKE$");
+    		    send_reply_msg(from, noid, "TAKE_SUCCESS", TRUE);
+    		    switch(effect) {
+        	    case 1:								//heal_avatar(from);
+            	    	curAvatar.health = 255;
+            	    	object_say(from, curAvatar.noid, "I feel much better now.");
+            	    	checkpoint_object(this);
+            	    	curAvatar.checkpoint_object(curAvatar);
+        	    	break;
+        	    case 2:								//poison_avatar(from);
+        	    	object_say(from, curAvatar.noid, "I feel very sick.");
+            	    	HabitatMod target =  current_region().noids[curAvatar.noid];
+            	    	trace_msg("Killing Avatar %s...", target.obj_id());
+            	    	kill_avatar((Avatar)target); 
+       	 	    	break;
+        	    case 3:								//turn_avatar_black(from);
+            	    	object_say(from, curAvatar.noid, "I feel very odd.");
+            	    	curAvatar.custom[0] = 17;
+            	    	curAvatar.custom[1] = 17;
+            	    	send_fiddle_msg(THE_REGION, curAvatar.noid, C64_ORIENT_OFFSET, new int[]{curAvatar.custom[0],curAvatar.custom[1]});
+            	    	HabitatMod curHeadObj = curAvatar.contents(Avatar.HEAD);
+            	    	Head curHead = (Head) curHeadObj;
+            	    	if(curHeadObj != null){
+            		    curHeadObj = curAvatar.contents(curHead.noid);
+            		    curHead.gen_flags[MODIFIED] = true;
+            		    curHead.orientation = (curHead.orientation & 0x87);
+            		    curHead.orientation = (curHead.orientation | 0x8);
+            		    curHead.checkpoint_object(curHead);
+            		    send_fiddle_msg(THE_REGION, curHead.noid, C64_ORIENT_OFFSET, new int[]{curHead.orientation});
+            	    	}
+       	 	    	break;
+        	   }
+    		   if(count <= 0){
+    		       destroy_object(this);
+    		       object_say(from, noid, "All gone!");
+    		   }
+    	     }
     	}
-    	send_reply_error(from);
-    	switch(effect) {
-    	case 1:
-    		heal_avatar(from);
-    		break;
-    	case 2:
-    		poison_avatar(from);
-   	 	break;
-    	case 3:
-   	 	turn_avatar_black(from);
-   	 	break;
-    	}
-    }
-    	
-    
-    public void heal_avatar(User from){
-    	Avatar curAvatar = avatar(from);
-    	curAvatar.health = 255;
-    	object_say(from, curAvatar.noid, "I feel much better now.");
-	checkpoint_object(this);
-	curAvatar.checkpoint_object(curAvatar);
-    }
-    
-    
-    public void poison_avatar(User from ){
-    	Avatar curAvatar = avatar(from);
-    	object_say(from, curAvatar.noid, "I feel very sick.");
-    	HabitatMod target =  current_region().noids[curAvatar.noid];
-    	trace_msg("Killing Avatar %s...", target.obj_id());
-    	kill_avatar((Avatar)target); 
-    }
-    
-    
-    public void turn_avatar_black(User from){
-     	Avatar curAvatar = avatar(from);
-    	HabitatMod curHeadObj = curAvatar.contents(Avatar.HEAD);
-    	Head curHead = (Head) curHeadObj;
-    	object_say(from, curAvatar.noid, "I feel very odd.");
-    	curAvatar.custom[0] = 17;
-    	curAvatar.custom[1] = 17;
-    	send_fiddle_msg(THE_REGION, curAvatar.noid, C64_ORIENT_OFFSET, new int[]{curAvatar.custom[0],curAvatar.custom[1]});
-    	if(curHeadObj != null){
-    		curHeadObj = curAvatar.contents(curHead.noid);
-    		curHead.gen_flags[MODIFIED] = true;
-    		curHead.orientation = (curHead.orientation & 0x87);
-    		curHead.orientation = (curHead.orientation | 0x8);
-    		send_fiddle_msg(THE_REGION, curHead.noid, C64_ORIENT_OFFSET, new int[]{curHead.orientation});
-    	}
-    }
-    
+
   
-    public String vendo_info(){
-    	if(effect < 1){
-    		return "Illegal drugs.";
-    	}
-    	else if(effect > NUMBER_OF_DRUG_EFFECTS){
+    	public String vendo_info(){
+    	    if(effect < 1){
+    		 return "Illegal drugs.";
+    	    }
+    	    else if(effect > NUMBER_OF_DRUG_EFFECTS){
     		return "DRUGS, no information available (yet).";
+    	    }
+	    return drug_help[effect];
     	}
-		return drug_help[effect];
-    }
     
  
     public void drugs_HELP(User from){
     	if(effect < 1 || effect > NUMBER_OF_DRUG_EFFECTS){
-    		send_reply_msg(from, "Illegible Latin scrawl.");
+    	    send_reply_msg(from, "Illegible Latin scrawl.");
     	}
     	else
-    		send_reply_msg(from, "DRUGS: select do to consume. This pill bottle has " + count + " pills remaining. This bottle contians:");
+    	    send_reply_msg(from, "DRUGS: select do to consume. This pill bottle has " + count + " pills remaining. This bottle contians:");
     	object_say(from, noid, drug_help[effect]);
     }
 }
