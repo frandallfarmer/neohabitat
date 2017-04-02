@@ -153,8 +153,10 @@ public class Avatar extends Container implements UserMod {
      * Target NOID and magic item saved between events, such as for the GOD TOOL
      * (see Magical.java). This is a transient value and not persisted.
      */
-    public HabitatMod savedTarget     = null;
-    public Magical    savedMagical    = null;
+    public HabitatMod savedTarget		= null;
+    public Magical    savedMagical		= null;
+    public String	  ESPTargetName		= null;
+    
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
@@ -458,11 +460,25 @@ public class Avatar extends Container implements UserMod {
      */
     @JSONMethod({ "esp", "text" })
     public void SPEAK(User from, OptInteger esp, OptString text) {
-        int in_esp = esp.value(FALSE);
-        send_broadcast_msg(this.noid, "SPEAK$", text.value("(missing text)"));
-        send_reply_msg(from, this.noid, "esp", in_esp);
+    	int		in_esp	= esp.value(TRUE);
+    	String	msg		= text.value("(missing text)");
+    	
+    	if (FALSE == in_esp) {
+    		if (msg.toLowerCase().startsWith("to:")) {
+    			String name = msg.substring(3).trim();
+    			if (Region.getUserByName(name) != null) {
+    				ESPTargetName	= name;
+    				in_esp			= TRUE;
+    			} else {
+    				send_private_msg(from, this.noid, from, "SPEAK$", "Cannot contact " + name + ".");
+    			}
+    		} else {
+    			send_broadcast_msg(this.noid, "SPEAK$", msg);
+    		}
+    	}
+		send_reply_msg(from, this.noid, "esp", in_esp);
     }
-    
+
     /**
      * Verb (Specific): TODO Walk across the region.
      * 
@@ -524,15 +540,42 @@ public class Avatar extends Container implements UserMod {
     }
 
     /**
-     * Verb (Specific): TODO Send a point-to-point message to another
-     * user/avatar.
+     * Verb (Specific): Send a point-to-point message to another user/avatar.
      * 
-     * @param from
+      * @param from
      *            User representing the connection making the request.
+     * @param esp
+     *            Byte flag indicating that ESP message mode is active on the
+     *            client (NOTE: ESP is implemented in the Bridge.)
+     * @param text
+     *            The string to speak...
      */
-    @JSONMethod
-    public void ESP(User from) {
-        unsupported_reply(from, noid, "Avatar.ESP implmented for clients in the bridge. JSON support TBD.");
+    @JSONMethod({ "esp", "text" })
+    public void ESP(User from, OptInteger esp, OptString text) {
+    	int		in_esp	= esp.value(FALSE);
+    	String	msg		= text.value("");
+
+    	if (TRUE == in_esp) {
+			msg = msg.startsWith("ESP:") ? msg.substring(4) : msg;
+    		if (msg.isEmpty()) {			// Exit ESP
+    			in_esp			= FALSE;
+    			ESPTargetName	= null;
+    		} else {
+    	    	User to = Region.getUserByName(ESPTargetName);
+    			if (to != null) {
+    				object_say(to, "ESP from " + object().name() + ": ");
+    				if (msg.length() < 4) {
+    					msg = " " + msg + " ";
+    				}
+    				object_say(to, msg);
+    			} else {
+    				object_say(from, "Cannot contact " + ESPTargetName + ".");
+        			in_esp			= FALSE;
+        			ESPTargetName	= null;
+    			}
+    		}
+    	}
+		send_reply_msg(from, this.noid, "esp", in_esp);      
     }
     
     /**
@@ -609,6 +652,32 @@ public class Avatar extends Container implements UserMod {
     }
     
     /**
+     * Verb (Specific): Userlist (same as F3 on c64 client)
+     * 
+     * @param from
+     *            User representing the connection making the request.
+     */
+    @JSONMethod
+    public void USERLIST(User from) {
+    	sayUserList(from);
+    } 
+    
+    public void sayUserList(User from) {
+    	String balloon = "";				// TODO Limit to last dozen.
+    	for (String name: Region.NameToUser.keySet()) {
+    		balloon += (Region.NameToUser.get(name).name() + "            ").substring(0, 12);
+    		if (balloon.length() > 35) {
+    			object_say(from, balloon);
+    			balloon = "";
+    		}
+        }
+    	if (!balloon.isEmpty()) {
+			object_say(from, (balloon + "                        ").substring(0,36));
+    	}
+    	send_reply_success(from);
+    }
+    
+    /**
      * Verb (Specific): TODO Deal with FN Key presses.
      * 
      * @param from
@@ -628,18 +697,7 @@ public class Avatar extends Container implements UserMod {
                 send_reply_success(from);
                 break;
             case 11: // F3 & F4 (Users list)
-            	String balloon = "";				// TODO Limit to las dozen.
-            	for (String name: Region.NameToUser.keySet()) {
-            		balloon += (Region.NameToUser.get(name).name() + "            ").substring(0, 12);
-            		if (balloon.length() > 35) {
-            			object_say(from, balloon);
-            			balloon = "";
-            		}
-                }
-            	if (!balloon.isEmpty()) {
-        			object_say(from, (balloon + "                        ").substring(0,36));
-            	}
-            	send_reply_success(from);
+            	sayUserList(from);
             	break;
             case 13: // F5 & F6 (Change Skin Color)
             default:

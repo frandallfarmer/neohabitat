@@ -525,6 +525,15 @@ this.translate = {
 				b.add(o.esp);
 			} 
 		},
+		ESP: 	 {
+			toServer: function(a, m) {
+				m.esp   = 1; // Ignore a[0] ESP is implied.
+				m.text 	= String.fromCharCode.apply(null, a.slice(1));
+			},
+			toClient: function(o, b) {
+				b.add(o.esp);
+			} 
+		},
 		ASK:	{
 			toServer: function(a, m) {
 				m.text 	= String.fromCharCode.apply(null, a);
