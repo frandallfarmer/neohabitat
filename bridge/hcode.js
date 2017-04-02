@@ -328,7 +328,11 @@ this.SERVER_OPS = {
 				b.add(o.SPRAY_CUSTOMIZE_1);
 			}
 		},
-		"TAKE$":		 		{ reqno: 8 },
+		"TAKE$":		 		{ reqno: 8,
+ 			toClient: function (o,b) {
+                b.add(o.count);
+            }
+ 		},
 		"TAKEMESSAGE$":		 	{ reqno: 8 },
 		"THROW$": 				{ reqno: 24,
 			toClient: function (o,b) {
@@ -683,6 +687,11 @@ this.translate = {
 				b.add(o.ATTACK_target);
 			}
 		},
+		TAKE: {
+ 			toClient: function(o, b) {
+ 				b.add(o.TAKE_SUCCESS);
+ 			}
+ 		},
 		PAYTO: {
 			toServer: function(a,m) {
 				m.target_id	= a[0];
@@ -857,6 +866,16 @@ this.Door	= {
 			4:{ op:"CLOSE" },
 			5:{ op:"OPEN" }
 		}
+};
+
+this.Drugs	= { 		
+ 		clientMessages: {
+ 			0:{ op:"HELP" },
+ 			1:{ op:"GET" },
+ 			2:{ op:"PUT" },
+ 			3:{ op:"THROW" },
+ 			4:{ op:"TAKE" }
+ 		}
 };
 
 this.Table	= { 		
