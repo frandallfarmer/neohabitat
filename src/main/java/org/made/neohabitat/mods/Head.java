@@ -179,8 +179,7 @@ public class Head extends HabitatMod implements Copyable {
             gen_flags[MODIFIED] = true;
             checkpoint_object(this);
             avatar.true_head_style = style;
-            /* inc_record(avatarptr, HS$body_changes); */ // TODO Hall of
-                                                          // Records
+            avatar.inc_record(HS$body_changes);
             send_neighbor_msg(from, avatar.noid, "WEAR$");
             send_reply_success(from);
         } else if (cont.HabitatClass() != CLASS_AVATAR || cont.noid == avatar.noid) {

@@ -112,6 +112,7 @@ public abstract class Weapon extends HabitatMod {
 		if (success == DEATH) {
 			trace_msg("Killing Avatar %s...", target.obj_id());
 			kill_avatar((Avatar) target);
+			Avatar.inc_record(from, HS$kills);
 		}
 	}
 

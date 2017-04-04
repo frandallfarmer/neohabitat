@@ -176,6 +176,7 @@ public class Spray_can extends HabitatMod implements Copyable {
         		"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
         		"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
             charge--;
+            curAvatar.inc_record(HS$body_changes);
             gen_flags[MODIFIED] = true;
             checkpoint_object(this);
             curAvatar.checkpoint_object(curAvatar);

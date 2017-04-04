@@ -150,6 +150,7 @@ public class Teleport extends Coinop implements Copyable {
     				(activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
     			// Moved arrival positioning logic to avatar.objectIsComplete
     			send_reply_success(from);
+                avatar.inc_record(HS$teleports);
     			goto_new_region(avatar, destination, EAST, TELEPORT_ENTRY, x, y);
     			send_neighbor_msg(from, noid, "ZAPTO$");
     			if (HabitatClass() == CLASS_TELEPORT) {
@@ -157,7 +158,7 @@ public class Teleport extends Coinop implements Copyable {
     				gr_state			= PORT_READY;
     				gen_flags[MODIFIED]	= true;
     				send_neighbor_fiddle_msg(from, THE_REGION, noid, C64_GR_STATE_OFFSET, PORT_READY);            
-    			}    		
+    			}
     			return;
     		}
     	}

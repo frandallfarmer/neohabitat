@@ -133,6 +133,10 @@ public class Avatar extends Container implements UserMod {
     /** TODO Doc */
     public int        dest_x          = 0;
     public int        dest_y          = 0;
+
+    /* FRF Moved Hall of Records per-user stats into the user-avatar for easy access/storage */
+    protected int	  stats[]			= null;
+
     
     /** This is workaround - replacing the containership-based original model for seating used by the original Habtiat */
     public int		  sittingIn			= 0;
@@ -157,48 +161,57 @@ public class Avatar extends Container implements UserMod {
     public Magical    savedMagical		= null;
     public String	  ESPTargetName		= null;
     
+    public				int		lastConnected		= 0;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
-        "to_x", "to_y", "turf", "custom" })
+        "to_x", "to_y", "turf", "custom", "lastConnected", "?stats" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
             OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
             OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
-            OptString turf, int[] custom) {
+            OptString turf, int[] custom, OptInteger lastConnected, int[] stats) {
         super(style, x, y, orientation, gr_state);
-        if (nitty_bits.value(-1) != -1) {
-            this.nitty_bits = unpackBits(nitty_bits.value());
+        if (null == stats) {
+        	stats = new int[HS$MAX];
+        	stats[HS$wealth]		= bankBalance.value(0);
+        	stats[HS$max_wealth]	= bankBalance.value(0);
         }
-//        this.bodyType = bodyType.value("male");
-//        if ("female".equals(this.bodyType)) {
-//            this.orientation = this.set_bit(this.orientation, GENDER_BIT);
-//        } else {
-//            this.orientation = this.clear_bit(this.orientation, GENDER_BIT);
-//        }
-        this.stun_count = stun_count.value(0);
-        this.bankBalance = bankBalance.value(0);
-        this.activity = activity.value(STAND_FRONT);
-        this.action = action.value(this.activity);
-        this.health = health.value(MAX_HEALTH);
-        this.restrainer = restrainer.value(0);
-        this.from_direction = from_direction.value(0);
-        this.from_orientation = from_orientation.value(0);
-        this.transition_type = transition_type.value(WALK_ENTRY);
-        this.from_region = from_region.value("");
-        this.to_region = to_region.value("");
-        this.to_x = to_x.value(0);
-        this.to_y = to_y.value(0);
-        this.turf = turf.value(DEFAULT_TURF);
-        this.custom = custom;
+        setAvatarState(	nitty_bits.present() ? unpackBits(nitty_bits.value()) :  new boolean[32],
+        				bodyType.value("male"),
+        				stun_count.value(0),
+        				bankBalance.value(0),
+        				activity.value(STAND_FRONT),
+        				action.value(this.activity),
+        				health.value(MAX_HEALTH),
+        				restrainer.value(0),
+        				from_direction.value(0),
+        				from_orientation.value(0),
+        				transition_type.value(WALK_ENTRY),
+        				from_region.value(""),
+        				to_region.value(""),
+        				to_x.value(0),
+        				to_y.value(0),
+        				turf.value(DEFAULT_TURF),
+        				custom,
+        				lastConnected.value(0),
+        				stats);
     }
 
     public Avatar(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, String bodyType,
         int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
         int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-        String turf, int[] custom) {
+        String turf, int[] custom, int lastConnected, int[] stats) {
         super(style, x, y, orientation, gr_state);
+        setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
+            from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom,  lastConnected, stats);
+    }
+
+    protected void setAvatarState(boolean[] nitty_bits, String bodyType,
+            int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
+            int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
+            String turf, int[] custom, int lastConnected, int[] stats) {
         this.nitty_bits = nitty_bits;
         this.bodyType = bodyType;
         this.stun_count = stun_count;
@@ -216,22 +229,25 @@ public class Avatar extends Container implements UserMod {
         this.to_y = to_y;
         this.turf = turf;
         this.custom = custom;
+        this.lastConnected = lastConnected;
+        this.stats = stats;
     }
-
+    
+    
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         if (packBits(nitty_bits) != 0) {
             result.addParameter("nitty_bits", packBits(nitty_bits));
         }
-        result.addParameter("bodyType", bodyType);
-        result.addParameter("stun_count", stun_count);
-        result.addParameter("bankBalance", bankBalance);
-        result.addParameter("activity", activity);
-        result.addParameter("action", action);
-        result.addParameter("health", health);
-        result.addParameter("restrainer", restrainer);
-        result.addParameter("custom", custom);
+        result.addParameter("bodyType",		bodyType);
+        result.addParameter("stun_count",	stun_count);
+        result.addParameter("bankBalance",	bankBalance);
+        result.addParameter("activity",		activity);
+        result.addParameter("action",		action);
+        result.addParameter("health",		health);
+        result.addParameter("restrainer",	restrainer);
+        result.addParameter("custom", 		custom);
         if (result.control().toRepository()) {
             result.addParameter("from_region",      from_region);
             result.addParameter("to_region",      	to_region);
@@ -240,12 +256,14 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("from_orientation", from_orientation);
             result.addParameter("from_direction",   from_direction);
             result.addParameter("transition_type",	transition_type);
-            result.addParameter("turf", turf);
+            result.addParameter("turf", 			turf);
+            result.addParameter("lastConnected", 	lastConnected);
+            result.addParameter("stats", 			stats);
         }
         if (result.control().toClient() && sittingIn != 0) {
-        	result.addParameter("sittingIn", sittingIn);
-        	result.addParameter("sittingSlot", sittingSlot);
-        	result.addParameter("sittingAction", sittingAction);
+        	result.addParameter("sittingIn",		sittingIn);
+        	result.addParameter("sittingSlot",		sittingSlot);
+        	result.addParameter("sittingAction",	sittingAction);
 			// Having a non-persistent client-only variables is unusual.
         	// This is a work around because the client expects a seated avatar to be "contained" by the seat
         	// That's terrible, so the workaround is to say that seating is live-session-only.
@@ -474,6 +492,7 @@ public class Avatar extends Container implements UserMod {
     			}
     		} else {
     			send_broadcast_msg(this.noid, "SPEAK$", msg);
+    	        inc_record(HS$talkcount);
     		}
     	}
 		send_reply_msg(from, this.noid, "esp", in_esp);
@@ -568,6 +587,8 @@ public class Avatar extends Container implements UserMod {
     					msg = " " + msg + " ";
     				}
     				object_say(to, msg);
+        	        inc_record(HS$esp_send_count);
+        	        Avatar.inc_record(to, HS$esp_recv_count);
     			} else {
     				object_say(from, "Cannot contact " + ESPTargetName + ".");
         			in_esp			= FALSE;
@@ -944,4 +965,70 @@ public class Avatar extends Container implements UserMod {
         return false;
     }
 
+    
+    /**
+     * Set a user's record value.
+     * 
+     * @param recordID
+     * @param value
+     */
+    public void set_record(int recordID, int value) {
+    	stats[recordID] 		= value;
+    	stats[HS$max_lifetime]	= Math.max(stats[HS$max_lifetime],	stats[HS$lifetime]);
+    	stats[HS$max_wealth]	= Math.max(stats[HS$max_wealth],	stats[HS$wealth]);
+    	stats[HS$max_travel]	= Math.max(stats[HS$max_travel],	stats[HS$travel]);
+		gen_flags[MODIFIED] = true;
+    }
+
+    /**
+     * Get this user's value for a record.
+     * 
+     * @param recordID
+     * @return
+     */
+    public int get_record(int recordID) {
+    	return stats[recordID];
+    }
+
+    /**
+     * Add one to a user's record value.
+     * 
+     * @param recordID
+     */
+    public void inc_record(int recordID) {
+    	set_record(recordID, get_record(recordID) + 1);
+    }
+    
+    /**
+     * Static version of set_record. Does the cast for you.
+     * 
+     * @param whom
+     * @param recordID
+     * @param value
+     */
+    static public void set_record(User whom, int recordID, int value) {
+    	((Avatar) whom.getMod(Avatar.class)).set_record(recordID, value);
+    }
+    
+    /**
+     * Static version of get_record. Does the cast for you.
+     * @param whom
+     * @param recordID
+     * @return
+     */
+    
+    static public int get_record(User whom, int recordID) {
+    	return(((Avatar) whom.getMod(Avatar.class)).get_record(recordID));
+    }
+ 
+    /**
+     * Static version of inc_record. Does the cast for you.
+     * 
+     * @param whom
+     * @param recordID
+     * @param value
+     */
+    static public void inc_record(User whom, int recordID) {
+    	((Avatar) whom.getMod(Avatar.class)).inc_record(recordID);
+    }
 }

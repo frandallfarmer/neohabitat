@@ -128,6 +128,13 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     }
 
     public void noteUserArrival(User who) {
+    	Avatar avatar = (Avatar) who.getMod(Avatar.class);
+    	avatar.inc_record(HS$travel);
+    	int today = (int) (System.currentTimeMillis()/ONE_DAY);
+    	if (today > avatar.lastConnected) {
+    		avatar.inc_record(HS$lifetime);
+    		avatar.lastConnected += today;
+    	}
     	Region.addUser(who);
     }
     

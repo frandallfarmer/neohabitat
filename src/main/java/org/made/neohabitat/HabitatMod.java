@@ -3001,6 +3001,21 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		victim.health = 255;
 		victim.bankBalance = Math.round(((float) victim.bankBalance) * 0.8f);
 		victim.stun_count = 0;
+	    victim.set_record(HS$wealth, victim.bankBalance);
+	    victim.inc_record(HS$deaths);
+	    victim.set_record(HS$travel, 0);
+	    victim.set_record(HS$explored, 0);
+	    victim.set_record(HS$escapes, 0);
+	    victim.set_record(HS$teleports, 0);
+	    victim.set_record(HS$treasures, 0);
+	    victim.set_record(HS$grabs, 0);
+	    victim.set_record(HS$kills, 0);
+	    victim.set_record(HS$body_changes, 0);
+	    victim.set_record(HS$esp_send_count, 0);
+	    victim.set_record(HS$mail_send_count, 0);
+	    victim.set_record(HS$esp_recv_count, 0);
+	    victim.set_record(HS$mail_recv_count, 0);
+	    victim.set_record(HS$requests, 0);
 		victim.gen_flags[MODIFIED] = true;
 
 		// Penalize the victim's tokens if they are holding any.

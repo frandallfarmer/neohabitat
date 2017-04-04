@@ -87,6 +87,7 @@ public class Sex_changer extends HabitatMod implements Copyable {
                 "AVATAR_NOID", sexChangingAvatar.noid);
         }
         trace_msg("New sex-changed Avatar orientation: %d", sexChangingAvatar.orientation);
+        sexChangingAvatar.inc_record(HS$body_changes);
         sexChangingAvatar.gen_flags[MODIFIED] = true;
         sexChangingAvatar.checkpoint_object(sexChangingAvatar);
 

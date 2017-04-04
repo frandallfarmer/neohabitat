@@ -97,6 +97,7 @@ public class Atm extends HabitatMod implements Copyable {
             success = FALSE;
         }
         if (success == TRUE) {
+            avatar.set_record(HS$wealth, avatar.bankBalance);
             trace_msg("Avatar %s successfully deposited mod: %s", from.ref(), mod);
             send_reply_success(from);
         } else {
@@ -125,7 +126,7 @@ public class Atm extends HabitatMod implements Copyable {
             "new_posture", OPERATE);
         avatar.bankBalance -= actual_withdrawal;
         if (actual_withdrawal != 0) {
-            // TODO(steve): When HoR is implemented, add code to update Avatar wealth.
+            avatar.set_record(HS$wealth, avatar.bankBalance);
         }
         send_reply_msg(from, noid,
             "amount_lo", actual_withdrawal % 256,
