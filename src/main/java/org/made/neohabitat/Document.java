@@ -80,7 +80,9 @@ public abstract class Document extends HabitatMod {
 					Object[] 			args 		= (Object[]) obj;
 					JSONArray 			textBlocks	= ((JSONObject) args[0]).getArray("pages");
 					Iterator<Object>	textPage 	= textBlocks.iterator();
-					for (int i = 0 ; i < textBlocks.size() ; i++) {
+					last_page	=  textBlocks.size();
+					pages		= new String[last_page];
+					for (int i = 0 ; i < last_page ; i++) {
 						pages[i] = (String) textPage.next();
 					}
 				} catch (JSONDecodingException e) {

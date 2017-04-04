@@ -599,7 +599,7 @@ public interface Constants {
     public static final int		 HS$esp_send_count    		=  20;
     public static final int		 HS$esp_recv_count    		=  21;
     public static final int		 HS$requests          		=  22;
-    public static final int		 HS$MAX						= HS$requests;
+    public static final int		 HS$MAX						= HS$requests + 1;
     
     
     public static final String[] CLIENT_ERRORS              = { "user_requested_dump", "memory_full", "memory_fault",

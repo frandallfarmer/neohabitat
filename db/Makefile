@@ -12,13 +12,16 @@
 # JSON static files to load 
 TELEPORTDB = ./db-teleports.json
 
+# Dynamic in-world objects/data
+BOOKOFRECORDS = ./Text/text-bookofrecords.json
+
 DATABASE_OBJECTS = $(TELEPORTDB)
 
 # JSON object definitions supplied by the various components
 MONGODB_OBJECTS = $(shell find . -name '*.json') $(DATABASE_OBJECTS)
 
 # JSON objects for just the text documents
-TEXT_OBJECTS = $(shell find ./Text -name '*.json')
+TEXT_OBJECTS = $(shell find ./Text -name '*.json') $(BOOKOFRECORDS)
 
 # The file that actually gets produced by "make db"
 DBINIT_SCRIPT = ./dbinit.sh
@@ -29,11 +32,21 @@ clean: nuke all help
 
 help:
 	@echo ""
-	@echo "Valid 'make' targets are 'teleports', 'text', 'regions', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
+	@echo "Valid 'make' targets are 'teleports', 'text', 'regions', 'book', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
 	@echo "Mongo output is in .errs"
 	@echo ""
+	
+book:
+	@echo "Regenerating Book of Records"
+	@rm -f $(DBINIT_SCRIPT) $(BOOKOFRECORDS)
+	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS)
+	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
+	@cp dbinitpre.js $(DBINIT_SCRIPT)
+	@$(foreach F,$(BOOKOFRECORDS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
+	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
+	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
 
-text:
+text: book
 	@echo "Building Text documents"
 	@rm -f $(DBINIT_SCRIPT)
 	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
@@ -75,7 +88,7 @@ nuke:
 	@rm -f  $(DATABASE_OBJECTS) .errs	
 	@echo 'db.odb.remove({});' | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
 
-all: teleports regions
+all: teleports regions book
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
