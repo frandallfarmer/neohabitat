@@ -22,6 +22,7 @@ clusters:
         NEOHABITAT_DEFAULT_CONTEXT: context-Downtown_5f
         NEOHABITAT_MONGO_HOST: 127.0.0.1:27017
         NEOHABITAT_SCHEMA_DIR: db
+        NEOHABITAT_SHOULD_ENABLE_CRON: "true"
         NEOHABITAT_SHOULD_ENABLE_DEBUGGER: "false"
       synapses:
         - resource: neohabitatmongo
@@ -34,7 +35,7 @@ clusters:
       image: chk1/slackin
       environment:
         SLACK_ORG: neohabitat
-        SLACK_TOKEN: "{{ vault.slack_token }}"
+        SLACK_API_TOKEN: "{{ vault.neohabitat_slack_token }}"
       ports:
         - port: 3000
 
