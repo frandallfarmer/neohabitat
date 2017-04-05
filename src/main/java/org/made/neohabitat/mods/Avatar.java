@@ -161,17 +161,19 @@ public class Avatar extends Container implements UserMod {
     public Magical    savedMagical		= null;
     public String	  ESPTargetName		= null;
     
-    public				int		lastConnected		= 0;
+    public int		  lastConnectedDay	= 0;
+    public int		  lastConnectedTime = 0;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
-        "to_x", "to_y", "turf", "custom", "lastConnected", "?stats" })
+        "to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "?stats" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
             OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
             OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
-            OptString turf, int[] custom, OptInteger lastConnected, int[] stats) {
+            OptString turf, int[] custom, OptInteger lastConnectedDay, OptInteger lastConnectedTime,
+            int[] stats) {
         super(style, x, y, orientation, gr_state);
         if (null == stats) {
         	stats = new int[HS$MAX];
@@ -195,23 +197,24 @@ public class Avatar extends Container implements UserMod {
         				to_y.value(0),
         				turf.value(DEFAULT_TURF),
         				custom,
-        				lastConnected.value(0),
+        				lastConnectedDay.value(0),
+        				lastConnectedTime.value(0),
         				stats);
     }
 
     public Avatar(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, String bodyType,
         int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
         int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-        String turf, int[] custom, int lastConnected, int[] stats) {
+        String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, int[] stats) {
         super(style, x, y, orientation, gr_state);
         setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
-            from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom,  lastConnected, stats);
+            from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime, stats);
     }
 
     protected void setAvatarState(boolean[] nitty_bits, String bodyType,
             int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
             int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-            String turf, int[] custom, int lastConnected, int[] stats) {
+            String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, int[] stats) {
         this.nitty_bits = nitty_bits;
         this.bodyType = bodyType;
         this.stun_count = stun_count;
@@ -229,7 +232,8 @@ public class Avatar extends Container implements UserMod {
         this.to_y = to_y;
         this.turf = turf;
         this.custom = custom;
-        this.lastConnected = lastConnected;
+        this.lastConnectedDay = lastConnectedDay;
+        this.lastConnectedTime = lastConnectedTime;
         this.stats = stats;
     }
     
@@ -257,7 +261,8 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("from_direction",   from_direction);
             result.addParameter("transition_type",	transition_type);
             result.addParameter("turf", 			turf);
-            result.addParameter("lastConnected", 	lastConnected);
+            result.addParameter("lastConnectedDay", lastConnectedDay);
+            result.addParameter("lastConnectedTime",lastConnectedTime);
             result.addParameter("stats", 			stats);
         }
         if (result.control().toClient() && sittingIn != 0) {
@@ -708,7 +713,7 @@ public class Avatar extends Container implements UserMod {
     public void FNKEY(User from, OptInteger key, OptInteger target) {
         switch (key.value(0)) {
             case 16: // F8
-                object_say(from, "        You are connected to          ");
+                object_say(from, UPGRADE_PREFIX + "       You are connected to          ");
                 object_say(from, "   The Neoclassical Habitat Server    ");
                 //                object_say(from, "                                     ".substring(BuildVersion.version.length())
                 //                       + BuildVersion.version + " ");

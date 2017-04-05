@@ -574,6 +574,9 @@ public interface Constants {
     public static final int      sign_char_cursor_left      = cursor_left;
     public static final int      sign_char_cursor_up        = cursor_up;
     public static final int      sign_char_cursor_down      = cursor_down;
+
+    /** This prefix is to always be displayed before a feature that did not exist in either Lucasfilm's Habitat Beta or Club Caribe */
+    public static final String	 UPGRADE_PREFIX				= "" + (char) ARROW_R;
     
     public static final long	 ONE_DAY					= 1000 * 60 * 60 * 24;		// Millis
     

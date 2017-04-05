@@ -130,15 +130,25 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     public void noteUserArrival(User who) {
     	Avatar avatar = (Avatar) who.getMod(Avatar.class);
     	avatar.inc_record(HS$travel);
-    	int today = (int) (System.currentTimeMillis()/ONE_DAY);
-    	if (today > avatar.lastConnected) {
-    		avatar.inc_record(HS$lifetime);
-    		avatar.lastConnected += today;
+    	int today = (int) (System.currentTimeMillis() / ONE_DAY);
+    	int time  = (int) (System.currentTimeMillis() % ONE_DAY);
+    	if (today > avatar.lastConnectedDay || time - avatar.lastConnectedTime > 1000 * 60 * 2) {
+    		tellEveryone(who.name() + " has arrived.");
     	}
+    	if (today > avatar.lastConnectedDay) {
+    		avatar.inc_record(HS$lifetime);
+    	}
+		avatar.lastConnectedDay  = today;
+    	avatar.lastConnectedTime = time;
     	Region.addUser(who);
     }
     
     public void noteUserDeparture(User who) {
+    	Avatar avatar = (Avatar) who.getMod(Avatar.class);
+    	avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
+    	avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
+		avatar.gen_flags[MODIFIED] = true;    					
+    	avatar.checkpoint_object(avatar);
     	Region.removeUser(who);
     }
         
@@ -198,6 +208,14 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
      */
     public static void removeFromObjList(HabitatMod mod) {
         mod.current_region().noids[mod.noid] = null;
+    }
+    
+    public static void tellEveryone(String text) {
+    	for (String key: NameToUser.keySet()) {
+    		User	user	= NameToUser.get(key);
+    		Avatar	avatar	= (Avatar) user.getMod(Avatar.class);
+    		avatar.object_say(user, UPGRADE_PREFIX + text);
+        }
     }
     
     /**
