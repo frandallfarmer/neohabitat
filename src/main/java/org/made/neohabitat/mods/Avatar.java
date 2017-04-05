@@ -489,9 +489,11 @@ public class Avatar extends Container implements UserMod {
     	if (FALSE == in_esp) {
     		if (msg.toLowerCase().startsWith("to:")) {
     			String name = msg.substring(3).trim();
-    			if (Region.getUserByName(name) != null) {
+    			User   user = Region.getUserByName(name);
+    			if (user != null && user != from) {
     				ESPTargetName	= name;
     				in_esp			= TRUE;
+        	        object_say(from, UPGRADE_PREFIX + "Tranmitting thoughts to " + user.name() + "...");
     			} else {
     				send_private_msg(from, this.noid, from, "SPEAK$", "Cannot contact " + name + ".");
     			}
@@ -584,6 +586,7 @@ public class Avatar extends Container implements UserMod {
     		if (msg.isEmpty()) {			// Exit ESP
     			in_esp			= FALSE;
     			ESPTargetName	= null;
+    	        object_say(from, UPGRADE_PREFIX + "ESP connection ended.");
     		} else {
     	    	User to = Region.getUserByName(ESPTargetName);
     			if (to != null) {
@@ -594,6 +597,7 @@ public class Avatar extends Container implements UserMod {
     				object_say(to, msg);
         	        inc_record(HS$esp_send_count);
         	        Avatar.inc_record(to, HS$esp_recv_count);
+        	        object_say(from, UPGRADE_PREFIX + "ESP:" + msg);
     			} else {
     				object_say(from, "Cannot contact " + ESPTargetName + ".");
         			in_esp			= FALSE;
