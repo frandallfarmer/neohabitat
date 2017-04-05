@@ -43,7 +43,7 @@ RUN npm install -g supervisor
 RUN printf '#!/bin/bash\ncat /proc/$(pgrep java)/fd/{1,2} /proc/$(pgrep -f node)/fd/{1,2}' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
 
 # Adds a cronjob to update the Hall of Records.
-RUN printf "*/10 * * * * /bin/bash -c 'cd /neohabitat/db && make book'" > /etc/cron.d/hall-of-records
+RUN printf "*/10 * * * * root /bin/bash -c 'cd /neohabitat/db && make book'" > /etc/cron.d/hall-of-records
 
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
