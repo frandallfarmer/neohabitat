@@ -71,7 +71,7 @@ JVM_ARGS=()
 
 if [ "${SHOULD_ENABLE_CRON}" == true ]; then
   echo " - Starting cron daemon..."
-  crond
+  crond -i
 fi
 
 if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
