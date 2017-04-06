@@ -34,6 +34,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
 	/** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
 	public static boolean	NEOHABITAT_FEATURES = true;	
 	
+	/** The number of tokens to give to an avatar each new day that the user loggs in */
+	public static final int	STIPEND = 100;
+	
     /** The default depth for a region. */
     public static final int DEFAULT_REGION_DEPTH = 32;
 
@@ -142,6 +145,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     		avatar.firstConnection = true;
     	}
     	if (today > avatar.lastConnectedDay) {
+    		avatar.bankBalance += STIPEND;
+            avatar.set_record(HS$wealth, avatar.bankBalance);
     		avatar.inc_record(HS$lifetime);
     	}
 		avatar.lastConnectedDay  = today;
