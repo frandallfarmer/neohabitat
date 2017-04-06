@@ -164,6 +164,9 @@ public class Avatar extends Container implements UserMod {
     public int		  lastConnectedDay	= 0;
     public int		  lastConnectedTime = 0;
     
+    /** Used to indicate that this avatar-instance should be treated as the "first" instantiation of the session */
+    public boolean	  firstConnection	= false;
+    
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
         "to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "?stats" })
@@ -487,13 +490,22 @@ public class Avatar extends Container implements UserMod {
     	String	msg		= text.value("(missing text)");
     	
     	if (FALSE == in_esp) {
-    		if (msg.toLowerCase().startsWith("to:")) {
+    		if (msg.toLowerCase().startsWith("//neohabitat")) {
+    			if (Region.NEOHABITAT_FEATURES) {
+    				Region.tellEveryone("Original Habitat interface enabled globally.");
+    			} else {
+    				Region.tellEveryone("Upgraded NeoHabitat interface enabled globally.");
+    			}
+    			Region.NEOHABITAT_FEATURES = !Region.NEOHABITAT_FEATURES;
+    		} else if (msg.toLowerCase().startsWith("to:")) {
     			String name = msg.substring(3).trim();
     			User   user = Region.getUserByName(name);
     			if (user != null && user != from) {
     				ESPTargetName	= name;
     				in_esp			= TRUE;
-        	        object_say(from, UPGRADE_PREFIX + "Tranmitting thoughts to " + user.name() + "...");
+    				if (Region.NEOHABITAT_FEATURES) {
+    					object_say(from, UPGRADE_PREFIX + "Tranmitting thoughts to " + user.name() + "...");
+    				}
     			} else {
     				send_private_msg(from, this.noid, from, "SPEAK$", "Cannot contact " + name + ".");
     			}
@@ -586,7 +598,9 @@ public class Avatar extends Container implements UserMod {
     		if (msg.isEmpty()) {			// Exit ESP
     			in_esp			= FALSE;
     			ESPTargetName	= null;
-    	        object_say(from, UPGRADE_PREFIX + "ESP connection ended.");
+    			if (Region.NEOHABITAT_FEATURES) {
+    				object_say(from, UPGRADE_PREFIX + "ESP connection ended.");
+    			}
     		} else {
     	    	User to = Region.getUserByName(ESPTargetName);
     			if (to != null) {
@@ -597,7 +611,9 @@ public class Avatar extends Container implements UserMod {
     				object_say(to, msg);
         	        inc_record(HS$esp_send_count);
         	        Avatar.inc_record(to, HS$esp_recv_count);
-        	        object_say(from, UPGRADE_PREFIX + "ESP:" + msg);
+    				if (Region.NEOHABITAT_FEATURES) {
+    					object_say(from, UPGRADE_PREFIX + "ESP:" + msg);
+    				}
     			} else {
     				object_say(from, "Cannot contact " + ESPTargetName + ".");
         			in_esp			= FALSE;

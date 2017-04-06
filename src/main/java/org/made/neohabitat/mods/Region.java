@@ -31,6 +31,9 @@ import org.made.neohabitat.HabitatMod;
 
 public class Region extends Container implements UserWatcher, ContextMod, Constants {
     
+	/** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
+	public static boolean	NEOHABITAT_FEATURES = true;	
+	
     /** The default depth for a region. */
     public static final int DEFAULT_REGION_DEPTH = 32;
 
@@ -133,7 +136,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     	int today = (int) (System.currentTimeMillis() / ONE_DAY);
     	int time  = (int) (System.currentTimeMillis() % ONE_DAY);
     	if (today > avatar.lastConnectedDay || time - avatar.lastConnectedTime > 1000 * 60 * 2) {
-    		tellEveryone(who.name() + " has arrived.");
+    		if (NEOHABITAT_FEATURES) {
+    			tellEveryone(who.name() + " has arrived.");
+    		}
+    		avatar.firstConnection = true;
     	}
     	if (today > avatar.lastConnectedDay) {
     		avatar.inc_record(HS$lifetime);
@@ -264,6 +270,14 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     	who.gr_state &= ~INVISIBLE;
     	who.showDebugInfo(from);
     	send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
+    	if (who.firstConnection && NEOHABITAT_FEATURES) {
+    		if (NameToUser.size() < 2) {
+        		object_say(from, UPGRADE_PREFIX + "You are the only Avatar here right now.");
+    		} else {
+        		object_say(from, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " other Avatars here. Press F3 to see a list.");
+    		}
+    	}
+		who.firstConnection = false;
     }
     
     /**
