@@ -71,6 +71,7 @@ JVM_ARGS=()
 
 if [ "${SHOULD_ENABLE_CRON}" == true ]; then
   echo " - Starting cron daemon..."
+  printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && make book' >> /var/log/hallofrecords.log" > /etc/cron.d/hall-of-records
   crond
 fi
 
