@@ -31,6 +31,8 @@ import org.made.neohabitat.HabitatMod;
 
 public class Region extends Container implements UserWatcher, ContextMod, Constants {
     
+	public static String	MOTD = "Welcome to Habitat!";
+	
 	/** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
 	public static boolean	NEOHABITAT_FEATURES = true;	
 	
@@ -275,14 +277,44 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     	who.gr_state &= ~INVISIBLE;
     	who.showDebugInfo(from);
     	send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
-    	if (who.firstConnection && NEOHABITAT_FEATURES) {
-    		if (NameToUser.size() < 2) {
-        		object_say(from, UPGRADE_PREFIX + "You are the only Avatar here right now.");
-    		} else {
-        		object_say(from, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " other Avatars here. Press F3 to see a list.");
+    	if (who.firstConnection) {
+    		object_say(from, MOTD);
+    		if (NEOHABITAT_FEATURES) {
+    			if (NameToUser.size() < 2) {
+    				object_say(from, UPGRADE_PREFIX + "You are the only Avatar here right now.");
+    			} else {
+    				object_say(from, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " other Avatars here. Press F3 to see a list.");
+    			}
     		}
     	}
-		who.firstConnection = false;
+    	who.firstConnection = false;
+    }
+    
+    /**
+     * Handle request to change the Message of the Day.
+     * Presently, this is a non-persistent change.
+     * 
+     * @param from
+     * @param MOTD
+     */
+    @JSONMethod ({ "MOTD" })
+    public void SET_MOTD(User from, String MOTD) {
+    	// TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
+    	Region.MOTD = MOTD;
+    }
+    
+    /**
+     * Handle request to send a word balloon message
+     * to every user currently online.
+     * 
+     * @param from
+     * @param MOTD
+     */
+    @JSONMethod ({ "text" })
+    public void TELL_EVERYONE(User from, String text) {
+    	// TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
+    	tellEveryone(" From: The Oracle   To: All Avatars: ");
+    	tellEveryone(text);
     }
     
     /**
