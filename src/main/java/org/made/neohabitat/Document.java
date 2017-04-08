@@ -129,7 +129,7 @@ public abstract class Document extends HabitatMod {
         from.send(msg);
     }
     
-    private String getTextPage(String path, int page_to_read) {
+    protected String getTextPage(String path, int page_to_read) {
         return pages[Math.max(Math.min(page_to_read, last_page), 1) - 1];
     }
     

@@ -310,6 +310,11 @@
 			"type": "class",
 			"tag": "Display_case",
 			"name": "org.made.neohabitat.mods.Display_case"
+		},
+		{
+			"type": "class",
+			"tag": "Book",
+			"name": "org.made.neohabitat.mods.Book"
 		}
 	]
 }

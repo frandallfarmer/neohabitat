@@ -1056,6 +1056,16 @@ this.Display_case	= {
 		}
 };
 
+this.Book = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"READ" }
+		}
+};
+
 this.magical	= {
 		clientMessages: {
 			0:{ op:"HELP" },
