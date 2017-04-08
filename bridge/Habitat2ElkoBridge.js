@@ -703,7 +703,7 @@ var encodeState = {
 		},
 		document:  function (state, container, buf) {
 			buf = this.common(state, container, buf);
-			buf.add(state.last_page		|| 1);
+			buf.add(state.last_page		|| 0);
 			return buf;
 		},
 		magical: function (state, container, buf) {
@@ -899,7 +899,8 @@ var encodeState = {
 		Sex_changer:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Dropbox:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Garbage_can: function (state, container, buf) { return (this.openable(state, container, buf)); },
-		Display_case: function (state, container, buf) { return (this.openable(state, container, buf)); }
+		Display_case: function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Book:		function (state, container, buf) { return (this.document(state, container, buf)); }
 };
 
 function habitatEncodeElkoModState (state, container, buf) {

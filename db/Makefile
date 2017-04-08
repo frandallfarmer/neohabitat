@@ -28,7 +28,7 @@ DBINIT_SCRIPT = ./dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
-clean: nuke all help
+clean: nuke all
 
 help:
 	@echo ""
@@ -39,7 +39,7 @@ help:
 book:
 	@echo "Regenerating Book of Records"
 	@rm -f $(DBINIT_SCRIPT) $(BOOKOFRECORDS)
-	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS)
+	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
 	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@$(foreach F,$(BOOKOFRECORDS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
