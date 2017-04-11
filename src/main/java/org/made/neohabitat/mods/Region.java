@@ -174,7 +174,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     }
     
     public static User getUserByName(String name) {
-    	return (User) NameToUser.get(name.toLowerCase());
+    	if (name != null) {    		
+        	return (User) NameToUser.get(name.toLowerCase());
+    	}
+    	return null;
     }
     
     @Override
