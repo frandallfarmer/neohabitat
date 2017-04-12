@@ -99,6 +99,23 @@ function makeLeaderboard(userRecords, statID, prefix, postfix, valueFunc) {
 
 function generateRecords(userRecords) {
 	pages = [];
+	pages.push(
+			pad("The Book of Records - " + (new Date()).toString().substring(0, 15), true) + 
+			pad(" 1. Contents") +
+			pad(" 2. WEALTHIEST") +
+			pad(" 3. ALL-TIME WEALTHIEST") +
+			pad(" 4. LONGEST LIVED") +
+			pad(" 5. ALL-TIME LONGEST LIVED") +
+			pad(" 6. MOST TIMES KILLED") +
+			pad(" 7. MOST DANGEROUS") +
+			pad(" 8. MOST OUTSPOKEN") +
+			pad(" 9. BIGGEST CHAMELEON") +
+			pad("10. MOST TELEPATHIC") +
+			pad("11. MOST ACTIVE") +
+			pad("12. MOST SEDATE") +
+			pad("13. MOST TRAVELLED") +
+			pad("14. ALL-TIME MOST TRAVELLED") +
+			pad("15. MOST ACTIVE TELEPORTER") );
 	pages.push (
 			pad("WEALTHIEST: The 10 Avatars with the", true) + 
 			pad("largest bank accounts today.", true) +
