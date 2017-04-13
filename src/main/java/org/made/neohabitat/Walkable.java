@@ -1,5 +1,6 @@
 package org.made.neohabitat;
 
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.JSONLiteral;
 
@@ -19,19 +20,19 @@ public abstract class Walkable extends HabitatMod {
      */
     protected int flat_type = 0;
     
-    public Walkable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Walkable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             int flat_type) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         this.flat_type = flat_type;
     }
 
-    public Walkable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Walkable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger flat_type) {
-        this(style, x, y, orientation, gr_state, flat_type.value(0));
+        this(style, x, y, orientation, gr_state, restricted, flat_type.value(0));
     }
 
-    public Walkable(int style, int x, int y, int orientation, int gr_state, int flat_type) {
-        super(style, x, y, orientation, gr_state);
+    public Walkable(int style, int x, int y, int orientation, int gr_state, boolean restricted, int flat_type) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.flat_type = flat_type;
     }
 

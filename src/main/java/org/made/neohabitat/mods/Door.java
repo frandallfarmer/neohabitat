@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -52,23 +53,23 @@ public class Door extends Openable implements Copyable {
     /** The region (context-ref) that this door leads to */
     public String connection;
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags", "key_lo", "key_hi", "connection" })
-    public Door(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_lo", "key_hi", "connection" })
+    public Door(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger open_flags, OptInteger key_lo, OptInteger key_hi,
         String connection) {
-        super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
         this.connection = connection;
     }
 
-    public Door(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags, int key_lo, int key_hi,
+    public Door(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags, int key_lo, int key_hi,
         String connection) {
-        super(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
         this.connection = connection;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Door(style, x, y, orientation, gr_state, open_flags, key_lo, key_hi, connection);
+        return new Door(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, connection);
     }
 
     @Override

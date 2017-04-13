@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -59,21 +60,21 @@ public class Spray_can extends HabitatMod implements Copyable {
 
     protected int charge = 100;
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "charge" })
-    public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-        OptInteger gr_state, OptInteger charge) {
-        super(style, x, y, orientation, gr_state);
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "charge" })
+    public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
+    		OptInteger charge) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.charge = charge.value(100);
     }
 
-    public Spray_can(int style, int x, int y, int orientation, int gr_state, int charge) {
-        super(style, x, y, orientation, gr_state);
+    public Spray_can(int style, int x, int y, int orientation, int gr_state, boolean restricted, int charge) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.charge = charge;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Spray_can(style, x, y, orientation, gr_state, charge);
+        return new Spray_can(style, x, y, orientation, gr_state, restricted, charge);
     }
 
     @Override

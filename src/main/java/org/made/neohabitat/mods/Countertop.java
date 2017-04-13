@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -46,19 +47,19 @@ public class Countertop extends Openable implements Copyable {
         return false;
     }
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags" })
-    public Countertop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags" })
+    public Countertop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
                  OptInteger open_flags) {
-        super(style, x, y, orientation, gr_state, open_flags);
+        super(style, x, y, orientation, gr_state, restricted, open_flags);
     }
 
-    public Countertop(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags) {
-        super(style, x, y, orientation, gr_state, open_flags);
+    public Countertop(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Countertop(style, x, y, orientation, gr_state, open_flags);
+        return new Countertop(style, x, y, orientation, gr_state, restricted, open_flags);
     }
 
     @Override

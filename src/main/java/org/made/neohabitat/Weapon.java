@@ -1,6 +1,7 @@
 package org.made.neohabitat;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.server.context.User;
 import org.elkoserver.util.trace.Trace;
@@ -30,12 +31,12 @@ public abstract class Weapon extends HabitatMod {
 	public static final int DEATH = 3;
 	
 	public Weapon(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-		OptInteger gr_state) {
-		super(style, x, y, orientation, gr_state);
+		OptInteger gr_state, OptBoolean restricted) {
+		super(style, x, y, orientation, gr_state, restricted);
 	}
 
-	public Weapon(int style, int x, int y, int orientation, int gr_state) {
-		super(style, x, y, orientation, gr_state);
+	public Weapon(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+		super(style, x, y, orientation, gr_state, restricted);
 	}
 
 	@JSONMethod

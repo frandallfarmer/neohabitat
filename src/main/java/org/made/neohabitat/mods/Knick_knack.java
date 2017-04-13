@@ -2,6 +2,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -59,12 +60,12 @@ public class Knick_knack extends Magical implements Copyable {
      * 
      */
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "magic_type", "charges", "magic_data", "magic_data2",
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "magic_type", "charges", "magic_data", "magic_data2",
             "magic_data3", "magic_data4", "magic_data5" })
-    public Knick_knack(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger magic_type, OptInteger charges, OptInteger magic_data, OptInteger magic_data2,
-            OptInteger magic_data3, OptInteger magic_data4, OptInteger magic_data5) {
-        super(style, x, y, orientation, gr_state, magic_type, charges, magic_data, magic_data2, magic_data3,
+    public Knick_knack(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+            OptInteger magic_type, OptInteger charges, 
+            OptInteger magic_data, OptInteger magic_data2, OptInteger magic_data3, OptInteger magic_data4, OptInteger magic_data5) {
+        super(style, x, y, orientation, gr_state, restricted, magic_type, charges, magic_data, magic_data2, magic_data3,
                 magic_data4, magic_data5);
         /*
          * knick_knacks don't have any additional state beyond being potentially
@@ -72,16 +73,17 @@ public class Knick_knack extends Magical implements Copyable {
          */
     }
 
-    public Knick_knack(int style, int x, int y, int orientation, int gr_state, int magic_type, int charges,
+    public Knick_knack(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
+    	int magic_type, int charges,
         int magic_data, int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
-        super(style, x, y, orientation, gr_state, magic_type, charges, magic_data, magic_data2, magic_data3,
+        super(style, x, y, orientation, gr_state, restricted, magic_type, charges, magic_data, magic_data2, magic_data3,
                 magic_data4, magic_data5);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Knick_knack(style, x, y, orientation, gr_state, magic_type, charges, magic_data, magic_data2,
-            magic_data3, magic_data4, magic_data5);
+        return new Knick_knack(style, x, y, orientation, gr_state, restricted,
+        	magic_type, charges, magic_data, magic_data2, magic_data3, magic_data4, magic_data5);
     }
 
     @Override

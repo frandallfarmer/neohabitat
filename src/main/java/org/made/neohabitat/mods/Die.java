@@ -3,6 +3,7 @@ package org.made.neohabitat.mods;
 import java.util.Random;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -52,20 +53,21 @@ public class Die extends HabitatMod implements Copyable {
 	public int state = 6; //See struct_die.incl.pl1
 	Random rand = new Random();
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "state" })
-    public Die(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int state ) {
-        super(style, x, y, orientation, gr_state);
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "state" })
+    public Die(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+    		int state ) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.state = state;
     }
     
-    public Die(int style, int x, int y, int orientation, int gr_state, int state) {
-        super(style, x, y, orientation, gr_state);
+    public Die(int style, int x, int y, int orientation, int gr_state, boolean restricted, int state) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.state = state;
     }
     
     @Override
 	public HabitatMod copyThisMod() {
-    	return new Die(style, x, y, orientation, gr_state, state);
+    	return new Die(style, x, y, orientation, gr_state, restricted, state);
 	}
     
     @Override

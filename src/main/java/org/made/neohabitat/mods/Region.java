@@ -3,6 +3,7 @@ package org.made.neohabitat.mods;
 import java.util.Hashtable;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
@@ -105,7 +106,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
         OptInteger nitty_bits, OptInteger depth, OptInteger lighting,
         OptString town_dir, OptString port_dir, OptInteger max_avatars,
         String[] neighbors) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, new OptBoolean(false));
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
         }
@@ -119,7 +120,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
 
     public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, int depth, int lighting,
         String town_dir, String port_dir, int max_avatars, String[] neighbors) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, false);
         this.nitty_bits = nitty_bits;
         this.depth = depth;
         this.lighting = lighting;

@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -52,22 +53,25 @@ public class Super_trapezoid extends Polygonal implements Copyable {
     private int	pattern_y_size	= 7;
     private int	pattern[] 		= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", 
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", 
     	"trapezoid_type",  "upper_left_x", "upper_right_x", 
     	"lower_left_x", "lower_right_x",  "height",
     	"pattern_x_size", "pattern_y_size", "pattern"})    
-    public Super_trapezoid(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Super_trapezoid(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger trapezoid_type, OptInteger upper_left_x,  OptInteger upper_right_x,
         OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height,
         OptInteger pattern_x_size, OptInteger pattern_y_size, int[] pattern) {
-        super(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
+        super(style, x, y, orientation, gr_state, restricted, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
         setPatternState(pattern_x_size.value(3), pattern_y_size.value(7), pattern);
     }
 
-    public Super_trapezoid(int style, int x, int y, int orientation, int gr_state, int trapezoid_type,
-        int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height, int pattern_x_size,
+    public Super_trapezoid(int style, int x, int y, int orientation, int gr_state, boolean restricted,
+    	int trapezoid_type,
+        int upper_left_x, int upper_right_x, 
+        int lower_left_x, int lower_right_x, 
+        int height, int pattern_x_size,
         int pattern_y_size, int[] pattern) {
-        super(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
+        super(style, x, y, orientation, gr_state, restricted, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
         setPatternState(pattern_x_size, pattern_y_size, pattern);
     }
     
@@ -79,7 +83,7 @@ public class Super_trapezoid extends Polygonal implements Copyable {
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Super_trapezoid(style, x, y, orientation, gr_state, trapezoid_type, upper_left_x, upper_right_x,
+        return new Super_trapezoid(style, x, y, orientation, gr_state, restricted, trapezoid_type, upper_left_x, upper_right_x,
             lower_left_x, lower_right_x, height, pattern_x_size, pattern_y_size, pattern);
     }
 

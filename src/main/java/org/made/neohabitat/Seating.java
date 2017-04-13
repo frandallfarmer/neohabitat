@@ -2,6 +2,7 @@ package org.made.neohabitat;
 
 import java.util.Arrays;
 
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.JSONLiteral;
@@ -26,13 +27,13 @@ public abstract class Seating extends Openable {
 	/** This state is never persisted, but used by the Bridge to sort out the contents vector */
 	public int sitters[] = {0, 0};
 
-	public Seating(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+	public Seating(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			OptInteger open_flags) {
-		super(style, x, y, orientation, gr_state, open_flags);
+		super(style, x, y, orientation, gr_state, restricted, open_flags);
 	}
 
-	public Seating(int style, int x, int y, int orientation, int gr_state, boolean[] open_flags) {
-		super(style, x, y, orientation, gr_state, open_flags);
+	public Seating(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags) {
+		super(style, x, y, orientation, gr_state, restricted, open_flags);
 	}
 
 	public JSONLiteral encodeSeating(JSONLiteral result) {

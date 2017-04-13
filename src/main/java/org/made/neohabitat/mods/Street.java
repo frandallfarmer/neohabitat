@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -49,16 +50,16 @@ public class Street extends HabitatMod implements Copyable {
     public int width;  
     public int height;
         
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state",  "width", "height" })
-    public Street(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted",  "width", "height" })
+    public Street(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger width, OptInteger height) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         setStreetState(width.value(0), height.value(0));
 
     }
 
-    public Street(int style, int x, int y, int orientation, int gr_state, int width, int height) {
-        super(style, x, y, orientation, gr_state);
+    public Street(int style, int x, int y, int orientation, int gr_state, boolean restricted, int width, int height) {
+        super(style, x, y, orientation, gr_state, restricted);
         setStreetState(width, height);
     }
     
@@ -69,7 +70,7 @@ public class Street extends HabitatMod implements Copyable {
  
     @Override
     public HabitatMod copyThisMod() {
-        return new Street(style, x, y, orientation, gr_state, width, height);
+        return new Street(style, x, y, orientation, gr_state, restricted, width, height);
     }
 
     @Override

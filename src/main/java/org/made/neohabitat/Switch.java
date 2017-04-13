@@ -1,5 +1,6 @@
 package org.made.neohabitat;
 
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
@@ -22,14 +23,14 @@ public abstract class Switch extends HabitatMod {
      */
     protected int on = FALSE;
     
-    public Switch(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Switch(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger on) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         this.on = on.value(FALSE);
     }
 
-    public Switch(int style, int x, int y, int orientation, int gr_state, int on) {
-        super(style, x, y, orientation, gr_state);
+    public Switch(int style, int x, int y, int orientation, int gr_state, boolean restricted, int on) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.on = on;
     }
 

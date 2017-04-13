@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -45,18 +46,18 @@ public class House_cat extends HabitatMod implements Copyable {
         return false;
     }
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state" })
-    public House_cat(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
-        super(style, x, y, orientation, gr_state);
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
+    public House_cat(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
+        super(style, x, y, orientation, gr_state, restricted);
     }
 
-    public House_cat(int style, int x, int y, int orientation, int gr_state) {
-        super(style, x, y, orientation, gr_state);
+    public House_cat(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+        super(style, x, y, orientation, gr_state, restricted);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new House_cat(style, x, y, orientation, gr_state);
+        return new House_cat(style, x, y, orientation, gr_state, restricted);
     }
 
     @Override

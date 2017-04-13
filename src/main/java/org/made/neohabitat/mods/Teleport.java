@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.print.attribute.standard.Destination;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
@@ -63,15 +64,15 @@ public class Teleport extends Coinop implements Copyable {
     /** The teleport address of this teleport [server only] */
     private String	address		= "";
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "activeState", "take", "address"})
-    public Teleport(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "activeState", "take", "address"})
+    public Teleport(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 		OptInteger activeState,  OptInteger take, String address) {
-        super(style, x, y, orientation, gr_state, take);
+        super(style, x, y, orientation, gr_state, restricted, take);
         setTeleportState(activeState.value(PORT_READY), address);
     }
 
-	public Teleport(int style, int x, int y, int orientation, int gr_state, int activeState, int take, String address) {
-		super(style, x, y, orientation, gr_state, take);
+	public Teleport(int style, int x, int y, int orientation, int gr_state, boolean restricted, int activeState, int take, String address) {
+		super(style, x, y, orientation, gr_state, restricted, take);
 		setTeleportState(activeState, address);
 	}
 	
@@ -82,7 +83,7 @@ public class Teleport extends Coinop implements Copyable {
 
 	@Override
 	public HabitatMod copyThisMod() {
-		return new Teleport(style, x, y, orientation, gr_state, activeState, take, address);
+		return new Teleport(style, x, y, orientation, gr_state, restricted, activeState, take, address);
 	}
 
     public JSONLiteral encode(EncodeControl control) {

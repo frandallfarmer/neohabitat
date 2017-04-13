@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
@@ -48,19 +49,19 @@ public class Plaque extends Document implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "last_page", "pages", "path" })
-    public Plaque(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "last_page", "pages", "path" })
+    public Plaque(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             int last_page, String pages[], OptString path) {
-        super(style, x, y, orientation, gr_state, last_page, pages, path);
+        super(style, x, y, orientation, gr_state, restricted, last_page, pages, path);
     }
 
-    public Plaque(int style, int x, int y, int orientation, int gr_state, int last_page, String[] pages, String path) {
-        super(style, x, y, orientation, gr_state, last_page, pages, path);
+    public Plaque(int style, int x, int y, int orientation, int gr_state, boolean restricted, int last_page, String[] pages, String path) {
+        super(style, x, y, orientation, gr_state, restricted, last_page, pages, path);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Plaque(style, x, y, orientation, gr_state, last_page, pages, path);
+        return new Plaque(style, x, y, orientation, gr_state, restricted, last_page, pages, path);
     }
 
     @Override

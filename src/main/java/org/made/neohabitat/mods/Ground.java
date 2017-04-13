@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -50,19 +51,19 @@ public class Ground extends Walkable implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "flat_type" })
-    public Ground(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "flat_type" })
+    public Ground(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger flat_type) {
-        super(style, x, y, orientation, gr_state, flat_type.value(GROUND_FLAT));
+        super(style, x, y, orientation, gr_state, restricted, flat_type.value(GROUND_FLAT));
     }
 
-    public Ground(int style, int x, int y, int orientation, int gr_state, int flat_type) {
-        super(style, x, y, orientation, gr_state, flat_type);
+    public Ground(int style, int x, int y, int orientation, int gr_state, boolean restricted, int flat_type) {
+        super(style, x, y, orientation, gr_state, restricted, flat_type);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Ground(style, x, y, orientation, gr_state, flat_type);
+        return new Ground(style, x, y, orientation, gr_state, restricted, flat_type);
     }
 
     @Override

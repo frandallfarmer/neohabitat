@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
@@ -47,19 +48,19 @@ public class Sign extends Poster implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "text", "ascii"})
-    public Sign(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "text", "ascii"})
+    public Sign(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptString text, int[] ascii) {
-        super(style, x, y, orientation, gr_state, text, ascii, 40);
+        super(style, x, y, orientation, gr_state, restricted, text, ascii, 40);
     }
 
-    public Sign(int style, int x, int y, int orientation, int gr_state, int[] ascii) {
-        super(style, x, y, orientation, gr_state, ascii);
+    public Sign(int style, int x, int y, int orientation, int gr_state, boolean restricted, int[] ascii) {
+        super(style, x, y, orientation, gr_state, restricted, ascii);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Sign(style, x, y, orientation, gr_state, ascii);
+        return new Sign(style, x, y, orientation, gr_state, restricted, ascii);
     }
 
     @Override

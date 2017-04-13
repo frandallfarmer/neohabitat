@@ -1,6 +1,7 @@
 package org.made.neohabitat;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
@@ -26,10 +27,10 @@ public abstract class Polygonal extends HabitatMod {
 	 protected int height		  = 0;
 
     
-	 public Polygonal(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+	 public Polygonal(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			 OptInteger trapezoid_type, OptInteger upper_left_x,  OptInteger upper_right_x,
 			 OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height) {
-		 super(style, x, y, orientation, gr_state);
+		 super(style, x, y, orientation, gr_state, restricted);
 		 setPolygonalState(
 				 trapezoid_type.value(0),
 				 upper_left_x.value(0),
@@ -39,9 +40,9 @@ public abstract class Polygonal extends HabitatMod {
 				 height.value(0));
 	 }
 
-    public Polygonal(int style, int x, int y, int orientation, int gr_state, int trapezoid_type, int upper_left_x,
-        int upper_right_x, int lower_left_x, int lower_right_x, int height) {
-        super(style, x, y, orientation, gr_state);
+    public Polygonal(int style, int x, int y, int orientation, int gr_state, boolean restricted,
+    	int trapezoid_type, int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height) {
+        super(style, x, y, orientation, gr_state, restricted);
         setPolygonalState(trapezoid_type,  upper_left_x, upper_right_x,  lower_left_x,  lower_right_x,  height);
     }
     

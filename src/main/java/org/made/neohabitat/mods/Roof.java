@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -49,23 +50,23 @@ public class Roof extends HabitatMod implements Copyable {
     private int pattern	= 0;
    
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "base", "pattern" })
-    public Roof(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "base", "pattern" })
+    public Roof(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger base, OptInteger pattern) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         this.base		= base.value(0);
         this.pattern	= pattern.value(0);
     }
 
-    public Roof(int style, int x, int y, int orientation, int gr_state, int base, int pattern) {
-        super(style, x, y, orientation, gr_state);
+    public Roof(int style, int x, int y, int orientation, int gr_state, boolean restricted, int base, int pattern) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.base		= base;
         this.pattern	= pattern;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Roof(style, x, y, orientation, gr_state, base, pattern);
+        return new Roof(style, x, y, orientation, gr_state, restricted, base, pattern);
     }
 
     @Override

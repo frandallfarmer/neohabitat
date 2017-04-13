@@ -2,6 +2,7 @@ package org.made.neohabitat;
 
 import java.util.Arrays;
 
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.JSONLiteral;
@@ -27,9 +28,9 @@ public abstract class Poster extends HabitatMod {
 		}
 	}
 	
-	public Poster(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+	public Poster(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			OptString text, int[] ascii, int textLen) {
-		super(style, x, y, orientation, gr_state);
+		super(style, x, y, orientation, gr_state, restricted);
 		this.ascii = new int[textLen];
 		Arrays.fill(this.ascii, 32);
 		if (text.present()) {
@@ -39,8 +40,8 @@ public abstract class Poster extends HabitatMod {
 		}
 	}
 
-	public Poster(int style, int x, int y, int orientation, int gr_state, int[] ascii) {
-		super(style, x, y, orientation, gr_state);
+	public Poster(int style, int x, int y, int orientation, int gr_state, boolean restricted, int[] ascii) {
+		super(style, x, y, orientation, gr_state, restricted);
 		this.ascii = ascii;
 	}
 

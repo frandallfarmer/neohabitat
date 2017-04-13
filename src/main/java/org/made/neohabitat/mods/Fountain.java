@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
@@ -48,19 +49,19 @@ public class Fountain extends Oracular implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "live" })
-    public Fountain(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "live" })
+    public Fountain(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger live) {
-        super(style, x, y, orientation, gr_state, live);
+        super(style, x, y, orientation, gr_state, restricted, live);
     }
 
-    public Fountain(int style, int x, int y, int orientation, int gr_state, int live) {
-        super(style, x, y, orientation, gr_state, live);
+    public Fountain(int style, int x, int y, int orientation, int gr_state, boolean restricted, int live) {
+        super(style, x, y, orientation, gr_state, restricted, live);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Fountain(style, x, y, orientation, gr_state, live);
+        return new Fountain(style, x, y, orientation, gr_state, restricted, live);
     }
 
     @Override

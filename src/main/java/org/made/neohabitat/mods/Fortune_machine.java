@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -143,19 +144,19 @@ public class Fortune_machine extends Coinop implements Copyable {
         "great idea for a fortune message"
     };
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "take" })
-    public Fortune_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-        OptInteger gr_state, OptInteger take) {
-        super(style, x, y, orientation, gr_state, take);
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "take" })
+    public Fortune_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+    		OptInteger take) {
+        super(style, x, y, orientation, gr_state, restricted, take);
     }
 
-    public Fortune_machine(int style, int x, int y, int orientation, int gr_state, int take) {
-        super(style, x, y, orientation, gr_state, take);
+    public Fortune_machine(int style, int x, int y, int orientation, int gr_state, boolean restricted, int take) {
+        super(style, x, y, orientation, gr_state, restricted, take);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Fortune_machine(style, x, y, orientation, gr_state, take);
+        return new Fortune_machine(style, x, y, orientation, gr_state, restricted, take);
     }
 
     @Override

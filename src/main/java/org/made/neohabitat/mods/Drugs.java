@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -60,23 +61,24 @@ public class Drugs extends HabitatMod implements Copyable
 	};
 	
 	
-	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "count", "effect"})
-	public Drugs(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptInteger count, OptInteger effect) {
-		super(style, x, y, orientation, gr_state);
+	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "count", "effect"})
+	public Drugs(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+			OptInteger count, OptInteger effect) {
+		super(style, x, y, orientation, gr_state, restricted);
 		this.count = count.value(3);
 		this.effect = effect.value(0);
 	 
 	}
 	
-	public Drugs(int style, int x, int y, int orientation, int gr_state, int count, int effect) {
-        	super(style, x, y, orientation, gr_state);
+	public Drugs(int style, int x, int y, int orientation, int gr_state, boolean restricted, int count, int effect) {
+        	super(style, x, y, orientation, gr_state, restricted);
         	this.count = count;
         	this.effect = effect;
 	}
 	
 	@Override
 	public HabitatMod copyThisMod() {
-		return new Drugs(style, x, y, orientation, gr_state, count, effect);
+		return new Drugs(style, x, y, orientation, gr_state, restricted, count, effect);
 	}
 	
 	@Override

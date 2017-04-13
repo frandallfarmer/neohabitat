@@ -2,6 +2,7 @@ package org.made.neohabitat;
 
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.server.context.User;
 import org.elkoserver.json.JSONLiteral;
 
@@ -18,14 +19,14 @@ public abstract class Coinop extends HabitatMod {
 	/** A server-only field. How many tokens has this coin operated device taken in? */
 	protected int take = 0;
 
-	public Coinop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+	public Coinop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			OptInteger take) {
-		super(style, x, y, orientation, gr_state);
+		super(style, x, y, orientation, gr_state, restricted);
 		this.take = take.value(0);
 	}
 
-	public Coinop(int style, int x, int y, int orientation, int gr_state, int take) {
-		super(style, x, y, orientation, gr_state);
+	public Coinop(int style, int x, int y, int orientation, int gr_state, boolean restricted, int take) {
+		super(style, x, y, orientation, gr_state, restricted);
 		this.take = take;
 	}
 	

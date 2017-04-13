@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -48,19 +49,19 @@ public class Flag extends Massive implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "mass" })
-    public Flag(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "mass" })
+    public Flag(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger mass) {
-        super(style, x, y, orientation, gr_state, mass);
+        super(style, x, y, orientation, gr_state, restricted, mass);
     }
 
-    public Flag(int style, int x, int y, int orientation, int gr_state, int mass) {
-        super(style, x, y, orientation, gr_state, mass);
+    public Flag(int style, int x, int y, int orientation, int gr_state, boolean restricted, int mass) {
+        super(style, x, y, orientation, gr_state, restricted, mass);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Flag(style, x, y, orientation, gr_state, mass);
+        return new Flag(style, x, y, orientation, gr_state, restricted, mass);
     }
 
     @Override

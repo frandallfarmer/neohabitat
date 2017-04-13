@@ -2,6 +2,7 @@ package org.made.neohabitat;
 
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.server.context.User;
 import org.elkoserver.json.JSONLiteral;
 
@@ -20,14 +21,14 @@ public abstract class Massive extends HabitatMod {
     /** The weight of this object - only ever 1 (immobile) or 0 (portable) */
     protected int mass = 0;
     
-    public Massive(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Massive(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger mass) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         this.mass = mass.value(0);
     }
 
-    public Massive(int style, int x, int y, int orientation, int gr_state, int mass) {
-        super(style, x, y, orientation, gr_state);
+    public Massive(int style, int x, int y, int orientation, int gr_state, boolean restricted, int mass) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.mass = mass;
     }
 

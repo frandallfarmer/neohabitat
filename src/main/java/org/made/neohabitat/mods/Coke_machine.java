@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -48,19 +49,19 @@ public class Coke_machine extends Coinop implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "take" })
-    public Coke_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "take" })
+    public Coke_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger take) {
-        super(style, x, y, orientation, gr_state, take);
+        super(style, x, y, orientation, gr_state, restricted, take);
     }
 
-    public Coke_machine(int style, int x, int y, int orientation, int gr_state, int take) {
-        super(style, x, y, orientation, gr_state, take);
+    public Coke_machine(int style, int x, int y, int orientation, int gr_state, boolean restricted, int take) {
+        super(style, x, y, orientation, gr_state, restricted, take);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Coke_machine(style, x, y, orientation, gr_state, take);
+        return new Coke_machine(style, x, y, orientation, gr_state, restricted, take);
     }
 
     @Override

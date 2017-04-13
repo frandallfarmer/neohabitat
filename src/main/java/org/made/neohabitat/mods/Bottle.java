@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -48,21 +49,21 @@ public class Bottle extends HabitatMod implements Copyable {
 
     public int filled = FALSE;
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "filled" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "filled" })
     public Bottle(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
-        OptInteger gr_state, OptInteger filled) {
-        super(style, x, y, orientation, gr_state);
+        OptInteger gr_state, OptBoolean restricted, OptInteger filled) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.filled = filled.value(FALSE);
     }
 
-    public Bottle(int style, int x, int y, int orientation, int gr_state, int filled) {
-        super(style, x, y, orientation, gr_state);
+    public Bottle(int style, int x, int y, int orientation, int gr_state, boolean restricted, int filled) {
+        super(style, x, y, orientation, gr_state, restricted);
         this.filled = filled;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Bottle(style, x, y, orientation, gr_state, filled);
+        return new Bottle(style, x, y, orientation, gr_state, restricted, filled);
     }
 
     @Override

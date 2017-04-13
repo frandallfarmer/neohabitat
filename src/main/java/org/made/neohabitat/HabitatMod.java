@@ -8,6 +8,7 @@ import org.elkoserver.server.context.ObjectCompletionWatcher;
 import java.util.Random;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.User;
@@ -96,6 +97,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	// public int container = 0; containership is managed by Elko - use it's
 	// understanding to access the objects
 	public int     gr_width    = 0;
+	/** Persistent store if the object is restricted (can't leave region or enter a non-restricted container) or is itself a restricted container */
+	public boolean restricted  = false;
+	
 	public boolean gen_flags[] = new boolean[33];
 
 	/* Provides an initialized random number generator for any derived classes. */
@@ -179,16 +183,17 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            animation/graphic state default:0
 	 */
 
-	public HabitatMod(int style, int x, int y, int orientation, int gr_state) {
-		this.style 			= style;
-		this.x				= x;
-		this.y 				= y;
-		this.orientation 	= orientation;
-		this.gr_state 		= gr_state;
+	public HabitatMod(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+		this.style 				= style;
+		this.x					= x;
+		this.y 					= y;
+		this.orientation 		= orientation;
+		this.gr_state 			= gr_state;
+		gen_flags[RESTRICTED]	= restricted;
 	}
 
-	public HabitatMod(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
-		this(style.value(0), x.value(0), y.value(0), orientation.value(0), gr_state.value(0));
+	public HabitatMod(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
+		this(style.value(0), x.value(0), y.value(0), orientation.value(0), gr_state.value(0), restricted.value(false));
 	}
 
 	public void objectIsComplete() {
@@ -204,6 +209,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		result.addParameter("y", y);
 		result.addParameter("orientation", orientation);
 		result.addParameter("gr_state", gr_state);
+		if (gen_flags[RESTRICTED]) {
+			result.addParameter("restricted", true);
+		}
 		/*
 		 * Do not do result.finsh() here. Each Habitat Class does the final
 		 * assembly.
@@ -3101,7 +3109,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		HabitatMod handContents = who.contents(HANDS);
 		Tokens tokens;
 		if (empty_handed(who)) {
-			tokens = new Tokens(0, 0, HANDS, 0, 0, 0, 0);
+			tokens = new Tokens(0, 0, HANDS, 0, 0, false, 0, 0);
 			Item obj = create_object("money", tokens, who);
 			tokens.tset(amount);
 			trace_msg("Created tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
@@ -3116,7 +3124,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			trace_msg("Updated tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
 			tokens.tset(amount);
 		} else {
-			tokens = new Tokens(0, who.x, who.y, 0, 0, 0, 0);
+			tokens = new Tokens(0, who.x, who.y, 0, 0, false, 0, 0);
 			trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", current_region().obj_id(),
 				who.obj_id(), tokens.tget());
 			Item item = create_object("money", tokens, current_region());

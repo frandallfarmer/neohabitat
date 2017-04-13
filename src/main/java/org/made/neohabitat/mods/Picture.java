@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -48,22 +49,21 @@ public class Picture extends Massive implements Copyable {
 
     public int picture = 0;
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "mass", "picture" })
-    public Picture(OptInteger style, OptInteger x, OptInteger y,
-        OptInteger orientation, OptInteger gr_state, OptInteger mass,
-        OptInteger picture) {
-        super(style, x, y, orientation, gr_state, mass);
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "mass", "picture" })
+    public Picture(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
+    		OptInteger mass, OptInteger picture) {
+        super(style, x, y, orientation, gr_state, restricted, mass);
         this.picture = picture.value(0);
     }
 
-    public Picture(int style, int x, int y, int orientation, int gr_state, int mass, int picture) {
-        super(style, x, y, orientation, gr_state, mass);
+    public Picture(int style, int x, int y, int orientation, int gr_state, boolean restricted, int mass, int picture) {
+        super(style, x, y, orientation, gr_state, restricted, mass);
         this.picture = picture;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Picture(style, x, y, orientation, gr_state, mass, picture);
+        return new Picture(style, x, y, orientation, gr_state, restricted, mass, picture);
     }
 
     @Override

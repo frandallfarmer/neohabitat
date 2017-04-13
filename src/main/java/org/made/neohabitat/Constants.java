@@ -208,7 +208,7 @@ public interface Constants {
     public static final int      MAGIC_LAMP_WAITING         = 0;
     public static final int      MAGIC_LAMP_GENIE           = 1;
     
-    /* instance_head general flag constants */
+    /* general flag constants */
     public static final int      RESTRICTED                 = 1;
     public static final int      MODIFIED                   = 2;
     

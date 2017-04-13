@@ -2,6 +2,7 @@ package org.made.neohabitat;
 
 import java.util.Iterator;
 
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.BasicObject;
@@ -29,12 +30,12 @@ public abstract class Container extends HabitatMod {
     
     /* All objects with contents have this state */
     
-    public Container(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state) {
-        super(style, x, y, orientation, gr_state);
+    public Container(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
+        super(style, x, y, orientation, gr_state, restricted);
     }
 
-    public Container(int style, int x, int y, int orientation, int gr_state) {
-        super(style, x, y, orientation, gr_state);
+    public Container(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+        super(style, x, y, orientation, gr_state, restricted);
     }
 
     public JSONLiteral encodeContainer(JSONLiteral result) {

@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -71,15 +72,16 @@ public class Tokens extends HabitatMod implements Copyable {
     	checkpoint_object(this);
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "denom_lo", "denom_hi" })
-    public Tokens(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, int denom_lo, int denom_hi) {
-        super(style, x, y, orientation, gr_state);
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "denom_lo", "denom_hi" })
+    public Tokens(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+    		int denom_lo, int denom_hi) {
+        super(style, x, y, orientation, gr_state, restricted);
         setTokensState(denom_lo, denom_hi);
 
     }
     
-    public Tokens(int style, int x, int y, int orientation, int gr_state, int denom_lo, int denom_hi) {
-        super(style, x, y, orientation, gr_state);
+    public Tokens(int style, int x, int y, int orientation, int gr_state, boolean restricted, int denom_lo, int denom_hi) {
+        super(style, x, y, orientation, gr_state, restricted);
         setTokensState(denom_lo, denom_hi);
     }
     
@@ -90,7 +92,7 @@ public class Tokens extends HabitatMod implements Copyable {
  
     @Override
     public HabitatMod copyThisMod() {
-        return new Tokens(style, x, y, orientation, gr_state, denom_lo, denom_hi);
+        return new Tokens(style, x, y, orientation, gr_state, restricted, denom_lo, denom_hi);
     }
 
     @Override
@@ -133,7 +135,7 @@ public class Tokens extends HabitatMod implements Copyable {
     		Avatar other	= (Avatar) target;
     		if (this.empty_handed(other)) {
     			if (spend(amount, SERVER_DESTROYS_TOKEN) == TRUE) {
-    				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, amount_lo, amount_hi);
+    				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, false, amount_lo, amount_hi);
     				Item item = create_object("money", tokens, other);
     				if (item == null) {
     					send_reply_err(from, noid, BOING_FAILURE);
@@ -219,7 +221,7 @@ public class Tokens extends HabitatMod implements Copyable {
                 send_reply_error(from);
                 return;
             }
-            Tokens tokens = new Tokens(0, 0, pos_y, 0, 0, big_denom % 256, big_denom / 256);
+            Tokens tokens = new Tokens(0, 0, pos_y, 0, 0, false, big_denom % 256, big_denom / 256);
             Item item = create_object("money", tokens, avatar);
             if (item == null) {
                 send_reply_error(from);

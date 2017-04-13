@@ -1,6 +1,7 @@
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.server.context.User;
@@ -177,7 +178,7 @@ public class Avatar extends Container implements UserMod {
             OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
             OptString turf, int[] custom, OptInteger lastConnectedDay, OptInteger lastConnectedTime,
             int[] stats) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, new OptBoolean(false));
         if (null == stats) {
         	stats = new int[HS$MAX];
         	stats[HS$wealth]		= bankBalance.value(0);
@@ -209,7 +210,7 @@ public class Avatar extends Container implements UserMod {
         int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
         int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
         String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, int[] stats) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, false);
         setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
             from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime, stats);
     }

@@ -3,6 +3,7 @@ package org.made.neohabitat;
 import java.util.regex.Pattern;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
@@ -35,10 +36,10 @@ public abstract class Magical extends HabitatMod {
     /** Per-type magic state - true type to be bound at execution time */
     protected int magic_data5 = 0;
     
-    public Magical(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Magical(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger magic_type, OptInteger charges, OptInteger magic_data, OptInteger magic_data2,
             OptInteger magic_data3, OptInteger magic_data4, OptInteger magic_data5) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         setMagicalState(magic_type.value(0),
         				charges.value(0),
         				magic_data.value(0),
@@ -48,9 +49,9 @@ public abstract class Magical extends HabitatMod {
         				magic_data5.value(0));
     }
 
-    public Magical(int style, int x, int y, int orientation, int gr_state, int magic_type, int charges, int magic_data,
-        int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
-        super(style, x, y, orientation, gr_state);
+    public Magical(int style, int x, int y, int orientation, int gr_state, boolean restricted,
+    	int magic_type, int charges, int magic_data, int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
+        super(style, x, y, orientation, gr_state, restricted);
         setMagicalState(magic_type,  charges,  magic_data, magic_data2,  magic_data3,  magic_data4,  magic_data5);
     }
 

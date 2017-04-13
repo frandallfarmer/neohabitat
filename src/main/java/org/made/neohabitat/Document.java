@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.elkoserver.foundation.json.JSONMethod;
+import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.JSONArray;
@@ -39,17 +40,17 @@ public abstract class Document extends HabitatMod {
     /** The page last read in this document (by any user/avatar) */
     protected int    next_page = 1;
     
-    public Document(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
+    public Document(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
             int last_page, String pages[], OptString path) {
-        super(style, x, y, orientation, gr_state);
+        super(style, x, y, orientation, gr_state, restricted);
         setDocumentState( (pages != null && pages.length > 0) ? pages.length : last_page,
         		 		  (pages != null && pages.length > 0) ? pages        : MISSING_PAGES,
         				  path.value(""));
     }
 
-    public Document(int style, int x, int y, int orientation, int gr_state, int last_page,
-        String[] pages, String path) {
-        super(style, x, y, orientation, gr_state);
+    public Document(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
+    		int last_page, String[] pages, String path) {
+        super(style, x, y, orientation, gr_state, restricted);
         setDocumentState(last_page, pages, path);
     }
     
