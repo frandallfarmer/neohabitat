@@ -220,7 +220,7 @@
 			"y": 71,			
 			"last_page": 16,
 			"style": 1,
-			"restricted": 1,
+			"restricted": true,
 			"path": "text-bookofrecords"
 		}
 	]
