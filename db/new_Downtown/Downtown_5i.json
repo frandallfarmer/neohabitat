@@ -7,7 +7,7 @@
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "", 
+        "port_dir": "}", 
         "type": "Region",
         "orientation": 1,
         "neighbors": [
@@ -206,5 +206,23 @@
     "type": "item", 
     "name": "Picture", 
     "in": "context-Downtown_5i"
+  },
+  {
+	"type": "item",
+	"ref": "item-bookofrecords",
+	"name": "Book of Records",
+	"in": "context-Downtown_5i",
+	"mods": [
+		{
+			"type": "Book",
+			"title": "The Great Book of Records",
+			"x": 72,
+			"y": 71,			
+			"last_page": 16,
+			"style": 1,
+			"restricted": true,
+			"path": "text-bookofrecords"
+		}
+	]
   }
 ]
