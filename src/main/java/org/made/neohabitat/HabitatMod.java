@@ -100,6 +100,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/** Persistent store if the object is restricted (can't leave region or enter a non-restricted container) or is itself a restricted container */
 	public boolean restricted  = false;
 	
+	/** local storage of the last container that had a restricted bit, only used this object is restricted itself - used to put the object back in place.*/
+	public Container lastRestrictedContainer = null;
+	
 	public boolean gen_flags[] = new boolean[33];
 
 	/* Provides an initialized random number generator for any derived classes. */
@@ -431,7 +434,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			send_reply_error(from);
 			return;
 		}
-
+		
+		if (this.gen_flags[RESTRICTED] && cont.gen_flags[RESTRICTED]) {
+			lastRestrictedContainer = (Container) cont;		// Save so we can put it back where it was.
+		}
+		
 		/*
 		 * If getting a switched on flashlight from an opaque container, turn up
 		 * the lights.
@@ -456,14 +463,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);            
 		}
 		send_reply_success(from); // Yes, your GET request succeeded.
-		send_neighbor_msg(from, avatar(from).noid, "GET$", "target", noid, "how", how); // Animate
-		// the
-		// picking
-		// up
-		// for
-		// other
-		// folks
-		// here.
+		send_neighbor_msg(from, avatar(from).noid, "GET$", "target", noid, "how", how); // Animate the picking up for other folks here.
 
 		// TODO THIS IS WRONG? Deal with at change_containers
 		/*
@@ -514,7 +514,36 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		}
 		generic_PUT(from, target, x, y, orientation);
 	}
-
+	
+	public void putMeBack(User from, boolean copyMe) {
+		Container cont = this.lastRestrictedContainer;
+		if (cont != null) {
+			int slot = -1;
+			for (int i = 0; i < cont.capacity(); i++) {
+				if (cont.contents(i) == null) {
+					slot = i;
+					break;
+				}
+			}
+			if (slot >= 0 && change_containers(this, cont, slot, true)) {
+				JSONLiteral msg = copyMe ? new_broadcast_msg(avatar(from).noid, "PUT$") :
+					new_neighbor_msg( avatar(from).noid, "PUT$");
+				msg.addParameter("obj",		this.noid);
+				msg.addParameter("cont",	cont.noid);
+				msg.addParameter("x", 		0);
+				msg.addParameter("y", 		slot);
+				msg.addParameter("how", 	0);
+				msg.addParameter("orient",	0);
+				msg.finish();
+				if (copyMe) {
+					context().send(msg);
+				} else {
+					context().sendToNeighbors(from, msg);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Most attempt to PUT an item go through this code. There are lots of
 	 * special cases.
@@ -543,6 +572,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 */
 	public void generic_PUT(User from, Container cont, int pos_x, int pos_y, int obj_orient) {
 
+		if (this.gen_flags[RESTRICTED] && this.lastRestrictedContainer != null && this.lastRestrictedContainer != cont) {
+			send_reply_error(from);			// Nope. Let's put it back instead.
+			putMeBack(from, true);
+			return;
+		}
+		
 		final int TO_AVATAR = 1;
 		final int TO_GROUND = 0;
 
@@ -629,6 +664,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			return;
 		}
 		if (this.gen_flags[RESTRICTED] && !cont.gen_flags[RESTRICTED] && cont.noid != THE_REGION) {
+			object_say(from, cont.noid, "You can't put that in there.");
+			send_reply_error(from);
+			return;
+		}
+		if (cont.gen_flags[RESTRICTED] && !this.gen_flags[RESTRICTED])  {
 			object_say(from, cont.noid, "You can't put that in there.");
 			send_reply_error(from);
 			return;
@@ -1502,18 +1542,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		 * not fail.)
 		 */
 
-		((Item) obj.object()).setContainer(new_container.object()); // TODO Talk
-		// to Chip
-		// about
-		// neighbors
-		// not
-		// deleting
-		// picked up
-		// items and
-		// also
-		// HANDS/HEAD
-		// slots.
-		// FRF
+		((Item) obj.object()).setContainer(new_container.object()); // TODO Talk to Chip about neighbors not deleting picked up items and also HANDS/HEAD slots. FRF
 
 		obj.y = new_position;
 		obj.gen_flags[MODIFIED] = true;

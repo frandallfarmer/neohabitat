@@ -644,7 +644,7 @@ public class Avatar extends Container implements UserMod {
     	Seating		seat	= (Seating) region.noids[seat_id];
     	int			slot	= -1;
     	if (seat != null) {
-    		if (isSeating(seat)) {
+    		if (isSeating(seat) && !seat.gen_flags[RESTRICTED]) {
     			if (up_or_down == STAND_UP) {
     				if (sittingIn == seat_id) {
     					slot = sittingSlot;
@@ -901,7 +901,10 @@ public class Avatar extends Container implements UserMod {
             }
         }
         
-        if (!new_region.isEmpty()) {
+        if (!new_region.isEmpty()) {        
+            if (this.holding_restricted_object()) {
+            	this.heldObject().putMeBack(from, false);
+            }
             send_neighbor_msg(from, THE_REGION, "WAITFOR_$", "who", this.noid);
             send_reply_success(from);
             change_regions(new_region, direction, entry_type);
@@ -916,9 +919,9 @@ public class Avatar extends Container implements UserMod {
     }
     
     public void change_regions(String contextRef, int direction, int type, int x, int y) {
-    	Region	region		= current_region();
-    	User	who			= (User) this.object();
-
+    	Region		region		= current_region();
+    	User		who			= (User) this.object();
+    	
         trace_msg("Avatar %s changing regions to context=%s, direction=%d, type=%d", obj_id(),
             contextRef, direction, type);
 

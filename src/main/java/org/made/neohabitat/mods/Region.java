@@ -158,7 +158,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     }
     
     public void noteUserDeparture(User who) {
-    	Avatar avatar = (Avatar) who.getMod(Avatar.class);
+    	Avatar avatar = avatar(who);
+        if (avatar.holding_restricted_object()) {
+        	avatar.heldObject().putMeBack(who, false);
+        }
     	avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
     	avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
 		avatar.gen_flags[MODIFIED] = true;    					
