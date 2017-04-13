@@ -57,7 +57,8 @@
         "y": 152, 
         "x": 72, 
         "style": 2,
-        "open_flags": 3,		
+        "open_flags": 3,
+        "restricted": true,
         "type": "Chair", 
         "orientation": 0
       }
@@ -211,15 +212,14 @@
 	"type": "item",
 	"ref": "item-bookofrecords",
 	"name": "Book of Records",
-	"in": "context-Downtown_5i",
+	"in": "item-chaircb9f",
 	"mods": [
 		{
 			"type": "Book",
 			"title": "The Great Book of Records",
-			"x": 72,
-			"y": 71,			
-			"last_page": 16,
-			"style": 1,
+			"y": 0,
+			"style": 5,
+			"last_page": 1,
 			"restricted": true,
 			"path": "text-bookofrecords"
 		}
