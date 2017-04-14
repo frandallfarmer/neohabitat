@@ -192,9 +192,9 @@ public class Avatar extends Container implements UserMod {
         				action.value(this.activity),
         				health.value(MAX_HEALTH),
         				restrainer.value(0),
-        				from_direction.value(0),
-        				from_orientation.value(0),
         				transition_type.value(WALK_ENTRY),
+        				from_orientation.value(0),
+        				from_direction.value(0),
         				from_region.value(""),
         				to_region.value(""),
         				to_x.value(0),
@@ -257,13 +257,13 @@ public class Avatar extends Container implements UserMod {
         result.addParameter("restrainer",	restrainer);
         result.addParameter("custom", 		custom);
         if (result.control().toRepository()) {
+            result.addParameter("transition_type",	transition_type);
+            result.addParameter("from_orientation", from_orientation);
+            result.addParameter("from_direction",   from_direction);
             result.addParameter("from_region",      from_region);
             result.addParameter("to_region",      	to_region);
             result.addParameter("to_x",		      	to_x);
             result.addParameter("to_y",		      	to_y);
-            result.addParameter("from_orientation", from_orientation);
-            result.addParameter("from_direction",   from_direction);
-            result.addParameter("transition_type",	transition_type);
             result.addParameter("turf", 			turf);
             result.addParameter("lastConnectedDay", lastConnectedDay);
             result.addParameter("lastConnectedTime",lastConnectedTime);
@@ -402,7 +402,7 @@ public class Avatar extends Container implements UserMod {
         	// If entering via teleport, make sure we're in foreground
         	y |= FOREGROUND_BIT;
         } else {
-        	trace_msg("ENTRY ERROR: uUnknown transition type: " + transition_type);
+        	trace_msg("ENTRY ERROR: Unknown transition type: " + transition_type);
         }
     }
 
