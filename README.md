@@ -66,9 +66,11 @@ alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rs
 
 Client software can be downloaded here:
 
-- [QuantumLink (with Habitat support)](https://s3.amazonaws.com/ssalevan/neohabitat/QuantumLink.d64)
-- [Club Caribe disk A (a.k.a. side 3)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-a.d64)
-- [Club Caribe disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/club-caribe-b.d64)
+- [QuantumLink (with Habitat support)](http://cloud.cbm8bit.com/brataccas/QLink-Habitat.d64)
+- [Habitat disk A (a.k.a. side 3)](http://cloud.cbm8bit.com/brataccas/Habitat-A.d64)
+- [Habitat disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/Habitat-B.d64)
+
+Major thanks to Gary Lake-Schaal who rebuilt the Habitat client from the original 1985 source!
 
 **NOTE:** Make a backup of QuantumLink.d64, as it gets modified with your account information and a link to the Club Caribe game disk.
 
