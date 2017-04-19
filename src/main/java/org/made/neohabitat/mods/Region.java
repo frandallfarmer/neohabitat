@@ -93,7 +93,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
      * room.
      */
     public HabitatMod noids[]      = new HabitatMod[256];
-    /** Connecting region numbers in the 4 ordinal directions */
+    public int		  nextNoid	   = 1;
     public String     neighbors[]  = { "", "", "", "" };
     /** Direction to nearest Town */
     public String	  town_dir     = "";
@@ -203,21 +203,49 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
         return result;
     }
     
+    private static int incNoid(int noid) {
+    	noid++;
+    	switch (noid) {
+    		case THE_REGION:
+    		case GHOST_NOID:
+    		case 256:
+	    		return 1;
+	    }
+    	return noid;
+    }
+    
     /**
-     * Add a HabitatMod to the object list for easy lookup by noid
+     * Add a HabitatMod to the object list for easy lookup by noid.
+     * This method uses a monotonically increasing index, remembering
+     * the previous noid assignment. Deleted objects will leave holes
+     * that we are in no hurry to fill in. Note the reserved NOID ids
+     * of THE_REGION (0) and GHOST_NOID (255).
      * 
      * @param mod
      */
-    public static int addToNoids(HabitatMod mod) {
-    	//TODO: Missing limit! OVERFLOW/LOOP POSSIBLE. FRF
-        int noid = 1;
-        HabitatMod[] noids = mod.current_region().noids;
-        while (null != noids[noid]) {
-            noid++;
+    public static boolean addToNoids(HabitatMod mod) {
+    	Region			region	= mod.current_region();
+        int				noid	= region.nextNoid;
+        HabitatMod[] 	noids	= region.noids;
+        
+        if (region.nextNoid == -1) {
+        	return false; /* Too many things in this region!*/
         }
-        noids[noid] = mod;
-        mod.noid = noid;
-        return noid;
+
+        noids[noid] 	= mod;
+        mod.noid 		= noid;
+        
+        noid = incNoid(noid);
+        
+        while (null != noids[noid]) {
+        	noid = incNoid(noid);
+        	if (noid == region.nextNoid) {
+        		noid = -1;
+        		break;	// Searched everything, none free.
+        	}
+        }
+        region.nextNoid = noid;
+        return true; // noid added, even if no
     }
     
     /**

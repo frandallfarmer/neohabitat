@@ -81,11 +81,7 @@ public abstract class Container extends HabitatMod {
      */
     public void get_container_contents(User from) {
         /* Original code was in regionproc.pl1 - ELKO handles this now */
-        Item item = (Item) this.object();
-        item.sendObjectDescription(context(), context()); // * TODO
-                                                          // CONNECTION_JSON
-                                                          // only - sends extra
-                                                          // container MAKE.
+        ((Item) object()).openContainer();
         // Assumes calling code has already accounted for any client-side
         // storage limitation
     }
@@ -98,6 +94,7 @@ public abstract class Container extends HabitatMod {
      *            User representing the connection making the request.
      */
     public void close_container(User from) {
+       	((Item) object()).closeContainer();
         /* Original code was in regionproc.pl1 - ELKO handles this now */
         // TODO Client Memory Management and several messages are missing from
         // this interim implementation

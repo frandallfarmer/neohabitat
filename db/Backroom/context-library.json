@@ -19,8 +19,7 @@
     "mods": [
 		{    	  	
 			"type": "Drugs",
-			"y": 20,
-			"x": 100,
+			"y": 0,
 			"gr_state": 0,
 			"orientation": 8,
 			"count":	3,
@@ -29,7 +28,7 @@
     ],
     "type": "item",
     "name": "Drugs",
-    "in": "context-library"
+    "in": "item-library.box"
   },
 {
     "ref": "item-trashcan",
