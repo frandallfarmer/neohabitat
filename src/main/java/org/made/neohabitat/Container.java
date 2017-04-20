@@ -10,6 +10,7 @@ import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Msg;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.mods.Avatar;
+import org.made.neohabitat.mods.Region;
 
 /**
  * an Elko Habitat superclass to handle container state.
@@ -94,19 +95,11 @@ public abstract class Container extends HabitatMod {
      *            User representing the connection making the request.
      */
     public void close_container(User from) {
-       	((Item) object()).closeContainer();
+       	Region.removeContentsFromRegion(this);		// Do this Game Logic before any delete messages get sent...
+       	((Item) object()).closeContainer();			// Elko will really remove the instances  TODO: FRF Can this fail?
         /* Original code was in regionproc.pl1 - ELKO handles this now */
         // TODO Client Memory Management and several messages are missing from
         // this interim implementation
-    	
-    	/* TODO Opaque container handling        
-        if (Avatar.getConnectionType() == CONNECTION_JSON) {
-            Iterable<Item> stuff = ((Item) this.object()).contents();
-            for (Item item : stuff) {
-                context().send(Msg.msgDelete(item));
-            }
-        }
-        */
     }
 
     /**

@@ -1,0 +1,31 @@
+[ {
+	"type": "item",
+	"ref": "item-library.bag",
+	"name": "Blue Box",
+	"closed": true,
+	"in": "item-library.box",
+	"mods": [
+		{
+			"type": "Bag",
+			"style": 0,
+			"y": 2,
+			"orientation": 0,
+			"gr_state": 0,
+			"open_flags": 2
+		} ]
+} , {
+	"type": "item",
+	"ref": "item-bag.chainsaw",
+	"name": "Chainsaw",
+	"in": "item-library.bag",
+	"mods": [
+		{
+			"type": "Knick_knack",
+			"style": 5,
+			"y": 0,
+			"orientation": 8,
+			"magic_type": 1,
+			"gr_state": 1,
+			"charges": 100
+		} ]
+} ]

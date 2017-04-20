@@ -228,7 +228,12 @@ this.SERVER_OPS = {
 				b.add(o.target);
 			}
 		},
-		"OPENCONTAINER$": 		{ reqno: 19 },
+		"OPENCONTAINER$": 		{ reqno: 19,
+			toClient: function (o, b, client) {
+				b.add(o.cont);
+				b.add(0);			// Forced empty contents vector because elko will send the contents asynchronously.
+			}
+		},
 		"ORACLESPEAK_$":	 	{ reqno: 8 },
 		"PAID$":	 			{ reqno: 30,
 			toClient: function (o, b, client) {

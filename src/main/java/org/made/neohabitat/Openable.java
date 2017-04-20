@@ -193,6 +193,7 @@ public abstract class Openable extends Container {
             gen_flags[MODIFIED] = true;
             checkpoint_object(this);
             send_reply_success(from);
+            send_neighbor_msg(from, avatar(from).noid, "OPENCONTAINER$", "cont", noid); // Elko will send contents asych!
             get_container_contents(from);
         } else {
             object_say(from, noid, "It is locked.");

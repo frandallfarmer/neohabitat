@@ -174,7 +174,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     }
     
     public static void removeUser(User from) {
+    	Avatar avatar = (Avatar) from.getMod(Avatar.class);
     	NameToUser.remove(from.name().toLowerCase());
+    	removeContentsFromRegion(avatar);
+    	removeFromObjList(avatar);
     }
     
     public static User getUserByName(String name) {
@@ -256,6 +259,20 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
      */
     public static void removeFromObjList(HabitatMod mod) {
         mod.current_region().noids[mod.noid] = null;
+    }
+        
+    /**
+     * When items go away because their container left or closed, we must reclaim scarece resources: noids and 
+     * 
+     * @param cont
+     */
+    public static void removeContentsFromRegion(Container cont) {
+    	for (int i = 0; i < cont.capacity(); i++) {
+    		HabitatMod mod = cont.contents(i);
+    		if (mod != null) {
+    			removeFromObjList(mod);
+    		}
+    	}    	
     }
     
     public static void tellEveryone(String text) {
