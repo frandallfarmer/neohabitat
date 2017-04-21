@@ -854,6 +854,13 @@ var encodeState = {
 			buf.add(state.picture || 0);
 			return buf;
 		},
+		Vendo_front: function (state, container, buf) {
+			buf = this.openable(state, container, buf);
+			buf.add(state.price_lo		|| 0);
+			buf.add(state.display_item	|| 0);
+			return buf;
+		},
+		Vendo_inside: function(state, container, buf) {return (this.openable(state, container, buf)); },
 		Spray_can:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 		function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Box:		function (state, container, buf) { return (this.openable(state, container, buf)); },

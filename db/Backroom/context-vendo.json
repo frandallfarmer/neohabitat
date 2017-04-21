@@ -1,0 +1,62 @@
+[ {
+	"type": "context",
+	"ref": "context-vendo",
+	"capacity": 6,
+	"name": "Test Vending Machine Room",
+	"aliases": ["pop-vendo"],
+	"mods": [
+		{
+			"type": "Region",
+			"nitty_bits": 3,
+	        "town_dir": "", 
+	        "port_dir": "| } ~ ", 
+			"neighbors": [ "context-test", "context-test", "context-test", "context-test" ]
+		}
+	]
+},
+{ "type": "item", "ref": "item-vendo.wall", "name": "Wall", "in": "context-vendo", "mods": [ { "type": "Wall",	"style": 4,			"orientation": 196 } ] },
+{ "type": "item", "ref": "item-vendo.grnd", "name": "Flor", "in": "context-vendo", "mods": [ { "type":"Ground", "style": 1, "y": 4, "orientation": 228 } ] },
+{
+	"type": "item",
+	"ref": "item-vendo.inside",
+	"name": "Bag and Box Vendo",
+	"closed": false,
+	"in": "context-vendo",
+	"mods": [
+		{
+			"type": "Vendo_inside",
+			"x": 60,
+			"y": 24,
+			"orientation": 156,
+			"open_flags": 0,
+		}
+	]
+},
+{ "type": "item", "ref": "item-vendo.bag1", "name": "Bag", "closed": true, "in": "item-vendo.inside", "mods": [ { "type": "Bag", "x": 1, "y": 1, "orientation": 56, "open_flags": 2 } ] },
+{
+	"type": "item",
+	"ref": "item-vendo.front",
+	"name": "Bag and Box Vendo",
+	"closed": false,
+	"in": "item-vendo.inside",
+	"mods": [
+		{
+			"type": "Vendo_front",
+			"x": 112,
+			"y": 0,
+			"orientation": 0,
+			"gr_state": 1,
+			"open_flags": 0,
+			"display_item": 0,
+			"item_price": 5,
+			"prices": [5, 5, 5, 10, 10, 10]
+		}
+	]
+}, 
+{ "type": "item", "ref": "item-vendo.bag0", "name": "Bag", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Bag", "x": 1, "y": 1, "orientation":  0, "open_flags": 2 } ] }, 
+{ "type": "item", "ref": "item-vendo.bag2", "name": "Bag", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Bag", "x": 2, "y": 2, "orientation": 16, "open_flags": 2 } ] },
+{ "type": "item", "ref": "item-vendo.box2", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 3, "y": 3, "orientation":  0, "open_flags": 2 } ] },
+{ "type": "item", "ref": "item-vendo.box3", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 4, "y": 4, "orientation": 40, "open_flags": 2 } ] },
+{ "type": "item", "ref": "item-vendo.box4", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 5, "y": 5, "orientation": 80, "open_flags": 2 } ] }
+]
+

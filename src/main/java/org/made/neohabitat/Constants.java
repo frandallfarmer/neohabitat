@@ -21,6 +21,11 @@ public interface Constants {
                                                                                                                        * constant
                                                                                                                        */
     
+
+    public static final int 	BOOK$HELP	= 0;
+    public static final int 	BOOK$VENDO	= 1;
+    public static final int 	PAPER$HELP	= 2;
+    
     /*
      * defs_class.incl.pl1
      *

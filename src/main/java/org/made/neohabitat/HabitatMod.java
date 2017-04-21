@@ -1542,12 +1542,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		 * not fail.)
 		 */
 
-		((Item) obj.object()).setContainer(new_container.object()); // TODO Talk to Chip about neighbors not deleting picked up items and also HANDS/HEAD slots. FRF
+		((Item) obj.object()).setContainer(new_container.object());
 
 		obj.y = new_position;
 		obj.gen_flags[MODIFIED] = true;
-		if (cp)
-			checkpoint_object(this);
+		if (cp) {
+			obj.checkpoint_object(obj);
+		}
 
 		return true;
 

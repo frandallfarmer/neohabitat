@@ -150,8 +150,6 @@ public class Tokens extends HabitatMod implements Copyable {
     		        msg.addParameter("container",   other.object().ref());
     		        msg.addParameter("object",		itemLiteral);
     		        msg.finish();
-                    trace_msg("Sending new Tokens context to neighbors, context=%s, from=%s, msg=%s",
-                        context(), from, msg);
     		        context().sendToNeighbors(from, msg);
     		        // Reply including the new tokens
     		        msg = new_reply_msg(noid);

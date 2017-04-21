@@ -10,7 +10,7 @@
 			"port_dir": "missing",
 			"type": "Region",
 			"nitty_bits": 2,
-			"neighbors": ["context-library", "context-table", "", ""]
+			"neighbors": ["context-library", "context-table", "context-vendo", ""]
 		}
 	]
 }

@@ -146,17 +146,34 @@ public class Book extends Document implements Copyable {
     @JSONMethod({ "target", "x", "y" })
     public void THROW(User from, int target, int x, int y) {
         generic_THROW(from, target, x, y);
-    }
-
+    }    
     @JSONMethod
     public void HELP(User from) {
-        send_reply_msg(from, "BOOK: DO while holding to read the book.");
-        if (title.length() == 0) {
-            object_say(from, noid, "This book is untitled.");
-        } else {
-            object_say(from, noid, String.format("This book is '%s'.", title.trim()));
-        }
+		send_reply_msg(from, "BOOK: DO while holding to read the book.");
+		object_say(from, noid, get_book_title(title, BOOK$HELP));
     }
+    
+    public String book_vendo_info() {
+    	return get_book_title(title, BOOK$VENDO);
+    }    
 
+    public String get_book_title(String title, int use_flag) {
+        String nice_title = title.trim();
+    	switch (use_flag) {    	
+    	case BOOK$HELP:
+    		if (nice_title.length() == 0)
+    			return "This book is untitled.";
+    		return String.format("This book is '%s'.", nice_title);
+    	case BOOK$VENDO:
+    		if (nice_title.length() == 0)
+    			return "This book is untitled.";
+    		return String.format("This is '%s'.", nice_title);
+    	case PAPER$HELP:
+    		if (nice_title.length() != 0) {
+    			return "This paper begins \"" + nice_title + "\".";
+    		}
+    	}
+		return "";
+    }
 }
 

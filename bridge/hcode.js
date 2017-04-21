@@ -307,7 +307,14 @@ this.SERVER_OPS = {
 		},
 		"RUB$": 				{ reqno: 9 },
 		"SCAN$":	 			{ reqno: 8 },
-		"SELL$": 				{ reqno: 9 },
+		"SELL$": 				{ reqno: 9, 
+			toClient: function (o,b,client) {
+				b.add(o.buyer);
+				b.add(o.item_price_lo);
+				b.add(o.item_price_hi);
+				b.add(client.backdoor.vectorize(client, o.object, 0));
+			}
+		},
 		"SEXCHANGE$": 			{ reqno: 8,
 			toClient: function (o,b) {
 				b.add(o.AVATAR_NOID);
@@ -352,7 +359,13 @@ this.SERVER_OPS = {
 		"UNHOOK$": 				{ reqno: 15 },
 		"UPDATE$": 				{ reqno: 11 },
 		"UNLOAD$": 				{ reqno: 8 },
-		"VSELECT$": 			{ reqno: 8 },
+		"VSELECT$": 			{ reqno: 8,
+			toClient: function(o,b) {
+				b.add(o.price_lo);
+				b.add(o.price_hi);
+				b.add(o.display_item);
+			}
+		},
 		"WAITFOR_$": 			{ reqno: 16,
 			toClient: function (o,b) {
 				b.add(o.who);
@@ -779,6 +792,21 @@ this.translate = {
 				b.add(o.err);
 			}
 		},
+		VSELECT: {
+			toClient: function(o,b) {
+				b.add(o.price_lo);
+				b.add(o.price_hi);
+				b.add(o.display_item);
+			}
+		},
+		VEND: {
+			toClient: function (o,b, client) {
+				b.add(o.success);
+				b.add(o.item_price_lo);
+				b.add(o.item_price_hi);
+				b.add(client.backdoor.vectorize(client, o.object, 0));
+			}			
+		},
 		FLUSH: {
 			toClient: function(o, b) {
 				b.add(o.err);
@@ -1068,6 +1096,20 @@ this.Book = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"READ" }
+		}
+};
+
+this.Vendo_inside	= { 		
+		clientMessages: {
+			0:{ op:"HELP" }
+		}
+};
+
+this.Vendo_front	= { 		
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"VEND" },
+			5:{ op:"VSELECT" }
 		}
 };
 
