@@ -49,7 +49,7 @@
 			"open_flags": 0,
 			"display_item": 0,
 			"item_price": 5,
-			"prices": [5, 5, 5, 10, 10, 10]
+			"prices": [30, 30, 30, 50, 50, 50]
 		}
 	]
 }, 
@@ -57,6 +57,21 @@
 { "type": "item", "ref": "item-vendo.bag2", "name": "Bag", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Bag", "x": 2, "y": 2, "orientation": 16, "open_flags": 2 } ] },
 { "type": "item", "ref": "item-vendo.box2", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 3, "y": 3, "orientation":  0, "open_flags": 2 } ] },
 { "type": "item", "ref": "item-vendo.box3", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 4, "y": 4, "orientation": 40, "open_flags": 2 } ] },
-{ "type": "item", "ref": "item-vendo.box4", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 5, "y": 5, "orientation": 80, "open_flags": 2 } ] }
+{ "type": "item", "ref": "item-vendo.box4", "name": "Box", "closed": true, "in": "item-vendo.front", "mods": [ { "type": "Box", "x": 5, "y": 5, "orientation": 80, "open_flags": 2 } ] },
+{
+	"type": "item",
+	"ref": "item-vendo.pawn",
+	"name": "Pawn Machine",
+	"closed": false,
+	"in": "context-vendo",
+	"mods": [
+		{
+			"type": "Pawn_machine",
+			"x": 12,
+			"y": 30,
+			"open_flags": 3
+		}
+		]
+}
 ]
 

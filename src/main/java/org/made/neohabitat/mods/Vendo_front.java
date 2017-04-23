@@ -139,11 +139,16 @@ public class Vendo_front extends Openable implements Copyable {
     		select_out_of_order(from, "missing price");
     		return;
     	}
+    	HabitatMod newDisplay = (HabitatMod) front.contents(new_display_item);
+    	int		   newClass   = newDisplay.HabitatClass();
+    	if (prices[new_display_item] < Pawn_machine.pawn_values[newClass]) {  // NEOHABITAT FIX for KNOWN BUG/EXPLOIT. FRF
+    		select_out_of_order(from, "price: " + prices[new_display_item] + " < pawn value:" + Pawn_machine.pawn_values[newClass]);
+    		return;
+    	}
     	if (!change_containers(display, front, display_item, true)) {
     		select_out_of_order(from, "reloading stock");
     		return;
     	}
-    	HabitatMod newDisplay = (HabitatMod) front.contents(new_display_item);
     	if (!change_containers(newDisplay, inside, 1, true)) {
     		change_containers(display, inside, 1, true);	// Try to put it back
     		select_out_of_order(from, "loading display");

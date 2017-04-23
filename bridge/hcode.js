@@ -742,6 +742,11 @@ this.translate = {
 				b.add(o.err);
 			}
 		},
+		MUNCH: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
 		STUN: {
 			toServer: function(a,m) {
 				m.target = a[0];
@@ -1061,6 +1066,13 @@ this.Garbage_can = {
 		clientMessages: {
 			0:{ op:"HELP" },
 			6:{ op:"FLUSH" }
+		}
+};
+
+this.Pawn_machine = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			6:{ op:"MUNCH" }
 		}
 };
 

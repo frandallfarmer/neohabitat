@@ -16,6 +16,7 @@ import org.elkoserver.util.trace.Trace;
 import org.made.neohabitat.mods.Avatar;
 import org.made.neohabitat.mods.Compass;
 import org.made.neohabitat.mods.Flashlight;
+import org.made.neohabitat.mods.Pawn_machine;
 import org.made.neohabitat.mods.Region;
 import org.made.neohabitat.mods.Tokens;
 import org.elkoserver.json.EncodeControl;
@@ -786,7 +787,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		/* If putting into a pawn machine, announce the value of the object */
 		if (contClass == CLASS_PAWN_MACHINE)
-			object_say(from, cont.noid, "Item value: $" + item_value(this));
+			object_say(from, cont.noid, "Item value: $" + Pawn_machine.pawn_values[this.HabitatClass()]);
 	}
 
 	/**
@@ -1239,18 +1240,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * Used in pawn machines to set the buy-back value of a Habitat object.
-	 * 
-	 * @param item
-	 *            The thing being priced.
-	 * @return The price in tokens.
-	 */
-	public int item_value(HabitatMod item) {
-		/* TODO item_value placeholder */
-		return 2;
 	}
 
 	/**
@@ -3135,36 +3124,40 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * @param amount The amount of Tokens to pay the Avatar.
      * @return TRUE or FALSE, depending upon success/failure
      */
-	public int pay_to(Avatar who, int amount) {
+	public static int pay_to(Avatar who, int amount) {
+		if (amount < 1) {
+			return FALSE;
+		}
 		HabitatMod handContents = who.contents(HANDS);
+		Region	   region		= who.current_region();
 		Tokens tokens;
-		if (empty_handed(who)) {
+		if (who.empty_handed(who)) {
 			tokens = new Tokens(0, 0, HANDS, 0, 0, false, 0, 0);
-			Item obj = create_object("money", tokens, who);
+			Item obj = who.create_object("money", tokens, who);
 			tokens.tset(amount);
-			trace_msg("Created tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
-			announce_object(obj, who);
+			who.trace_msg("Created tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
+			who.announce_object(obj, who);
 		} else if (handContents.HabitatClass() == CLASS_TOKENS) {
 			tokens = (Tokens) handContents;
 			amount += tokens.tget();
 			if (amount > 65535) {
-				trace_msg("Tokens for Avatar %s > 65535: %d", who.obj_id(), amount);
+				who.trace_msg("Tokens for Avatar %s > 65535: %d", who.obj_id(), amount);
 				return FALSE;
 			}
-			trace_msg("Updated tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
+			who.trace_msg("Updated tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
 			tokens.tset(amount);
 		} else {
 			tokens = new Tokens(0, who.x, who.y, 0, 0, false, 0, 0);
-			trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", current_region().obj_id(),
+			who.trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", region.obj_id(),
 				who.obj_id(), tokens.tget());
-			Item item = create_object("money", tokens, current_region());
+			Item item = who.create_object("money", tokens, region);
 			if (item == null) {
-				trace_msg("FAILED to create tokens in region %s for Avatar %s", current_region().obj_id(),
+				who.trace_msg("FAILED to create tokens in region %s for Avatar %s", region.obj_id(),
 					who.obj_id());
 				return FALSE;
 			}
 			tokens.tset(amount);
-			announce_object(item, current_region());
+			who.announce_object(item, region);
 		}
 		tokens.gen_flags[MODIFIED] = true;
 		return TRUE;
