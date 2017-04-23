@@ -40,7 +40,7 @@ RUN yum -y install \
 RUN npm install -g supervisor
 
 # Adds a container log tailing utility.
-RUN printf '#!/bin/bash\ncat /proc/$(pgrep java)/fd/1 /proc/$(pgrep java)/fd/2 /proc/$(pgrep -f node)/fd/1 /proc/$(pgrep -f node)/fd/2' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
+RUN printf '#!/bin/bash\ntail -f /neohabitat/{bridge,elko_server}.log' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
 
 # Adds a cronjob to enable the updating of the Hall of Records.
 RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && make book' >> /var/log/hallofrecords.log\n" > /etc/cron.d/hall-of-records
