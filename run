@@ -69,6 +69,21 @@ BASE_ARGS=(
 
 JVM_ARGS=()
 
+function start_bridge() {
+  supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js \
+    -l "${BRIDGE_HOST}:${BRIDGE_PORT}" \
+    -m "${MONGO_HOST}/elko" \
+    -c "${DEFAULT_CONTEXT}" \
+    -t debug 2>&1 | tee bridge.log
+}
+
+function start_elko_server() {
+  java "${JVM_ARGS[@]}" \
+    -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar \
+    "${BASE_ARGS[@]}" \
+    "${@}" 2>&1 | tee elko_server.log
+}
+
 if [ "${SHOULD_ENABLE_CRON}" == true ]; then
   echo " - Starting cron daemon..."
   crond -i
@@ -76,7 +91,9 @@ fi
 
 if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
   echo " - Enabling JMX debugging for Neohabitat..."
-  JVM_ARGS+=("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUGGER_PORT}")
+  JVM_ARGS+=(
+    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUGGER_PORT}"
+  )
 fi
 
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
@@ -87,15 +104,16 @@ fi
 
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
+  npm install
   if [ "${SHOULD_BACKGROUND_BRIDGE}" == true ]; then
-    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}/elko" -c "${DEFAULT_CONTEXT}" -t debug &
+    start_bridge &
   else
-    supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js -l "${BRIDGE_HOST}:${BRIDGE_PORT}" -m "${MONGO_HOST}/elko" -c "${DEFAULT_CONTEXT}" -t debug
+    start_bridge
   fi
 fi
 
 # Starts the Habitat Elko server if requested.
 if [ "${SHOULD_RUN_NEOHABITAT}" == true ]; then
   echo " - Running Neohabitat Elko server with args: ${BASE_ARGS[@]}"
-  java "${JVM_ARGS[@]}" -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar "${BASE_ARGS[@]}" "${@}"
+  start_elko_server
 fi

@@ -131,3 +131,11 @@ Tokens:
 
 Trapezoid:
   <<: *polygonal
+
+Vendo_front:
+  <<: *openable
+  11: item_price
+  12: display_item
+
+Vendo_inside:
+  <<: *openable
