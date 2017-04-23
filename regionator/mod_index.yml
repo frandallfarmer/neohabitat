@@ -34,6 +34,9 @@ toggle: &toggle
 Bag:
   <<: *openable
 
+Book:
+  <<: *document
+
 Box:
   <<: *openable
 
