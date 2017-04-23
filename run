@@ -84,6 +84,8 @@ function start_elko_server() {
     "${@}" 2>&1 | tee elko_server.log
 }
 
+npm install
+
 if [ "${SHOULD_ENABLE_CRON}" == true ]; then
   echo " - Starting cron daemon..."
   crond -i
@@ -104,7 +106,6 @@ fi
 
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
-  npm install
   if [ "${SHOULD_BACKGROUND_BRIDGE}" == true ]; then
     start_bridge &
   else
