@@ -159,7 +159,7 @@ public class Vendo_front extends Openable implements Copyable {
     	gen_flags[MODIFIED]	= true;
     	checkpoint_object(this);
     	send_reply_msg(from, noid, "price_lo", item_price % 256, "price_hi", (int) (item_price / 256), "display_item", display_item);
-        send_neighbor_msg(from, noid, "POSTURE$", "new_posture", OPERATE);
+        send_neighbor_msg(from, avatar(from).noid, "POSTURE$", "new_posture", OPERATE);
     	send_neighbor_msg(from, noid, "VSELECT$", "price_lo", (int) (item_price % 256), "price_hi", (int) (item_price / 256), "display_item", display_item);    	    	
     }
 
