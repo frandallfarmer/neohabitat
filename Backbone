@@ -3,6 +3,9 @@ clusters:
   - neohabitatmongo:
       image: mongo
       tag: "3.4.1"
+      volumes:
+        - mount_location: /data/db
+          size_gb: 10
       ports:
         - port: 27017
 
@@ -13,6 +16,9 @@ clusters:
         MYSQL_DATABASE: qlink
         MYSQL_USER: spine
         MYSQL_PASSWORD: spine
+      volumes:
+        - mount_location: /var/lib/mysql
+          size_gb: 10
       ports:
         - port: 3306
 
