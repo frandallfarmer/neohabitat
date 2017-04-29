@@ -100,6 +100,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     /** Direciton to nearest Teleport Booth */
     public String	  port_dir     = "";    
     
+    /** C64 Heap Emulation */
+    public	int[]	class_ref_count		= new int[256];
+    public	int[][]	resource_ref_count	= new int[4][256];		// images, heads, behaviors, sounds
+    public	int		space_usage			= 0;
+    
+    
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
         "town_dir", "port_dir", "max_avatars", "neighbors" })
     public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
@@ -262,7 +268,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     }
         
     /**
-     * When items go away because their container left or closed, we must reclaim scarece resources: noids and 
+     * When items go away because their container left or closed, we must reclaim scarce resources: noids and 
      * 
      * @param cont
      */
@@ -270,6 +276,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     	for (int i = 0; i < cont.capacity(); i++) {
     		HabitatMod mod = cont.contents(i);
     		if (mod != null) {
+    			if (cont.opaque_container()) {
+    				mod.note_instance_deletion(mod);
+    			} else {
+    				mod.note_object_deletion(mod);
+    			}
     			removeFromObjList(mod);
     		}
     	}    	

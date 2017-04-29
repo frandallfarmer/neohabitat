@@ -33,6 +33,7 @@ clean: nuke all
 help:
 	@echo ""
 	@echo "Valid 'make' targets are 'teleports', 'text', 'regions', 'book', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
+	@echo "'make version' only when a major version is declared, or the beta.jlist changes for the client resources."
 	@echo "Mongo output is in .errs"
 	@echo ""
 	
@@ -74,6 +75,10 @@ teleports:
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $(TELEPORTDB) >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
+	
+version:
+	@echo "Building Class Source for NeoHabitat.java"	
+	@node convertClientDataToJava.js
 
 %.o: %.json
 	@echo "Updating" $*.json "in the database"

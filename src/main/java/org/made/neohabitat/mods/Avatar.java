@@ -74,7 +74,7 @@ public class Avatar extends Container implements UserMod {
     }
     
     public boolean opaque_container() {
-        return true;
+        return false;						// TODO This should be conditionally 'true' depending on the content's slot. FRF
     }
     
     public boolean filler() {
@@ -741,12 +741,16 @@ public class Avatar extends Container implements UserMod {
                 object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
                 object_say(from, "                                      ");
                 object_say(from, "Open source - Join us! NeoHabitat.org ");
+                object_say(from, NeoHabitat.GetBuildVersion());
                 send_reply_success(from);
                 break;
             case 11: // F3 & F4 (Users list)
             	sayUserList(from);
             	break;
             case 13: // F5 & F6 (Change Skin Color)
+                object_say(from, String.format("Current heap: %d", current_region().space_usage));
+                send_reply_success(from);
+                break;
             default:
                 unsupported_reply(from, noid, "Avatar.FNKEY not implemented yet.");
                 

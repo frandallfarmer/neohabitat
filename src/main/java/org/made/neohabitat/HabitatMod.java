@@ -109,6 +109,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	/* Provides an initialized random number generator for any derived classes. */
 	protected Random rand = new Random();
 
+	/* This item fits on the heap in the C64 clients memory. */
+	public	boolean	fits = false;
+	
 	/**
 	 * Replaces original global 'position'
 	 * 
@@ -202,6 +205,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 	public void objectIsComplete() {
 		Region.addToNoids(this);
+		if (container().opaque_container()) {
+			note_instance_creation(this);
+		} else {
+			note_object_creation(this);
+		}
 	}
 
 	public JSONLiteral encodeCommon(JSONLiteral result) {
@@ -1262,19 +1270,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
-	 * Visibility check.
-	 * 
-	 * @param cont
-	 *            The container being tested
-	 * @return Is this slot, of this container, visible to the region?
-	 */
-	// TODO @depracate Is this ever used properly? It would be bad to call this
-	// if CLASS_AVATAR
-	public boolean container_is_opaque(HabitatMod cont) {
-		return container_is_opaque(cont, 0);
-	}
-
-	/**
 	 * empty_handed -- Return true iff 'who' is not holding anything.
 	 * 
 	 * @param who
@@ -1523,7 +1518,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			return false;
 		}
 
-		if (!heap_space_available(obj, new_container))
+		fits = heap_space_available(obj, new_container, new_position);
+		if (!fits)
 			return false;
 
 		/*
@@ -1542,6 +1538,218 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		return true;
 
 	}
+	
+	/**
+	 * A full object (all resources) is about to be loaded in every C64
+	 * client that can see this region. Account for the memory use of
+	 * every resource (class def, images, head hack, actions, sounds)
+	 * 
+	 * @param obj
+	 */
+	public void note_object_creation(HabitatMod obj) {
+		int class_number= obj.HabitatClass();
+		int style		= obj.style;
+
+		if (class_number < 0  || class_number > MAX_CLASS_NUMBER) {
+			trace_msg("*ERR* call to CAPMON create with class = " + obj.HabitatModName());
+			return;
+		}
+
+		note_instance_creation_internal(obj);
+		note_resource_creation_internal(obj, style);
+
+	}
+	
+	/**
+	 * Account for ONLY the instance data and class overhead loaded for an object
+	 * to the C64 memory heap. Do not yet account for the image, sound, of behavior
+	 * resources. (This is what we mean by an 'opaque' container.)
+	 * 
+	 * @param obj
+	 */
+	
+	public void note_instance_creation(HabitatMod obj) {
+		int class_number= obj.HabitatClass();
+
+		if (class_number < 0  || class_number > MAX_CLASS_NUMBER) {
+			trace_msg("*ERR* call to CAPMON create with class = " + obj.HabitatModName());
+			return;
+		}
+		note_instance_creation_internal(obj);
+	}
+	
+	private void note_instance_creation_internal(HabitatMod obj) {
+		int class_number= obj.HabitatClass();
+		Region region	= current_region();
+
+		region.space_usage += obj.instance_size();
+		region.class_ref_count[class_number]++;
+		if (region.class_ref_count[class_number] == 1)
+			region.space_usage += obj.class_size();
+	}
+
+		private void note_resource_creation_internal(HabitatMod obj, int style) {
+		int		class_number= obj.HabitatClass();
+
+		int type = NeoHabitat.RESOURCE_IMAGE;
+		if (class_number == CLASS_HEAD)
+			note_resource_usage(NeoHabitat.RESOURCE_HEAD, style);
+		else if (NeoHabitat.ClassResources[class_number][type].length > 0)
+			note_resource_usage(type, style);
+
+		type++;		
+		while (type <= NeoHabitat.RESOURCE_SOUND) {
+			for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
+				note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][i]);
+			}
+			type++;
+		}
+	}
+
+	private void note_resource_usage(int type, int resource) {
+		Region region = current_region();
+		
+		region.resource_ref_count[type][resource] += 1;
+	     if (region.resource_ref_count[type][resource] == 1)
+	          region.space_usage += NeoHabitat.ResourceSizes[type][resource];		
+	}
+	
+	/**
+	 * Recover and object and it's class resources from the C64 heap.
+	 * 
+	 * @param obj
+	 */
+
+	public void note_object_deletion(HabitatMod obj) {
+		int class_number= obj.HabitatClass();
+		int style		= obj.style;
+
+		if (class_number < 0  || class_number > MAX_CLASS_NUMBER) {
+			trace_msg("*ERR* call to CAPMON delete with class = " + obj.HabitatModName());
+			return;
+		}
+
+		note_instance_deletion_internal(obj);
+		note_resource_deletion_internal(obj, style);
+	}
+
+	/**
+	 * Recover only the instance space from the C64 heap model for this region.
+	 * 
+	 * @param obj
+	 */
+	public void note_instance_deletion(HabitatMod obj) {
+		int class_number= obj.HabitatClass();
+		int style		= obj.style;
+
+		if (class_number < 0  || class_number > MAX_CLASS_NUMBER) {
+			trace_msg("*ERR* call to CAPMON delete with class = " + obj.HabitatModName());
+			return;
+		}
+
+		note_instance_deletion_internal(obj);
+	}
+	
+	private void note_instance_deletion_internal(HabitatMod obj) {
+		int class_number= obj.HabitatClass();
+		Region region	= current_region();
+
+		region.space_usage -= obj.instance_size();
+		region.class_ref_count[class_number]--;
+		if (region.class_ref_count[class_number] == 0)
+			region.space_usage -= obj.class_size();
+	}
+
+	private void note_resource_deletion_internal(HabitatMod obj, int style) {
+		int		class_number= obj.HabitatClass();
+
+		int type = NeoHabitat.RESOURCE_IMAGE;
+		if (class_number == CLASS_HEAD)
+			note_resource_removal(NeoHabitat.RESOURCE_HEAD, style);
+		else if (NeoHabitat.ClassResources[class_number][type].length > 0) 
+			note_resource_removal(type, style);
+
+		type++;		
+		while (type <= NeoHabitat.RESOURCE_SOUND) {
+			for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
+				note_resource_removal(type, NeoHabitat.ClassResources[class_number][type][i]);
+			}
+			type++;
+		}
+	}
+
+	private void note_resource_removal(int type, int resource) {
+		Region region = current_region();
+		
+		region.resource_ref_count[type][resource] -= 1;
+	     if (region.resource_ref_count[type][resource] == 0)
+	          region.space_usage -= NeoHabitat.ResourceSizes[type][resource];		
+	}
+	
+	
+	/**
+	 * Check to make sure various limits related to the C64 heap manager
+	 * are still within limits.
+	 * 
+	 * The "head hack" limits 32 heads in a region (mapping 255 head types to 32 fixed image slots)
+	 * Apparently the client can only allow 64 instances of any class in a region (bit packing, I'm sure.)
+	 * Of course, total memory usage is limited as well.
+	 * 
+	 * NOTE! C64_HEAP_SIZE changes with client builds, so the server needs to know the SMALLEST of these 
+	 * if there are ever multiple clients.
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	private boolean mem_checks_ok(HabitatMod obj) {
+		
+		Region region = current_region();
+		if (region.space_usage > C64_HEAP_SIZE)
+			return false;	     
+
+		int the_class = obj.HabitatClass();
+		if (the_class == CLASS_HEAD)
+			if (region.class_ref_count[the_class] > 31)
+				return false;
+		
+		if (region.class_ref_count[the_class] > 63)
+			return false;
+
+		return true;
+	}
+		
+	
+	// NEXT FEW FUNCTIONS ARE STUBS! TODO HACK
+	
+	private int image_count(int class_number) {
+		// TODO: GET THIS TABLE!
+		// HACK PLACEHOLDER FRF
+		return 4;
+	}
+	
+	private int looplimit = 5;
+
+	private int resources_array(int class_resource_offset) {
+		// TODO: GET THIS TABLE!
+		// HACK PLACEHOLDER FRF
+		looplimit--;
+		if (looplimit == 0) {
+			looplimit = 5;
+			return 0;
+		}
+		return looplimit * 5;	// resource
+	}
+	
+	public int class_size() {
+		return NeoHabitat.ClassSizes[HabitatClass()];
+	}
+	
+	public int instance_size() {
+		return 6 + this.capacity() + pc_state_bytes();
+	}
+	
+	
+	// END HACK STUBS
 
 	/**
 	 * Test to see if the client will have room for the resources changed by an
@@ -1556,37 +1764,38 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *         memory?
 	 */
 
-	boolean heap_space_available(HabitatMod obj, Container new_container) {
-		return true;
+	public boolean heap_space_available(HabitatMod obj, Container new_container, int new_position) {
+
+		HabitatMod old_container = obj.container();
+		
+		if (container_is_opaque(old_container, obj.y)) {
+			note_instance_deletion(obj);
+		} else {
+			note_object_deletion(obj);
+		}
+		if (container_is_opaque(new_container, new_position)) {
+			note_instance_creation(obj);
+		} else {
+			note_object_creation(obj);
+		}
+		
+		if (mem_checks_ok(obj)) {
+			return true;
+		}
+
+		if (container_is_opaque(new_container, new_position)) {
+			note_instance_deletion(obj);
+		} else {
+			note_object_deletion(obj);
+		}
+		if (container_is_opaque(old_container, obj.y)) {
+			note_instance_creation(obj);
+		} else {
+			note_object_creation(obj);
+		}
+		
+		return false;
 	}
-	/*
-	 * TODO This is a placeholder implementation. Client Storage is NOT
-	 * currently managed FRF
-	 */
-	/*
-	 * heap_space_available: procedure (dmy) returns (bit(1) aligned); declare
-	 * dmy bin(15);
-	 * 
-	 * if (container_is_opaque (old_container.class,obj.position)) then call
-	 * note_instance_deletion (obj.class,obj.style); else call
-	 * note_object_deletion (obj.class,obj.style); if (container_is_opaque
-	 * (new_container.class,new_position)) then call note_instance_creation
-	 * (obj.class,obj.style); else call note_object_creation
-	 * (obj.class,obj.style);
-	 * 
-	 * if (mem_checks_ok (obj.class)) then return (true);
-	 * 
-	 * if (container_is_opaque (new_container.class,new_position)) then call
-	 * note_instance_deletion (obj.class,obj.style); else call
-	 * note_object_deletion (obj.class,obj.style); if (container_is_opaque
-	 * (old_container.class,obj.position)) then call note_instance_creation
-	 * (obj.class,obj.style); else call note_object_creation
-	 * (obj.class,obj.style);
-	 * 
-	 * return (false);
-	 * 
-	 * end heap_space_available;
-	 */
 
 	/*
 	 * Dump a string to the debugging server log.
