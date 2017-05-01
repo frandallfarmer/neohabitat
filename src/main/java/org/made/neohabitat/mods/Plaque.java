@@ -49,10 +49,10 @@ public class Plaque extends Document implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "last_page", "pages", "path" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "last_page", "pages", "ascii", "path" })
     public Plaque(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-            int last_page, String pages[], OptString path) {
-        super(style, x, y, orientation, gr_state, restricted, last_page, pages, path);
+            int last_page, String pages[], int ascii[][], OptString path) {
+        super(style, x, y, orientation, gr_state, restricted, last_page, pages, ascii, path);
     }
 
     public Plaque(int style, int x, int y, int orientation, int gr_state, boolean restricted, int last_page, String[] pages, String path) {

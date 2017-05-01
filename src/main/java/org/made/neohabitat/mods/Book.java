@@ -51,10 +51,10 @@ public class Book extends Document implements Copyable {
 
     private String title;
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "last_page", "pages", "path", "title" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "last_page", "pages", "ascii", "path", "title" })
     public Book(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-        int last_page, String pages[], OptString path, OptString title) {
-        super(style, x, y, orientation, gr_state, restricted, last_page, pages, path);
+        int last_page, String pages[], int[][] ascii, OptString path, OptString title) {    	
+    	super(style, x, y, orientation, gr_state, restricted, last_page, pages, ascii, path);  		
         this.title = title.value("");
     }
 
@@ -64,9 +64,15 @@ public class Book extends Document implements Copyable {
         this.title = title;
     }
 
+    public Book(int style, int x, int y, int orientation, int gr_state, boolean restricted, int last_page, int ascii[][], String path,
+            String title) {
+            super(style, x, y, orientation, gr_state, restricted, last_page, ascii, path);
+            this.title = title;
+    }
+    
     @Override
     public HabitatMod copyThisMod() {
-        return new Book(style, x, y, orientation, gr_state, restricted, last_page, pages, path, title);
+        return new Book(style, x, y, orientation, gr_state, restricted, last_page, ascii, path, title);
     }
 
     @Override
@@ -94,8 +100,8 @@ public class Book extends Document implements Copyable {
             next_page = page_to_read + 1;
             show_text_page(from, path, page_to_read, next_page);
         } else {
-            String textPage = getTextPage(path, page_to_read);
-            send_reply_msg(from, textPage.substring(0, 16));
+            int[] textPage = getTextPage(path, page_to_read);
+            send_reply_msg(from, textPage.toString().substring(0, 16));
         }
     }
 

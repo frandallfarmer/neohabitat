@@ -1,6 +1,5 @@
 package org.made.neohabitat;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -13,8 +12,6 @@ import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.json.JSONObject;
 import org.elkoserver.server.context.User;
 import org.elkoserver.util.ArgRunnable;
-import org.elkoserver.util.trace.Trace;
-import org.made.neohabitat.mods.Region;
 
 /**
  * an Elko Habitat superclass to text documents.
@@ -28,12 +25,14 @@ import org.made.neohabitat.mods.Region;
  */
 public abstract class Document extends HabitatMod {
     
-	private static final String NO_PAGES[]		= {};
-	private static final String MISSING_PAGES[]	= new String[] { "[Missing Document]" };
+	private static final int	  NO_PAGES[][]	= {};
+	private static final int MISSING_PAGES[][]	= new int[][] { {91, 77, 105, 115, 115, 105, 110, 103, 32, 68, 111, 99, 117, 109, 101, 110, 116, 93 } }; // [Missing Document]
 	
-    /** Local document body */
-    protected String pages[]   = NO_PAGES;
-    /** TODO URL/Path to external resource FUTURE FEATURE */
+    /** Local document body - char array provided for simple documents only.  Immediately converted to ascii byte array. */
+    protected String pages[]   = {};
+    /** ASCII version of document body - normal peristent form */
+    protected int ascii[][]    = NO_PAGES;
+    /** DB reference to static shared) page content to be read from DB */
     protected String path      = "";
     /** The last page read, shared with client */
     protected int    last_page = 1;
@@ -41,25 +40,54 @@ public abstract class Document extends HabitatMod {
     protected int    next_page = 1;
     
     public Document(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
-            int last_page, String pages[], OptString path) {
-        super(style, x, y, orientation, gr_state, restricted);
-        setDocumentState( (pages != null && pages.length > 0) ? pages.length : last_page,
-        		 		  (pages != null && pages.length > 0) ? pages        : MISSING_PAGES,
-        				  path.value(""));
+    		int last_page, String pages[], int[][] ascii, OptString path) {
+    	super(style, x, y, orientation, gr_state, restricted);    	
+    	if (ascii != null && ascii.length > 0 ) {
+            setDocumentState(	(ascii != null && ascii.length > 0) ? ascii.length : last_page,
+  		 		  				(ascii != null && ascii.length > 0) ? ascii        : MISSING_PAGES,
+  		 		  				path.value(""));
+    	} else {
+    		setDocumentState(	(pages != null && pages.length > 0) ? pages.length : last_page,
+    							convertPagesToAscii(pages),
+    							path.value(""));
+    	}
     }
-
+   
     public Document(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
     		int last_page, String[] pages, String path) {
         super(style, x, y, orientation, gr_state, restricted);
-        setDocumentState(last_page, pages, path);
+        setDocumentState(last_page, convertPagesToAscii(pages), path);
     }
     
-    protected void setDocumentState(int last_page, String[] pages, String path) {
+    public Document(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
+    		int last_page, int[][] ascii, String path) {
+        super(style, x, y, orientation, gr_state, restricted);
+        setDocumentState(last_page, ascii, path);
+    }
+    
+    protected void setDocumentState(int last_page, int[][] ascii, String path) {
 		this.last_page	= last_page;
 		this.path		= path;	
-		this.pages 		= pages;
+		this.ascii 		= ascii;
     }
     
+    public static final int MAX_LINE_WIDTH = 40;
+    public static final int LINES_PER_PAGE = 16;
+    public static final int FULL_TEXT_PAGE = LINES_PER_PAGE * MAX_LINE_WIDTH; // 16 lines of 40 characters each.
+
+    protected int[][] convertPagesToAscii(String[] pages) {
+    	int results[][] = MISSING_PAGES;
+    	if (pages != null && pages.length > 0) {
+    		results = new int[pages.length][FULL_TEXT_PAGE];
+    		for (int i = 0; i < pages.length; i++) {
+    			for (int c = 0; c < pages[i].length() && c < FULL_TEXT_PAGE; c++) {
+    				results[i][c] = (int) pages[i].charAt(c) & 0xff;
+    			}    			
+    		}
+    	}
+    	return results;
+    }
+   
     /** If the text for this document is on disk, we have to go and get that now... */
     public void objectIsComplete() {
 		super.objectIsComplete();
@@ -75,20 +103,34 @@ public abstract class Document extends HabitatMod {
 		@Override
 		public void run(Object obj) {
 			if (null == obj) {
-				pages = MISSING_PAGES;
+				ascii = MISSING_PAGES;
 			} else {
 				try {
 					Object[] 			args 		= (Object[]) obj;
-					JSONArray 			textBlocks	= ((JSONObject) args[0]).getArray("pages");
-					Iterator<Object>	textPage 	= textBlocks.iterator();
-					last_page	=  textBlocks.size();
-					pages		= new String[last_page];
-					for (int i = 0 ; i < last_page ; i++) {
-						pages[i] = (String) textPage.next();
+					JSONArray 			textBlocks;
+
+					textBlocks = ((JSONObject) args[0]).getArray("pages");						
+					if (textBlocks.size() > 0) {				// We need to convert the char-pages to ascii pages.
+						Iterator<Object> textPage 	= textBlocks.iterator();
+						last_page					= textBlocks.size();
+						String textPages[]			= new String[last_page];
+						for (int i = 0 ; i < last_page ; i++) {
+							textPages[i] = (String) textPage.next();
+						}
+						ascii = convertPagesToAscii(textPages);
+					} else {
+						JSONArray byteBlocks		= ((JSONObject) args[0]).getArray("ascii");
+						Iterator<Object> bytePage 	= byteBlocks.iterator();
+						last_page					= byteBlocks.size();
+						ascii = new int[last_page][FULL_TEXT_PAGE];
+						for (int i = 0; i < last_page; i++) {
+							ascii[i] = (int []) bytePage.next();
+						}
 					}
+
 				} catch (JSONDecodingException e) {
 					e.printStackTrace();
-					pages = MISSING_PAGES;
+					ascii = MISSING_PAGES;
 				}
 			}
 		}
@@ -99,7 +141,7 @@ public abstract class Document extends HabitatMod {
         result.addParameter("last_page", last_page);
         if (result.control().toRepository()) {
         	if (path.isEmpty()) {
-                result.addParameter("pages", pages);
+                result.addParameter("ascii", ascii);
         	} else {
         		result.addParameter("path", path);
         	}
@@ -125,13 +167,13 @@ public abstract class Document extends HabitatMod {
     public void show_text_page(User from, String path, int page_to_read, int next_page) {
         JSONLiteral msg = new_reply_msg(noid);
         msg.addParameter("nextpage", next_page);
-        msg.addParameter("text", getTextPage(path, page_to_read));
+        msg.addParameter("ascii", getTextPage(path, page_to_read));
         msg.finish();
         from.send(msg);
     }
     
-    protected String getTextPage(String path, int page_to_read) {
-        return pages[Math.max(Math.min(page_to_read, last_page), 1) - 1];
+    protected int[] getTextPage(String path, int page_to_read) {
+        return ascii[Math.max(Math.min(page_to_read, last_page), 1) - 1];
     }
     
 }

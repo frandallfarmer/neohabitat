@@ -653,7 +653,7 @@ this.translate = {
 			},
 			toClient: function(o, b) {
 				b.add(o.nextpage);
-				b.add(o.text.getBytes());
+				b.add(o.ascii);
 				return true;		// This reply should be split upon transmission to the client.
 			}
  		},
