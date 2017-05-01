@@ -294,6 +294,21 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
         }
     }
     
+    public static void tellEveryone(int[] ascii) {
+    	for (String key: NameToUser.keySet()) {
+    		User		user	= NameToUser.get(key);
+    		Avatar		avatar	= (Avatar) user.getMod(Avatar.class);
+    		JSONLiteral msg 	= avatar.new_private_msg(THE_REGION, "OBJECTSPEAK_$");
+    		int 		send[]  = new int[ascii.length + 1];
+    		send[0] = UPGRADE_PREFIX.charAt(0);
+    		System.arraycopy(ascii, 0, send, 1, ascii.length);
+       		msg.addParameter("ascii", send);
+    		msg.addParameter("speaker", avatar.noid);
+    		msg.finish();
+    		user.send(msg);
+        }
+    }
+    
     /**
      * The client is leaving the Habitat Application and wants to politely
      * disconnect.
@@ -373,12 +388,16 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
      * @param from
      * @param MOTD
      */
-    @JSONMethod ({ "text" })
-    public void TELL_EVERYONE(User from, String text) {
+    @JSONMethod ({ "text", "ascii" })
+    public void TELL_EVERYONE(User from, OptString text, int[] ascii) {
     	// TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
     	tellEveryone(" From: The Oracle   To: All Avatars: ");
-    	tellEveryone(text);
-    }
+    	if (ascii != null) {
+        	tellEveryone(ascii);
+    	} else {
+    		tellEveryone(text.value("... nevermind ..."));
+    	}
+    }    
     
     /**
      * Handle a prompted message, overloading the text-entry field. This

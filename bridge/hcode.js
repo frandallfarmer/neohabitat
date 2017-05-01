@@ -216,7 +216,11 @@ this.SERVER_OPS = {
 		"OBJECTSPEAK_$":	 	{ reqno: 15, 
 			toClient: function (o,b) {				
 				b.add(o.speaker);
-				b.add(o.text.getBytes());
+				if (o.ascii) {
+					b.add(o.ascii);
+				} else {
+					b.add(o.text.getBytes());
+				}
 			}
 		},
 		"OFF$":			 		{ reqno: 8 },
