@@ -1,0 +1,395 @@
+[
+  {
+    "ref": "context-Downtown_4k", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Pawnshop Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Downtown_4j", 
+          ""
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall.52fa.Downtown_4k", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-ground.ce87.Downtown_4k", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-display_case.f1ef.Downtown_4k", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 3, 
+        "y": 32, 
+        "x": 16, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-display_case.51e9.Downtown_4k", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 3, 
+        "y": 70, 
+        "x": 16, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.46f1.Downtown_4k", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "y": 75, 
+        "x": 136, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.9703.Downtown_4k", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 60, 
+        "x": 112, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-display_case.1886.Downtown_4k", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 60, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-display_case.d0dd.Downtown_4k", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 3, 
+        "y": 70, 
+        "x": 60, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-display_case.0a6d.Downtown_4k", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 104, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.505b.Downtown_4k", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 59, 
+        "x": 124, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.6c5a.Downtown_4k", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 41, 
+        "x": 128, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.6d9d.Downtown_4k", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "y": 73, 
+        "x": 108, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.1636.Downtown_4k", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 16, 
+        "type": "Knick_knack", 
+        "orientation": 0, 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.770f.Downtown_4k", 
+    "mods": [
+      {
+        "y": 160, 
+        "x": 48, 
+        "type": "Knick_knack", 
+        "orientation": 0, 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.7ac2.Downtown_4k", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "y": 42, 
+        "x": 28, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.d076.Downtown_4k", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 24, 
+        "y": 41, 
+        "x": 36, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.4a6d.Downtown_4k", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 16, 
+        "y": 40, 
+        "x": 68, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.2188.Downtown_4k", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 48, 
+        "y": 40, 
+        "x": 84, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.006b.Downtown_4k", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 78, 
+        "x": 20, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.f4df.Downtown_4k", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "gr_state": 2, 
+        "y": 77, 
+        "x": 32, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-wall.3492.Downtown_4k", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 160, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-pawn_machine.cb51.Downtown_4k", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 124, 
+        "type": "Pawn_machine", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pawn_machine", 
+    "in": "context-Downtown_4k"
+  }, 
+  {
+    "ref": "item-knick_knack.f4df42.Downtown_4k", 
+    "mods": [
+      {
+        "style": 9, 
+        "orientation": 0,
+        "y": 77, 
+        "x": 68, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_4k"
+  }
+]
