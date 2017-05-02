@@ -40,8 +40,6 @@ class Mod(object):
     self.contained_mods = contained_mods
     self.id = str(uuid.uuid4())[:4]
     self.parent = parent
-    if len(self.contained_mods) > 0:
-      pdb.set_trace()
     for contained_mod in self.contained_mods:
       contained_mod.parent = self
 
@@ -76,6 +74,17 @@ class Mod(object):
       if 'CHOMP' in translator:
         chomp_key = translator['CHOMP']
         mod_json[chomp_key] = self._chomped_params(chomp_start_key)
+
+    if self.neohabitat_name == 'Vendo_front':
+      display_item = 0
+      slot_bools = [False for _ in range(10)]
+      for contained_mod in self.contained_mods:
+        slot_bools[int(contained_mod.params['y'])] = True
+      for slot in range(len(slot_bools)):
+        if not slot_bools[slot]:
+          display_item = slot + 1
+          break
+      mod_json['display_item'] = display_item
 
     return mod_json
 
@@ -258,9 +267,6 @@ class Region(object):
                       additional_params=inner_mod_2_params_additional,
                       contained_mods=inner_mod_2_contained_mods))
 
-          if len(inner_mod_1_contained_mods) > 0:
-            pdb.set_trace()
-          
           contained_mods.append(
               Mod(region=self, identifier=inner_mod_1_identifier,
                   params=inner_mod_1_params,
