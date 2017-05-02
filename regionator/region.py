@@ -85,6 +85,8 @@ class Mod(object):
           display_item = slot + 1
           break
       mod_json['display_item'] = display_item
+    elif self.neohabitat_name == 'Door':
+      mod_json['connection'] = self.region.neohabitat_context
 
     return mod_json
 
