@@ -7,21 +7,21 @@
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "", 
-        "type": "Region",
-        "orientation": 1,
         "neighbors": [
-          "context-Downtown_4k",
+          "context-Downtown_4k", 
           "context-Downtown_5j", 
           "", 
-          "context-Downtown_3j"          
+          "context-Downtown_3j"
         ], 
-        "nitty_bits": 3
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
       }
     ]
   }, 
   {
-    "ref": "item-walle497", 
+    "ref": "item-wall.65d0.Downtown_4j", 
     "mods": [
       {
         "y": 0, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_4j"
   }, 
   {
-    "ref": "item-ground9547", 
+    "ref": "item-ground.3a07.Downtown_4j", 
     "mods": [
       {
         "y": 4, 
@@ -51,15 +51,17 @@
     "in": "context-Downtown_4j"
   }, 
   {
-    "ref": "item-doord46e", 
+    "ref": "item-door.26b3.Downtown_4j", 
     "mods": [
       {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "connection": "context-Downtown_4j", 
+        "key_hi": 0, 
         "y": 33, 
         "x": 20, 
-        "open_flags": 0, 
-        "type": "Door",
-        "connection": "context-Downtown_4j",		
-        "orientation": 204
+        "type": "Door", 
+        "open_flags": 0
       }
     ], 
     "type": "item", 
@@ -67,14 +69,16 @@
     "in": "context-Downtown_4j"
   }, 
   {
-    "ref": "item-streetf2ea", 
+    "ref": "item-street.d163.Downtown_4j", 
     "mods": [
       {
         "orientation": 8, 
-        "type": "Street", 
+        "height": 0, 
+        "width": 0, 
         "gr_state": 6, 
         "y": 8, 
-        "x": 68
+        "x": 68, 
+        "type": "Street"
       }
     ], 
     "type": "item", 
@@ -82,18 +86,137 @@
     "in": "context-Downtown_4j"
   }, 
   {
-    "ref": "item-garbage_can3eb0", 
+    "ref": "item-garbage_can.3f9a.Downtown_4j", 
     "mods": [
       {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
         "y": 155, 
         "x": 132, 
-        "open_flags": 3, 
         "type": "Garbage_can", 
-        "orientation": 0
+        "open_flags": 3
       }
     ], 
     "type": "item", 
     "name": "Garbage_can", 
+    "in": "context-Downtown_4j"
+  }, 
+  {
+    "ref": "item-sign.dd9b.Downtown_4j", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          80, 
+          138, 
+          136, 
+          65, 
+          138, 
+          136, 
+          87, 
+          138, 
+          136, 
+          78, 
+          32, 
+          32, 
+          32, 
+          32, 
+          80, 
+          136, 
+          137, 
+          79, 
+          137, 
+          136, 
+          72, 
+          137, 
+          136, 
+          83, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "item-glue.93a1.Downtown_4j"
+  }, 
+  {
+    "ref": "item-knick_knack.9346.Downtown_4j", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.93a1.Downtown_4j"
+  }, 
+  {
+    "ref": "item-knick_knack.a24a.Downtown_4j", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.93a1.Downtown_4j"
+  }, 
+  {
+    "ref": "item-glue.93a1.Downtown_4j", 
+    "mods": [
+      {
+        "y_offset_2": 253, 
+        "y_offset_3": 0, 
+        "y_offset_1": 254, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 4, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 7, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 54, 
+        "x": 56, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
     "in": "context-Downtown_4j"
   }
 ]

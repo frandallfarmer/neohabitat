@@ -7,21 +7,21 @@
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "~", 
-        "type": "Region",
-        "orientation": 1,
         "neighbors": [
-          "",
-          "context-Downtown_4j",
-          "context-Downtown_3i",
-          "" 
+          "", 
+          "context-Downtown_4j", 
+          "context-Downtown_3i", 
+          ""
         ], 
-        "nitty_bits": 3
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
       }
     ]
   }, 
   {
-    "ref": "item-wall4ded", 
+    "ref": "item-wall.78f0.Downtown_3j", 
     "mods": [
       {
         "y": 0, 
@@ -36,7 +36,7 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-groundc186", 
+    "ref": "item-ground.5f70.Downtown_3j", 
     "mods": [
       {
         "y": 4, 
@@ -51,7 +51,77 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-sign10ab", 
+    "ref": "item-book.cbb6.Downtown_3j", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.4b98.Downtown_3j"
+  }, 
+  {
+    "ref": "item-vendo_front.4b98.Downtown_3j", 
+    "mods": [
+      {
+        "display_item": 2, 
+        "style": 1, 
+        "orientation": 228, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.581f.Downtown_3j"
+  }, 
+  {
+    "ref": "item-book.0f38.Downtown_3j", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 8, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_inside.581f.Downtown_3j"
+  }, 
+  {
+    "ref": "item-vendo_inside.581f.Downtown_3j", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 228, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 12, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-sign.4a57.Downtown_3j", 
     "mods": [
       {
         "style": 6, 
@@ -109,7 +179,7 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-short_sign02db", 
+    "ref": "item-short_sign.ff96.Downtown_3j", 
     "mods": [
       {
         "style": 5, 
@@ -137,14 +207,84 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-bottlebfdd", 
+    "ref": "item-book.733b.Downtown_3j", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.c63c.Downtown_3j"
+  }, 
+  {
+    "ref": "item-vendo_front.c63c.Downtown_3j", 
+    "mods": [
+      {
+        "display_item": 2, 
+        "style": 1, 
+        "orientation": 172, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.738e.Downtown_3j"
+  }, 
+  {
+    "ref": "item-book.58cf.Downtown_3j", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_inside.738e.Downtown_3j"
+  }, 
+  {
+    "ref": "item-vendo_inside.738e.Downtown_3j", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 172, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 44, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_3j"
+  }, 
+  {
+    "ref": "item-bottle.53b0.Downtown_3j", 
     "mods": [
       {
         "y": 153, 
         "x": 120, 
-        "filled": 0, 
         "type": "Bottle", 
-        "orientation": 0
+        "orientation": 0, 
+        "filled": 0
       }
     ], 
     "type": "item", 
@@ -152,14 +292,14 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-bottle710e", 
+    "ref": "item-bottle.9eeb.Downtown_3j", 
     "mods": [
       {
         "orientation": 0, 
-        "type": "Bottle", 
         "gr_state": 1, 
         "y": 155, 
         "x": 116, 
+        "type": "Bottle", 
         "filled": 1
       }
     ], 
@@ -168,7 +308,7 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-tree7043", 
+    "ref": "item-tree.5f8c.Downtown_3j", 
     "mods": [
       {
         "y": 29, 
@@ -183,14 +323,16 @@
     "in": "context-Downtown_3j"
   }, 
   {
-    "ref": "item-street3d65", 
+    "ref": "item-street.46dc.Downtown_3j", 
     "mods": [
       {
         "orientation": 8, 
-        "type": "Street", 
+        "height": 0, 
+        "width": 0, 
         "gr_state": 8, 
         "y": 7, 
-        "x": 68
+        "x": 68, 
+        "type": "Street"
       }
     ], 
     "type": "item", 

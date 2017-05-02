@@ -1,0 +1,421 @@
+[
+  {
+    "ref": "context-Downtown_6c", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Body Paints Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_6d", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.1d07.Downtown_6c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.f6ca.Downtown_6c", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Spray_can", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.e787.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.ca68.Downtown_6c", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "type": "Spray_can", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.e787.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.22de.Downtown_6c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Spray_can", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.e787.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.1073.Downtown_6c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Spray_can", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.e787.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.3dd4.Downtown_6c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Spray_can", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.e787.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.920b.Downtown_6c", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Spray_can", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.e787.Downtown_6c"
+  }, 
+  {
+    "ref": "item-vendo_front.e787.Downtown_6c", 
+    "mods": [
+      {
+        "display_item": 7, 
+        "orientation": 112, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 184, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.e09e.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.a4c3.Downtown_6c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Spray_can", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_inside.e09e.Downtown_6c"
+  }, 
+  {
+    "ref": "item-vendo_inside.e09e.Downtown_6c", 
+    "mods": [
+      {
+        "orientation": 112, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.4ab4.Downtown_6c", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Spray_can", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.7c3f.Downtown_6c", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 6, 
+        "type": "Spray_can", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.194f.Downtown_6c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Spray_can", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.3870.Downtown_6c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Spray_can", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.45b7.Downtown_6c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Spray_can", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.7272.Downtown_6c", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Spray_can", 
+        "orientation": 96
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.31a3.Downtown_6c", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "type": "Spray_can", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_front.936a.Downtown_6c"
+  }, 
+  {
+    "ref": "item-vendo_front.936a.Downtown_6c", 
+    "mods": [
+      {
+        "display_item": 8, 
+        "orientation": 88, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.ef6e.Downtown_6c"
+  }, 
+  {
+    "ref": "item-spray_can.bdc7.Downtown_6c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Spray_can", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Spray_can", 
+    "in": "item-vendo_inside.ef6e.Downtown_6c"
+  }, 
+  {
+    "ref": "item-vendo_inside.ef6e.Downtown_6c", 
+    "mods": [
+      {
+        "orientation": 88, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 112, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_6c"
+  }, 
+  {
+    "ref": "item-short_sign.28af.Downtown_6c", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 5, 
+        "y": 63, 
+        "x": 64, 
+        "ascii": [
+          133, 
+          131, 
+          128, 
+          36, 
+          53, 
+          48, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_6c"
+  }, 
+  {
+    "ref": "item-wall.e6a9.Downtown_6c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_6c"
+  }, 
+  {
+    "ref": "item-sign.1936.Downtown_6c", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 113, 
+        "x": 52, 
+        "ascii": [
+          131, 
+          32, 
+          87, 
+          101, 
+          39, 
+          108, 
+          108, 
+          32, 
+          112, 
+          97, 
+          105, 
+          110, 
+          116, 
+          133, 
+          134, 
+          32, 
+          32, 
+          65, 
+          78, 
+          89, 
+          134, 
+          133, 
+          98, 
+          111, 
+          100, 
+          121, 
+          32, 
+          102, 
+          111, 
+          114, 
+          32, 
+          111, 
+          110, 
+          108, 
+          121, 
+          58, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_6c"
+  }
+]
