@@ -59,6 +59,7 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0, 
+		"path": "text-bookofrecords",
         "type": "Book"
       }
     ], 
@@ -79,7 +80,8 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0, 
-        "item_price": 0
+        "prices": [5,5],
+        "item_price": 5
       }
     ], 
     "type": "item", 
@@ -95,6 +97,7 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1, 
+		"path": "text-bookofrecords",
         "type": "Book"
       }
     ], 
@@ -215,6 +218,7 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0, 
+		"path": "text-weeklyrant.current",
         "type": "Book"
       }
     ], 
@@ -235,7 +239,8 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0, 
-        "item_price": 0
+        "prices": [5,5],
+        "item_price": 5
       }
     ], 
     "type": "item", 
@@ -251,6 +256,7 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1, 
+		"path": "text-weeklyrant.current",
         "type": "Book"
       }
     ], 
