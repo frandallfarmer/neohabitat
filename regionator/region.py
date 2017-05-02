@@ -77,6 +77,17 @@ class Mod(object):
         chomp_key = translator['CHOMP']
         mod_json[chomp_key] = self._chomped_params(chomp_start_key)
 
+    if self.neohabitat_name == 'Vendo_front':
+      display_item = 0
+      slot_bools = [False for _ in range(10)]
+      for contained_mod in self.contained_mods:
+        slot_bools[int(contained_mod.params['y'])] = True
+      for slot in range(len(slot_bools)):
+        if not slot_bools[slot]:
+          display_item = slot + 1
+          break
+      mod_json['display_item'] = display_item
+
     return mod_json
 
   @property
