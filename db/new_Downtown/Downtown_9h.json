@@ -1,0 +1,410 @@
+[
+  {
+    "ref": "context-Downtown_9h", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Library Green", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_8i", 
+          "", 
+          "context-Downtown_9g", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.ecf7.Downtown_9h", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.c9e4.Downtown_9h", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 80, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.31db.Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.4d5c.Downtown_9h", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 104, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.31db.Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.496b.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "last_page": 0, 
+        "gr_state": 1, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.31db.Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.8b61.Downtown_9h", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "last_page": 0, 
+        "type": "Book", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.31db.Downtown_9h"
+  }, 
+  {
+    "ref": "item-display_case.31db.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 157, 
+        "x": 4, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.13d6.Downtown_9h", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 56, 
+        "last_page": 0, 
+        "y": 3, 
+        "x": 3, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.3805.Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.21a9.Downtown_9h", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.3805.Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.8879.Downtown_9h", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "last_page": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.3805.Downtown_9h"
+  }, 
+  {
+    "ref": "item-book.a81f.Downtown_9h", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "gr_state": 1, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-display_case.3805.Downtown_9h"
+  }, 
+  {
+    "ref": "item-display_case.3805.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 157, 
+        "x": 112, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-short_sign.9930.Downtown_9h", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 244, 
+        "ascii": [
+          32, 
+          133, 
+          126, 
+          133, 
+          32, 
+          98, 
+          108, 
+          117, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 117, 
+        "x": 0, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-wall.3ceb.Downtown_9h", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-short_sign.cac5.Downtown_9h", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 164, 
+        "ascii": [
+          32, 
+          112, 
+          114, 
+          112, 
+          32, 
+          133, 
+          127, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 117, 
+        "x": 132, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-sign.9fd8.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 122, 
+        "x": 52, 
+        "ascii": [
+          133, 
+          131, 
+          82, 
+          85, 
+          76, 
+          69, 
+          83, 
+          58, 
+          134, 
+          133, 
+          132, 
+          66, 
+          101, 
+          32, 
+          113, 
+          117, 
+          105, 
+          101, 
+          116, 
+          134, 
+          78, 
+          111, 
+          32, 
+          99, 
+          104, 
+          101, 
+          99, 
+          107, 
+          111, 
+          117, 
+          116, 
+          134, 
+          66, 
+          101, 
+          32, 
+          113, 
+          117, 
+          105, 
+          101, 
+          116
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-short_sign.def7.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 5, 
+        "y": 114, 
+        "x": 0, 
+        "ascii": [
+          82, 
+          101, 
+          102, 
+          101, 
+          114, 
+          101, 
+          110, 
+          99, 
+          101, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-short_sign.173b.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 5, 
+        "y": 114, 
+        "x": 128, 
+        "ascii": [
+          82, 
+          101, 
+          97, 
+          100, 
+          105, 
+          110, 
+          103, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_9h"
+  }, 
+  {
+    "ref": "item-short_sign.3601.Downtown_9h", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 106, 
+        "x": 44, 
+        "ascii": [
+          49, 
+          58, 
+          134, 
+          50, 
+          58, 
+          134, 
+          51, 
+          58, 
+          134, 
+          134
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_9h"
+  }
+]

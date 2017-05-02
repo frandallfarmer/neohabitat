@@ -1,0 +1,378 @@
+[
+  {
+    "ref": "context-Downtown_7a", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Stock Market Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_7b", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.e575.Downtown_7a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.2d8e.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.a500.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.f74e.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 16, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.a500.Downtown_7a"
+  }, 
+  {
+    "ref": "item-vendo_front.a500.Downtown_7a", 
+    "mods": [
+      {
+        "display_item": 3, 
+        "orientation": 120, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 184, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.38e6.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.bdf2.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 8, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_inside.38e6.Downtown_7a"
+  }, 
+  {
+    "ref": "item-vendo_inside.38e6.Downtown_7a", 
+    "mods": [
+      {
+        "orientation": 140, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 12, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.bf25.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 24, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.9088.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.31a8.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 32, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.9088.Downtown_7a"
+  }, 
+  {
+    "ref": "item-vendo_front.9088.Downtown_7a", 
+    "mods": [
+      {
+        "display_item": 3, 
+        "orientation": 120, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 181, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.4b72.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.92a9.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 32, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_inside.4b72.Downtown_7a"
+  }, 
+  {
+    "ref": "item-vendo_inside.4b72.Downtown_7a", 
+    "mods": [
+      {
+        "orientation": 140, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 60, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.df9c.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 48, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.de63.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.7a0f.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 56, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.de63.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.1763.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 32, 
+        "last_page": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.de63.Downtown_7a"
+  }, 
+  {
+    "ref": "item-vendo_front.de63.Downtown_7a", 
+    "mods": [
+      {
+        "display_item": 4, 
+        "orientation": 120, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.fe79.Downtown_7a"
+  }, 
+  {
+    "ref": "item-book.e7c4.Downtown_7a", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 40, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_inside.fe79.Downtown_7a"
+  }, 
+  {
+    "ref": "item-vendo_inside.fe79.Downtown_7a", 
+    "mods": [
+      {
+        "orientation": 140, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 108, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_7a"
+  }, 
+  {
+    "ref": "item-wall.3476.Downtown_7a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_7a"
+  }, 
+  {
+    "ref": "item-sign.58e6.Downtown_7a", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 104, 
+        "x": 12, 
+        "ascii": [
+          32, 
+          83, 
+          116, 
+          111, 
+          99, 
+          107, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          128, 
+          66, 
+          111, 
+          110, 
+          100, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          128, 
+          67, 
+          111, 
+          109, 
+          109, 
+          111, 
+          100, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7a"
+  }
+]
