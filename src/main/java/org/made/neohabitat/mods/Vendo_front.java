@@ -79,6 +79,9 @@ public class Vendo_front extends Openable implements Copyable {
     	this.item_price		= item_price;
     	this.display_item	= display_item;
     	this.take			= take;
+    	if (prices == null) {
+    		prices = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    	}
     	this.prices			= prices;
     }
 
@@ -141,6 +144,14 @@ public class Vendo_front extends Openable implements Copyable {
     	}
     	HabitatMod newDisplay = (HabitatMod) front.contents(new_display_item);
     	int		   newClass   = newDisplay.HabitatClass();
+    	if (new_display_item >= prices.length) {
+    		int newPrices[] = new int[10];
+    		System.arraycopy(prices, 0, newPrices, 0, prices.length);
+    		prices = newPrices;
+    	}
+    	if (prices[new_display_item] == 0) {								  // 0 price == 125% of Pawn Value
+    		prices[new_display_item] = (Pawn_machine.pawn_values[newClass] * 125) / 100;
+    	}
     	if (prices[new_display_item] < Pawn_machine.pawn_values[newClass]) {  // NEOHABITAT FIX for KNOWN BUG/EXPLOIT. FRF
     		select_out_of_order(from, "price: " + prices[new_display_item] + " < pawn value:" + Pawn_machine.pawn_values[newClass]);
     		return;
