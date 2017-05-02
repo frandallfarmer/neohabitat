@@ -60,6 +60,7 @@
         "y": 0, 
         "x": 0, 
 		"path": "text-bookofrecords",
+		"title": "Book of Records",
         "type": "Book"
       }
     ], 
@@ -71,7 +72,7 @@
     "ref": "item-vendo_front.4b98.Downtown_3j", 
     "mods": [
       {
-        "display_item": 2, 
+        "display_item": 1, 
         "style": 1, 
         "orientation": 228, 
         "key_lo": 0, 
@@ -98,6 +99,7 @@
         "y": 1, 
         "x": 1, 
 		"path": "text-bookofrecords",
+		"title": "Book of Records",
         "type": "Book"
       }
     ], 
@@ -219,6 +221,7 @@
         "y": 0, 
         "x": 0, 
 		"path": "text-weeklyrant.current",
+		"title": "Weekly Rant, Perpetual Current Issue",
         "type": "Book"
       }
     ], 
@@ -230,7 +233,7 @@
     "ref": "item-vendo_front.c63c.Downtown_3j", 
     "mods": [
       {
-        "display_item": 2, 
+        "display_item": 1, 
         "style": 1, 
         "orientation": 172, 
         "key_lo": 0, 
@@ -239,7 +242,7 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0, 
-        "prices": [5,5],
+        "prices": [20, 5],
         "item_price": 5
       }
     ], 
@@ -256,7 +259,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1, 
-		"path": "text-weeklyrant.current",
+		"path": "text-weeklyrant.1",
+		"title": "Weekly Rant, Commemorative First Issue",
         "type": "Book"
       }
     ], 
