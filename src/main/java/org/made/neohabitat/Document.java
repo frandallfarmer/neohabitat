@@ -1,5 +1,6 @@
 package org.made.neohabitat;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -186,7 +187,15 @@ public abstract class Document extends HabitatMod {
 	}
 
 	protected int[] getTextPage(String path, int page_to_read) {
-		return ascii[Math.max(Math.min(page_to_read, last_page), 1) - 1];
+		int pge = Math.max(Math.min(page_to_read, last_page), 1) - 1;
+		int eop = FULL_TEXT_PAGE;
+		for (int i = 0; i < FULL_TEXT_PAGE - 1; i++) {
+			if (ascii[pge][i] == 0) {
+				eop = i + 1;
+				break;
+			}
+		}
+		return Arrays.copyOfRange(ascii[pge], 0, eop);
 	}
 
 }
