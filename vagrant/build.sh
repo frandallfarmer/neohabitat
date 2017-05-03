@@ -5,6 +5,9 @@
 
 set -eo pipefail
 
+# Disable TTY settings because Vagrant.
+sed -i 's/^mesg n$/tty -s \&\& mesg n/g' /root/.profile
+
 SHOULD_INSTALL_MARIADB="${VAGRANT_SHOULD_INSTALL_MARIADB-true}"
 
 PACKAGES=(
