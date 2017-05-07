@@ -83,18 +83,18 @@ Garbage_can:
   <<: *openable
 
 Glue:
-  8: x_offset_1
-  9: y_offset_1
-  10: x_offset_2
-  11: y_offset_2
-  12: x_offset_3
-  13: y_offset_3
-  14: x_offset_4
-  15: y_offset_4
-  16: x_offset_5
-  17: y_offset_5
-  18: x_offset_6
-  19: y_offset_6
+  11: x_offset_1
+  12: y_offset_1
+  13: x_offset_2
+  14: y_offset_2
+  15: x_offset_3
+  16: y_offset_3
+  17: x_offset_4
+  18: y_offset_4
+  19: x_offset_5
+  20: y_offset_5
+  21: x_offset_6
+  22: y_offset_6
 
 Key:
   8: key_number_lo
