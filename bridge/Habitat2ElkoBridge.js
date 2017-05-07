@@ -865,6 +865,11 @@ var encodeState = {
 			buf.add(state.charge || 0);
 			return buf;
 		},
+		Elevator: function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.activeState || 0);
+			return buf;
+		},
 		Atm:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 			function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Bed:			function (state, container, buf) { return (this.common  (state, container, buf)); },

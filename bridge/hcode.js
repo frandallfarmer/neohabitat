@@ -414,6 +414,7 @@ this.CLASSES 			= {
 		"Drugs":	25, 25:"Drugs",
 		"Escape_device":26, 26:"Escape_device",
 		"Fake_gun":	27, 27:"Fake_gun",
+		"Elevator": 28, 28:"Elevator",
 		"Flag":		29, 29:"Flag",
 		"Flashlight":30, 30:"Flashlight",
 		"Frisbee":	31, 31:"Frisbee",
@@ -1141,6 +1142,13 @@ this.Escape_device = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"BUGOUT" }
+		}
+};
+
+this.Elevator = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			5:{ op:"ZAPTO" }
 		}
 };
 

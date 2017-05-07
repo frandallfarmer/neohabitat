@@ -1,0 +1,66 @@
+[
+  {
+    "type": "context",
+    "ref": "context-steve1",
+    "capacity": 6,
+    "name": "Welcome to Steve: Floor 1",
+    "mods": [
+      {
+        "town_dir": "",
+        "port_dir": "missing",
+        "type": "Region",
+        "nitty_bits": 2,
+        "neighbors": [ 
+          "context-library",
+          "context-library",
+          "context-library",
+          "context-library"
+        ]
+      }
+    ]
+  },
+  {
+    "ref": "item-steve1.wall", 
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 5,
+        "type": "Wall",
+        "orientation": 148
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-steve1"
+  },
+  {
+    "ref": "item-steve1.ground", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-steve1"
+  }, 
+  {
+    "type": "item",
+    "ref": "item-steve1.elevator",
+    "name": "Elevator - Steve 1",
+    "in": "context-steve1",
+    "mods": [
+      {
+        "type": "Elevator",
+        "x": 60,
+        "y": 26,
+        "address": "steve-1"
+      }
+    ]
+  }
+]
