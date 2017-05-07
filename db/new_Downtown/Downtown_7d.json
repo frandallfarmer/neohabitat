@@ -114,8 +114,8 @@
         "x": 68,
         "type": "Door", 
         "orientation": 56,
-		"open_flags": 0,
-		"connection": "context-test"
+		"open_flags": 2,
+		"connection": "context-Downtown_8d"
       }
     ], 
     "type": "item", 
