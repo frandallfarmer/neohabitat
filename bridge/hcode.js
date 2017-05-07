@@ -820,6 +820,11 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.err);
 			}
+		},
+		BUGOUT: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
 		}
 };
 
@@ -1126,6 +1131,16 @@ this.Vendo_front	= {
 			0:{ op:"HELP" },
 			4:{ op:"VEND" },
 			5:{ op:"VSELECT" }
+		}
+};
+
+this.Escape_device = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"BUGOUT" }
 		}
 };
 

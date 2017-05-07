@@ -58,6 +58,9 @@ Display_case:
 Door:
   <<: *openable
 
+Escape_device:
+  8: charge
+
 Flag:
   <<: *massive
 
