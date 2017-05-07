@@ -335,6 +335,11 @@
 			"type": "class",
 			"tag": "Escape_device",
 			"name": "org.made.neohabitat.mods.Escape_device"
+		},
+		{
+			"type": "class",
+			"tag": "Elevator",
+			"name": "org.made.neohabitat.mods.Elevator"
 		}
 	]
 }

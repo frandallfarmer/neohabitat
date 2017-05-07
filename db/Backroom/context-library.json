@@ -10,7 +10,7 @@
 			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 2,
-			"neighbors": ["", "context-table", "context-test", ""]
+			"neighbors": ["context-steve1", "context-table", "context-test", ""]
 		}
 	]
 },

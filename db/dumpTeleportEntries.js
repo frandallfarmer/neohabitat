@@ -22,6 +22,8 @@ var lookForTeleportEntries = function (o) {
 		if (mod.type === "Teleport") {
 			console.log("\"" + squish(mod.address) + "\":\"" + o.in + "\",");
 			lookForAliases(mod, o.in);
+		} else if (mod.type === "Elevator") {
+			console.log("\"" + "otis-" + squish(mod.address) + "\":\"" + o.in + "\",");
 		}
 		if (o.type === "context") {
 			lookForAliases(o, o.ref);

@@ -27,6 +27,9 @@ polygonal: &polygonal
   12: lower_right_x
   13: height
 
+teleporter: &teleporter
+  8: activeState
+
 toggle: &toggle
   8: "on"
 
@@ -57,6 +60,9 @@ Display_case:
 
 Door:
   <<: *openable
+
+Elevator:
+  <<: *teleporter
 
 Escape_device:
   8: charge
@@ -129,7 +135,7 @@ Table:
   <<: *openable
 
 Teleport:
-  8: activeState
+  <<: *teleporter
 
 Tokens:
   8: denom_lo
