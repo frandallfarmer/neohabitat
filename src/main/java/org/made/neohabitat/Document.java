@@ -29,8 +29,8 @@ import com.mongodb.MongoException;
  */
 public abstract class Document extends HabitatMod {
 
-	private static final int	  NO_PAGES[][]	= {};
-	private static final int MISSING_PAGES[][]	= new int[][] { {91, 77, 105, 115, 115, 105, 110, 103, 32, 68, 111, 99, 117, 109, 101, 110, 116, 93 } }; // [Missing Document]
+	public static final int	NO_PAGES[][]		= {};
+	public static final int MISSING_PAGES[][]	= new int[][] { {91, 77, 105, 115, 115, 105, 110, 103, 32, 68, 111, 99, 117, 109, 101, 110, 116, 93 } }; // [Missing Document]
 
 	/** Local document body - char array provided for simple documents only.  Immediately converted to ascii byte array. */
 	protected String pages[]   = {};

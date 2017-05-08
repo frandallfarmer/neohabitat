@@ -52,40 +52,36 @@ public class Matchbook extends HabitatMod implements Copyable {
         return false;
     }
 
-    private String text = "";
+    private int ascii[] = {};
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "text" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "text", "ascii" })
     public Matchbook(OptInteger style, OptInteger x, OptInteger y,
         OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-        OptString text) {
+        OptString text, int[] ascii) {
         super(style, x, y, orientation, gr_state, restricted);
-        this.text = boundTextLength(text.value(""));
+        if (ascii == null) {
+            this.ascii = convert_to_petscii(text.value(""), MAX_MATCHBOOK_TEXT_LENGTH);
+        } else {
+            this.ascii = ascii;
+        }
     }
 
     public Matchbook(int style, int x, int y, int orientation, int gr_state,
-        boolean restricted, String text) {
+        boolean restricted, int[] ascii) {
         super(style, x, y, orientation, gr_state, restricted);
-        this.text = boundTextLength(text);
-    }
-
-    private String boundTextLength(String text) {
-        if (text.length() < MAX_MATCHBOOK_TEXT_LENGTH) {
-            return text;
-        } else {
-            return text.substring(0, MAX_MATCHBOOK_TEXT_LENGTH);
-        }
+        this.ascii = ascii;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Matchbook(style, x, y, orientation, gr_state, restricted, text);
+        return new Matchbook(style, x, y, orientation, gr_state, restricted, ascii);
     }
 
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         if (control.toRepository()) {
-            result.addParameter("text", boundTextLength(text));
+            result.addParameter("ascii", ascii);
         }
         result.finish();
         return result;
@@ -94,11 +90,14 @@ public class Matchbook extends HabitatMod implements Copyable {
     @JSONMethod
     public void README(User from) {
         Avatar avatar = avatar(from);
-        String readmeText = "";
+        int[] readmeAscii = {};
         if (holding(avatar, this)) {
-            readmeText = text;
+            readmeAscii = ascii;
         }
-        send_reply_msg(from, readmeText);
+        JSONLiteral msg = new_reply_msg(noid);
+        msg.addParameter("ascii", readmeAscii);
+        msg.finish();
+        from.send(msg);
     }
 
     /**

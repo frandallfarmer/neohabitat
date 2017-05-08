@@ -834,7 +834,7 @@ this.translate = {
 		},
 		README: {
 			toClient: function(o, b) {
-				b.add(o.text.getBytes());
+				b.add(o.ascii);
 			}
 		}
 };

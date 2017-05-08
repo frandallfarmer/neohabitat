@@ -3371,4 +3371,24 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		tokens.gen_flags[MODIFIED] = true;
 		return TRUE;
 	}
+
+	/**
+	 * Converts a Unicode string to an int[] of Commodore-compliant PETSCII,
+	 * bounded by the provided maximum length.
+	 *
+	 * @param text the Unicode string to encode
+	 * @param maxLength the maximum length of the PETSCII array
+	 * @return an int[] containing the Commodore-compliant PETSCII
+     */
+	public static int[] convert_to_petscii(String text, int maxLength) {
+		int petsciiLength = text.length();
+		if (petsciiLength > maxLength) {
+			petsciiLength = maxLength;
+		}
+		int[] petscii = new int[petsciiLength];
+		for (int c = 0; c < petsciiLength; c++) {
+			petscii[c] = (int) text.charAt(c) & 0xff;
+		}
+		return petscii;
+	}
 }
