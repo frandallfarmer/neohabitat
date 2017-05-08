@@ -96,6 +96,9 @@ Glue:
   21: x_offset_6
   22: y_offset_6
 
+Hole:
+  <<: *openable
+
 Key:
   8: key_number_lo
   9: key_number_hi
@@ -117,6 +120,8 @@ Rock:
 
 Short_sign:
   CHOMP: ascii
+
+Shovel: {}
 
 Sign:
   CHOMP: ascii
