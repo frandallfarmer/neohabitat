@@ -826,6 +826,11 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.err);
 			}
+		},
+		DIG: {
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
 		}
 };
 
@@ -1149,6 +1154,23 @@ this.Elevator = {
 		clientMessages: {
 			0:{ op:"HELP" },
 			5:{ op:"ZAPTO" }
+		}
+};
+
+this.Shovel = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			4:{ op:"DIG" }
+		}
+};
+
+this.Hole = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"CLOSECONTAINER" },
+			5:{ op:"OPENCONTAINER" }
 		}
 };
 

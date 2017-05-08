@@ -62,5 +62,34 @@
         "address": "steve-1"
       }
     ]
+  },
+  {
+    "type": "item",
+    "ref": "item-steve1.hole",
+    "name": "Hole Test",
+    "in": "context-steve1",
+    "mods": [
+      {
+        "type": "Hole",
+        "x": 24,
+        "y": 148,
+        "gr_state": 1,
+        "open_flags": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-steve1.shovel",
+    "name": "Shovel Test",
+    "in": "context-steve1",
+    "mods": [
+      {
+        "type": "Shovel",
+        "x": 20,
+        "y": 72,
+        "orientation": 56
+      }
+    ]
   }
 ]

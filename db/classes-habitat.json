@@ -340,6 +340,16 @@
 			"type": "class",
 			"tag": "Elevator",
 			"name": "org.made.neohabitat.mods.Elevator"
+		},
+		{
+			"type": "class",
+			"tag": "Shovel",
+			"name": "org.made.neohabitat.mods.Shovel"
+		},
+		{
+			"type": "class",
+			"tag": "Hole",
+			"name": "org.made.neohabitat.mods.Hole"
 		}
 	]
 }
