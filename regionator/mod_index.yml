@@ -106,6 +106,8 @@ Key:
 Knick_knack:
   <<: *magical
 
+Matchbook: {}
+
 Plant:
   <<: *massive
 
