@@ -902,6 +902,7 @@ var encodeState = {
 		House_cat:  	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Knick_knack:	function (state, container, buf) { return (this.magical (state, container, buf)); },
 		Knife:  		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Matchbook:  function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Pawn_machine:	function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Plant:	 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Plaque:			function (state, container, buf) { return (this.document(state, container, buf)); },

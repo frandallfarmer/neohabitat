@@ -62,5 +62,20 @@
         "address": "steve-2"
       }
     ]
+  },
+  {
+    "type": "item",
+    "ref": "item-steve2.matchbook",
+    "name": "Matchbook Test",
+    "in": "context-steve2",
+    "mods": [
+      {
+        "type": "Matchbook",
+        "x": 16,
+        "y": 130,
+        "orientation": 16,
+        "text": "{ PHIL COLLINS {"
+      }
+    ]
   }
 ]
