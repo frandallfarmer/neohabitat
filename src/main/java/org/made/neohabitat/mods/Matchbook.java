@@ -62,14 +62,14 @@ public class Matchbook extends HabitatMod implements Copyable {
         if (ascii == null) {
             this.ascii = convert_to_petscii(text.value(""), MAX_MATCHBOOK_TEXT_LENGTH);
         } else {
-            this.ascii = ascii;
+            this.ascii = bound_int_array(ascii, MAX_MATCHBOOK_TEXT_LENGTH);
         }
     }
 
     public Matchbook(int style, int x, int y, int orientation, int gr_state,
         boolean restricted, int[] ascii) {
         super(style, x, y, orientation, gr_state, restricted);
-        this.ascii = ascii;
+        this.ascii = bound_int_array(ascii, MAX_MATCHBOOK_TEXT_LENGTH);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Matchbook extends HabitatMod implements Copyable {
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         if (control.toRepository()) {
-            result.addParameter("ascii", ascii);
+            result.addParameter("ascii", bound_int_array(ascii, MAX_MATCHBOOK_TEXT_LENGTH));
         }
         result.finish();
         return result;

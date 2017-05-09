@@ -108,6 +108,8 @@ Knick_knack:
 
 Matchbook: {}
 
+Paper: {}
+
 Plant:
   <<: *massive
 

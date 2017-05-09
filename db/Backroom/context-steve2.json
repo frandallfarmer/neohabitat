@@ -66,15 +66,15 @@
   {
     "type": "item",
     "ref": "item-steve2.matchbook",
-    "name": "Matchbook Test",
+    "name": "Paper Test",
     "in": "context-steve2",
     "mods": [
       {
-        "type": "Matchbook",
+        "type": "Paper",
         "x": 16,
         "y": 130,
         "orientation": 16,
-        "text": "{ PHIL COLLINS {"
+        "text_path": "text-popmap"
       }
     ]
   }

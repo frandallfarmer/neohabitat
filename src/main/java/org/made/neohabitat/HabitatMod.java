@@ -5,6 +5,7 @@ import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Mod;
 import org.elkoserver.server.context.ObjectCompletionWatcher;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -488,9 +489,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * 
 	 * @param from
 	 *            User representing the connection making the request.
+	 * @returns whether the PUT succeded
 	 */
-	public void generic_PUT(User from) {
-		generic_PUT(from, (Container) current_region(), avatar(from).x, avatar(from).y, avatar(from).orientation);
+	public boolean generic_PUT(User from) {
+		return generic_PUT(from, (Container) current_region(), avatar(from).x, avatar(from).y, avatar(from).orientation);
 	}
 
 	/**
@@ -508,9 +510,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            new container.
 	 * @param orientation
 	 *            The new orientation for this once transfered.
+	 * @returns whether the PUT succeded
 	 */
 	// TODO @deprecate containerNoid/ObjList?
-	public void generic_PUT(User from, int containerNoid, int x, int y, int orientation) {
+	public boolean generic_PUT(User from, int containerNoid, int x, int y, int orientation) {
 		Region region = current_region();
 		Container target = region;
 		if (containerNoid != THE_REGION) {
@@ -518,10 +521,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				target = (Container) region.noids[containerNoid];
 			} else {
 				trace_msg("Class " + region.noids[containerNoid].object().ref() + " is not a container.");
-				return;
+				return false;
 			}
 		}
-		generic_PUT(from, target, x, y, orientation);
+		return generic_PUT(from, target, x, y, orientation);
 	}
 	
 	public void putMeBack(User from, boolean copyMe) {
@@ -579,12 +582,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * @param obj_orient
 	 *            The new orientation for this once transfered.
 	 */
-	public void generic_PUT(User from, Container cont, int pos_x, int pos_y, int obj_orient) {
+	public boolean generic_PUT(User from, Container cont, int pos_x, int pos_y, int obj_orient) {
 
 		if (this.gen_flags[RESTRICTED] && this.lastRestrictedContainer != null && this.lastRestrictedContainer != cont) {
 			send_reply_error(from);			// Nope. Let's put it back instead.
 			putMeBack(from, true);
-			return;
+			return false;
 		}
 		
 		final int TO_AVATAR = 1;
@@ -595,11 +598,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		if (this.container() == null) {
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (!holding(avatar(from), this)) {
 			send_reply_error(from);
-			return;
+			return false;
 		}
 
 		Item item = (Item) this.object();
@@ -615,13 +618,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			trace_msg("PUT WHILE OPEN: " + from.ref() + " attempted to put " + item.ref() + " into containter "
 					+ cont.object().ref());
 			send_reply_error(from);
-			return;
+			return false;
 		}
 
 		if (cont.noid != THE_REGION) {
 			if (contClass != CLASS_AVATAR && cont instanceof Openable && !((Openable) cont).open_flags[OPEN_BIT]) {
 				send_reply_error(from); // Tried to put into a CLOSED container
-				return;
+				return false;
 			}
 			pos_y = -1;
 			int token_at = -1;
@@ -646,7 +649,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				int	   newDenom  = inHand.tget() + inContainer.tget();
 				if (newDenom > 65535)  {
 					send_reply_error(from);
-					return;
+					return false;
 				}
 				inContainer.tset(newDenom);
 				inContainer.gen_flags[MODIFIED] = true;
@@ -655,56 +658,56 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				send_goaway_msg(inHand.noid);
 				inHand.destroy_object(inHand);
 				send_reply_error(from);			// Well, a merge isn't really a failure, but the client doesn't understand otherwise;				
-				return;
+				return false;
 			}
 			if (pos_y == -1) {
 				if (selfClass != CLASS_PAPER) {
 					send_reply_error(from);
-					return;
+					return false;
 				}
 				send_reply_error(from);
 				// put_success = true;
-				return;
+				return false;
 			}
 		}
 		if (!available(cont, pos_x, pos_y)) {
 			object_say(from, cont.noid, "The container is full.");
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (this.gen_flags[RESTRICTED] && !cont.gen_flags[RESTRICTED] && cont.noid != THE_REGION) {
 			object_say(from, cont.noid, "You can't put that in there.");
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (cont.gen_flags[RESTRICTED] && !this.gen_flags[RESTRICTED])  {
 			object_say(from, cont.noid, "You can't put that in there.");
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (selfClass == CLASS_MAGIC_LAMP && this.gr_state == MAGIC_LAMP_GENIE) {
 			object_say(from, noid, "You can't put down a Genie!");
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (selfClass == CLASS_FLAG && cont.noid != THE_REGION) {
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (cont.noid == THE_REGION && pos_y < 128) {
 			send_reply_error(from);
-			return;
+			return false;
 		}
 		if (cont.noid == THE_REGION && (pos_x < 8 || pos_x > 152)) {
 			send_reply_error(from);
-			return;
+			return false;
 		}
 
 		/* Preemptive tests complete! We're ready to change containers! */
 
 		if (!change_containers(this, cont, pos_y, false)) {
 			send_reply_error(from);
-			return;
+			return false;
 		}
 
 		/* Now for the side effects... */
@@ -796,6 +799,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		/* If putting into a pawn machine, announce the value of the object */
 		if (contClass == CLASS_PAWN_MACHINE)
 			object_say(from, cont.noid, "Item value: $" + Pawn_machine.pawn_values[this.HabitatClass()]);
+
+		return true;
 	}
 
 	/**
@@ -809,10 +814,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The new horizontal position for this.
 	 * @param target_y
 	 *            The new vertical position for this.
+	 * @returns whether the THROW succeded
 	 */
 	// TODO @deprecate target/ObjList?
-	public void generic_THROW(User from, int target, int target_x, int target_y) {
-		generic_THROW(from, current_region().noids[target], target_x, target_y);
+	public boolean generic_THROW(User from, int target, int target_x, int target_y) {
+		return generic_THROW(from, current_region().noids[target], target_x, target_y);
 	}
 
 	/**
@@ -833,8 +839,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The new horizontal position for this.
 	 * @param target_y
 	 *            The new vertical position for this.
+	 * @returns whether the THROW succeded
 	 */
-	public void generic_THROW(User from, HabitatMod target, int target_x, int target_y) {
+	public boolean generic_THROW(User from, HabitatMod target, int target_x, int target_y) {
 
 		int new_x = target_x;
 		int new_y = target_y;
@@ -844,7 +851,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		Avatar avatar = (Avatar) avatar(from);
 		int oldY = this.y;
 		Item item = (Item) this.object();
-		// boolean throw_success = false; /* TODO FIX THIS ORIGINAL GLOBAL */
 
 		/*
 		 * DEAD CODE if (target == null) { r_msg_4(from, target.noid, this.x,
@@ -853,29 +859,29 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		if (!holding(avatar, this)) {
 			send_throw_reply(from, noid, target.noid, this.x, this.y, FALSE);
-			return;
+			return false;
 		}
 
 		if (selfClass == CLASS_MAGIC_LAMP && this.gr_state == MAGIC_LAMP_GENIE) {
 			object_say(from, noid, "You can''t throw a Genie!");
 			send_throw_reply(from, noid, target.noid, this.x, this.y, FALSE);
-			return;
+			return false;
 		}
 		/* If target isn't open ground, object doesn't move */
 		if (targetClass != CLASS_STREET && targetClass != CLASS_GROUND) {
 			if (targetClass != CLASS_FLAT && targetClass != CLASS_TRAPEZOID && targetClass != CLASS_SUPER_TRAPEZOID) {
 				send_throw_reply(from, noid, target.noid, this.x, this.y, FALSE);
-				return;
+				return false;
 			}
 			if (((Walkable) target).flat_type != GROUND_FLAT) {
 				send_throw_reply(from, noid, target.noid, this.x, this.y, FALSE);
-				return;
+				return false;
 			}
 		}
 
 		if (target_x > 152 || target_x < 8) {
 			send_throw_reply(from, noid, target.noid, this.x, this.y, FALSE);
-			return;
+			return false;
 		}
 
 		/* Hook for collision detection */
@@ -887,7 +893,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		if (new_x != target_x | new_y != target_y) { // This is dead code TODO
 			// Review to Remove
 			send_throw_reply(from, noid, target.noid, this.x, this.y, FALSE);
-			return;
+			return false;
 		}
 		/*
 		 * Preflight complete! Lets throw the item into the region at the
@@ -897,7 +903,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		if (!change_containers(this, current_region(), 0, false)) {
 			trace_msg("*ERR* change_containers fails: generic_THROW");
 			send_reply_msg(from, noid, "target", target.noid, "x", this.x, "y", this.y, "err", FALSE);
-			return;
+			return false;
 		}
 
 		/* Clamp y-coord at region depth */
@@ -944,8 +950,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		send_throw_reply(from, noid, target.noid, new_x, new_y, TRUE);
 
-		/* throw_success is a global interrogated by others */
-		// throw_success = true;
+		/* Notes that this throw has been successful. */
+		return true;
 	}
 
 	private void send_throw_reply(User from, int noid, int target, int x, int y, int err) {
@@ -3391,4 +3397,96 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		}
 		return petscii;
 	}
+
+	/**
+	 * Bounds an int[] by a provided maximum length.
+	 *
+	 * @param intArray an int[] to bound by the provided maximum length
+	 * @param maxLength the maximum length of the int[]
+     * @return an int[] bounded by the provided maximum length
+     */
+	public static int[] bound_int_array(int[] intArray, int maxLength) {
+		if (intArray.length > maxLength) {
+			int[] boundedAscii = new int[maxLength];
+			System.arraycopy(intArray, 0, boundedAscii, 0, maxLength);
+			return boundedAscii;
+		} else {
+			return intArray;
+		}
+	}
+
+	/**
+	 * Returns the title page of a Document-like object.
+	 *
+	 * @param title The title of the Document-like object
+	 * @param use_flag How the Document-like object is being used
+     * @return String containing the title page.
+     */
+	public static String get_title_page(String title, int use_flag) {
+		String nice_title = title.trim();
+		switch (use_flag) {
+			case BOOK$HELP:
+				if (nice_title.length() == 0)
+					return "This book is untitled.";
+				return String.format("This book is '%s'.", nice_title);
+			case BOOK$VENDO:
+				if (nice_title.length() == 0)
+					return "This book is untitled.";
+				return String.format("This is '%s'.", nice_title);
+			case PAPER$HELP:
+				if (nice_title.length() != 0) {
+					return "This paper begins \"" + nice_title + "\".";
+				}
+		}
+		return "";
+	}
+
+	/**
+	 * Concatenates multiple int[] in the order provided.
+	 *
+	 * @param first first int[] to concatenate
+	 * @param rest remaining int[]s to concatenate
+     * @return an int[] containing the provided concatenated arrays
+     */
+	public static int[] concat_int_arrays(int[] first, int[]... rest) {
+		// Determines the maximum length of the concatenated array.
+		int totalLength = first.length;
+		for (int[] nextArray : rest) {
+			totalLength += nextArray.length;
+		}
+
+		// Concatenates all int[] arrays with System.arraycopy.
+		int[] concatArray = new int[totalLength];
+		System.arraycopy(first, 0, concatArray, 0, first.length);
+		int curStartPoint = first.length;
+		for (int[] nextArray : rest) {
+			System.arraycopy(nextArray, 0, concatArray, curStartPoint, nextArray.length);
+			curStartPoint += nextArray.length;
+		}
+		return concatArray;
+	}
+
+	/**
+	 * Concatenates multiple arrays in the provided order, borrowed from:
+	 * http://stackoverflow.com/posts/784842/revisions
+	 *
+	 * @param first first array to concatenate
+	 * @param rest remaining arrays to concatenate
+	 * @param <T> type of array
+     * @return concatenated array
+     */
+	public static <T> T[] concat_arrays(T[] first, T[]... rest) {
+		int totalLength = first.length;
+		for (T[] array : rest) {
+			totalLength += array.length;
+		}
+		T[] result = Arrays.copyOf(first, totalLength);
+		int offset = first.length;
+		for (T[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+
 }
