@@ -666,7 +666,7 @@ this.translate = {
  		},
  		WRITE: {
  			toServer: function(a, m) {
- 				m.request_ascii = a[0].getBytes();
+ 				m.request_ascii = a;
  			},
  			toClient: function(o, b) {
  				b.add(o.err);

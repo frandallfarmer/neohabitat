@@ -596,7 +596,7 @@ function parseHabitatClientMessage(client, server, data) {
 	var msg;
 
 	Trace.debug("client (" + client.sessionName + ") ->  [noid:" + noid +
-			" request:" + reqNum + " ... " + JSON.stringify(args) + "]");
+			" request:" + reqNum + " seq:" + seq + " ... " + JSON.stringify(args) + "]");
 
 	if (undefined === client.connected) {
 		client.state.who = client.packetPrefix;

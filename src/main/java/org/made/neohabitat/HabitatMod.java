@@ -3416,6 +3416,25 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Pads the right side of an ASCII array of int[] with space characters.
+	 *
+	 * @param asciiArray ASCII array to pad
+	 * @param padLength expected length of ASCII array
+     * @return right-padded ASCII array of int[]
+     */
+	public static int[] right_pad_ascii_array(int[] asciiArray, int padLength) {
+		if (asciiArray.length < padLength) {
+			int[] padArray = new int[padLength - asciiArray.length];
+			for (int i=0; i< padArray.length; i++) {
+				padArray[i] = (int) ' ';
+			}
+			return concat_int_arrays(asciiArray, padArray);
+		} else {
+			return asciiArray;
+		}
+	}
+
+	/**
 	 * Returns the title page of a Document-like object.
 	 *
 	 * @param title The title of the Document-like object
