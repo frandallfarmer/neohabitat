@@ -1717,27 +1717,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		return true;
 	}
-		
-	
-	// NEXT FEW FUNCTIONS ARE STUBS! TODO HACK
-	
-	private int image_count(int class_number) {
-		// TODO: GET THIS TABLE!
-		// HACK PLACEHOLDER FRF
-		return 4;
-	}
-	
-	private int looplimit = 5;
 
-	private int resources_array(int class_resource_offset) {
-		// TODO: GET THIS TABLE!
-		// HACK PLACEHOLDER FRF
-		looplimit--;
-		if (looplimit == 0) {
-			looplimit = 5;
-			return 0;
+	public boolean mem_check_container(Container cont) {
+		for (int i = 0; i < cont.capacity(); i++) {
+			HabitatMod obj = cont.contents(i);
+			if (obj != null)
+				if (false == mem_checks_ok(obj))
+					return false;
 		}
-		return looplimit * 5;	// resource
+		return true;
 	}
 	
 	public int class_size() {
@@ -3275,6 +3263,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			}
 		}
 
+		// TODO Missing "SAFE TO TELEPORT" check! See Region.IsRoomForMyAvatar() FRF
 		victim.change_regions(victim.turf, AUTO_TELEPORT_DIR, DEATH_ENTRY);
 	}
 

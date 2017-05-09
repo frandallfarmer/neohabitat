@@ -10,6 +10,7 @@ import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.Context;
 import org.elkoserver.server.context.ContextMod;
+import org.elkoserver.server.context.ContextShutdownWatcher;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserWatcher;
 import org.made.neohabitat.Constants;
@@ -30,7 +31,7 @@ import org.made.neohabitat.HabitatMod;
  *
  */
 
-public class Region extends Container implements UserWatcher, ContextMod, Constants {
+public class Region extends Container implements UserWatcher, ContextMod, ContextShutdownWatcher,  Constants {
     
 	public static String	MOTD = "Welcome to Habitat!";
 	
@@ -50,6 +51,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
 
     /** All the currently logged in user names for ESP lookup */
     public static Hashtable<String, User> NameToUser = new Hashtable<String, User>();    
+    
+    /** All the currently instantiated regions for region transition testing  */
+    public static Hashtable<String, Region> RefToRegion = new Hashtable<String, Region>();    
 
     public int HabitatClass() {
         return CLASS_REGION;
@@ -138,10 +142,17 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
 
     @Override
     public void objectIsComplete() {
-        ((Context) this.object()).registerUserWatcher((UserWatcher) this);
-        this.noids[0] = this;
+        ((Context) object()).registerUserWatcher((UserWatcher) this);
+        noids[0] = this;
+		note_object_creation(this);
+        Region.RefToRegion.put(obj_id(), this);
     }
 
+    @Override
+    public void noteContextShutdown() {
+    	Region.RefToRegion.remove(obj_id());
+    }
+    
     public void noteUserArrival(User who) {
     	Avatar avatar = (Avatar) who.getMod(Avatar.class);
     	avatar.inc_record(HS$travel);
@@ -174,7 +185,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     	avatar.checkpoint_object(avatar);
     	Region.removeUser(who);
     }
-        
+    
+    private int avatarsPresent() {
+    	return class_ref_count[CLASS_AVATAR];
+    }
+    
     public static void addUser(User from) {
     	NameToUser.put(from.name().toLowerCase(), from);
     }
@@ -183,6 +198,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     	Avatar avatar = (Avatar) from.getMod(Avatar.class);
     	NameToUser.remove(from.name().toLowerCase());
     	removeContentsFromRegion(avatar);
+    	avatar.note_object_deletion(avatar);
     	removeFromObjList(avatar);
     }
     
@@ -191,6 +207,24 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
         	return (User) NameToUser.get(name.toLowerCase());
     	}
     	return null;
+    }
+    
+    public static final int AVERAGE_C64_AVATAR_LOAD = 1000; // bytes. Non-scientific spitball guess of additional headroom needed for head image + 4 unique items.
+    
+    public static boolean IsRoomForMyAvatar(String regionRef, User from) {
+    	Region region = Region.RefToRegion.get(regionRef);
+    	
+    	if (region == null)
+    		return true;				// if there is no instantiated region, there must be room!
+    			
+    	if (region.avatarsPresent() == region.max_avatars)
+    		return false;
+    	
+    	// TODO: Remove the silly headroom estimate below with something real someday?
+    	if (region.space_usage + AVERAGE_C64_AVATAR_LOAD >= C64_HEAP_SIZE)
+    		return false;
+    	
+    	return region.mem_check_container(region.avatar(from)); // Check the pocket contents for other overflows.
     }
     
     @Override

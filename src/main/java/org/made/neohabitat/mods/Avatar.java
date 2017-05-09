@@ -286,6 +286,8 @@ public class Avatar extends Container implements UserMod {
     /** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
     public void objectIsComplete() {
         Region.addToNoids(this);
+		note_object_creation(this);
+
         /** Was pl1 region_entry_daemon: */
         
         // If traveling as a ghost, don't do ANYTHING fancy 
@@ -906,8 +908,13 @@ public class Avatar extends Container implements UserMod {
         }
         
         if (!new_region.isEmpty()) {        
-            if (this.holding_restricted_object()) {
-            	this.heldObject().putMeBack(from, false);
+            if (holding_restricted_object()) {
+            	heldObject().putMeBack(from, false);
+            }
+            if (Region.IsRoomForMyAvatar(new_region, from) == false) {
+            	object_say(from, "That region is full. Try entering as a ghost (F1).");
+                send_reply_error(from); 
+                return;
             }
             send_neighbor_msg(from, THE_REGION, "WAITFOR_$", "who", this.noid);
             send_reply_success(from);
@@ -928,8 +935,6 @@ public class Avatar extends Container implements UserMod {
     	
         trace_msg("Avatar %s changing regions to context=%s, direction=%d, type=%d", obj_id(),
             contextRef, direction, type);
-
-    	// TODO change_regions exceptions! see region.pl1
     	
         to_region			= contextRef;    
         to_x				= x;

@@ -191,7 +191,8 @@ public abstract class Openable extends Container {
         if (!open_flags[OPEN_BIT] && // OPEN
                 (have_key || open_flags[UNLOCKED_BIT]) &&   // Holding Key or UNLOCKED
                 container().noid == THE_REGION) {           // AND in the REGION alone.
-        	if (region.space_usage + AVERAGE_C64_OBJ_LOAD * capacity() >= C64_HEAP_SIZE) {		// TODO Best guess. No science behind this. FRF
+        	if (region.space_usage + AVERAGE_C64_OBJ_LOAD * capacity() >= C64_HEAP_SIZE) {		
+        		// TODO Best guess. No science behind this. FRF
                 object_say(from, noid, "There is too much stuff in this region.");
                 send_reply_error(from);
                 return;
