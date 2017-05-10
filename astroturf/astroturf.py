@@ -32,7 +32,7 @@ class AstroturfRegion(object):
     self.args = map(lambda arg: _strip_quotes(arg), region_args.strip().split())
     self.door_connections = []
     self._parse_region_specifier(region_specifier)
-    self.port_dir = '|'
+    self.port_dir = ''
     self.town_dir = ''
 
     random_id = str(uuid.uuid4())[:4]
@@ -169,6 +169,8 @@ class Astroturf(object):
 
   def write_output_files(self):
     print(' - Outputting all templated regions...')
+    os.makedirs(self.output_dir)
+
     failures = []
     for region in self.regions:
       success = region.write_templated_region()
