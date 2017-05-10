@@ -40,14 +40,14 @@ class AstroturfRegion(object):
       self.region_ref = '{}.{}'.format(self.region_proto, random_id)
       self.region_name = '{} {}'.format(self.region_proto, random_id)
     elif len(self.args) == 1:
-      self.region_ref = '{}.{}'.format(self.args[0], random_id)
-      self.region_name = '{} {}'.format(self.args[0], random_id)
+      self.region_ref = '{}.{}.{}'.format(self.args[0], self.region_proto, random_id)
+      self.region_name = '{} {}'.format(self.args[0], self.region_proto)
     elif len(self.args) == 2:
       self.region_ref = '{}.{}'.format(self.args[0], self.args[1])
       self.region_name = '{} {}'.format(self.args[0], self.args[1])
     else:
-      self.region_ref = '{}.{}'.format(self.args[-2], random_id)
-      self.region_name = '{} {}'.format(self.args[-2], random_id)
+      self.region_ref = '{}.{}.{}'.format(self.args[-2], self.region_proto, random_id)
+      self.region_name = '{} {}'.format(self.args[-2], self.region_proto)
       self.port_dir = self.args[-1]
 
   def _get_region_context(self, linenum):
