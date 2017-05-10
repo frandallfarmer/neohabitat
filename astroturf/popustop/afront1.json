@@ -1,0 +1,150 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(region_name)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 5,
+        "type": "Wall",
+        "orientation": 164
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Ground",
+        "x": 0,
+        "y": 4,
+        "orientation": 228,
+        "style": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-door.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 64,
+        "y": 33,
+        "orientation": 140,
+        "style": 0,
+        "open_flags": 0,
+        "connection": "context-%(region_ref)s"
+      }
+    ]
+  },
+  {
+    "ref": "item-window1.%(region_ref)s",
+    "mods": [
+      {
+        "style": 0,
+        "orientation": 0,
+        "gr_state": 1,
+        "gr_width": 20,
+        "y": 51,
+        "x": 16,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-street.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Street",
+        "x": 68,
+        "y": 8,
+        "gr_state": 6,
+        "orientation": 8
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sign1.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 32,
+        "y": 104,
+        "style": 4,
+        "orientation": 244,
+        "gr_state": 2,
+        "ascii": [
+          32,
+          32,
+          32,
+          32,
+          133,
+          80,
+          111,
+          112,
+          117,
+          115,
+          116,
+          111,
+          112
+        ]
+      }
+    ]
+  },
+  {
+    "ref": "item-window2.%(region_ref)s",
+    "mods": [
+      {
+        "style": 0,
+        "orientation": 0,
+        "gr_state": 1,
+        "gr_width": 20,
+        "y": 51,
+        "x": 124,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  }
+]

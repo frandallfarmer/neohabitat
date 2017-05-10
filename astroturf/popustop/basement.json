@@ -1,0 +1,68 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(region_name)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 6,
+        "type": "Wall",
+        "orientation": 220
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-ground.%(region_ref)s",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 220
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-pond.%(region_ref)s",
+    "mods": [
+      {
+        "y": 16,
+        "x": 12,
+        "type": "Pond",
+        "orientation": 112,
+        "gr_state": 1
+      }
+    ],
+    "type": "item",
+    "name": "Pond",
+    "in": "context-%(region_ref)s"
+  }
+]

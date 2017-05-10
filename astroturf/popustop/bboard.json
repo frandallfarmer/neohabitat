@@ -1,0 +1,161 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(region_name)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 220
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-ground.%(region_ref)s",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 104
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-table1.%(region_ref)s",
+    "name": "Test Table",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Table",
+        "style": 3,
+        "x": 12,
+        "y": 27,
+        "orientation": 244,
+        "gr_state": 0,
+        "open_flags": 3,
+        "key_lo": 5,
+        "key_hi": 5
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-table2.%(region_ref)s",
+    "name": "Test Table",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Table",
+        "style": 3,
+        "x": 12,
+        "y": 28,
+        "orientation": 244,
+        "gr_state": 1,
+        "open_flags": 3,
+        "key_lo": 5,
+        "key_hi": 5
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-table3.%(region_ref)s",
+    "name": "Test Table",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Table",
+        "style": 3,
+        "x": 92,
+        "y": 27,
+        "orientation": 244,
+        "gr_state": 0,
+        "open_flags": 3,
+        "key_lo": 5,
+        "key_hi": 5
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-table4.%(region_ref)s",
+    "name": "Test Table",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Table",
+        "style": 3,
+        "x": 92,
+        "y": 28,
+        "orientation": 244,
+        "gr_state": 1,
+        "open_flags": 3,
+        "key_lo": 5,
+        "key_hi": 5
+      }
+    ]
+  },
+  {
+    "ref": "item-sign.%(region_ref)s",
+    "mods": [
+      {
+        "style": 0,
+        "orientation": 0,
+        "ascii": [
+          133,
+          131,
+          80,
+          111,
+          112,
+          117,
+          115,
+          116,
+          111,
+          112,
+          32,
+          66,
+          66,
+          83
+        ],
+        "gr_state": 5,
+        "y": 122,
+        "x": 28,
+        "type": "Sign"
+      }
+    ],
+    "type": "item",
+    "name": "Sign",
+    "in": "context-%(region_ref)s"
+  }
+]

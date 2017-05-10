@@ -1,0 +1,172 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(region_name)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.%(region_ref)s",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 48
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 244
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-display_case.%(region_ref)s",
+    "mods": [
+      {
+        "orientation": 0,
+        "key_lo": 0,
+        "key_hi": 0,
+        "y": 152,
+        "x": 92,
+        "type": "Display_case",
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Display_case",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-window.%(region_ref)s",
+    "mods": [
+      {
+        "style": 1,
+        "orientation": 0,
+        "gr_state": 2,
+        "gr_width": 20,
+        "y": 104,
+        "x": 20,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-door.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 16,
+        "y": 33,
+        "gr_state": 0,
+        "orientation": 0,
+        "open_flags": 2,
+        "connection": "context-%(region_ref)s"
+      }
+    ]
+  },
+  {
+    "ref": "item-garbage_can.%(region_ref)s",
+    "mods": [
+      {
+        "orientation": 16,
+        "type": "Garbage_can",
+        "gr_state": 1,
+        "style": 1,
+        "y": 147,
+        "x": 144,
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Garbage_can",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-window2.%(region_ref)s",
+    "mods": [
+      {
+        "style": 1,
+        "orientation": 0,
+        "gr_state": 1,
+        "gr_width": 20,
+        "y": 63,
+        "x": 56,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-chair.%(region_ref)s",
+    "mods": [
+      {
+        "y": 130,
+        "x": 96,
+        "style": 1,
+        "open_flags": 3,
+        "gr_width": 24,
+        "type": "Chair",
+        "orientation": 17
+      }
+    ],
+    "type": "item",
+    "name": "Chair",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-chair2.%(region_ref)s",
+    "mods": [
+      {
+        "y": 131,
+        "x": 44,
+        "style": 1,
+        "open_flags": 3,
+        "gr_width": 24,
+        "type": "Chair",
+        "orientation": 16
+      }
+    ],
+    "type": "item",
+    "name": "Chair",
+    "in": "context-%(region_ref)s"
+  }
+]

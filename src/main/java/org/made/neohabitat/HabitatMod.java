@@ -3426,7 +3426,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		if (asciiArray.length < padLength) {
 			int[] padArray = new int[padLength - asciiArray.length];
 			for (int i=0; i< padArray.length; i++) {
-				padArray[i] = (int) ' ';
+				padArray[i] = 0;
 			}
 			return concat_int_arrays(asciiArray, padArray);
 		} else {

@@ -35,15 +35,7 @@ public class Paper extends HabitatMod implements Copyable {
     public static final int PAPER_WRITTEN_STATE = 1;
     public static final int PAPER_LETTER_STATE = 2;
 
-    public static final int MAX_TITLE_LENGTH = 24;
-
-    /** Total number of segments with which the client will segment a Paper's page on WRITE. */
-    public static final int WRITE_SEGMENTS = 6;
-    public static final int WRITE_SEGMENT_LENGTH = 114;
-
-    /** Handles the special case of the final write segment. */
-    public static final int FINAL_WRITE_SEGMENT_STARTPOS = 570;
-    public static final int FINAL_WRITE_SEGMENT_LENGTH = 71;
+    public static final int MAX_TITLE_LENGTH = 32;
 
     public static final int[] EMPTY_PAPER = new int[Document.FULL_TEXT_PAGE];
     public static final int[] PAPER_TITLE_BEGINNING = convert_to_petscii("This paper begins \"", 24);
@@ -367,12 +359,13 @@ public class Paper extends HabitatMod implements Copyable {
 
         private int[] ascii;
 
+        @JSONMethod({ "ascii" })
         public PaperContents(int[] ascii) {
             this.ascii = ascii;
         }
 
         public JSONLiteral encode(EncodeControl control) {
-            JSONLiteral paper = new JSONLiteral("PaperContents", control);
+            JSONLiteral paper = new JSONLiteral(control);
             if (control.toRepository()) {
                 paper.addParameter("ascii", ascii);
             }
@@ -430,7 +423,6 @@ public class Paper extends HabitatMod implements Copyable {
                     return;
                 }
                 Iterator<Object> bytePage = byteBlocks.iterator();
-                ascii = new int[Document.FULL_TEXT_PAGE];
                 Iterator<Object> chars = ((JSONArray) bytePage.next()).iterator();
                 int i = 0;
                 for (; chars.hasNext(); i++) {
@@ -442,7 +434,7 @@ public class Paper extends HabitatMod implements Copyable {
                 }
                 // Right pads the remaining ASCII text if less than the size of a full text page.
                 for (; i < Document.FULL_TEXT_PAGE; i++) {
-                    ascii[i] = (int) ' ';
+                    ascii[i] = 0;
                 }
                 trace_msg("Obtained ASCII for Paper at Text path %s: %s",
                     paper_path(), Arrays.toString(ascii));
@@ -472,19 +464,23 @@ public class Paper extends HabitatMod implements Copyable {
             Object[] args = (Object[]) obj;
             JSONArray byteBlocks = null;
             try {
-                byteBlocks = ((JSONObject) args[0]).getArray("ascii");
+                JSONObject jsonObj = ((JSONObject) args[0]);
+                byteBlocks = jsonObj.getArray("ascii");
             } catch (JSONDecodingException e) {
                 return;
             }
-            Iterator<Object> bytePage = byteBlocks.iterator();
-            ascii = new int[Document.FULL_TEXT_PAGE];
-            Iterator<Object> chars = ((JSONArray) bytePage.next()).iterator();
-            for (int i = 0; chars.hasNext(); i++) {
-                int c = ((Double) chars.next()).intValue();
+            Iterator<Object> chars = byteBlocks.iterator();
+            int i = 0;
+            for (; chars.hasNext(); i++) {
+                int c = ((Long) chars.next()).intValue();
                 if (c == 0) {
                     break;
                 }
                 ascii[i] = c;
+            }
+            // Right pads the remaining ASCII text if less than the size of a full text page.
+            for (; i < Document.FULL_TEXT_PAGE; i++) {
+                ascii[i] = 0;
             }
             trace_msg("Obtained ASCII for Paper at Paper path %s: %s",
                 paper_path(), Arrays.toString(ascii));
@@ -549,7 +545,7 @@ public class Paper extends HabitatMod implements Copyable {
                 JSONObject findPattern = new JSONObject();
                 findPattern.addProperty("ref", text_path);
                 context().contextor().queryObjects(findPattern, null, 1, finishTextRead);
-            } else {
+            } else if (obj != null) {
                 setAsciiFromPaperResult(obj);
             }
         }
