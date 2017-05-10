@@ -115,7 +115,7 @@
         "gr_state": 0,
         "orientation": 252,
         "open_flags": 2,
-        "connection": "context-%(region_ref)s"
+        "connection": "%(turf_exit_connection)s"
       }
     ]
   },

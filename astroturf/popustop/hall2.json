@@ -63,7 +63,7 @@
         "y": 33,
         "orientation": 140,
         "gr_state": 0,
-        "open_flags": 3,
+        "open_flags": 2,
         "connection": "%(door0_connection)s"
       }
     ]
@@ -96,7 +96,7 @@
         "y": 33,
         "orientation": 148,
         "gr_state": 0,
-        "open_flags": 3,
+        "open_flags": 2,
         "connection": "%(door1_connection)s"
       }
     ]
@@ -129,7 +129,7 @@
         "y": 33,
         "orientation": 156,
         "gr_state": 0,
-        "open_flags": 3,
+        "open_flags": 2,
         "connection": "%(door2_connection)s"
       }
     ]

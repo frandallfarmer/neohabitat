@@ -150,6 +150,7 @@ class AstroturfRegion(object):
   def template_dict(self):
     template_dict = {
       'is_turf': 'turf' in self.region_proto,
+      'turf_exit_connection': '',
       'region_ref': self.region_ref,
       'region_name': self.region_name,
       'orientation': self.orientation,
@@ -174,12 +175,16 @@ class AstroturfRegion(object):
 
     if self.west_linenumber != 0:
       template_dict['west_connection'] = self._get_region_context(self.west_linenumber)
+      template_dict['turf_exit_connection'] = template_dict['west_connection']
     if self.north_linenumber != 0:
       template_dict['north_connection'] = self._get_region_context(self.north_linenumber)
+      template_dict['turf_exit_connection'] = template_dict['north_connection']
     if self.east_linenumber != 0:
       template_dict['east_connection'] = self._get_region_context(self.east_linenumber)
+      template_dict['turf_exit_connection'] = template_dict['east_connection']
     if self.south_linenumber != 0:
       template_dict['south_connection'] = self._get_region_context(self.south_linenumber)
+      template_dict['turf_exit_connection'] = template_dict['south_connection']
 
     return template_dict
 
