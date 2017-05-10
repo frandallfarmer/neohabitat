@@ -3,7 +3,7 @@
     "ref": "context-%(region_ref)s",
     "capacity": 6,
     "type": "context",
-    "name": "%(region_name)s",
+    "name": "Basement",
     "mods": [
       {
         "town_dir": "%(town_dir)s",

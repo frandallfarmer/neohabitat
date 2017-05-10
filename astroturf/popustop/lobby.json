@@ -75,7 +75,18 @@
         "gr_state": 1,
         "y": 122,
         "x": 76,
-        "text": "\h\+\(\(\(%(arg_1)s"
+        "ascii": [
+          133,
+          129,
+          131,
+          131,
+          131,
+          76,
+          111,
+          98,
+          98,
+          121
+        ]
       }
     ],
     "type": "item",
@@ -113,6 +124,63 @@
           105,
           114,
           115
+        ]
+      }
+    ],
+    "type": "item",
+    "name": "Short_sign",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-vendo_front.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 108,
+        "style": 1,
+        "type": "Vendo_front",
+        "orientation": 144
+      }
+    ],
+    "type": "item",
+    "name": "Vendo_front",
+    "in": "item-vendo_inside.%(region_ref)s"
+  },
+  {
+    "ref": "item-vendo_inside.%(region_ref)s",
+    "mods": [
+      {
+        "y": 27,
+        "x": 108,
+        "style": 1,
+        "type": "Vendo_inside",
+        "orientation": 144
+      }
+    ],
+    "type": "item",
+    "name": "Vendo_inside",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-short_sign3.%(region_ref)s",
+    "mods": [
+      {
+        "orientation": 0,
+        "type": "Short_sign",
+        "gr_state": 5,
+        "y": 21,
+        "x": 72,
+        "ascii": [
+          133,
+          69,
+          88,
+          73,
+          84,
+          134,
+          128,
+          128,
+          128,
+          125
         ]
       }
     ],

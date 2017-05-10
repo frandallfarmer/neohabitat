@@ -1,7 +1,7 @@
 1106
 basement r=0 w=0 n=2 e=0 s=0 /
 stairs r=0 w=0 n=21 e=3 s=1 /"Lobby" 136 "Popustop" "}"
-elevator1 r=0 w=2 n=4 e=1106 s=0 /"Lobby" 136 "Popustop" "}"
+lobby r=0 w=2 n=4 e=1106 s=0 /"Lobby" 136 "Popustop" "}"
 bboard r=0 w=0 n=0 e=0 s=3 /"Popustop"
 turf8 r=1 w=0 n=8 e=0 s=0 /"Popustop" 124
 turf3 r=1 w=0 n=8 e=0 s=0 /"Popustop" 125

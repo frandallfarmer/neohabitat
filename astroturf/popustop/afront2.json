@@ -3,7 +3,7 @@
     "ref": "context-%(region_ref)s",
     "capacity": 6,
     "type": "context",
-    "name": "%(region_name)s",
+    "name": "%(arg_1)s",
     "mods": [
       {
         "town_dir": "%(town_dir)s",
@@ -100,21 +100,7 @@
         "style": 4,
         "orientation": 244,
         "gr_state": 2,
-        "ascii": [
-          32,
-          32,
-          32,
-          32,
-          133,
-          80,
-          111,
-          112,
-          117,
-          115,
-          116,
-          111,
-          112
-        ]
+        "text": "\h%(arg_1)sc12                                  "
       }
     ]
   },

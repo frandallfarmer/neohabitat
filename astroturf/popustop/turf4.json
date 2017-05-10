@@ -3,7 +3,7 @@
     "ref": "context-%(region_ref)s",
     "capacity": 6,
     "type": "context",
-    "name": "%(region_name)s",
+    "name": "%(arg_1)s #%(arg_2)s",
     "mods": [
       {
         "town_dir": "%(town_dir)s",
@@ -16,6 +16,8 @@
           "%(south_connection)s",
           "%(west_connection)s"
         ],
+        "is_turf": true,
+        "locked": true,
         "nitty_bits": %(nitty_bits)s
       }
     ]

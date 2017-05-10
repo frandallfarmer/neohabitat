@@ -3,11 +3,11 @@
     "ref": "context-%(region_ref)s",
     "capacity": 6,
     "type": "context",
-    "name": "%(region_name)s",
+    "name": "%(arg_3)s:%(arg_1)s",
     "mods": [
       {
-        "town_dir": "%(town_dir)s",
-        "port_dir": "%(port_dir)s",
+        "town_dir": "%(arg_4)s",
+        "port_dir": "%(arg_4)s",
         "type": "Region",
         "orientation": %(orientation)s,
         "neighbors": [
@@ -31,7 +31,7 @@
         "style": 4,
         "x": 0,
         "y": 0,
-        "orientation": %(arg_1)s
+        "orientation": %(arg_2)s
       }
     ]
   },
@@ -59,14 +59,7 @@
         "gr_state": 1,
         "y": 122,
         "x": 48,
-        "ascii": [
-          133,
-          129,
-          131,
-          131,
-          131,
-          50
-        ]
+        "text": "\h\+\(\(\(%(arg_1)s   "
       }
     ],
     "type": "item",
