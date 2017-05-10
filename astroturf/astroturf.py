@@ -1,14 +1,32 @@
 from __future__ import print_function
 
-import ipdb
+import json
 import os
 import re
+import string
+import sys
+import traceback
 import uuid
+import yaml
 
 
 DOOR_CONNECTION_REGEX = re.compile(r'\((.*)\)')  
 STRING_REGEX = re.compile(r'"(.*)"')
 REGION_SPECIFIER_REGEX = re.compile(r'([a-z])=(\(.*\)|\d+)')
+
+OCTAL_REGEX_STRING = r'(!ASTROESC!\d\d\d)'
+OCTAL_REGEX = re.compile(OCTAL_REGEX_STRING)
+
+HEX_REGEX_STRING = r'(!ASTROESC!x[0-9a-f][0-9a-f])'
+HEX_REGEX = re.compile(HEX_REGEX_STRING)
+
+CUSTOM_ESCAPE_REGEX_STRING = r'(!ASTROESC!.)'
+CUSTOM_ESCAPE_REGEX = re.compile(CUSTOM_ESCAPE_REGEX_STRING)
+
+
+CUSTOM_ESCAPES_TABLE = {}
+with open('./custom_escapes_table.yml', 'r') as custom_escapes_table:
+  CUSTOM_ESCAPES_TABLE = yaml.load(custom_escapes_table)
 
 
 def _strip_quotes(value):
@@ -16,6 +34,76 @@ def _strip_quotes(value):
     return STRING_REGEX.findall(value)[0]
   else:
     return value
+
+
+def _custom_escape_to_ascii(custom_escape):
+  escape_char = custom_escape[10:11]
+  if escape_char in CUSTOM_ESCAPES_TABLE:
+    return int(CUSTOM_ESCAPES_TABLE[escape_char])
+  else:
+    # Handles \a-z or \A-Z cases.
+    if escape_char in string.lowercase or escape_char in string.uppercase:
+      return int(128 + string.lowercase.index(escape_char.lower()))
+
+
+def _hex_escape_to_ascii(hex_escape):
+  hex_text = hex_escape[11:]
+  return int(hex_text, 16)
+
+
+def _octal_escape_to_ascii(octal_escape):
+  octal_text = octal_escape[10:]
+  return int(octal_text, 8)
+
+
+def _astroesc_text_to_ascii_int_list(text):
+  range_to_replacement = []
+
+  def _get_replacement(index):
+    should_replace = False
+    for replace_start, replace_end, replacement in range_to_replacement:
+      if replace_start <= index < replace_end:
+        if index == replace_start:
+          return True, replacement
+        else:
+          return True, None
+    return False, None
+
+  for octal_match in OCTAL_REGEX.finditer(text):
+    octal_replace_tuple = (
+      octal_match.pos,
+      octal_match.end(),
+      _octal_escape_to_ascii(octal_match.groups()[0]),
+    )
+    range_to_replacement.append(octal_replace_tuple)
+
+  for hex_match in HEX_REGEX.finditer(text):
+    hex_replace_tuple = (
+      hex_match.pos,
+      hex_match.end(),
+      _hex_escape_to_ascii(hex_match.groups()[0]),
+    )
+    range_to_replacement.append(hex_replace_tuple)
+
+  for custom_match in CUSTOM_ESCAPE_REGEX.finditer(text):
+    custom_replace_tuple = (
+      custom_match.pos,
+      custom_match.end(),
+      _custom_escape_to_ascii(custom_match.groups()[0]),
+    )
+    range_to_replacement.append(custom_replace_tuple)
+
+  # Patches together an ASCII int array with all escaped replacements.
+  ascii_string = []
+  for i in range(len(text)):
+    should_replace, replacement = _get_replacement(i)
+    if should_replace:
+      if replacement is not None:
+        ascii_string.append(replacement)
+    else:
+      ascii_string.append(ord(text[i]))
+
+  return ascii_string
 
 
 class AstroturfRegion(object):
@@ -35,7 +123,7 @@ class AstroturfRegion(object):
     self.port_dir = ''
     self.town_dir = ''
 
-    random_id = str(uuid.uuid4())[:4]
+    random_id = str(uuid.uuid4())[:8]
     if not self.args:
       self.region_ref = '{}.{}'.format(self.region_proto, random_id)
       self.region_name = '{} {}'.format(self.region_proto, random_id)
@@ -60,6 +148,7 @@ class AstroturfRegion(object):
   @property
   def template_dict(self):
     template_dict = {
+      'is_turf': 'turf' in self.region_proto,
       'region_ref': self.region_ref,
       'region_name': self.region_name,
       'orientation': self.orientation,
@@ -74,7 +163,7 @@ class AstroturfRegion(object):
 
     # Determines any arguments for templating purposes.
     for i in range(len(self.args)):
-      key = 'arg_{}'.format(i)
+      key = 'arg_{}'.format(i+1)
       template_dict[key] = self.args[i]
 
     # Determines region and door connections.
@@ -127,12 +216,36 @@ class AstroturfRegion(object):
     print(' - Writing region {} from line {} to: {}'.format(
         self.region_ref, self.line_number, output_location))
     region_prototype = self.astroturf.region_name_to_proto[self.region_proto]
-    templated_region_contents = region_prototype % self.template_dict
-    with open(output_location, 'w') as output_file:
-      output_file.write(templated_region_contents)
-    print(' - Successully wrote region {} from line {} to: {}'.format(
-        self.region_ref, self.line_number, output_location))
-    return True
+    
+    region_contents = (region_prototype % self.template_dict).replace('\\', '!ASTROESC!')
+
+    try:
+      # Tests whether the JSON parses after templating.
+      region_json = json.loads(region_contents)
+      ascii_converted_region = []
+
+      # If it does, converts all 'text' fields to 'ascii' equivalents.
+      for elko_obj in region_json:
+        ascii_converted_mods = []
+        for habitat_mod in elko_obj['mods']:
+          if 'text' in habitat_mod:
+            habitat_mod['ascii'] = _astroesc_text_to_ascii_int_list(habitat_mod['text'])
+            del habitat_mod['text']
+          ascii_converted_mods.append(habitat_mod)
+        elko_obj['mods'] = ascii_converted_mods
+        ascii_converted_region.append(elko_obj)
+
+      # Finally, writes out the fully-templated and escaped region.
+      with open(output_location, 'w') as output_file:
+        output_file.write(json.dumps(ascii_converted_region, indent=2))
+
+      print(' - Successully wrote region {} from line {} to: {}'.format(
+          self.region_ref, self.line_number, output_location))
+      return True
+    except Exception:
+      print(' ! JSON parse check for region {} from line {} failed; skipping:'.format(
+        self.region_ref, self.line_number))
+      traceback.print_exc()
 
 
 class Astroturf(object):
