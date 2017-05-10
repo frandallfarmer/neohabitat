@@ -99,7 +99,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     public String	  town_dir     = "";
     /** Direciton to nearest Teleport Booth */
     public String	  port_dir     = "";    
-    
+
+    public boolean is_turf  = false;
+    public String  resident = "";
+    public String  realm    = "unknown";
+    public boolean locked   = false;
+
     /** C64 Heap Emulation */
     public	int[]	class_ref_count		= new int[256];
     public	int[][]	resource_ref_count	= new int[4][256];		// images, heads, behaviors, sounds
@@ -107,11 +112,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
     
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
-        "town_dir", "port_dir", "max_avatars", "neighbors" })
+        "town_dir", "port_dir", "max_avatars", "neighbors", "is_turf", "resident", "realm", "locked" })
     public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
         OptInteger nitty_bits, OptInteger depth, OptInteger lighting,
         OptString town_dir, OptString port_dir, OptInteger max_avatars,
-        String[] neighbors) {
+        String[] neighbors, OptBoolean is_turf, OptString resident, OptString realm,
+        OptBoolean locked) {
         super(style, x, y, orientation, gr_state, new OptBoolean(false));
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -122,10 +128,15 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
         this.neighbors = neighbors;
         this.town_dir = town_dir.value("");
         this.port_dir = port_dir.value("");
+        this.is_turf = is_turf.value(false);
+        this.resident = resident.value("");
+        this.realm = realm.value("unknown");
+        this.locked = locked.value(false);
     }
 
-    public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, int depth, int lighting,
-        String town_dir, String port_dir, int max_avatars, String[] neighbors) {
+    public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits,
+        int depth, int lighting, String town_dir, String port_dir, int max_avatars,
+        String[] neighbors, boolean is_turf, String resident, String realm, boolean locked) {
         super(style, x, y, orientation, gr_state, false);
         this.nitty_bits = nitty_bits;
         this.depth = depth;
@@ -134,6 +145,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
         this.neighbors = neighbors;
         this.town_dir = town_dir;
         this.port_dir = port_dir;
+        this.is_turf = is_turf;
+        this.resident = resident;
+        this.realm = realm;
+        this.locked = locked;
     }
 
     @Override
@@ -207,6 +222,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Consta
             result.addParameter("max_avatars", max_avatars);
         	result.addParameter("town_dir", town_dir);
         	result.addParameter("port_dir", port_dir);
+            result.addParameter("is_turf", is_turf);
+            result.addParameter("resident", resident);
+            result.addParameter("realm", realm);
+            result.addParameter("locked", locked);
         }
         result.finish();
         return result;

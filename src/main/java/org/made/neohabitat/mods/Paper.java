@@ -37,7 +37,9 @@ public class Paper extends HabitatMod implements Copyable {
 
     public static final int MAX_TITLE_LENGTH = 32;
 
-    public static final int[] EMPTY_PAPER = new int[Document.FULL_TEXT_PAGE];
+    public static final String EMPTY_PAPER_REF = "text-emptypaper";
+
+    public static final int[] EMPTY_PAPER = {};
     public static final int[] PAPER_TITLE_BEGINNING = convert_to_petscii("This paper begins \"", 24);
     public static final int[] PAPER_TITLE_ENDING = convert_to_petscii("\".", 2);
 
@@ -70,16 +72,13 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     /** Contains the MongoDB ref to a path of text to base an empty Paper off of. */
-    private String text_path = "";
+    private String text_path = EMPTY_PAPER_REF;
 
     /** Whether this paper has any PETSCII text currently written to it. */
     protected boolean has_ascii = false;
 
     /** Contains the current PETSCII text of the Paper, retrieved from a PaperContents record in MongoDB. */
-    protected int ascii[] = new int[Document.FULL_TEXT_PAGE];
-
-    /** Used when WRITE is called for a Paper text segment, tracks the current PETSCII array offset */
-    protected int write_offset = 0;
+    protected int ascii[] = EMPTY_PAPER;
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "text_path" })
     public Paper(OptInteger style, OptInteger x, OptInteger y,
@@ -87,16 +86,18 @@ public class Paper extends HabitatMod implements Copyable {
         OptString text_path) {
         super(style, x, y, orientation, gr_state, restricted);
         this.has_ascii = false;
-        this.ascii = new int[Document.FULL_TEXT_PAGE];
-        this.text_path = text_path.value("");
+        this.ascii = EMPTY_PAPER;
+        this.text_path = text_path.value(EMPTY_PAPER_REF);
+        reconcileGRState();
     }
 
     public Paper(int style, int x, int y, int orientation, int gr_state,
         boolean restricted, String text_path) {
         super(style, x, y, orientation, gr_state, restricted);
         this.has_ascii = false;
-        this.ascii = new int[Document.FULL_TEXT_PAGE];
+        this.ascii = EMPTY_PAPER;
         this.text_path = text_path;
+        reconcileGRState();
     }
 
     public String paper_path() {
@@ -157,32 +158,24 @@ public class Paper extends HabitatMod implements Copyable {
         boolean success = false;
         boolean fiddle_flag = false;
 
-        // If the current write_segment is at its terminal position, resets it to zero,
-        // as the Avatar has requested a fresh WRITE of this document.
-        if (write_offset >= Document.FULL_TEXT_PAGE) {
-            write_offset = 0;
-        }
-
         if (holding(avatar, this)) {
             success = true;
             // If we've been given an empty string, clears out the Paper's contents.
             if (request_ascii == null || request_ascii.length == 16) {
                 trace_msg("Avatar %s requested clearing of contents for Paper %s",
                     from.name(), paper_path());
-                write_offset = 0;
-                clearAscii();
-                savePaperContents();
+                ascii = EMPTY_PAPER;
+                text_path = EMPTY_PAPER_REF;
+                deletePaperContents();
                 if (gr_state != PAPER_BLANK_STATE) {
                     gr_state = PAPER_BLANK_STATE;
-                    gen_flags[MODIFIED] = true;
                     fiddle_flag = true;
                 }
+                gen_flags[MODIFIED] = true;
             } else {
-                trace_msg("Avatar %s setting Paper %s offset %d contents to: %s",
-                    from.name(), paper_path(), write_offset, request_ascii.length,
-                    Arrays.toString(request_ascii));
-                System.arraycopy(request_ascii, 0, ascii, write_offset, request_ascii.length);
-                write_offset += request_ascii.length;
+                trace_msg("Avatar %s setting Paper %s contents to: %s",
+                    from.name(), paper_path(), Arrays.toString(request_ascii));
+                ascii = request_ascii;
                 savePaperContents();
                 gr_state = PAPER_WRITTEN_STATE;
                 gen_flags[MODIFIED] = true;
@@ -374,8 +367,14 @@ public class Paper extends HabitatMod implements Copyable {
 
     }
 
-    private void clearAscii() {
-        System.arraycopy(EMPTY_PAPER, 0, ascii, 0, Document.FULL_TEXT_PAGE);
+    private void reconcileGRState() {
+        if (ascii.length == 0 && (text_path.equals(EMPTY_PAPER_REF) || text_path.isEmpty())) {
+            if (gr_state != PAPER_BLANK_STATE) {
+                gr_state = PAPER_BLANK_STATE;
+            }
+        } else if (gr_state != PAPER_LETTER_STATE && gr_state != PAPER_WRITTEN_STATE) {
+            gr_state = PAPER_WRITTEN_STATE;
+        }
     }
 
     private void showPaper(User from) {
@@ -397,7 +396,7 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     private void setAsciiFromTextResult(Object obj) {
-        clearAscii();
+        ascii = EMPTY_PAPER;
         if (obj != null) {
             Object[] args = (Object[]) obj;
             JSONArray textBlocks;
@@ -422,8 +421,12 @@ public class Paper extends HabitatMod implements Copyable {
                 } catch (JSONDecodingException e) {
                     return;
                 }
+
                 Iterator<Object> bytePage = byteBlocks.iterator();
-                Iterator<Object> chars = ((JSONArray) bytePage.next()).iterator();
+                JSONArray byteArray = ((JSONArray) bytePage.next());
+                Iterator<Object> chars = byteArray.iterator();
+
+                ascii = new int[byteArray.size()];
                 int i = 0;
                 for (; chars.hasNext(); i++) {
                     int c = ((Double) chars.next()).intValue();
@@ -432,15 +435,11 @@ public class Paper extends HabitatMod implements Copyable {
                     }
                     ascii[i] = c;
                 }
-                // Right pads the remaining ASCII text if less than the size of a full text page.
-                for (; i < Document.FULL_TEXT_PAGE; i++) {
-                    ascii[i] = 0;
-                }
                 trace_msg("Obtained ASCII for Paper at Text path %s: %s",
                     paper_path(), Arrays.toString(ascii));
             }
         }
-        if (ascii != EMPTY_PAPER) {
+        if (ascii.length > 0) {
             has_ascii = true;
             if (gr_state == PAPER_BLANK_STATE) {
                 gr_state = PAPER_WRITTEN_STATE;
@@ -459,7 +458,7 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     private void setAsciiFromPaperResult(Object obj) {
-        clearAscii();
+        ascii = EMPTY_PAPER;
         if (obj != null) {
             Object[] args = (Object[]) obj;
             JSONArray byteBlocks = null;
@@ -470,6 +469,8 @@ public class Paper extends HabitatMod implements Copyable {
                 return;
             }
             Iterator<Object> chars = byteBlocks.iterator();
+
+            ascii = new int[byteBlocks.size()];
             int i = 0;
             for (; chars.hasNext(); i++) {
                 int c = ((Long) chars.next()).intValue();
@@ -478,14 +479,10 @@ public class Paper extends HabitatMod implements Copyable {
                 }
                 ascii[i] = c;
             }
-            // Right pads the remaining ASCII text if less than the size of a full text page.
-            for (; i < Document.FULL_TEXT_PAGE; i++) {
-                ascii[i] = 0;
-            }
             trace_msg("Obtained ASCII for Paper at Paper path %s: %s",
                 paper_path(), Arrays.toString(ascii));
         }
-        if (ascii != EMPTY_PAPER) {
+        if (ascii.length > 0) {
             has_ascii = true;
             if (gr_state == PAPER_BLANK_STATE) {
                 gr_state = PAPER_WRITTEN_STATE;
@@ -511,11 +508,28 @@ public class Paper extends HabitatMod implements Copyable {
 
     private void savePaperContents() {
         trace_msg("Saving contents for Paper %s: %s", paper_path(), Arrays.toString(ascii));
+        reconcileGRState();
         PaperContents contents = new PaperContents(ascii);
         context().contextor().odb().putObject(paper_path(), contents, null, false, finishPaperWrite);
     }
 
+    private void deletePaperContents() {
+        trace_msg("Saving contents for Paper %s: %s", paper_path(), Arrays.toString(ascii));
+        PaperContents contents = new PaperContents(ascii);
+        context().contextor().odb().removeObject(paper_path(), null, finishPaperRemove);
+    }
+
     // Callback methods for DB operations:
+
+    protected final ArgRunnable finishPaperRemove = new ArgRunnable() {
+        @Override
+        public void run(Object obj) {
+            if (obj != null) {
+                String errorMsg = (String) obj;
+                trace_msg("Received a DB error when removing Paper %s: %s", paper_path(), errorMsg);
+            }
+        }
+    };
 
     protected final ArgRunnable finishPaperWrite = new ArgRunnable() {
         @Override
@@ -530,7 +544,7 @@ public class Paper extends HabitatMod implements Copyable {
     protected final ArgRunnable finishTextRead = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            clearAscii();
+            ascii = EMPTY_PAPER;
             setAsciiFromTextResult(obj);
         }
     };
@@ -538,9 +552,9 @@ public class Paper extends HabitatMod implements Copyable {
     protected final ArgRunnable finishPaperRead = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            clearAscii();
-            if (obj == null && !text_path.isEmpty()) {
-                trace_msg("No PaperContents found at path %s, checking at text_path %s",
+            ascii = EMPTY_PAPER;
+            if (obj == null && !text_path.equals(EMPTY_PAPER_REF) && !text_path.isEmpty()) {
+                trace_msg("No PaperContents found at path %s, checking at non-empty text_path %s",
                     paper_path(), text_path);
                 JSONObject findPattern = new JSONObject();
                 findPattern.addProperty("ref", text_path);
