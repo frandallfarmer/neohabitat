@@ -1,7 +1,6 @@
 [
   {
     "ref": "context-Downtown_6h", 
-    "capacity": 6, 
     "type": "context", 
     "name": "City Hall", 
     "mods": [

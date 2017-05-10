@@ -2,7 +2,6 @@
   {
     "type": "context",
     "ref": "context-Downtown_1t", 
-    "capacity": 6,  
     "name": "Checker Board", 
     "mods": [
       {
