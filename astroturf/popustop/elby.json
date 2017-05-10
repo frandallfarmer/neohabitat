@@ -62,7 +62,7 @@
         "y": 33,
         "orientation": 172,
         "open_flags": 2,
-        "connection": "context-%(region_ref)s"
+        "connection": "%(west_connection)s"
       }
     ]
   },

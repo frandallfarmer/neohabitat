@@ -63,7 +63,7 @@
         "y": 33,
         "orientation": 140,
         "gr_state": 0,
-        "open_flags": 0,
+        "open_flags": 3,
         "connection": "%(door0_connection)s"
       }
     ]
@@ -96,7 +96,7 @@
         "y": 33,
         "orientation": 148,
         "gr_state": 0,
-        "open_flags": 0,
+        "open_flags": 3,
         "connection": "%(door1_connection)s"
       }
     ]
@@ -129,7 +129,7 @@
         "y": 33,
         "orientation": 156,
         "gr_state": 0,
-        "open_flags": 0,
+        "open_flags": 3,
         "connection": "%(door2_connection)s"
       }
     ]
@@ -147,7 +147,7 @@
         "y": 90,
         "orientation": 0,
         "gr_state": 1,
-        "text": "%(arg_1)sr4            %(arg_2)sr4            %(arg_3)sr4    "
+        "text": "%(arg_1)sr4           %(arg_2)sr4            %(arg_3)sr4    "
       }
     ]
   },

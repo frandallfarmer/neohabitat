@@ -123,18 +123,19 @@ class AstroturfRegion(object):
     self.port_dir = ''
     self.town_dir = ''
 
-    random_id = str(uuid.uuid4())[:8]
     if not self.args:
-      self.region_ref = '{}.{}'.format(self.region_proto, random_id)
-      self.region_name = '{} {}'.format(self.region_proto, random_id)
+      self.region_ref = '{}.line{}'.format(self.region_proto, self.line_number)
+      self.region_name = '{} {}'.format(self.region_proto, self.line_number)
     elif len(self.args) == 1:
-      self.region_ref = '{}.{}.{}'.format(self.args[0], self.region_proto, random_id)
+      self.region_ref = '{}.{}.line{}'.format(
+          self.args[0], self.region_proto, self.line_number)
       self.region_name = '{} {}'.format(self.args[0], self.region_proto)
     elif len(self.args) == 2:
       self.region_ref = '{}.{}'.format(self.args[0], self.args[1])
       self.region_name = '{} {}'.format(self.args[0], self.args[1])
     else:
-      self.region_ref = '{}.{}.{}'.format(self.args[-2], self.region_proto, random_id)
+      self.region_ref = '{}.{}.line{}'.format(self.args[-2], self.region_proto,
+          self.line_number)
       self.region_name = '{} {}'.format(self.args[-2], self.region_proto)
       self.port_dir = self.args[-1]
 
