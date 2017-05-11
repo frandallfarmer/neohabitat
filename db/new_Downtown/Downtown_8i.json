@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_8i", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Library Lobby", 
     "mods": [

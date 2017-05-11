@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_6b", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Costello's", 
     "mods": [

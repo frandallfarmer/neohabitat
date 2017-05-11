@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_9d", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Auditorium B", 
     "mods": [

@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_4h", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Meeting Hall", 
     "mods": [

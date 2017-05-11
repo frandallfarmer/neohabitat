@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_4d", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "La Vous New", 
     "mods": [

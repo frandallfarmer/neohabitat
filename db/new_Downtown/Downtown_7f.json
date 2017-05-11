@@ -1,6 +1,7 @@
 [
 	{
 		"ref": "context-Downtown_7f", 
+		"capacity"": 64, 
 		"type": "context", 
 		"name": "Broadway Cross", 
 		"mods": [

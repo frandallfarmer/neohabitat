@@ -1,6 +1,7 @@
 [ {
 	"type": "context",
 	"ref": "context-vendo",
+	"capacity"": 64,
 	"name": "Test Vending Machine Room",
 	"aliases": ["pop-vendo"],
 	"mods": [

@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_8e", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Auditorium Lobby", 
     "mods": [

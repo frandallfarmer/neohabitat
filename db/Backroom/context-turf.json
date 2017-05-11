@@ -1,6 +1,7 @@
 {
 	"type": "context",
 	"ref": "context-turf",
+	"capacity"": 64,
 	"name": "Steve's Turf",
 	"mods": [
 		{

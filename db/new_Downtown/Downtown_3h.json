@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_3h", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Sandy's Spas", 
     "mods": [

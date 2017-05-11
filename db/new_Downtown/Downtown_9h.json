@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_9h", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Library Green", 
     "mods": [

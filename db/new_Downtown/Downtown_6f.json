@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_6f", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Plaza East", 
     "mods": [

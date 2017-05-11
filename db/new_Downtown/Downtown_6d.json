@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_6d", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Body Paints", 
     "mods": [

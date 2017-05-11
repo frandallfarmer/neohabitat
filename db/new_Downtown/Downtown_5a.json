@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_5a", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Tivolli's Garden Lounge", 
     "mods": [

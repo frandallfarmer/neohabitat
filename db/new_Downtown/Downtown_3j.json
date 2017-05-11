@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_3j", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Maine St & Skid Row", 
     "mods": [

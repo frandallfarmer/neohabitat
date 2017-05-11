@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_3g", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "General Store", 
     "mods": [

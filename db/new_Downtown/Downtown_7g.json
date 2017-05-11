@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_7g", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Arcade", 
     "mods": [

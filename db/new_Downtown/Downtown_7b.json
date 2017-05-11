@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_7b", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Stock Market", 
     "mods": [

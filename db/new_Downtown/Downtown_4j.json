@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_4j", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Pawnshop", 
     "mods": [

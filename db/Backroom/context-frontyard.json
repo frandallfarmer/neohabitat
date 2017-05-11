@@ -1,6 +1,7 @@
 {
 	"type": "context",
 	"ref": "context-frontyard",
+	"capacity"": 64,
 	"name": "Our House, in the middle of the street...",
 	"mods": [
 		{

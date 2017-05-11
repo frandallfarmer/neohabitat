@@ -1,6 +1,7 @@
 [
   {
     "ref": "context-Downtown_5j", 
+    "capacity"": 64, 
     "type": "context", 
     "name": "Kelly's Bar and Grill", 
     "mods": [
