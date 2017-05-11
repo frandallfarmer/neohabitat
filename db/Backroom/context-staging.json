@@ -1,7 +1,7 @@
 {
 	"type": "context",
 	"ref": "context-staging",
-	"capacity"": 64,
+	"capacity": 64,
 	"name": "Put Objects Here if they are not working yet...",
 	"mods": [
 		{

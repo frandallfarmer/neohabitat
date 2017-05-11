@@ -2,7 +2,7 @@
 {
 	"type": "context",
 	"ref": "context-library",
-	"capacity"": 64,
+	"capacity": 64,
 	"name": "City Library",
 	"mods": [
 		{

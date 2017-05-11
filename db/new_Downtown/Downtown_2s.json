@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_2s", 
-    "capacity"": 64, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Chess Board", 
     "mods": [

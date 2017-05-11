@@ -2,7 +2,7 @@
   {
     "type": "context",
     "ref": "context-steve2",
-    "capacity"": 64,
+    "capacity": 64,
     "name": "Welcome to Steve: Floor 2",
     "mods": [
       {

@@ -1,7 +1,7 @@
 {
 	"type": "context",
 	"ref": "context-table",
-	"capacity"": 64,
+	"capacity": 64,
 	"name": "The Nexus",
 	"mods": [
 		{
