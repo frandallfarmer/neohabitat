@@ -3349,6 +3349,22 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 	
 	/**
+	 * Simulate a "make" message (instead of HEREIS_$) - used when deghosting an avatar so it
+	 * will appear as in a single set of objects.
+	 */
+	
+	public void fakeMakeMessage(BasicObject obj, HabitatMod container) {
+		JSONLiteral itemLiteral = obj.encode(EncodeControl.forClient);
+		JSONLiteral msg = new JSONLiteral(null, EncodeControl.forClient);
+		msg.addParameter("to", container.obj_id());
+		msg.addParameter("op", "make");
+		msg.addParameter("obj", itemLiteral);
+		msg.finish();
+		context().send(msg);
+	}
+	
+	
+	/**
 	 * Pays the provided amount of Tokens to the specified Avatar.
 	 *
 	 * @param who The Avatar to pay Tokens to.

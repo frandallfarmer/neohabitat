@@ -691,19 +691,25 @@ public class Avatar extends Container implements UserMod {
 			y = SAFE_Y;
 			activity = STAND;
 			gen_flags[MODIFIED] = true;
-			msg.addParameter("body", object().encode(EncodeControl.forClient));
+//			msg.addParameter("body", object().encode(EncodeControl.forClient));
+			msg.addParameter("body", 0);
 			from.send(msg);
-			announce_object_to_neighbors(from, object(), current_region());
+//			announce_object_to_neighbors(from, object(), current_region());
+			fakeMakeMessage(object(), current_region());
 			for (int i = capacity() - 1; i >= 0; i--) {			// TODO - encode the avatar and contents together instead of this HACK! FRF
 				HabitatMod obj = contents(i);
 				if (obj != null)
-					announce_object(obj.object(), this);
+					fakeMakeMessage(obj.object(), this);
 			}
+			JSONLiteral ready = new JSONLiteral(null, EncodeControl.forClient);
+			ready.addParameter("to", object().ref());
+			ready.addParameter("op", "ready");
+			ready.finish();
+			context().send(ready);
 
 		}
 	}
-
-
+	
 	/**
 	 * Verb (Specific): Send a point-to-point message to another user/avatar.
 	 * 
