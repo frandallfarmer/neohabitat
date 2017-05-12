@@ -454,14 +454,15 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	if (who.firstConnection) {
     		object_say(from, MOTD);
     		if (NEOHABITAT_FEATURES) {
+    			if (NameToUser.size() < 2) {
+    				object_say(from, UPGRADE_PREFIX + "You are the only one here right now.");
+    			} else {
+    				object_say(from, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " others here" +
+    							(who.amAGhost ? "." : " Press F3 to see a list."));
+    			}
     			if (who.amAGhost) {
     				object_say(from, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
-    			}
-    			if (NameToUser.size() < 2) {
-    				object_say(from, UPGRADE_PREFIX + "You are the only Avatar here right now.");
-    			} else {
-    				object_say(from, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " other Avatars here. Press F3 to see a list.");
-    			}
+    			} 
     		}
     	}
     	who.firstConnection = false;
