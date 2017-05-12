@@ -16,15 +16,14 @@ public interface Constants {
     
     public static final int      CONNECTION_JSON            = 0;
     public static final int      CONNECTION_HABITAT         = 0;
-    public static final int      MAX_HEALTH                 = 255;                                                    /*
-                                                                                                                       * Missing
-                                                                                                                       * constant
-                                                                                                                       */
-    
+    public static final int      MAX_HEALTH                 = 255;
 
     public static final int 	BOOK$HELP	= 0;
     public static final int 	BOOK$VENDO	= 1;
     public static final int 	PAPER$HELP	= 2;
+    
+    public static final int		SAFE_X		= 8;
+    public static final int		SAFE_Y		= 132;
     
     /*
      * defs_class.incl.pl1
@@ -232,6 +231,7 @@ public interface Constants {
     public static final int      DOOR_AVATAR_RESTRICTED_BIT = 32;
     public static final int      DOOR_GHOST_RESTRICTED_BIT  = 31;
     
+    public static final int		 UNASSIGNED_NOID			= 256;
     public static final int      THE_REGION                 = 0;
     public static final int      GHOST_NOID                 = 255;
 

@@ -168,7 +168,13 @@ function scanForRefs(s) {
 	if (o.to) {
 		addName(o.to);
 	}
-	if (o.op && o.op === "make") {
+	if (!o.op) {
+		return;
+	}
+	if (o.op === "HEREIS_$") {
+		o.obj = o.object;		// HEREIS does not use the same params as make. TODO fix one day.
+	}
+	if (o.op === "make" || o.op == "HEREIS_$") {
 		var ref = o.obj.ref;
 		addName(ref);
 		History[ref] = o;
@@ -177,7 +183,10 @@ function scanForRefs(s) {
 			Names.ME 	= ref;
 			Names.USER	= split[0] + "-" + split[1];
 		}
-	}	
+		if (o.obj.mods[0].type === "Ghost") {
+			Names.GHOST = ref;
+		}
+	}
 }
 
 /**

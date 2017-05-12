@@ -77,7 +77,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * 0-255. Ephemeral Numeric Object ID: The client's world model of region
 	 * contents, 0 = THE_REGION.
 	 */
-	public int     noid        = 0;
+	public int     noid        = UNASSIGNED_NOID;
 	/**
 	 * 0-255 Each Habitat Class has a 0-based table mapping to a global 0-255
 	 * space of graphics.
@@ -204,11 +204,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	public void objectIsComplete() {
-		Region.addToNoids(this);
-		if (container().opaque_container()) {
-			note_instance_creation(this);
-		} else {
-			note_object_creation(this);
+		HabitatMod container = container();
+		if (!(container.HabitatClass() == CLASS_AVATAR && ((Avatar) container).amAGhost)) {
+			Region.addToNoids(this);
+			if (container.opaque_container()) {
+				note_instance_creation(this);
+			} else {
+				note_object_creation(this);
+			}
 		}
 	}
 
@@ -2037,6 +2040,17 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Unexpected client message in an illegal state. Does not attempt to rescue the client.
+	 * 
+	 * @param from
+	 * @param text
+	 */
+	public void illegal_request(User from, String text) {
+		object_say(from, text); 
+		trace_msg(text);
+	}
+	
+	/**
 	 * Create a JSONLiteral initialized with the minimum arguments for broadcast
 	 * from the Habitat/Elko server.
 	 * 
@@ -3275,17 +3289,23 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * @param container The container that will hold the object when it arrives. null == region/context.
 	 * @return
 	 */
-	public Item create_object(String name, HabitatMod mod, Container container) {
+	public Item create_object(String name, HabitatMod mod, Container container, boolean ephemeral) {
 		Item item = null;
 		if (container != null) {
 			item = container.object().createItem(name, true, true);
 		} else {
 			item = context().createItem(name, true, true);
 		}
+
 		if (item != null) {
+			if (ephemeral)
+				item.markAsEphemeral();
+			
 			mod.attachTo(item);
 			mod.objectIsComplete();
-			item.checkpoint();
+			
+			if (!ephemeral)
+				item.checkpoint();
 		}
 		return item;
 	}
@@ -3305,16 +3325,29 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *
 	 * @param obj The new HabitatMod to announce.
      */
-	public void announce_object(Item obj, HabitatMod container) {
+	public void announce_object(BasicObject obj, HabitatMod container) {
 		JSONLiteral itemLiteral = obj.encode(EncodeControl.forClient);
 		JSONLiteral announceBroadcast = new_broadcast_msg(THE_REGION, "HEREIS_$");
 		announceBroadcast.addParameter("object", itemLiteral);
 		announceBroadcast.addParameter("container", container.object().ref());
 		announceBroadcast.finish();
-		trace_msg("Announcing object in container %s: %s", container.object().ref(), itemLiteral.sendableString());
 		context().send(announceBroadcast);
 	}
-
+	
+	/**
+	 * Tell the neighbors about this object (it was sent as a reply argment to the originator)
+	 * 
+	 * @param obj
+	 * @param container
+	 */
+	public void announce_object_to_neighbors(User from, BasicObject obj, HabitatMod container) {
+		JSONLiteral announceNeighbors = new_neighbor_msg(THE_REGION, "HEREIS_$");
+		announceNeighbors.addParameter("object", obj.encode(EncodeControl.forClient));
+		announceNeighbors.addParameter("container", container.object().ref());
+		announceNeighbors.finish();
+		context().sendToNeighbors(from, announceNeighbors);
+	}
+	
 	/**
 	 * Pays the provided amount of Tokens to the specified Avatar.
 	 *
@@ -3331,7 +3364,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		Tokens tokens;
 		if (who.empty_handed(who)) {
 			tokens = new Tokens(0, 0, HANDS, 0, 0, false, 0, 0);
-			Item obj = who.create_object("money", tokens, who);
+			Item obj = who.create_object("money", tokens, who, false);
 			tokens.tset(amount);
 			who.trace_msg("Created tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
 			who.announce_object(obj, who);
@@ -3348,7 +3381,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			tokens = new Tokens(0, who.x, who.y, 0, 0, false, 0, 0);
 			who.trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", region.obj_id(),
 				who.obj_id(), tokens.tget());
-			Item item = who.create_object("money", tokens, region);
+			Item item = who.create_object("money", tokens, region, false);
 			if (item == null) {
 				who.trace_msg("FAILED to create tokens in region %s for Avatar %s", region.obj_id(),
 					who.obj_id());

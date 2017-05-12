@@ -11,8 +11,10 @@ import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.Context;
 import org.elkoserver.server.context.ContextMod;
 import org.elkoserver.server.context.ContextShutdownWatcher;
+import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserWatcher;
+import org.elkoserver.util.ArgRunnable;
 import org.made.neohabitat.Constants;
 import org.made.neohabitat.Container;
 import org.made.neohabitat.HabitatMod;
@@ -101,7 +103,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public String     neighbors[]  = { "", "", "", "" };
     /** Direction to nearest Town */
     public String	  town_dir     = "";
-    /** Direciton to nearest Teleport Booth */
+    /** Direction to nearest Teleport Booth */
     public String	  port_dir     = "";    
     
     /** C64 Heap Emulation */
@@ -109,6 +111,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public	int[][]	resource_ref_count	= new int[4][256];		// images, heads, behaviors, sounds
     public	int		space_usage			= 0;
     
+    /** A handle to the mandatory singleton ghost object for this region */    
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
         "town_dir", "port_dir", "max_avatars", "neighbors" })
@@ -147,9 +150,52 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 		note_object_creation(this);
         Region.RefToRegion.put(obj_id(), this);
     }
+    
+    private	Ghost regionGhost() {
+    	return (Ghost) noids[GHOST_NOID];
+    }
 
+    public Ghost getGhost() {
+    	Ghost ghost = regionGhost();
+        if (ghost == null) {
+        	ghost 		= new Ghost(0, 4, 240, 0, 0, false);
+        	ghost.noid	= GHOST_NOID;
+        	Item item 	= create_object("Ghost", ghost, this, true);
+        	new Thread(announceGhostLater).start();        	 
+        }
+        return ghost;
+    }
+
+    /**
+     * It could be that the ghost is getting created at startup time, which is too soon to send messages to the clients.
+     */
+    protected Runnable announceGhostLater = new Runnable() {
+    	@Override
+    	public void run() {
+    		try {
+    		    Thread.sleep(1000);
+    		} catch (InterruptedException neverHappens) {
+    		    Thread.currentThread().interrupt();
+    		}
+            announce_object(current_region().noids[GHOST_NOID].object(), current_region());
+    	}
+    };
+    
+    public void destroyGhost(User from) {
+    	Ghost ghost = regionGhost();
+    	if (ghost != null) {
+    		if (from != null)
+    			send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", GHOST_NOID);
+    		Region.removeFromObjList(ghost);
+    		note_object_deletion(ghost);
+    		destroy_object(ghost);
+    	}
+    }
+    
+    
     @Override
     public void noteContextShutdown() {
+    	destroyGhost(null);
     	Region.RefToRegion.remove(obj_id());
     }
     
@@ -172,12 +218,22 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 		avatar.lastConnectedDay  = today;
     	avatar.lastConnectedTime = time;
     	Region.addUser(who);
+    	if (avatar.amAGhost) {
+    		getGhost().total_ghosts++; // Make sure the user has a ghost object..
+    	}
     }
     
     public void noteUserDeparture(User who) {
     	Avatar avatar = avatar(who);
+    	Ghost  ghost  = regionGhost();
         if (avatar.holding_restricted_object()) {
         	avatar.heldObject().putMeBack(who, false);
+        }
+        if (avatar.amAGhost) {
+        	ghost.total_ghosts--;
+        	if (ghost.total_ghosts == 0) {
+        		destroyGhost(who);
+        	}
         }
     	avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
     	avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
@@ -211,20 +267,25 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     
     public static final int AVERAGE_C64_AVATAR_LOAD = 1000; // bytes. Non-scientific spitball guess of additional headroom needed for head image + 4 unique items.
     
-    public static boolean IsRoomForMyAvatar(String regionRef, User from) {
+    public static boolean IsRoomForMyAvatarIn(String regionRef, User from) {
     	Region region = Region.RefToRegion.get(regionRef);
     	
     	if (region == null)
     		return true;				// if there is no instantiated region, there must be room!
     			
-    	if (region.avatarsPresent() == region.max_avatars)
+    	return region.isRoomForMyAvatar(from);
+    }
+    
+    public boolean isRoomForMyAvatar(User from) {
+    	if (avatarsPresent() == max_avatars)
     		return false;
     	
     	// TODO: Remove the silly headroom estimate below with something real someday?
-    	if (region.space_usage + AVERAGE_C64_AVATAR_LOAD >= C64_HEAP_SIZE)
+    	if (space_usage + AVERAGE_C64_AVATAR_LOAD >= C64_HEAP_SIZE)
     		return false;
     	
-    	return region.mem_check_container(region.avatar(from)); // Check the pocket contents for other overflows.
+    	return mem_check_container(avatar(from)); // Check the pocket contents for other overflows.
+
     }
     
     @Override
@@ -298,7 +359,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      *            The object to remove from the noid list.
      */
     public static void removeFromObjList(HabitatMod mod) {
-        mod.current_region().noids[mod.noid] = null;
+    	if (mod.noid < UNASSIGNED_NOID)
+    		mod.current_region().noids[mod.noid] = null;
     }
         
     /**
@@ -392,6 +454,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	if (who.firstConnection) {
     		object_say(from, MOTD);
     		if (NEOHABITAT_FEATURES) {
+    			if (who.amAGhost) {
+    				object_say(from, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
+    			}
     			if (NameToUser.size() < 2) {
     				object_say(from, UPGRADE_PREFIX + "You are the only Avatar here right now.");
     			} else {

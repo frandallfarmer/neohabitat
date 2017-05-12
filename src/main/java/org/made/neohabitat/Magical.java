@@ -417,7 +417,7 @@ public abstract class Magical extends HabitatMod {
                 	}
                 	context = context.replace('{', '_');			// There is no underscore in VICE
                 	send_reply_error(from);							// Need to clear the GOD MODE flag on the client.
-                	if (!Region.IsRoomForMyAvatar(context, from)) {
+                	if (!Region.IsRoomForMyAvatarIn(context, from)) {
                 		object_say(from, context + " is full.");
                 	} else {
                 		avatar.savedMagical = null;
