@@ -210,8 +210,12 @@ public class Paper extends HabitatMod implements Copyable {
             int[] boundedAscii = new int[titleLength];
             System.arraycopy(ascii, 0, boundedAscii, 0, titleLength);
             JSONLiteral msg = new_reply_msg(noid);
-            msg.addParameter("ascii",
-                concat_int_arrays(PAPER_TITLE_BEGINNING, boundedAscii, PAPER_TITLE_ENDING));
+            if (ascii.length > 0) {
+                msg.addParameter("ascii",
+                    concat_int_arrays(PAPER_TITLE_BEGINNING, boundedAscii, PAPER_TITLE_ENDING));
+            } else {
+                msg.addParameter("text", "This paper is empty.");
+            }
             msg.finish();
             from.send(msg);
         }

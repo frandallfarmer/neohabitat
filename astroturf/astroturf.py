@@ -20,7 +20,7 @@ OCTAL_REGEX = re.compile(OCTAL_REGEX_STRING)
 HEX_REGEX_STRING = r'(!ASTROESC!x[0-9a-f][0-9a-f])'
 HEX_REGEX = re.compile(HEX_REGEX_STRING)
 
-CUSTOM_ESCAPE_REGEX_STRING = r'(!ASTROESC!.)'
+CUSTOM_ESCAPE_REGEX_STRING = r'(!ASTROESC![^0-9])'
 CUSTOM_ESCAPE_REGEX = re.compile(CUSTOM_ESCAPE_REGEX_STRING)
 
 
@@ -59,6 +59,8 @@ def _octal_escape_to_ascii(octal_escape):
 def _astroesc_text_to_ascii_int_list(text):
   range_to_replacement = []
 
+  print('Running escape logic for text: {}'.format(text))
+
   def _get_replacement(index):
     should_replace = False
     for replace_start, replace_end, replacement in range_to_replacement:
@@ -71,27 +73,33 @@ def _astroesc_text_to_ascii_int_list(text):
 
   for octal_match in OCTAL_REGEX.finditer(text):
     octal_replace_tuple = (
-      octal_match.pos,
-      octal_match.end(),
+      octal_match.start(0),
+      octal_match.end(0),
       _octal_escape_to_ascii(octal_match.groups()[0]),
     )
+    print("Replacement for octal: {}: {}".format(octal_match.groups()[0], octal_replace_tuple))
     range_to_replacement.append(octal_replace_tuple)
 
   for hex_match in HEX_REGEX.finditer(text):
     hex_replace_tuple = (
-      hex_match.pos,
-      hex_match.end(),
+      hex_match.start(0),
+      hex_match.end(0),
       _hex_escape_to_ascii(hex_match.groups()[0]),
     )
+    print("Replacement for hex: {}: {}".format(hex_match.groups()[0], hex_replace_tuple))
     range_to_replacement.append(hex_replace_tuple)
 
   for custom_match in CUSTOM_ESCAPE_REGEX.finditer(text):
     custom_replace_tuple = (
-      custom_match.pos,
-      custom_match.end(),
+      custom_match.start(0),
+      custom_match.end(0),
       _custom_escape_to_ascii(custom_match.groups()[0]),
     )
+    print("Replacement for custom: {}: {}".format(custom_match.groups()[0], custom_replace_tuple))
     range_to_replacement.append(custom_replace_tuple)
+
+  if range_to_replacement:
+    print('Replacements for text {}: \n{}'.format(text, range_to_replacement))
 
   # Patches together an ASCII int array with all escaped replacements.
   ascii_string = []
@@ -102,6 +110,8 @@ def _astroesc_text_to_ascii_int_list(text):
         ascii_string.append(replacement)
     else:
       ascii_string.append(ord(text[i]))
+
+  print('ASCII for text {}:\n{}'.format(text, ascii_string))
 
   return ascii_string
 

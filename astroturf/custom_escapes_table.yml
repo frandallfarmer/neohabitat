@@ -11,8 +11,8 @@
 '#': 143 # double space
 '+': 129 # increment text width
 '-': 130 # decrement text width
-'{': 131 # increment text height
-'}': 132 # decrement text height
+'(': 131 # increment text height
+')': 132 # decrement text height
 'h': 133 # half size characters
 'R': 134 # sign carriage return
 'd': 139 # move half character space down
