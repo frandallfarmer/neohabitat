@@ -168,6 +168,7 @@ class AstroturfRegion(object):
       'north_connection': '',
       'east_connection': '',
       'south_connection': '',
+      'orientation_connection': '',
       'town_dir': self.town_dir,
       'port_dir': self.port_dir,
       'nitty_bits': 3,
@@ -183,6 +184,7 @@ class AstroturfRegion(object):
       key = 'door{}_connection'.format(i)
       template_dict[key] = self._get_region_context(self.door_connections[i])
 
+    # Looks up region context references for all connections in ordinal directions.
     if self.west_linenumber != 0:
       template_dict['west_connection'] = self._get_region_context(self.west_linenumber)
       template_dict['turf_exit_connection'] = template_dict['west_connection']
@@ -195,6 +197,17 @@ class AstroturfRegion(object):
     if self.south_linenumber != 0:
       template_dict['south_connection'] = self._get_region_context(self.south_linenumber)
       template_dict['turf_exit_connection'] = template_dict['south_connection']
+
+    # Populates the connection that is currently pointed in the direction of the region's
+    # orientation, typically a single door mounted on a Wall mod.
+    if self.orientation == 0:
+      template_dict['orientation_connection'] = template_dict['west_connection']
+    elif self.orientation == 1:
+      template_dict['orientation_connection'] = template_dict['north_connection']
+    elif self.orientation == 2:
+      template_dict['orientation_connection'] = template_dict['east_connection']
+    elif self.orientation == 3:
+      template_dict['orientation_connection'] = template_dict['south_connection']
 
     return template_dict
 

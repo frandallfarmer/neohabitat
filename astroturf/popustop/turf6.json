@@ -17,6 +17,7 @@
           "%(west_connection)s"
         ],
         "is_turf": true,
+        "realm": "Popustop",
         "locked": true,
         "nitty_bits": %(nitty_bits)s
       }

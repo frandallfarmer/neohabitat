@@ -16,6 +16,7 @@
           "%(south_connection)s",
           "%(west_connection)s"
         ],
+        "realm": "Popustop",
         "nitty_bits": %(nitty_bits)s
       }
     ]
@@ -88,7 +89,7 @@
       {
         "orientation": 204,
         "type": "Street",
-        "gr_state": 8,
+        "gr_state": 6,
         "y": 7,
         "x": 68
       }

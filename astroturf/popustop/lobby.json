@@ -16,6 +16,7 @@
           "%(south_connection)s",
           "%(west_connection)s"
         ],
+        "realm": "Popustop",
         "nitty_bits": %(nitty_bits)s
       }
     ]

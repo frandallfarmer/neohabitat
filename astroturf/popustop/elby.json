@@ -15,7 +15,8 @@
           "%(east_connection)s", 
           "%(south_connection)s", 
           "%(west_connection)s"
-        ], 
+        ],
+        "realm": "Popustop",
         "nitty_bits": %(nitty_bits)s
       }
     ]
@@ -62,7 +63,7 @@
         "y": 33,
         "orientation": 172,
         "open_flags": 2,
-        "connection": "%(west_connection)s"
+        "connection": "%(orientation_connection)s"
       }
     ]
   },
@@ -78,7 +79,7 @@
         "y": 123,
         "orientation": 0,
         "gr_state": 1,
-        "text": "%(arg_3)s-%(arg_4)s\R    \h}                          "
+        "text": "%(arg_3)s-%(arg_4)s\R   \h}                          "
       }
     ]
   },
@@ -94,7 +95,7 @@
         "y": 123,
         "orientation": 0,
         "gr_state": 1,
-        "text": "%(arg_5)s-%(arg_6)s\R      \h\177                        "
+        "text": "%(arg_5)s-%(arg_6)s\R     \h\177                        "
       }
     ]
   },

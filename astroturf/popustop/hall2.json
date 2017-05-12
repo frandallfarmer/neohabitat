@@ -16,6 +16,7 @@
           "%(south_connection)s",
           "%(west_connection)s"
         ],
+        "realm": "Popustop",
         "nitty_bits": %(nitty_bits)s
       }
     ]
@@ -147,7 +148,7 @@
         "y": 90,
         "orientation": 0,
         "gr_state": 1,
-        "text": "%(arg_1)s            %(arg_2)s            %(arg_3)s    "
+        "text": " %(arg_1)s             %(arg_2)s             %(arg_3)s"
       }
     ]
   },
