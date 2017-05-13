@@ -1,7 +1,7 @@
 {
 	"type": "context",
 	"ref": "context-test",
-	"capacity": 6,
+	"capacity": 64,
 	"name": "Neohabitat Project Hub",
 	"aliases": ["pop-hub", "pop-test"],
 	"mods": [

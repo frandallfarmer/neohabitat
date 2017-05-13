@@ -81,27 +81,31 @@ public class Escape_device extends HabitatMod implements Copyable {
 
     @JSONMethod
     public void BUGOUT(User from) {
-        Avatar avatar = avatar(from);
-        if (holding(avatar, this) && charge > 0) {
-            if (avatar.turf.equals(current_region().object().ref())) {
-                object_say(from, noid, "You're already home.");
-                send_reply_error(from);
-            } else {
-                avatar.x = 80;
-                avatar.y = 132;
-                avatar.inc_record(HS$escapes);
-                avatar.markAsChanged();
-                send_reply_success(from);
-                send_neighbor_msg(from, avatar.noid, "BUGOUT$");
-                charge--;
-                gen_flags[MODIFIED] = true;
-                checkpoint_object(this);
-                avatar.change_regions(avatar.turf, 0, 1);
-            }
-        } else {
-            object_say(from, noid, "Its charge is all used up.");
-            send_reply_error(from);
-        }
+    	Avatar avatar = avatar(from);
+    	if (holding(avatar, this) && charge > 0) {
+    		if (avatar.turf.equals(current_region().object().ref())) {
+    			object_say(from, noid, "You're already home.");
+    			send_reply_error(from);
+    		} else if (!Region.IsRoomForMyAvatarIn(avatar.turf, from)) {
+    			object_say(from, "My turf is full.");
+    			send_reply_error(from); 
+    		} else {
+    			avatar.inc_record(HS$escapes);
+    			avatar.markAsChanged();
+    			send_reply_success(from);
+    			send_neighbor_msg(from, avatar.noid, "BUGOUT$");
+    			charge--;
+    			avatar.x = SAFE_X;
+    			avatar.y = SAFE_Y;
+    			avatar.activity = STAND;
+    			gen_flags[MODIFIED] = true;
+    			checkpoint_object(this);
+    			avatar.change_regions(avatar.turf, 0, 1);
+    		}
+    	} else {
+    		object_say(from, noid, "Its charge is all used up.");
+    		send_reply_error(from);
+    	}
     }
 
     @JSONMethod

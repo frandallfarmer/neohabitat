@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_4g", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Plaza Northwest", 
     "mods": [

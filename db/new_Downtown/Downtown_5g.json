@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_5g", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Plaza North", 
     "mods": [

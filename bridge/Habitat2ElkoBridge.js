@@ -75,6 +75,7 @@ var ElkoPort	 = elkoaddr.length > 1   ? parseInt(elkoaddr[1])   : 9000;
 var SessionCount = 0;
 var MongoDB = {};
 
+const UNASSIGNED_NOID = 256;
 
 function rnd(max) {
 	return Math.floor(Math.random() * max)
@@ -412,12 +413,15 @@ var HabBuf = function (start, end, seq, noid, reqNum) {
 
 var unpackHabitatObject = function (client, o, containerRef) {
 	var mod  			= o.obj.mods[0];
-
 	o.noid				= mod.noid || 0;
 	o.mod				= mod;
 	o.ref			 	= o.obj.ref;
 	o.className		 	= mod.type;
 	o.classNumber	 	= HCode.CLASSES[mod.type] || 0;	
+
+	if (o.noid == UNASSIGNED_NOID) {
+		return true;					// Ghost Hack: Items/Avatars ghosted have an UNASSIGNED_NOID
+	}
 
 	if (undefined === HCode[mod.type]) {
 		Trace.error("\n\n*** Attempted to instantiate class '" + o.className + "' which is not supported. Aborted make. ***\n\n");
@@ -479,9 +483,9 @@ var ContentsVector = function (replySeq, noid, ref, type) {
 				HCode.REGION_NOID,
 				this.type);
 		if (this.type == HCode.MESSAGE_DESCRIBE) { 
-			if (this.container.data[4] == -1) {
+			if (this.container.data[4] == UNASSIGNED_NOID) {
 				av = client.state.avatar; // Since the region arrives before the avatar, we need to fix some state...
-				this.container.data[4] = av.noid; 
+				this.container.data[4] = av.amAGhost ? 255 : av.noid; 
 				this.container.data[8] = ((av.bankBalance & 0xFF000000) >> 24);
 				this.container.data[7] = ((av.bankBalance & 0x00FF0000) >> 16);
 				this.container.data[6] = ((av.bankBalance & 0x0000FF00) >> 8);
@@ -514,6 +518,7 @@ function initializeClientState(client, who, replySeq) {
 			otherContents: [],
 			otherNoid: 0,
 			otherRef: "",
+			ghost: false,
 			replySeq: replySeq
 	};
 }
@@ -671,20 +676,22 @@ function enterContext(client, server, context) {
 }
 
 function removeNoidFromClient(client, noid) {
-	var o = client.state.objects[noid];
-	var buf = new HabBuf(
-			true,
-			true,
-			HCode.PHANTOM_REQUEST,
-			HCode.REGION_NOID,
-			HCode.MESSAGE_GOAWAY);
-	buf.add(noid);
-	buf.send(client);
+	if (noid) {
+		var o = client.state.objects[noid];
+		var buf = new HabBuf(
+				true,
+				true,
+				HCode.PHANTOM_REQUEST,
+				HCode.REGION_NOID,
+				HCode.MESSAGE_GOAWAY);
+		buf.add(noid);
+		buf.send(client);
 
-	delete client.state.refToNoid[o.ref];
-	delete client.state.objects[noid];
-	if (o.className === "Avatar") {
-		client.state.numAvatars--;
+		delete client.state.refToNoid[o.ref];
+		delete client.state.objects[noid];
+		if (o.className === "Avatar") {
+			client.state.numAvatars--;
+		}
 	}
 }
 
@@ -757,7 +764,7 @@ var encodeState = {
 			}
 			buf.add(state.depth			|| 32);
 			buf.add(state.region_class	||  0);
-			buf.add(state.Who_am_I		|| -1);    	
+			buf.add(state.Who_am_I		|| UNASSIGNED_NOID);    	
 			buf.add(0); // Bank account balance is managed once we get the avatar object for this connection.
 			buf.add(0);
 			buf.add(0);
@@ -894,6 +901,7 @@ var encodeState = {
 		Fortune_machine:function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Fountain:		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Garbage_can: 	function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Ghost:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Ground:			function (state, container, buf) { return (this.walkable(state, container, buf)); },
 		Gun:	  		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Head:			function (state, container, buf) { return (this.common  (state, container, buf)); },
@@ -1012,19 +1020,27 @@ function parseIncomingElkoServerMessage(client, server, data) {
 		if (client.state.waitingForAvatarContents) {
 			client.state.waitingForAvatar 		  = false;
 			client.state.waitingForAvatarContents = false;
+
 			if (client.json) { // We might have to tell the server that the avatar is visible - emulating C64 client behavior.
 				toElko(server, JSON.stringify({ to:o.to, op:"FINGER_IN_QUE"}));
 				toElko(server, JSON.stringify({ to:o.to, op:"I_AM_HERE"}));
 				return;
 			}
 			for (var i = 0; i < client.state.objects.length; i++) {
-				if (undefined !== client.state.objects[i]) {
-					client.state.contentsVector.add(client.state.objects[i]);
-				}
+				var itm = client.state.objects[i];
+				if (undefined !== itm)
+					client.state.contentsVector.add(itm);
 			}
-			Trace.debug(client.state.user + " known as object ref " + client.state.ref + " in region/context " + client.state.region + ".");
+			Trace.debug(client.state.user +
+					    " known as object ref " + 
+					    client.state.ref + 
+					    " in region/context " + 
+					    client.state.region + 
+					    (client.state.avatar.amAGhost ? " (GHOSTED)." : "."));
 			client.state.contentsVector.send(client);
+			
 			client.state.contentsVector =  new ContentsVector(); 		// May be used by HEREIS/makes after region arrival
+			
 			if (client.state.numAvatars === 1) {
 				var caughtUpMessage = new HabBuf(true, true, HCode.PHANTOM_REQUEST, HCode.REGION_NOID, HCode.MESSAGE_CAUGHT_UP);
 				caughtUpMessage.add(1);			// TRUE
@@ -1032,13 +1048,15 @@ function parseIncomingElkoServerMessage(client, server, data) {
 			}
 			return;
 		}
-		if (client.state.otherNoid) {		// Other avatar needs to go out as one package.			
-			for (var i = 0; i < client.state.otherContents.length; i++) {
-				if (undefined !== client.state.otherContents[i]) {
-					client.state.contentsVector.add(client.state.otherContents[i]);
+		if (client.state.otherNoid) {		// Other avatar needs to go out as one package.	
+			if (client.state.otherNoid != UNASSIGNED_NOID) {
+				for (var i = 0; i < client.state.otherContents.length; i++) {
+					if (undefined !== client.state.otherContents[i]) {
+						client.state.contentsVector.add(client.state.otherContents[i]);
+					}
 				}
+				client.state.contentsVector.send(client);	// Suppress client send for ghosted avatar-connections.
 			}
-			client.state.contentsVector.send(client);
 			client.state.otherContents	= [];
 			client.state.otherNoid		= 0;
 			client.state.otherRef		= "";
@@ -1084,7 +1102,9 @@ function parseIncomingElkoServerMessage(client, server, data) {
 
 
 	if (o.op === "delete") {
-		removeNoidFromClient(client, client.state.refToNoid[o.to]);
+		var target = client.state.refToNoid[o.to];
+		if (target) 
+			removeNoidFromClient(client, target );
 		return;
 	}
 
@@ -1119,7 +1139,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 				client.state.ref    					= o.ref;
 				client.state.region 					= o.to;
 				client.state.avatar						= mod;
-				client.state.waitingForAvatarContents	= true;
+				client.state.waitingForAvatarContents	= true;				
 				// The next "ready" will build the full contents vector and send it to the client.
 			}
 			return;

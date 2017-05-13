@@ -416,13 +416,17 @@ public abstract class Magical extends HabitatMod {
                 		context = "context-" + context;
                 	}
                 	context = context.replace('{', '_');			// There is no underscore in VICE
-                    send_reply_error(from);							// Need to clear the GOD MODE flag on the client.
-                    avatar.savedMagical = null;
-                    avatar.savedTarget = null;              	
-                	avatar.x = 80;
-                	avatar.y = 132;
-                	avatar.markAsChanged();
-                	avatar.change_regions(context, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+                	send_reply_error(from);							// Need to clear the GOD MODE flag on the client.
+                	if (!Region.IsRoomForMyAvatarIn(context, from)) {
+                		object_say(from, context + " is full.");
+                	} else {
+                		avatar.savedMagical = null;
+                		avatar.savedTarget = null;              	
+                		avatar.x = 80;
+                		avatar.y = 132;
+                		avatar.markAsChanged();
+                		avatar.change_regions(context, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+                	}
                 	break;
                 case '?':
                 case 'h':

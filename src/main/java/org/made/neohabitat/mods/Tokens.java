@@ -136,7 +136,7 @@ public class Tokens extends HabitatMod implements Copyable {
     		if (this.empty_handed(other)) {
     			if (spend(amount, SERVER_DESTROYS_TOKEN) == TRUE) {
     				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, false, amount_lo, amount_hi);
-    				Item item = create_object("money", tokens, other);
+    				Item item = create_object("money", tokens, other, false);
     				if (item == null) {
     					send_reply_err(from, noid, BOING_FAILURE);
     					return;
@@ -220,7 +220,7 @@ public class Tokens extends HabitatMod implements Copyable {
                 return;
             }
             Tokens tokens = new Tokens(0, 0, pos_y, 0, 0, false, big_denom % 256, big_denom / 256);
-            Item item = create_object("money", tokens, avatar);
+            Item item = create_object("money", tokens, avatar, false);
             if (item == null) {
                 send_reply_error(from);
                 return;

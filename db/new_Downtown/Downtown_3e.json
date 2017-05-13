@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_3e", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Bobs Bank", 
     "mods": [

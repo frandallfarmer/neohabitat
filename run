@@ -67,7 +67,10 @@ BASE_ARGS=(
   conf.msgdiagnostics=true
 )
 
-JVM_ARGS=()
+JVM_ARGS=(
+  -DDEBUG.MONGO=true
+  -DDB.TRACE=true
+)
 
 function start_bridge() {
   supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js \

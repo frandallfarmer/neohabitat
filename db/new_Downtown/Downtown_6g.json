@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_6g", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Plaza Northeast", 
     "mods": [

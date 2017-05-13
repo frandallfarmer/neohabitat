@@ -606,6 +606,36 @@ this.translate = {
 				m.target = a[1];
 			}
 		},
+		CORPORATE: 	{
+			toClient: function(o,b, client) {
+				b.add(o.success);
+				b.add(o.newNoid);
+				b.add(o.balance & 0x000000ff);
+				b.add(o.balance & 0x0000ff00 >> 8);
+				b.add(o.balance & 0x00ff0000 >> 16);
+				b.add(o.balance & 0xff000000 >> 24);
+				if (o.body) {
+					b.add(client.backdoor.vectorize(client, o.body, 0));
+				} else {
+					b.add(0);
+				}
+			}
+		},
+		DISCORPORATE: 	{
+			toClient: function(o,b, client) {
+				b.add(o.success);
+				b.add(o.newNoid);
+				b.add(o.balance & 0x000000ff);
+				b.add(o.balance & 0x0000ff00 >> 8);
+				b.add(o.balance & 0x00ff0000 >> 16);
+				b.add(o.balance & 0xff000000 >> 24);
+				if (o.body) {
+					b.add(client.backdoor.vectorize(client, o.body, 0));
+				} else {
+					b.add(0);
+				}
+			}
+		},
 		PROMPT_REPLY: {
 			toServer: function(a,m) {
 				m.text  = String.fromCharCode.apply(null, a);
@@ -900,6 +930,15 @@ this.Avatar = {
 			14:{ op:"FNKEY" }
 		}
 };
+
+this.Ghost = {
+		clientMessages: {
+			0: { op:"HELP" },
+			8: { op:"WALK" },
+			9: { op:"NEWREGION" },
+			10:{ op:"CORPORATE" }
+		}
+}
 
 this.Head = {
 		clientMessages: {

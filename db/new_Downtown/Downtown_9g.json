@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_9g", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Library Purple", 
     "mods": [

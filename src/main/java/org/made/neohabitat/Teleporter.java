@@ -9,6 +9,7 @@ import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 
 import org.made.neohabitat.mods.Avatar;
+import org.made.neohabitat.mods.Region;
 
 
 /**
@@ -64,19 +65,24 @@ public abstract class Teleporter extends Coinop {
         } else {
             Avatar avatar = avatar(from);
             if (adjacent(avatar) &&
-                (activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
-                // Moved arrival positioning logic to avatar.objectIsComplete
-                send_reply_success(from);
-                avatar.inc_record(HS$teleports);
-                goto_new_region(avatar, destination, EAST, TELEPORT_ENTRY, x, y);
-                send_neighbor_msg(from, noid, "ZAPTO$");
-                if (HabitatClass() == CLASS_TELEPORT) {
-                    activeState			= PORT_READY;
-                    gr_state			= PORT_READY;
-                    gen_flags[MODIFIED]	= true;
-                    send_neighbor_fiddle_msg(from, THE_REGION, noid, C64_GR_STATE_OFFSET, PORT_READY);
-                }
-                return;
+            		(activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
+            	if (Region.IsRoomForMyAvatarIn(destination, from)) {
+            		send_reply_success(from);
+            		avatar.inc_record(HS$teleports);
+                	// Moved arrival positioning logic to avatar.objectIsComplete
+            		goto_new_region(avatar, destination, EAST, TELEPORT_ENTRY, x, y);
+            		send_neighbor_msg(from, noid, "ZAPTO$");
+            		if (HabitatClass() == CLASS_TELEPORT) {
+            			activeState			= PORT_READY;
+            			gr_state			= PORT_READY;
+            			gen_flags[MODIFIED]	= true;
+            			send_neighbor_fiddle_msg(from, THE_REGION, noid, C64_GR_STATE_OFFSET, PORT_READY);
+            		}
+            	} else {
+            		object_say(from, "Flash crowd detected at that destination. Try a different location.");
+                    send_reply_error(from);
+            	}
+            	return;
             }
         }
         send_reply_error(from);

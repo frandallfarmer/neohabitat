@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_1g", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "Sandy's A", 
     "mods": [

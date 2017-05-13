@@ -197,7 +197,7 @@ public class Vendo_front extends Openable implements Copyable {
     		HabitatMod vended	= (HabitatMod) display.copyThisMod();
     		vended.x = inside.x + 8;
     		vended.y = inside.y | 0x80;
-    		Item item = create_object(((HabitatMod) display).HabitatModName().toLowerCase(), vended, region);
+    		Item item = create_object(((HabitatMod) display).HabitatModName().toLowerCase(), vended, region, false);
     		if (item == null) {
     			Tokens.spend(from, -(item_price), Tokens.CLIENT_DESTROYS_TOKEN);
     			send_reply_err(from, noid, BOING_FAILURE);

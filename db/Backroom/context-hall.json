@@ -1,7 +1,7 @@
 {
 	"type": "context",
 	"ref": "context-hall",
-	"capacity": 6,
+	"capacity": 64,
 	"name": "Popustop 4th floor hallway",
 	"mods": [
 		{

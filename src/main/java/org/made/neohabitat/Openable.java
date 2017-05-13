@@ -6,6 +6,7 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.mods.Key;
+import org.made.neohabitat.mods.Region;
 
 /**
  * an Elko Habitat superclass to handle container open/closed and
@@ -172,6 +173,8 @@ public abstract class Openable extends Container {
     }
     
     
+    public int AVERAGE_C64_OBJ_LOAD = 200; // bytes
+    
     /**
      * Verb (Openable): Open [and unlock] this container.
      * 
@@ -182,11 +185,18 @@ public abstract class Openable extends Container {
     public void OPENCONTAINER(User from) {
         /** Was generic_OPENCONTAINER */
         HabitatMod held = heldObject(from);
+        Region region	= current_region();
         boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
                 && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
         if (!open_flags[OPEN_BIT] && // OPEN
                 (have_key || open_flags[UNLOCKED_BIT]) &&   // Holding Key or UNLOCKED
                 container().noid == THE_REGION) {           // AND in the REGION alone.
+        	if (region.space_usage + AVERAGE_C64_OBJ_LOAD * capacity() >= C64_HEAP_SIZE) {		
+        		// TODO Best guess. No science behind this. FRF
+                object_say(from, noid, "There is too much stuff in this region.");
+                send_reply_error(from);
+                return;
+        	}
             open_flags[OPEN_BIT] = true;
             open_flags[UNLOCKED_BIT] = true;
             gr_state = 1;
@@ -197,8 +207,7 @@ public abstract class Openable extends Container {
             get_container_contents(from);
         } else {
             object_say(from, noid, "It is locked.");
-            send_reply_error(from); // TODO This reply wasn't here in the
-            // original. Why?
+            send_reply_error(from); // TODO This reply wasn't here in the original. Why?
         }
     }
     
