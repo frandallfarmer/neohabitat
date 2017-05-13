@@ -129,6 +129,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         this.neighbors = neighbors;
         this.town_dir = town_dir.value("");
         this.port_dir = port_dir.value("");
+        this.noid = THE_REGION;
     }
 
     public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, int depth, int lighting,
@@ -141,12 +142,13 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         this.neighbors = neighbors;
         this.town_dir = town_dir;
         this.port_dir = port_dir;
+        this.noid = THE_REGION;
     }
 
     @Override
     public void objectIsComplete() {
         ((Context) object()).registerUserWatcher((UserWatcher) this);
-        noids[0] = this;
+        noids[noid] = this;
 		note_object_creation(this);
         Region.RefToRegion.put(obj_id(), this);
     }
