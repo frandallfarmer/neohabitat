@@ -139,6 +139,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         this.resident = resident.value("");
         this.realm = realm.value("unknown");
         this.locked = locked.value(false);
+        this.noid = THE_REGION;
     }
 
     public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits,
@@ -162,7 +163,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     @Override
     public void objectIsComplete() {
         ((Context) object()).registerUserWatcher((UserWatcher) this);
-        noids[noid] = this;
+        noids[THE_REGION] = this;
 		note_object_creation(this);
         Region.RefToRegion.put(obj_id(), this);
     }
