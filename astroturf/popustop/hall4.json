@@ -1,0 +1,171 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(arg_5)s",
+    "mods": [
+      {
+        "town_dir": "%(arg_6)s",
+        "port_dir": "%(arg_6)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "realm": "Popustop",
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall.%(region_ref)s",
+    "name": "Wall",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Wall",
+        "style": 4,
+        "x": 0,
+        "y": 0,
+        "orientation": %(arg_4)s
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.%(region_ref)s",
+    "name": "Ground",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Ground",
+        "style": 1,
+        "x": 0,
+        "y": 4,
+        "orientation": 56
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-door0.%(region_ref)s",
+    "name": "Door",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Door",
+        "style": 0,
+        "x": 4,
+        "y": 33,
+        "orientation": 140,
+        "gr_state": 0,
+        "open_flags": 2,
+        "connection": "%(door0_connection)s"
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree1.%(region_ref)s",
+    "name": "Tree",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 6,
+        "x": 44,
+        "y": 29,
+        "orientation": 112
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-door1.%(region_ref)s",
+    "name": "Door",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Door",
+        "style": 0,
+        "x": 68,
+        "y": 33,
+        "orientation": 148,
+        "gr_state": 0,
+        "open_flags": 2,
+        "connection": "%(door1_connection)s"
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-tree2.%(region_ref)s",
+    "name": "Tree",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Tree",
+        "style": 6,
+        "x": 116,
+        "y": 29,
+        "orientation": 33
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-door2.%(region_ref)s",
+    "name": "Door",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Door",
+        "style": 0,
+        "x": 132,
+        "y": 33,
+        "orientation": 156,
+        "gr_state": 0,
+        "open_flags": 2,
+        "connection": "%(door2_connection)s"
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sign.%(region_ref)s",
+    "name": "Sign",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Sign",
+        "style": 0,
+        "x": 8,
+        "y": 90,
+        "orientation": 0,
+        "gr_state": 1,
+        "text": " %(arg_1)s             %(arg_2)s             %(arg_3)s"
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-street.%(region_ref)s",
+    "name": "Street",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Street",
+        "style": 0,
+        "x": 68,
+        "y": 8,
+        "orientation": 144,
+        "gr_state": 6
+      }
+    ]
+  }
+]

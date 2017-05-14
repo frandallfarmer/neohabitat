@@ -1,0 +1,142 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(arg_1)s #%(arg_2)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "is_turf": true,
+        "realm": "Popustop",
+        "locked": true,
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.%(region_ref)s",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 16
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-display_case.%(region_ref)s",
+    "mods": [
+      {
+        "orientation": 0,
+        "key_lo": 0,
+        "key_hi": 0,
+        "y": 152,
+        "x": 52,
+        "type": "Display_case",
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Display_case",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-display_case2.%(region_ref)s",
+    "mods": [
+      {
+        "orientation": 0,
+        "key_lo": 0,
+        "key_hi": 0,
+        "y": 152,
+        "x": 100,
+        "type": "Display_case",
+        "open_flags": 3
+      }
+    ],
+    "type": "item",
+    "name": "Display_case",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-table.%(region_ref)s",
+    "name": "Test Table",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Table",
+        "style": 0,
+        "x": 20,
+        "y": 133,
+        "orientation": 16,
+        "gr_state": 0,
+        "open_flags": 3,
+        "key_lo": 5,
+        "key_hi": 5
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 5,
+        "type": "Wall",
+        "orientation": 220
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-door.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 16,
+        "y": 33,
+        "gr_state": 0,
+        "orientation": 204,
+        "open_flags": 2,
+        "connection": "%(turf_exit_connection)s"
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-couch.%(region_ref)s",
+    "name": "Turf couch",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Couch",
+        "style": 0,
+        "x": 72,
+        "y": 134,
+        "orientation": 204,
+        "gr_state": 0
+      }
+    ]
+  }
+]

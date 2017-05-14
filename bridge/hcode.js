@@ -502,7 +502,9 @@ this.CLASSES 			= {
 this.translate = {
 		HELP:	 { 
 			toClient: function(o, b) {
-				if (o.text) {
+				if ("ascii" in o) {
+					b.add(o.ascii);
+				} else if (o.text) {
 					b.add(o.text.getBytes());
 				} 
 			}
@@ -692,6 +694,14 @@ this.translate = {
 				return true;		// This reply should be split upon transmission to the client.
 			}
  		},
+ 		WRITE: {
+ 			toServer: function(a, m) {
+ 				m.request_ascii = a;
+ 			},
+ 			toClient: function(o, b) {
+ 				b.add(o.err);
+ 			}
+ 		},
 		RESET: { 
  			toClient: function(o, b) {
  				b.add(o.RESET_SUCCESS); 
@@ -865,6 +875,11 @@ this.translate = {
 		README: {
 			toClient: function(o, b) {
 				b.add(o.ascii);
+			}
+		},
+		PSENDMAIL: {
+			toClient: function(o, b) {
+				b.add(o.err);
 			}
 		}
 };
@@ -1225,6 +1240,18 @@ this.Matchbook = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"README" }
+		}
+};
+
+this.Paper = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"READ" },
+			5:{ op:"WRITE" },
+			6:{ op:"PSENDMAIL" }
 		}
 };
 

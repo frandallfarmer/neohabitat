@@ -1,0 +1,171 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(arg_1)s #%(arg_2)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "is_turf": true,
+        "realm": "Popustop",
+        "locked": true,
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.%(region_ref)s",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 220
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 196
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-window.%(region_ref)s",
+    "mods": [
+      {
+        "style": 1,
+        "orientation": 0,
+        "gr_state": 0,
+        "y": 56,
+        "x": 48,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-couch.%(region_ref)s",
+    "name": "Turf couch",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Couch",
+        "style": 0,
+        "x": 44,
+        "y": 130,
+        "orientation": 0,
+        "gr_state": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-chest1.%(region_ref)s",
+    "name": "Rant Cabinet",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Chest",
+        "style": 0,
+        "x": 8,
+        "y": 26,
+        "orientation": 16,
+        "gr_state": 0,
+        "open_flags": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-door.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 120,
+        "y": 33,
+        "gr_state": 0,
+        "orientation": 204,
+        "open_flags": 2,
+        "connection": "%(turf_exit_connection)s"
+      }
+    ]
+  },
+  {
+    "ref": "item-floor_lamp.%(region_ref)s",
+    "mods": [
+      {
+        "y": 133,
+        "x": 100,
+        "on": 1,
+        "type": "Floor_lamp",
+        "orientation": 16
+      }
+    ],
+    "type": "item",
+    "name": "Floor_lamp",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-window2.%(region_ref)s",
+    "mods": [
+      {
+        "style": 1,
+        "orientation": 0,
+        "gr_state": 0,
+        "y": 56,
+        "x": 88,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-knick_knack.%(region_ref)s",
+    "mods": [
+      {
+        "style": 3,
+        "gr_state": 3,
+        "gr_width": 3,
+        "orientation": 0,
+        "y": 210,
+        "x": 28,
+        "type": "Knick_knack",
+        "magic_type": 0
+      }
+    ],
+    "type": "item",
+    "name": "Knick_knack",
+    "in": "context-%(region_ref)s"
+  }
+]

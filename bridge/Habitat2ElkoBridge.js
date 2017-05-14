@@ -601,7 +601,7 @@ function parseHabitatClientMessage(client, server, data) {
 	var msg;
 
 	Trace.debug("client (" + client.sessionName + ") ->  [noid:" + noid +
-			" request:" + reqNum + " ... " + JSON.stringify(args) + "]");
+			" request:" + reqNum + " seq:" + seq + " ... " + JSON.stringify(args) + "]");
 
 	if (undefined === client.connected) {
 		client.state.who = client.packetPrefix;
@@ -911,6 +911,7 @@ var encodeState = {
 		Knick_knack:	function (state, container, buf) { return (this.magical (state, container, buf)); },
 		Knife:  		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Matchbook:  function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Paper: 			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Pawn_machine:	function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Plant:	 		function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Plaque:			function (state, container, buf) { return (this.document(state, container, buf)); },

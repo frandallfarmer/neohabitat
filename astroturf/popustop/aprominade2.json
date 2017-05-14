@@ -1,0 +1,511 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(arg_1)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "realm": "Popustop",
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-sky1.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Sky",
+        "orientation": 0
+      }
+    ],
+    "type": "item",
+    "name": "Sky",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Ground",
+        "x": 0,
+        "y": 4,
+        "orientation": 228,
+        "style": 1
+      }
+    ]
+  },
+  {
+    "ref": "item-sky2.%(region_ref)s",
+    "mods": [
+      {
+        "y": 3,
+        "x": 0,
+        "style": 0,
+        "type": "Sky",
+        "orientation": 228
+      }
+    ],
+    "type": "item",
+    "name": "Sky",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-street1.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Street",
+        "x": 68,
+        "y": 12,
+        "gr_state": 6,
+        "orientation": 8
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-supertrap1.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Super_trapezoid",
+        "x": 24,
+        "y": 48,
+        "orientation": 164,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 103,
+        "lower_left_x": 0,
+        "lower_right_x": 103,
+        "height": 216,
+        "pattern_x_size": 1,
+        "pattern_y_size": 7,
+        "pattern": [
+          85,
+          85,
+          90,
+          165,
+          90,
+          165,
+          90,
+          165,
+          90,
+          165,
+          90,
+          165,
+          90,
+          165,
+          90,
+          165,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-supertrap2.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Super_trapezoid",
+        "x": 24,
+        "y": 48,
+        "orientation": 164,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 103,
+        "lower_left_x": 0,
+        "lower_right_x": 103,
+        "height": 144,
+        "pattern_x_size": 1,
+        "pattern_y_size": 1,
+        "pattern": [
+          102,
+          102,
+          153,
+          153,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap1.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 78,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap2.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 86,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap3.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 72,
+        "y": 57,
+        "orientation": 0,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 4,
+        "lower_left_x": 0,
+        "lower_right_x": 4,
+        "height": 132
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap4.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 72,
+        "y": 49,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 135
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap5.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 66,
+        "y": 28,
+        "orientation": 8,
+        "trapezoid_type": 0,
+        "upper_left_x": 9,
+        "upper_right_x": 11,
+        "lower_left_x": 0,
+        "lower_right_x": 20,
+        "height": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap6.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 70,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap7.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 94,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap8.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 102,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap9.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 110,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap10.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 118,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap11.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 62,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap12.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 54,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap13.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 46,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap14.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 38,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap15.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 30,
+        "y": 48,
+        "orientation": 140,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 3,
+        "lower_left_x": 0,
+        "lower_right_x": 3,
+        "height": 143
+      }
+    ]
+  },
+  {
+    "ref": "item-teleport.%(region_ref)s",
+    "mods": [
+      {
+        "y": 128,
+        "x": 132,
+        "address": "Pop-popustop",
+        "type": "Teleport",
+        "orientation": 236
+      }
+    ],
+    "type": "item",
+    "name": "Teleport",
+    "in": "context-%(region_ref)s"
+  }
+]

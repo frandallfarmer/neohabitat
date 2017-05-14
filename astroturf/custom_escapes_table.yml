@@ -1,0 +1,23 @@
+# ASCII lookup table for custom Habitat text control characters:
+# https://github.com/frandallfarmer/neohabitat/wiki/Habitat-Sign-Escape-and-Graphical-Character-Codes
+
+---
+'n': 10  # newline
+'r': 13  # horizontal tab
+'\': 109 # backslash
+"'": 39  # apostrophe
+'"': 34  # quote
+' ': 128 # half space
+'#': 143 # double space
+'+': 129 # increment text width
+'-': 130 # decrement text width
+'(': 131 # increment text height
+')': 132 # decrement text height
+'h': 133 # half size characters
+'R': 134 # sign carriage return
+'d': 139 # move half character space down
+'i': 140 # shift to inverse video
+'>': 135 # cursor right
+'<': 136 # cursor left
+'^': 137 # cursor up
+'v': 138 # cursor down

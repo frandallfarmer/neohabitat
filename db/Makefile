@@ -28,6 +28,12 @@ DBINIT_SCRIPT = ./dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1"
 
+define NL
+
+
+endef
+
+
 clean: nuke all
 
 help:
@@ -43,7 +49,7 @@ book:
 	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
 	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
-	@$(foreach F,$(BOOKOFRECORDS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
+	@$(foreach F,$(BOOKOFRECORDS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)$(NL))
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
 
@@ -52,7 +58,7 @@ text: book
 	@rm -f $(DBINIT_SCRIPT)
 	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
-	@$(foreach F,$(TEXT_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
+	@$(foreach F,$(TEXT_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)$(NL))
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
 
@@ -61,7 +67,7 @@ regions:
 	@rm -f $(DBINIT_SCRIPT)
 	@echo '#!/bin/bash' > $(DBINIT_SCRIPT)
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
-	@$(foreach F,$(MONGODB_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT);)
+	@$(foreach F,$(MONGODB_OBJECTS), echo "eupdate(" >> $(DBINIT_SCRIPT); cat $F >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)$(NL))
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >>.errs 2>&1
 

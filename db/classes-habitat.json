@@ -355,6 +355,11 @@
 			"type": "class",
 			"tag": "Matchbook",
 			"name": "org.made.neohabitat.mods.Matchbook"
+		},
+		{
+			"type": "class",
+			"tag": "Paper",
+			"name": "org.made.neohabitat.mods.Paper"
 		}
 	]
 }

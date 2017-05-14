@@ -1,0 +1,175 @@
+[
+  {
+    "ref": "context-%(region_ref)s",
+    "capacity": 6,
+    "type": "context",
+    "name": "%(arg_1)s #%(arg_2)s",
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s",
+        "port_dir": "%(port_dir)s",
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s",
+          "%(east_connection)s",
+          "%(south_connection)s",
+          "%(west_connection)s"
+        ],
+        "is_turf": true,
+        "realm": "Popustop",
+        "locked": true,
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.%(region_ref)s",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 8
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-wall.%(region_ref)s",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 88
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-window.%(region_ref)s",
+    "mods": [
+      {
+        "style": 1,
+        "orientation": 8,
+        "gr_state": 1,
+        "gr_width": 20,
+        "y": 59,
+        "x": 132,
+        "type": "Window"
+      }
+    ],
+    "type": "item",
+    "name": "Window",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-door.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 100,
+        "y": 33,
+        "gr_state": 0,
+        "orientation": 220,
+        "open_flags": 2,
+        "connection": "%(turf_exit_connection)s"
+      }
+    ]
+  },
+  {
+    "ref": "item-floor_lamp.%(region_ref)s",
+    "mods": [
+      {
+        "y": 131,
+        "x": 56,
+        "on": 1,
+        "type": "Floor_lamp",
+        "orientation": 188
+      }
+    ],
+    "type": "item",
+    "name": "Floor_lamp",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-table.%(region_ref)s",
+    "name": "Test Table",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Table",
+        "style": 0,
+        "x": 36,
+        "y": 154,
+        "orientation": 0,
+        "gr_state": 0,
+        "open_flags": 3,
+        "key_lo": 5,
+        "key_hi": 5
+      }
+    ]
+  },
+  {
+    "ref": "item-picture.%(region_ref)s",
+    "mods": [
+      {
+        "orientation": 0,
+        "type": "Picture",
+        "mass": 1,
+        "style": 3,
+        "gr_state": 0,
+        "y": 70,
+        "x": 60
+      }
+    ],
+    "type": "item",
+    "name": "Picture",
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-chest1.%(region_ref)s",
+    "name": "Rant Cabinet",
+    "in": "context-%(region_ref)s",
+    "mods": [
+      {
+        "type": "Chest",
+        "style": 2,
+        "x": 8,
+        "y": 137,
+        "orientation": 245,
+        "gr_state": 0,
+        "open_flags": 2
+      }
+    ]
+  },
+  {
+    "ref": "item-chair.%(region_ref)s",
+    "mods": [
+      {
+        "y": 138,
+        "x": 68,
+        "style": 1,
+        "open_flags": 3,
+        "gr_width": 24,
+        "type": "Chair",
+        "orientation": 229
+      }
+    ],
+    "type": "item",
+    "name": "Chair",
+    "in": "context-%(region_ref)s"
+  }
+]
