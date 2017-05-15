@@ -1,16 +1,48 @@
-{
-	"type": "user",
-	"ref": "user-vonguard",
-	"name": "VonGuard",
-	"mods": [
-		{
-			"type": "Avatar",
-			"x": 0,
-			"y": 130,			
-			"bodyType": "male",
-			"bankBalance": 50000,
-			"custom": [170, 119],
-			"nitty_bits": 8
-		}
-	]
-}
+[ {
+	"type" : "user",
+	"ref" : "user-vonguard",
+	"name" : "VonGuard",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 0,
+		"y" : 130,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 170, 119 ],
+		"nitty_bits" : 8
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-vonguard.godtool",
+	"name" : "Tool to rule the universe.",
+	"in" : "user-vonguard",
+	"mods" : [ {
+		"type" : "Knick_knack",
+		"style" : 2,
+		"y" : 1,
+		"orientation" : 8,
+		"magic_type" : 17,
+		"charges" : 255
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-vonguard.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-vonguard",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-vonguard.head.json",
+	"name" : "Alex's Head",
+	"in" : "user-vonguard",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 57,
+		"orientation" : 48,
+		"y" : 6
+	} ]
+} ]

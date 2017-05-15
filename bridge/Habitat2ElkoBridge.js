@@ -98,7 +98,7 @@ function insertUser(db, user, callback) {
 }
 
 function addDefaultHead(db, userRef, fullName) {
-	headRef = "item-" + userRef.substring(5)+".head";
+	headRef = "item-head" + Math.random();
 	db.collection('odb').insertOne({
 		"ref": headRef,
 		"type": "item",
@@ -121,9 +121,31 @@ function addDefaultHead(db, userRef, fullName) {
 	)
 }
 
+function addPaperPrime(db, userRef, fullName) {
+	paperRef = "item-paper" + Math.random();
+	db.collection('odb').insertOne({
+		"ref": paperRef,
+		"type": "item",
+		"name": "Paper for " + fullName,
+		"in":userRef,
+		"mods": [
+			{
+				"type": "Paper",
+				"y": 4,
+				"orientation": 16
+			}
+			]
+	}, function(err, result) {
+		Assert.equal(err, null);
+		if (result === null) {
+			Trace.debug("Unable to add " + paperRef + " for " + userRef);
+		}
+	}
+	)
+}
 
 function addDefaultTokens(db, userRef, fullName) {
-	tokenRef = "item-" + userRef.substring(5)+".tokens";
+	tokenRef = "item-tokens" + Math.random();
 	db.collection('odb').insertOne({
 		"ref": tokenRef,
 		"type": "item",
@@ -169,6 +191,7 @@ function confirmOrCreateUser(fullName) {
 						]
 				}, function() {
 					addDefaultHead(db, userRef, fullName);
+					addPaperPrime(db, userRef, fullName);
 					addDefaultTokens(db, userRef, fullName);
 					db.close();
 				});
@@ -573,7 +596,8 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 			o = JSON.parse(send);
 			if (o && o.op) {
 				if (o.op === "entercontext") {
-					Trace.debug(o.user + " is trying to enter region-context " + o.context);					
+					Trace.debug(o.user + " is trying to enter region-context " + o.context);	
+					confirmOrCreateUser(o.user.substring("user-".length));
 				}
 			}
 		} catch (e) {

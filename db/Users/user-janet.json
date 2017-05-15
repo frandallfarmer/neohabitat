@@ -1,15 +1,34 @@
-{
-	"type": "user",
-	"ref": "user-janet",
-	"name": "Janet",
-	"mods": [
-		{
-			"type": "Avatar",
-			"x": 50,
-			"y": 130,
-			"bodyType": "female",
-			"bankBalance": 50000,
-			"custom": [102, 136]
-		}
-	]
-}
+[ {
+	"type" : "user",
+	"ref" : "user-janet",
+	"name" : "Janet",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 50,
+		"y" : 130,
+		"bodyType" : "female",
+		"bankBalance" : 50000,
+		"custom" : [ 102, 136 ]
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-janet.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-janet",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-janet.head",
+	"name" : "Janet's Head",
+	"in" : "user-janet",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 2,
+		"y" : 6,
+		"orientation" : 8
+	} ]
+} ]

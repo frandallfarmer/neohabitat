@@ -1,7 +1,7 @@
-{
+[ {
 	"type": "user",
 	"ref": "user-keith3",
-	"name": "Keith3",
+	"name": "Keith",
 	"mods": [
 		{
 			"type": "Avatar",
@@ -13,4 +13,63 @@
 			"nitty_bits": 8
 		}
 		]
-}
+}, {
+	"type" : "item",
+	"ref" : "item-keith3.spraycan",
+	"deletable" : true,
+	"name" : "Stylin' body paint",
+	"in" : "user-keith3",
+	"mods" : [ {
+		"type" : "Spray_can",
+		"y" : 0,
+		"orientation" : 8,
+		"charge" : 255
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-keith3.godtool",
+	"deletable" : true,
+	"name" : "Tool to rule the universe.",
+	"in" : "user-keith3",
+	"mods" : [ {
+		"type" : "Knick_knack",
+		"style" : 2,
+		"y" : 1,
+		"orientation" : 8,
+		"magic_type" : 17,
+		"charges" : 255
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-keith3.compass",
+	"name" : "Keith's Compass",
+	"in" : "user-keith3",
+	"mods" : [ {
+		"type" : "Compass",
+		"style" : 0,
+		"gr_state" : 0,
+		"y" : 2,
+		"orientation" : 16
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-keith3.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-keith3",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-keith3.head",
+	"name" : "Keith's Head",
+	"in" : "user-keith3",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 160,
+		"y" : 6
+	} ]
+} ]
+

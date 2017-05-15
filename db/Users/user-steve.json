@@ -1,16 +1,83 @@
-{
-	"type": "user",
-	"ref": "user-steve",
-	"name": "Steve",
-	"mods": [
-		{
-			"type": "Avatar",
-			"x": 100,
-			"y": 130,
-			"bodyType": "male",
-			"bankBalance": 50000,
-			"custom": [17, 151],
-			"nitty_bits": 8
-		}
-	]
-}
+[ {
+	"type" : "user",
+	"ref" : "user-steve",
+	"name" : "Steve",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 100,
+		"y" : 130,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 17, 151 ],
+		"nitty_bits" : 8
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-steve.tokens",
+	"name" : "Money!",
+	"in" : "user-steve",
+	"mods" : [ {
+		"type" : "Tokens",
+		"y" : 0,
+		"denom_hi" : 4,
+		"denom_lo" : 0
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-steve.godtool",
+	"name" : "Tool to rule the universe.",
+	"in" : "user-steve",
+	"mods" : [ {
+		"type" : "Knick_knack",
+		"style" : 2,
+		"y" : 1,
+		"orientation" : 8,
+		"magic_type" : 17,
+		"charges" : 255
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-steve.compass",
+	"name" : "Compass",
+	"in" : "user-steve",
+	"mods" : [ {
+		"type" : "Compass",
+		"style" : 0,
+		"y" : 2,
+		"orientation" : 0
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-steve.spraycan",
+	"name" : "Stylin' body paint",
+	"in" : "user-steve",
+	"mods" : [ {
+		"type" : "Spray_can",
+		"style" : 0,
+		"x" : 10,
+		"y" : 3,
+		"gr_state" : 0,
+		"orientation" : 64
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-chip.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-chip",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-steve.head",
+	"name" : "Steve's Head",
+	"in" : "user-steve",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 28,
+		"orientation" : 16,
+		"y" : 6
+	} ]
+} ]

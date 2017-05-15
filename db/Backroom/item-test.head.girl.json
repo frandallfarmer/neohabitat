@@ -1,14 +1,16 @@
 {
 	"type": "item",
-	"ref": "item-janet.head",
-	"name": "Janet's Head",
-	"in": "user-janet",
+	"ref": "item-gengirl.head",
+	"name": "Head",
+	"in": "context-test",
 	"mods": [
 		{
 			"type": "Head",
 			"style": 2,
-			"y": 6,
-			"orientation": 8
+			"x": 132,
+			"y": 80,
+			"orientation": 8,
+			"gr_state": 1
 		}
 		]
 }

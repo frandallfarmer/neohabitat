@@ -1,16 +1,47 @@
-{
-	"type": "user",
-	"ref": "user-rassilon",
-	"name": "Rassilon",
-	"mods": [
-		{
-			"type": "Avatar",
-			"x": 0,
-			"y": 150,			
-			"bodyType": "male",
-			"bankBalance": 50000,
-			"custom": [17,51],
-			"nitty_bits": 8
-		}
-		]
-}
+[ {
+	"type" : "user",
+	"ref" : "user-rassilon",
+	"name" : "Rassilon",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 0,
+		"y" : 150,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 17, 51 ],
+		"nitty_bits" : 8
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-rassilon.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-rassilon",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-rassilon.godtool",
+	"name" : "Tool to rule the universe.",
+	"in" : "user-rassilon",
+	"mods" : [ {
+		"type" : "Knick_knack",
+		"style" : 2,
+		"y" : 1,
+		"orientation" : 8,
+		"magic_type" : 17,
+		"charges" : 255
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-rassilon.head.json",
+	"name" : "Rassilon's Head",
+	"in" : "user-rassilon",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 100,
+		"y" : 6
+	} ]
+} ]

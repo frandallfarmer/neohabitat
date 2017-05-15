@@ -1,15 +1,34 @@
-{
-	"type": "user",
-	"ref": "user-aric",
-	"name": "Aric",
-	"mods": [
-		{
-			"type": "Avatar",
-			"x": 20,
-			"y": 130,
-			"bodyType": "male",
-			"bankBalance": 50000,
-			"custom": [221, 51]
-		}
-	]
-}
+[ {
+	"type" : "user",
+	"ref" : "user-aric",
+	"name" : "Aric",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 20,
+		"y" : 130,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 221, 51 ]
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-aric.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-aric",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-aric.head",
+	"name" : "Aric's Head",
+	"in" : "user-aric",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 160,
+		"y" : 6,
+		"orientation" : 112
+	} ]
+} ]
