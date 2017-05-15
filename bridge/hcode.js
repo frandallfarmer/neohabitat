@@ -610,10 +610,10 @@ this.translate = {
 			toClient: function(o,b, client) {
 				b.add(o.success);
 				b.add(o.newNoid);
-				b.add(o.balance & 0x000000ff);
-				b.add(o.balance & 0x0000ff00 >> 8);
-				b.add(o.balance & 0x00ff0000 >> 16);
-				b.add(o.balance & 0xff000000 >> 24);
+				b.add((o.balance & 0x000000FF));
+				b.add((o.balance & 0x0000FF00) >> 8);
+				b.add((o.balance & 0x00FF0000) >> 16);
+				b.add((o.balance & 0xFF000000) >> 24);
 				if (o.body) {
 					b.add(client.backdoor.vectorize(client, o.body, 0));
 				} else {
@@ -625,10 +625,10 @@ this.translate = {
 			toClient: function(o,b, client) {
 				b.add(o.success);
 				b.add(o.newNoid);
-				b.add(o.balance & 0x000000ff);
-				b.add(o.balance & 0x0000ff00 >> 8);
-				b.add(o.balance & 0x00ff0000 >> 16);
-				b.add(o.balance & 0xff000000 >> 24);
+				b.add((o.balance & 0x000000FF));
+				b.add((o.balance & 0x0000FF00) >> 8);
+				b.add((o.balance & 0x00FF0000) >> 16);
+				b.add((o.balance & 0xFF000000) >> 24);
 				if (o.body) {
 					b.add(client.backdoor.vectorize(client, o.body, 0));
 				} else {
