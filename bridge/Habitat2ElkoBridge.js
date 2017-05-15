@@ -673,7 +673,10 @@ function parseHabitatClientMessage(client, server, data) {
 	if (undefined !== HCode.translate[op]) {
 		client.state.replyEncoder = HCode.translate[op].toClient;
 		if (undefined !== HCode.translate[op].toServer) {
-			HCode.translate[op].toServer(args, msg);
+			HCode.translate[op].toServer(args, msg, client, start, end);
+			if (msg.supressReply) {
+				delete msg;
+			}
 		}
 	}
 

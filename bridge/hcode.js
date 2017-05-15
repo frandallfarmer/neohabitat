@@ -695,8 +695,17 @@ this.translate = {
 			}
  		},
  		WRITE: {
- 			toServer: function(a, m) {
- 				m.request_ascii = a;
+ 			toServer: function(a, m, client, start, end) {
+ 				m.supressReply = true;
+ 				if (start) {
+ 					client.largeRequestCache = [];
+ 				}
+ 				Array.prototype.push.apply(client.largeRequestCache, a)
+ 				if (end) {
+ 					m.request_ascii = client.largeRequestCache;
+ 					delete m.supressReply;
+ 					delete client.largeRequestCache;
+ 				}
  			},
  			toClient: function(o, b) {
  				b.add(o.err);
