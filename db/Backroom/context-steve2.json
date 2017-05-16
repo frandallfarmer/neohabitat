@@ -73,6 +73,7 @@
         "type": "Paper",
         "x": 16,
         "y": 130,
+        "gr_state": 1,
         "orientation": 16,
         "text_path": "text-popmap"
       }

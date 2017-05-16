@@ -38,7 +38,7 @@ public class Paper extends HabitatMod implements Copyable {
 
     public static final String EMPTY_PAPER_REF = "text-emptypaper";
 
-    public static final int[] EMPTY_PAPER = {};
+    public static final int[] EMPTY_PAPER = new int[16];
     public static final int[] PAPER_TITLE_BEGINNING = convert_to_petscii("This paper begins \"", 24);
     public static final int[] PAPER_TITLE_ENDING = convert_to_petscii("\".", 2);
 
@@ -83,7 +83,6 @@ public class Paper extends HabitatMod implements Copyable {
         super(style, x, y, orientation, gr_state, restricted);
         this.ascii = EMPTY_PAPER;
         this.text_path = text_path.value(EMPTY_PAPER_REF);
-        reconcile_gr_state();
     }
 
     public Paper(int style, int x, int y, int orientation, int gr_state,
@@ -91,25 +90,10 @@ public class Paper extends HabitatMod implements Copyable {
         super(style, x, y, orientation, gr_state, restricted);
         this.ascii = EMPTY_PAPER;
         this.text_path = text_path;
-        reconcile_gr_state();
-    }
-
-    public String paper_path() {
-        String[] splitRef = object().ref().split("item-");
-        if (splitRef.length > 1) {
-            return String.format("paper-%s", splitRef[1]);
-        } else {
-            return String.format("paper-%s", object().ref());
-        }
-    }
-
-    public String new_paper_item_uuid() {
-        return String.format("item-paper.%s.%s", object().ref(),
-            java.util.UUID.randomUUID().toString());
     }
 
     public boolean is_blank() {
-        return ascii.length == 0 && (text_path.equals(EMPTY_PAPER_REF) || text_path.isEmpty());
+        return text_path.equals(EMPTY_PAPER_REF);
     }
 
     /**
@@ -119,6 +103,10 @@ public class Paper extends HabitatMod implements Copyable {
     public void objectIsComplete() {
         retrievePaperContents();
         super.objectIsComplete();
+    }
+
+    public String paper_path() {
+        return String.format("paper-%s", object().ref());
     }
 
     @Override
@@ -153,7 +141,7 @@ public class Paper extends HabitatMod implements Copyable {
     @JSONMethod({ "request_ascii" })
     public void WRITE(User from, int[] request_ascii) {
         Avatar avatar = avatar(from);
-        boolean success = false;
+        boolean success;
         boolean fiddle_flag = false;
 
         if (holding(avatar, this)) {
@@ -161,9 +149,8 @@ public class Paper extends HabitatMod implements Copyable {
             // If we've been given an empty string, clears out the Paper's contents.
             if (request_ascii == null || request_ascii.length == 16) {
                 trace_msg("Avatar %s requested clearing of contents for Paper %s",
-                    from.name(), paper_path());
+                    from.name(), text_path);
                 ascii = EMPTY_PAPER;
-                text_path = EMPTY_PAPER_REF;
                 deletePaperContents();
                 if (gr_state != PAPER_BLANK_STATE) {
                     gr_state = PAPER_BLANK_STATE;
@@ -172,13 +159,15 @@ public class Paper extends HabitatMod implements Copyable {
                 gen_flags[MODIFIED] = true;
             } else {
                 trace_msg("Avatar %s setting Paper %s contents to: %s",
-                    from.name(), paper_path(), Arrays.toString(request_ascii));
+                    from.name(), text_path, Arrays.toString(request_ascii));
                 ascii = request_ascii;
                 savePaperContents();
                 gr_state = PAPER_WRITTEN_STATE;
                 gen_flags[MODIFIED] = true;
             }
             checkpoint_object(this);
+        } else {
+            success = false;
         }
 
         if (success) {
@@ -188,7 +177,7 @@ public class Paper extends HabitatMod implements Copyable {
         }
 
         if (fiddle_flag) {
-            trace_msg("Sending PAPER_BLANK_STATE fiddle for Paper %s", paper_path());
+            trace_msg("Sending PAPER_BLANK_STATE fiddle for Paper %s", text_path);
             send_fiddle_msg(
                 THE_REGION,
                 noid,
@@ -212,7 +201,7 @@ public class Paper extends HabitatMod implements Copyable {
                 msg.addParameter("ascii",
                     concat_int_arrays(PAPER_TITLE_BEGINNING, boundedAscii, PAPER_TITLE_ENDING));
             } else {
-                msg.addParameter("text", "This paper is empty.");
+                msg.addParameter("text", "");
             }
             msg.finish();
             from.send(msg);
@@ -234,7 +223,7 @@ public class Paper extends HabitatMod implements Copyable {
         }
 
         boolean announce_it = false;
-        int how = -1;
+        int how;
         boolean success;
 
         Item paperItem = null;
@@ -250,7 +239,7 @@ public class Paper extends HabitatMod implements Copyable {
               position() == MAIL_SLOT);
             if (!change_containers(this, avatar, HANDS, true)) {
                 trace_msg("Could not change containers to Avatar %s for Paper %s",
-                    from.name(), paper_path());
+                    from.name(), text_path);
                 send_reply_error(from);
                 return;
             }
@@ -259,9 +248,10 @@ public class Paper extends HabitatMod implements Copyable {
             // If special_get is true, we're either getting mail or creating a new Paper sheet.
             if (special_get) {
                 trace_msg("Special GET is true for Paper %s, either a mail or Paper sheet creation",
-                    paper_path());
-                Paper blankPaper = new Paper(0, 0, MAIL_SLOT, 16, PAPER_BLANK_STATE, false, "");
-                paperItem = create_object(new_paper_item_uuid(), blankPaper, avatar, false);
+                    text_path);
+                Paper blankPaper = new Paper(
+                    0, 0, MAIL_SLOT, 16, PAPER_BLANK_STATE, false, EMPTY_PAPER_REF);
+                paperItem = create_object("paper", blankPaper, avatar, false);
                 if (paperItem == null) {
                     // If this fails, put the Paper back in the Avatar's inventory.
                     change_containers(this, avatar, MAIL_SLOT, true);
@@ -317,7 +307,7 @@ public class Paper extends HabitatMod implements Copyable {
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         boolean put_success = generic_PUT(from, containerNoid.value(THE_REGION),
             x.value(avatar(from).x), y.value(avatar(from).y), orientation.value(avatar(from).orientation));
-        trace_msg("PUT success for Paper %s: %b", paper_path(), put_success);
+        trace_msg("PUT success for Paper %s: %b", text_path, put_success);
         if (put_success && is_blank()) {
             send_goaway_msg(noid);
             destroy_object(this);
@@ -337,7 +327,7 @@ public class Paper extends HabitatMod implements Copyable {
     @JSONMethod({ "target", "x", "y" })
     public void THROW(User from, int target, int x, int y) {
         boolean throw_success = generic_THROW(from, target, x, y);
-        trace_msg("THROW success for Paper %s: %b", paper_path(), throw_success);
+        trace_msg("THROW success for Paper %s: %b", text_path, throw_success);
         if (throw_success && is_blank()) {
             send_goaway_msg(noid);
             destroy_object(this);
@@ -369,17 +359,8 @@ public class Paper extends HabitatMod implements Copyable {
 
     }
 
-    /* Sets the gr_state of this Paper based upon whether it has text associated with it. */
-    private void reconcile_gr_state() {
-        if (is_blank() && gr_state != PAPER_LETTER_STATE && gr_state != PAPER_BLANK_STATE) {
-            gr_state = PAPER_BLANK_STATE;
-        } else if (gr_state != PAPER_LETTER_STATE && gr_state != PAPER_WRITTEN_STATE) {
-            gr_state = PAPER_WRITTEN_STATE;
-        }
-    }
-
     private void showPaper(User from) {
-        trace_msg("Showing written Paper %s to Avatar %s", paper_path(), from.name());
+        trace_msg("Showing written Paper %s to Avatar %s", text_path, from.name());
         JSONLiteral msg = new_reply_msg(noid);
         msg.addParameter("nextpage", 0);
         msg.addParameter("ascii", ascii);
@@ -388,7 +369,7 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     private void showEmptyPaper(User from) {
-        trace_msg("Showing empty Paper %s to Avatar %s", paper_path(), from.name());
+        trace_msg("Showing empty Paper %s to Avatar %s", text_path, from.name());
         JSONLiteral msg = new_reply_msg(noid);
         msg.addParameter("nextpage", 0);
         msg.addParameter("ascii", EMPTY_PAPER);
@@ -397,6 +378,7 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     private void setAsciiFromTextResult(Object obj) {
+        ascii = EMPTY_PAPER;
         if (obj != null) {
             Object[] args = (Object[]) obj;
             JSONArray textBlocks;
@@ -410,7 +392,7 @@ public class Paper extends HabitatMod implements Copyable {
             if (textBlocks != null && textBlocks.size() > 0) {
                 Iterator<Object> textPage = textBlocks.iterator();
                 String text = (String) textPage.next();
-                trace_msg("Obtained text for Paper at Text path %s: %s", paper_path(), text);
+                trace_msg("Obtained text for Paper at Text path %s: %s", text_path, text);
                 ascii = convert_to_petscii(text, text.length());
             } else {
                 // Otherwise, we take the first element of the "ascii" array, containing raw PETSCII runes.
@@ -435,10 +417,10 @@ public class Paper extends HabitatMod implements Copyable {
                     ascii[i] = c;
                 }
                 trace_msg("Obtained ASCII for Paper at Text path %s: %s",
-                    paper_path(), Arrays.toString(ascii));
+                    text_path, Arrays.toString(ascii));
             }
         }
-        if (ascii.length > 0) {
+        if (ascii != EMPTY_PAPER) {
             if (gr_state == PAPER_BLANK_STATE) {
                 gr_state = PAPER_WRITTEN_STATE;
                 gen_flags[MODIFIED] = true;
@@ -456,6 +438,7 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     private void setAsciiFromPaperResult(Object obj) {
+        ascii = EMPTY_PAPER;
         if (obj != null) {
             Object[] args = (Object[]) obj;
             JSONArray byteBlocks = null;
@@ -477,9 +460,9 @@ public class Paper extends HabitatMod implements Copyable {
                 ascii[i] = c;
             }
             trace_msg("Obtained ASCII for Paper at Paper path %s: %s",
-                paper_path(), Arrays.toString(ascii));
+                text_path, Arrays.toString(ascii));
         }
-        if (ascii.length > 0 && gr_state == PAPER_BLANK_STATE) {
+        if (ascii != EMPTY_PAPER && gr_state == PAPER_BLANK_STATE) {
             gr_state = PAPER_WRITTEN_STATE;
             gen_flags[MODIFIED] = true;
             checkpoint_object(this);
@@ -489,21 +472,29 @@ public class Paper extends HabitatMod implements Copyable {
     private void retrievePaperContents() {
         // Get the text for this Paper from the DB.
         JSONObject findPattern = new JSONObject();
-        findPattern.addProperty("ref", paper_path());
-        context().contextor().queryObjects(findPattern, null, 1, finishPaperRead);
+        findPattern.addProperty("ref", text_path);
+
+        if (text_path.startsWith("text-") && !text_path.equals(EMPTY_PAPER_REF)) {
+            context().contextor().queryObjects(findPattern, null, 1, finishTextRead);
+        } else if (text_path.startsWith("paper-")) {
+            context().contextor().queryObjects(findPattern, null, 1, finishPaperRead);
+        }
     }
 
     private void savePaperContents() {
-        trace_msg("Saving contents for Paper %s: %s", paper_path(), Arrays.toString(ascii));
-        reconcile_gr_state();
+        trace_msg("Saving contents for Paper %s: %s", text_path, Arrays.toString(ascii));
+        text_path = paper_path();
         PaperContents contents = new PaperContents(ascii);
-        context().contextor().odb().putObject(paper_path(), contents, null, false, finishPaperWrite);
+        context().contextor().odb().putObject(text_path, contents, null, false, finishPaperWrite);
     }
 
     private void deletePaperContents() {
-        trace_msg("Saving contents for Paper %s: %s", paper_path(), Arrays.toString(ascii));
-        PaperContents contents = new PaperContents(ascii);
-        context().contextor().odb().removeObject(paper_path(), null, finishPaperDelete);
+        if (text_path.equals(EMPTY_PAPER_REF)) {
+            return;
+        }
+        trace_msg("Deleting contents of Paper %s", text_path);
+        context().contextor().odb().removeObject(text_path, null, finishPaperDelete);
+        text_path = EMPTY_PAPER_REF;
     }
 
     // Callback methods for DB operations:
@@ -513,7 +504,7 @@ public class Paper extends HabitatMod implements Copyable {
         public void run(Object obj) {
             if (obj != null) {
                 String errorMsg = (String) obj;
-                trace_msg("Received a DB error when removing Paper %s: %s", paper_path(), errorMsg);
+                trace_msg("Received a DB error when removing Paper %s: %s", text_path, errorMsg);
             }
         }
     };
@@ -523,7 +514,7 @@ public class Paper extends HabitatMod implements Copyable {
         public void run(Object obj) {
             if (obj != null) {
                 String errorMsg = (String) obj;
-                trace_msg("Received a DB error when saving Paper %s: %s", paper_path(), errorMsg);
+                trace_msg("Received a DB error when saving Paper %s: %s", text_path, errorMsg);
             }
         }
     };
@@ -531,7 +522,8 @@ public class Paper extends HabitatMod implements Copyable {
     protected final ArgRunnable finishTextRead = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            ascii = EMPTY_PAPER;
+            // After any text read, sets text_path to point at the Paper's DB reference
+            // for future CRUD operations.
             setAsciiFromTextResult(obj);
         }
     };
@@ -539,16 +531,7 @@ public class Paper extends HabitatMod implements Copyable {
     protected final ArgRunnable finishPaperRead = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            ascii = EMPTY_PAPER;
-            if (obj == null && !text_path.equals(EMPTY_PAPER_REF) && !text_path.isEmpty()) {
-                trace_msg("No PaperContents found at path %s, checking at non-empty text_path %s",
-                    paper_path(), text_path);
-                JSONObject findPattern = new JSONObject();
-                findPattern.addProperty("ref", text_path);
-                context().contextor().queryObjects(findPattern, null, 1, finishTextRead);
-            } else if (obj != null) {
-                setAsciiFromPaperResult(obj);
-            }
+            setAsciiFromPaperResult(obj);
         }
     };
 
