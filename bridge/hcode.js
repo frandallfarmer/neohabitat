@@ -696,14 +696,14 @@ this.translate = {
  		},
  		WRITE: {
  			toServer: function(a, m, client, start, end) {
- 				m.supressReply = true;
+ 				m.suppressReply = true;
  				if (start) {
  					client.largeRequestCache = [];
  				}
  				Array.prototype.push.apply(client.largeRequestCache, a)
  				if (end) {
  					m.request_ascii = client.largeRequestCache;
- 					delete m.supressReply;
+ 					delete m.suppressReply;
  					delete client.largeRequestCache;
  				}
  			},
