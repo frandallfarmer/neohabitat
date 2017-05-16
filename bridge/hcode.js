@@ -1007,6 +1007,15 @@ this.Table	= {
 		}
 };
 
+
+this.Safe	= { 		
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"CLOSECONTAINER" },
+			5:{ op:"OPENCONTAINER" }
+		}
+};
+
 this.Fake_gun = {
 		clientMessages: {
 			0:{ op:"HELP" },
@@ -1293,33 +1302,34 @@ this.Bag				= this.portableContainer;
 this.Box				= this.portableContainer;
 this.Building			= this.help;
 this.Bush				= this.help;
+this.Chair				= this.help;
+this.Club				= this.weapon;
+this.Couch				= this.help;
+this.Fence				= this.help;
+this.Flag				= this.portable;
+this.Flat				= this.help;
 this.Glue				= this.help;
 this.Ground				= this.portable;
-this.Fence				= this.help;
+this.Gun       			= this.weapon;
+this.Hot_tub		 	= this.help;
+this.House_cat		 	= this.help;
 this.Key				= this.portable;
 this.Knick_knack		= this.magical;
+this.Knife				= this.weapon;
+this.Picture			= this.portable;
+this.Plant				= this.portable;
 this.Plaque				= this.document;
+this.Pond				= this.help;
 this.Rock				= this.portable;
+this.Roof				= this.help;
 this.Short_sign 		= this.help;
 this.Sign 				= this.help;
+this.Sky				= this.help;
 this.Street				= this.help;
+this.Streetlamp			= this.help;
+this.Super_trapezoid 	= this.help;
+this.Trapezoid			= this.help;
 this.Tree				= this.help;
 this.Wall				= this.portable;
-this.Sky				= this.help;
-this.Pond				= this.help;
-this.House_cat		 	= this.help;
-this.Roof				= this.help;
-this.Couch				= this.help;
 this.Window 			= this.help;
-this.Chair				= this.help;
-this.Plant				= this.portable;
-this.Flag				= this.portable;
-this.Trapezoid			= this.help;
-this.Super_trapezoid 	= this.help;
-this.Flat				= this.help;
-this.Hot_tub		 	= this.help;
-this.Gun       = this.weapon;
-this.Knife   = this.weapon;
-this.Club   = this.weapon;
-this.Streetlamp = this.help;
-this.Picture = this.portable;
+

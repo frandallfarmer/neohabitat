@@ -360,6 +360,11 @@
 			"type": "class",
 			"tag": "Paper",
 			"name": "org.made.neohabitat.mods.Paper"
+		},
+		{
+			"type": "class",
+			"tag": "Safe",
+			"name": "org.made.neohabitat.mods.Safe"
 		}
 	]
 }

@@ -1,49 +1,300 @@
 [
-{
-	"type": "context",
-	"ref": "context-library",
-	"capacity": 64,
-	"name": "City Library",
-	"mods": [
-		{
-			"town_dir": "here",
-			"port_dir": "",
-			"type": "Region",
-			"nitty_bits": 2,
-			"neighbors": ["context-steve1", "context-table", "context-test", ""]
-		}
-	]
-},
-{
-      "ref": "item-drugs",
-    "mods": [
-		{    	  	
-			"type": "Drugs",
-			"y": 0,
-			"gr_state": 0,
-			"orientation": 8,
-			"count":	3,
-			"effect": 2
-		}
-    ],
-    "type": "item",
-    "name": "Drugs",
-    "in": "item-library.box"
-  },
-{
-    "ref": "item-trashcan",
-    "mods": [
-      {    	  	
-    	"type": "Garbage_can",
-        "y": 132,
-        "x": 120,
-        "orientation": 224,
-        "gr_state": 1,
-        "open_flags": 3
-      }
-    ],
-    "type": "item",
-    "name": "Garbage_can",
-    "in": "context-library"
-  }
-]
+	{
+		"type" : "context",
+		"ref" : "context-library",
+		"capacity" : 64,
+		"name" : "City Library",
+		"mods" : [ {
+			"town_dir" : "here",
+			"port_dir" : "",
+			"type" : "Region",
+			"nitty_bits" : 2,
+			"neighbors" : [ "context-steve1", "context-table",
+				"context-test", "" ]
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.safe",
+		"name" : "Wall safe",
+		"closed" : true,
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Safe",
+			"style" : 0,
+			"x" : 30,
+			"y" : 80,
+			"orientation" : 0,
+			"gr_state" : 0,
+			"open_flags" : 2,
+			"key_lo" : 5,
+			"key_hi" : 5
+		} ]
+	},
+	{
+		"ref" : "item-drugs",
+		"mods" : [ {
+			"type" : "Drugs",
+			"y" : 0,
+			"gr_state" : 0,
+			"orientation" : 8,
+			"count" : 3,
+			"effect" : 2
+		} ],
+		"type" : "item",
+		"name" : "Drugs",
+		"in" : "item-library.box"
+	},
+	{
+		"ref" : "item-trashcan",
+		"mods" : [ {
+			"type" : "Garbage_can",
+			"y" : 132,
+			"x" : 120,
+			"orientation" : 224,
+			"gr_state" : 1,
+			"open_flags" : 3
+		} ],
+		"type" : "item",
+		"name" : "Garbage_can",
+		"in" : "context-library"
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.bag",
+		"name" : "Blue Box",
+		"closed" : true,
+		"in" : "item-library.box",
+		"mods" : [ {
+			"type" : "Bag",
+			"style" : 0,
+			"y" : 2,
+			"orientation" : 0,
+			"gr_state" : 0,
+			"open_flags" : 2
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-bag.chainsaw",
+		"name" : "Chainsaw",
+		"in" : "item-library.bag",
+		"mods" : [ {
+			"type" : "Knick_knack",
+			"style" : 5,
+			"y" : 0,
+			"orientation" : 8,
+			"magic_type" : 1,
+			"gr_state" : 1,
+			"charges" : 100
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.box",
+		"name" : "Blue Box",
+		"closed" : true,
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Box",
+			"style" : 0,
+			"x" : 145,
+			"y" : 140,
+			"orientation" : 0,
+			"gr_state" : 0,
+			"open_flags" : 2,
+			"key_lo" : 5,
+			"key_hi" : 5
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.coke",
+		"name" : "Choke Machine",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Coke_machine",
+			"x" : 120,
+			"y" : 30
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.down.sign",
+		"name" : "Indicate Down Exit",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Short_sign",
+			"style" : 0,
+			"x" : 112,
+			"y" : 5,
+			"gr_state" : 1,
+			"orientation" : 0,
+			"text" : " הההההההה ",
+			"ascii" : []
+
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.exit.sign",
+		"name" : "Exit the region sign...",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Short_sign",
+			"style" : 4,
+			"x" : 0,
+			"y" : 32,
+			"orientation" : 168,
+			"text" : "<<<< HEADS",
+			"ascii" : []
+
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.ground",
+		"name" : "Ground for Contents Testing",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Ground",
+			"style" : 1,
+			"x" : 0,
+			"y" : 4,
+			"orientation" : 106
+		} ]
+	},
+	{
+		"type" : "item",
+		"ref" : "item-library.plaque",
+		"name" : "Test Plaque",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Plaque",
+			"x" : 80,
+			"y" : 80,
+			"last_page" : 1,
+			"pages" : [
+				"Habitat Weekly Rant   Volume 1, number 1"
+				+ "    Monday, pub date here, 1986 A.C.    "
+				+ "                                        "
+				+ "         EDITORIAL -- WELCOME!          "
+				+ "Welcome to Habitat!  We're sure you're  "
+				+ "going to have a terrific time!  This is "
+				+ "the very first edition of the 'Weekly   "
+				+ "Rant', the Habitat newspaper.  The Rant "
+				+ "is your official source for the most    "
+				+ "up-to-date news and information about   "
+				+ "the Habitat world.  Here you will find  "
+				+ "the latest pronouncements from the      "
+				+ "Oracle, notices of important changes to "
+				+ "the world as they happen, and a timely  "
+				+ "accounting of the Avatars and events    "
+				+ "that shape our lives.",
+
+				"     THINGS TO DO IN HABITAT            "
+				+ "                                        "
+				+ "Congratulations!  You're one of the     "
+				+ "Habitat pioneers.  When you get done    "
+				+ "wandering around your Turf, picking     "
+				+ "things up and putting them away again,  "
+				+ "changing the color of your furniture,   "
+				+ "fiddling with the lights, and generally "
+				+ "learning how things work, you're        "
+				+ "probably going to ask yourself, 'So,    "
+				+ "what do I do here?'                     "
+				+ "                                        "
+				+ "A good way to start getting yourself    "
+				+ "oriented is to learn how to use the     "
+				+ "TelePort network.  In order to TelePort "
+				+ "you'll need cash, so you'll have to find",
+
+				"a Bank and learn to use the Automatic   "
+				+ "Token Machine.  To find a Bank you'll   "
+				+ "need to find the business district,     "
+				+ "which'll get you out exploring the      "
+				+ "world.  Be sure to take note of your    "
+				+ "street address the first time you step  "
+				+ "out front of your house -- you'll want  "
+				+ "to be able to find your way back!  Visit"
+				+ "the shops downtown.  Head on down to the"
+				+ "Oracle and see who's hanging out.  Be   "
+				+ "friendly!  And keep your eye out for    "
+				+ "clues.  Even though the world is just   "
+				+ "getting started, there's already a few  "
+				+ "adventures awaiting you!",
+
+				"    AMULET OF SALESH STILL MISSING!     "
+				+ "                                        "
+				+ "Today, the thieves in the now famous    "
+				+ "'Great Amulet Caper' were found guilty  "
+				+ "of Grand Theft Magic, and sentenced to 5"
+				+ "years in The Void.  In pronouncing the  "
+				+ "sentence to a hushed, packed courtroom, "
+				+ "Judge Themonioli was solemn.  'Zap'em   "
+				+ "'til they glow!' he said, 'let the      "
+				+ "Oracle sort'em out!  Next case!'        "
+				+ "                                        "
+				+ "The story began last week when the Great"
+				+ "Amulet of Wonderous Worth was stolen    "
+				+ "from the Back-Forty home of Habitat's   "
+				+ "resident Not-So-Wise-Man, Dada Salesh.",
+
+				"Salesh, a powerful but clumsy wizard,   "
+				+ "tried to retrieve the valuable trinket  "
+				+ "with a homing-return spell, but his     "
+				+ "attempt backfired.  Instead of          "
+				+ "recovering the stolen property, Salesh  "
+				+ "accidentally Ported the thieves         "
+				+ "themselves to his house.  Although this "
+				+ "resulted in the thieves' immediate      "
+				+ "capture, the Amulet is still missing.   "
+				+ "                                        "
+				+ "All attempts by officials to extract    "
+				+ "information from the evil-doers have    "
+				+ "been in vain.  It is feared that the    "
+				+ "Amulet may remain forever lost.",
+
+				"----------------------------------------"
+				+ "A little knowledge is a dangerous thing."
+				+ "                                        "
+				+ "       Why live dangerously?            "
+				+ "                                        "
+				+ "A public service announcement from the  "
+				+ "Populopolis Public Library, Oracle Plaza"
+				+ "----------------------------------------"
+				+ "The Weekly Rant is published every      "
+				+ "Monday by the Rant'n'Rave Free Press    "
+				+ "Propaganda Publishing Co., Ltd.,        "
+				+ "Populopolis.  Mail article submissions, "
+				+ "paid advertisements, letters to the     "
+				+ "editor and anonymous threats to 'WEEKLY "
+				+ "RANT'.  Editor: Nonfoon.  Publisher:    "
+				+ "Foonswargle." ]
+		} ]
+
+	}, {
+		"type" : "item",
+		"ref" : "item-library.plaque2",
+		"name" : "DB Read Plaque",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Plaque",
+			"x" : 55,
+			"y" : 80,
+			"last_page" : 1,
+			"path" : "text-bookofrecords"
+		} ]
+	}, {
+		"type" : "item",
+		"ref" : "item-library.wall",
+		"name" : "Wall for Contents Testing",
+		"in" : "context-library",
+		"mods" : [ {
+			"type" : "Wall",
+			"style" : 4,
+			"x" : 0,
+			"y" : 0,
+			"orientation" : 144
+		} ]
+	} ]
