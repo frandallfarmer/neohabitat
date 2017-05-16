@@ -904,6 +904,11 @@ var encodeState = {
 			buf.add(state.activeState || 0);
 			return buf;
 		},
+		Windup_toy: function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.wind_level || 0);
+			return buf;
+		},
 		Amulet:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Atm:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 			function (state, container, buf) { return (this.openable(state, container, buf)); },
@@ -928,6 +933,7 @@ var encodeState = {
 		Floor_lamp: 	function (state, container, buf) { return (this.toggle  (state, container, buf)); },
 		Fortune_machine:function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Fountain:		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Gemstone:		function (state, container, buf) { return (this.magical (state, container, buf)); },
 		Garbage_can: 	function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Ghost:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Ground:			function (state, container, buf) { return (this.walkable(state, container, buf)); },

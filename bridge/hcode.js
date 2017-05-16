@@ -419,7 +419,7 @@ this.CLASSES 			= {
 		"Flashlight":30, 30:"Flashlight",
 		"Frisbee":	31, 31:"Frisbee",
 		"Garbage_can":32, 32:"Garbage_can",
-		"gemstone":	33, 33:"gemstone",
+		"Gemstone":	33, 33:"Gemstone",
 		"Grenade":	35, 35:"Grenade",
 		"Ground":	36, 36:"Ground",
 		"Gun":		37, 37:"Gun",
@@ -451,7 +451,7 @@ this.CLASSES 			= {
 		"Ticket":	75, 75:"Ticket",
 		"Tokens":	76, 76:"Tokens",
 		"Wall":		80, 80:"Wall",
-		"Wind_up_toy":82, 82:"Wind_up_toy",
+		"Windup_toy":82, 82:"Windup_toy",
 		"Changomatic":84, 84:"Changomatic",
 		"Vendo_front":85, 85:"Vendo_front",
 		"Vendo_inside":86, 86:"Vendo_inside",
@@ -1314,6 +1314,16 @@ this.Magic_immobile	= {
 		}	
 };
 
+this.Windup_toy	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"WIND" }
+		}	
+};
+
 this.Amulet				= this.magical; 
 this.Bag				= this.portableContainer;
 this.Box				= this.portableContainer;
@@ -1325,6 +1335,7 @@ this.Couch				= this.help;
 this.Fence				= this.help;
 this.Flag				= this.portable;
 this.Flat				= this.help;
+this.Gemstone			= this.magical;
 this.Glue				= this.help;
 this.Ground				= this.portable;
 this.Gun       			= this.weapon;

@@ -36,6 +36,7 @@
 		{ "type": "class", "tag": "Fortune_machine", "name": "org.made.neohabitat.mods.Fortune_machine" },
 		{ "type": "class", "tag": "Fountain", "name": "org.made.neohabitat.mods.Fountain" },
 		{ "type": "class", "tag": "Garbage_can", "name": "org.made.neohabitat.mods.Garbage_can" },
+		{ "type": "class", "tag": "Gemstone", "name": "org.made.neohabitat.mods.Gemstone" },
 		{ "type": "class", "tag": "Glue", "name": "org.made.neohabitat.mods.Glue" },
 		{ "type": "class", "tag": "Ground", "name": "org.made.neohabitat.mods.Ground" },
 		{ "type": "class", "tag": "Gun", "name": "org.made.neohabitat.mods.Gun" },
@@ -79,6 +80,7 @@
 		{ "type": "class", "tag": "Vendo_front", "name": "org.made.neohabitat.mods.Vendo_front" },
 		{ "type": "class", "tag": "Vendo_inside", "name": "org.made.neohabitat.mods.Vendo_inside" },
 		{ "type": "class", "tag": "Wall", "name": "org.made.neohabitat.mods.Wall" },
-		{ "type": "class", "tag": "Window", "name": "org.made.neohabitat.mods.Window" }
+		{ "type": "class", "tag": "Window", "name": "org.made.neohabitat.mods.Window" },
+		{ "type": "class", "tag": "Windup_toy", "name": "org.made.neohabitat.mods.Windup_toy" }
 		]
 }
