@@ -8,7 +8,7 @@ import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
-import org.made.neohabitat.Switch;
+import org.made.neohabitat.Toggle;
 
 /**
  * Habitat Floor Light Mod
@@ -17,7 +17,7 @@ import org.made.neohabitat.Switch;
  *
  * @author steve
  */
-public class Floor_lamp extends Switch implements Copyable {
+public class Floor_lamp extends Toggle implements Copyable {
 
     public int HabitatClass() {
         return CLASS_FLOOR_LAMP;
@@ -81,7 +81,7 @@ public class Floor_lamp extends Switch implements Copyable {
     }
 
     /**
-     * Verb (Switch): Turn this OFF
+     * Verb (Toggle): Turn this OFF
      *
      * @param from
      *            User representing the connection making the request.
@@ -92,7 +92,7 @@ public class Floor_lamp extends Switch implements Copyable {
     }
 
     /**
-     * Verb (Switch): Turn this ON
+     * Verb (Toggle): Turn this ON
      *
      * @param from User representing the connection making the request.
      */

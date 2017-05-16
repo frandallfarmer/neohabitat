@@ -15,7 +15,7 @@ import org.elkoserver.server.context.User;
  * Though the switch is attached specifically to items that effect lighting, it
  * is not a requirement.
  */
-public abstract class Switch extends HabitatMod {
+public abstract class Toggle extends HabitatMod {
     
     /**
      * On-off state. Set using the integer constants: TRUE/FALSE *not* the
@@ -23,13 +23,13 @@ public abstract class Switch extends HabitatMod {
      */
     protected int on = FALSE;
     
-    public Switch(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+    public Toggle(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger on) {
         super(style, x, y, orientation, gr_state, restricted);
         this.on = on.value(FALSE);
     }
 
-    public Switch(int style, int x, int y, int orientation, int gr_state, boolean restricted, int on) {
+    public Toggle(int style, int x, int y, int orientation, int gr_state, boolean restricted, int on) {
         super(style, x, y, orientation, gr_state, restricted);
         this.on = on;
     }

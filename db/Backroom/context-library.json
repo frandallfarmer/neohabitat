@@ -12,7 +12,7 @@
 			"neighbors" : [ "context-steve1", "context-table",
 				"context-test", "" ]
 		} ]
-	},
+	},	
 	{
 		"type" : "item",
 		"ref" : "item-library.safe",
@@ -31,6 +31,75 @@
 			"key_hi" : 5
 		} ]
 	},
+	{
+		"ref" : "item-library.moneytree",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 158,
+			"x" : 10,
+			"gr_state" : 0,
+			"charges" : 10,
+			"style": 13,
+			"magic_type" : 24,
+			"magic_data" : 200
+		} ],
+		"type" : "item",
+		"name" : "Money Tree",
+		"in" : "context-library"
+	},
+	{
+		"ref" : "item-library.amulet",
+		"mods" : [ {
+			"type" : "Amulet",
+			"y" : 3,
+			"gr_state" : 0,
+			"charges" : 10,
+			"magic_type" : 2
+		} ],
+		"type" : "item",
+		"name" : "Amulet",
+		"in" : "item-library.box"
+	},
+	{
+		"ref" : "item-library.ring",
+		"mods" : [ {
+			"type" : "Ring",
+			"y" : 4,
+			"gr_state" : 0,
+			"charges" : 10,
+			"magic_type" : 2
+		} ],
+		"type" : "item",
+		"name" : "Ring",
+		"in" : "item-library.box"
+	}, 	
+	{
+		"ref" : "item-library.magic_staff",
+		"mods" : [ {
+			"type" : "Magic_staff",
+			"y" : 6,
+			"gr_state" : 0,
+			"charges" : 10,
+			"magic_type" : 2
+		} ],
+		"type" : "item",
+		"name" : "Magic Staff",
+		"in" : "item-library.box"
+	},	
+	{
+		"ref" : "item-library.magic_wand",
+		"mods" : [ {
+			"type" : "Magic_wand",
+			"y" : 7,
+			"gr_state" : 0,
+			"charges" : 10,
+			"magic_type" : 2
+		} ],
+		"type" : "item",
+		"name" : "Magic Wand",
+		"in" : "item-library.box"
+	},
+	
 	{
 		"ref" : "item-drugs",
 		"mods" : [ {
@@ -62,7 +131,7 @@
 	{
 		"type" : "item",
 		"ref" : "item-library.bag",
-		"name" : "Blue Box",
+		"name" : "Blue Bag",
 		"closed" : true,
 		"in" : "item-library.box",
 		"mods" : [ {

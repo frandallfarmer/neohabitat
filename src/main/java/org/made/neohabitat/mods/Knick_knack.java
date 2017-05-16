@@ -36,7 +36,7 @@ public class Knick_knack extends Magical implements Copyable {
     }
     
     public int pc_state_bytes() {
-        return 7;
+        return 1;
     };
     
     public boolean known() {

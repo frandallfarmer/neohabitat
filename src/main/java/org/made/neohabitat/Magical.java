@@ -7,9 +7,11 @@ import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.mods.Avatar;
 import org.made.neohabitat.mods.Region;
+import org.made.neohabitat.mods.Tokens;
 
 /**
  * an Elko Habitat superclass to handle magic state and specific behaviors.
@@ -67,29 +69,33 @@ public abstract class Magical extends HabitatMod {
     }
     
     public JSONLiteral encodeMagical(JSONLiteral result) {
-        result = super.encodeCommon(result);
-        if (0 != magic_type) {
-            result.addParameter("magic_type", magic_type);
-        }
-        if (0 != charges) {
-            result.addParameter("charges", charges);
-        }
-        if (0 != magic_data) {
-            result.addParameter("magic_data", magic_data);
-        }
-        if (0 != magic_data2) {
-            result.addParameter("magic_data2", magic_data2);
-        }
-        if (0 != magic_data3) {
-            result.addParameter("magic_data3", magic_data3);
-        }
-        if (0 != magic_data4) {
-            result.addParameter("magic_data4", magic_data4);
-        }
-        if (0 != magic_data5) {
-            result.addParameter("magic_data5", magic_data4);
-        }
-        return result;
+    	result = super.encodeCommon(result);
+    	if (pc_state_bytes() == 0)
+    		return result;
+    	if (0 != magic_type) {
+    		result.addParameter("magic_type", magic_type);
+    	}
+    	if (result.control().toRepository()) {
+    		if (0 != charges) {
+    			result.addParameter("charges", charges);
+    		}
+    		if (0 != magic_data) {
+    			result.addParameter("magic_data", magic_data);
+    		}
+    		if (0 != magic_data2) {
+    			result.addParameter("magic_data2", magic_data2);
+    		}
+    		if (0 != magic_data3) {
+    			result.addParameter("magic_data3", magic_data3);
+    		}
+    		if (0 != magic_data4) {
+    			result.addParameter("magic_data4", magic_data4);
+    		}
+    		if (0 != magic_data5) {
+    			result.addParameter("magic_data5", magic_data4);
+    		}
+    	}
+    	return result;
     }
     
     /** The number of magical methods available. NOTE: This is expandable */
@@ -186,7 +192,7 @@ public abstract class Magical extends HabitatMod {
                 magic_default(from, targetMod);
                 break;
             case 24:
-                magic_default(from, targetMod);
+                money_tree(from, targetMod);
                 break;
             case 25:
                 magic_default(from, targetMod);
@@ -240,6 +246,33 @@ public abstract class Magical extends HabitatMod {
             object_say(from, "Nothing happens.");
             send_reply_error(from);
         }
+    }
+    
+    /**
+     * The money tree drops a token in the denomination of magic_data on the ground for each user exactly one time.
+     * 
+     * @param from
+     * @param target
+     */
+    private void money_tree(User from, HabitatMod target) {
+    	Avatar avatar = avatar(from);
+    	Region region = current_region();
+    	
+    	if (avatar.nitty_bits[MISC_FLAG3]) {
+    		object_say(from, "Sorry! One to a customer!");
+    		send_reply_error(from);
+    	} else {
+    		Tokens tokens = new Tokens(0, avatar.x, avatar.y - 1, 0, 0, false, magic_data & 0xFF, (magic_data & 0xFF00) >> 8);
+    		Item item = create_object("Money Tree Tokens", tokens, region, false);
+    		if (item == null)
+    			return;
+    		announce_object(item, region);
+    		avatar.nitty_bits[MISC_FLAG3] = true;
+    		avatar.gen_flags[MODIFIED] = true;
+    		gen_flags[MODIFIED] = true;
+    		object_say(from, "There you go. Enjoy!");
+    		send_reply_success(from);
+    	}
     }
     
     private String identifyTarget(HabitatMod target) {

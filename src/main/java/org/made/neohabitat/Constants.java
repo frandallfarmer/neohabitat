@@ -124,7 +124,7 @@ public interface Constants {
     public static final int      CLASS_SECURITY_DEV         = 63;
     public static final int      CLASS_SENSOR               = 64;
     public static final int      CLASS_SEX_CHANGER          = 90;
-    public static final int      CLASS_SWITCH               = 97;
+    public static final int      CLASS_MAGIC_IMMOBILE       = 97;
     public static final int      CLASS_SHOES                = 66;
     public static final int      CLASS_SIDEWALK             = 151;
     public static final int      CLASS_SIGN                 = 57;

@@ -1298,6 +1298,23 @@ this.help		= {
 		}
 };
 
+this.Magic_staff	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			4:{ op:"MAGIC" }
+		}	
+};
+
+this.Magic_immobile	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"MAGIC" }
+		}	
+};
+
+this.Amulet				= this.magical; 
 this.Bag				= this.portableContainer;
 this.Box				= this.portableContainer;
 this.Building			= this.help;
@@ -1316,10 +1333,12 @@ this.House_cat		 	= this.help;
 this.Key				= this.portable;
 this.Knick_knack		= this.magical;
 this.Knife				= this.weapon;
+this.Magic_wand			= this.magical; 
 this.Picture			= this.portable;
 this.Plant				= this.portable;
 this.Plaque				= this.document;
 this.Pond				= this.help;
+this.Ring				= this.magical; 
 this.Rock				= this.portable;
 this.Roof				= this.help;
 this.Short_sign 		= this.help;

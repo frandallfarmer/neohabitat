@@ -1,3 +1,4 @@
+
 package org.made.neohabitat.mods;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -8,24 +9,25 @@ import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
-import org.made.neohabitat.Toggle;
+import org.made.neohabitat.Magical;
 
 /**
- * Habitat Flashlight Mod (attached to an Elko Item.)
+ * Habitat Ring Mod (attached to an Elko Item.)
  * 
- * A Flashlight may be switched on/off, and it effects room lighting.
+ * This is a magic item. 100% configured by state.
  * 
  * @author randy
  *
  */
-public class Flashlight extends Toggle implements Copyable {
+
+public class Ring extends Magical implements Copyable {
     
     public int HabitatClass() {
-        return CLASS_FLASHLIGHT;
+        return CLASS_RING;
     }
     
     public String HabitatModName() {
-        return "Flashlight";
+        return "Ring";
     }
     
     public int capacity() {
@@ -33,7 +35,7 @@ public class Flashlight extends Toggle implements Copyable {
     }
     
     public int pc_state_bytes() {
-        return 1;
+        return 0;
     };
     
     public boolean known() {
@@ -48,24 +50,38 @@ public class Flashlight extends Toggle implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "on" })
-    public Flashlight(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-            OptInteger on) {
-        super(style, x, y, orientation, gr_state, restricted, on);
+    /**
+     * Constructor.
+     * 
+     * See the @see Magical constructor for documentation on state.
+     * 
+     */
+    
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "magic_type", "charges", "magic_data", "magic_data2",
+            "magic_data3", "magic_data4", "magic_data5" })
+    public Ring(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+            OptInteger magic_type, OptInteger charges, 
+            OptInteger magic_data, OptInteger magic_data2, OptInteger magic_data3, OptInteger magic_data4, OptInteger magic_data5) {
+        super(style, x, y, orientation, gr_state, restricted, magic_type, charges, magic_data, magic_data2, magic_data3,
+                magic_data4, magic_data5);
     }
 
-    public Flashlight(int style, int x, int y, int orientation, int gr_state, boolean restricted, int on) {
-        super(style, x, y, orientation, gr_state, restricted, on);
+    public Ring(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
+    	int magic_type, int charges,
+        int magic_data, int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
+        super(style, x, y, orientation, gr_state, restricted, magic_type, charges, magic_data, magic_data2, magic_data3,
+                magic_data4, magic_data5);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Flashlight(style, x, y, orientation, gr_state, restricted, on);
+        return new Ring(style, x, y, orientation, gr_state, restricted,
+        	magic_type, charges, magic_data, magic_data2, magic_data3, magic_data4, magic_data5);
     }
 
     @Override
     public JSONLiteral encode(EncodeControl control) {
-        JSONLiteral result = super.encodeLighting(new JSONLiteral(HabitatModName(), control));
+        JSONLiteral result = super.encodeMagical(new JSONLiteral(HabitatModName(), control));
         result.finish();
         return result;
     }
@@ -78,7 +94,7 @@ public class Flashlight extends Toggle implements Copyable {
      */
     @JSONMethod
     public void HELP(User from) {
-        flashlight_HELP(from);
+        super.HELP(from);
     }
     
     /**
@@ -112,7 +128,7 @@ public class Flashlight extends Toggle implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
     
     /**
@@ -125,44 +141,22 @@ public class Flashlight extends Toggle implements Copyable {
      * @param y
      *            Destination vertical position (lower 7 bits)
      */
-    @JSONMethod({ "target", "x", "y" })
-    public void THROW(User from, int target, int x, int y) {
-        generic_THROW(from, target, x, y);
+    @JSONMethod({ "targetNoid", "x", "y" })
+    public void THROW(User from, int targetNoid, int x, int y) {
+        generic_THROW(from, targetNoid, x, y);
     }
     
     /**
-     * Verb (Toggle): Turn this OFF
+     * Verb (Magical): Magic activation
      * 
      * @param from
      *            User representing the connection making the request.
+     * @param target
+     *            The noid of the object being pointed at in case the magic
+     *            effects it!
      */
-    @JSONMethod
-    public void OFF(User from) {
-        generic_OFF(from);
+    @JSONMethod({ "target" })
+    public void MAGIC(User from, OptInteger target) {
+        super.MAGIC(from, target);
     }
-    
-    /**
-     * Verb (Toggle): Turn this ON
-     * 
-     * @param from
-     *            User representing the connection making the request.
-     */
-    @JSONMethod
-    public void ON(User from) {
-        generic_ON(from);
-    }
-    
-    /**
-     * Reply with HELP for Flashlights
-     * 
-     * @param from
-     *            User representing the connection making the request.
-     */
-    public void flashlight_HELP(User from) {
-        if (on == FALSE)
-            send_reply_msg(from, "LIGHT: DO while holding turns light on or off.  This light is now off.");
-        else
-            send_reply_msg(from, "LIGHT: DO while holding turns light on or off.  This light is now on.");
-    }
-    
 }
