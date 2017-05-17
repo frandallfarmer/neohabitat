@@ -49,6 +49,7 @@
 		{ "type": "class", "tag": "Knick_knack", "name": "org.made.neohabitat.mods.Knick_knack" },
 		{ "type": "class", "tag": "Knife", "name": "org.made.neohabitat.mods.Knife" },
 		{ "type": "class", "tag": "Magic_immobile", "name": "org.made.neohabitat.mods.Magic_immobile" },
+		{ "type": "class", "tag": "Magic_lamp", "name": "org.made.neohabitat.mods.Magic_lamp" },
 		{ "type": "class", "tag": "Magic_staff", "name": "org.made.neohabitat.mods.Magic_staff" },
 		{ "type": "class", "tag": "Magic_wand", "name": "org.made.neohabitat.mods.Magic_wand" },
 		{ "type": "class", "tag": "Matchbook", "name": "org.made.neohabitat.mods.Matchbook" },

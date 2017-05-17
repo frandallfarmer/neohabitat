@@ -32,6 +32,17 @@
 			} ]
 		},
 		{
+			"ref" : "item-library.genie",
+			"mods" : [ {
+				"type" : "Magic_lamp",
+				"y" : 148,
+				"x" : 40
+			} ],
+			"type" : "item",
+			"name" : "The Genie in the Lamp",
+			"in" : "context-library"
+		},
+		{
 			"ref" : "item-library.moneytree",
 			"mods" : [ {
 				"type" : "Magic_immobile",

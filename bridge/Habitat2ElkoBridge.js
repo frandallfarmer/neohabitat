@@ -909,6 +909,12 @@ var encodeState = {
 			buf.add(state.wind_level || 0);
 			return buf;
 		},
+		Magic_lamp: function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.lamp_state);
+			buf.add(state.wisher);
+			return buf;
+		},
 		Amulet:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Atm:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 			function (state, container, buf) { return (this.openable(state, container, buf)); },
