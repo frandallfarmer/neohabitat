@@ -20,6 +20,7 @@
 		{ "type": "class", "tag": "Compass", "name": "org.made.neohabitat.mods.Compass" },
 		{ "type": "class", "tag": "Couch", "name": "org.made.neohabitat.mods.Couch" },
 		{ "type": "class", "tag": "Countertop", "name": "org.made.neohabitat.mods.Countertop" },
+		{ "type": "class", "tag": "Crystal_ball", "name": "org.made.neohabitat.mods.Crystal_ball" },
 		{ "type": "class", "tag": "Die", "name": "org.made.neohabitat.mods.Die" },
 		{ "type": "class", "tag": "Display_case", "name": "org.made.neohabitat.mods.Display_case" },
 		{ "type": "class", "tag": "Door", "name": "org.made.neohabitat.mods.Door" },

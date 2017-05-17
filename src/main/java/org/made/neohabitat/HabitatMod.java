@@ -1819,7 +1819,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The message to be logged.
 	 */
 	public void message_to_god(HabitatMod obj, HabitatMod avatar, String msg) {
-		Trace.trace(msg + " by " + avatar.object().ref() + " via " + obj.object().ref());
+		trace_msg(msg + " by " + avatar.object().ref() + " via " + obj.object().ref());
 		/*
 		 * TODO Placeholder implementation by FRF - full implementation when
 		 * CLASS_ORACLE is ported.

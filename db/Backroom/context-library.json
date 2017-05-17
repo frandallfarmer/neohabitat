@@ -121,6 +121,16 @@
 			"in" : "item-library.box"
 		},
 		{
+			"ref" : "item-library.crystal_ball",
+			"mods" : [ {
+				"type" : "Crystal_ball",
+				"y" : 9
+			} ],
+			"type" : "item",
+			"name" : "Crystal Ball",
+			"in" : "item-library.box"
+		},
+		{
 			"ref" : "item-drugs",
 			"mods" : [ {
 				"type" : "Drugs",

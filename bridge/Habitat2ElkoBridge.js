@@ -924,6 +924,7 @@ var encodeState = {
 		Compass:  		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Couch:  	    function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Countertop:		function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Crystal_ball:	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Display_case:	function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Door:			function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Dropbox: 		function (state, container, buf) { return (this.common  (state, container, buf)); },

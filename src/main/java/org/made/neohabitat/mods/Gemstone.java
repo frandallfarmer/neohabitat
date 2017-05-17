@@ -104,9 +104,9 @@ public class Gemstone extends Magical implements Copyable {
                 orientation.value(avatar(from).orientation));
     }
 
-    @JSONMethod({ "targetNoid", "x", "y" })
-    public void THROW(User from, int targetNoid, int x, int y) {
-        generic_THROW(from, targetNoid, x, y);
+    @JSONMethod({ "target", "x", "y" })
+    public void THROW(User from, int target, int x, int y) {
+        generic_THROW(from, target, x, y);
     }
 
     @JSONMethod({ "target" })

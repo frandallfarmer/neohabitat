@@ -141,9 +141,9 @@ public class Magic_wand extends Magical implements Copyable {
      * @param y
      *            Destination vertical position (lower 7 bits)
      */
-    @JSONMethod({ "targetNoid", "x", "y" })
-    public void THROW(User from, int targetNoid, int x, int y) {
-        generic_THROW(from, targetNoid, x, y);
+    @JSONMethod({ "target", "x", "y" })
+    public void THROW(User from, int target, int x, int y) {
+        generic_THROW(from, target, x, y);
     }
     
     /**
