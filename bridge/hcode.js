@@ -1057,6 +1057,18 @@ this.Flashlight	= {
 		}		
 };
 
+
+this.Movie_camera = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"OFF" },
+			5:{ op:"ON" }
+		}		
+};
+
 this.Spray_can = {
 		clientMessages: {
 			0:{ op:"HELP" },

@@ -43,6 +43,17 @@
 			"in" : "context-library"
 		},
 		{
+			"ref" : "item-library.camera",
+			"mods" : [ {
+				"type" : "Movie_camera",
+				"y" : 148,
+				"x" : 80
+			} ],
+			"type" : "item",
+			"name" : "A really crappy handicam",
+			"in" : "context-library"
+		},
+		{
 			"ref" : "item-library.moneytree",
 			"mods" : [ {
 				"type" : "Magic_immobile",

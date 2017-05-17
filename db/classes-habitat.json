@@ -53,6 +53,7 @@
 		{ "type": "class", "tag": "Magic_staff", "name": "org.made.neohabitat.mods.Magic_staff" },
 		{ "type": "class", "tag": "Magic_wand", "name": "org.made.neohabitat.mods.Magic_wand" },
 		{ "type": "class", "tag": "Matchbook", "name": "org.made.neohabitat.mods.Matchbook" },
+		{ "type": "class", "tag": "Movie_camera", "name": "org.made.neohabitat.mods.Movie_camera" },
 		{ "type": "class", "tag": "Paper", "name": "org.made.neohabitat.mods.Paper" },
 		{ "type": "class", "tag": "Pawn_machine", "name": "org.made.neohabitat.mods.Pawn_machine" },
 		{ "type": "class", "tag": "Picture", "name": "org.made.neohabitat.mods.Picture" },
