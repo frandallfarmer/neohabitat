@@ -1,0 +1,306 @@
+[
+  {
+    "capacity": 64, 
+    "mods": [
+      {
+        "town_dir": "|", 
+        "neighbors": [
+          "", 
+          "context-Popustop.aprominade2.line1107", 
+          "", 
+          "context-Popustop.lobby.line3"
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "|", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.afront2.line1106", 
+    "name": "Popustop", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "ref": "item-wall.Popustop.afront2.line1106", 
+    "name": "Wall", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-ground.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-door.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "connection": "context-Popustop.lobby.line3", 
+        "y": 33, 
+        "x": 52, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-trap1.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "lower_right_x": 51, 
+        "upper_left_x": 2, 
+        "upper_right_x": 49, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "y": 18, 
+        "x": 52, 
+        "height": 14, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-sign1.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 244, 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 32, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          32, 
+          133, 
+          80, 
+          111, 
+          112, 
+          117, 
+          115, 
+          116, 
+          111, 
+          112
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-trap2.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "lower_right_x": 19, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 24, 
+        "x": 16, 
+        "height": 144, 
+        "type": "Trapezoid", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-supertrap1.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "pattern_x_size": 0, 
+        "lower_right_x": 11, 
+        "upper_left_x": 0, 
+        "pattern": [
+          68, 
+          68, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0
+        ], 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 40, 
+        "x": 20, 
+        "height": 88, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 0, 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-supertrap2.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "pattern_x_size": 0, 
+        "lower_right_x": 11, 
+        "upper_left_x": 0, 
+        "pattern": [
+          68, 
+          68, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0
+        ], 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 40, 
+        "x": 128, 
+        "height": 88, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 0, 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-street.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 64, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-trap3.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "lower_right_x": 19, 
+        "upper_left_x": 0, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 24, 
+        "x": 124, 
+        "height": 144, 
+        "type": "Trapezoid", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }, 
+  {
+    "ref": "item-door2.Popustop.afront2.line1106", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 1, 
+        "connection": "context-Popustop.lobby.line3", 
+        "y": 33, 
+        "x": 92, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.afront2.line1106"
+  }
+]

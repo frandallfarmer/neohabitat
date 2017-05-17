@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-%(region_ref)s",
-    "capacity": 6,
+    "capacity": 64,
     "type": "context",
     "name": "%(arg_1)s",
     "mods": [
@@ -63,7 +63,7 @@
         "y": 33,
         "orientation": 140,
         "style": 0,
-        "open_flags": 0,
+        "open_flags": 2,
         "connection": "context-%(region_ref)s"
       }
     ]

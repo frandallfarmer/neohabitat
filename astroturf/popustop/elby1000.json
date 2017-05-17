@@ -1,0 +1,206 @@
+[
+  {
+    "ref": "context-%(region_ref)s", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "%(arg_8)s", 
+    "mods": [
+      {
+        "town_dir": "%(town_dir)s", 
+        "port_dir": "%(port_dir)s", 
+        "type": "Region",
+        "orientation": %(orientation)s,
+        "neighbors": [
+          "%(north_connection)s", 
+          "%(east_connection)s", 
+          "%(south_connection)s", 
+          "%(west_connection)s"
+        ],
+        "realm": "Popustop",
+        "nitty_bits": %(nitty_bits)s
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.%(region_ref)s", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": %(arg_7)s
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-%(region_ref)s"
+  }, 
+  {
+    "ref": "item-ground.%(region_ref)s", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "type": "item",
+    "ref": "item-door0.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 68,
+        "y": 33,
+        "orientation": 172,
+        "open_flags": 2,
+        "connection": "%(orientation_connection)s"
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sign1.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 66,
+        "y": 123,
+        "orientation": 0,
+        "gr_state": 1,
+        "text": "%(arg_3)s-%(arg_4)s\R    \h}                          "
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sign2.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 123,
+        "y": 123,
+        "orientation": 0,
+        "gr_state": 1,
+        "text": "%(arg_5)s-%(arg_6)s\R      \h\177                        "
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-sign3.%(region_ref)s",
+    "in": "context-%(region_ref)s",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 0,
+        "y": 123,
+        "orientation": 0,
+        "gr_state": 1,
+        "text": "%(arg_1)s-%(arg_2)s\R \h~                               "
+      }
+    ]
+  },
+  {
+    "ref": "item-street.%(region_ref)s", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "type": "Street", 
+        "gr_state": 13,
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-short_sign.%(region_ref)s", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 5, 
+        "y": 19, 
+        "x": 64, 
+        "ascii": [
+		  133,
+		  69,
+		  120,
+		  105,
+		  116,
+		  134,
+		  32,
+		  128,
+		  125
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-tree1.%(region_ref)s", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 24, 
+        "type": "Tree", 
+        "orientation": 0,
+		"style": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-tree2.%(region_ref)s", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 132, 
+        "type": "Tree", 
+        "orientation": 1,
+		"style": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-%(region_ref)s"
+  },
+  {
+    "ref": "item-garbage_can.%(region_ref)s", 
+    "mods": [
+      {
+        "orientation": 229, 
+        "type": "Garbage_can", 
+        "gr_state": 0,
+		"style": 1,
+		"x": 20,
+        "y": 129,  
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-%(region_ref)s"
+  }
+]

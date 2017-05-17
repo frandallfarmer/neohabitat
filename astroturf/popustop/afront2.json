@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-%(region_ref)s",
-    "capacity": 6,
+    "capacity": 64,
     "type": "context",
     "name": "%(arg_1)s",
     "mods": [
@@ -64,7 +64,7 @@
         "orientation": 0,
         "style": 4,
         "open_flags": 2,
-        "connection": "context-Elevator"
+        "connection": "context-Popustop.lobby.line3"
       }
     ]
   },
@@ -101,7 +101,7 @@
         "style": 4,
         "orientation": 244,
         "gr_state": 2,
-        "text": "\h%(arg_1)sc12                                  "
+        "text": "    \h%(arg_1)s"
       }
     ]
   },
@@ -285,7 +285,7 @@
         "orientation": 1,
         "style": 4,
         "open_flags": 2,
-        "connection": "context-Elevator"
+        "connection": "context-Popustop.lobby.line3"
       }
     ]
   }

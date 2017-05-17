@@ -1,0 +1,142 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Popustop.hall2.line612", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "locked": true, 
+        "is_turf": true, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.728", 
+    "name": "Popustop #728", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "ref": "item-ground.Popustop.728", 
+    "name": "Ground", 
+    "in": "context-Popustop.728"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 52, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-display_case.Popustop.728", 
+    "name": "Display_case", 
+    "in": "context-Popustop.728"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 100, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-display_case2.Popustop.728", 
+    "name": "Display_case", 
+    "in": "context-Popustop.728"
+  }, 
+  {
+    "ref": "item-table.Popustop.728", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "key_hi": 5, 
+        "key_lo": 5, 
+        "gr_state": 0, 
+        "y": 133, 
+        "x": 20, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Test Table", 
+    "in": "context-Popustop.728"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "ref": "item-wall.Popustop.728", 
+    "name": "Wall", 
+    "in": "context-Popustop.728"
+  }, 
+  {
+    "ref": "item-door.Popustop.728", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "connection": "context-Popustop.hall2.line612", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.728"
+  }, 
+  {
+    "ref": "item-couch.Popustop.728", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 134, 
+        "x": 72, 
+        "type": "Couch"
+      }
+    ], 
+    "type": "item", 
+    "name": "Turf couch", 
+    "in": "context-Popustop.728"
+  }
+]

@@ -1,4 +1,15 @@
 [ {
+	"type" : "item",
+	"ref" : "item-stutokens",
+	"name" : "Money!",
+	"in" : "user-stu",
+	"mods" : [ {
+		"type" : "Tokens",
+		"y" : 0,
+		"denom_hi" : 4,
+		"denom_lo" : 0
+	} ]
+}, {
 	"type" : "user",
 	"ref" : "user-stu",
 	"name" : "Stu",

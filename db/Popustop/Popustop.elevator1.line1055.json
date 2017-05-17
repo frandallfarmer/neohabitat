@@ -1,0 +1,148 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "|", 
+        "neighbors": [
+          "context-232.elby1000.line1056", 
+          "", 
+          "context-232.elby1000.line1054", 
+          "context-Popustop.stairs.line1021"
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "|", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.elevator1.line1055", 
+    "name": "Popustop:11", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 232
+      }
+    ], 
+    "ref": "item-wall.Popustop.elevator1.line1055", 
+    "name": "Wall", 
+    "in": "context-Popustop.elevator1.line1055"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "ref": "item-ground.Popustop.elevator1.line1055", 
+    "name": "Ground", 
+    "in": "context-Popustop.elevator1.line1055"
+  }, 
+  {
+    "ref": "item-door.Popustop.elevator1.line1055", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "connection": "context-Popustop.stairs.line1021", 
+        "y": 33, 
+        "x": 8, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.elevator1.line1055"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "x": 76, 
+        "y": 122, 
+        "gr_state": 1, 
+        "ascii": [
+          133, 
+          129, 
+          131, 
+          131, 
+          131, 
+          49, 
+          49
+        ], 
+        "type": "Short_sign"
+      }
+    ], 
+    "ref": "item-short_sign.Popustop.elevator1.line1055", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.elevator1.line1055"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 7, 
+        "gr_state": 6, 
+        "type": "Street", 
+        "orientation": 204, 
+        "x": 68
+      }
+    ], 
+    "ref": "item-street.Popustop.elevator1.line1055", 
+    "name": "Street", 
+    "in": "context-Popustop.elevator1.line1055"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 8, 
+        "y": 112, 
+        "gr_state": 1, 
+        "ascii": [
+          83, 
+          116, 
+          97, 
+          105, 
+          114, 
+          115
+        ]
+      }
+    ], 
+    "ref": "item-short_sign2.Popustop.elevator1.line1055", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.elevator1.line1055"
+  }, 
+  {
+    "ref": "item-elevator.Popustop.elevator1.line1055", 
+    "mods": [
+      {
+        "orientation": 141, 
+        "gr_state": 2, 
+        "address": "Popustop-11", 
+        "y": 34, 
+        "x": 48, 
+        "type": "Elevator"
+      }
+    ], 
+    "type": "item", 
+    "name": "Elevator", 
+    "in": "context-Popustop.elevator1.line1055"
+  }
+]

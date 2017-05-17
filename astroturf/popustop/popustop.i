@@ -906,202 +906,203 @@ hall4 r=1 w=900 n=(901 902 903) e=0 s=0 /969 970 971 216 "Popustop" "~"
 turf10 r=1 w=0 n=908 e=0 s=0 /"Popustop" 1024
 turf9 r=1 w=0 n=908 e=0 s=0 /"Popustop" 1025
 turf4 r=1 w=0 n=908 e=0 s=0 /"Popustop" 1026
-hall1 r=3 w=912 n=0 e=954 s=(905 906 907) /1024 1025 1026 224 "Popustop" "~"
+hall11000 r=3 w=912 n=0 e=954 s=(905 906 907) /1024 1025 1026 224 "Popustop" "~"
 turf6 r=1 w=0 n=912 e=0 s=0 /"Popustop" 1027
 turf9 r=1 w=0 n=912 e=0 s=0 /"Popustop" 1028
 turf4 r=1 w=0 n=912 e=0 s=0 /"Popustop" 1029
-hall2 r=3 w=916 n=0 e=908 s=(909 910 911) /1027 1028 1029 224 "Popustop" "~"
+hall21000 r=3 w=916 n=0 e=908 s=(909 910 911) /1027 1028 1029 224 "Popustop" "~"
 turf2 r=1 w=0 n=916 e=0 s=0 /"Popustop" 1030
 turf3 r=1 w=0 n=916 e=0 s=0 /"Popustop" 1031
 turf9 r=1 w=0 n=916 e=0 s=0 /"Popustop" 1032
-hall3 r=3 w=920 n=0 e=912 s=(913 914 915) /1030 1031 1032 224 "Popustop" "~"
+hall31000 r=3 w=920 n=0 e=912 s=(913 914 915) /1030 1031 1032 224 "Popustop" "~"
 turf6 r=1 w=0 n=920 e=0 s=0 /"Popustop" 1033
 turf4 r=1 w=0 n=920 e=0 s=0 /"Popustop" 1034
 turf2 r=1 w=0 n=920 e=0 s=0 /"Popustop" 1035
-hall4 r=3 w=0 n=0 e=916 s=(917 918 919) /1033 1034 1035 224 "Popustop" "~"
+hall41000 r=3 w=0 n=0 e=916 s=(917 918 919) /1033 1034 1035 224 "Popustop" "~"
 stairs r=0 w=0 n=1021 e=955 s=821 /10 224 "Popustop" "~"
 turf9 r=3 w=0 n=0 e=0 s=925 /"Popustop" 1036
 turf9 r=3 w=0 n=0 e=0 s=925 /"Popustop" 1037
 turf9 r=3 w=0 n=0 e=0 s=925 /"Popustop" 1038
-hall1 r=1 w=0 n=(922 923 924) e=929 s=0 /1036 1037 1038 224 "Popustop" "\177"
+hall11000 r=1 w=0 n=(922 923 924) e=929 s=0 /1036 1037 1038 224 "Popustop" "\177"
 turf7 r=3 w=0 n=0 e=0 s=929 /"Popustop" 1039
 turf6 r=3 w=0 n=0 e=0 s=929 /"Popustop" 1040
 turf7 r=3 w=0 n=0 e=0 s=929 /"Popustop" 1041
-hall2 r=1 w=925 n=(926 927 928) e=933 s=0 /1039 1040 1041 224 "Popustop" "\177"
+hall21000 r=1 w=925 n=(926 927 928) e=933 s=0 /1039 1040 1041 224 "Popustop" "\177"
 turf2 r=3 w=0 n=0 e=0 s=933 /"Popustop" 1042
 turf7 r=3 w=0 n=0 e=0 s=933 /"Popustop" 1043
 turf4 r=3 w=0 n=0 e=0 s=933 /"Popustop" 1044
-hall3 r=1 w=929 n=(930 931 932) e=937 s=0 /1042 1043 1044 224 "Popustop" "\177"
+hall31000 r=1 w=929 n=(930 931 932) e=937 s=0 /1042 1043 1044 224 "Popustop" "\177"
 turf1 r=3 w=0 n=0 e=0 s=937 /"Popustop" 1045
 turf10 r=3 w=0 n=0 e=0 s=937 /"Popustop" 1046
 turf8 r=3 w=0 n=0 e=0 s=937 /"Popustop" 1047
-hall4 r=1 w=933 n=(934 935 936) e=956 s=0 /1045 1046 1047 224 "Popustop" "\177"
+hall41000 r=1 w=933 n=(934 935 936) e=956 s=0 /1045 1046 1047 224 "Popustop" "\177"
 turf9 r=2 w=0 n=0 e=941 s=0 /"Popustop" 1012
 turf6 r=2 w=0 n=0 e=941 s=0 /"Popustop" 1013
 turf10 r=2 w=0 n=0 e=941 s=0 /"Popustop" 1014
-hall1 r=0 w=(938 939 940) n=945 e=0 s=0 /1012 1013 1014 224 "Popustop" "\177"
+hall11000 r=0 w=(938 939 940) n=945 e=0 s=0 /1012 1013 1014 224 "Popustop" "\177"
 turf2 r=2 w=0 n=0 e=945 s=0 /"Popustop" 1015
 turf7 r=2 w=0 n=0 e=945 s=0 /"Popustop" 1016
 turf8 r=2 w=0 n=0 e=945 s=0 /"Popustop" 1017
-hall2 r=0 w=(942 943 944) n=949 e=0 s=941 /1015 1016 1017 224 "Popustop" "\177"
+hall21000 r=0 w=(942 943 944) n=949 e=0 s=941 /1015 1016 1017 224 "Popustop" "\177"
 turf10 r=2 w=0 n=0 e=949 s=0 /"Popustop" 1018
 turf6 r=2 w=0 n=0 e=949 s=0 /"Popustop" 1019
 turf9 r=2 w=0 n=0 e=949 s=0 /"Popustop" 1020
-hall3 r=0 w=(946 947 948) n=953 e=0 s=945 /1018 1019 1020 224 "Popustop" "\177"
+hall31000 r=0 w=(946 947 948) n=953 e=0 s=945 /1018 1019 1020 224 "Popustop" "\177"
 turf8 r=2 w=0 n=0 e=953 s=0 /"Popustop" 1021
 turf2 r=2 w=0 n=0 e=953 s=0 /"Popustop" 1022
 turf10 r=2 w=0 n=0 e=953 s=0 /"Popustop" 1023
-hall4 r=0 w=(950 951 952) n=954 e=0 s=949 /1021 1022 1023 224 "Popustop" "\177"
-elby r=3 w=908 n=955 e=988 s=953 /1000 1011 1012 1023 1024 1035 224 "Popustop"
+hall41000 r=0 w=(950 951 952) n=954 e=0 s=949 /1021 1022 1023 224 "Popustop" "\177"
+elby1000 r=3 w=908 n=955 e=988 s=953 /1000 1011 1012 1023 1024 1035 224 "Popustop"
 elevator1 r=0 w=921 n=956 e=0 s=954 /10 224 "Popustop" "|"
-elby r=1 w=937 n=960 e=992 s=955 /1036 1047 1048 1059 1060 1071 224 "Popustop"
+elby1000 r=1 w=937 n=960 e=992 s=955 /1036 1047 1048 1059 1060 1071 224 "Popustop"
 turf10 r=2 w=0 n=0 e=960 s=0 /"Popustop" 1048
 turf2 r=2 w=0 n=0 e=960 s=0 /"Popustop" 1049
 turf2 r=2 w=0 n=0 e=960 s=0 /"Popustop" 1050
-hall1 r=0 w=(957 958 959) n=964 e=0 s=956 /1048 1049 1050 224 "Popustop" "~"
+hall11000 r=0 w=(957 958 959) n=964 e=0 s=956 /1048 1049 1050 224 "Popustop" "~"
 turf2 r=2 w=0 n=0 e=964 s=0 /"Popustop" 1051
 turf10 r=2 w=0 n=0 e=964 s=0 /"Popustop" 1052
 turf8 r=2 w=0 n=0 e=964 s=0 /"Popustop" 1053
-hall2 r=0 w=(961 962 963) n=968 e=0 s=960 /1051 1052 1053 224 "Popustop" "~"
+hall21000 r=0 w=(961 962 963) n=968 e=0 s=960 /1051 1052 1053 224 "Popustop" "~"
 turf3 r=2 w=0 n=0 e=968 s=0 /"Popustop" 1054
 turf10 r=2 w=0 n=0 e=968 s=0 /"Popustop" 1055
 turf4 r=2 w=0 n=0 e=968 s=0 /"Popustop" 1056
-hall3 r=0 w=(965 966 967) n=972 e=0 s=964 /1054 1055 1056 224 "Popustop" "~"
+hall31000 r=0 w=(965 966 967) n=972 e=0 s=964 /1054 1055 1056 224 "Popustop" "~"
 turf2 r=2 w=0 n=0 e=972 s=0 /"Popustop" 1057
 turf9 r=2 w=0 n=0 e=972 s=0 /"Popustop" 1058
 turf9 r=2 w=0 n=0 e=972 s=0 /"Popustop" 1059
-hall4 r=0 w=(969 970 971) n=0 e=0 s=968 /1057 1058 1059 224 "Popustop" "~"
+hall41000 r=0 w=(969 970 971) n=0 e=0 s=968 /1057 1058 1059 224 "Popustop" "~"
 turf5 r=1 w=0 n=976 e=0 s=0 /"Popustop" 1000
 turf3 r=1 w=0 n=976 e=0 s=0 /"Popustop" 1001
 turf1 r=1 w=0 n=976 e=0 s=0 /"Popustop" 1002
-hall1 r=3 w=980 n=0 e=0 s=(973 974 975) /1000 1001 1002 224 "Popustop" "\177"
+hall11000 r=3 w=980 n=0 e=0 s=(973 974 975) /1000 1001 1002 224 "Popustop" "\177"
 turf2 r=1 w=0 n=980 e=0 s=0 /"Popustop" 1003
 turf5 r=1 w=0 n=980 e=0 s=0 /"Popustop" 1004
 turf9 r=1 w=0 n=980 e=0 s=0 /"Popustop" 1005
-hall2 r=3 w=984 n=0 e=976 s=(977 978 979) /1003 1004 1005 224 "Popustop" "\177"
+hall21000 r=3 w=984 n=0 e=976 s=(977 978 979) /1003 1004 1005 224 "Popustop" "\177"
 turf10 r=1 w=0 n=984 e=0 s=0 /"Popustop" 1006
 turf10 r=1 w=0 n=984 e=0 s=0 /"Popustop" 1007
 turf8 r=1 w=0 n=984 e=0 s=0 /"Popustop" 1008
-hall3 r=3 w=988 n=0 e=980 s=(981 982 983) /1006 1007 1008 224 "Popustop" "\177"
+hall31000 r=3 w=988 n=0 e=980 s=(981 982 983) /1006 1007 1008 224 "Popustop" "\177"
 turf5 r=1 w=0 n=988 e=0 s=0 /"Popustop" 1009
 turf9 r=1 w=0 n=988 e=0 s=0 /"Popustop" 1010
 turf10 r=1 w=0 n=988 e=0 s=0 /"Popustop" 1011
-hall4 r=3 w=954 n=0 e=984 s=(985 986 987) /1009 1010 1011 224 "Popustop" "\177"
+hall41000 r=3 w=954 n=0 e=984 s=(985 986 987) /1009 1010 1011 224 "Popustop" "\177"
 turf9 r=3 w=0 n=0 e=0 s=992 /"Popustop" 1060
 turf5 r=3 w=0 n=0 e=0 s=992 /"Popustop" 1061
 turf7 r=3 w=0 n=0 e=0 s=992 /"Popustop" 1062
-hall1 r=1 w=956 n=(989 990 991) e=996 s=0 /1060 1061 1062 224 "Popustop" "~"
+hall11000 r=1 w=956 n=(989 990 991) e=996 s=0 /1060 1061 1062 224 "Popustop" "~"
 turf4 r=3 w=0 n=0 e=0 s=996 /"Popustop" 1063
 turf4 r=3 w=0 n=0 e=0 s=996 /"Popustop" 1064
 turf5 r=3 w=0 n=0 e=0 s=996 /"Popustop" 1065
-hall2 r=1 w=992 n=(993 994 995) e=1000 s=0 /1063 1064 1065 224 "Popustop" "~"
+hall21000 r=1 w=992 n=(993 994 995) e=1000 s=0 /1063 1064 1065 224 "Popustop" "~"
 turf5 r=3 w=0 n=0 e=0 s=1000 /"Popustop" 1066
 turf2 r=3 w=0 n=0 e=0 s=1000 /"Popustop" 1067
 turf3 r=3 w=0 n=0 e=0 s=1000 /"Popustop" 1068
-hall3 r=1 w=996 n=(997 998 999) e=1004 s=0 /1066 1067 1068 224 "Popustop" "~"
+hall31000 r=1 w=996 n=(997 998 999) e=1004 s=0 /1066 1067 1068 224 "Popustop" "~"
 turf2 r=3 w=0 n=0 e=0 s=1004 /"Popustop" 1069
 turf4 r=3 w=0 n=0 e=0 s=1004 /"Popustop" 1070
 turf5 r=3 w=0 n=0 e=0 s=1004 /"Popustop" 1071
-hall4 r=1 w=1000 n=(1001 1002 1003) e=0 s=0 /1069 1070 1071 224 "Popustop" "~"
+hall41000 r=1 w=1000 n=(1001 1002 1003) e=0 s=0 /1069 1070 1071 224 "Popustop" "~"
 turf2 r=1 w=0 n=1008 e=0 s=0 /"Popustop" 1124
 turf1 r=1 w=0 n=1008 e=0 s=0 /"Popustop" 1125
 turf10 r=1 w=0 n=1008 e=0 s=0 /"Popustop" 1126
-hall1 r=3 w=1012 n=0 e=1054 s=(1005 1006 1007) /1124 1125 1126 232 "Popustop" "~"
+hall11000 r=3 w=1012 n=0 e=1054 s=(1005 1006 1007) /1124 1125 1126 232 "Popustop" "~"
 turf5 r=1 w=0 n=1012 e=0 s=0 /"Popustop" 1127
 turf1 r=1 w=0 n=1012 e=0 s=0 /"Popustop" 1128
 turf2 r=1 w=0 n=1012 e=0 s=0 /"Popustop" 1129
-hall2 r=3 w=1016 n=0 e=1008 s=(1009 1010 1011) /1127 1128 1129 232 "Popustop" "~"
+hall21000 r=3 w=1016 n=0 e=1008 s=(1009 1010 1011) /1127 1128 1129 232 "Popustop" "~"
 turf5 r=1 w=0 n=1016 e=0 s=0 /"Popustop" 1130
 turf7 r=1 w=0 n=1016 e=0 s=0 /"Popustop" 1131
 turf1 r=1 w=0 n=1016 e=0 s=0 /"Popustop" 1132
-hall3 r=3 w=1020 n=0 e=1012 s=(1013 1014 1015) /1130 1131 1132 232 "Popustop" "~"
+hall31000 r=3 w=1020 n=0 e=1012 s=(1013 1014 1015) /1130 1131 1132 232 "Popustop" "~"
 turf9 r=1 w=0 n=1020 e=0 s=0 /"Popustop" 1133
 turf10 r=1 w=0 n=1020 e=0 s=0 /"Popustop" 1134
 turf1 r=1 w=0 n=1020 e=0 s=0 /"Popustop" 1135
-hall4 r=3 w=0 n=0 e=1016 s=(1017 1018 1019) /1133 1134 1135 232 "Popustop" "~"
+hall41000 r=3 w=0 n=0 e=1016 s=(1017 1018 1019) /1133 1134 1135 232 "Popustop" "~"
 stairs r=0 w=0 n=1105 e=1055 s=921 /11 232 "Popustop" "~"
 turf9 r=3 w=0 n=0 e=0 s=1025 /"Popustop" 1136
 turf2 r=3 w=0 n=0 e=0 s=1025 /"Popustop" 1137
 turf8 r=3 w=0 n=0 e=0 s=1025 /"Popustop" 1138
-hall1 r=1 w=0 n=(1022 1023 1024) e=1029 s=0 /1136 1137 1138 232 "Popustop" "\177"
+hall11000 r=1 w=0 n=(1022 1023 1024) e=1029 s=0 /1136 1137 1138 232 "Popustop" "\177"
 turf9 r=3 w=0 n=0 e=0 s=1029 /"Popustop" 1139
 turf1 r=3 w=0 n=0 e=0 s=1029 /"Popustop" 1140
 turf5 r=3 w=0 n=0 e=0 s=1029 /"Popustop" 1141
-hall2 r=1 w=1025 n=(1026 1027 1028) e=1033 s=0 /1139 1140 1141 232 "Popustop" "\177"
+hall21000 r=1 w=1025 n=(1026 1027 1028) e=1033 s=0 /1139 1140 1141 232 "Popustop" "\177"
 turf1 r=3 w=0 n=0 e=0 s=1033 /"Popustop" 1142
 turf10 r=3 w=0 n=0 e=0 s=1033 /"Popustop" 1143
 turf2 r=3 w=0 n=0 e=0 s=1033 /"Popustop" 1144
-hall3 r=1 w=1029 n=(1030 1031 1032) e=1037 s=0 /1142 1143 1144 232 "Popustop" "\177"
+hall31000 r=1 w=1029 n=(1030 1031 1032) e=1037 s=0 /1142 1143 1144 232 "Popustop" "\177"
 turf9 r=3 w=0 n=0 e=0 s=1037 /"Popustop" 1145
 turf5 r=3 w=0 n=0 e=0 s=1037 /"Popustop" 1146
 turf7 r=3 w=0 n=0 e=0 s=1037 /"Popustop" 1147
-hall4 r=1 w=1033 n=(1034 1035 1036) e=1056 s=0 /1145 1146 1147 232 "Popustop" "\177"
+hall41000 r=1 w=1033 n=(1034 1035 1036) e=1056 s=0 /1145 1146 1147 232 "Popustop" "\177"
 turf1 r=2 w=0 n=0 e=1041 s=0 /"Popustop" 1112
 turf6 r=2 w=0 n=0 e=1041 s=0 /"Popustop" 1113
 turf9 r=2 w=0 n=0 e=1041 s=0 /"Popustop" 1114
-hall1 r=0 w=(1038 1039 1040) n=1045 e=0 s=0 /1112 1113 1114 232 "Popustop" "\177"
+hall11000 r=0 w=(1038 1039 1040) n=1045 e=0 s=0 /1112 1113 1114 232 "Popustop" "\177"
 turf3 r=2 w=0 n=0 e=1045 s=0 /"Popustop" 1115
 turf7 r=2 w=0 n=0 e=1045 s=0 /"Popustop" 1116
 turf2 r=2 w=0 n=0 e=1045 s=0 /"Popustop" 1117
-hall2 r=0 w=(1042 1043 1044) n=1049 e=0 s=1041 /1115 1116 1117 232 "Popustop" "\177"
+hall21000 r=0 w=(1042 1043 1044) n=1049 e=0 s=1041 /1115 1116 1117 232 "Popustop" "\177"
 turf5 r=2 w=0 n=0 e=1049 s=0 /"Popustop" 1118
 turf10 r=2 w=0 n=0 e=1049 s=0 /"Popustop" 1119
 turf4 r=2 w=0 n=0 e=1049 s=0 /"Popustop" 1120
-hall3 r=0 w=(1046 1047 1048) n=1053 e=0 s=1045 /1118 1119 1120 232 "Popustop" "\177"
+hall31000 r=0 w=(1046 1047 1048) n=1053 e=0 s=1045 /1118 1119 1120 232 "Popustop" "\177"
 turf6 r=2 w=0 n=0 e=1053 s=0 /"Popustop" 1121
 turf9 r=2 w=0 n=0 e=1053 s=0 /"Popustop" 1122
 turf2 r=2 w=0 n=0 e=1053 s=0 /"Popustop" 1123
-hall4 r=0 w=(1050 1051 1052) n=1054 e=0 s=1049 /1121 1122 1123 232 "Popustop" "\177"
-elby r=3 w=1008 n=1055 e=1088 s=1053 /1100 1111 1112 1123 1124 1135 232 "Popustop"
+hall41000 r=0 w=(1050 1051 1052) n=1054 e=0 s=1049 /1121 1122 1123 232 "Popustop" "\177"
+elby1000 r=3 w=1008 n=1055 e=1088 s=1053 /1100 1111 1112 1123 1124 1135 232 "Popustop"
 elevator1 r=0 w=1021 n=1056 e=0 s=1054 /11 232 "Popustop" "|"
-elby r=1 w=1037 n=1060 e=1092 s=1055 /1136 1147 1148 1159 1160 1171 232 "Popustop"
+elby1000 r=1 w=1037 n=1060 e=1092 s=1055 /1136 1147 1148 1159 1160 1171 232 "Popustop"
 turf10 r=2 w=0 n=0 e=1060 s=0 /"Popustop" 1148
 turf4 r=2 w=0 n=0 e=1060 s=0 /"Popustop" 1149
 turf1 r=2 w=0 n=0 e=1060 s=0 /"Popustop" 1150
-hall1 r=0 w=(1057 1058 1059) n=1064 e=0 s=1056 /1148 1149 1150 232 "Popustop" "~"
+hall11000 r=0 w=(1057 1058 1059) n=1064 e=0 s=1056 /1148 1149 1150 232 "Popustop" "~"
 turf4 r=2 w=0 n=0 e=1064 s=0 /"Popustop" 1151
 turf4 r=2 w=0 n=0 e=1064 s=0 /"Popustop" 1152
 turf7 r=2 w=0 n=0 e=1064 s=0 /"Popustop" 1153
-hall2 r=0 w=(1061 1062 1063) n=1068 e=0 s=1060 /1151 1152 1153 232 "Popustop" "~"
+hall21000 r=0 w=(1061 1062 1063) n=1068 e=0 s=1060 /1151 1152 1153 232 "Popustop" "~"
 turf4 r=2 w=0 n=0 e=1068 s=0 /"Popustop" 1154
 turf3 r=2 w=0 n=0 e=1068 s=0 /"Popustop" 1155
 turf4 r=2 w=0 n=0 e=1068 s=0 /"Popustop" 1156
-hall3 r=0 w=(1065 1066 1067) n=1072 e=0 s=1064 /1154 1155 1156 232 "Popustop" "~"
+hall31000 r=0 w=(1065 1066 1067) n=1072 e=0 s=1064 /1154 1155 1156 232 "Popustop" "~"
 turf3 r=2 w=0 n=0 e=1072 s=0 /"Popustop" 1157
 turf10 r=2 w=0 n=0 e=1072 s=0 /"Popustop" 1158
 turf10 r=2 w=0 n=0 e=1072 s=0 /"Popustop" 1159
-hall4 r=0 w=(1069 1070 1071) n=0 e=0 s=1068 /1157 1158 1159 232 "Popustop" "~"
+hall41000 r=0 w=(1069 1070 1071) n=0 e=0 s=1068 /1157 1158 1159 232 "Popustop" "~"
 turf4 r=1 w=0 n=1076 e=0 s=0 /"Popustop" 1100
 turf3 r=1 w=0 n=1076 e=0 s=0 /"Popustop" 1101
 turf10 r=1 w=0 n=1076 e=0 s=0 /"Popustop" 1102
-hall1 r=3 w=1080 n=0 e=0 s=(1073 1074 1075) /1100 1101 1102 232 "Popustop" "\177"
+hall11000 r=3 w=1080 n=0 e=0 s=(1073 1074 1075) /1100 1101 1102 232 "Popustop" "\177"
 turf1 r=1 w=0 n=1080 e=0 s=0 /"Popustop" 1103
 turf3 r=1 w=0 n=1080 e=0 s=0 /"Popustop" 1104
 turf7 r=1 w=0 n=1080 e=0 s=0 /"Popustop" 1105
-hall2 r=3 w=1084 n=0 e=1076 s=(1077 1078 1079) /1103 1104 1105 232 "Popustop" "\177"
+hall21000 r=3 w=1084 n=0 e=1076 s=(1077 1078 1079) /1103 1104 1105 232 "Popustop" "\177"
 turf3 r=1 w=0 n=1084 e=0 s=0 /"Popustop" 1106
 turf8 r=1 w=0 n=1084 e=0 s=0 /"Popustop" 1107
 turf8 r=1 w=0 n=1084 e=0 s=0 /"Popustop" 1108
-hall3 r=3 w=1088 n=0 e=1080 s=(1081 1082 1083) /1106 1107 1108 232 "Popustop" "\177"
+hall31000 r=3 w=1088 n=0 e=1080 s=(1081 1082 1083) /1106 1107 1108 232 "Popustop" "\177"
 turf8 r=1 w=0 n=1088 e=0 s=0 /"Popustop" 1109
 turf6 r=1 w=0 n=1088 e=0 s=0 /"Popustop" 1110
 turf1 r=1 w=0 n=1088 e=0 s=0 /"Popustop" 1111
-hall4 r=3 w=1054 n=0 e=1084 s=(1085 1086 1087) /1109 1110 1111 232 "Popustop" "\177"
+hall41000 r=3 w=1054 n=0 e=1084 s=(1085 1086 1087) /1109 1110 1111 232 "Popustop" "\177"
 turf3 r=3 w=0 n=0 e=0 s=1092 /"Popustop" 1160
 turf6 r=3 w=0 n=0 e=0 s=1092 /"Popustop" 1161
 turf3 r=3 w=0 n=0 e=0 s=1092 /"Popustop" 1162
-hall1 r=1 w=1056 n=(1089 1090 1091) e=1096 s=0 /1160 1161 1162 232 "Popustop" "~"
+hall11000 r=1 w=1056 n=(1089 1090 1091) e=1096 s=0 /1160 1161 1162 232 "Popustop" "~"
 turf1 r=3 w=0 n=0 e=0 s=1096 /"Popustop" 1163
 turf9 r=3 w=0 n=0 e=0 s=1096 /"Popustop" 1164
 turf7 r=3 w=0 n=0 e=0 s=1096 /"Popustop" 1165
-hall2 r=1 w=1092 n=(1093 1094 1095) e=1100 s=0 /1163 1164 1165 232 "Popustop" "~"
+hall21000 r=1 w=1092 n=(1093 1094 1095) e=1100 s=0 /1163 1164 1165 232 "Popustop" "~"
 turf10 r=3 w=0 n=0 e=0 s=1100 /"Popustop" 1166
 turf1 r=3 w=0 n=0 e=0 s=1100 /"Popustop" 1167
 turf5 r=3 w=0 n=0 e=0 s=1100 /"Popustop" 1168
-hall3 r=1 w=1096 n=(1097 1098 1099) e=1104 s=0 /1166 1167 1168 232 "Popustop" "~"
+hall31000 r=1 w=1096 n=(1097 1098 1099) e=1104 s=0 /1166 1167 1168 232 "Popustop" "~"
 turf9 r=3 w=0 n=0 e=0 s=1104 /"Popustop" 1169
 turf3 r=3 w=0 n=0 e=0 s=1104 /"Popustop" 1170
 turf3 r=3 w=0 n=0 e=0 s=1104 /"Popustop" 1171
-hall4 r=1 w=1100 n=(1101 1102 1103) e=0 s=0 /1169 1170 1171 232 "Popustop" "~"
+hall41000 r=1 w=1100 n=(1101 1102 1103) e=0 s=0 /1169 1170 1171 232 "Popustop" "~"
 roof r=0 w=0 n=0 e=0 s=1021 /
-afront1 r=0 w=3 n=0 e=0 s=0 /"Popustop"
+afront2 r=0 w=3 n=0 e=1107 s=0 /"Popustop"
+aprominade2 r=0 w=1106 n=0 e=0 s=0 /"Popustop Entrance"
