@@ -1,0 +1,69 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Popustop.stairs.line2", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-basement.line1", 
+    "name": "Basement", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "ref": "item-wall.basement.line1", 
+    "name": "Wall", 
+    "in": "context-basement.line1"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "ref": "item-ground.basement.line1", 
+    "name": "Ground", 
+    "in": "context-basement.line1"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 16, 
+        "x": 12, 
+        "type": "Pond", 
+        "orientation": 112, 
+        "gr_state": 1
+      }
+    ], 
+    "ref": "item-pond.basement.line1", 
+    "name": "Pond", 
+    "in": "context-basement.line1"
+  }
+]

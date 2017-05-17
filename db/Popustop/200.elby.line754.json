@@ -1,0 +1,329 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Popustop.elevator1.line755", 
+          "context-Popustop.hall4.line788", 
+          "context-Popustop.hall4.line753", 
+          "context-Popustop.hall1.line708"
+        ], 
+        "realm": "Popustop", 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "Popustop", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-200.elby.line754", 
+    "name": "Popustop", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 200
+      }
+    ], 
+    "ref": "item-wall.200.elby.line754", 
+    "name": "Wall", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "ref": "item-ground.200.elby.line754", 
+    "name": "Ground", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "ref": "item-door0.200.elby.line754", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "connection": "context-Popustop.hall4.line753", 
+        "y": 33, 
+        "x": 68, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "ref": "item-sign1.200.elby.line754", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 66, 
+        "ascii": [
+          56, 
+          49, 
+          50, 
+          45, 
+          56, 
+          50, 
+          51, 
+          134, 
+          32, 
+          32, 
+          32, 
+          133, 
+          125, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "ref": "item-sign2.200.elby.line754", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 126, 
+        "ascii": [
+          56, 
+          50, 
+          52, 
+          45, 
+          56, 
+          51, 
+          53, 
+          134, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          133, 
+          127, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "ref": "item-sign3.200.elby.line754", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 0, 
+        "ascii": [
+          56, 
+          48, 
+          48, 
+          45, 
+          56, 
+          49, 
+          49, 
+          134, 
+          32, 
+          133, 
+          126, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 8, 
+        "gr_state": 13, 
+        "type": "Street", 
+        "orientation": 148, 
+        "x": 68
+      }
+    ], 
+    "ref": "item-street.200.elby.line754", 
+    "name": "Street", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 64, 
+        "y": 19, 
+        "gr_state": 5, 
+        "ascii": [
+          133, 
+          69, 
+          120, 
+          105, 
+          116, 
+          134, 
+          32, 
+          128, 
+          125
+        ]
+      }
+    ], 
+    "ref": "item-short_sign.200.elby.line754", 
+    "name": "Short_sign", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 24, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "ref": "item-tree1.200.elby.line754", 
+    "name": "Tree", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 132, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "ref": "item-tree2.200.elby.line754", 
+    "name": "Tree", 
+    "in": "context-200.elby.line754"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 229, 
+        "x": 20, 
+        "y": 129, 
+        "gr_state": 0, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-garbage_can.200.elby.line754", 
+    "name": "Garbage_can", 
+    "in": "context-200.elby.line754"
+  }
+]

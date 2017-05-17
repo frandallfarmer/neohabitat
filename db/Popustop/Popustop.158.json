@@ -1,0 +1,186 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Popustop.hall4.line72", 
+          "", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "locked": true, 
+        "is_turf": true, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.158", 
+    "name": "Popustop #158", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "ref": "item-ground.Popustop.158", 
+    "name": "Ground", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "ref": "item-wall.Popustop.158", 
+    "name": "Wall", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 56, 
+        "gr_width": 20, 
+        "x": 48, 
+        "y": 56, 
+        "gr_state": 0, 
+        "type": "Window"
+      }
+    ], 
+    "ref": "item-window.Popustop.158", 
+    "name": "Window", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "ref": "item-couch.Popustop.158", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 132, 
+        "x": 44, 
+        "type": "Couch"
+      }
+    ], 
+    "type": "item", 
+    "name": "Turf couch", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "ref": "item-chest1.Popustop.158", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Rant Cabinet", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "ref": "item-door.Popustop.158", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "connection": "context-Popustop.hall4.line72", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 8, 
+        "on": 1
+      }
+    ], 
+    "ref": "item-floor_lamp.Popustop.158", 
+    "name": "Floor_lamp", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 56, 
+        "gr_width": 20, 
+        "x": 88, 
+        "y": 56, 
+        "gr_state": 0, 
+        "type": "Window"
+      }
+    ], 
+    "ref": "item-window2.Popustop.158", 
+    "name": "Window", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "ref": "item-housecat.Popustop.158", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 12, 
+        "type": "House_cat", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "Housecat", 
+    "in": "context-Popustop.158"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 1, 
+        "gr_width": 24, 
+        "y": 130, 
+        "x": 112, 
+        "type": "Chair", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-chair.Popustop.158", 
+    "name": "Chair", 
+    "in": "context-Popustop.158"
+  }
+]

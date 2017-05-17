@@ -1,0 +1,162 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Popustop.lobby.line3", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.bboard.line4", 
+    "name": "Popustop bboard", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "ref": "item-wall.Popustop.bboard.line4", 
+    "name": "Wall", 
+    "in": "context-Popustop.bboard.line4"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 104
+      }
+    ], 
+    "ref": "item-ground.Popustop.bboard.line4", 
+    "name": "Ground", 
+    "in": "context-Popustop.bboard.line4"
+  }, 
+  {
+    "ref": "item-table1.Popustop.bboard.line4", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 244, 
+        "key_hi": 5, 
+        "key_lo": 5, 
+        "gr_state": 0, 
+        "y": 27, 
+        "x": 12, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Test Table", 
+    "in": "context-Popustop.bboard.line4"
+  }, 
+  {
+    "ref": "item-table2.Popustop.bboard.line4", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 244, 
+        "key_hi": 5, 
+        "key_lo": 5, 
+        "gr_state": 1, 
+        "y": 28, 
+        "x": 12, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Test Table", 
+    "in": "context-Popustop.bboard.line4"
+  }, 
+  {
+    "ref": "item-table3.Popustop.bboard.line4", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 244, 
+        "key_hi": 5, 
+        "key_lo": 5, 
+        "gr_state": 0, 
+        "y": 27, 
+        "x": 92, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Test Table", 
+    "in": "context-Popustop.bboard.line4"
+  }, 
+  {
+    "ref": "item-table4.Popustop.bboard.line4", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 244, 
+        "key_hi": 5, 
+        "key_lo": 5, 
+        "gr_state": 1, 
+        "y": 28, 
+        "x": 92, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Test Table", 
+    "in": "context-Popustop.bboard.line4"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 5, 
+        "y": 122, 
+        "x": 28, 
+        "ascii": [
+          133, 
+          131, 
+          80, 
+          111, 
+          112, 
+          117, 
+          115, 
+          116, 
+          111, 
+          112, 
+          32, 
+          66, 
+          66, 
+          83
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "ref": "item-sign.Popustop.bboard.line4", 
+    "name": "Sign", 
+    "in": "context-Popustop.bboard.line4"
+  }
+]

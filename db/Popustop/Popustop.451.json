@@ -1,0 +1,126 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Popustop.hall2.line364", 
+          "", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "locked": true, 
+        "is_turf": true, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.451", 
+    "name": "Popustop #451", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "ref": "item-ground.Popustop.451", 
+    "name": "Ground", 
+    "in": "context-Popustop.451"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "ref": "item-wall.Popustop.451", 
+    "name": "Wall", 
+    "in": "context-Popustop.451"
+  }, 
+  {
+    "ref": "item-table.Popustop.451", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 32, 
+        "key_hi": 5, 
+        "key_lo": 5, 
+        "gr_state": 0, 
+        "y": 154, 
+        "x": 84, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Test Table", 
+    "in": "context-Popustop.451"
+  }, 
+  {
+    "ref": "item-door.Popustop.451", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "connection": "context-Popustop.hall2.line364", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.451"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 148, 
+        "gr_state": 0, 
+        "y": 131, 
+        "x": 96, 
+        "type": "Bed", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-bed.Popustop.451", 
+    "name": "Bed", 
+    "in": "context-Popustop.451"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_width": 24, 
+        "y": 156, 
+        "x": 56, 
+        "type": "Chair", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-chair.Popustop.451", 
+    "name": "Chair", 
+    "in": "context-Popustop.451"
+  }
+]

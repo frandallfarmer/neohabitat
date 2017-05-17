@@ -1,0 +1,170 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "~", 
+        "neighbors": [
+          "context-Popustop.stairs.line521", 
+          "context-Popustop.elevator1.line455", 
+          "context-Popustop.stairs.line321", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.stairs.line421", 
+    "name": "Popustop:5", 
+    "type": "context"
+  }, 
+  {
+    "ref": "item-wall.Popustop.stairs.line421", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 168
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Popustop.stairs.line421"
+  }, 
+  {
+    "ref": "item-ground.Popustop.stairs.line421", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Popustop.stairs.line421"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "x": 48, 
+        "y": 122, 
+        "gr_state": 1, 
+        "ascii": [
+          133, 
+          129, 
+          131, 
+          131, 
+          131, 
+          53, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Short_sign"
+      }
+    ], 
+    "ref": "item-short_sign1.Popustop.stairs.line421", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.stairs.line421"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 0, 
+        "y": 120, 
+        "gr_state": 1, 
+        "ascii": [
+          133, 
+          131, 
+          126, 
+          100, 
+          111, 
+          119, 
+          110
+        ]
+      }
+    ], 
+    "ref": "item-short_sign2.Popustop.stairs.line421", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.stairs.line421"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 116, 
+        "y": 120, 
+        "gr_state": 1, 
+        "ascii": [
+          133, 
+          131, 
+          32, 
+          32, 
+          117, 
+          112, 
+          127
+        ]
+      }
+    ], 
+    "ref": "item-short_sign3.Popustop.stairs.line421", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.stairs.line421"
+  }, 
+  {
+    "ref": "item-street.Popustop.stairs.line421", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 148, 
+        "gr_state": 13, 
+        "y": 8, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Popustop.stairs.line421"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 64, 
+        "y": 19, 
+        "gr_state": 5, 
+        "ascii": [
+          133, 
+          69, 
+          120, 
+          105, 
+          116, 
+          134, 
+          32, 
+          128, 
+          125
+        ]
+      }
+    ], 
+    "ref": "item-short_sign4.Popustop.stairs.line421", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.stairs.line421"
+  }
+]

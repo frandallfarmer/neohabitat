@@ -1,0 +1,208 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "neighbors": [
+          "context-Popustop.bboard.line4", 
+          "context-Popustop.afront2.line1106", 
+          "", 
+          "context-Popustop.stairs.line2"
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.lobby.line3", 
+    "name": "Popustop:Lobby", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 136
+      }
+    ], 
+    "ref": "item-wall.Popustop.lobby.line3", 
+    "name": "Wall", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "ref": "item-ground.Popustop.lobby.line3", 
+    "name": "Ground", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "ref": "item-door.Popustop.lobby.line3", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "connection": "context-Popustop.stairs.line2", 
+        "y": 33, 
+        "x": 8, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 76, 
+        "y": 122, 
+        "gr_state": 1, 
+        "ascii": [
+          133, 
+          129, 
+          131, 
+          131, 
+          131, 
+          76, 
+          111, 
+          98, 
+          98, 
+          121
+        ]
+      }
+    ], 
+    "ref": "item-short_sign.Popustop.lobby.line3", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 7, 
+        "gr_state": 8, 
+        "type": "Street", 
+        "orientation": 204, 
+        "x": 68
+      }
+    ], 
+    "ref": "item-street.Popustop.lobby.line3", 
+    "name": "Street", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 8, 
+        "y": 112, 
+        "gr_state": 1, 
+        "ascii": [
+          83, 
+          116, 
+          97, 
+          105, 
+          114, 
+          115
+        ]
+      }
+    ], 
+    "ref": "item-short_sign2.Popustop.lobby.line3", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 108, 
+        "style": 1, 
+        "type": "Vendo_front", 
+        "orientation": 144
+      }
+    ], 
+    "ref": "item-vendo_front.Popustop.lobby.line3", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 108, 
+        "style": 1, 
+        "type": "Vendo_inside", 
+        "orientation": 144
+      }
+    ], 
+    "ref": "item-vendo_inside.Popustop.lobby.line3", 
+    "name": "Vendo_inside", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 72, 
+        "y": 21, 
+        "gr_state": 5, 
+        "ascii": [
+          133, 
+          69, 
+          88, 
+          73, 
+          84, 
+          134, 
+          128, 
+          128, 
+          128, 
+          125
+        ]
+      }
+    ], 
+    "ref": "item-short_sign3.Popustop.lobby.line3", 
+    "name": "Short_sign", 
+    "in": "context-Popustop.lobby.line3"
+  }, 
+  {
+    "ref": "item-elevator.Popustop.lobby.line3", 
+    "mods": [
+      {
+        "orientation": 141, 
+        "gr_state": 2, 
+        "address": "Popustop-Lobby", 
+        "y": 34, 
+        "x": 48, 
+        "type": "Elevator"
+      }
+    ], 
+    "type": "item", 
+    "name": "Elevator", 
+    "in": "context-Popustop.lobby.line3"
+  }
+]

@@ -1,0 +1,329 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Popustop.hall1.line60", 
+          "context-Popustop.hall1.line92", 
+          "context-Popustop.elevator1.line55", 
+          "context-Popustop.hall4.line37"
+        ], 
+        "realm": "Popustop", 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "Popustop", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-136.elby.line56", 
+    "name": "Popustop", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 136
+      }
+    ], 
+    "ref": "item-wall.136.elby.line56", 
+    "name": "Wall", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "ref": "item-ground.136.elby.line56", 
+    "name": "Ground", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "ref": "item-door0.136.elby.line56", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "connection": "context-Popustop.hall1.line60", 
+        "y": 33, 
+        "x": 68, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "ref": "item-sign1.136.elby.line56", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 66, 
+        "ascii": [
+          49, 
+          52, 
+          56, 
+          45, 
+          49, 
+          53, 
+          57, 
+          134, 
+          32, 
+          32, 
+          32, 
+          133, 
+          125, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "ref": "item-sign2.136.elby.line56", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 126, 
+        "ascii": [
+          49, 
+          54, 
+          48, 
+          45, 
+          49, 
+          55, 
+          49, 
+          134, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          133, 
+          127, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "ref": "item-sign3.136.elby.line56", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 123, 
+        "x": 0, 
+        "ascii": [
+          49, 
+          51, 
+          54, 
+          45, 
+          49, 
+          52, 
+          55, 
+          134, 
+          32, 
+          133, 
+          126, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 8, 
+        "gr_state": 13, 
+        "type": "Street", 
+        "orientation": 148, 
+        "x": 68
+      }
+    ], 
+    "ref": "item-street.136.elby.line56", 
+    "name": "Street", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "x": 64, 
+        "y": 19, 
+        "gr_state": 5, 
+        "ascii": [
+          133, 
+          69, 
+          120, 
+          105, 
+          116, 
+          134, 
+          32, 
+          128, 
+          125
+        ]
+      }
+    ], 
+    "ref": "item-short_sign.136.elby.line56", 
+    "name": "Short_sign", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 24, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "ref": "item-tree1.136.elby.line56", 
+    "name": "Tree", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 132, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "ref": "item-tree2.136.elby.line56", 
+    "name": "Tree", 
+    "in": "context-136.elby.line56"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 229, 
+        "x": 20, 
+        "y": 129, 
+        "gr_state": 0, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-garbage_can.136.elby.line56", 
+    "name": "Garbage_can", 
+    "in": "context-136.elby.line56"
+  }
+]

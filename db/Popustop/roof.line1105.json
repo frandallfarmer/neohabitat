@@ -1,0 +1,261 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "~", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Popustop.stairs.line1021", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-roof.line1105", 
+    "name": "Roof", 
+    "type": "context"
+  }, 
+  {
+    "ref": "item-trap1.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 20, 
+        "upper_left_x": 253, 
+        "upper_right_x": 20, 
+        "lower_left_x": 253, 
+        "trapezoid_type": 3, 
+        "y": 0, 
+        "x": 141, 
+        "height": 127, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap2.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 132, 
+        "upper_left_x": 0, 
+        "upper_right_x": 131, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 32, 
+        "x": 0, 
+        "height": 16, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap3.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 136, 
+        "upper_left_x": 0, 
+        "upper_right_x": 136, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "y": 0, 
+        "x": 0, 
+        "height": 127, 
+        "type": "Trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap4.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 160, 
+        "upper_left_x": 0, 
+        "upper_right_x": 160, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 126, 
+        "x": 0, 
+        "height": 2, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap5.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 136, 
+        "upper_left_x": 0, 
+        "upper_right_x": 136, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "y": 0, 
+        "x": 0, 
+        "height": 32, 
+        "type": "Trapezoid", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap6.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 8, 
+        "upper_left_x": 0, 
+        "upper_right_x": 5, 
+        "lower_left_x": 2, 
+        "trapezoid_type": 3, 
+        "y": 0, 
+        "x": 134, 
+        "height": 176, 
+        "type": "Trapezoid", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 100, 
+        "x": 20, 
+        "style": 10, 
+        "type": "Sky", 
+        "orientation": 188
+      }
+    ], 
+    "ref": "item-sky1.roof.line1105", 
+    "name": "Sky", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 100, 
+        "x": 32, 
+        "style": 11, 
+        "type": "Sky", 
+        "orientation": 8
+      }
+    ], 
+    "ref": "item-sky2.roof.line1105", 
+    "name": "Sky", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap7.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 7, 
+        "upper_left_x": 0, 
+        "upper_right_x": 7, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 0, 
+        "x": 0, 
+        "height": 144, 
+        "type": "Trapezoid", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "item-glue.roof.line1105"
+  }, 
+  {
+    "ref": "item-glue.roof.line1105", 
+    "mods": [
+      {
+        "y_offset_2": 240, 
+        "y_offset_3": 0, 
+        "y_offset_1": 0, 
+        "y_offset_6": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 255, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 0, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 130, 
+        "x": 84, 
+        "type": "Glue", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }, 
+  {
+    "ref": "item-trap8.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 16, 
+        "upper_left_x": 8, 
+        "upper_right_x": 8, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 1, 
+        "x": 1, 
+        "height": 150, 
+        "type": "Trapezoid", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "item-glue.roof.line1105"
+  }, 
+  {
+    "ref": "item-trap9.roof.line1105", 
+    "mods": [
+      {
+        "lower_right_x": 132, 
+        "upper_left_x": 0, 
+        "upper_right_x": 132, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 44, 
+        "x": 0, 
+        "height": 132, 
+        "type": "Trapezoid", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-roof.line1105"
+  }
+]

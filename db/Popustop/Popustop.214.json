@@ -1,0 +1,175 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Popustop.hall1.line141", 
+          "", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "locked": true, 
+        "is_turf": true, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.214", 
+    "name": "Popustop #214", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 48
+      }
+    ], 
+    "ref": "item-ground.Popustop.214", 
+    "name": "Ground", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "ref": "item-wall.Popustop.214", 
+    "name": "Wall", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 92, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-display_case.Popustop.214", 
+    "name": "Display_case", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_width": 20, 
+        "x": 20, 
+        "y": 104, 
+        "gr_state": 2, 
+        "type": "Window"
+      }
+    ], 
+    "ref": "item-window.Popustop.214", 
+    "name": "Window", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "ref": "item-door.Popustop.214", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "connection": "context-Popustop.hall1.line141", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "x": 144, 
+        "y": 147, 
+        "gr_state": 1, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-garbage_can.Popustop.214", 
+    "name": "Garbage_can", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_width": 20, 
+        "x": 56, 
+        "y": 63, 
+        "gr_state": 1, 
+        "type": "Window"
+      }
+    ], 
+    "ref": "item-window2.Popustop.214", 
+    "name": "Window", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 17, 
+        "gr_width": 24, 
+        "y": 130, 
+        "x": 96, 
+        "type": "Chair", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-chair.Popustop.214", 
+    "name": "Chair", 
+    "in": "context-Popustop.214"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "gr_width": 24, 
+        "y": 131, 
+        "x": 44, 
+        "type": "Chair", 
+        "open_flags": 3
+      }
+    ], 
+    "ref": "item-chair2.Popustop.214", 
+    "name": "Chair", 
+    "in": "context-Popustop.214"
+  }
+]

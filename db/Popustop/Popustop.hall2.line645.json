@@ -1,0 +1,208 @@
+[
+  {
+    "capacity": 6, 
+    "mods": [
+      {
+        "town_dir": "!ASTROESC!177", 
+        "neighbors": [
+          "context-Popustop.hall3.line649", 
+          "", 
+          "context-Popustop.hall1.line641", 
+          ""
+        ], 
+        "realm": "Popustop", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "!ASTROESC!177", 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-Popustop.hall2.line645", 
+    "name": "Popustop", 
+    "type": "context"
+  }, 
+  {
+    "ref": "item-wall.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 192
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-ground.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-door0.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 140, 
+        "connection": "context-Popustop.715", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-tree1.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 44, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-door1.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 148, 
+        "connection": "context-Popustop.716", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 68, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-tree2.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 116, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 33
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-door2.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 156, 
+        "connection": "context-Popustop.717", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 132, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-sign.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 90, 
+        "x": 8, 
+        "ascii": [
+          32, 
+          55, 
+          49, 
+          53, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          55, 
+          49, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          55, 
+          49, 
+          55
+        ], 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Popustop.hall2.line645"
+  }, 
+  {
+    "ref": "item-street.Popustop.hall2.line645", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 144, 
+        "gr_state": 6, 
+        "y": 8, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Popustop.hall2.line645"
+  }
+]
