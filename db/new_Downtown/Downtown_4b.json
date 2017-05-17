@@ -3,7 +3,7 @@
     "ref": "context-Downtown_4b", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Emporium", 
+    "name": "Adventure Ymporium", 
     "mods": [
       {
         "town_dir": "", 
@@ -115,12 +115,12 @@
         "style": 1, 
         "orientation": 148, 
         "key_lo": 0, 
-        "connection": "context-Downtown_4b", 
+        "connection": "context-Downtown_4a", 
         "key_hi": 0, 
         "y": 32, 
         "x": 124, 
         "type": "Door", 
-        "open_flags": 0
+        "open_flags": 2
       }
     ], 
     "type": "item", 
