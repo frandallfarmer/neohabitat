@@ -136,10 +136,16 @@
     "type": "item", 
     "mods": [
       {
+	    "display_item": 1,
         "y": 0, 
-        "x": 108, 
+        "x": 108,
+        "key_lo": 0, 
+        "key_hi": 0, 		
         "style": 1, 
-        "type": "Vendo_front", 
+        "type": "Vendo_front",
+		"open_flags": 0,
+        "prices": [20, 5],
+        "item_price": 5,		
         "orientation": 144
       }
     ], 
@@ -152,16 +158,55 @@
     "mods": [
       {
         "y": 27, 
-        "x": 108, 
+        "x": 108,
+        "key_lo": 0, 
+        "key_hi": 0,		
         "style": 1, 
-        "type": "Vendo_inside", 
+        "type": "Vendo_inside",
+        "open_flags": 0,	
         "orientation": 144
       }
     ], 
     "ref": "item-vendo_inside.Popustop.lobby.line3", 
     "name": "Vendo_inside", 
     "in": "context-Popustop.lobby.line3"
-  }, 
+  },
+  {
+    "ref": "item-book.Popustop.lobby.line3", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+		"path": "text-weeklyrant.1",
+		"title": "Weekly Rant, Commemorative First Issue",
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_inside.Popustop.lobby.line3"
+  },
+  {
+    "ref": "item-book1.Popustop.lobby.line3", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+		"path": "text-weeklyrant.current",
+		"title": "Weekly Rant, Perpetual Current Issue",
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-vendo_front.Popustop.lobby.line3"
+  },   
   {
     "type": "item", 
     "mods": [

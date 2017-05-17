@@ -1,0 +1,486 @@
+[
+  {
+    "ref": "context-Downtown_4a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Ymporium Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_4b", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.62ef.Downtown_4a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4a"
+  }, 
+  {
+    "ref": "item-paper.faaa.Downtown_4a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Paper", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Paper", 
+    "in": "item-vendo_front.2a53.Downtown_4a"
+  }, 
+  {
+    "ref": "item-escape_device.4ed8.Downtown_4a", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "charge": 3, 
+        "type": "Escape_device", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Escape_device", 
+    "in": "item-vendo_front.2a53.Downtown_4a"
+  }, 
+  {
+    "ref": "item-compass.1b00.Downtown_4a", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Compass", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Compass", 
+    "in": "item-vendo_front.2a53.Downtown_4a"
+  }, 
+  {
+    "ref": "item-matchbook.01fc.Downtown_4a", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Matchbook", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Matchbook", 
+    "in": "item-vendo_front.2a53.Downtown_4a"
+  }, 
+  {
+    "ref": "item-shovel.301d.Downtown_4a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Shovel", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Shovel", 
+    "in": "item-vendo_front.2a53.Downtown_4a"
+  }, 
+  {
+    "ref": "item-vendo_front.2a53.Downtown_4a", 
+    "mods": [
+      {
+        "display_item": 5, 
+        "orientation": 120, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 184, 
+        "type": "Vendo_front",
+        "prices": [22, 1125, 195, 4, 150, 150],		
+        "open_flags": 0, 
+        "item_price": 150
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.11d6.Downtown_4a"
+  }, 
+  {
+    "ref": "item-flashlight.3f0f.Downtown_4a", 
+    "mods": [
+      {
+        "on": 0, 
+        "style": 1, 
+        "orientation": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Flashlight"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flashlight", 
+    "in": "item-vendo_inside.11d6.Downtown_4a"
+  }, 
+  {
+    "ref": "item-vendo_inside.11d6.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 12, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_4a"
+  }, 
+  {
+    "ref": "item-bag.ab64.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_front.8a30.Downtown_4a"
+  }, 
+  {
+    "ref": "item-bag.4b62.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_front.8a30.Downtown_4a"
+  }, 
+  {
+    "ref": "item-box.8527.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 80, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 4, 
+        "x": 4, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-vendo_front.8a30.Downtown_4a"
+  }, 
+  {
+    "ref": "item-box.ad07.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 40, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 3, 
+        "x": 3, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-vendo_front.8a30.Downtown_4a"
+  }, 
+  {
+    "ref": "item-box.6fe2.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-vendo_front.8a30.Downtown_4a"
+  }, 
+  {
+    "ref": "item-vendo_front.8a30.Downtown_4a", 
+    "mods": [
+      {
+        "display_item": 5, 
+        "orientation": 120, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 181, 
+        "type": "Vendo_front",
+        "prices": [25, 25, 80, 88, 79, 45],		
+        "open_flags": 0, 
+        "item_price": 45
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.83b4.Downtown_4a"
+  }, 
+  {
+    "ref": "item-bag.1615.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 56, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_inside.83b4.Downtown_4a"
+  }, 
+  {
+    "ref": "item-vendo_inside.83b4.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 156, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 60, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_4a"
+  }, 
+  {
+    "ref": "item-knife.475a.Downtown_4a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Knife", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-vendo_front.a4b6.Downtown_4a"
+  }, 
+  {
+    "ref": "item-club.825f.Downtown_4a", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Club", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Club", 
+    "in": "item-vendo_front.a4b6.Downtown_4a"
+  }, 
+  {
+    "ref": "item-gun.bf30.Downtown_4a", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Gun", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Gun", 
+    "in": "item-vendo_front.a4b6.Downtown_4a"
+  }, 
+  {
+    "ref": "item-gun.f13e.Downtown_4a", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "style": 1, 
+        "type": "Gun", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Gun", 
+    "in": "item-vendo_front.a4b6.Downtown_4a"
+  }, 
+  {
+    "ref": "item-vendo_front.a4b6.Downtown_4a", 
+    "mods": [
+      {
+        "display_item": 4, 
+        "orientation": 188, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front",
+        "prices": [395, 129, 800, 850, 425],		
+        "open_flags": 0, 
+        "item_price": 395
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.584b.Downtown_4a"
+  }, 
+  {
+    "ref": "item-knife.4244.Downtown_4a", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Knife", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-vendo_inside.584b.Downtown_4a"
+  }, 
+  {
+    "ref": "item-vendo_inside.584b.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 188, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 108, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_4a"
+  }, 
+  {
+    "ref": "item-wall.6d1f.Downtown_4a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4a"
+  }, 
+  {
+    "ref": "item-sign.81d7.Downtown_4a", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 108, 
+        "x": 12, 
+        "ascii": [
+          131,
+          83,		  
+          117, 
+          112, 
+          112, 
+          108, 
+          105, 
+          101, 
+          115, 
+          32, 
+          32, 
+          32, 
+          128, 
+          67, 
+          111, 
+          110, 
+          116, 
+          97, 
+          105, 
+          110, 
+          101, 
+          114, 
+          115, 
+          32, 
+          32, 
+          32, 
+          128, 
+          87, 
+          101, 
+          97, 
+          112, 
+          111, 
+          110, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_4a"
+  }
+]
