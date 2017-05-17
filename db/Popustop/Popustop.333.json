@@ -13,8 +13,9 @@
         "realm": "Popustop", 
         "orientation": 1, 
         "nitty_bits": 3, 
-        "locked": true, 
-        "is_turf": true, 
+        "locked": true,
+        "is_turf": true,
+        "resident": "user-randy",
         "port_dir": "", 
         "type": "Region"
       }

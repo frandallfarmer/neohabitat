@@ -59,6 +59,7 @@
 	"name" : "Randy",
 	"mods" : [ {
 		"type" : "Avatar",
+		"turf": "context-Popustop.333",
 		"x" : 0,
 		"y" : 150,
 		"bodyType" : "male",
