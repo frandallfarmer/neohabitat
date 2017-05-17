@@ -634,6 +634,10 @@ public class Avatar extends Container implements UserMod {
 	public static final int COPOREAL_LAST_GHOST		= 3;
 
 	public void switch_to_ghost(User from) {
+		if (sittingIn != 0) {
+			send_reply_error(from);
+			return;
+		}
 		/* First, transform to a ghost (which will create one if needed) */
 		Ghost ghost = current_region().getGhost();
 		ghost.total_ghosts++;
@@ -643,7 +647,10 @@ public class Avatar extends Container implements UserMod {
 				"newNoid", GHOST_NOID,
 				"balance", bankBalance);
 		send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", noid); // Tell the neighbors who vanished...		
-		
+		x = SAFE_X;			// Prepare for when the avatar comes back. Or reload from DB
+		y = SAFE_Y;
+		activity = STAND;
+		gen_flags[MODIFIED] = true;
 		/* Clean up the region, recovering scarce c64 resources and noids */
 		for (int i = 0; i < capacity(); i++) {
 			HabitatMod obj = contents(i);
@@ -689,7 +696,6 @@ public class Avatar extends Container implements UserMod {
 		} else {
 			x = SAFE_X;
 			y = SAFE_Y;
-			activity = STAND;
 			gen_flags[MODIFIED] = true;
 //			msg.addParameter("body", object().encode(EncodeControl.forClient));
 			msg.addParameter("body", 0);
