@@ -15,6 +15,7 @@
 	"name" : "Stu",
 	"mods" : [ {
 		"type" : "Avatar",
+        "turf": "context-Popustop.666",
 		"x" : 0,
 		"y" : 110,
 		"bodyType" : "male",
