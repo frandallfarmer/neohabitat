@@ -26,6 +26,7 @@ const DefDefs	= { context:	'context-test',
 		elko:		'127.0.0.1:9000',
 		mongo:		'127.0.0.1:27017/elko',
 		rate:		1200,
+		realm:  'Popustop',
 		trace:		'info'};
 var	 Defaults	= DefDefs;
 
@@ -37,6 +38,7 @@ try {
 			elko:		userDefs.elko		|| DefDefs.elko,
 			mongo:		userDefs.mongo  	|| DefDefs.mongo,
 			rate:		userDefs.rate		|| DefDefs.rate,
+			realm:   userDefs.realm || DefDefs.realm,
 			trace:		userDefs.trace		|| DefDefs.trace};
 } catch (e) {
 	console.log("Missing/invalid defaults.elko configuration file. Proceeding with factory defaults.");
@@ -52,6 +54,7 @@ const Argv 		 = require('yargs')
 .option('elko',		{ alias: 'e', default: Defaults.elko,    describe: 'Host:Port of the Habitat Elko Server'})
 .option('mongo',	{ alias: 'm', default: Defaults.mongo,   describe: 'Mongodb server URL'})
 .option('rate',		{ alias: 'r', default: Defaults.rate,	 describe: 'Data rate in bits-per-second for transmitting to c64 clients'})
+.option('realm',		{ alias: 'a', default: Defaults.realm,	 describe: 'Realm within which to assign turfs'})
 .argv;
 
 Trace.level 	 = Argv.trace;
@@ -85,6 +88,70 @@ function findOne(db, query, callback) {
 	db.collection('odb').findOne(query, callback);
 }
 
+function userHasTurf(user) {
+	return (
+		user.mods[0].turf !== undefined && 
+		user.mods[0].turf != "" &&
+		user.mods[0].turf != "context-test"
+	);
+}
+
+function ensureTurfAssigned(db, userRef, callback) {
+	db.collection('odb').findOne({
+		"ref": userRef
+	}, function(err, user) {
+		Assert.equal(err, null);
+		Assert.notEqual(user, null);
+
+		// Don't assign a turf Region -to a User if one is already assigned.
+		if (userHasTurf(user)) {
+			Trace.debug("User %s already has a turf Region assigned: %s",
+				userRef, user.mods[0].turf);
+			callback();
+			return;
+		}
+
+		// Searches for an available turf Region and assigns it to the User if found.
+		db.collection('odb').findOne({
+			"mods.0.type": "Region",
+			"mods.0.realm": Argv.realm,
+			"mods.0.is_turf": true,
+			$or: [
+				{ "mods.0.resident": { $exists: false } },
+				{ "mods.0.resident": "" }
+			]
+		}, function(err, region) {
+			Assert.equal(err, null);
+			if (region === null) {
+				Trace.error("Unable to find an available turf Region for User: %j", user);
+				callback();
+				return;
+			}
+			Trace.debug("Assigning turf Region %s to Avatar %s", region.ref, user.ref);
+
+			// Assigns the available region as the given user's turf.
+			user.mods[0]['turf'] = region.ref;
+			region.mods[0]['resident'] = user.ref;
+
+			// Updates the User's Elko document with the turf assignment.
+			db.collection('odb').updateOne(
+				{ref: region.ref},
+				region,
+				{upsert: true},
+				function(err, result) {
+					Assert.equal(err, null);
+					db.collection('odb').updateOne(
+						{ref: user.ref},
+						user,
+						{upsert: true},
+						function(err, result) {
+							Assert.equal(err, null);
+							callback();
+						});
+				});
+		});
+	});
+}
 
 function insertUser(db, user, callback) {
 	db.collection('odb').updateOne(
@@ -174,7 +241,7 @@ function confirmOrCreateUser(fullName) {
 		Assert.equal(null, err);
 		findOne(db, {ref: userRef}, function(err, result) {
 			if (result === null || Argv.force) {
-				insertUser(db, {
+				var newUser = {
 					"type": "user",
 					"ref": userRef,
 					"name": fullName,
@@ -188,18 +255,24 @@ function confirmOrCreateUser(fullName) {
 							"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
 							"nitty_bits": 0
 						}
-						]
-				}, function() {
+					]
+				};
+				insertUser(db, newUser, function() {
 					addDefaultHead(db, userRef, fullName);
 					addPaperPrime(db, userRef, fullName);
 					addDefaultTokens(db, userRef, fullName);
-					db.close();
+					ensureTurfAssigned(db, userRef, function() {
+						db.close();
+					});
 				});
 			} else {
-				db.close();
+				ensureTurfAssigned(db, userRef, function() {
+					db.close();
+				});
 			}
 		});
 	});
+
 	return userRef;
 }
 
