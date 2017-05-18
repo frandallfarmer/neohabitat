@@ -111,7 +111,7 @@
     "mods": [
       {
         "display_item": 5, 
-        "orientation": 120, 
+        "orientation": 152, 
         "key_hi": 0, 
         "key_lo": 0, 
         "gr_state": 1, 
@@ -250,7 +250,7 @@
     "mods": [
       {
         "display_item": 5, 
-        "orientation": 120, 
+        "orientation": 0, 
         "key_hi": 0, 
         "key_lo": 0, 
         "gr_state": 1, 
@@ -364,7 +364,7 @@
     "mods": [
       {
         "display_item": 4, 
-        "orientation": 188, 
+        "orientation": 240, 
         "key_hi": 0, 
         "key_lo": 0, 
         "gr_state": 1, 

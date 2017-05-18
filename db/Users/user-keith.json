@@ -5,6 +5,7 @@
 	"mods": [
 		{
 			"type": "Avatar",
+			"turf": "context-Popustop.166",
 			"x": 0,
 			"y": 150,			
 			"bodyType": "male",
@@ -68,7 +69,7 @@
 	"in" : "user-keith",
 	"mods" : [ {
 		"type" : "Head",
-		"style" : 160,
+		"style" : 132,
 		"y" : 6
 	} ]
 } ]

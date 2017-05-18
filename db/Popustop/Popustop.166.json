@@ -1,6 +1,6 @@
 [
   {
-    "capacity": 6, 
+    "capacity": 64, 
     "mods": [
       {
         "town_dir": "", 
@@ -14,7 +14,8 @@
         "orientation": 3, 
         "nitty_bits": 3, 
         "locked": true, 
-        "is_turf": true, 
+        "is_turf": true,
+        "resident": "user-keith",
         "port_dir": "", 
         "type": "Region"
       }
