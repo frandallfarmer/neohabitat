@@ -284,30 +284,7 @@ public class Paper extends HabitatMod implements Copyable {
 
     @JSONMethod
     public void PSENDMAIL(User from) {
-        Avatar avatar = avatar(from);
-        boolean success;
-        Paper paperInHands = null;
-        HabitatMod inHands = avatar.contents(HANDS);
-
-        if (holding(avatar, this)) {
-            if (inHands instanceof Paper) {
-                paperInHands = (Paper) inHands;
-                success = paperInHands.send_mail_message(from);
-            } else {
-                success = false;
-            }
-        } else {
-            success = false;
-        }
-
-        if (success) {
-            send_reply_success(from);
-            send_goaway_msg(paperInHands.noid);
-            destroy_object(paperInHands);
-            avatar.inc_record(Constants.HS$mail_send_count);
-        } else {
-            send_reply_error(from);
-        }
+        illegal(from, this.HabitatModName() + ".PSENDMAIL");
     }
 
     private boolean send_mail_message(User from) {
