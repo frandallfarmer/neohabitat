@@ -451,6 +451,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		 * int original_position = position() + 1; Original dead code that is
 		 * never referenced. FRF
 		 */
+		boolean previousContainerWasOpaque = container_is_opaque(container(), y);
 
 		if (!change_containers(this, (Container) avatar(from), HANDS, true)) {
 			send_reply_error(from);
@@ -467,10 +468,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		 */
 		if (selfClass == CLASS_FLASHLIGHT) {
 			if (((Flashlight) this).on == TRUE) {
-				if (container_is_opaque(cont,
-						y)) { /* TODO should y be position() here? FRF */
-					current_region().lighting = current_region().lighting + 1;
-					send_broadcast_msg(noid, "CHANGELIGHT_$", "state", 1);
+				if (previousContainerWasOpaque) {
+					current_region().lighting += 1;
+					send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", +1);
 				}
 			}
 		}
@@ -716,6 +716,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		}
 
 		/* Preemptive tests complete! We're ready to change containers! */
+		boolean previousContainerWasOpaque = container_is_opaque(container(), y);
 
 		if (!change_containers(this, cont, pos_y, false)) {
 			send_reply_error(from);
@@ -760,11 +761,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		 * If the object is a switched on flashlight and is being put into an
 		 * opaque container, turn down the lights.
 		 */
-		if (contClass == CLASS_FLASHLIGHT) {
+		if (selfClass == CLASS_FLASHLIGHT) {
 			if (((Flashlight) this).on == TRUE) {
-				if (container_is_opaque(cont, pos_y)) {
-					current_region().lighting = current_region().lighting - 1;
-					send_broadcast_msg(noid, "CHANGELIGHT_$", "change", -1);
+				if (container_is_opaque(cont, y)) {
+					current_region().lighting -= 1;
+					send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", -1);
 				}
 			}
 		}
@@ -1284,7 +1285,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				return (false);
 			else
 				return (true);
-		return this.opaque_container(); /* TODO Discuss with Chip */
+		return cont.opaque_container();
 	}
 
 	/**
@@ -3183,52 +3184,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 */    
 	public boolean isSeating() {
 		return isSeating(this);
-	}
-
-	/**
-	 * Originally coded as lights_on in helpers.pl1, this method ensures
-	 * that necessary side effects are applied whenever an Avatar is built.
-	 * 
-	 * @param who
-	 * 			  The avatar upon which to perform in-hands side effects.
-	 */
-	public void in_hands_side_effects(Avatar who) {
-		if (who.contents(HANDS) != null) {
-			HabitatMod inHands = who.contents(HANDS);
-			if (inHands.HabitatClass() == CLASS_FLASHLIGHT) {
-				Flashlight flashlight = (Flashlight) inHands;
-				Region curRegion = current_region();
-				if (flashlight.on == TRUE) {
-					curRegion.lighting += 1;
-					send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "SUCCESS", 1);
-				}
-			} else if (inHands.HabitatClass() == CLASS_COMPASS) {
-				Compass compass = (Compass) inHands;
-				compass.gr_state = current_region().orientation;
-				compass.gen_flags[MODIFIED] = true;
-			}
-		}
-	}
-
-	/**
-	 * Originally coded as lights_off in helpers.pl1, this method ensures
-	 * that necessary side effects are applied whenever an Avatar becomes a ghost.
-	 *
-	 * @param who
-	 * 			  The Avatar upon which to perform in-hands side effects during ghosting.
-	 */
-	public void to_ghost_side_effects(Avatar who) {
-		if (who.contents(HANDS) != null) {
-			HabitatMod inHands = who.contents(HANDS);
-			if (inHands.HabitatClass() == CLASS_FLASHLIGHT) {
-				Flashlight flashlight = (Flashlight) inHands;
-				Region curRegion = current_region();
-				if (flashlight.on == TRUE) {
-					curRegion.lighting -= 1;
-					send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "SUCCESS", -1);
-				}
-			}
-		}
 	}
 
 	/**

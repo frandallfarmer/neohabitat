@@ -21,7 +21,7 @@ public abstract class Toggle extends HabitatMod {
      * On-off state. Set using the integer constants: TRUE/FALSE *not* the
      * boolean: true/false
      */
-    protected int on = FALSE;
+    public int on = FALSE;
     
     public Toggle(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger on) {

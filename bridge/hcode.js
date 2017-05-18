@@ -306,7 +306,7 @@ this.SERVER_OPS = {
 		"RETURN$": 				{ reqno: 1 },
 		"CHANGELIGHT_$": 		{ reqno: 13,
 			toClient: function (o, b) {
-				b.add(o.SUCCESS);
+				b.add(o.adjustment);
 			}
 		},
 		"ROLL$": 				{ reqno: 8,	

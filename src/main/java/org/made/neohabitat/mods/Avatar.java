@@ -307,9 +307,6 @@ public class Avatar extends Container implements UserMod {
 		Region.addToNoids(this);
 		note_object_creation(this);
 
-		// If the avatar has any objects in their hands, perform any necessary side effects.
-		in_hands_side_effects(this);
-
 		// If walking in, set the new (x,y) based on the old (x,y), the entry
 		// direction, the rotation of the region transition, the horizon of the
 		// new region, and so on 
@@ -625,7 +622,6 @@ public class Avatar extends Container implements UserMod {
 			if (holding_restricted_object())
 				object_say(from, "You can't turn into a ghost while you are holding that.");
 			else {
-				// TODO LIGHTING lights_off(this)
 				switch_to_ghost(from);
 				return;
 			}
@@ -655,6 +651,7 @@ public class Avatar extends Container implements UserMod {
 		y = SAFE_Y;
 		activity = STAND;
 		gen_flags[MODIFIED] = true;
+		current_region().lights_off(this);
 		/* Clean up the region, recovering scarce c64 resources and noids */
 		for (int i = 0; i < capacity(); i++) {
 			HabitatMod obj = contents(i);
@@ -706,6 +703,7 @@ public class Avatar extends Container implements UserMod {
 			from.send(msg);
 			//			announce_object_to_neighbors(from, object(), current_region());
 			fakeMakeMessage(object(), current_region());
+			current_region().lights_on(this);
 			for (int i = capacity() - 1; i >= 0; i--) {			// TODO - encode the avatar and contents together instead of this HACK! FRF
 				HabitatMod obj = contents(i);
 				if (obj != null)
@@ -914,7 +912,7 @@ public class Avatar extends Container implements UserMod {
 			sayUserList(from);
 			break;
 		case 13: // F5 & F6 (Change Skin Color)
-			object_say(from, String.format("Current heap: %d", current_region().space_usage));
+			object_say(from, String.format("Light level: " + current_region().lighting + " Current heap: %d", current_region().space_usage));
 			send_reply_success(from);
 			break;
 		default:

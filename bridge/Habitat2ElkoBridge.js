@@ -1162,11 +1162,11 @@ function parseIncomingElkoServerMessage(client, server, data) {
 			
 			client.state.contentsVector =  new ContentsVector(); 		// May be used by HEREIS/makes after region arrival
 			
-			if (client.state.numAvatars === 1) {
-				var caughtUpMessage = new HabBuf(true, true, HCode.PHANTOM_REQUEST, HCode.REGION_NOID, HCode.MESSAGE_CAUGHT_UP);
-				caughtUpMessage.add(1);			// TRUE
-				caughtUpMessage.send(client);
-			}
+//			if (client.state.numAvatars === 1) {
+//				var caughtUpMessage = new HabBuf(true, true, HCode.PHANTOM_REQUEST, HCode.REGION_NOID, HCode.MESSAGE_CAUGHT_UP);
+//				caughtUpMessage.add(1);			// TRUE
+//				caughtUpMessage.send(client);
+//			}
 			return;
 		}
 		if (client.state.otherNoid) {		// Other avatar needs to go out as one package.	

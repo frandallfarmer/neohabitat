@@ -18,6 +18,7 @@ import org.elkoserver.util.ArgRunnable;
 import org.made.neohabitat.Constants;
 import org.made.neohabitat.Container;
 import org.made.neohabitat.HabitatMod;
+import org.made.neohabitat.Toggle;
 
 
 
@@ -88,7 +89,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     /** A collection of server-side region status flags */
     public boolean    nitty_bits[] = new boolean[32];
     /** The lighting level in the room. 0 is Dark. */
-    public int        lighting     = 1;
+    public int        lighting     = 0;
     /** The horizon line for the region to clip avatar motion */
     public int        depth        = DEFAULT_REGION_DEPTH;
     /** The maximum number of Avatars that can be in this Region */
@@ -130,7 +131,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             this.nitty_bits = unpackBits(nitty_bits.value());
         }
         this.depth = depth.value(DEFAULT_REGION_DEPTH);
-        this.lighting = lighting.value(1);
+        this.lighting = lighting.value(0);
         this.max_avatars = max_avatars.value(DEFAULT_MAX_AVATARS);
         this.neighbors = neighbors;
         this.town_dir = town_dir.value("");
@@ -251,6 +252,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         	if (ghost.total_ghosts == 0) {
         		destroyGhost(who);
         	}
+        } else {
+        	lights_off(avatar);
         }
     	avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
     	avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
@@ -487,8 +490,41 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     		}
     	}
     	who.firstConnection = false;
+		// If the avatar has any objects in their hands, perform any necessary side effects.
+		lights_on(who);
+    }
+    	
+    	
+    public void lights_off(Avatar avatar) {
+    	if (!empty_handed(avatar)) {
+    		HabitatMod light = avatar.contents(HANDS);
+    		if (light.HabitatClass() == CLASS_FLASHLIGHT) {
+    			if (((Toggle) light).on == TRUE) {
+    				lighting -= 1;
+    				send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", -1);
+    			}
+    		}    		
+    	}
     }
     
+    public void lights_on(Avatar avatar) {
+    	if (!empty_handed(avatar)) {
+    		HabitatMod held = avatar.contents(HANDS);
+            /* If holding a flashheld.on entry, turn on the held. */
+    		if (held.HabitatClass() == CLASS_FLASHLIGHT) {
+    			if (((Toggle) held).on == TRUE) {
+    				lighting += 1;
+    				send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", +1);
+    			}
+    		}    		
+            /* If holding a compass, set the arrow pointer */
+    		if (held.HabitatClass() ==  CLASS_COMPASS) {
+    			held.gr_state = orientation;
+    			held.gen_flags[MODIFIED] = true;
+    		}
+    	}
+    }
+        
     /**
      * Handle request to change the Message of the Day.
      * Presently, this is a non-persistent change.
