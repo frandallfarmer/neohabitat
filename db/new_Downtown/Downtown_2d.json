@@ -3,11 +3,11 @@
     "ref": "context-Downtown_2d", 
     "capacity": 64, 
     "type": "context", 
-    "name": "For Rent F Interior", 
+    "name": "Fine Furniture interior", 
     "mods": [
       {
-        "town_dir": "",
-        "port_dir": "",
+        "town_dir": "}",
+        "port_dir": "}",
         "type": "Region",
         "orientation": 0,
         "neighbors": [
@@ -49,7 +49,71 @@
     "type": "item", 
     "name": "Countertop", 
     "in": "context-Downtown_2d"
-  }, 
+  },
+  {
+    "ref": "item-vendo_front.2a53.Downtown_2d", 
+    "mods": [
+      {
+        "display_item": 1, 
+        "orientation": 160, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 184, 
+        "type": "Vendo_front",
+        "prices": [400, 400],		
+        "open_flags": 0, 
+        "item_price": 400
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.11d6.Downtown_2d"
+  },
+  {
+    "ref": "item-vendo_inside.11d6.Downtown_2d", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 8, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_2d"
+  },
+  {
+	"ref" : "item-changomatic.b89d.Downtown_2d",
+	"mods" : [
+      {
+		"type" : "Changomatic",
+		"y": 1,
+		"x": 1
+	  }
+	],
+	"type" : "item",
+    "name" : "Paintin' yer turf",
+    "in": "item-vendo_inside.11d6.Downtown_2d"
+  },
+  {
+    "ref": "item-changomatic.faaa.Downtown_2d", 
+    "mods": [
+      {
+	    "type": "Changomatic",
+        "y": 0, 
+        "x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Paintin' yer turf", 
+    "in": "item-vendo_front.2a53.Downtown_2d"
+  },   
   {
     "ref": "item-wall0eac", 
     "mods": [
@@ -63,6 +127,69 @@
     ], 
     "type": "item", 
     "name": "Wall", 
+    "in": "context-Downtown_2d"
+  },
+  {
+    "ref": "item-sign1.81d7.Downtown_2d", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 108, 
+        "x": 8, 
+        "ascii": [
+          131,
+          83,		  
+          117, 
+          112, 
+          112, 
+          108, 
+          105, 
+          101, 
+          115
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_2d"
+  },
+  {
+    "ref": "item-sign2.68e9.Downtown_2d", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 106, 
+        "x": 68, 
+        "ascii": [
+          131, 
+          131, 
+          133, 
+          70,
+		  105,
+		  110,
+		  101,  
+          32,
+          134,
+          32,
+          32,		  
+          70,
+		  117,
+		  114,
+		  110,
+		  105,
+		  116,
+		  117,
+		  114,
+		  101
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
     "in": "context-Downtown_2d"
   }
 ]

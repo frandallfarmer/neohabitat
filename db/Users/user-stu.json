@@ -25,6 +25,15 @@
 	} ]
 }, {
 	"type" : "item",
+	"ref" : "item-stu.changomatic",
+	"name" : "Paintin' yer turf",
+	"in" : "user-stu",
+	"mods" : [ {
+		"type" : "Changomatic",
+		"y" : 2
+	} ]
+},  {
+	"type" : "item",
 	"ref" : "item-stu.godtool",
 	"name" : "Tool to rule the universe.",
 	"in" : "user-stu",
