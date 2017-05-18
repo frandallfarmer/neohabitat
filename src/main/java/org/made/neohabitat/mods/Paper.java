@@ -9,6 +9,7 @@ import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 
 import org.elkoserver.util.ArgRunnable;
+import org.made.neohabitat.Constants;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
@@ -265,7 +266,7 @@ public class Paper extends HabitatMod implements Copyable {
                 }*/
                 announce_it = true;
             }
-            send_neighbor_msg(from, noid, "GET$", "target", noid, "how", how);
+            send_neighbor_msg(from, avatar.noid, "GET$", "target", noid, "how", how);
         } else {
             success = false;
         }
@@ -284,6 +285,10 @@ public class Paper extends HabitatMod implements Copyable {
     @JSONMethod
     public void PSENDMAIL(User from) {
         illegal(from, this.HabitatModName() + ".PSENDMAIL");
+    }
+
+    private boolean send_mail_message(User from) {
+        return true;
     }
 
     /**
