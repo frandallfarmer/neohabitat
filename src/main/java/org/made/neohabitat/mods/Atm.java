@@ -43,10 +43,12 @@ public class Atm extends HabitatMod implements Copyable {
         return false;
     }
 
+	public boolean changeable() { return true; }
+
     public boolean filler() {
         return false;
     }
-
+    
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
     public Atm(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
         super(style, x, y, orientation, gr_state, restricted);

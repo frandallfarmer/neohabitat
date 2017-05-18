@@ -45,6 +45,8 @@ public class Fountain extends Oracular implements Copyable {
         return false;
     }
     
+	public boolean  changeable		 () { return true; }
+
     public boolean filler() {
         return false;
     }

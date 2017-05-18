@@ -43,6 +43,8 @@ public class Ground extends Walkable implements Copyable {
         return true;
     }
     
+	public boolean  changeable		 () { return true; }
+	
     public boolean opaque_container() {
         return false;
     }

@@ -16,6 +16,8 @@ import org.elkoserver.json.JSONLiteral;
  */
 public abstract class Coinop extends HabitatMod {
 
+	public boolean changeable() { return true; }
+
 	/** A server-only field. How many tokens has this coin operated device taken in? */
 	protected int take = 0;
 

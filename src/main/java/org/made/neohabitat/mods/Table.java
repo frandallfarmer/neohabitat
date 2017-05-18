@@ -44,6 +44,8 @@ public class Table extends Openable implements Copyable {
         return false;
     }
     
+	public boolean  changeable		 () { return true; }
+
     public boolean filler() {
         return false;
     }

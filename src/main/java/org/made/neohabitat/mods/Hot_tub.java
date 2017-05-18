@@ -43,6 +43,8 @@ public class Hot_tub extends HabitatMod implements Copyable {
     public boolean opaque_container() {
         return false;
     }
+    
+	public boolean  changeable		 () { return true; }
 
     public boolean filler() {
         return false;

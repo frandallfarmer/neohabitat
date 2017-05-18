@@ -174,6 +174,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	}
 
 	/**
+	 * Can this be painted with a Changomatic?    
+	 * @return
+	 */
+	public boolean changeable() {
+		return false;
+	}
+
+	
+	/**
 	 * Constructor.
 	 * 
 	 * This is an abstract class, and the constructor is only ever called by the

@@ -47,6 +47,8 @@ public class Vendo_front extends Openable implements Copyable {
         return true;
     }
     
+	public boolean  changeable		 () { return true; }
+
     public boolean filler() {
         return false;
     }

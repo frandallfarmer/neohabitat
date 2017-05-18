@@ -44,6 +44,8 @@ public class Flat extends Walkable implements Copyable {
     public boolean opaque_container() {
         return false;
     }
+    
+	public boolean  changeable		 () { return true; }
 
     public boolean filler() {
         return false;

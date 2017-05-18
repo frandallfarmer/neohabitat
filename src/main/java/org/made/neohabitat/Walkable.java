@@ -14,6 +14,8 @@ import org.elkoserver.json.JSONLiteral;
  */
 public abstract class Walkable extends HabitatMod {
     
+	public boolean changeable() { return true; }
+	
     /**
      * flat_type == GROUND_FLAT (2) means this is a valid target for a THROW
      * verb.

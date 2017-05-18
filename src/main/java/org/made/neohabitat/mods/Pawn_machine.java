@@ -42,6 +42,8 @@ public class Pawn_machine extends Openable implements Copyable {
     public boolean opaque_container() {
         return true;
     }
+    
+	public boolean  changeable		 () { return true; }
 
     public boolean filler() {
         return false;

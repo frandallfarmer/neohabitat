@@ -14,6 +14,7 @@
 		{ "type": "class", "tag": "Building", "name": "org.made.neohabitat.mods.Building" },
 		{ "type": "class", "tag": "Bush", "name": "org.made.neohabitat.mods.Bush" },
 		{ "type": "class", "tag": "Chair", "name": "org.made.neohabitat.mods.Chair" },
+		{ "type": "class", "tag": "Changomatic", "name": "org.made.neohabitat.mods.Changomatic" },
 		{ "type": "class", "tag": "Chest", "name": "org.made.neohabitat.mods.Chest" },
 		{ "type": "class", "tag": "Club", "name": "org.made.neohabitat.mods.Club" },
 		{ "type": "class", "tag": "Coke_machine", "name": "org.made.neohabitat.mods.Coke_machine" },

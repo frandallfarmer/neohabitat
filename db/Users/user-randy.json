@@ -11,14 +11,12 @@
 	} ]
 }, {
 	"type" : "item",
-	"ref" : "item-randyspraycan",
-	"name" : "Stylin' body paint",
+	"ref" : "item-randy.changomatic",
+	"name" : "Paintin' yer turf",
 	"in" : "user-randy",
 	"mods" : [ {
-		"type" : "Spray_can",
-		"y" : 1,
-		"orientation" : 8,
-		"charge" : 255
+		"type" : "Changomatic",
+		"y" : 1
 	} ]
 }, {
 	"type" : "item",

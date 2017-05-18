@@ -18,6 +18,8 @@ import org.made.neohabitat.mods.Region;
  */
 public abstract class Teleporter extends Coinop {
 
+	public boolean changeable() { return true; }
+
     public static final int TELEPORT_COST = 10;
     public static final int PORT_READY    = 0;
     public static final int PORT_ACTIVE   = 1;

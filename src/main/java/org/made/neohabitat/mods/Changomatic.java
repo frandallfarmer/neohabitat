@@ -6,35 +6,33 @@ import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
 import org.elkoserver.server.context.User;
+import org.made.neohabitat.Container;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
-import org.made.neohabitat.Openable;
 
 /**
- * Habitat Bag Mod (attached to an Elko Item.)
- * 
- * A Bag is a small container that can be open/closed and [un]locked.
- * 
- * @author randy
+ * Changomatic Mod
  *
+ * A device that allows you to customize the pattern/colors on objects in your turf.
+ *
+ * @author randy
  */
-
-public class Bag extends Openable implements Copyable {
+public class Changomatic extends HabitatMod implements Copyable {
 
 	public int HabitatClass() {
-		return CLASS_BAG;
+		return CLASS_CHANGOMATIC;
 	}
 
 	public String HabitatModName() {
-		return "Bag";
+		return "Changomatic";
 	}
 
 	public int capacity() {
-		return 5;
+		return 0;
 	}
 
 	public int pc_state_bytes() {
-		return 3;
+		return 0;
 	};
 
 	public boolean known() {
@@ -42,49 +40,38 @@ public class Bag extends Openable implements Copyable {
 	}
 
 	public boolean opaque_container() {
-		return true;
+		return false;
 	}
 
 	public boolean filler() {
 		return false;
 	}
 
-	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_lo", "key_hi" })
-	public Bag(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-			OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
-		super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
+	public Changomatic(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
+			OptInteger gr_state, OptBoolean restricted) {
+		super(style, x, y, orientation, gr_state, restricted);
 	}
 
-	public Bag(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags, int key_lo, int key_hi) {
-		super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+	public Changomatic(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+		super(style, x, y, orientation, gr_state, restricted);
 	}
 
 	@Override
 	public HabitatMod copyThisMod() {
-		return new Bag(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+		return new Changomatic(style, x, y, orientation, gr_state, restricted);
 	}
 
 	@Override
 	public JSONLiteral encode(EncodeControl control) {
-		JSONLiteral result = super.encodeOpenable(new JSONLiteral(HabitatModName(), control));
+		JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
 		result.finish();
 		return result;
 	}
 
 	/**
-	 * Verb (Specific): Get HELP for this.
-	 * 
-	 * @param from
-	 *            User representing the connection making the request.
-	 */
-	@JSONMethod
-	public void HELP(User from) {
-		bag_HELP(from);
-	}
-
-	/**
 	 * Verb (Generic): Pick this item up.
-	 * 
+	 *
 	 * @param from
 	 *            User representing the connection making the request.
 	 */
@@ -95,7 +82,7 @@ public class Bag extends Openable implements Copyable {
 
 	/**
 	 * Verb (Generic): Put this item into some container or on the ground.
-	 * 
+	 *
 	 * @param from
 	 *            User representing the connection making the request.
 	 * @param containerNoid
@@ -131,13 +118,32 @@ public class Bag extends Openable implements Copyable {
 		generic_THROW(from, target, x, y);
 	}
 
-	/**
-	 * Reply with HELP for Bags
-	 * 
-	 * @param from
-	 *            User representing the connection making the request.
-	 */
-	public void bag_HELP(User from) {
-		lock_HELP(from, "BAG", key_hi * 256 + key_lo, open_flags);
+	@JSONMethod({ "targetNoid" })
+	public void CHANGE(User from, int targetNoid) {
+		Avatar     avatar 	= avatar(from);
+		Region     region 	= current_region();
+		HabitatMod target	= region.noids[targetNoid];
+		int        back 	= (region.orientation + 3) % 4;
+
+		if (((region.resident.equals(avatar.object().baseRef()) || region.obj_id().equals(avatar.turf))  && target.changeable()) ||
+				(region.neighbors[back].equals(avatar.turf) && neighbor_changeable(target)) ) {
+			int color_bits = target.orientation >> 3;
+			color_bits = (color_bits + 1) % 0b11111;
+			if (color_bits == 15) color_bits++;
+			target.orientation = (color_bits << 3) | (target.orientation & 0b00000111);
+			target.gen_flags[MODIFIED] = true;
+			target.checkpoint_object(target);
+			send_reply_msg(from, noid, "err", TRUE, "CHANGE_NEW_ORIENTATION", target.orientation);
+			send_neighbor_msg(from, noid, "CHANGE$", "CHANGE_TARGET", targetNoid, "CHANGE_NEW_ORIENTATION", target.orientation);
+		} else {
+			object_say(from, "You can't change that here.");
+			send_reply_error(from);
+		}
 	}
+
+	public boolean neighbor_changeable(HabitatMod object) {
+		return (object.HabitatClass() == CLASS_BUILDING);
+	}
+
+
 }

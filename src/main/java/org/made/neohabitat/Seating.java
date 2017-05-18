@@ -24,6 +24,8 @@ import org.elkoserver.json.JSONLiteral;
  */
 public abstract class Seating extends Openable {
 
+	public boolean changeable() { return true; }
+
 	/** This state is never persisted, but used by the Bridge to sort out the contents vector */
 	public int sitters[] = {0, 0};
 

@@ -997,6 +997,7 @@ var encodeState = {
 		Building:		function (state, container, buf) { return (this.common	(state, container, buf)); },
 		Bush: 			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Chair:  	    function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Changomatic:  	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Chest:			function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Club:  			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Coke_machine:	function (state, container, buf) { return (this.common  (state, container, buf)); },

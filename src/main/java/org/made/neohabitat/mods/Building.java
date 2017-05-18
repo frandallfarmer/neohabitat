@@ -43,9 +43,12 @@ public class Building extends HabitatMod implements Copyable {
         return false;
     }
     
+	public boolean  changeable		 () { return true; }
+	
     public boolean filler() {
         return false;
     }
+    
     
     /** The region (context-ref) that this door leads to */
     public String connection;

@@ -42,6 +42,8 @@ public class Floor_lamp extends Toggle implements Copyable {
     public boolean opaque_container() {
         return false;
     }
+    
+	public boolean  changeable		 () { return true; }
 
     public boolean filler() {
         return false;

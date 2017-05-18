@@ -138,7 +138,12 @@ this.SERVER_OPS = {
 				b.add(o.err);
 			},
 		},
-		"CHANGE$": 				{ reqno: 8 },
+		"CHANGE$": 				{ reqno: 8 ,
+			toClient: function (o, b) {
+				b.add(o.CHANGE_TARGET);
+				b.add(o.CHANGE_NEW_ORIENTATION);
+			}
+		},
 		"CHANGE_CONTAINERS_$":	{ reqno: 19,
 			toClient: function (o, b) {
 				b.add(o.object_noid);
@@ -764,6 +769,15 @@ this.translate = {
 				b.add(o.SPRAY_CUSTOMIZE_1);
 			}
 		},
+		CHANGE: {
+			toServer: function(a, m) {
+				m.targetNoid = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
+				b.add(o.CHANGE_NEW_ORIENTATION);
+			}
+		},
 		DIRECT: {
 			toClient: function(o, b) {
 				b.add(o.text.getBytes());
@@ -1076,6 +1090,16 @@ this.Spray_can = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"SPRAY" }
+		}
+};
+
+this.Changomatic = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"CHANGE" }
 		}
 };
 

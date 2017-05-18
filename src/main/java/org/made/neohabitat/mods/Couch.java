@@ -25,6 +25,7 @@ public class Couch extends Seating implements Copyable {
     public int		pc_state_bytes 	 () { return 0; };
     public boolean	known 			 () { return true; }
     public boolean	opaque_container () { return false; }
+	public boolean  changeable		 () { return true; }
     public boolean	filler 			 () { return false; }
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags", "restricted"})

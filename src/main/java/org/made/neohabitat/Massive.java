@@ -17,6 +17,8 @@ import org.elkoserver.json.JSONLiteral;
  * by other operations.
  */
 public abstract class Massive extends HabitatMod {
+	
+	public boolean  changeable		 () { return (mass != 0); } // May only change things that are too heavy to carry.
     
     /** The weight of this object - only ever 1 (immobile) or 0 (portable) */
     protected int mass = 0;

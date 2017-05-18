@@ -16,6 +16,7 @@
         "locked": true, 
         "is_turf": true, 
         "port_dir": "", 
+        "resident": "user-chip",
         "type": "Region"
       }
     ], 

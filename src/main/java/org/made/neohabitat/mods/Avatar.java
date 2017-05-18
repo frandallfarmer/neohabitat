@@ -78,6 +78,10 @@ public class Avatar extends Container implements UserMod {
 		return false;						// TODO This should be conditionally 'true' depending on the content's slot. FRF
 	}
 
+	public boolean changeable() {
+		return true;
+	}
+
 	public boolean filler() {
 		return false;
 	}
@@ -294,15 +298,15 @@ public class Avatar extends Container implements UserMod {
 	/** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
 	public void objectIsComplete() {
 		/** Was pl1 region_entry_daemon: */
-		
+
 		// If traveling as a ghost, don't do ANYTHING fancy 
 		if (amAGhost) {
 			return;
 		}
-		
+
 		Region.addToNoids(this);
 		note_object_creation(this);
-		
+
 		// If the avatar has any objects in their hands, perform any necessary side effects.
 		in_hands_side_effects(this);
 
@@ -514,7 +518,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		int		in_esp	= esp.value(TRUE);
 		String	msg		= text.value("(missing text)");
 
@@ -600,7 +604,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		avatar_NEWREGION(from, direction.value(1), passage_id.value(0));
 	}
 
@@ -612,19 +616,19 @@ public class Avatar extends Container implements UserMod {
 	 */
 	@JSONMethod
 	public void DISCORPORATE(User from) {
-//		if (amAGhost)
-//			trace_msg("Invalid request: Avatar.DISCORPORATE called with avatar.amAGhost == true.");
-//		else
-			if (holding_class(CLASS_MAGIC_LAMP) && heldObject().gr_state == MAGIC_LAMP_GENIE) 
+		//		if (amAGhost)
+		//			trace_msg("Invalid request: Avatar.DISCORPORATE called with avatar.amAGhost == true.");
+		//		else
+		if (holding_class(CLASS_MAGIC_LAMP) && heldObject().gr_state == MAGIC_LAMP_GENIE) 
 			object_say(from, "You can't turn into a ghost while you are holding the Genie.");
 		else 
 			if (holding_restricted_object())
-			object_say(from, "You can't turn into a ghost while you are holding that.");
-		else {
-			// TODO LIGHTING lights_off(this)
-			switch_to_ghost(from);
-			return;
-		}
+				object_say(from, "You can't turn into a ghost while you are holding that.");
+			else {
+				// TODO LIGHTING lights_off(this)
+				switch_to_ghost(from);
+				return;
+			}
 		send_reply_error(from);
 	}
 
@@ -697,10 +701,10 @@ public class Avatar extends Container implements UserMod {
 			x = SAFE_X;
 			y = SAFE_Y;
 			gen_flags[MODIFIED] = true;
-//			msg.addParameter("body", object().encode(EncodeControl.forClient));
+			//			msg.addParameter("body", object().encode(EncodeControl.forClient));
 			msg.addParameter("body", 0);
 			from.send(msg);
-//			announce_object_to_neighbors(from, object(), current_region());
+			//			announce_object_to_neighbors(from, object(), current_region());
 			fakeMakeMessage(object(), current_region());
 			for (int i = capacity() - 1; i >= 0; i--) {			// TODO - encode the avatar and contents together instead of this HACK! FRF
 				HabitatMod obj = contents(i);
@@ -715,7 +719,7 @@ public class Avatar extends Container implements UserMod {
 
 		}
 	}
-	
+
 	/**
 	 * Verb (Specific): Send a point-to-point message to another user/avatar.
 	 * 
@@ -733,7 +737,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		int		in_esp	= esp.value(FALSE);
 		String	msg		= text.value("");
 
@@ -846,7 +850,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		unsupported_reply(from, noid, "Avatar.TOUCH not implemented yet.");
 	}
 
@@ -862,7 +866,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		sayUserList(from);
 	} 
 
@@ -893,7 +897,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		switch (key.value(0)) {
 		case 16: // F8
 			object_say(from, UPGRADE_PREFIX + "       You are connected to          ");
@@ -931,7 +935,7 @@ public class Avatar extends Container implements UserMod {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		
+
 		avatar_IDENTIFY(from);
 	}
 

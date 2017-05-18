@@ -47,6 +47,8 @@ public class Magic_immobile extends Magical implements Copyable {
         return false;
     }
     
+	public boolean  changeable		 () { return true; }
+
     public boolean filler() {
         return false;
     }
