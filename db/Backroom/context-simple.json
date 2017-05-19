@@ -1,0 +1,62 @@
+[
+	{
+		"type" : "context",
+		"ref" : "context-simple",
+		"capacity" : 64,
+		"name" : "The Void",
+		"mods" : [ {
+			"town_dir" : "",
+			"port_dir" : "",
+			"type" : "Region",
+			"nitty_bits" : 2,
+			"neighbors" : [ "context-test", "context-test", "context-test",
+				"context-test" ]
+		} ]
+	}, {
+		"type" : "item",
+		"ref" : "item-simple.wall",
+		"name" : "The Void",
+		"in" : "context-simple",
+		"mods" : [ {
+			"type" : "Wall",
+			"style" : 4,
+			"x" : 0,
+			"y" : 0,
+			"orientation" : 8
+		} ]
+	}, {
+		"ref" : "item-simple.chess",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 110,
+			"x" : 10,
+			"magic_type" : 12
+		} ],
+		"type" : "item",
+		"name" : "Chess",
+		"in" : "context-simple"
+	}, {
+		"ref" : "item-simple.checkers",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 100,
+			"x" : 10,
+			"magic_type" : 13
+		} ],
+		"type" : "item",
+		"name" : "Checkers",
+		"in" : "context-simple"
+
+	}, {
+		"ref" : "item-simple.backgammon",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 90,
+			"x" : 10,
+			"magic_type" : 14
+		} ],
+		"type" : "item",
+		"name" : "Backgammon",
+		"in" : "context-simple"
+	}
+]

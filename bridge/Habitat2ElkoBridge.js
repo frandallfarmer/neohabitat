@@ -326,6 +326,12 @@ function descape(b, skip) {
 	return r;
 }
 
+var PACKETOVERHEAD = 20;	// Adjustment for Qlink Protocol and Framing.
+
+function timeToXmit(bytes) {
+	return (bytes + PACKETOVERHEAD) * 8 / Argv.rate * Millis;
+}
+
 /*
  * Elko uses a fresh connection for every context/region change.
  */
@@ -354,7 +360,7 @@ function createServerConnection(port, host, client, immediate, context) {
 
 			// Make sure any outgoing messages have been sent...
 			var now  = new Date().getTime();
-			var when = Math.ceil(client.timeLastSent + client.lastSentLen * 8 / Argv.rate * Millis);
+			var when = Math.ceil(client.timeLastSent + timeToXmit(client.lastSentLen));
 			if (when <= now) {
 				server.destroy();
 			} else {
@@ -422,13 +428,15 @@ function guardedWrite(connection, msg) {
 
 function futureSend(connection, data) {
 	var now  = new Date().getTime();
-	var when = Math.ceil(connection.timeLastSent + connection.lastSentLen * 8 / Argv.rate * Millis);
+	var when = Math.ceil(connection.timeLastSent + timeToXmit(connection.lastSentLen));
 
 	connection.lastSentLen = data.length;
+	
 	if (when <= now) {
 		connection.write(data);
 		connection.timeLastSent = now;
 	} else {
+		Trace.debug("SEND IN:" + ((when-now) / Millis));
 		var delay = Math.ceil(Math.max(0, (when - now)));
 		var msg = (isString(data)) ? data : Buffer.from(escape(data));
 		setTimeout(function () { guardedWrite(connection, msg); }, delay);

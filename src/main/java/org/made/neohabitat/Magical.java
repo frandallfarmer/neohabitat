@@ -7,9 +7,12 @@ import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.BasicObject;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.mods.Avatar;
+import org.made.neohabitat.mods.Game_piece;
+import org.made.neohabitat.mods.Paper;
 import org.made.neohabitat.mods.Region;
 import org.made.neohabitat.mods.Tokens;
 
@@ -156,13 +159,13 @@ public abstract class Magical extends HabitatMod {
                 magic_default(from, targetMod);
                 break;
             case 12:
-                magic_default(from, targetMod);
-                break;
+            	switch_reset_chess(from);
+            	break;
             case 13:
-                magic_default(from, targetMod);
+            	switch_reset_checkers(from);
                 break;
             case 14:
-                magic_default(from, targetMod);
+            	switch_reset_backgammon(from);
                 break;
             case 15:
                 magic_default(from, targetMod);
@@ -274,6 +277,76 @@ public abstract class Magical extends HabitatMod {
     		send_reply_success(from);
     	}
     }
+  
+    private static final int 			 CHESS = 0;
+    private static final int			 CHECKERS = 1;
+    private static final int			 BACKGAMMON = 2;
+    
+    private	static final int			 X_INIT		= 0;
+    private	static final int			 Y_INIT		= 1;
+    private	static final int			 O_INIT		= 2;
+    private	static final int			 G_INIT		= 3;
+    		
+    private static int [][][] BOARDGAME_PARAMS = {
+    	// Chess
+    	{ { 32,  44,  56,  68,  80,  92, 104, 116,  32,  44,  56,  68,  80,  92, 104, 116,  32,  44,  56,  68,  80,  92, 104, 116,  32,  44,  56,  68,  80,  92, 104, 116}, 
+    	  { 97,  97,  97,  97,  97,  97,  97,  97, 113, 113, 113, 113, 113, 113, 113, 113,  17,  17,  17,  17,  17,  17,  17,  17,   1,   1,   1,   1,   1,   1,   1,   1},
+    	  {  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16}, 
+    	  {  0,   0,   0,   0,   0,   0,   0,   0,   3,   2,   1,   5,   4,   1,   2,   3,   0,   0,   0,   0,   0,   0,   0,   0,   3,   2,   1,   5,   4,   1,   2,   3}
+    	},
+    	// Checkers
+    	{ { 32,  56,  80, 104,  44,  68,  92, 116,  32,  56,  80, 104,  44,  68,  92, 116,  32,  56,  80, 104,  44,  68,  92, 116}, 
+      	  {  1,   1,   1,   1,  17,  17,  17,  17,  33,  33,  33,  33,  81,  81,  81,  81,  97,  97,  97,  97, 113, 113, 113, 113},
+      	  { 16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0}, 
+      	  {  6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6}
+      	},
+    	// Backgammon
+    	{ { 28,  28,  76,  76,  76,  76,  76, 112, 112, 112, 148, 148, 148, 148, 148,  28,  28,  76,  76,  76,  76,  76, 112, 112, 112, 148, 148, 148, 148, 148}, 
+      	  {115, 103,  49,  37,  25,  13,   1,  25,  13,   1, 115, 103,  91,  79, 195,  13,   1, 115, 103,  91,  79,  67, 115, 103,  91,  49,  37,  25,  13,   1},
+      	  { 16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0}, 
+      	  {  8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8 }
+      	} };
+
+    private void switch_reset_chess(User from) {
+    	reset_generic_boardgame(from, CHESS);
+    }
+    
+    private void switch_reset_checkers(User from) {
+    	reset_generic_boardgame(from, CHECKERS);
+    }
+    
+    private void switch_reset_backgammon(User from) {
+    	reset_generic_boardgame(from, BACKGAMMON);
+    }
+    
+    private void reset_generic_boardgame(User from, int game) {
+    	int [] x_int = BOARDGAME_PARAMS[game][X_INIT];
+    	int [] y_int = BOARDGAME_PARAMS[game][Y_INIT];
+    	int [] o_int = BOARDGAME_PARAMS[game][O_INIT];
+    	int [] g_int = BOARDGAME_PARAMS[game][G_INIT];
+    	Region region = current_region();
+    	
+		send_reply_success(from);
+    	
+    	// Delete all the old pieces... This deals with the case if some pieces leave...
+    	for (int i = 1; i <255; i ++) {
+    		HabitatMod target = region.noids[i];
+    		if (null != target && target.HabitatClass() == CLASS_GAME_PIECE) {
+    	            send_goaway_msg(target.noid);
+    	            target.destroy_object(target);
+    		}
+    	}
+
+    	// Create new pieces from scratch, all set up properly.
+    	for (int p = 0; p < x_int.length; p++) {
+    		 Game_piece piece = new Game_piece(0, x_int[p] + 4, y_int[p] + 6, o_int[p], g_int[p], true);
+    		 Item		item  = create_object("Game Piece", piece, region, false);
+    		 if (item != null)
+    			 announce_object(item, region);
+    	}
+    	
+		
+    }    
     
     private String identifyTarget(HabitatMod target) {
         return "" + target.noid + ":" + target.obj_id();
