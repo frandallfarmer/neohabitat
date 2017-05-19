@@ -4,6 +4,7 @@
 	"classes": [
 		{ "type": "class", "tag": "map", "name" : "org.elkoserver.server.context.statics.StaticStringMap" },
 		{ "type": "class", "tag": "Amulet", "name": "org.made.neohabitat.mods.Amulet" },
+		{ "type": "class", "tag": "Aquarium", "name": "org.made.neohabitat.mods.Aquarium" },
 		{ "type": "class", "tag": "Atm", "name": "org.made.neohabitat.mods.Atm" },
 		{ "type": "class", "tag": "Avatar", "name": "org.made.neohabitat.mods.Avatar" },
 		{ "type": "class", "tag": "Bag", "name": "org.made.neohabitat.mods.Bag" },

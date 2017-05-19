@@ -988,6 +988,11 @@ var encodeState = {
 			buf.add(state.wisher);
 			return buf;
 		},
+		Aquarium: function (state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.fed || 0);
+			return buf;
+		},
 		Amulet:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Atm:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 			function (state, container, buf) { return (this.openable(state, container, buf)); },

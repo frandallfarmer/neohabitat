@@ -43,14 +43,15 @@
 			"in" : "context-library"
 		},
 		{
-			"ref" : "item-library.frisbee",
+			"ref" : "item-library.fish",
 			"mods" : [ {
-				"type" : "Frisbee",
-				"y" : 148,
+				"type" : "Aquarium",
+				"gr_state": 1,
+				"y" : 150,
 				"x" : 55
 			} ],
 			"type" : "item",
-			"name" : "Frisbee",
+			"name" : "Fish Tank",
 			"in" : "context-library"
 		},
 		{

@@ -1400,6 +1400,16 @@ this.Windup_toy	= {
 		}	
 };
 
+this.Aquarium = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"FEED" }
+		}
+};
+
 this.Amulet				= this.magical; 
 this.Bag				= this.portableContainer;
 this.Ball				= this.portable;
