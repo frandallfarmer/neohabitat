@@ -658,12 +658,10 @@ public class Avatar extends Container implements UserMod {
 			if (obj != null) {
 				note_object_deletion(obj);
 				Region.removeFromObjList(obj);
-				obj.noid = UNASSIGNED_NOID;
 			}
 		}
 		note_object_deletion(this);
 		Region.removeFromObjList(this);
-		noid = UNASSIGNED_NOID;
 	}
 
 	public void switch_to_avatar(User from) {

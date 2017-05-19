@@ -3159,8 +3159,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The Habitat Mod to delete.
 	 */
 	public void destroy_object(HabitatMod mod) {
-		Item item = (Item) mod.object();
-		item.delete();
+		if (mod.noid != UNASSIGNED_NOID)
+			Region.removeObjectFromRegion(mod);
+		
+		((Item) mod.object()).delete();
 	}
 
 	/**

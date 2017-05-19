@@ -383,8 +383,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      *            The object to remove from the noid list.
      */
     public static void removeFromObjList(HabitatMod mod) {
-    	if (mod.noid < UNASSIGNED_NOID)
+    	if (mod.noid < UNASSIGNED_NOID) {
     		mod.current_region().noids[mod.noid] = null;
+    		mod.noid = UNASSIGNED_NOID;
+    	}
     }
         
     /**
@@ -393,17 +395,18 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * @param cont
      */
     public static void removeContentsFromRegion(Container cont) {
-    	for (int i = 0; i < cont.capacity(); i++) {
-    		HabitatMod mod = cont.contents(i);
-    		if (mod != null) {
-    			if (cont.opaque_container()) {
-    				mod.note_instance_deletion(mod);
-    			} else {
-    				mod.note_object_deletion(mod);
-    			}
-    			removeFromObjList(mod);
-    		}
-    	}    	
+    	for (int i = 0; i < cont.capacity(); i++)
+    			removeObjectFromRegion(cont.contents(i));
+    }
+    
+    public static void removeObjectFromRegion(HabitatMod obj) {
+    	Container cont = obj.container();
+       	if (cont != null & cont.opaque_container())
+    		obj.note_instance_deletion(obj);
+    	else
+			obj.note_object_deletion(obj);
+    	
+    	removeFromObjList(obj);
     }
     
     public static void tellEveryone(String text) {
