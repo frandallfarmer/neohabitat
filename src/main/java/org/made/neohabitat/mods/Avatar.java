@@ -4,13 +4,11 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
-import org.elkoserver.server.context.Item;
+import org.elkoserver.json.*;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserMod;
+import org.elkoserver.util.ArgRunnable;
 import org.made.neohabitat.*;
-import org.made.neohabitat.mods.Door;
-import org.elkoserver.json.EncodeControl;
-import org.elkoserver.json.JSONLiteral;
 
 /**
  * The Avatar Mod (attached to an Elko User.)
@@ -159,6 +157,8 @@ public class Avatar extends Container implements UserMod {
 	private int		   to_y				= 0;
 	private int        transition_type	= WALK_ENTRY;
 
+	private MailQueue  mail_queue = null;
+
 	/**
 	 * Target NOID and magic item saved between events, such as for the GOD TOOL
 	 * (see Magical.java). This is a transient value and not persisted.
@@ -294,6 +294,9 @@ public class Avatar extends Container implements UserMod {
 		return result;
 	}
 
+	public String mailQueueRef() {
+		return String.format("mail-%s", object().ref());
+	}
 
 	/** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
 	public void objectIsComplete() {
@@ -1186,6 +1189,22 @@ public class Avatar extends Container implements UserMod {
 	}
 
 	/**
+	 * Sends a MAILARRIVED$ message to the User associated with this Avatar.
+	 */
+	public void send_mail_arrived() {
+		send_mail_arrived(Region.getUserByName(object().name()));
+	}
+
+	/**
+	 * Sends a MAILARRIVED$ message to the provided User.
+	 *
+	 * @param from User to send MAILARRIVED$ message to.
+     */
+	public void send_mail_arrived(User from) {
+		send_private_msg(from, noid, from, "MAILARRIVED$");
+	}
+
+	/**
 	 * Get this user's value for a record.
 	 * 
 	 * @param recordID
@@ -1236,4 +1255,64 @@ public class Avatar extends Container implements UserMod {
 	static public void inc_record(User whom, int recordID) {
 		((Avatar) whom.getMod(Avatar.class)).inc_record(recordID);
 	}
+
+	public void check_mail() {
+		// Get the text for this Paper from the DB.
+		JSONObject findPattern = new JSONObject();
+		findPattern.addProperty("ref", mailQueueRef());
+		context().contextor().queryObjects(findPattern, null, 1, finishMailQueueRead);
+	}
+
+	protected final ArgRunnable finishMailQueueRead = new ArgRunnable() {
+		@Override
+		public void run(Object obj) {
+			MailQueue newQueue = new MailQueue();
+			if (obj != null) {
+				Object[] args = (Object[]) obj;
+				JSONArray jsonQueue;
+				try {
+					JSONObject jsonObj = ((JSONObject) args[0]);
+					jsonQueue = jsonObj.getArray("queue");
+				} catch (JSONDecodingException e) {
+					mail_queue = newQueue;
+					return;
+				}
+				jsonQueue.toArray(newQueue.queue);
+			}
+			HabitatMod paperMod = contents(MAIL_SLOT);
+			if (paperMod == null || !(paperMod instanceof Paper)) {
+				trace_msg("Paper not in MAIL_SLOT for User %s", object().ref());
+				return;
+			}
+
+			Paper paper = (Paper) paperMod;
+			mail_queue = newQueue;
+			if (mail_queue.nonEmpty()) {
+				// If the paper in the Avatar's pocket is not a LETTER, which indicates that
+				// there is an outstanding mail message, pops the latest mail text ref off the
+				// queue and sets it on the paper so it may be read.
+				if (paper.gr_state != Paper.PAPER_LETTER_STATE) {
+					paper.gr_state = Paper.PAPER_LETTER_STATE;
+					paper.text_path = mail_queue.popNextMailRef();
+					paper.gen_flags[MODIFIED] = true;
+					paper.checkpoint_object(paper);
+					paper.send_gr_state_fiddle(Paper.PAPER_LETTER_STATE);
+					context().contextor().odb().putObject(
+						mailQueueRef(), mail_queue, null, false, finishMailQueueWrite);
+				}
+				send_mail_arrived();
+			}
+		}
+	};
+
+	protected final ArgRunnable finishMailQueueWrite = new ArgRunnable() {
+		@Override
+		public void run(Object obj) {
+			if (obj != null) {
+				trace_msg("Failed to write mail queue for User %s: %s",
+					object().ref(), obj);
+			}
+		}
+	};
+
 }

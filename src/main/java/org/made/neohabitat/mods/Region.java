@@ -227,6 +227,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     			tellEveryone(who.name() + " has arrived.");
     		}
     		avatar.firstConnection = true;
+            avatar.check_mail();
     	}
     	if (today > avatar.lastConnectedDay) {
     		avatar.bankBalance += STIPEND;

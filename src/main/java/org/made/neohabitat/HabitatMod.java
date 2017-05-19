@@ -5,6 +5,8 @@ import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Mod;
 import org.elkoserver.server.context.ObjectCompletionWatcher;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -3489,6 +3491,19 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			offset += array.length;
 		}
 		return result;
+	}
+
+	/**
+	 * Returns the text of a Throwable as a String.
+	 *
+	 * @param t a Java Throwable
+	 * @return String-formatted traceback from Throwable
+     */
+	public String getTracebackString(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		return sw.toString();
 	}
 
 }
