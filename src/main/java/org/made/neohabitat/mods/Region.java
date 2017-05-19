@@ -204,8 +204,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	if (ghost != null) {
     		if (from != null)
     			send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", GHOST_NOID);
-    		Region.removeFromObjList(ghost);
-    		note_object_deletion(ghost);
     		destroy_object(ghost);
     	}
     }
