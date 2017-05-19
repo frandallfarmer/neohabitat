@@ -1022,6 +1022,7 @@ var encodeState = {
 		Fountain:		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Frisbee:		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Gemstone:		function (state, container, buf) { return (this.magical (state, container, buf)); },
+		Game_piece: 	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Garbage_can: 	function (state, container, buf) { return (this.openable(state, container, buf)); },
 		Ghost:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Ground:			function (state, container, buf) { return (this.walkable(state, container, buf)); },

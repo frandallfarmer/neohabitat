@@ -43,15 +43,16 @@
 			"in" : "context-library"
 		},
 		{
-			"ref" : "item-library.fish",
+			"ref" : "item-library.checker",
 			"mods" : [ {
-				"type" : "Aquarium",
-				"gr_state": 1,
+				"type" : "Game_piece",
+				"gr_state": 7,
+				"restricted": true,
 				"y" : 150,
 				"x" : 55
 			} ],
 			"type" : "item",
-			"name" : "Fish Tank",
+			"name" : "Checker",
 			"in" : "context-library"
 		},
 		{

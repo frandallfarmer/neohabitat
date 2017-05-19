@@ -410,6 +410,7 @@ this.CLASSES 			= {
 		"Amulet":	2,   2:"Amulet",
 		"Ghost":	3,   3:"Ghost",
 		"Atm":		4,   4:"Atm",
+		"Game_piece": 5, 5:"Game_piece",
 		"Bag":		6,   6:"Bag",
 		"Ball":		7,   7:"Ball",
 		"Book":		10, 10:"Book",
@@ -849,7 +850,7 @@ this.translate = {
 			toClient: function(o, b) {
 				b.add(o.err);
 			}
-    },
+		},
 		ZAPTO: {
 			toServer: function(a,m) {
 				m.port_number = String.fromCharCode.apply(null, a);
@@ -922,6 +923,11 @@ this.translate = {
 		PSENDMAIL: {
 			toClient: function(o, b) {
 				b.add(o.err);
+			}
+		},
+		KING: {
+			toClient: function(o, b) {
+				b.add(o.state);
 			}
 		}
 };
@@ -1407,6 +1413,16 @@ this.Aquarium = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"FEED" }
+		}
+};
+
+this.Game_piece = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"KING" }
 		}
 };
 

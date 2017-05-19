@@ -737,15 +737,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		/* If putting to the region, set the (x, y) coordinates */
 		if (cont.noid == THE_REGION) {
 			if (selfClass == CLASS_GAME_PIECE) {
-				this.orientation = clear_bit(pos_y, 8);
-				send_broadcast_msg(noid, "PLAY_$", "orient", 128 + 0, "piece", noid);
+				this.orientation &= ~FOREGROUND_BIT;
+				send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 128 + 0, "from_noid", noid);
 			}
 			this.x = pos_x;
 			this.y = pos_y;
 			if (obj_orient == 1)
-				this.orientation = set_bit(this.orientation, 1);
+				this.orientation |= FACING_BIT;
 			else
-				this.orientation = clear_bit(this.orientation, 1);
+				this.orientation &= ~FACING_BIT;
 		}
 
 		/* If putting into a display case, adjust the locked bit */
@@ -926,9 +926,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			new_y = current_region().depth;
 
 		if (selfClass != CLASS_GAME_PIECE)
-			new_y = set_bit(new_y, 8);
+			new_y = new_y | FOREGROUND_BIT;
 		else
-			send_broadcast_msg(noid, "PLAY_$", "orient", 128 + 0, "piece", noid);
+			send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 128 + 0, "from_noid", noid);
 
 		/* Put the object there */
 

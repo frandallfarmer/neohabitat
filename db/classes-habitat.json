@@ -41,6 +41,7 @@
 		{ "type": "class", "tag": "Fountain", "name": "org.made.neohabitat.mods.Fountain" },
 		{ "type": "class", "tag": "Frisbee", "name": "org.made.neohabitat.mods.Frisbee" },
 		{ "type": "class", "tag": "Garbage_can", "name": "org.made.neohabitat.mods.Garbage_can" },
+		{ "type": "class", "tag": "Game_piece", "name": "org.made.neohabitat.mods.Game_piece" },
 		{ "type": "class", "tag": "Gemstone", "name": "org.made.neohabitat.mods.Gemstone" },
 		{ "type": "class", "tag": "Glue", "name": "org.made.neohabitat.mods.Glue" },
 		{ "type": "class", "tag": "Ground", "name": "org.made.neohabitat.mods.Ground" },
