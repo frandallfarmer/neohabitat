@@ -1412,6 +1412,7 @@ this.Couch				= this.help;
 this.Fence				= this.help;
 this.Flag				= this.portable;
 this.Flat				= this.help;
+this.Frisbee			= this.portable;
 this.Gemstone			= this.magical;
 this.Glue				= this.help;
 this.Ground				= this.portable;

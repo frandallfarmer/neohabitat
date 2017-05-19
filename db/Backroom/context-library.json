@@ -43,14 +43,14 @@
 			"in" : "context-library"
 		},
 		{
-			"ref" : "item-library.ball",
+			"ref" : "item-library.frisbee",
 			"mods" : [ {
-				"type" : "Ball",
+				"type" : "Frisbee",
 				"y" : 148,
-				"x" : 50
+				"x" : 55
 			} ],
 			"type" : "item",
-			"name" : "Ball",
+			"name" : "Frisbee",
 			"in" : "context-library"
 		},
 		{
