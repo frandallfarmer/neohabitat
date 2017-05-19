@@ -436,7 +436,6 @@ function futureSend(connection, data) {
 		connection.write(data);
 		connection.timeLastSent = now;
 	} else {
-		Trace.debug("SEND IN:" + ((when-now) / Millis));
 		var delay = Math.ceil(Math.max(0, (when - now)));
 		var msg = (isString(data)) ? data : Buffer.from(escape(data));
 		setTimeout(function () { guardedWrite(connection, msg); }, delay);
