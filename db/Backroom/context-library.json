@@ -43,6 +43,17 @@
 			"in" : "context-library"
 		},
 		{
+			"ref" : "item-library.ball",
+			"mods" : [ {
+				"type" : "Ball",
+				"y" : 148,
+				"x" : 50
+			} ],
+			"type" : "item",
+			"name" : "Ball",
+			"in" : "context-library"
+		},
+		{
 			"ref" : "item-library.camera",
 			"mods" : [ {
 				"type" : "Movie_camera",

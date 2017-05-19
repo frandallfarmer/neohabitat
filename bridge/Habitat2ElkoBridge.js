@@ -991,6 +991,7 @@ var encodeState = {
 		Amulet:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Atm:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bag: 			function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Ball:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Bed:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Book:			function (state, container, buf) { return (this.document(state, container, buf)); },
 		Box:			function (state, container, buf) { return (this.openable(state, container, buf)); },
