@@ -393,11 +393,17 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * @param cont
      */
     public static void removeContentsFromRegion(Container cont) {
-    	for (int i = 0; i < cont.capacity(); i++)
-    			removeObjectFromRegion(cont.contents(i));
+    	for (int i = 0; i < cont.capacity(); i++) {
+    		HabitatMod obj = cont.contents(i);
+    		if (obj != null)
+    			removeObjectFromRegion(obj);
+    	}
     }
     
     public static void removeObjectFromRegion(HabitatMod obj) {
+    	if (obj == null)
+    		return;
+    	
     	Container cont = obj.container();
        	if (cont != null & cont.opaque_container())
     		obj.note_instance_deletion(obj);
