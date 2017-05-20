@@ -9,8 +9,7 @@
 				"port_dir" : "",
 				"type" : "Region",
 				"nitty_bits" : 2,
-				"neighbors" : [ "context-steve1", "context-table",
-						"context-test", "" ]
+				"neighbors" : [ "context-steve1", "context-table", "context-test", "" ]
 			} ]
 		},
 		{
@@ -43,30 +42,6 @@
 			"in" : "context-library"
 		},
 		{
-			"ref" : "item-library.checker",
-			"mods" : [ {
-				"type" : "Game_piece",
-				"gr_state": 7,
-				"restricted": true,
-				"y" : 150,
-				"x" : 55
-			} ],
-			"type" : "item",
-			"name" : "Checker",
-			"in" : "context-library"
-		},
-		{
-			"ref" : "item-library.camera",
-			"mods" : [ {
-				"type" : "Movie_camera",
-				"y" : 148,
-				"x" : 80
-			} ],
-			"type" : "item",
-			"name" : "A really crappy handicam",
-			"in" : "context-library"
-		},
-		{
 			"ref" : "item-library.moneytree",
 			"mods" : [ {
 				"type" : "Magic_immobile",
@@ -89,7 +64,8 @@
 				"y" : 3,
 				"gr_state" : 0,
 				"charges" : 10,
-				"magic_type" : 11
+				"magic_type" : 9,
+				"magic_data": 6
 			} ],
 			"type" : "item",
 			"name" : "Amulet",
@@ -102,21 +78,11 @@
 				"y" : 4,
 				"gr_state" : 0,
 				"charges" : 10,
-				"magic_type" : 1
+				"magic_type" : 29,
+				"magic_data" : 1
 			} ],
 			"type" : "item",
 			"name" : "Ring",
-			"in" : "item-library.box"
-		},
-		{
-			"ref" : "item-library.windup",
-			"mods" : [ {
-				"type" : "Windup_toy",
-				"y" : 5,
-				"style" : 1
-			} ],
-			"type" : "item",
-			"name" : "PENGY!",
 			"in" : "item-library.box"
 		},
 		{
@@ -126,7 +92,7 @@
 				"y" : 6,
 				"gr_state" : 0,
 				"charges" : 10,
-				"magic_type" : 2
+				"magic_type" : 4
 			} ],
 			"type" : "item",
 			"name" : "Magic Staff",
@@ -139,7 +105,7 @@
 				"y" : 7,
 				"gr_state" : 0,
 				"charges" : 10,
-				"magic_type" : 2
+				"magic_type" : 3
 			} ],
 			"type" : "item",
 			"name" : "Magic Wand",
@@ -153,30 +119,6 @@
 			} ],
 			"type" : "item",
 			"name" : "Gemstone",
-			"in" : "item-library.box"
-		},
-		{
-			"ref" : "item-library.crystal_ball",
-			"mods" : [ {
-				"type" : "Crystal_ball",
-				"y" : 9
-			} ],
-			"type" : "item",
-			"name" : "Crystal Ball",
-			"in" : "item-library.box"
-		},
-		{
-			"ref" : "item-drugs",
-			"mods" : [ {
-				"type" : "Drugs",
-				"y" : 0,
-				"gr_state" : 0,
-				"orientation" : 8,
-				"count" : 3,
-				"effect" : 2
-			} ],
-			"type" : "item",
-			"name" : "Drugs",
 			"in" : "item-library.box"
 		},
 		{
@@ -206,21 +148,6 @@
 				"orientation" : 0,
 				"gr_state" : 0,
 				"open_flags" : 2
-			} ]
-		},
-		{
-			"type" : "item",
-			"ref" : "item-bag.chainsaw",
-			"name" : "Chainsaw",
-			"in" : "item-library.bag",
-			"mods" : [ {
-				"type" : "Knick_knack",
-				"style" : 5,
-				"y" : 0,
-				"orientation" : 8,
-				"magic_type" : 1,
-				"gr_state" : 1,
-				"charges" : 100
 			} ]
 		},
 		{

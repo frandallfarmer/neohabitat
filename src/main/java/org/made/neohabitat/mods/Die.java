@@ -51,7 +51,6 @@ public class Die extends HabitatMod implements Copyable {
     }
     
 	public int state = 6; //See struct_die.incl.pl1
-	Random rand = new Random();
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "state" })
     public Die(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,

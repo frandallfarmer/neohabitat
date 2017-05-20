@@ -1,5 +1,9 @@
 package org.made.neohabitat;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -76,11 +80,9 @@ public abstract class Magical extends HabitatMod {
 
 	public JSONLiteral encodeMagical(JSONLiteral result) {
 		result = super.encodeCommon(result);
-		if (pc_state_bytes() == 0)
+		if (pc_state_bytes() == 0 && result.control().toClient())
 			return result;
-		if (0 != magic_type) {
-			result.addParameter("magic_type", magic_type);
-		}
+		result.addParameter("magic_type", magic_type);
 		if (result.control().toRepository()) {
 			if (NO_CHARGES != charges) {
 				result.addParameter("charges", charges);
@@ -105,7 +107,7 @@ public abstract class Magical extends HabitatMod {
 	}
 
 	/** The number of magical methods available. NOTE: This is expandable */
-	private final static int NUMBER_OF_MAGICS = 29; /* This should grow! */
+	private final static int NUMBER_OF_MAGICS = 30; /* This should grow! */
 
 	private final static int MAGIC_GOD_TOOL	  = 17;
 
@@ -139,10 +141,10 @@ public abstract class Magical extends HabitatMod {
 			make_target_avatar_jump(from, targetMod);
 			break;
 		case 3:
-			magic_default(from, targetMod);
+			make_other_avatars_turn_blue(from);
 			break;
 		case 4:
-			magic_default(from, targetMod);
+			send_target_avatar_home(from, targetMod);
 			break;
 		case 5:
 			magic_default(from, targetMod);
@@ -157,7 +159,7 @@ public abstract class Magical extends HabitatMod {
 			magic_default(from, targetMod);
 			break;
 		case 9:
-			magic_default(from, targetMod);
+			change_avatar_style(from, targetMod);
 			break;
 		case 10:
 			magic_default(from, targetMod);
@@ -217,8 +219,11 @@ public abstract class Magical extends HabitatMod {
 			magic_default(from, targetMod);
 			break;
 		case 29:
-			magic_default(from, targetMod);
+			random_porter(from, targetMod);
 			break;
+		case 30:
+			magic_default(from, targetMod);
+			break;			
 		}
 	}
 
@@ -246,28 +251,109 @@ public abstract class Magical extends HabitatMod {
 		int    o = avatar.orientation;
 		
 		avatar.orientation = (o & 0b11000111) | ((o + 16) & 0b00111000);
-		avatar.gen_flags[MODIFIED] = true;
-		send_fiddle_msg(THE_REGION, avatar.noid, C64_ORIENT_OFFSET, o);
+		modify_variable(from, avatar, C64_ORIENT_OFFSET, avatar.orientation);
 		object_broadcast(noid, ">BAMPF<");
 		send_reply_success(from);
 	}
 
 	private void make_target_avatar_jump(User from, HabitatMod target) {
-		if (target.HabitatClass() == CLASS_AVATAR) {
+		Avatar avatar = (Avatar) avatar_target_check(target);
+		if (avatar != null) {
 			object_broadcast(noid, "Ha!");
 			if (magic_data < AV_ACT_stand || magic_data > AV_ACT_sit_front) {
-				send_broadcast_msg(target.noid, "POSTURE$", "new_posture", AV_ACT_jump);
+				send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", AV_ACT_jump);
 			} else {
-				send_broadcast_msg(target.noid, "POSTURE$", "new_posture", magic_data);
+				send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", magic_data);
 			}
 			send_reply_success(from);
-			return;
+		} else {
+			object_say(from, "Nothing happens.");
+			send_reply_error(from);
+		}
+	}
+	
+
+	private void make_other_avatars_turn_blue(User from) {
+		Region region = current_region();
+		Avatar avatar = avatar(from);
+		int turned = 0;
+		for (int i = 1; i < 255; i++) {
+			HabitatMod obj = region.noids[i];
+			if (obj != null && obj.HabitatClass() == CLASS_AVATAR && avatar.noid != obj.noid) {
+				Avatar target = (Avatar) obj;
+				turned++;
+				target.custom[0] = 0;
+				target.custom[1] = 0;
+				target.gen_flags[MODIFIED] = true;
+				send_fiddle_msg(THE_REGION, target.noid, C64_CUSTOMIZE_OFFSET, new int[] {0,  0});
+			}			
+		}
+		if (turned > 0) {
+			object_broadcast(noid, "Isn't Blue awesome?");
+			send_reply_success(from);
 		} else {
 			object_say(from, "Nothing happens.");
 			send_reply_error(from);
 		}
 	}
 
+	private Avatar avatar_target_check(HabitatMod target) {
+		if (target == null)
+			return null;
+		if (target.HabitatClass() == CLASS_AVATAR) 
+			return (Avatar) target;
+		if (target.HabitatClass() != CLASS_HEAD)
+			return null;
+		HabitatMod cont = target.container();
+		if (cont.HabitatClass() == CLASS_AVATAR && target.y == HEAD)
+			return (Avatar) cont;
+		return null;
+	}
+	
+	
+	private void send_target_avatar_home(User from, HabitatMod target ) {
+		Avatar avatar = (Avatar) avatar_target_check(target);
+		if (avatar != null) {
+			object_broadcast(noid, "Poof!");
+			send_reply_success(from);
+			/* Send the target home! */
+			avatar.x = 80;
+			avatar.y = 132;
+			avatar.change_regions(avatar.turf, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+		} else {
+			object_say(from, "Nothing happens.");
+			send_reply_error(from);
+		}				
+	}
+	
+	private void change_avatar_style(User from, HabitatMod target) {
+		Avatar avatar = (Avatar) avatar_target_check(target);
+		Region region = current_region();
+		if (target != null && magic_data != 0) {
+			int new_style = 0;
+			int saved_style  = style;
+			if (avatar.style != magic_data)
+				new_style = magic_data;
+			note_instance_deletion(target);
+			target.style = new_style;
+		    note_object_creation(target);
+		    if (mem_checks_ok(target)) {
+				object_broadcast(noid, "Yikes!");
+				send_reply_success(from);
+				avatar.change_regions(region.obj_id(), AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+		    } else {
+				note_instance_deletion(target);
+				target.style = saved_style;
+			    note_object_creation(target);
+				object_say(from, "That won't work here now.");
+				send_reply_error(from);
+		    }
+		} else {
+			object_say(from, "Nothing happens.");
+			send_reply_error(from);
+		}
+	}
+	
 	private void make_user_moonwalk(User from) {
 		Avatar avatar = avatar(from);
 		int    g = avatar.gr_state;
@@ -277,6 +363,7 @@ public abstract class Magical extends HabitatMod {
 		object_broadcast(noid, "POOF!!!");
 		send_reply_success(from);
 	}
+
 
 	/**
 	 * The money tree drops a token in the denomination of magic_data on the ground for each user exactly one time.
@@ -576,6 +663,30 @@ public abstract class Magical extends HabitatMod {
 		avatar.savedMagical = null;
 		avatar.savedTarget = null;
 	}
+	
+	
+	private void random_porter(User from, HabitatMod target) {
+		Avatar avatar = (Avatar) avatar_target_check(target);
+		if (avatar != null) {
+			object_broadcast(noid, "Where she stops, nobody knows!");
+			send_reply_success(from);
+	        avatar.x = 80;
+	        avatar.y = 132;
+	        String destination = avatar.turf;	        
+	        if(magic_data != 0) {
+	        	// Lookup a random teleport as destination! //
+	            @SuppressWarnings("unchecked")
+				Map<String, String> directory = (Map <String, String>) context().getStaticObject("teleports");
+				List<String> keys = new ArrayList<String>(directory.keySet());
+	            destination = directory.get(keys.get(rand.nextInt(keys.size() - 1) + 1));        	
+	        }
+        	avatar.change_regions(destination, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+
+		} else {
+			object_say(from, "Nothing happens.");
+			send_reply_error(from);
+		}		
+	}
 
 	/** The messages describing each magical type */
 	private static final String magic_help[] = { "Down, down, down, down takes you up.",
@@ -634,8 +745,10 @@ public abstract class Magical extends HabitatMod {
 			/* 27 -- lottery payoff machine */
 			"DO to activate.",
 			/* 28 -- death magic */
-			"Try your luck."
+			"Try your luck.",
 			/* 29 -- Random Porter */
+			"Clink!"
+			/* 30 -- Token Dispenser? */
 	};
 
 	/**
