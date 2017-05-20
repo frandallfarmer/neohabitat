@@ -63,8 +63,8 @@ public class Magic_lamp extends Oracular implements Copyable {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "live", "lamp_state", "wisher" })
     public Magic_lamp(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger live, OptInteger lamp_state, OptInteger wisher) {
-        super(style, x, y, orientation, gr_state, restricted, live);
-        this.lamp_state = lamp_state.value(0);
+        super(style, x, y, orientation, new OptInteger(MAGIC_LAMP_WAITING), restricted, live);		// Reading from disk? Always reset.
+        this.lamp_state = lamp_state.value(MAGIC_LAMP_WAITING);
         this.wisher = wisher.value(UNASSIGNED_NOID);
     }
 
@@ -76,7 +76,7 @@ public class Magic_lamp extends Oracular implements Copyable {
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Magic_lamp(style, x, y, orientation, gr_state, restricted, live, lamp_state, wisher);
+        return new Magic_lamp(style, x, y, orientation, MAGIC_LAMP_WAITING, restricted, live, MAGIC_LAMP_WAITING, UNASSIGNED_NOID); // reset dupes.
     }
 
     @Override
@@ -98,7 +98,6 @@ public class Magic_lamp extends Oracular implements Copyable {
             lamp_state			= MAGIC_LAMP_GENIE;
             gr_state			= MAGIC_LAMP_GENIE;
             wisher				= avatar.noid;
-            gen_flags[MODIFIED]	= true;
             success 			= TRUE;
             lampNoid			= noid;
             gaveWarning			= false;
@@ -133,21 +132,21 @@ public class Magic_lamp extends Oracular implements Copyable {
     	@Override
     	public void run() {
     		try {
-    		    Thread.sleep(GENIE_TIMEOUT * 1000);
-    		} catch (InterruptedException neverHappens) {
-    		    Thread.currentThread().interrupt();
-    		}
-    		Magic_lamp lamp = (Magic_lamp) ((lampNoid == UNASSIGNED_NOID) ? null : current_region().noids[lampNoid]);
-    		if (null != lamp && CLASS_MAGIC_LAMP == lamp.HabitatClass()) {
-    			if (!gaveWarning) {
-    	    		object_broadcast("Come on now, I don't have all day!");
-    	    		gaveWarning = true;
-    	        	new Thread(Genie_Gets_Impatient).start();        	 
-    	    		return;
+    			Thread.sleep(GENIE_TIMEOUT * 1000);
+    			Magic_lamp lamp = (Magic_lamp) ((lampNoid == UNASSIGNED_NOID) ? null : current_region().noids[lampNoid]);
+    			if (null != lamp && CLASS_MAGIC_LAMP == lamp.HabitatClass()) {
+    				if (!gaveWarning) {
+    					object_broadcast("Come on now, I don't have all day!");
+    					gaveWarning = true;
+    					new Thread(Genie_Gets_Impatient).start();        	 
+    					return;
+    				}
+    				send_broadcast_msg(noid, "WISH$", "WISH_MESSAGE", "Sorry, I just don't have time for indecisiveness!");
+    				destroy_object(lamp);
     			}
-        		send_broadcast_msg(noid, "WISH$", "WISH_MESSAGE", "Sorry, I just don't have time for indecisiveness!");
-        		destroy_object(lamp);
-    		}
+    		} catch (Exception e) {
+    			trace_msg("Genie thread did not run to completion correctly. Something interrupted the flow.");
+    		}    		
     	}
     };
 
