@@ -89,7 +89,7 @@
 				"y" : 3,
 				"gr_state" : 0,
 				"charges" : 10,
-				"magic_type" : 2
+				"magic_type" : 11
 			} ],
 			"type" : "item",
 			"name" : "Amulet",
@@ -102,7 +102,7 @@
 				"y" : 4,
 				"gr_state" : 0,
 				"charges" : 10,
-				"magic_type" : 2
+				"magic_type" : 1
 			} ],
 			"type" : "item",
 			"name" : "Ring",
