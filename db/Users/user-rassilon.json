@@ -13,6 +13,41 @@
 	} ]
 }, {
 	"type" : "item",
+	"ref" : "item-rassilon.tokens",
+	"name" : "Money!",
+	"in" : "user-rassilon",
+	"mods" : [ {
+		"type" : "Tokens",
+		"y" : 0,
+		"denom_hi" : 4,
+		"denom_lo" : 0
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-rassilon.compass",
+	"name" : "Compass",
+	"in" : "user-rassilon",
+	"mods" : [ {
+		"type" : "Compass",
+		"style" : 0,
+		"y" : 2,
+		"orientation" : 0
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-rassilon.spraycan",
+	"name" : "Stylin' body paint",
+	"in" : "user-rassilon",
+	"mods" : [ {
+		"type" : "Spray_can",
+		"style" : 0,
+		"x" : 10,
+		"y" : 3,
+		"gr_state" : 0,
+		"orientation" : 64
+	} ]
+}, {
+	"type" : "item",
 	"ref" : "item-rassilon.paper",
 	"name" : "Pad and mailbox",
 	"in" : "user-rassilon",
