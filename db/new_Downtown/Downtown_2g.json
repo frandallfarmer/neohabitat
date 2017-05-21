@@ -1,0 +1,529 @@
+[
+  {
+    "ref": "context-Downtown_2g", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "General Store interior", 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "neighbors": [
+          "", 
+          "context-Downtown_3g", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.3bca.Downtown_2g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_2g"
+  }, 
+  {
+    "ref": "item-bag.b7ce.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 40, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_front.39e7.Downtown_2g"
+  }, 
+  {
+    "ref": "item-box.0622.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 80, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-vendo_front.39e7.Downtown_2g"
+  }, 
+  {
+    "ref": "item-box.b039.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-vendo_front.39e7.Downtown_2g"
+  }, 
+  {
+    "ref": "item-movie_camera.9aa4.Downtown_2g", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Movie_camera", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Movie_camera", 
+    "in": "item-vendo_front.39e7.Downtown_2g"
+  }, 
+  {
+    "ref": "item-paper.19df.Downtown_2g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Paper", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Paper", 
+    "in": "item-vendo_front.39e7.Downtown_2g"
+  }, 
+  {
+    "ref": "item-knick_knack.a457.Downtown_2g", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 0, 
+        "y": 5, 
+        "x": 5, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.39e7.Downtown_2g"
+  }, 
+  {
+    "ref": "item-vendo_front.39e7.Downtown_2g", 
+    "mods": [
+      {
+        "display_item": 6, 
+        "orientation": 148, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0,
+        "prices": [95, 120, 125, 250, 20, 50, 49],		
+        "item_price": 49
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.d1b9.Downtown_2g"
+  }, 
+  {
+    "ref": "item-ball.ba73.Downtown_2g", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Ball", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Ball", 
+    "in": "item-vendo_inside.d1b9.Downtown_2g"
+  }, 
+  {
+    "ref": "item-vendo_inside.d1b9.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 12, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_2g"
+  }, 
+  {
+    "ref": "item-bag.cf15.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_front.fcd6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-fake_gun.ecf3.Downtown_2g", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Fake_gun", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fake_gun", 
+    "in": "item-vendo_front.fcd6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-matchbook.fbee.Downtown_2g", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Matchbook", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Matchbook", 
+    "in": "item-vendo_front.fcd6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-paper.02b7.Downtown_2g", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Paper", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Paper", 
+    "in": "item-vendo_front.fcd6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-vendo_front.fcd6.Downtown_2g", 
+    "mods": [
+      {
+        "display_item": 4, 
+        "orientation": 252, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0,
+		"prices": [50, 140, 20, 25, 75],
+        "item_price": 75
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.4e50.Downtown_2g"
+  }, 
+  {
+    "ref": "item-bottle.3901.Downtown_2g", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-vendo_inside.4e50.Downtown_2g"
+  }, 
+  {
+    "ref": "item-vendo_inside.4e50.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 60, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_2g"
+  }, 
+  {
+    "ref": "item-bag.b62a.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 56, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-escape_device.a6cb.Downtown_2g", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "charge": 3, 
+        "type": "Escape_device", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Escape_device", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-flashlight.9d1a.Downtown_2g", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Flashlight", 
+        "orientation": 0, 
+        "on": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flashlight", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-paper.b0a2.Downtown_2g", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Paper", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Paper", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-windup_toy.acda.Downtown_2g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Windup_toy", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Windup_toy", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-knick_knack.c8e2.Downtown_2g", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 0, 
+        "y": 5, 
+        "x": 5, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-knick_knack.35e9.Downtown_2g", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "y": 6, 
+        "x": 6, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.15d6.Downtown_2g"
+  }, 
+  {
+    "ref": "item-vendo_front.15d6.Downtown_2g", 
+    "mods": [
+      {
+        "display_item": 7, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0,
+        "prices": [80, 1200, 150, 20, 250, 180, 250, 150],		
+        "item_price": 150
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.6e8d.Downtown_2g"
+  }, 
+  {
+    "ref": "item-compass.25ac.Downtown_2g", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Compass", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Compass", 
+    "in": "item-vendo_inside.6e8d.Downtown_2g"
+  }, 
+  {
+    "ref": "item-vendo_inside.6e8d.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 108, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_2g"
+  }, 
+  {
+    "ref": "item-wall.bf85.Downtown_2g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_2g"
+  }, 
+  {
+    "ref": "item-sign.295f.Downtown_2g", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 108, 
+        "x": 12, 
+        "ascii": [
+          128, 
+          131, 
+          86, 
+          101, 
+          110, 
+          100, 
+          114, 
+          111, 
+          105, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          86, 
+          101, 
+          110, 
+          100, 
+          114, 
+          111, 
+          105, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          86, 
+          101, 
+          110, 
+          100, 
+          114, 
+          111, 
+          105, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_2g"
+  }
+]

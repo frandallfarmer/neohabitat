@@ -56,7 +56,7 @@
       {
         "y": 161, 
         "x": 64, 
-        "open_flags": 0, 
+        "open_flags": 2, 
         "type": "Door",
 		"connection": "context-Downtown_2g",
         "orientation": 140
