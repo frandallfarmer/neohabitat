@@ -204,8 +204,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	if (ghost != null) {
     		if (from != null)
     			send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", GHOST_NOID);
-    		Region.removeFromObjList(ghost);
-    		note_object_deletion(ghost);
     		destroy_object(ghost);
     	}
     }
@@ -384,8 +382,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      *            The object to remove from the noid list.
      */
     public static void removeFromObjList(HabitatMod mod) {
-    	if (mod.noid < UNASSIGNED_NOID)
+    	if (mod.noid < UNASSIGNED_NOID) {
     		mod.current_region().noids[mod.noid] = null;
+    		mod.noid = UNASSIGNED_NOID;
+    	}
     }
         
     /**
@@ -395,16 +395,23 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      */
     public static void removeContentsFromRegion(Container cont) {
     	for (int i = 0; i < cont.capacity(); i++) {
-    		HabitatMod mod = cont.contents(i);
-    		if (mod != null) {
-    			if (cont.opaque_container()) {
-    				mod.note_instance_deletion(mod);
-    			} else {
-    				mod.note_object_deletion(mod);
-    			}
-    			removeFromObjList(mod);
-    		}
-    	}    	
+    		HabitatMod obj = cont.contents(i);
+    		if (obj != null)
+    			removeObjectFromRegion(obj);
+    	}
+    }
+    
+    public static void removeObjectFromRegion(HabitatMod obj) {
+    	if (obj == null)
+    		return;
+    	
+    	Container cont = obj.container();
+       	if (cont != null & cont.opaque_container())
+    		obj.note_instance_deletion(obj);
+    	else
+			obj.note_object_deletion(obj);
+    	
+    	removeFromObjList(obj);
     }
     
     public static void tellEveryone(String text) {

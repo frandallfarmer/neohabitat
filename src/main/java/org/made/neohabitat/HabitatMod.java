@@ -110,7 +110,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	public boolean gen_flags[] = new boolean[33];
 
 	/* Provides an initialized random number generator for any derived classes. */
-	protected Random rand = new Random();
+	protected static final Random rand = new Random();
 
 	/* This item fits on the heap in the C64 clients memory. */
 	public	boolean	fits = false;
@@ -1722,7 +1722,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 * @param obj
 	 * @return
 	 */
-	private boolean mem_checks_ok(HabitatMod obj) {
+	public boolean mem_checks_ok(HabitatMod obj) {
 		
 		Region region = current_region();
 		if (region.space_usage > C64_HEAP_SIZE)
@@ -3170,8 +3170,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The Habitat Mod to delete.
 	 */
 	public void destroy_object(HabitatMod mod) {
-		Item item = (Item) mod.object();
-		item.delete();
+		if (mod.noid != UNASSIGNED_NOID)
+			Region.removeObjectFromRegion(mod);
+		
+		((Item) mod.object()).delete();
 	}
 
 	/**
