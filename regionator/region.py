@@ -30,6 +30,11 @@ with open('./mod_index.yml', 'r') as mod_index:
   MOD_INDEX = yaml.load(mod_index)
 
 
+MOD_DEFAULTS = {}
+with open('./mod_defaults.yml', 'r') as mod_defaults:
+  MOD_DEFAULTS = yaml.load(mod_defaults)
+
+
 class Mod(object):
   def __init__(self, region, identifier, params={}, additional_params={},
       contained_mods=[], parent=None):
@@ -54,6 +59,9 @@ class Mod(object):
       'y': int(self.params['y']),
       'orientation': int(self.params['or']),
     }
+    if self.neohabitat_name in MOD_DEFAULTS:
+      mod_json.update(MOD_DEFAULTS[self.neohabitat_name])
+
     if 'style' in self.params:
       mod_json['style'] = int(self.params['style'])
     if 'gr_state' in self.params:
