@@ -61,9 +61,9 @@
 	} ]
 }, {
 	"type" : "item",
-	"ref" : "item-chip.paper",
+	"ref" : "item-steve.paper",
 	"name" : "Pad and mailbox",
-	"in" : "user-chip",
+	"in" : "user-steve",
 	"mods" : [ {
 		"type" : "Paper",
 		"orientation" : 16,

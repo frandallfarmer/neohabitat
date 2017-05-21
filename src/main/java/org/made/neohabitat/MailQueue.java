@@ -1,52 +1,64 @@
 package org.made.neohabitat;
 
-import org.elkoserver.foundation.json.JSONMethod;
-import org.elkoserver.json.Encodable;
-import org.elkoserver.json.EncodeControl;
-import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.json.*;
+import org.elkoserver.server.context.User;
+
+import org.made.neohabitat.mods.Paper;
+
 
 /**
- * Class within which to serialize an Avatar's Mail queue.
+ * Represents a JSON-serializable Mail queue, used for facilitating
+ * in-order delivery of Mail messages to Paper mods in Avatar
+ * pockets.
  */
 public class MailQueue implements Encodable {
 
-    public String[] queue;
+    public MailQueueRecord[] queue;
 
-    @JSONMethod({ "queue" })
-    public MailQueue(String[] queue) {
-        if (queue == null) {
-            this.queue = new String[0];
+    public MailQueue(JSONObject queueObj) throws JSONDecodingException {
+        if (queueObj == null) {
+            this.queue = new MailQueueRecord[0];
         } else {
-            this.queue = queue;
+            JSONArray queueRecordsArray = queueObj.getArray("queue");
+            JSONObject[] queueRecords = {};
+            queueRecords = queueRecordsArray.toArray(queueRecords);
+
+            this.queue = new MailQueueRecord[queueRecords.length];
+            for (int i=0; i < queue.length; i++) {
+                this.queue[i] = new MailQueueRecord(queueRecords[i]);
+            }
         }
     }
 
     public MailQueue() {
-        this.queue = new String[0];
+        this.queue = new MailQueueRecord[0];
     }
 
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral paper = new JSONLiteral(control);
         if (control.toRepository()) {
-            paper.addParameter("queue", queue);
+            paper.addParameter("queue", getQueueAsJSONObjects());
         }
+        paper.finish();
         return paper;
     }
 
-    public void addNewMail(String mailRef) {
-        String[] newQueue = new String[queue.length + 1];
+    public void addNewMail(User from, Paper newMail) {
+        MailQueueRecord[] newQueue = new MailQueueRecord[queue.length + 1];
         System.arraycopy(queue, 0, newQueue, 0, queue.length);
-        newQueue[queue.length] = mailRef;
+        newQueue[queue.length] = new MailQueueRecord(
+            from.name().toLowerCase(), from.ref(), newMail.text_path,
+            newMail.sent_timestamp);
         queue = newQueue;
     }
 
-    public String popNextMailRef() {
-        if (queue.length == 0) {
+    public MailQueueRecord popNextMail() {
+        if (empty()) {
             return null;
         }
-        String[] newQueue = new String[queue.length - 1];
+        MailQueueRecord[] newQueue = new MailQueueRecord[queue.length - 1];
         System.arraycopy(queue, 1, newQueue, 0, queue.length - 1);
-        String headMailRef = queue[0];
+        MailQueueRecord headMailRef = queue[0];
         queue = newQueue;
         return headMailRef;
     }
@@ -57,6 +69,18 @@ public class MailQueue implements Encodable {
 
     public boolean nonEmpty() {
         return !empty();
+    }
+
+    public int size() {
+        return queue.length;
+    }
+
+    private JSONObject[] getQueueAsJSONObjects() {
+        JSONObject[] jsonObjects = new JSONObject[queue.length];
+        for (int i=0; i < queue.length; i++) {
+            jsonObjects[i] = queue[i].toJSONObject();
+        }
+        return jsonObjects;
     }
 
 }
