@@ -1284,12 +1284,18 @@ public class Avatar extends Container implements UserMod {
      */
 	public String turf_name() {
 		if (!has_turf()) {
-			return null;
+			return "unknown";
 		} else {
-			String[] splitTurf = turf.split("context-")[1].split(".");
-			String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
-			String turfId = splitTurf[1];
-			return String.format("%s #%s", realm, turfId);
+			try {
+				String[] splitContext = turf.split("-");
+				String[] splitTurf = splitContext[1].split("\\.");
+				String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
+				String turfId = splitTurf[1];
+				return String.format("%s #%s", realm, turfId);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				trace_exception(e);
+				return "unknown";
+			}
 		}
 	}
 
