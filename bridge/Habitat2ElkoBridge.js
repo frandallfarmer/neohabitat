@@ -397,7 +397,7 @@ function createServerConnection(port, host, client, immediate, context) {
 
 	client.removeAllListeners('data').on('data', function(data) {
 		try {
-			parseIncomingHabitatClientMessage(client, server, data);				
+			frameClientStream(client, server, data);				
 		} catch(err) {
 			Trace.error("\n\n\nClient input processing error captured:\n" + 
 					JSON.stringify(err,null,2) + "\n" +
@@ -611,6 +611,7 @@ function toElko(connection, data) {
 function initializeClientState(client, who, replySeq) {
 	++SessionCount;
 	client.sessionName = "" + SessionCount;
+	client.inputBuf    = [];
 	client.state = { user: who || "",
 			contentsVector: new ContentsVector(replySeq, HCode.REGION_NOID),
 			objects: [],
@@ -626,6 +627,27 @@ function initializeClientState(client, who, replySeq) {
 	};
 }
 
+
+function frameClientStream(client, server, data) {
+	var framed   = false;
+	var saveC	 = "";
+	for (var i = 0; i < data.length; i++) {
+		var c = data[i];
+		client.inputBuf += c;
+		if (c == '\n' || c == '\r') {		// Two returns-delimited frames on streams.
+			if (client.saveFrameChar == '\n' || client.saveFrameChar == '\r') {
+				framed = true;
+			}
+		}
+		if (framed) {
+			parseIncomingHabitatClientMessage(client, server, client.inputBuf);
+			client.inputBuf = [];
+			c = "";
+		}
+		client.saveFrameChar = c;
+	}
+}
+
 /**
  * 
  * @param client
@@ -638,7 +660,6 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 	// Handle new connections - determine the protocol/device type and setup environment
 
 	if (undefined === client.json) {
-		initializeClientState(client);
 		var curly = send.indexOf("{");
 		var colon = send.indexOf(":");
 		if (curly !== -1 && curly < colon) {
@@ -1379,12 +1400,12 @@ function processIncomingElkoBlob(client, server, data) {
 const Listener = Net.createServer(function(client) {
 	// We have a Habitat Client connection!
 	client.setEncoding('binary');
-	client.state 		= {};
 	client.port 		= ElkoPort;
 	client.host 		= ElkoHost;
 	client.timeLastSent	= new Date().getTime();
 	client.lastSentLen	= 0;
-	client.backdoor		= {vectorize: vectorize}
+	client.backdoor		= {vectorize: vectorize};
+	initializeClientState(client);
 
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);
 	try {

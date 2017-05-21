@@ -338,7 +338,7 @@ function sendWithSubstituions(obj) {
 	}
 	var msg = JSON.stringify(obj);
 	console.log(timestamp("->") + msg.trim());
-	Server.write(msg);
+	Server.write(msg + "\n\n");
 }
 
 function startReadingSTDIN() {
