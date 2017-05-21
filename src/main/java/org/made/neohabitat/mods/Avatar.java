@@ -1286,7 +1286,7 @@ public class Avatar extends Container implements UserMod {
 		if (!has_turf()) {
 			return null;
 		} else {
-			String[] splitTurf = turf.split("item-")[1].split(".");
+			String[] splitTurf = turf.split("context-")[1].split(".");
 			String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
 			String turfId = splitTurf[1];
 			return String.format("%s #%s", realm, turfId);
