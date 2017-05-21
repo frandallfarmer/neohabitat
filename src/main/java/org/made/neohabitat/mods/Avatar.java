@@ -4,13 +4,12 @@ import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
+import org.elkoserver.json.*;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 import org.elkoserver.server.context.UserMod;
+import org.elkoserver.util.ArgRunnable;
 import org.made.neohabitat.*;
-import org.made.neohabitat.mods.Door;
-import org.elkoserver.json.EncodeControl;
-import org.elkoserver.json.JSONLiteral;
 
 /**
  * The Avatar Mod (attached to an Elko User.)
@@ -53,6 +52,8 @@ public class Avatar extends Container implements UserMod {
 	public static final int BUILDING_OFFSET = 28;
 
 	public static final String DEFAULT_TURF = "context-test";
+
+	public static final String MAIL_ARRIVED_MSG = "* You have MAIL in your pocket. *";
 
 	public int HabitatClass() {
 		return CLASS_AVATAR;
@@ -158,6 +159,8 @@ public class Avatar extends Container implements UserMod {
 	private int		   to_x				= 0;
 	private int		   to_y				= 0;
 	private int        transition_type	= WALK_ENTRY;
+
+	private MailQueue  mail_queue = null;
 
 	/**
 	 * Target NOID and magic item saved between events, such as for the GOD TOOL
@@ -294,6 +297,9 @@ public class Avatar extends Container implements UserMod {
 		return result;
 	}
 
+	public String mailQueueRef() {
+		return String.format("mail-%s", object().name().toLowerCase());
+	}
 
 	/** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
 	public void objectIsComplete() {
@@ -1017,6 +1023,10 @@ public class Avatar extends Container implements UserMod {
 				result = result + "in poor health.";
 			else
 				result = result + "near death.";
+
+			if (has_turf()) {
+				result = result + "  You live at " + turf_name() + ".";
+			}
 		} else {
 			send_private_msg(from, avatar.noid, targetUser, "SPEAK$", "I am " + avatarname);
 			// p_msg_s(from, avatar.noid, targetUser, SPEAK$, "I am " +
@@ -1184,6 +1194,31 @@ public class Avatar extends Container implements UserMod {
 	}
 
 	/**
+	 * Returns the Elko User associated with this Avatar.
+	 *
+	 * @return the Elko User associated with this Avatar
+     */
+	public User elko_user() {
+		return Region.getUserByName(object().name());
+	}
+
+	/**
+	 * Sends a MAILARRIVED$ message to the User associated with this Avatar.
+	 */
+	public void send_mail_arrived() {
+		send_mail_arrived(elko_user());
+	}
+
+	/**
+	 * Sends a mail arrival message to the provided User.
+	 *
+	 * @param from User to send mail arrival message to.
+     */
+	public void send_mail_arrived(User from) {
+		object_say(from, noid, MAIL_ARRIVED_MSG);
+	}
+
+	/**
 	 * Get this user's value for a record.
 	 * 
 	 * @param recordID
@@ -1219,7 +1254,6 @@ public class Avatar extends Container implements UserMod {
 	 * @param recordID
 	 * @return
 	 */
-
 	static public int get_record(User whom, int recordID) {
 		return(((Avatar) whom.getMod(Avatar.class)).get_record(recordID));
 	}
@@ -1229,9 +1263,194 @@ public class Avatar extends Container implements UserMod {
 	 * 
 	 * @param whom
 	 * @param recordID
-	 * @param value
 	 */
 	static public void inc_record(User whom, int recordID) {
 		((Avatar) whom.getMod(Avatar.class)).inc_record(recordID);
 	}
+
+	/**
+	 * Returns whether this Avatar has an assigned Turf.
+	 *
+	 * @return boolean whether Avatar has an assigned Turf
+     */
+	public boolean has_turf() {
+		return !turf.equals(DEFAULT_TURF);
+	}
+
+	/**
+	 * Determines the name of the turf (e.g. Popustop #100) from its Elko context reference.
+	 *
+	 * @return Human-readable name of the Avatar's turf
+     */
+	public String turf_name() {
+		if (!has_turf()) {
+			return "unknown";
+		} else {
+			try {
+				String[] splitContext = turf.split("-");
+				String[] splitTurf = splitContext[1].split("\\.");
+				String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
+				String turfId = splitTurf[1];
+				return String.format("%s #%s", realm, turfId);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				trace_exception(e);
+				return "unknown";
+			}
+		}
+	}
+
+	/**
+	 * Checks for new Mail and sends a MAILARRIVED$ notification to the Avatar if so.
+	 */
+	public void check_mail() {
+		// If the Avatar has a Paper in their MAIL_SLOT, sends a Mail arrived
+		// notification and performs no MailQueue operations.
+		HabitatMod paperMod = contents(MAIL_SLOT);
+		if (paperMod == null || !(paperMod instanceof Paper)) {
+			trace_msg("Paper not in MAIL_SLOT for User %s", object().ref());
+			return;
+		}
+		Paper paperInMailSlot = (Paper) paperMod;
+		if (paperInMailSlot.gr_state == Paper.PAPER_LETTER_STATE) {
+			if (!amAGhost) {
+				send_mail_arrived();
+			}
+			return;
+		}
+
+		// Otherwise, checks the Avatar's MailQueue for new Mail and modifies the Paper
+		// in the MAIL_SLOT if any is found.
+		update_mail_slot(!amAGhost);
+	}
+
+	/**
+	 * If the Paper in the Avatar's pocket indicates that it can receive a new Mail and
+	 * there is new Mail in an Avatar's MailQueue, pops that Mail off the MailQueue
+	 * and adds it to the Paper in the Avatar's MAIL_SLOT, then optionally sends a
+	 * mail arrival message.
+	 *
+	 * @param shouldAnnounce whether to send a MAILARRIVED$ message if the slot is advanced
+     */
+	private void advance_mail_slot(boolean shouldAnnounce) {
+		if (mail_queue == null) {
+			return;
+		}
+
+		trace_msg("Advancing Mail slot for User %s (Mail records count: %d)",
+			object().ref(), mail_queue.size());
+
+		boolean advanced = false;
+
+		Paper paperInMailSlot = null;
+		HabitatMod paperMod = contents(MAIL_SLOT);
+		if (paperMod == null || !(paperMod instanceof Paper)) {
+			trace_msg("Object in MAIL_SLOT for User %s is not Paper", object().ref());
+			return;
+		} else {
+			paperInMailSlot = (Paper) paperMod;
+		}
+
+		if (mail_queue.nonEmpty()) {
+			// There is a Paper in the Avatar's MAIL_SLOT, so pops the latest Mail
+			// record off the MailQueue and sets it on the Paper within the MAIL_SLOT
+			// so it may be read.
+			MailQueueRecord nextMail = mail_queue.popNextMail();
+			paperInMailSlot.gr_state = Paper.PAPER_LETTER_STATE;
+			paperInMailSlot.text_path = nextMail.paper_ref;
+			paperInMailSlot.sent_timestamp = nextMail.timestamp;
+			paperInMailSlot.gen_flags[MODIFIED] = true;
+			paperInMailSlot.checkpoint_object(paperInMailSlot);
+			paperInMailSlot.retrievePaperContents();
+			paperInMailSlot.send_gr_state_fiddle(Paper.PAPER_LETTER_STATE);
+			context().contextor().odb().putObject(
+				mailQueueRef(), mail_queue, null, false, finishMailQueueWrite);
+			inc_record(Constants.HS$mail_recv_count);
+			advanced = true;
+			trace_msg("Advanced Mail slot for User %s to %s",
+				object().ref(), paperInMailSlot.text_path);
+		} else if (paperInMailSlot.gr_state == Paper.PAPER_LETTER_STATE) {
+			// Otherwise, there is no more mail, so if the Paper is in a LETTER state,
+			// renders it as a BLANK state.
+			paperInMailSlot.ascii = Paper.EMPTY_PAPER;
+			paperInMailSlot.gr_state = Paper.PAPER_BLANK_STATE;
+			paperInMailSlot.text_path = Paper.EMPTY_PAPER_REF;
+			paperInMailSlot.sent_timestamp = 0;
+			paperInMailSlot.gen_flags[MODIFIED] = true;
+			paperInMailSlot.checkpoint_object(paperInMailSlot);
+			paperInMailSlot.send_gr_state_fiddle(Paper.PAPER_BLANK_STATE);
+			context().contextor().odb().putObject(
+				mailQueueRef(), mail_queue, null, false, finishMailQueueWrite);
+			trace_msg("Blanked Mail slot for User %s", object().ref());
+		}
+
+		if (advanced && shouldAnnounce) {
+			send_mail_arrived();
+		}
+	}
+
+	/**
+	 * Reads the latest MailQueue from Mongo then updates the Paper in an Avatar's MailSlot with
+	 * the next Mail message on the MailQueue. If no further mail, blanks the Paper instead.
+	 *
+	 * @param shouldAnnounce whether the Avatar should receive a ' * You have MAIL...' notification
+     */
+	public void update_mail_slot(boolean shouldAnnounce) {
+		JSONObject findPattern = new JSONObject();
+		findPattern.addProperty("ref", mailQueueRef());
+		context().contextor().queryObjects(
+			findPattern, null, 1, new MailQueueReader(shouldAnnounce));
+	}
+
+	private class MailQueueReader implements ArgRunnable {
+
+		private boolean shouldAnnounce;
+
+		public MailQueueReader(boolean shouldAnnounce) {
+			this.shouldAnnounce = shouldAnnounce;
+		}
+
+		@Override
+		public void run(Object obj) {
+			try {
+				// Deserializes the MailQueue if it was found in Mongo.
+				MailQueue newQueue = new MailQueue();
+				if (obj != null) {
+					Object[] args = (Object[]) obj;
+					try {
+						JSONObject jsonObj = ((JSONObject) args[0]);
+						newQueue = new MailQueue(jsonObj);
+					} catch (JSONDecodingException e) {
+						mail_queue = newQueue;
+						return;
+					}
+				}
+
+				// After reading the MailQueue, assigns it as an Avatar instance variable.
+				mail_queue = newQueue;
+				trace_msg("Finished reading MailQueue %s for User %s",
+						mailQueueRef(), object().ref());
+
+				// If any Mail exists in the MailQueue, adds it to this Avatar's MailSlot,
+				// optionally sending a presence notification.
+				advance_mail_slot(shouldAnnounce);
+			} catch (Exception e) {
+				trace_exception(e);
+			}
+		}
+	}
+
+	private final ArgRunnable finishMailQueueWrite = new ArgRunnable() {
+		@Override
+		public void run(Object obj) {
+			try {
+				if (obj != null) {
+					trace_msg("Failed to write mail queue for User %s: %s",
+							object().ref(), obj);
+				}
+			} catch (Exception e) {
+				trace_exception(e);
+			}
+		}
+	};
+
 }

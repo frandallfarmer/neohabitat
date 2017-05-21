@@ -5,16 +5,17 @@ import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.*;
+import org.elkoserver.objdb.ObjDB;
 import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.User;
 
 import org.elkoserver.util.ArgRunnable;
-import org.made.neohabitat.Constants;
-import org.made.neohabitat.Copyable;
-import org.made.neohabitat.HabitatMod;
+import org.made.neohabitat.*;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -35,13 +36,12 @@ public class Paper extends HabitatMod implements Copyable {
     public static final int PAPER_WRITTEN_STATE = 1;
     public static final int PAPER_LETTER_STATE = 2;
 
-    public static final int MAX_TITLE_LENGTH = 32;
-
     public static final String EMPTY_PAPER_REF = "text-emptypaper";
 
+    public static final Pattern ADDRESS_REGEX = Pattern.compile("[Tt][Oo]:(.*)");
+    public static final SimpleDateFormat POSTMARK_DATE_FORMAT = new SimpleDateFormat("yy-MM-dd");
+
     public static final int[] EMPTY_PAPER = new int[16];
-    public static final int[] PAPER_TITLE_BEGINNING = convert_to_petscii("This paper begins \"", 24);
-    public static final int[] PAPER_TITLE_ENDING = convert_to_petscii("\".", 2);
 
     public int HabitatClass() {
         return CLASS_PAPER;
@@ -72,25 +72,30 @@ public class Paper extends HabitatMod implements Copyable {
     }
 
     /** Contains the MongoDB ref to a path of text to base an empty Paper off of. */
-    private String text_path = EMPTY_PAPER_REF;
+    public String text_path = EMPTY_PAPER_REF;
+
+    /** Contains the time at which this Paper was sent as a Mail message. */
+    public int sent_timestamp = 0;
 
     /** Contains the current PETSCII text of the Paper, retrieved from a PaperContents record in MongoDB. */
     protected int ascii[] = EMPTY_PAPER;
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "text_path" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "text_path", "sent_timestamp" })
     public Paper(OptInteger style, OptInteger x, OptInteger y,
         OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-        OptString text_path) {
+        OptString text_path, OptInteger sent_timestamp) {
         super(style, x, y, orientation, gr_state, restricted);
         this.ascii = EMPTY_PAPER;
         this.text_path = text_path.value(EMPTY_PAPER_REF);
+        this.sent_timestamp = sent_timestamp.value(0);
     }
 
     public Paper(int style, int x, int y, int orientation, int gr_state,
-        boolean restricted, String text_path) {
+        boolean restricted, String text_path, Integer sent_timestamp) {
         super(style, x, y, orientation, gr_state, restricted);
         this.ascii = EMPTY_PAPER;
         this.text_path = text_path;
+        this.sent_timestamp = sent_timestamp;
     }
 
     public boolean is_blank() {
@@ -112,7 +117,7 @@ public class Paper extends HabitatMod implements Copyable {
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Paper(style, x, y, orientation, gr_state, restricted, text_path);
+        return new Paper(style, x, y, orientation, gr_state, restricted, text_path, sent_timestamp);
     }
 
     @Override
@@ -120,6 +125,7 @@ public class Paper extends HabitatMod implements Copyable {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         if (control.toRepository()) {
             result.addParameter("text_path", text_path);
+            result.addParameter("sent_timestamp", sent_timestamp);
         }
         result.finish();
         return result;
@@ -155,7 +161,6 @@ public class Paper extends HabitatMod implements Copyable {
                 deletePaperContents();
                 if (gr_state != PAPER_BLANK_STATE) {
                     gr_state = PAPER_BLANK_STATE;
-                    fiddle_flag = true;
                 }
                 gen_flags[MODIFIED] = true;
             } else {
@@ -173,40 +178,22 @@ public class Paper extends HabitatMod implements Copyable {
 
         if (success) {
             send_reply_success(from);
+            send_gr_state_fiddle(gr_state);
         } else {
             send_reply_error(from);
-        }
-
-        if (fiddle_flag) {
-            trace_msg("Sending PAPER_BLANK_STATE fiddle for Paper %s", text_path);
-            send_fiddle_msg(
-                THE_REGION,
-                noid,
-                C64_GR_STATE_OFFSET,
-                PAPER_BLANK_STATE
-            );
         }
     }
 
     @JSONMethod
     public void HELP(User from) {
-        if (ascii.length > 0) {
-            int titleLength = ascii.length;
-            if (titleLength > MAX_TITLE_LENGTH) {
-                titleLength = MAX_TITLE_LENGTH;
-            }
-            int[] boundedAscii = new int[titleLength];
-            System.arraycopy(ascii, 0, boundedAscii, 0, titleLength);
-            JSONLiteral msg = new_reply_msg(noid);
-            if (!is_blank()) {
-                msg.addParameter("ascii",
-                    concat_int_arrays(PAPER_TITLE_BEGINNING, boundedAscii, PAPER_TITLE_ENDING));
-            } else {
-                msg.addParameter("text", "");
-            }
-            msg.finish();
-            from.send(msg);
+        JSONLiteral msg = new_reply_msg(noid);
+        if (!is_blank()) {
+            msg.addParameter("text", get_title_page(getFirstLine(), PAPER$HELP));
+        } else {
+            msg.addParameter("text", "");
         }
+        msg.finish();
+        from.send(msg);
     }
 
     /**
@@ -224,9 +211,9 @@ public class Paper extends HabitatMod implements Copyable {
         }
 
         boolean announce_it = false;
-        int how;
-        boolean success;
-
+        int how = -1;
+        boolean success = false;
+        boolean is_letter = false;
         Item paperItem = null;
 
         if (empty_handed(avatar) && getable(this) &&
@@ -246,27 +233,27 @@ public class Paper extends HabitatMod implements Copyable {
             }
             success = true;
 
-            // If special_get is true, we're either getting mail or creating a new Paper sheet.
+            // If special_get is true, we need to replace the Paper we just removed from the
+            // Avatar's MAIL_SLOT.
             if (special_get) {
                 trace_msg("Special GET is true for Paper %s, either a mail or Paper sheet creation",
                     text_path);
-                Paper blankPaper = new Paper(
-                    0, 0, MAIL_SLOT, 16, PAPER_BLANK_STATE, false, EMPTY_PAPER_REF);
-                paperItem = create_object("paper", blankPaper, avatar, false);
+
+                Paper newPaper = new Paper(
+                    0, 0, MAIL_SLOT, 16, PAPER_BLANK_STATE, false, EMPTY_PAPER_REF, 0);
+                paperItem = create_object("paper", newPaper, avatar, false);
                 if (paperItem == null) {
-                    // If this fails, put the Paper back in the Avatar's inventory.
+                    // If this fails, puts the Paper back in the Avatar's inventory.
                     change_containers(this, avatar, MAIL_SLOT, true);
                     send_reply_error(from);
                     return;
                 }
-                // TODO(steve): Fix this logic once PSENDMAIL is implemented.
-                /*if (gr_state == PAPER_LETTER_STATE) {
-                    get_mail_message(from);
-                    return;
-                }*/
+
                 announce_it = true;
             }
-            send_neighbor_msg(from, avatar.noid, "GET$", "target", noid, "how", how);
+            send_neighbor_msg(from, avatar.noid, "GET$",
+                "target", noid,
+                "how", how);
         } else {
             success = false;
         }
@@ -280,15 +267,50 @@ public class Paper extends HabitatMod implements Copyable {
         if (announce_it) {
             announce_object(paperItem, avatar);
         }
+
+        // If the Paper is a LETTER, checks the Avatar's MailQueue and replaces the Paper
+        // with either a LETTER or a BLANK depending upon its status.
+        if (gr_state == PAPER_LETTER_STATE) {
+            send_gr_state_fiddle(PAPER_WRITTEN_STATE);
+            avatar.update_mail_slot(false);
+        }
     }
 
     @JSONMethod
     public void PSENDMAIL(User from) {
-        illegal(from, this.HabitatModName() + ".PSENDMAIL");
-    }
+        Avatar avatar = avatar(from);
+        boolean success;
+        Paper paperInHands = null;
+        HabitatMod inHands = avatar.contents(HANDS);
 
-    private boolean send_mail_message(User from) {
-        return true;
+        // Parse the addressee (To: somebody) from the Paper's ASCII contents.
+        String addressee = findAddressee();
+        if (addressee == null) {
+            send_reply_error(from);
+            return;
+        }
+
+        if (holding(avatar, this)) {
+            if (inHands instanceof Paper) {
+                paperInHands = (Paper) inHands;
+                paperInHands.addPostmark(from);
+                paperInHands.sendMailToUser(from, addressee);
+                success = true;
+            } else {
+                success = false;
+            }
+        } else {
+            success = false;
+        }
+
+        if (success) {
+            send_reply_success(from);
+            send_goaway_msg(paperInHands.noid);
+            destroy_object(paperInHands);
+            avatar.inc_record(Constants.HS$mail_send_count);
+        } else {
+            send_reply_error(from);
+        }
     }
 
     /**
@@ -339,6 +361,15 @@ public class Paper extends HabitatMod implements Copyable {
         }
     }
 
+    public void send_gr_state_fiddle(int new_gr_state) {
+        send_fiddle_msg(
+            THE_REGION,
+            noid,
+            C64_GR_STATE_OFFSET,
+            new_gr_state
+        );
+    }
+
     // Private classes and methods:
 
     /**
@@ -362,6 +393,102 @@ public class Paper extends HabitatMod implements Copyable {
             return paper;
         }
 
+    }
+
+    /**
+     * Returns the first line of this Paper as a String.
+     *
+     * @return a Java String representing the first line of this Paper
+     */
+    private String getFirstLine() {
+        // Extracts the first line of the Paper.
+        int lineWidth = Document.MAX_LINE_WIDTH;
+        if (ascii.length < Document.MAX_LINE_WIDTH) {
+            lineWidth = ascii.length;
+        }
+        List<Character> firstLine = new LinkedList<>();
+
+        // Sanitizes out any PETSCII characters that won't parse as UTF-8,
+        // replacing them with spaces.
+        for (int i=0; i < lineWidth; i++) {
+            int curChar = ascii[i];
+            if (curChar >=32 && curChar <= 127) {
+                // If a valid ASCII character, adds to String.
+                firstLine.add((char) curChar);
+            } else if (curChar == 10) { // 10 == \n (newline)
+                // NUL-terminates the String if we reach a newline.
+                firstLine.add((char) 0);
+                break;
+            } else {
+                // Converts any non-parseable character to a space.
+                firstLine.add((char) 32); // 32 == ' '
+            }
+        }
+
+        // Parses List into a char[] and transforms it into a String.
+        char[] firstLineChars = new char[firstLine.size()];
+        for (int i=0; i < firstLine.size(); i++) {
+            firstLineChars[i] = firstLine.get(i);
+        }
+        String firstLineString = new String(firstLineChars);
+
+        trace_msg("First line of Paper %s, length %d:\n%s",
+            text_path, firstLineString.length(), firstLineString);
+        return firstLineString;
+    }
+
+
+    /**
+     * Locates the addressee of the Mail within this paper, returning a lowercased
+     * user name suitable for MailQueue lookup.
+     *
+     * @return
+     */
+    private String findAddressee() {
+        // Looks for a matching address within the first line.
+        String firstLineString = getFirstLine();
+        Matcher addressMatcher = ADDRESS_REGEX.matcher(firstLineString);
+        if (addressMatcher.matches()) {
+            String address = addressMatcher.group(1).trim();
+            trace_msg("Found addressee for Paper %s: %s", text_path, address);
+            return address.toLowerCase();
+        } else {
+            trace_msg("Could not find addressee for Paper %s: %s",
+                text_path, firstLineString);
+            return null;
+        }
+    }
+
+    /**
+     * Replaces the address line (To:...) of a Mail-like Paper with a postmark:
+     * From: someone   Postmark:05-19-17
+     *
+     * @param from User who is sending a Mail message with this Paper
+     */
+    private void addPostmark(User from) {
+        // Figures out the mail sending timestamp from the current time.
+        long currentTime = System.currentTimeMillis();
+        Date currentDate = new Date(currentTime);
+        sent_timestamp = (int) (currentTime / 1000L);
+
+        // Creates a 40 character-long postmark String to append to the start
+        // of this message.
+        String postmarkFirstLine = String.format("From: %-14s Postmark: %s ",
+            from.name(), POSTMARK_DATE_FORMAT.format(currentDate));
+        trace_msg("Writing postmark to sent mail in Paper %s:\n%s",
+            paper_path(), postmarkFirstLine);
+
+        // Figures out where to insert the Postmark.
+        int startOfLetterText = getFirstLine().length();
+        int[] letterText = Arrays.copyOfRange(ascii, startOfLetterText, ascii.length);
+
+        // Inserts the Postmark.
+        ascii = concat_int_arrays(stringToIntArray(postmarkFirstLine), letterText);
+        trace_msg("Postmarked ASCII for Paper %s: %s", paper_path(), Arrays.toString(ascii));
+
+        // Saves the Paper's contents.
+        savePaperContents();
+        checkpoint_object(this);
     }
 
     private void showPaper(User from) {
@@ -474,7 +601,9 @@ public class Paper extends HabitatMod implements Copyable {
         }
     }
 
-    private void retrievePaperContents() {
+    public void retrievePaperContents() {
+        trace_msg("Retrieving Paper contents for Paper %s at: %s", object().ref(), text_path);
+
         // Get the text for this Paper from the DB.
         JSONObject findPattern = new JSONObject();
         findPattern.addProperty("ref", text_path);
@@ -488,7 +617,10 @@ public class Paper extends HabitatMod implements Copyable {
 
     private void savePaperContents() {
         trace_msg("Saving contents for Paper %s: %s", text_path, Arrays.toString(ascii));
-        text_path = paper_path();
+        if (text_path.startsWith("text-")) {
+            text_path = paper_path();
+            gen_flags[MODIFIED] = true;
+        }
         PaperContents contents = new PaperContents(ascii);
         context().contextor().odb().putObject(text_path, contents, null, false, finishPaperWrite);
     }
@@ -502,14 +634,115 @@ public class Paper extends HabitatMod implements Copyable {
         text_path = EMPTY_PAPER_REF;
     }
 
+    private void sendMailToUser(User from, String toUserName) {
+        trace_msg("Sending Mail to User %s: %s", toUserName, text_path);
+
+        String mailQueueRef = String.format("mail-%s", toUserName);
+
+        JSONObject findPattern = new JSONObject();
+        findPattern.addProperty("ref", mailQueueRef);
+
+        User user = Region.getUserByName(toUserName);
+        if (user != null) {
+            Avatar avatar = avatar(user);
+            HabitatMod mailMod = avatar.contents(MAIL_SLOT);
+            if (mailMod != null && mailMod instanceof Paper) {
+                Paper mailPaper = (Paper) mailMod;
+                // If the Paper in the Avatar's MAIL_SLOT is already in a LETTER state,
+                // appends it to the Avatar's MailQueue instead.
+                if (mailPaper.gr_state == PAPER_LETTER_STATE) {
+                    trace_msg("Appending Paper to online User's MailQueue %s: %s", mailQueueRef, text_path);
+                    context().contextor().queryObjects(
+                        findPattern, null, 1, new MailQueueUpdater(
+                            from, toUserName, this, context().contextor().odb()));
+                    return;
+                }
+                mailPaper.gr_state = PAPER_LETTER_STATE;
+                mailPaper.text_path = text_path;
+                mailPaper.sent_timestamp = sent_timestamp;
+                mailPaper.gen_flags[MODIFIED] = true;
+                mailPaper.checkpoint_object(mailPaper);
+                mailPaper.retrievePaperContents();
+                mailPaper.send_gr_state_fiddle(PAPER_LETTER_STATE);
+                avatar.send_mail_arrived();
+                avatar.inc_record(Constants.HS$mail_recv_count);
+                trace_msg("Saving Paper to online User %s MAIL_SLOT: %s", toUserName, mailPaper.text_path);
+            } else {
+                trace_msg("No Paper in MAIL_SLOT for User %s", toUserName);
+                return;
+            }
+        } else {
+            trace_msg("Appending Mail to offline User's MailQueue %s: %s", mailQueueRef, text_path);
+            context().contextor().queryObjects(
+                findPattern, null, 1, new MailQueueUpdater(
+                    from, toUserName, this, context().contextor().odb()));
+        }
+    }
+
     // Callback methods for DB operations:
+
+    private class MailQueueUpdater implements ArgRunnable {
+
+        private User from;
+        private String toUserName;
+        private Paper mailPaper;
+        private ObjDB odb;
+
+        public MailQueueUpdater(User from, String toUserName, Paper mailPaper, ObjDB odb) {
+            this.from = from;
+            this.toUserName = toUserName;
+            this.mailPaper = (Paper) mailPaper.copyThisMod();
+            this.odb = odb;
+        }
+
+        @Override
+        public void run(Object obj) {
+            try {
+                MailQueue newQueue = new MailQueue();
+                if (obj != null) {
+                    Object[] args = (Object[]) obj;
+                    try {
+                        JSONObject jsonObj = ((JSONObject) args[0]);
+                        newQueue = new MailQueue(jsonObj);
+                    } catch (JSONDecodingException e) {
+                        trace_msg("Could not decode Mail queue: %s", getTracebackString(e));
+                        return;
+                    }
+                }
+                newQueue.addNewMail(from, mailPaper);
+                odb.putObject(
+                        String.format("mail-%s", toUserName), newQueue, null, false,
+                        finishMailQueueWrite);
+            } catch (Exception e) {
+                trace_exception(e);
+            }
+        }
+
+    }
+
+    protected final ArgRunnable finishMailQueueWrite = new ArgRunnable() {
+        @Override
+        public void run(Object obj) {
+            try {
+                if (obj != null) {
+                    trace_msg("Could not write mail queue for Paper %s: %s", text_path, obj);
+                    return;
+                }
+            } catch (Exception e) {
+                trace_exception(e);
+            }
+        }
+    };
 
     protected final ArgRunnable finishPaperDelete = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            if (obj != null) {
-                String errorMsg = (String) obj;
-                trace_msg("Received a DB error when removing Paper %s: %s", text_path, errorMsg);
+            try {
+                if (obj != null) {
+                    trace_msg("Received a DB error when removing Paper %s: %s", text_path, obj);
+                }
+            } catch (Exception e) {
+                trace_exception(e);
             }
         }
     };
@@ -517,9 +750,12 @@ public class Paper extends HabitatMod implements Copyable {
     protected final ArgRunnable finishPaperWrite = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            if (obj != null) {
-                String errorMsg = (String) obj;
-                trace_msg("Received a DB error when saving Paper %s: %s", text_path, errorMsg);
+            try {
+                if (obj != null) {
+                    trace_msg("Received a DB error when saving Paper %s: %s", text_path, obj);
+                }
+            } catch (Exception e) {
+                trace_exception(e);
             }
         }
     };
@@ -527,16 +763,24 @@ public class Paper extends HabitatMod implements Copyable {
     protected final ArgRunnable finishTextRead = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            // After any text read, sets text_path to point at the Paper's DB reference
-            // for future CRUD operations.
-            setAsciiFromTextResult(obj);
+            try {
+                // After any text read, sets text_path to point at the Paper's DB reference
+                // for future CRUD operations.
+                setAsciiFromTextResult(obj);
+            } catch (Exception e) {
+                trace_exception(e);
+            }
         }
     };
 
     protected final ArgRunnable finishPaperRead = new ArgRunnable() {
         @Override
         public void run(Object obj) {
-            setAsciiFromPaperResult(obj);
+            try {
+                setAsciiFromPaperResult(obj);
+            } catch (Exception e) {
+                trace_exception(e);
+            }
         }
     };
 

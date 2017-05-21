@@ -5,6 +5,8 @@ import org.elkoserver.server.context.Item;
 import org.elkoserver.server.context.Mod;
 import org.elkoserver.server.context.ObjectCompletionWatcher;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -1804,7 +1806,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		return false;
 	}
 
-	/*
+	/**
 	 * Dump a string to the debugging server log.
 	 * 
 	 * @param msg
@@ -1814,6 +1816,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 */
 	public void trace_msg(String msg, Object... args) {
 		Trace.trace("habitat").warningm(new Formatter().format(msg, args).toString());
+	}
+
+	/**
+	 * Logs a Throwable to the trace log.
+	 *
+	 * @param t a Throwable to log the trace from
+     */
+	public void trace_exception(Throwable t) {
+		trace_msg("Caught a Neohabitat exception:\n%s", getTracebackString(t));
 	}
 
 	/**
@@ -3491,6 +3502,34 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			offset += array.length;
 		}
 		return result;
+	}
+
+	/**
+	 * Returns the text of a Throwable as a String.
+	 *
+	 * @param t a Java Throwable
+	 * @return String-formatted traceback from Throwable
+     */
+	public String getTracebackString(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		return sw.toString();
+	}
+
+	/**
+	 * Converts a Java String to an int[] expected by all ASCII-returning
+	 * methods.
+	 *
+	 * @param s a Java String
+	 * @return an int[] representation of the provided String
+     */
+	public int[] stringToIntArray(String s) {
+		int[] asInts = new int[s.length()];
+		for (int i = 0; i < s.length(); i++) {
+			asInts[i] = s.charAt(i);
+		}
+		return asInts;
 	}
 
 }
