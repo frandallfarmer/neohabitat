@@ -225,7 +225,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     			tellEveryone(who.name() + " has arrived.");
     		}
     		avatar.firstConnection = true;
-            avatar.check_mail();
     	}
     	if (today > avatar.lastConnectedDay) {
     		avatar.bankBalance += STIPEND;
@@ -238,6 +237,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	if (avatar.amAGhost) {
     		getGhost().total_ghosts++; // Make sure the user has a ghost object..
     	}
+        if (avatar.firstConnection) {
+            avatar.check_mail();
+        }
     }
     
     public void noteUserDeparture(User who) {
@@ -265,11 +267,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	return class_ref_count[CLASS_AVATAR];
     }
     
-    public static void addUser(User from) {
+    public synchronized static void addUser(User from) {
     	NameToUser.put(from.name().toLowerCase(), from);
     }
     
-    public static void removeUser(User from) {
+    public synchronized static void removeUser(User from) {
     	Avatar avatar = (Avatar) from.getMod(Avatar.class);
     	NameToUser.remove(from.name().toLowerCase());
     	removeContentsFromRegion(avatar);
