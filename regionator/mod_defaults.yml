@@ -1,0 +1,7 @@
+# Default values for mods
+---
+Flag:
+  mass: 1
+
+Rock:
+  mass: 1
