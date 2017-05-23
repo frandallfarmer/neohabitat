@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-back4t_45", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "", 
     "mods": [
