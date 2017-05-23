@@ -219,8 +219,8 @@
       {
         "y": 0, 
         "x": 0, 
-        "type": "Boomerang", 
-        "orientation": 0
+        "type": "Ball", 
+        "style": 1
       }
     ], 
     "type": "item", 
@@ -233,8 +233,8 @@
       {
         "y": 1, 
         "x": 1, 
-        "type": "Boomerang", 
-        "orientation": 0
+        "type": "Ball", 
+        "style": 1
       }
     ], 
     "type": "item", 
@@ -247,8 +247,8 @@
       {
         "y": 2, 
         "x": 2, 
-        "type": "Boomerang", 
-        "orientation": 0
+        "type": "Ball", 
+        "style": 1
       }
     ], 
     "type": "item", 
