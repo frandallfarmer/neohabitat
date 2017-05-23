@@ -1,9 +1,9 @@
 [
   {
-    "capacity": 6, 
+    "capacity": 64, 
     "mods": [
       {
-        "town_dir": "!ASTROESC!177", 
+        "town_dir": "\u007f", 
         "neighbors": [
           "context-Popustop.hall4.line553", 
           "", 
@@ -13,7 +13,7 @@
         "realm": "Popustop", 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "!ASTROESC!177", 
+        "port_dir": "\u007f", 
         "type": "Region"
       }
     ], 

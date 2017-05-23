@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-%(region_ref)s",
-    "capacity": 6,
+    "capacity": 64,
     "type": "context",
     "name": "%(arg_3)s:%(arg_1)s",
     "mods": [
