@@ -1,0 +1,160 @@
+[
+  {
+    "ref": "context-back4t_56", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-back4t_55"
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 2, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-door.ea9e.back4t_56", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Door", 
+        "open_flags": 2,
+		"connection": "context-back4t_55"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-back4t_56"
+  }, 
+  {
+    "ref": "item-ground.966a.back4t_56", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-back4t_56"
+  }, 
+  {
+    "ref": "item-wall.b822.back4t_56", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-back4t_56"
+  }, 
+  {
+    "ref": "item-tree.8fbb.back4t_56", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 24, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_56"
+  }, 
+  {
+    "ref": "item-tree.d4e7.back4t_56", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 128, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_56"
+  }, 
+   {
+    "ref": "item-sign.5e98.back4t_56", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 188, 
+        "ascii": [
+          68, 
+          97, 
+          100, 
+          101, 
+          110, 
+          32, 
+          83, 
+          97, 
+          108, 
+          101, 
+          115, 
+          104, 
+          58, 
+          32, 
+          87, 
+          105, 
+          122, 
+          97, 
+          114, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 111, 
+        "x": 32, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-back4t_56"
+  }
+]

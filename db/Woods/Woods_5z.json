@@ -1,0 +1,194 @@
+[
+  {
+    "ref": "context-Woods_5z", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "Woods_5z", 
+    "mods": [
+      {
+        "town_dir": "~", 
+        "neighbors": [
+          "context-Woods_6a", 
+          "", 
+          "context-Woods_5y", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.Woods_5z", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Woods_5z"
+  }, 
+  {
+    "ref": "item-sky.Woods_5z", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Woods_5z"
+  }, 
+  {
+    "ref": "item-street.Woods_5z", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "height": 0, 
+        "width": 0, 
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Woods_5z"
+  },
+  {
+    "ref": "item-sign1.Woods_5z", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 160, 
+        "ascii": [
+          80,
+		  111,
+		  112,
+		  117,
+		  108,
+		  111,
+		  112,
+		  111,
+		  108,
+		  105,
+		  115,
+		  134,
+		  134,
+		  84,
+		  104,
+		  101,
+		  102,
+		  116,
+		  47,
+		  87,
+		  101,
+		  97,
+		  112,
+		  111,
+		  110,
+		  134,
+		  32,
+		  70,
+		  114,
+		  101,
+		  101,
+		  32,
+		  90,
+		  111,
+		  110,
+		  101 
+        ], 
+        "gr_state": 0, 
+        "y": 36, 
+        "x": 5, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Woods_5z"
+  },
+  {
+    "ref": "item-sign2.Woods_5z", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          87,
+		  111,
+		  111,
+		  100,
+		  115,
+		  32,
+		  82,
+		  100 
+        ], 
+        "gr_state": 4, 
+        "y": 133, 
+        "x": 93, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Woods_5z"
+  },   
+  {
+    "ref": "item-tree1.Woods_5z", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 133, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5z"
+  }, 
+  {
+    "ref": "item-tree2.Woods_5z", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 80, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5z"
+  }, 
+  {
+    "ref": "item-tree3.Woods_5z", 
+    "mods": [
+      {
+        "y": 41, 
+        "x": 100, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5z"
+  }
+]

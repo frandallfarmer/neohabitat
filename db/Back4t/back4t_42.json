@@ -1,0 +1,237 @@
+[
+  {
+    "ref": "context-back4t_42", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-back4t_52", 
+          "context-back4t_43", 
+          "context-back4t_32", 
+          "context-back4t_41"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 2, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.11f3.back4t_42", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-sky.d59f.back4t_42", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.4305.back4t_42", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 66, 
+        "x": 4, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.79f4.back4t_42", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 96, 
+        "style": 3, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.39fd.back4t_42", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 28, 
+        "style": 3, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.d568.back4t_42", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 4, 
+        "style": 11, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.4930.back4t_42", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 96, 
+        "style": 3, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.5f01.back4t_42", 
+    "mods": [
+      {
+        "y": 147, 
+        "x": 48, 
+        "style": 3, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.6e9c.back4t_42", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 132, 
+        "style": 3, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.c55b.back4t_42", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 9, 
+        "gr_state": 2, 
+        "y": 136, 
+        "x": 64, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.4a56.back4t_42", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 148, 
+        "x": 68, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.9f24.back4t_42", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 147, 
+        "x": 92, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.2af0.back4t_42", 
+    "mods": [
+      {
+        "y": 140, 
+        "x": 128, 
+        "style": 11, 
+        "type": "Tree", 
+        "orientation": 9
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }, 
+  {
+    "ref": "item-tree.5bab.back4t_42", 
+    "mods": [
+      {
+        "y": 53, 
+        "x": 88, 
+        "style": 3, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_42"
+  }
+]

@@ -1,0 +1,312 @@
+[
+  {
+    "ref": "context-Woods_5y", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Woods_5y", 
+    "mods": [
+      {
+        "town_dir": "~", 
+        "neighbors": [
+          "context-Woods_5z", 
+          "", 
+          "context-Woods_5x", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 1, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.Woods_5y", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Woods_5y"
+  }, 
+  {
+    "ref": "item-sky.Woods_5y", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Woods_5y"
+  }, 
+  {
+    "ref": "item-street.Woods_5y", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "height": 0, 
+        "width": 0, 
+        "gr_state": 13, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Woods_5y"
+  },
+  {
+    "ref": "item-sign1.Woods_5y", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          87,
+		  111,
+		  111,
+		  100,
+		  115,
+		  32,
+		  82,
+		  100 
+        ], 
+        "gr_state": 4, 
+        "y": 133, 
+        "x": 67, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Woods_5y"
+  },
+  {
+    "ref": "item-sign2.Woods_5y", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 208, 
+        "ascii": [
+          68,
+		  78,
+		  84,
+		  79,
+		  87,
+		  78,
+		  128,
+		  133,
+		  126
+        ], 
+        "gr_state": 7, 
+        "y": 160, 
+        "x": 113, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Woods_5y"
+  },
+	{
+		"type": "item",
+		"ref": "item-warningsign.Woods_5y",
+		"in": "context-Woods_5y",
+		"name": "Warning Sign",
+		"mods": [
+			{
+				"type": "Glue",
+				"x": 0,
+				"y": 128,
+				"gr_state": 1,
+				"open_flags": 3,
+				"x_offset_1": 254,
+				"y_offset_1": 248,
+				"x_offset_2": 254,
+				"y_offset_2": 0,
+				"x_offset_3": 254,
+				"y_offset_3": 0,
+				"x_offset_4": 0,
+				"y_offset_4": 0,
+				"x_offset_5": 0,
+				"y_offset_5": 0,
+				"x_offset_6": 0,
+				"y_offset_6": 0
+			}
+			]
+	},  
+	{
+		"ref": "item-warningtape.Woods_5y",
+		"mods": [
+			{
+				"y": 0,
+				"trapezoid_type": 2,
+				"upper_left_x": 60,
+				"upper_right_x": 103,
+				"lower_left_x": 60,
+				"lower_right_x": 103,
+				"height": 16,
+				"pattern_x_size": 1,
+				"pattern_y_size": 7,
+				"pattern": [
+					170,	85,
+					106,	149,
+					90,		165,
+					86,		169,
+					85,		170,
+					149,	106,
+					165,	90,
+					169,	86,
+					0,	0,	0,	0,
+					0,	0,	0,	0,
+					0,	0,	0,	0,
+					0,	0,	0,	0
+					],
+					"type": "Super_trapezoid",
+					"orientation": 184
+			}
+			],
+			"type": "item",
+			"name": "Warning Sign",
+			"in": "item-warningsign.Woods_5y"
+	},
+	{
+		"ref": "item-leftSignSupport.Woods_5y", 
+		"mods": [
+			{
+				"y": 1,
+				"trapezoid_type": 2, 
+				"upper_left_x": 64, 
+				"upper_right_x": 66, 
+				"lower_left_x": 64,
+				"lower_right_x": 66, 
+				"height": 12, 
+				"type": "Trapezoid", 
+				"orientation": 224
+			}
+			],
+			"type": "item",
+			"name": "Warning Sign",
+			"in": "item-warningsign.Woods_5y"
+	},
+	{
+		"ref": "item-rightSignSupport.Woods_5y", 
+		"mods": [
+			{
+				"y": 2,
+				"trapezoid_type": 2, 
+				"upper_left_x": 96, 
+				"upper_right_x": 98, 
+				"lower_left_x": 96,
+				"lower_right_x": 98, 
+				"height": 12, 
+				"type": "Trapezoid", 
+				"orientation": 224
+			}
+			],
+			"type": "item",
+			"name": "Warning Sign",
+			"in": "item-warningsign.Woods_5y"
+	},
+  {
+    "ref": "item-tree1.Woods_5y", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 103, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5y"
+  }, 
+  {
+    "ref": "item-tree2.Woods_5y", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 122, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5y"
+  },
+  {
+    "ref": "item-tree3.Woods_5y", 
+    "mods": [
+      {
+        "y": 38, 
+        "x": 6, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5y"
+  }, 
+  {
+    "ref": "item-tree4.Woods_5y", 
+    "mods": [
+      {
+        "y": 38, 
+        "x": 26, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5y"
+  },
+  {
+    "ref": "item-tree5.Woods_5y", 
+    "mods": [
+      {
+        "y": 40, 
+        "x": 54, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5y"
+  },
+  {
+    "ref": "item-tree6.Woods_5y", 
+    "mods": [
+      {
+        "y": 40, 
+        "x": 136, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Woods_5y"
+  }
+]

@@ -12,7 +12,7 @@
 				"orientation": 0,
 				"neighbors": [
 					"context-Downtown_7g",
-					"", 
+					"context-Woods_5x", 
 					"context-Downtown_7e", 
 					"context-Downtown_6f"
 					], 
@@ -50,106 +50,6 @@
 			"name": "Ground", 
 			"in": "context-Downtown_7f"
 	}, 
-	{
-		"type": "item",
-		"ref": "item-warningsign.downtown7f",
-		"in": "context-Downtown_7f",
-		"name": "Warning Sign",
-		"mods": [
-			{
-				"type": "Glue",
-				"x": 0,
-				"y": 128,
-				"gr_state": 1,
-				"open_flags": 3,
-				"x_offset_1": 254,
-				"y_offset_1": 248,
-				"x_offset_2": 254,
-				"y_offset_2": 0,
-				"x_offset_3": 254,
-				"y_offset_3": 0,
-				"x_offset_4": 0,
-				"y_offset_4": 0,
-				"x_offset_5": 0,
-				"y_offset_5": 0,
-				"x_offset_6": 0,
-				"y_offset_6": 0
-			}
-			]
-	},  
-	{
-		"ref": "item-warningtape.downtown7f",
-		"mods": [
-			{
-				"y": 0,
-				"trapezoid_type": 2,
-				"upper_left_x": 60,
-				"upper_right_x": 103,
-				"lower_left_x": 60,
-				"lower_right_x": 103,
-				"height": 16,
-				"pattern_x_size": 1,
-				"pattern_y_size": 7,
-				"pattern": [
-					170,	85,
-					106,	149,
-					90,		165,
-					86,		169,
-					85,		170,
-					149,	106,
-					165,	90,
-					169,	86,
-					0,	0,	0,	0,
-					0,	0,	0,	0,
-					0,	0,	0,	0,
-					0,	0,	0,	0
-					],
-					"type": "Super_trapezoid",
-					"orientation": 184
-			}
-			],
-			"type": "item",
-			"name": "Warning Sign",
-			"in": "item-warningsign.downtown7f"
-	},
-	{
-		"ref": "item-leftSignSupport.downtown7f", 
-		"mods": [
-			{
-				"y": 1,
-				"trapezoid_type": 2, 
-				"upper_left_x": 64, 
-				"upper_right_x": 66, 
-				"lower_left_x": 64,
-				"lower_right_x": 66, 
-				"height": 12, 
-				"type": "Trapezoid", 
-				"orientation": 200
-			}
-			],
-			"type": "item",
-			"name": "Warning Sign",
-			"in": "item-warningsign.downtown7f"
-	},
-	{
-		"ref": "item-rightSignSupport.downtown7f", 
-		"mods": [
-			{
-				"y": 2,
-				"trapezoid_type": 2, 
-				"upper_left_x": 96, 
-				"upper_right_x": 98, 
-				"lower_left_x": 96,
-				"lower_right_x": 98, 
-				"height": 12, 
-				"type": "Trapezoid", 
-				"orientation": 200
-			}
-			],
-			"type": "item",
-			"name": "Warning Sign",
-			"in": "item-warningsign.downtown7f"
-	},
 	{
 		"ref": "item-street3c3a", 
 		"mods": [
