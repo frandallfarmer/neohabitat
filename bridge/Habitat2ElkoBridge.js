@@ -397,7 +397,7 @@ function createServerConnection(port, host, client, immediate, context) {
 
 	client.removeAllListeners('data').on('data', function(data) {
 		try {
-			parseIncomingHabitatClientMessage(client, server, data);				
+			frameClientStream(client, server, data);				
 		} catch(err) {
 			Trace.error("\n\n\nClient input processing error captured:\n" + 
 					JSON.stringify(err,null,2) + "\n" +
@@ -608,9 +608,16 @@ function toElko(connection, data) {
 	connection.write(data + "\n\n");
 }
 
+const UNKNOWN_FRAME   = 0;
+const DELIMITED_FRAME = 1;
+const QLR_FRAME		  = 2;
+const QLINK_FRAME     = 3;
+
 function initializeClientState(client, who, replySeq) {
 	++SessionCount;
 	client.sessionName = "" + SessionCount;
+	client.inputBuf    = [];
+	client.framingMode = UNKNOWN_FRAME;
 	client.state = { user: who || "",
 			contentsVector: new ContentsVector(replySeq, HCode.REGION_NOID),
 			objects: [],
@@ -626,6 +633,55 @@ function initializeClientState(client, who, replySeq) {
 	};
 }
 
+
+function frameClientStream(client, server, data) {
+	var framed   = false;
+	var saveC	 = "";
+		
+	// First try do discover a QLR frame:  NAME:QLINKPACKET
+	if (client.framingMode == UNKNOWN_FRAME) {
+		var s 	 	= data.toString().trim();
+		var colon	= s.indexOf(":");
+		var Z		= s.indexOf("Z");
+		if (colon > 0 && (colon + 1) == Z) {
+			client.framingMode = QLR_FRAME;
+		}
+	}
+	if (client.framingMode == QLINK_FRAME || client.framingMode == QLR_FRAME) {	// If we know this is a FULL Qlink/QLR protocol packet, process now.
+		parseIncomingHabitatClientMessage(client, server, data);
+		return;
+	}
+
+	// This is either PARTIAL lf-lf delimited JSON packet OR we still don't know what kind of packet it is yet
+	for (var i = 0; i < data.length; i++) {
+		var c = data[i];
+		if (client.framingMode == UNKNOWN_FRAME) {		// zip through the data looking for the starting signature byte
+			if (c == "{") {
+				client.framingMode	= DELIMITED_FRAME;	// JSON is always lf-lf delimited
+			} else if (c == "Z") {
+				client.framingMode = QLINK_FRAME;		// Start processing QLINK messages on this connection.
+				parseIncomingHabitatClientMessage(client, server, data.slice(i));  // And process this one.
+				return;
+			}
+		}
+		if (client.framingMode == DELIMITED_FRAME) {
+			client.inputBuf += c;
+			if (c == '\n' || c == '\r') {		// Two returns-delimited frames on streams.
+				if (client.saveFrameChar == '\n' || client.saveFrameChar == '\r') {
+					framed = true;
+				}
+			}
+			if (framed) {
+				parseIncomingHabitatClientMessage(client, server, client.inputBuf);
+				client.inputBuf = [];
+				c = "";
+			}
+			client.saveFrameChar = c;
+		}
+	}
+}
+
+
 /**
  * 
  * @param client
@@ -638,7 +694,6 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 	// Handle new connections - determine the protocol/device type and setup environment
 
 	if (undefined === client.json) {
-		initializeClientState(client);
 		var curly = send.indexOf("{");
 		var colon = send.indexOf(":");
 		if (curly !== -1 && curly < colon) {
@@ -1379,12 +1434,12 @@ function processIncomingElkoBlob(client, server, data) {
 const Listener = Net.createServer(function(client) {
 	// We have a Habitat Client connection!
 	client.setEncoding('binary');
-	client.state 		= {};
 	client.port 		= ElkoPort;
 	client.host 		= ElkoHost;
 	client.timeLastSent	= new Date().getTime();
 	client.lastSentLen	= 0;
-	client.backdoor		= {vectorize: vectorize}
+	client.backdoor		= {vectorize: vectorize};
+	initializeClientState(client);
 
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);
 	try {
