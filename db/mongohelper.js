@@ -4,6 +4,12 @@ const LEFT	= "~";
 const RIGHT = "";
 const SPACE = " ";
 
+const WEST  = 0;
+const SOUTH = 1;
+const EAST  = 2;
+const NORTH = 3;
+
+
 function mhelp() {
     print("  eget(ref)               return an object descriptor for object <ref>");
     print("  eremove(ref)            delete object <ref>");
