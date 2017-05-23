@@ -1,7 +1,7 @@
 [
   {
     "ref": "context-Downtown_2g", 
-    "capacity": 6, 
+    "capacity": 64, 
     "type": "context", 
     "name": "General Store interior", 
     "mods": [
