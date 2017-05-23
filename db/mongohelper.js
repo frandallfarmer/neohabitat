@@ -1,3 +1,9 @@
+const UP	= "|";
+const DOWN	= "}";
+const LEFT	= "~";
+const RIGHT = "";
+const SPACE = " ";
+
 function mhelp() {
     print("  eget(ref)               return an object descriptor for object <ref>");
     print("  eremove(ref)            delete object <ref>");

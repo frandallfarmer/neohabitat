@@ -8,7 +8,7 @@
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "| }", 
+        "port_dir": UP + SPACE + DOWN, 
         "type": "Region", 
         "neighbors": [
           "context-Downtown_5f",

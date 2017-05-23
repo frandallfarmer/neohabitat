@@ -6,8 +6,8 @@
     "name": "Fine Furniture interior", 
     "mods": [
       {
-        "town_dir": "}",
-        "port_dir": "}",
+        "town_dir": DOWN,
+        "port_dir": DOWN,
         "type": "Region",
         "orientation": 0,
         "neighbors": [

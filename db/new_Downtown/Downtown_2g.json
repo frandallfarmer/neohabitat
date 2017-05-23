@@ -6,7 +6,7 @@
     "name": "General Store interior", 
     "mods": [
       {
-        "town_dir": "}", 
+        "town_dir": DOWN, 
         "neighbors": [
           "", 
           "context-Downtown_3g", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "}", 
+        "port_dir": DOWN, 
         "type": "Region"
       }
     ]

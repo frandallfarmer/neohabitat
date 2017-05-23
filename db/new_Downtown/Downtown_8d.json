@@ -6,7 +6,7 @@
     "name": "Hamlets Interior", 
     "mods": [
       {
-        "town_dir": "}", 
+        "town_dir": DOWN, 
         "neighbors": [
           "", 
           "", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 2, 
         "nitty_bits": 3, 
-        "port_dir": "}", 
+        "port_dir": DOWN, 
         "type": "Region"
       }
     ]

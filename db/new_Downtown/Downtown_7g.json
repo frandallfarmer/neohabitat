@@ -7,7 +7,7 @@
     "mods": [
       {
         "town_dir": "",
-        "port_dir": "}",
+        "port_dir": DOWN,
         "type": "Region",
         "orientation": 2,
         "neighbors": [
@@ -322,7 +322,8 @@
         "type": "Door", 
         "y": 33, 
         "x": 52,
-		"open_flags": 0,
+		"open_flags": 3,
+		"gr_state": 1,
 		"connection": "context-Downtown_8g"
       }
     ], 

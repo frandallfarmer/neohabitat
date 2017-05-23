@@ -7,13 +7,13 @@
     "mods": [
       {
         "town_dir": "",
-        "port_dir": "",
+        "port_dir": DOWN,
         "type": "Region",
         "orientation": 2,
         "neighbors": [
-          "",
-          "",
-          "",
+          "context-Downtown_1t",
+          "context-Downtown_2s",
+          "context-Downtown_1r",
           "context-Downtown_7g"
         ], 
         "nitty_bits": 3

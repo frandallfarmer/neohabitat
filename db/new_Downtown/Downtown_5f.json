@@ -7,7 +7,7 @@
     "mods": [
       {
         "town_dir": "", 
-        "port_dir": "| } ~ ", 
+        "port_dir": UP + SPACE + DOWN + SPACE + LEFT + SPACE + RIGHT, 
         "type": "Region",
         "orientation": 0,		
         "neighbors": [
