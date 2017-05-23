@@ -146,8 +146,9 @@
         "y": 33, 
         "x": 4,
         "type": "Door",
-		"open_flags": 2,
-        "orientation": 140,
+		"open_flags": 3,
+		"gr_state": 1,
+		"orientation": 140,
 		"connection": "context-Downtown_2d"
       }
     ], 

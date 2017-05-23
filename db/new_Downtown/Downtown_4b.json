@@ -118,10 +118,11 @@
         "connection": "context-Downtown_4a", 
         "key_hi": 0, 
         "y": 32, 
-        "x": 124, 
-        "type": "Door", 
-        "open_flags": 2
-      }
+        "x": 124,
+		"open_flags": 3,
+		"gr_state": 1,
+        "type": "Door"
+       }
     ], 
     "type": "item", 
     "name": "Door", 
