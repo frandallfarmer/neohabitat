@@ -1,0 +1,328 @@
+[
+  {
+    "ref": "context-Woods_6x", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Woods_6w", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 1, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall.6c91.Woods_6x", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-sign.8734.Woods_6x", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 188, 
+        "ascii": [
+          83, 
+          101, 
+          97, 
+          116, 
+          128, 
+          121, 
+          111, 
+          117, 
+          114, 
+          115, 
+          101, 
+          108, 
+          102, 
+          134, 
+          139, 
+          128, 
+          87, 
+          97, 
+          105, 
+          116, 
+          101, 
+          114, 
+          32, 
+          119, 
+          105, 
+          108, 
+          108, 
+          134, 
+          32, 
+          128, 
+          115, 
+          101, 
+          114, 
+          118, 
+          101, 
+          32, 
+          121, 
+          111, 
+          117, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 80, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-tree.ece2.Woods_6x", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "item-glue.644e.Woods_6x"
+  }, 
+  {
+    "ref": "item-pond.d6a8.Woods_6x", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Pond", 
+        "orientation": 80, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "item-glue.644e.Woods_6x"
+  }, 
+  {
+    "ref": "item-glue.644e.Woods_6x", 
+    "mods": [
+      {
+        "y_offset_2": 0, 
+        "y_offset_3": 0, 
+        "y_offset_1": 227, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 254, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 249, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 147, 
+        "x": 32, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-super_trapezoid.fa17.Woods_6x", 
+    "mods": [
+      {
+        "pattern_x_size": 3, 
+        "lower_right_x": 136, 
+        "upper_left_x": 232, 
+        "pattern": [
+          101, 
+          101, 
+          101, 
+          101, 
+          149, 
+          90, 
+          149, 
+          90, 
+          101, 
+          101, 
+          101, 
+          101, 
+          90, 
+          149, 
+          90, 
+          149, 
+          101, 
+          101, 
+          101, 
+          101, 
+          149, 
+          90, 
+          149, 
+          90, 
+          101, 
+          101, 
+          101, 
+          101, 
+          90, 
+          149, 
+          90, 
+          149
+        ], 
+        "upper_right_x": 136, 
+        "lower_left_x": 232, 
+        "trapezoid_type": 2, 
+        "y": 0, 
+        "x": 24, 
+        "height": 31, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 7, 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-pond.9f3f.Woods_6x", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Pond", 
+        "orientation": 80, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "item-glue.cf66.Woods_6x"
+  }, 
+  {
+    "ref": "item-tree.cbe1.Woods_6x", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "item-glue.cf66.Woods_6x"
+  }, 
+  {
+    "ref": "item-glue.cf66.Woods_6x", 
+    "mods": [
+      {
+        "y_offset_2": 0, 
+        "y_offset_3": 0, 
+        "y_offset_1": 226, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 255, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 250, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 138, 
+        "x": 108, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-chair.8f23.Woods_6x", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-chair.27be.Woods_6x", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 56, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 41
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-chair.7653.Woods_6x", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 80, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Woods_6x"
+  }, 
+  {
+    "ref": "item-chair.838a.Woods_6x", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 136, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Woods_6x"
+  }
+]

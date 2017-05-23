@@ -1,0 +1,191 @@
+[
+  {
+    "ref": "context-Woods_5g", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Woods_5h", 
+          "context-Woods_6g", 
+          "context-Woods_5f", 
+          "context-Woods_3d"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 1, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.d994.Woods_5g", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Woods_5g"
+  }, 
+  {
+    "ref": "item-super_trapezoid.aab9.Woods_5g", 
+    "mods": [
+      {
+        "pattern_x_size": 1, 
+        "lower_right_x": 95, 
+        "upper_left_x": 0, 
+        "pattern": [
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          170, 
+          169, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          169, 
+          170, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185
+        ], 
+        "upper_right_x": 95, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "y": 40, 
+        "x": 0, 
+        "height": 88, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Woods_5g"
+  }, 
+  {
+    "ref": "item-super_trapezoid.9279.Woods_5g", 
+    "mods": [
+      {
+        "pattern_x_size": 1, 
+        "lower_right_x": 113, 
+        "upper_left_x": 1, 
+        "pattern": [
+          149, 
+          149, 
+          149, 
+          149, 
+          149, 
+          149, 
+          106, 
+          106, 
+          89, 
+          89, 
+          89, 
+          89, 
+          89, 
+          89, 
+          166, 
+          166, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0
+        ], 
+        "upper_right_x": 99, 
+        "lower_left_x": 1, 
+        "trapezoid_type": 1, 
+        "y": 0, 
+        "x": 0, 
+        "height": 28, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 7, 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "item-glue.246f.Woods_5g"
+  }, 
+  {
+    "ref": "item-glue.246f.Woods_5g", 
+    "mods": [
+      {
+        "y_offset_2": 0, 
+        "y_offset_3": 0, 
+        "y_offset_1": 192, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 0, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 242, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 164, 
+        "x": 48, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Woods_5g"
+  }, 
+  {
+    "ref": "item-wall.1aed.Woods_5g", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Woods_5g"
+  }
+]

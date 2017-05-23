@@ -1,0 +1,348 @@
+[
+  {
+    "ref": "context-Woods_5f", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Woods_5g", 
+          "context-Woods_6f", 
+          "", 
+          "context-Woods_3c"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 1, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.d4fe.Woods_5f", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-wall.569b.Woods_5f", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-super_trapezoid.1cd4.Woods_5f", 
+    "mods": [
+      {
+        "pattern_x_size": 1, 
+        "lower_right_x": 111, 
+        "upper_left_x": 0, 
+        "pattern": [
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          170, 
+          169, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          169, 
+          170, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185
+        ], 
+        "upper_right_x": 111, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "y": 40, 
+        "x": 48, 
+        "height": 88, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-super_trapezoid.e739.Woods_5f", 
+    "mods": [
+      {
+        "pattern_x_size": 1, 
+        "lower_right_x": 113, 
+        "upper_left_x": 1, 
+        "pattern": [
+          149, 
+          149, 
+          149, 
+          149, 
+          149, 
+          149, 
+          106, 
+          106, 
+          89, 
+          89, 
+          89, 
+          89, 
+          89, 
+          89, 
+          166, 
+          166, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0, 
+          0
+        ], 
+        "upper_right_x": 111, 
+        "lower_left_x": 243, 
+        "trapezoid_type": 1, 
+        "y": 0, 
+        "x": 0, 
+        "height": 28, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 7, 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "item-glue.faf7.Woods_5f"
+  }, 
+  {
+    "ref": "item-glue.faf7.Woods_5f", 
+    "mods": [
+      {
+        "y_offset_2": 0, 
+        "y_offset_3": 0, 
+        "y_offset_1": 192, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 0, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 254, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 164, 
+        "x": 48, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-trapezoid.6511.Woods_5f", 
+    "mods": [
+      {
+        "lower_right_x": 30, 
+        "upper_left_x": 0, 
+        "upper_right_x": 29, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "y": 40, 
+        "x": 120, 
+        "height": 54, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-plant.3ae8.Woods_5f", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 148, 
+        "x": 24, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-picture.129d.Woods_5f", 
+    "mods": [
+      {
+        "picture": 0, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 73, 
+        "x": 56, 
+        "type": "Picture"
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-picture.6349.Woods_5f", 
+    "mods": [
+      {
+        "picture": 0, 
+        "orientation": 0, 
+        "gr_state": 4, 
+        "y": 62, 
+        "x": 56, 
+        "type": "Picture"
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-sign.11d7.Woods_5f", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 91, 
+        "x": 60, 
+        "ascii": [
+          82, 
+          72, 
+          79, 
+          78, 
+          68, 
+          65, 
+          39, 
+          83, 
+          134, 
+          82, 
+          111, 
+          97, 
+          100, 
+          115, 
+          105, 
+          100, 
+          101, 
+          134, 
+          128, 
+          82, 
+          104, 
+          101, 
+          115, 
+          111, 
+          114, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-plant.702f.Woods_5f", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 33, 
+        "mass": 1, 
+        "y": 159, 
+        "x": 88, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Woods_5f"
+  }, 
+  {
+    "ref": "item-plant.8b09.Woods_5f", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 33, 
+        "mass": 1, 
+        "y": 157, 
+        "x": 108, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Woods_5f"
+  }
+]

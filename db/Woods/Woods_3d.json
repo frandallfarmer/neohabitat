@@ -1,0 +1,521 @@
+[
+  {
+    "ref": "context-Woods_3d", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Woods_5g", 
+          "context-Woods_3c", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 1, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.558a.Woods_3d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.a633.Woods_3d", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 236, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.295f.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.e5bc.Woods_3d", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.295f.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.ad34.Woods_3d", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 16, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.295f.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.45fa.Woods_3d", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 32, 
+        "y": 3, 
+        "x": 3, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.295f.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.af0d.Woods_3d", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 56, 
+        "y": 4, 
+        "x": 4, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.295f.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.a06b.Woods_3d", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 80, 
+        "y": 5, 
+        "x": 5, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue.295f.Woods_3d"
+  }, 
+  {
+    "ref": "item-glue.295f.Woods_3d", 
+    "mods": [
+      {
+        "y_offset_2": 186, 
+        "y_offset_3": 186, 
+        "y_offset_1": 186, 
+        "y_offset_6": 186, 
+        "orientation": 0, 
+        "y_offset_4": 186, 
+        "y_offset_5": 186, 
+        "x_offset_2": 5, 
+        "x_offset_5": 23, 
+        "x_offset_4": 17, 
+        "x_offset_6": 249, 
+        "x_offset_1": 255, 
+        "x_offset_3": 11, 
+        "gr_state": 1, 
+        "y": 41, 
+        "x": 32, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Woods_3d"
+  }, 
+  {
+    "ref": "item-super_trapezoid.24fc.Woods_3d", 
+    "mods": [
+      {
+        "pattern_x_size": 1, 
+        "lower_right_x": 159, 
+        "upper_left_x": 0, 
+        "pattern": [
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          170, 
+          169, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          169, 
+          170, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185, 
+          185
+        ], 
+        "upper_right_x": 159, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "y": 40, 
+        "x": 0, 
+        "height": 88, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Woods_3d"
+  }, 
+  {
+    "ref": "item-boomerang.7039.Woods_3d", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Boomerang", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Boomerang", 
+    "in": "item-glue.f2ad.Woods_3d"
+  }, 
+  {
+    "ref": "item-boomerang.89dd.Woods_3d", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Boomerang", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Boomerang", 
+    "in": "item-glue.f2ad.Woods_3d"
+  }, 
+  {
+    "ref": "item-boomerang.8617.Woods_3d", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Boomerang", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Boomerang", 
+    "in": "item-glue.f2ad.Woods_3d"
+  }, 
+  {
+    "ref": "item-knife.f364.Woods_3d", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Knife", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-glue.f2ad.Woods_3d"
+  }, 
+  {
+    "ref": "item-knife.f4c9.Woods_3d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Knife", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-glue.f2ad.Woods_3d"
+  }, 
+  {
+    "ref": "item-knife.0012.Woods_3d", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "type": "Knife", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-glue.f2ad.Woods_3d"
+  }, 
+  {
+    "ref": "item-glue.f2ad.Woods_3d", 
+    "mods": [
+      {
+        "y_offset_2": 216, 
+        "y_offset_3": 218, 
+        "y_offset_1": 216, 
+        "y_offset_6": 218, 
+        "orientation": 0, 
+        "y_offset_4": 218, 
+        "y_offset_5": 220, 
+        "x_offset_2": 254, 
+        "x_offset_5": 16, 
+        "x_offset_4": 9, 
+        "x_offset_6": 21, 
+        "x_offset_1": 248, 
+        "x_offset_3": 4, 
+        "gr_state": 1, 
+        "y": 41, 
+        "x": 32, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.a81e.Woods_3d", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 8, 
+        "y": 5, 
+        "x": 5, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.cae9.Woods_3d", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.21d8.Woods_3d", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 48, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.4cbd.Woods_3d", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 0, 
+        "y": 6, 
+        "x": 6, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.d8a6.Woods_3d", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 16, 
+        "y": 4, 
+        "x": 4, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.18f0.Woods_3d", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 40, 
+        "y": 3, 
+        "x": 3, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.9c41.Woods_3d", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 48, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_front.334c.Woods_3d"
+  }, 
+  {
+    "ref": "item-vendo_front.334c.Woods_3d", 
+    "mods": [
+      {
+        "display_item": 8, 
+        "style": 1, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.a23a.Woods_3d"
+  }, 
+  {
+    "ref": "item-knick_knack.89ea.Woods_3d", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-vendo_inside.a23a.Woods_3d"
+  }, 
+  {
+    "ref": "item-vendo_inside.a23a.Woods_3d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 252, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 146, 
+        "x": 108, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Woods_3d"
+  }, 
+  {
+    "ref": "item-short_sign.0882.Woods_3d", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 164, 
+        "ascii": [
+          128, 
+          83, 
+          79, 
+          85, 
+          86, 
+          69, 
+          78, 
+          73, 
+          82, 
+          83
+        ], 
+        "y": 56, 
+        "x": 24, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Woods_3d"
+  }
+]

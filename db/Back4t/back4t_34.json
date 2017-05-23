@@ -1,0 +1,222 @@
+[
+  {
+    "ref": "context-back4t_34", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-back4t_44", 
+          "context-back4t_35", 
+          "context-back4t_24", 
+          "context-back4t_33"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 2, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.1c7d.back4t_34", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-sky.6d3d.back4t_34", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.2324.back4t_34", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 172, 
+        "gr_state": 1, 
+        "y": 30, 
+        "x": 16, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.b9b6.back4t_34", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 236, 
+        "gr_state": 2, 
+        "y": 43, 
+        "x": 88, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.44f9.back4t_34", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 60, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.6432.back4t_34", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 132, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.e1cc.back4t_34", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 28, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.7479.back4t_34", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 188, 
+        "gr_state": 1, 
+        "y": 30, 
+        "x": 88, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.12ae.back4t_34", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 172, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 16, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.dfee.back4t_34", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 108, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.5985.back4t_34", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 72, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.a3e7.back4t_34", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 36, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }, 
+  {
+    "ref": "item-tree.d1cb.back4t_34", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 136, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_34"
+  }
+]

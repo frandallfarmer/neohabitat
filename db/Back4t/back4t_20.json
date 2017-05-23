@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-back4t_20", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-back4t_30", 
+          "context-back4t_12", 
+          "", 
+          ""
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 2, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.624c.back4t_20", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-back4t_20"
+  }, 
+  {
+    "ref": "item-wall.05b6.back4t_20", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-back4t_20"
+  }, 
+  {
+    "ref": "item-tree.e40f.back4t_20", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 24, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_20"
+  }, 
+  {
+    "ref": "item-tree.0eb8.back4t_20", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 128, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_20"
+  },
+  {
+    "ref": "item-sign.df97.back4t_20", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 188, 
+        "ascii": [
+          68, 
+          97, 
+          100, 
+          101, 
+          110, 
+          32, 
+          83, 
+          97, 
+          108, 
+          101, 
+          115, 
+          104, 
+          58, 
+          32, 
+          87, 
+          105, 
+          122, 
+          97, 
+          114, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 2, 
+        "y": 111, 
+        "x": 32, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-back4t_20"
+  },
+  {
+    "ref": "item-door.aa85.back4t_20", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Door", 
+        "open_flags": 2,
+		"connection": "context-back4t_30"
+		
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-back4t_20"
+  }
+  
+]

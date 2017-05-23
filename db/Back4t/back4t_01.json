@@ -1,0 +1,194 @@
+[
+  {
+    "ref": "context-back4t_01", 
+    "capacity": 6, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-back4t_11", 
+          "context-back4t_02", 
+          "context-back4t_02", 
+          "context-back4t_11"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 2, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.c4f2.back4t_01", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-sky.8599.back4t_01", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.bc28.back4t_01", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 172, 
+        "gr_state": 1, 
+        "y": 30, 
+        "x": 16, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.0c01.back4t_01", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 188, 
+        "gr_state": 2, 
+        "y": 43, 
+        "x": 88, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.e8ea.back4t_01", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 196, 
+        "gr_state": 2, 
+        "y": 84, 
+        "x": 36, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.7c8c.back4t_01", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 128, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.a16d.back4t_01", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 112, 
+        "style": 10, 
+        "type": "Tree", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.f86f.back4t_01", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 188, 
+        "gr_state": 1, 
+        "y": 30, 
+        "x": 88, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.1929.back4t_01", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 196, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 16, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.0311.back4t_01", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 56, 
+        "style": 10, 
+        "type": "Tree", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }, 
+  {
+    "ref": "item-tree.e1cd.back4t_01", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 196, 
+        "gr_state": 1, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-back4t_01"
+  }
+]
