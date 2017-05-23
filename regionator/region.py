@@ -312,7 +312,7 @@ class Region(object):
     region_context = {
       'type': 'context',
       'ref': self.neohabitat_context,
-      'capacity': 6,
+      'capacity': 64,
       'name': DEFAULT_REGIONATOR_NAME.format(self.name),
       'mods': [region_mod]
     }
