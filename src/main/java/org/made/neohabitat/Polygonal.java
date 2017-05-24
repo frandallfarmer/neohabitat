@@ -16,7 +16,7 @@ import org.elkoserver.server.context.User;
  * There are no default verb methods here, as this field is simply interrogated
  * by other operations.
  */
-public abstract class Polygonal extends HabitatMod {
+public abstract class Polygonal extends Walkable {
 
 	/** All Polygonal (trapezoids) use the y coordinate and height along with 4 x coordinates to bound the shape. */
 	 protected int trapezoid_type = 0;
@@ -30,7 +30,7 @@ public abstract class Polygonal extends HabitatMod {
 	 public Polygonal(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			 OptInteger trapezoid_type, OptInteger upper_left_x,  OptInteger upper_right_x,
 			 OptInteger lower_left_x,   OptInteger lower_right_x, OptInteger height) {
-		 super(style, x, y, orientation, gr_state, restricted);
+		 super(style, x, y, orientation, gr_state, restricted, trapezoid_type);
 		 setPolygonalState(
 				 trapezoid_type.value(0),
 				 upper_left_x.value(0),
@@ -42,7 +42,7 @@ public abstract class Polygonal extends HabitatMod {
 
     public Polygonal(int style, int x, int y, int orientation, int gr_state, boolean restricted,
     	int trapezoid_type, int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height) {
-        super(style, x, y, orientation, gr_state, restricted);
+        super(style, x, y, orientation, gr_state, restricted, trapezoid_type);
         setPolygonalState(trapezoid_type,  upper_left_x, upper_right_x,  lower_left_x,  lower_right_x,  height);
     }
     

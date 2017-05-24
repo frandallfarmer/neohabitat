@@ -56,7 +56,7 @@
 },
 {
 	"type": "item",
-	"ref": "item-library.die1",
+	"ref": "item-1r.die1",
 	"name": "Die",
 	"in" : "context-Downtown_1r",
 	"mods": [
@@ -72,7 +72,7 @@
 },
 {
 	"type": "item",
-	"ref": "item-library.die2",
+	"ref": "item-1r.die2",
 	"name": "Die",
 	"in" : "context-Downtown_1r",
 	"mods": [
