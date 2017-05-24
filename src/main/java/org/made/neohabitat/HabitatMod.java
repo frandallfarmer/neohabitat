@@ -3186,7 +3186,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	public boolean isSeating(HabitatMod mod) {
 		return (mod.HabitatClass() == CLASS_COUCH ||
 				mod.HabitatClass() == CLASS_CHAIR ||
-				mod.HabitatClass() == CLASS_CHAIR);
+				mod.HabitatClass() == CLASS_BED);
 	}  
 
 	/**
