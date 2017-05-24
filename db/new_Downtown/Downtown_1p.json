@@ -21,6 +21,72 @@
     ]
   }, 
   {
+		"ref" : "item-1p.gammon",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 69,
+			"x" : 10,
+			"style": 0,
+			"orientation": 8,
+			"magic_type" : 14,
+			"magic_data" : 0,
+			"magic_data2": 6
+		} ],
+		"type" : "item",
+		"name" : "Backgammon Reset",
+		"in" : "context-Downtown_1p"
+}, 
+{
+		"type": "item",
+		"ref": "item-1p.reset",
+		"name": "Reset Game",
+		"in": "context-Downtown_1p",
+		"mods": [
+			{
+				"type": "Short_sign",
+				"style": 5,
+				"gr_state": 8,
+				"x": 2,
+				"y": 56,
+				"orientation": 16,
+				"text": "  Reset",
+				"ascii": []
+			}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.die1",
+	"name": "Die",
+	"in" : "context-Downtown_1p",
+	"mods": [
+		{
+			"type": "Die",
+			"y": 1,
+			"x": 84,
+			"gr_state": 6,
+			"orientation": 16,
+			"state":	6 
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.die2",
+	"name": "Die",
+	"in" : "context-Downtown_1p",
+	"mods": [
+		{
+			"type": "Die",
+			"y": 13,
+			"x": 88,
+			"gr_state": 6,
+			"orientation": 16,
+			"state":	6 
+		}
+		]
+},
+  {
     "ref": "item-trapezoida681", 
     "mods": [
       {

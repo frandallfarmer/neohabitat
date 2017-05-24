@@ -36,6 +36,39 @@
     "in": "context-Downtown_4s"
   }, 
   {
+		"ref" : "item-4s.chess",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 66,
+			"x" : 2,
+			"style": 0,
+			"orientation": 8,
+			"magic_type" : 12,
+			"magic_data" : 36,
+			"magic_data2": 6
+		} ],
+		"type" : "item",
+		"name" : "Chess Reset",
+		"in" : "context-Downtown_4s"
+}, 
+{
+		"type": "item",
+		"ref": "item-4s.reset",
+		"name": "Reset Game",
+		"in": "context-Downtown_4s",
+		"mods": [
+			{
+				"type": "Short_sign",
+				"style": 4,
+				"x": 12,
+				"y": 64,
+				"orientation": 140,
+				"text": "Reset Game",
+				"ascii": []
+			}
+		]
+},
+  {
     "ref": "item-wall5fb9", 
     "mods": [
       {

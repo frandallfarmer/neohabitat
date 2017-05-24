@@ -51,6 +51,39 @@
     "in": "context-Downtown_1v"
   }, 
   {
+		"ref" : "item-1v.checkers",
+		"mods" : [ {
+			"type" : "Magic_immobile",
+			"y" : 66,
+			"x" : 2,
+			"style": 0,
+			"orientation": 8,
+			"magic_type" : 13,
+			"magic_data" : 36,
+			"magic_data2": 6
+		} ],
+		"type" : "item",
+		"name" : "Checkers Reset",
+		"in" : "context-Downtown_1v"
+}, 
+{
+		"type": "item",
+		"ref": "item-1v.reset",
+		"name": "Reset Game",
+		"in": "context-Downtown_1v",
+		"mods": [
+			{
+				"type": "Short_sign",
+				"style": 4,
+				"x": 12,
+				"y": 64,
+				"orientation": 140,
+				"text": "Reset Game",
+				"ascii": []
+			}
+		]
+},
+{
     "ref": "item-super_trapezoiddad5", 
     "mods": [
       {
