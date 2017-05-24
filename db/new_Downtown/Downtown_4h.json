@@ -174,7 +174,7 @@
     "ref": "item-street5017", 
     "mods": [
       {
-        "orientation": 16, 
+        "orientation": 8, 
         "type": "Street", 
         "gr_state": 6, 
         "y": 7, 

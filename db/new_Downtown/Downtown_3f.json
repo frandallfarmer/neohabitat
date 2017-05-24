@@ -103,7 +103,7 @@
 				"y": 4, 
 				"x": 0, 
 				"type": "Ground", 
-				"orientation": 8
+				"orientation": 220
 			}
 			], 
 			"type": "item", 
@@ -129,7 +129,7 @@
 		"ref": "item-streetd909", 
 		"mods": [
 			{
-				"orientation": 228, 
+				"orientation": 8, 
 				"type": "Street", 
 				"gr_state": 14, 
 				"y": 12, 

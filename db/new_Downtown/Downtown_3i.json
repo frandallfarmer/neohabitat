@@ -304,7 +304,7 @@
     "ref": "item-street626b", 
     "mods": [
       {
-        "orientation": 64, 
+        "orientation": 8, 
         "type": "Street", 
         "gr_state": 6, 
         "y": 10, 

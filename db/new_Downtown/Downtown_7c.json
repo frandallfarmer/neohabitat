@@ -45,6 +45,7 @@
         "type": "Street",
         "x": 68,
         "y": 10,
+        "orientation": 8,
         "gr_state": 6
       }
     ]
