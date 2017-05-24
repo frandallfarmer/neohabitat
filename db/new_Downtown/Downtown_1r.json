@@ -62,7 +62,7 @@
 	"mods": [
 		{
 			"type": "Die",
-			"y": 1,
+			"y": 129,
 			"x": 84,
 			"gr_state": 6,
 			"orientation": 16,
@@ -78,7 +78,7 @@
 	"mods": [
 		{
 			"type": "Die",
-			"y": 13,
+			"y": 141,
 			"x": 88,
 			"gr_state": 6,
 			"orientation": 16,
