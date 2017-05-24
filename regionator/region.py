@@ -35,6 +35,11 @@ with open('./mod_defaults.yml', 'r') as mod_defaults:
   MOD_DEFAULTS = yaml.load(mod_defaults)
 
 
+MOD_RENAMES = {}
+with open('./mod_renames.yml', 'r') as mod_renames:
+  MOD_RENAMES = yaml.load(mod_renames)
+
+
 class Mod(object):
   def __init__(self, region, identifier, params={}, additional_params={},
       contained_mods=[], parent=None):
@@ -100,11 +105,14 @@ class Mod(object):
 
   @property
   def neohabitat_name(self):
-    return self.identifier.capitalize()
+    if self.identifier in MOD_RENAMES:
+      return MOD_RENAMES[self.identifier]
+    else:
+      return self.identifier.capitalize()
 
   @property
   def neohabitat_ref(self):
-    return 'item-{0}.{1}.{2}'.format(self.identifier, self.id,
+    return 'item-{0}.{1}.{2}'.format(self.neohabitat_name, self.id,
         self.region.name.replace('-', '.'))
 
   def _chomped_params(self, start_index=8):
