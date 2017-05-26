@@ -608,10 +608,10 @@ function toElko(connection, data) {
 	connection.write(data + "\n\n");
 }
 
-const UNKNOWN_FRAME   = 0;
-const DELIMITED_FRAME = 1;
-const QLR_FRAME		  = 2;
-const QLINK_FRAME     = 3;
+const UNKNOWN_FRAME		= 0;
+const DELIMITED_FRAME	= 1;
+const QLR_FRAME			= 2;
+const QLINK_FRAME		= 3;
 
 function initializeClientState(client, who, replySeq) {
 	++SessionCount;
@@ -637,19 +637,17 @@ function initializeClientState(client, who, replySeq) {
 function frameClientStream(client, server, data) {
 	var framed   = false;
 	var saveC	 = "";
-	var Z 		 = client.packetPrefix ? client.packetPrefix.length : 0;
 		
 	// First try do discover a QLR frame:  NAME:QLINKPACKET
 	if (client.framingMode == UNKNOWN_FRAME) {
 		var s 	 	= data.toString().trim();
 		var colon	= s.indexOf(":");
-		Z			= s.indexOf("Z");
+		var Z		= s.indexOf("Z");
 		if (colon > 0 && (colon + 1) == Z) {
 			client.framingMode = QLR_FRAME;
 		}
 	}
 	if (client.framingMode == QLINK_FRAME || client.framingMode == QLR_FRAME) {	// If we know this is a FULL Qlink/QLR protocol packet, process now.
-//		dumpQlinkPacket(data.slice(Z));
 		parseIncomingHabitatClientMessage(client, server, data);
 		return;
 	}
@@ -1452,141 +1450,3 @@ const Listener = Net.createServer(function(client) {
 }).listen(ListenPort, ListenHost);
 
 Trace.info('Habitat to Elko Bridge listening on ' + ListenHost +':'+ ListenPort);
-
-
-/** 
- * 
- * JS Implementation of portions of the QLINK serial protocol for the [Neo]Habitat Project
- * 
- * Creator: Randy Farmer
- * 
- * NOTE: Most of this code is directly derived from numerous previous generations of source, especially the QLink Reloaded Project
- * 
- */
-
-const	CRCPOLY		= 0xA001;
-const   SEQ_DEFAULT	= 0x7F;
-const	SEQ_LOW 	= 0x10;
-const	ESCAPE		= 0x5D;
-const   ESCAPE_XOR  = 0x55;
-const   FORBIDDEN   = {0x0D: true, 0x5D: true};  // 0x00? 0x0e? 0xff?
-const   QLINK_START = 0x5a;
-const   QLINK_EOP	= 0x0d;
-
-const   QLINK_TYPE = {
-		 0x20: "DTA", "DTA":0x20, 
-		 0x21: "SS ", "SS ":0x21, 
-		 0x22: "SSR", "SSR":0x22, 
-		 0x23: "INI", "INI":0x23, 
-		 0x24: "ACK", "ACK":0x24, 
-		 0x25: "NAK", "NAK":0x25, 
-		 0x26: "HBT", "HBT":0x26 }
-
-function incSeq(seq) {
-	if (seq == SEQ_DEFAULT)
-		seq = SEQ_LOW;
-	else
-		seq++;
-	return seq;
-}
-
-function escapeQlinkPacket(packet) {
-	var result = packet.slice(0, 5);
-	var hasEOP = (packet[packet.length - 1] == QLINK_EOP) ? 1 : 0;	
-	
-	for (i = 5; i < packet.length - hasEOP; i++ ) {
-		c = packet[i];
-		if (FORBIDDEN[c]) {
-			result.push(ESCAPE);
-			c ^= ESCAPE_XOR;
-		}
-		result.push(c);
-	}
-	
-	if (hasEOP == 1)
-		result.push(QLINK_EOP);
-
-	return result;
-}
-
-function descapeQlinkPacket(packet) {
-	var result = packet.slice(0, 5);
-	for (i = 5; i < packet.length; i++ ) {
-		c = packet[i];
-		if (c == ESCAPE) {
-			i++;
-			c = ESCAPE_XOR ^ packet[i];
-		}
-		result.push(c);
-	}
-	return result;
-}
-
-//const fakePacket = [QLINK_START, 0, 0, 0, 0, 32, 64, QLINK_TYPE["DTA"], 1, 2, 3, 4, 5, ESCAPE, (6 ^ ESCAPE_XOR), 7, 8, 9, 11, 12, 13, 14, 15, QLINK_EOP];
-//Trace.debug(JSON.stringify(                   fakePacket));
-//Trace.debug(JSON.stringify( escapeQlinkPacket(fakePacket)));
-//Trace.debug(JSON.stringify(descapeQlinkPacket(fakePacket)));
-
-function CRC(data, start, len) {
-	var value;
-	var crc = 0;
-	
-	for (var i = 0; i < len; i++) {
-		value = data[i +  start];
-		for (var bit = 0; bit < 8; bit++) {
-			crc   = crc ^ (value & 1);
-			value = value >> 1;
-			if (crc & 1) {
-				crc = crc >> 1;
-				crc = crc ^ CRCPOLY;
-			} else {
-				crc = crc >> 1;
-			}
-		}
-	}
-	return crc;
-}
-
-function makeQlinkPacket(data, client, send, recv, cmd) {	
-	send = send || incSeq(client.bSendSeq);
-	recv = recv || client.bRecvSeq;
-	cmd  = cmd  || QLINK_TYPE["DTA"];	
-    data[0]= QLINK_START;
-    data[5]=send;			// Transmit and Receive values are PART of the CRC.
-    data[6]=recv;
-    data[7]=cmd;
-    crc = CRC(data, 5, data.length - 5);
-    data[1]=(byte)(((crc & 0xF000 ) >>8 ) | 0x01);
-    data[2]=(byte)(((crc & 0x0F00 ) >>8 ) | 0x40);
-    data[3]=(byte)(( crc & 0x00F0 )       | 0x01);
-    data[4]=(byte)(( crc & 0x000F )       | 0x40);
-	return escapeQlinkPacket(data);
-}
-
-function dumpQlinkPacket(packet) {
-	var data = descapeQlinkPacket(packet.getBytes());
-	crc = 
-	  ( data[4] & ~0x40) +
-	  ( data[3] & ~0x01) +
-	  ((data[2] & ~0x40) << 8) +
-	  ((data[1] & ~0x01) << 8);
-	var sendSeq = data[5];
-	var recvSeq = data[6];
-	var cmd		= data[7];
-	var payload = data.slice(8);
-    var check   = CRC(data, 5, data.length - 5);
-	var s = "Bad CRC: " + crc + "/" + check + " [" + bitDump(data[1]) + ", " + bitDump(data[2]) + ", " + bitDump(data[3]) + ", " + bitDump(data[4]) + "] Len = " + (data.length-5); 
-	if (crc == check) {
-		s = "CRC OK";
-	}
-	Trace.debug("Qlink Packet: " + s + " s|r: " + sendSeq + "|" + recvSeq + " (" + QLINK_TYPE[cmd] + ")\n     DATA:" + payload);
-}
-
-function bitDump(val) {
-	var s = "/" + val.toString(16) +"/" + val;
-	while (val) {
-		s = ((val & 1) ? "1" : "0") + s
-		val = val >> 1;
-	}
-	return s;
-}
