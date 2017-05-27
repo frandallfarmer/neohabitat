@@ -178,7 +178,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         if (ghost == null) {
         	ghost 		= new Ghost(0, 4, 240, 0, 0, false);
         	ghost.noid	= GHOST_NOID;
-        	Item item 	= create_object("Ghost", ghost, this, true);
+        	create_object("Ghost", ghost, this, true);
         	new Thread(announceGhostLater).start();        	 
         }
         return ghost;
@@ -192,10 +192,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	public void run() {
     		try {
     		    Thread.sleep(1000);
+                announce_object(current_region().noids[GHOST_NOID].object(), current_region());
     		} catch (InterruptedException neverHappens) {
     		    Thread.currentThread().interrupt();
     		}
-            announce_object(current_region().noids[GHOST_NOID].object(), current_region());
     	}
     };
     
