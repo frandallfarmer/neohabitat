@@ -1,4 +1,4 @@
-{
+[{
 	"type": "context",
 	"ref": "context-frontyard",
 	"capacity": 64,
@@ -12,4 +12,17 @@
 			"neighbors": ["context-hall", "", "", ""]
 		}
 	]
-}
+},
+{
+		"type": "item",
+		"ref": "item-frontyard.mailbox",
+		"name": "Ancient Artifact",
+		"in": "context-frontyard",
+		"mods": [
+			{
+				"type": "Mailbox",
+				"x": 28,
+				"y": 158
+			}
+		]
+}]

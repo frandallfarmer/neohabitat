@@ -1449,6 +1449,7 @@ this.Key				= this.portable;
 this.Knick_knack		= this.magical;
 this.Knife				= this.weapon;
 this.Magic_wand			= this.magical; 
+this.Mailbox			= this.help;
 this.Picture			= this.portable;
 this.Plant				= this.portable;
 this.Plaque				= this.document;

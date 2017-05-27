@@ -242,7 +242,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     			}
     			if (avatar.amAGhost) {
     				object_say(who, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
-    			} 
+    			}
+    			tellEveryone(who.name() + " has arrived.");
     		}
     	}
     	avatar.check_mail();

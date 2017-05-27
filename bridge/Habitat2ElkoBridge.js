@@ -1119,6 +1119,7 @@ var encodeState = {
 		Magic_immobile:	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Magic_staff:	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Magic_wand:		function (state, container, buf) { return (this.common  (state, container, buf)); },
+		Mailbox: 		function (state, container, buf) { return (this.massive  (state, container, buf)); },
 		Matchbook:  	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Movie_camera: 	function (state, container, buf) { return (this.toggle  (state, container, buf)); },
 		Paper: 			function (state, container, buf) { return (this.common  (state, container, buf)); },
