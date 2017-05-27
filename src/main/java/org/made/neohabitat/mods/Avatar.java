@@ -182,14 +182,14 @@ public class Avatar extends Container implements UserMod {
 
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
 		"activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
-		"to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "?stats" })
+		"to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "?stats" })
 	public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
 			OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
 			OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
 			OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
 			OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
 			OptString turf, int[] custom, OptInteger lastConnectedDay, OptInteger lastConnectedTime,
-			OptBoolean amAGhost, int[] stats) {
+			OptBoolean amAGhost, OptBoolean firstConnection,int[] stats) {
 		super(style, x, y, orientation, gr_state, new OptBoolean(false));
 		if (null == stats) {
 			stats = new int[HS$MAX];
@@ -216,22 +216,23 @@ public class Avatar extends Container implements UserMod {
 				lastConnectedDay.value(0),
 				lastConnectedTime.value(0),
 				amAGhost.value(false),
+				firstConnection.value(false),
 				stats);
 	}
 
 	public Avatar(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, String bodyType,
 			int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
 			int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost, int[] stats) {
+			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost, boolean firstConnection, int[] stats) {
 		super(style, x, y, orientation, gr_state, false);
 		setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
-				from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime, amAGhost, stats);
+				from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime, amAGhost, firstConnection, stats);
 	}
 
 	protected void setAvatarState(boolean[] nitty_bits, String bodyType,
 			int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
 			int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost, int[] stats) {
+			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost, boolean firstConnection, int[] stats) {
 		this.nitty_bits = nitty_bits;
 		this.bodyType = bodyType;
 		this.stun_count = stun_count;
@@ -252,6 +253,7 @@ public class Avatar extends Container implements UserMod {
 		this.lastConnectedDay = lastConnectedDay;
 		this.lastConnectedTime = lastConnectedTime;
 		this.amAGhost = amAGhost;
+		this.firstConnection = firstConnection;
 		this.stats = stats;
 	}
 
@@ -271,6 +273,7 @@ public class Avatar extends Container implements UserMod {
 		result.addParameter("restrainer",	restrainer);
 		result.addParameter("custom", 		custom);
 		result.addParameter("amAGhost",		amAGhost);
+		result.addParameter("firstConnection", firstConnection);
 		if (result.control().toRepository()) {
 			result.addParameter("transition_type",	transition_type);
 			result.addParameter("from_orientation", from_orientation);
@@ -1118,6 +1121,7 @@ public class Avatar extends Container implements UserMod {
 		from_orientation    = region.orientation;
 		from_direction      = direction;
 		transition_type     = type;
+    	firstConnection		= false;
 		gen_flags[MODIFIED] = true;
 		checkpoint_object(this);
 

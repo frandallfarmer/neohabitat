@@ -153,6 +153,23 @@ function ensureTurfAssigned(db, userRef, callback) {
 	});
 }
 
+function setFirstConnection(db, userRef) {
+	db.collection('odb').findOne({
+		"ref": userRef
+	}, function(err, user) {
+		user.mods[0].firstConnection = true;
+		db.collection('odb').updateOne(
+				{ref: user.ref},
+				user,
+				{upsert: true},
+				function(err, result) {
+					Assert.equal(err, null);
+					if (result === null)
+						Trace.debug("Unable to setFirstConnection  for " + userRef);
+				});
+	});
+}
+
 function insertUser(db, user, callback) {
 	db.collection('odb').updateOne(
 			{ref: user.ref},
@@ -235,7 +252,7 @@ function addDefaultTokens(db, userRef, fullName) {
 	)
 }
 
-function confirmOrCreateUser(fullName) {
+function confirmOrCreateUser(fullName, firstConnection) {
 	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
 	MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
@@ -261,11 +278,14 @@ function confirmOrCreateUser(fullName) {
 					addDefaultHead(db, userRef, fullName);
 					addPaperPrime(db, userRef, fullName);
 					addDefaultTokens(db, userRef, fullName);
+					setfirstConnection(db, userRef);
 					ensureTurfAssigned(db, userRef, function() {
 						db.close();
 					});
 				});
 			} else {
+				if (firstConnection)
+					setFirstConnection(db, userRef);
 				ensureTurfAssigned(db, userRef, function() {
 					db.close();
 				});
@@ -714,8 +734,8 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 					client.rawWrite(Buffer.from(escape(msg)));
 				}
 			};
-			client.userRef = confirmOrCreateUser(send.substring(0, colon));				 // Make sure there's one in the NeoHabitat/Elko database.
-
+			client.userRef = confirmOrCreateUser(send.substring(0, colon), client.firstConnection);		// Make sure there's one in the NeoHabitat/Elko database.
+			client.firstConnection = false;
 			Trace.debug(client.sessionName + " (Habitat Client) connected.");
 		}
 	}
@@ -732,7 +752,8 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 			if (o && o.op) {
 				if (o.op === "entercontext") {
 					Trace.debug(o.user + " is trying to enter region-context " + o.context);	
-					confirmOrCreateUser(o.user.substring("user-".length));
+					confirmOrCreateUser(o.user.substring("user-".length), client.firstConnection);
+					client.firstConnection = false;
 				}
 			}
 		} catch (e) {
@@ -1434,11 +1455,12 @@ function processIncomingElkoBlob(client, server, data) {
 const Listener = Net.createServer(function(client) {
 	// We have a Habitat Client connection!
 	client.setEncoding('binary');
-	client.port 		= ElkoPort;
-	client.host 		= ElkoHost;
-	client.timeLastSent	= new Date().getTime();
-	client.lastSentLen	= 0;
-	client.backdoor		= {vectorize: vectorize};
+	client.port				= ElkoPort;
+	client.host				= ElkoHost;
+	client.timeLastSent		= new Date().getTime();
+	client.lastSentLen		= 0;
+	client.firstConnection	= true;
+	client.backdoor			= {vectorize: vectorize};
 	initializeClientState(client);
 
 	Trace.debug('Habitat connection from ' + client.address().address + ':'+ client.address().port);

@@ -220,12 +220,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	avatar.inc_record(HS$travel);
     	int today = (int) (System.currentTimeMillis() / ONE_DAY);
     	int time  = (int) (System.currentTimeMillis() % ONE_DAY);
-    	if (today > avatar.lastConnectedDay || time - avatar.lastConnectedTime > 1000 * 60 * 2) {
-    		if (NEOHABITAT_FEATURES) {
-    			tellEveryone(who.name() + " has arrived.");
-    		}
-    		avatar.firstConnection = true;
-    	}
     	if (today > avatar.lastConnectedDay) {
     		avatar.bankBalance += STIPEND;
             avatar.set_record(HS$wealth, avatar.bankBalance);
@@ -237,9 +231,21 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	if (avatar.amAGhost) {
     		getGhost().total_ghosts++; // Make sure the user has a ghost object..
     	}
-        if (avatar.firstConnection) {
-            avatar.check_mail();
-        }
+    	if (avatar.firstConnection) {
+    		object_say(who, MOTD);
+    		if (NEOHABITAT_FEATURES) {
+    			if (NameToUser.size() < 2) {
+    				object_say(who, UPGRADE_PREFIX + "You are the only one here right now.");
+    			} else {
+    				object_say(who, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " others here" +
+    						(avatar.amAGhost ? "." : " Press F3 to see a list."));
+    			}
+    			if (avatar.amAGhost) {
+    				object_say(who, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
+    			} 
+    		}
+    	}
+    	avatar.check_mail();
     }
     
     public void noteUserDeparture(User who) {
@@ -485,21 +491,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	who.gr_state &= ~INVISIBLE;
     	who.showDebugInfo(from);
     	send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
-    	if (who.firstConnection) {
-    		object_say(from, MOTD);
-    		if (NEOHABITAT_FEATURES) {
-    			if (NameToUser.size() < 2) {
-    				object_say(from, UPGRADE_PREFIX + "You are the only one here right now.");
-    			} else {
-    				object_say(from, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " others here" +
-    							(who.amAGhost ? "." : " Press F3 to see a list."));
-    			}
-    			if (who.amAGhost) {
-    				object_say(from, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
-    			} 
-    		}
-    	}
-    	who.firstConnection = false;
 		// If the avatar has any objects in their hands, perform any necessary side effects.
 		lights_on(who);
     }
