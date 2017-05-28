@@ -61,15 +61,18 @@ clusters:
         - resource: neohabitatmariadb
           port: 3306
       ports:
+        - port: 1986
         - port: 5190
 
 balancers:
   - neohabitat:
       synapses:
-        - resource: neohabitatqlink
-          port: 5190
         - resource: neohabitat
           port: 1337
+        - resource: neohabitatqlink
+          port: 1986
+        - resource: neohabitatqlink
+          port: 5190
 
   - join-neohabitat:
       enable_ssl: false

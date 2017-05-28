@@ -6,6 +6,8 @@
 /* jslint bitwise: true */
 /* jshint esversion: 6 */
 
+const Trace		 	= require('winston');
+
 this.MICROCOSM_ID_BYTE	= 0x55;
 this.ESCAPE_CHAR		= 0x5D;
 this.END_OF_MESSAGE		= 0x0D;
@@ -206,7 +208,11 @@ this.SERVER_OPS = {
 			}
 		},
 		"GRAB$": 				{ reqno: 16 },
-		"GRABFROM$": 			{ reqno: 17 },
+		"GRABFROM$": 			{ reqno: 17,
+			toClient: function (o, b) {
+				b.add(o.avatar_noid);
+			}
+		},
 		"HANG$": 				{ reqno: 11 },
 		"HEREIS_$":		 		{ reqno: 8,
 			toClient: function (o, b, client) {
@@ -928,6 +934,20 @@ this.translate = {
 		KING: {
 			toClient: function(o, b) {
 				b.add(o.state);
+			}
+		},
+		GRAB: {
+			toServer: function(a, m) {
+				Trace.info("A: %j", a);
+				m.avatar_noid = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.item_noid);
+			}
+		},
+		HAND: {
+			toClient: function(o, b) {
+				b.add(o.err);
 			}
 		}
 };
