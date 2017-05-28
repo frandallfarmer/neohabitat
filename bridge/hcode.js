@@ -6,8 +6,6 @@
 /* jslint bitwise: true */
 /* jshint esversion: 6 */
 
-const Trace		 	= require('winston');
-
 this.MICROCOSM_ID_BYTE	= 0x55;
 this.ESCAPE_CHAR		= 0x5D;
 this.END_OF_MESSAGE		= 0x0D;
@@ -937,10 +935,6 @@ this.translate = {
 			}
 		},
 		GRAB: {
-			toServer: function(a, m) {
-				Trace.info("A: %j", a);
-				m.avatar_noid = a[0];
-			},
 			toClient: function(o, b) {
 				b.add(o.item_noid);
 			}
