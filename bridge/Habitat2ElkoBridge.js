@@ -279,7 +279,7 @@ function confirmOrCreateUser(fullName, client) {
 					addDefaultHead(db, userRef, fullName);
 					addPaperPrime(db, userRef, fullName);
 					addDefaultTokens(db, userRef, fullName);
-					setfirstConnection(db, userRef);
+					setFirstConnection(db, userRef);
 					ensureTurfAssigned(db, userRef, function() {
 						db.close();
 					});
