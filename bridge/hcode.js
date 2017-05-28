@@ -206,7 +206,11 @@ this.SERVER_OPS = {
 			}
 		},
 		"GRAB$": 				{ reqno: 16 },
-		"GRABFROM$": 			{ reqno: 17 },
+		"GRABFROM$": 			{ reqno: 17,
+			toClient: function (o, b) {
+				b.add(o.avatar_noid);
+			}
+		},
 		"HANG$": 				{ reqno: 11 },
 		"HEREIS_$":		 		{ reqno: 8,
 			toClient: function (o, b, client) {
@@ -928,6 +932,16 @@ this.translate = {
 		KING: {
 			toClient: function(o, b) {
 				b.add(o.state);
+			}
+		},
+		GRAB: {
+			toClient: function(o, b) {
+				b.add(o.item_noid);
+			}
+		},
+		HAND: {
+			toClient: function(o, b) {
+				b.add(o.err);
 			}
 		}
 };

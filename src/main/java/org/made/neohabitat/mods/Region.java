@@ -496,8 +496,18 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 		// If the avatar has any objects in their hands, perform any necessary side effects.
 		lights_on(who);
     }
-    	
-    	
+
+    public boolean grabable(HabitatMod mod) {
+        if (nitty_bits[STEAL_FREE] |
+            mod.HabitatClass() == CLASS_PAPER |
+            mod.HabitatClass() == CLASS_BOOK |
+            mod.HabitatClass() == CLASS_TOKENS |
+            (mod.HabitatClass() == CLASS_MAGIC_LAMP && mod.gr_state == MAGIC_LAMP_GENIE)) {
+            return false;
+        }
+        return true;
+    }
+
     public void lights_off(Avatar avatar) {
     	if (!empty_handed(avatar)) {
     		HabitatMod light = avatar.contents(HANDS);

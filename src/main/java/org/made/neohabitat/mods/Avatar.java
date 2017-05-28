@@ -455,33 +455,87 @@ public class Avatar extends Container implements UserMod {
 	}
 
 	/**
-	 * Verb (Specific): TODO Grabbing from another avatar.
+	 * Verb (Specific): Grabbing from another avatar.
 	 * 
-	 * @param from
-	 *            User representing the connection making the request.
+	 * @param from User representing the connection making the request.
 	 */
-	@JSONMethod
+	@JSONMethod()
 	public void GRAB(User from) {
-		if (amAGhost) { 
+		Avatar otherAvatar = avatar(from);
+
+		if (amAGhost || otherAvatar.amAGhost) {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		unsupported_reply(from, noid, "Avatar.GRAB not implemented yet.");
+
+		Region curRegion = current_region();
+		HabitatMod itemMod = null;
+
+		if (empty_handed(otherAvatar) && !empty_handed(this)) {
+			itemMod = this.contents(HANDS);
+			if (!curRegion.grabable(itemMod)) {
+				send_reply_msg(from, noid, "item_noid", 0);
+				if (curRegion.nitty_bits[STEAL_FREE]) {
+					object_say(from, noid, "This is a theft-free zone.");
+				}
+				return;
+			}
+			if (!change_containers(itemMod, otherAvatar, HANDS, true)) {
+				send_reply_msg(from, noid, "item_noid", 0);
+				return;
+			}
+			send_neighbor_msg(from, otherAvatar.noid, "GRABFROM$", "avatar_noid", noid);
+			otherAvatar.inc_record(HS$grabs);
+		}
+
+		if (itemMod != null) {
+			send_reply_msg(from, noid, "item_noid", itemMod.noid);
+		} else {
+			send_reply_msg(from, noid, "item_noid", 0);
+		}
 	}
 
 	/**
-	 * Verb (Specific): TODO Handing in-hand item to another avatar.
-	 * 
-	 * @param from
-	 *            User representing the connection making the request.
+	 * Verb (Specific): Handing in-hand item to another avatar.
+	 *
+	 * @param from User representing the connection making the request.
 	 */
-	@JSONMethod
+	@JSONMethod()
 	public void HAND(User from) {
-		if (amAGhost) { 
+		Avatar otherAvatar = avatar(from);
+
+		if (amAGhost || otherAvatar.amAGhost) {
 			illegal_request(from, "Avatar commands not allowed when a ghost.");
 			return;
 		}
-		unsupported_reply(from, noid, "Avatar.HAND not implemented yet.");
+
+		HabitatMod itemMod = null;
+		boolean success = false;
+
+		if (empty_handed(this) && !empty_handed(otherAvatar) && sittingIn == 0) {
+			itemMod = otherAvatar.contents(HANDS);
+			if (itemMod.HabitatClass() == CLASS_MAGIC_LAMP &&
+				itemMod.gr_state == MAGIC_LAMP_GENIE) {
+				object_say(from, itemMod.noid, "You can't give away the Genie!");
+				success = false;
+			} else {
+				if (!change_containers(itemMod, this, HANDS, true)) {
+					success = false;
+				} else {
+					success = true;
+					activity = STAND;
+					gen_flags[MODIFIED] = true;
+					checkpoint_object(this);
+					send_neighbor_msg(from, noid, "GRABFROM$", "avatar_noid", otherAvatar.noid);
+				}
+			}
+		}
+
+		if (success) {
+			send_reply_success(from);
+		} else {
+			send_reply_error(from);
+		}
 	}
 
 	/**

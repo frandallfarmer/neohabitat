@@ -30,7 +30,7 @@ services:
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=true
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
     ports:
       - "1337:1337"
       - "1898:1898"
@@ -47,6 +47,7 @@ services:
       - QLINK_HABITAT_HOST=neohabitat
     ports:
       - "5190:5190"
+      - "1986:1986"
     depends_on:
       - neohabitat
       - mariadb
