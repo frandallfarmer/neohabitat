@@ -488,7 +488,11 @@ public class Avatar extends Container implements UserMod {
 			otherAvatar.inc_record(HS$grabs);
 		}
 
-		send_reply_msg(from, noid, "item_noid", itemMod.noid);
+		if (itemMod != null) {
+			send_reply_msg(from, noid, "item_noid", itemMod.noid);
+		} else {
+			send_reply_msg(from, noid, "item_noid", 0);
+		}
 	}
 
 	/**
