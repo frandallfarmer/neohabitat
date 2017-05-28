@@ -226,6 +226,8 @@ public interface Constants {
     public static final int      MISC_FLAG1                 = 5;
     public static final int      MISC_FLAG2                 = 6;
     public static final int      MISC_FLAG3                 = 7;
+    /* avatar NEOHabitat nitty_bit flags start at the top and work down. */
+    public static final int		 INTENTIONAL_GHOST			= 31;
     
     /* object nitty-bits constants */
     public static final int      DOOR_AVATAR_RESTRICTED_BIT = 32;

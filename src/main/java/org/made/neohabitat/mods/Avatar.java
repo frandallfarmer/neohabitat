@@ -172,6 +172,7 @@ public class Avatar extends Container implements UserMod {
 
 	public int		  lastConnectedDay	= 0;
 	public int		  lastConnectedTime = 0;
+	public String	  lastArrivedIn		= "";
 
 	/** Used to indicate that this avatar-instance should be treated as the "first" instantiation of the session */
 	public boolean	  firstConnection	= false;
@@ -182,14 +183,14 @@ public class Avatar extends Container implements UserMod {
 
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
 		"activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
-		"to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "?stats" })
+		"to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "lastArrivedIn", "?stats" })
 	public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
 			OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
 			OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
 			OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
 			OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
 			OptString turf, int[] custom, OptInteger lastConnectedDay, OptInteger lastConnectedTime,
-			OptBoolean amAGhost, OptBoolean firstConnection,int[] stats) {
+			OptBoolean amAGhost, OptBoolean firstConnection, OptString lastArrivedIn, int[] stats) {
 		super(style, x, y, orientation, gr_state, new OptBoolean(false));
 		if (null == stats) {
 			stats = new int[HS$MAX];
@@ -217,22 +218,26 @@ public class Avatar extends Container implements UserMod {
 				lastConnectedTime.value(0),
 				amAGhost.value(false),
 				firstConnection.value(false),
+				lastArrivedIn.value(""),
 				stats);
 	}
 
 	public Avatar(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, String bodyType,
 			int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
 			int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost, boolean firstConnection, int[] stats) {
+			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
+			boolean firstConnection, String lastArrivedIn, int[] stats) {
 		super(style, x, y, orientation, gr_state, false);
 		setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
-				from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime, amAGhost, firstConnection, stats);
+				from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime,
+				amAGhost, firstConnection, lastArrivedIn, stats);
 	}
 
 	protected void setAvatarState(boolean[] nitty_bits, String bodyType,
 			int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
 			int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
-			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost, boolean firstConnection, int[] stats) {
+			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
+			boolean firstConnection, String lastArrivedIn, int[] stats) {
 		this.nitty_bits = nitty_bits;
 		this.bodyType = bodyType;
 		this.stun_count = stun_count;
@@ -254,6 +259,7 @@ public class Avatar extends Container implements UserMod {
 		this.lastConnectedTime = lastConnectedTime;
 		this.amAGhost = amAGhost;
 		this.firstConnection = firstConnection;
+		this.lastArrivedIn = lastArrivedIn;
 		this.stats = stats;
 	}
 
@@ -273,7 +279,6 @@ public class Avatar extends Container implements UserMod {
 		result.addParameter("restrainer",	restrainer);
 		result.addParameter("custom", 		custom);
 		result.addParameter("amAGhost",		amAGhost);
-		result.addParameter("firstConnection", firstConnection);
 		if (result.control().toRepository()) {
 			result.addParameter("transition_type",	transition_type);
 			result.addParameter("from_orientation", from_orientation);
@@ -285,6 +290,8 @@ public class Avatar extends Container implements UserMod {
 			result.addParameter("turf", 			turf);
 			result.addParameter("lastConnectedDay", lastConnectedDay);
 			result.addParameter("lastConnectedTime",lastConnectedTime);
+			result.addParameter("firstConnection",	firstConnection);
+			result.addParameter("lastArrivedIn",	lastArrivedIn);
 			result.addParameter("stats", 			stats);
 		}
 		if (result.control().toClient() && sittingIn != 0) {
@@ -307,12 +314,12 @@ public class Avatar extends Container implements UserMod {
 	/** Avatars need to be repositioned upon arrival in a region based on the method used to arrive. */
 	public void objectIsComplete() {
 		/** Was pl1 region_entry_daemon: */
-
-		// If traveling as a ghost, don't do ANYTHING fancy 
+		
+		// If traveling as an intentional ghost, don't do ANYTHING fancy 
 		if (amAGhost) {
 			return;
 		}
-
+		
 		Region.addToNoids(this);
 		note_object_creation(this);
 
@@ -631,7 +638,9 @@ public class Avatar extends Container implements UserMod {
 			if (holding_restricted_object())
 				object_say(from, "You can't turn into a ghost while you are holding that.");
 			else {
+	    		send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", sfx_number(4), "from_noid", noid);
 				switch_to_ghost(from);
+	    		nitty_bits[INTENTIONAL_GHOST] = true;
 				return;
 			}
 		send_reply_error(from);

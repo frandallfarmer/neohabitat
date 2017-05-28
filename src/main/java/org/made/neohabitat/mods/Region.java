@@ -225,8 +225,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             avatar.set_record(HS$wealth, avatar.bankBalance);
     		avatar.inc_record(HS$lifetime);
     	}
-		avatar.lastConnectedDay  = today;
-    	avatar.lastConnectedTime = time;
+    	avatar.lastArrivedIn		= context().baseRef();
+		avatar.lastConnectedDay  	= today;
+    	avatar.lastConnectedTime 	= time;
     	Region.addUser(who);
     	if (avatar.amAGhost) {
     		getGhost().total_ghosts++; // Make sure the user has a ghost object..

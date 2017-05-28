@@ -158,6 +158,7 @@ function setFirstConnection(db, userRef) {
 		"ref": userRef
 	}, function(err, user) {
 		user.mods[0].firstConnection = true;
+		user.mods[0].amAGhost = true;
 		db.collection('odb').updateOne(
 				{ref: user.ref},
 				user,
@@ -252,7 +253,7 @@ function addDefaultTokens(db, userRef, fullName) {
 	)
 }
 
-function confirmOrCreateUser(fullName, firstConnection) {
+function confirmOrCreateUser(fullName, client) {
 	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
 	MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
 		Assert.equal(null, err);
@@ -284,12 +285,16 @@ function confirmOrCreateUser(fullName, firstConnection) {
 					});
 				});
 			} else {
-				if (firstConnection)
+				if (client.firstConnection)
 					setFirstConnection(db, userRef);
 				ensureTurfAssigned(db, userRef, function() {
 					db.close();
 				});
 			}
+		});
+		/* Grab a copy of the user object for the bridge to use */
+		findOne(db, {ref: userRef}, function(err, user) {
+			client.user = user;
 		});
 	});
 
@@ -734,8 +739,7 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 					client.rawWrite(Buffer.from(escape(msg)));
 				}
 			};
-			client.userRef = confirmOrCreateUser(send.substring(0, colon), client.firstConnection);		// Make sure there's one in the NeoHabitat/Elko database.
-			client.firstConnection = false;
+			client.userRef = confirmOrCreateUser(send.substring(0, colon), client);		// Make sure there's one in the NeoHabitat/Elko database.
 			Trace.debug(client.sessionName + " (Habitat Client) connected.");
 		}
 	}
@@ -752,8 +756,7 @@ function parseIncomingHabitatClientMessage(client, server, data) {
 			if (o && o.op) {
 				if (o.op === "entercontext") {
 					Trace.debug(o.user + " is trying to enter region-context " + o.context);	
-					confirmOrCreateUser(o.user.substring("user-".length), client.firstConnection);
-					client.firstConnection = false;
+					confirmOrCreateUser(o.user.substring("user-".length), client);
 				}
 			}
 		} catch (e) {
@@ -802,13 +805,19 @@ function parseHabitatClientMessage(client, server, data) {
 				// After a (re)connection, only the first request for a contents vector is valid
 				var context;
 				if (undefined === client.state.nextRegion) {
-					context = Argv.context;
+					if (client.user && client.user.mods[0].lastArrivedIn) {
+						context = client.user.mods[0].lastArrivedIn;
+						client.user.mods[0].lastArrivedIn = "";
+					} else {
+						context = Argv.context;
+					}
 				} else if (client.state.nextRegion !== "") {
 					context = client.state.nextRegion;
 				} else {
 					return;	// Ignore this request, the client is hanging but a changecontext/immdiate message is coming to fix this.
 				}
 				enterContext(client, server, context);
+				client.firstConnection = false;
 				return;
 			}
 		}
@@ -1461,6 +1470,7 @@ const Listener = Net.createServer(function(client) {
 	client.timeLastSent		= new Date().getTime();
 	client.lastSentLen		= 0;
 	client.firstConnection	= true;
+	client.user				= null;
 	client.backdoor			= {vectorize: vectorize};
 	initializeClientState(client);
 
