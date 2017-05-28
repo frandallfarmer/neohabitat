@@ -118,9 +118,9 @@
         "key_hi": 0, 
         "y": 34, 
         "x": 68, 
-		"open_flags": 3,
-		"gr_state": 1,
-		"type": "Door", 
+        "open_flags": 3,
+        "gr_state": 1,
+        "type": "Door"
       }
     ], 
     "type": "item", 
