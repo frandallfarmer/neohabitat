@@ -254,50 +254,50 @@ function addDefaultTokens(db, userRef, fullName) {
 }
 
 function confirmOrCreateUser(fullName, client) {
-	var userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
-	MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
-		Assert.equal(null, err);
-		findOne(db, {ref: userRef}, function(err, result) {
-			if (result === null || Argv.force) {
-				var newUser = {
-					"type": "user",
-					"ref": userRef,
-					"name": fullName,
-					"mods": [
-						{
-							"type": "Avatar",
-							"x": 10,
-							"y": 128 + rnd(32),
-							"bodyType": "male",
-							"bankBalance": 50000,
-							"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
-							"nitty_bits": 0
-						}
-					]
-				};
-				insertUser(db, newUser, function() {
-					addDefaultHead(db, userRef, fullName);
-					addPaperPrime(db, userRef, fullName);
-					addDefaultTokens(db, userRef, fullName);
+	var userRef = client.userRef;
+	if (client.firstConnection) {
+		userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
+		MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+			Assert.equal(null, err);
+			findOne(db, {ref: userRef}, function(err, result) {
+				if (result === null || Argv.force) {
+					var newUser = {
+							"type": "user",
+							"ref": userRef,
+							"name": fullName,
+							"mods": [
+								{
+									"type": "Avatar",
+									"x": 10,
+									"y": 128 + rnd(32),
+									"bodyType": "male",
+									"bankBalance": 50000,
+									"custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
+									"nitty_bits": 0
+								}
+								]
+					};
+					insertUser(db, newUser, function() {
+						addDefaultHead(db, userRef, fullName);
+						addPaperPrime(db, userRef, fullName);
+						addDefaultTokens(db, userRef, fullName);
+						ensureTurfAssigned(db, userRef, function() {
+							db.close();
+						});
+					});
+				} else {
 					setFirstConnection(db, userRef);
 					ensureTurfAssigned(db, userRef, function() {
 						db.close();
 					});
-				});
-			} else {
-				if (client.firstConnection)
-					setFirstConnection(db, userRef);
-				ensureTurfAssigned(db, userRef, function() {
-					db.close();
-				});
-			}
+				}
+			});
+			/* Grab a copy of the user object for the bridge to use */
+			findOne(db, {ref: userRef}, function(err, user) {
+				client.user = user;
+			});
 		});
-		/* Grab a copy of the user object for the bridge to use */
-		findOne(db, {ref: userRef}, function(err, user) {
-			client.user = user;
-		});
-	});
-
+	}
 	return userRef;
 }
 
