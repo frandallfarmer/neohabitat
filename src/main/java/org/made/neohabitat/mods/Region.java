@@ -36,7 +36,7 @@ import org.made.neohabitat.Toggle;
 
 public class Region extends Container implements UserWatcher, ContextMod, ContextShutdownWatcher,  Constants {
     
-	public static String	MOTD = "Welcome to Habitat!";
+	public static String	MOTD = "Welcome to Habitat! For help see http://neohabitat.org";
 	
 	/** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
 	public static boolean	NEOHABITAT_FEATURES = true;	

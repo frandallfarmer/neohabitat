@@ -107,9 +107,16 @@ public class Ghost extends HabitatMod implements Copyable {
     @JSONMethod
     public void CORPORATE(User from) {
     	Avatar avatar = avatar(from); 	// The user always has an Avatar-connection on the server side, it's just forgotten on the client side.
+    	Region region = current_region();
     	if (avatar.amAGhost) {
     		send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", 8, "from_noid", THE_REGION);
+    		if (avatar.firstConnection && Region.NEOHABITAT_FEATURES) {
+    			region.object_say(from, UPGRADE_PREFIX + "Please wait for your Avatar...");
+    		}
     		avatar.switch_to_avatar(from);
+    		if (avatar.firstConnection && Region.NEOHABITAT_FEATURES) {
+    			region.object_say(from, UPGRADE_PREFIX + "Ready to go!");
+    		}
     		avatar.nitty_bits[INTENTIONAL_GHOST] = false;
     	} else {
     		trace_msg("Attempt to switch from ghost to avatar for a non-ghosted avatar.");

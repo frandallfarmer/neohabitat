@@ -15,6 +15,10 @@ const fileRoots = {
   all: '.',
   book_of_records: './Text/text-bookofrecords.json',
   downtown_regions: './new_Downtown',
+  woods: './Woods',
+  beach: './Beach',
+  back4t: './Back4t',
+  streets: "./Streets",
   text: './Text'
 };
 

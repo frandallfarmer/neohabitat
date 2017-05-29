@@ -253,6 +253,14 @@ function addDefaultTokens(db, userRef, fullName) {
 	)
 }
 
+
+function readUserAndClose(db, userRef, client) {
+	findOne(db, {ref: userRef}, function(err, user) {
+			client.user = user;
+			db.close();
+	});
+}
+
 function confirmOrCreateUser(fullName, client) {
 	var userRef = client.userRef;
 	if (client.firstConnection) {
@@ -282,19 +290,15 @@ function confirmOrCreateUser(fullName, client) {
 						addPaperPrime(db, userRef, fullName);
 						addDefaultTokens(db, userRef, fullName);
 						ensureTurfAssigned(db, userRef, function() {
-							db.close();
+							readUserAndClose(db, userRef, client);
 						});
 					});
 				} else {
 					setFirstConnection(db, userRef);
 					ensureTurfAssigned(db, userRef, function() {
-						db.close();
+						readUserAndClose(db, userRef, client);
 					});
 				}
-			});
-			/* Grab a copy of the user object for the bridge to use */
-			findOne(db, {ref: userRef}, function(err, user) {
-				client.user = user;
 			});
 		});
 	}

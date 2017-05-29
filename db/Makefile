@@ -61,7 +61,23 @@ regions:
 downtown:
 	@echo "Building Downtown Only"
 	@node populateModels.js $(NEOHABITAT_MONGO_HOST) downtown_regions >>.errs 2>&1
+	
+woods:
+	@echo "Building Woods Rd Only"
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) woods >>.errs 2>&1	
 
+streets:
+	@echo "Building the Suburb Streets Only"
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) streets >>.errs 2>&1	
+
+beach:
+	@echo "Building the Beach Only"
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) beach >>.errs 2>&1	
+
+back4t:
+	@echo "Building the Back Forty Only"
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) back4t >>.errs 2>&1	
+	
 teleports:
 	@echo "Building Teleport Directory"
 	@rm -f $(TELEPORTDB)
