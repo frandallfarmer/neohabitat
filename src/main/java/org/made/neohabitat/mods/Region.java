@@ -228,7 +228,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	avatar.lastArrivedIn		= context().baseRef();
 		avatar.lastConnectedDay  	= today;
     	avatar.lastConnectedTime 	= time;
-    	Region.addUser(who);
     	if (avatar.amAGhost) {
     		getGhost().total_ghosts++; // Make sure the user has a ghost object..
     	}
@@ -248,9 +247,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     		}
     	}
     	avatar.check_mail();
+    	Region.addUser(who);
     }
     
     public void noteUserDeparture(User who) {
+    	Region.removeUser(who);
     	Avatar avatar = avatar(who);
     	Ghost  ghost  = regionGhost();
         if (avatar.holding_restricted_object()) {
@@ -268,7 +269,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
 		avatar.gen_flags[MODIFIED] = true;    					
     	avatar.checkpoint_object(avatar);
-    	Region.removeUser(who);
     }
     
     private int avatarsPresent() {
