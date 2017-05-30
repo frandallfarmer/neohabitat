@@ -3,10 +3,10 @@
     "ref": "context-HyperDr_n_end", 
     "capacity": 64, 
     "type": "context", 
-    "name": "HyperDr_n_end", 
+    "name": "Hyper Dr North End", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": LEFT, 
         "neighbors": [
           "", 
           "", 

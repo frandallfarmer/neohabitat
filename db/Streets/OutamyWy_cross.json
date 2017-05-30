@@ -3,10 +3,10 @@
     "ref": "context-OutamyWy_cross", 
     "capacity": 64, 
     "type": "context", 
-    "name": "OutamyWy_cross", 
+    "name": "Outamy Wy Cross",
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": UP, 
         "neighbors": [
           "context-OutamyWy_629_front", 
           "context-HyperDr_cross", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": DOWN, 
         "type": "Region"
       }
     ]
@@ -77,39 +77,7 @@
           109, 
           121, 
           87, 
-          121, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32
+          121
         ], 
         "gr_state": 5, 
         "y": 35, 
@@ -166,6 +134,21 @@
     ], 
     "type": "item", 
     "name": "Bush", 
+    "in": "context-OutamyWy_cross"
+  },
+  {
+    "ref": "item-Teleport.bc0e.OutamyWy_cross", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 16, 
+        "type": "Teleport", 
+        "orientation": 204, 
+        "address": "Outamy Wy Cross"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
     "in": "context-OutamyWy_cross"
   }
 ]

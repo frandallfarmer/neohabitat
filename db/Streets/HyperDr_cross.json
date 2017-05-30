@@ -3,10 +3,10 @@
     "ref": "context-HyperDr_cross", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Hyper Dr Cross", 
+    "name": "Hyper Dr Cross",	
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": UP, 
         "neighbors": [
           "context-HyperDr_630_front", 
           "context-StreetRd_cross", 

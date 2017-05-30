@@ -6,7 +6,7 @@
     "name": "Outamy Wy #229", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": RIGHT, 
         "neighbors": [
           "context-OutamyWy_329_front", 
           "", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": LEFT, 
         "type": "Region"
       }
     ]
@@ -58,7 +58,7 @@
         "x": 0, 
         "style": 7, 
         "type": "Wall", 
-        "orientation": 164
+        "orientation": 172
       }
     ], 
     "type": "item", 
@@ -109,41 +109,7 @@
           32, 
           50, 
           50, 
-          57, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32
+          57
         ], 
         "gr_state": 8, 
         "y": 32, 
