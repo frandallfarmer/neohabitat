@@ -82,7 +82,7 @@ teleports:
 	@echo "Building Teleport Directory"
 	@rm -f $(TELEPORTDB)
 	@echo '{ "ref" : "teleports", "type" : "map", "map" : {' > $(TELEPORTDB)
-	@$(foreach F,$(MONGODB_OBJECTS), node dumpTeleportEntries.js < $(F) >> $(TELEPORTDB);)
+	@$(foreach F,$(MONGODB_OBJECTS), node dumpTeleportEntries.js < $(F) >> $(TELEPORTDB)$(NL))
 	@echo ' " End Of Directory": "eod" } }' >> $(TELEPORTDB)
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $(TELEPORTDB) >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
