@@ -344,74 +344,74 @@ function createServerConnection(port, host, client, immediate, context) {
 		if (immediate) {
 			enterContext(client, server, context);
 		}
-	});
-	server.on('data', function(data) {
-		var reset = false;
-		try {
-			reset = processIncomingElkoBlob(client, server, data);				
-		} catch(err) {
-			Trace.error("\n\n\nServer input processing error captured:\n" +
-					err.message + "\n" +
-					err.stack   + "\n" +
-			"...resuming...\n");
-		}
-		if (reset) {				// This connection has been replaced due to context change.
-			Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
 
-			// Make sure any outgoing messages have been sent...
-			var now  = new Date().getTime();
-			var when = Math.ceil(client.timeLastSent + timeToXmit(client.lastSentLen));
-			if (when <= now) {
-				server.destroy();
-			} else {
-				var delay = Math.ceil(Math.max(0, (when - now)));
-				setTimeout(function () { server.destroy(); }, delay);
-			}		
-		}
-	});
-
-	// If we see a socket exception, logs it instead of throwing it.
-	server.on('error', function(err) {
-		Trace.warn("Unable to connect to NeoHabitat Server, terminating client connection.");
-		if (client) {
-			if (client.userName) {
-				Users[client.userName].online = false;
+		server.on('data', function(data) {
+			var reset = false;
+			try {
+				reset = processIncomingElkoBlob(client, server, data);				
+			} catch(err) {
+				Trace.error("\n\n\nServer input processing error captured:\n" +
+						err.message + "\n" +
+						err.stack   + "\n" +
+				"...resuming...\n");
 			}
-			client.end(); 
-		}
-	});
+			if (reset) {				// This connection has been replaced due to context change.
+				Trace.debug("Destroying connection: " + server.address().address + ':' + server.address().port);
 
-	// What if the Elko server breaks the connection? For now we tear the bridge down also.
-	// If we ever bring up a "director" based service, this will need to change on context changes.
-
-	server.on('end', function() {
-		Trace.debug('Elko port disconnected...');
-		if (client) {
-			Trace.debug("{Bridge being shutdown...}");
-			if (client.userName) {
-				Users[client.userName].online = false;
+				// Make sure any outgoing messages have been sent...
+				var now  = new Date().getTime();
+				var when = Math.ceil(client.timeLastSent + timeToXmit(client.lastSentLen));
+				if (when <= now) {
+					server.destroy();
+				} else {
+					var delay = Math.ceil(Math.max(0, (when - now)));
+					setTimeout(function () { server.destroy(); }, delay);
+				}		
 			}
-			client.end();
-		}
-	});
+		});
 
-	client.removeAllListeners('data').on('data', function(data) {
-		try {
-			frameClientStream(client, server, data);				
-		} catch(err) {
-			Trace.error("\n\n\nClient input processing error captured:\n" + 
-					JSON.stringify(err,null,2) + "\n" +
-					err.stack + "\n...resuming...\n");
-		}
-	});
+		// If we see a socket exception, logs it instead of throwing it.
+		server.on('error', function(err) {
+			Trace.warn("Unable to connect to NeoHabitat Server, terminating client connection.");
+			if (client) {
+				if (client.userName) {
+					Users[client.userName].online = false;
+				}
+				client.end(); 
+			}
+		});
 
-	client.removeAllListeners('close').on('close', function(data) {
-		Trace.debug("Habitat client disconnected.");
-		if (server) { 
-			server.end(); 
-		}
-	});
+		// What if the Elko server breaks the connection? For now we tear the bridge down also.
+		// If we ever bring up a "director" based service, this will need to change on context changes.
 
+		server.on('end', function() {
+			Trace.debug('Elko port disconnected...');
+			if (client) {
+				Trace.debug("{Bridge being shutdown...}");
+				if (client.userName) {
+					Users[client.userName].online = false;
+				}
+				client.end();
+			}
+		});
+
+		client.removeAllListeners('data').on('data', function(data) {
+			try {
+				frameClientStream(client, server, data);				
+			} catch(err) {
+				Trace.error("\n\n\nClient input processing error captured:\n" + 
+						JSON.stringify(err,null,2) + "\n" +
+						err.stack + "\n...resuming...\n");
+			}
+		});
+
+		client.removeAllListeners('close').on('close', function(data) {
+			Trace.debug("Habitat client disconnected.");
+			if (server) { 
+				server.end(); 
+			}
+		});
+	});
 }
 
 function isString(data) {

@@ -1206,16 +1206,7 @@ public class Avatar extends Container implements UserMod {
 	 * Sends a MAILARRIVED$ message to the User associated with this Avatar.
 	 */
 	public void send_mail_arrived() {
-		send_mail_arrived(elko_user());
-	}
-
-	/**
-	 * Sends a mail arrival message to the provided User.
-	 *
-	 * @param from User to send mail arrival message to.
-     */
-	public void send_mail_arrived(User from) {
-		object_say(from, noid, MAIL_ARRIVED_MSG);
+		new Thread(sendMailArrived).start();
 	}
 
 	/**
@@ -1447,6 +1438,22 @@ public class Avatar extends Container implements UserMod {
 					trace_msg("Failed to write mail queue for User %s: %s",
 							object().ref(), obj);
 				}
+			} catch (Exception e) {
+				trace_exception(e);
+			}
+		}
+	};
+
+	protected Runnable sendMailArrived = new Runnable() {
+		@Override
+		public void run() {
+			try {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException neverHappens) {
+					Thread.currentThread().interrupt();
+				}
+				object_say(elko_user(), noid, MAIL_ARRIVED_MSG);
 			} catch (Exception e) {
 				trace_exception(e);
 			}
