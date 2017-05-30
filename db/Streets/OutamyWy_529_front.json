@@ -1,0 +1,260 @@
+[
+  {
+    "ref": "context-OutamyWy_529_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Outamy Wy #529", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-OutamyWy_cross", 
+          "", 
+          "context-OutamyWy_429_front", 
+          "context-OutamyWy_529_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.4951.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Wall.413b.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Wall.b642.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Building.2426.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 12, 
+        "type": "Building",
+        "connection": "context-OutamyWy_529_interior", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Sign.acad.OutamyWy_529_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          53, 
+          50, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Bush.1916.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 38, 
+        "x": 136, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Mailbox.2ac4.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 8, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Bush.a2b3.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 53, 
+        "x": 72, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Bush.9fd4.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 104, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Street.1600.OutamyWy_529_front", 
+    "mods": [
+      {
+        "orientation": 56,
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Building.2429.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 83, 
+        "x": 16, 
+        "type": "Building", 
+        "orientation": 196, 
+        "gr_state": 10
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Building.7313.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 90, 
+        "x": 20, 
+        "type": "Building", 
+        "orientation": 0, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-OutamyWy_529_front"
+  }, 
+  {
+    "ref": "item-Building.8046.OutamyWy_529_front", 
+    "mods": [
+      {
+        "y": 123, 
+        "x": 24, 
+        "type": "Building", 
+        "orientation": 0, 
+        "gr_state": 9
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-OutamyWy_529_front"
+  }
+]

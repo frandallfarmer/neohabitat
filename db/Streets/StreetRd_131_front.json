@@ -1,0 +1,214 @@
+[
+  {
+    "ref": "context-StreetRd_131_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Street Rd #131", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-StreetRd_231_front", 
+          "", 
+          "context-StreetRd_s_end", 
+          "context-StreetRd_131_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c027.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Wall.964f.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Wall.306e.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Building.7e80.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 40, 
+        "type": "Building",
+        "connection": "context-StreetRd_131_interior", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Bush.fdcf.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Sign.46c8.StreetRd_131_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 252, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          49, 
+          51, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 29, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Mailbox.ead1.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 20, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Street.1e14.StreetRd_131_front", 
+    "mods": [
+      {
+        "orientation": 252,
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Plant.27df.StreetRd_131_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 31, 
+        "x": 20, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-StreetRd_131_front"
+  }, 
+  {
+    "ref": "item-Fence.657d.StreetRd_131_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-StreetRd_131_front"
+  }
+]

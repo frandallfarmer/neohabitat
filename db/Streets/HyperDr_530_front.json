@@ -1,0 +1,214 @@
+[
+  {
+    "ref": "context-HyperDr_530_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Hyper Dr #530", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-HyperDr_cross", 
+          "", 
+          "context-HyperDr_430_front", 
+          "context-HyperDr_530_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1a84.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Wall.0b05.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Wall.a992.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Building.7b4f.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 24, 
+        "type": "Building",
+        "connection": "context-HyperDr_530_interior", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Bush.96e8.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Sign.bf5d.HyperDr_530_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          53, 
+          51, 
+          48, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 56, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Mailbox.c45d.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 154, 
+        "x": 20, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Street.a202.HyperDr_530_front", 
+    "mods": [
+      {
+        "orientation": 252,
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Plant.7eb8.HyperDr_530_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 31, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-HyperDr_530_front"
+  }, 
+  {
+    "ref": "item-Fence.d5d1.HyperDr_530_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-HyperDr_530_front"
+  }
+]

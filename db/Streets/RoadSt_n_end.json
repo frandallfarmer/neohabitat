@@ -1,0 +1,127 @@
+[
+  {
+    "ref": "context-RoadSt_n_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "RoadSt_n_end", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-RoadSt_1032_front", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7276.RoadSt_n_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_n_end"
+  }, 
+  {
+    "ref": "item-Wall.18fc.RoadSt_n_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_n_end"
+  }, 
+  {
+    "ref": "item-Wall.4313.RoadSt_n_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_n_end"
+  }, 
+  {
+    "ref": "item-Teleport.2337.RoadSt_n_end", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 100, 
+        "type": "Teleport", 
+        "orientation": 228, 
+        "address": "Road St North"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-RoadSt_n_end"
+  }, 
+  {
+    "ref": "item-Bush.ade9.RoadSt_n_end", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 76, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_n_end"
+  }, 
+  {
+    "ref": "item-Street.9294.RoadSt_n_end", 
+    "mods": [
+      {
+        "orientation": 236,
+        "gr_state": 3, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-RoadSt_n_end"
+  }, 
+  {
+    "ref": "item-Bush.ebd1.RoadSt_n_end", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_n_end"
+  }
+]

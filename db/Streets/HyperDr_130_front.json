@@ -1,0 +1,258 @@
+[
+  {
+    "ref": "context-HyperDr_130_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Hyper Dr #130", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-HyperDr_230_front", 
+          "", 
+          "context-HyperDr_s_end", 
+          "context-HyperDr_130_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fec7.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Wall.04bd.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Wall.5f1b.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Building.bb88.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 16, 
+        "type": "Building",
+        "connection": "context-HyperDr_130_interior", 
+        "orientation": 157
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Bush.fa31.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 112, 
+        "type": "Bush", 
+        "orientation": 212
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Sign.8375.HyperDr_130_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          49, 
+          51, 
+          48, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 57, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Mailbox.50c5.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 149, 
+        "x": 108, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Fence.4e5f.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Fence.a736.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Plant.e40c.HyperDr_130_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 48, 
+        "mass": 1, 
+        "y": 48, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Fence.44aa.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Fence.5f69.HyperDr_130_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-HyperDr_130_front"
+  }, 
+  {
+    "ref": "item-Street.fe1c.HyperDr_130_front", 
+    "mods": [
+      {
+        "orientation": 252,
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-HyperDr_130_front"
+  }
+]

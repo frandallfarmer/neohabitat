@@ -1,0 +1,133 @@
+[
+  {
+    "ref": "context-RoadSt_832_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Road St #832", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-RoadSt_832_front", 
+          "", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6f0b.RoadSt_832_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_832_interior"
+  }, 
+  {
+    "ref": "item-Wall.efeb.RoadSt_832_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_832_interior"
+  }, 
+  {
+    "ref": "item-Table.006c.RoadSt_832_interior", 
+    "mods": [
+      {
+        "orientation": 188, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-RoadSt_832_interior"
+  }, 
+  {
+    "ref": "item-Chest.5f15.RoadSt_832_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-RoadSt_832_interior"
+  }, 
+  {
+    "ref": "item-Couch.87a8.RoadSt_832_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 88, 
+        "type": "Couch", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-RoadSt_832_interior"
+  }, 
+  {
+    "ref": "item-Door.eaae.RoadSt_832_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "connection": "context-RoadSt_832_interior", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-RoadSt_832_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.bbb8.RoadSt_832_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 72, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-RoadSt_832_interior"
+  }
+]

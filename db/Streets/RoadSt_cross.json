@@ -1,0 +1,201 @@
+[
+  {
+    "ref": "context-RoadSt_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "RoadSt_cross", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-RoadSt_632_front", 
+          "",
+          "context-RoadSt_532_front", 
+          "context-StreetRd_cross"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.da70.RoadSt_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Sky.144e.RoadSt_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Street.7f7a.RoadSt_cross", 
+    "mods": [
+      {
+        "orientation": 56,
+        "y": 12, 
+        "x": 68, 
+        "gr_state": 14,
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Sign.239d.RoadSt_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          82, 
+          111, 
+          97, 
+          100, 
+          32, 
+          83, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Tree.205e.RoadSt_cross", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 8, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Tree.f2b6.RoadSt_cross", 
+    "mods": [
+      {
+        "y": 37, 
+        "x": 12, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Bush.b47c.RoadSt_cross", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 112, 
+        "style": 3, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Bush.89d5.RoadSt_cross", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 237, 
+        "gr_state": 1, 
+        "y": 37, 
+        "x": 124, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_cross"
+  }, 
+  {
+    "ref": "item-Teleport.da55.RoadSt_cross", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 40, 
+        "type": "Teleport", 
+        "orientation": 172, 
+        "address": "Road St Cross"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-RoadSt_cross"
+  }
+]

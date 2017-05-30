@@ -1,0 +1,199 @@
+[
+  {
+    "ref": "context-HyperDr_730_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Hyper Dr #730", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-HyperDr_830_front", 
+          "", 
+          "context-HyperDr_630_front", 
+          "context-HyperDr_730_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d1ba.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Wall.e77e.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Wall.7a39.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Building.55fa.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 52, 
+        "type": "Building",
+        "connection": "context-HyperDr_730_interior", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Bush.d780.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 112, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Sign.fd71.HyperDr_730_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          55, 
+          51, 
+          48, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Mailbox.364d.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 108, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Street.b859.HyperDr_730_front", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-HyperDr_730_front"
+  }, 
+  {
+    "ref": "item-Bush.6c5f.HyperDr_730_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 32, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-HyperDr_730_front"
+  }
+]

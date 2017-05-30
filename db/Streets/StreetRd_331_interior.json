@@ -1,0 +1,197 @@
+[
+  {
+    "ref": "context-StreetRd_331_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Street Rd #331", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-StreetRd_331_front", 
+          "", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.cdef.StreetRd_331_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Wall.8fea.StreetRd_331_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Display_case.5144.StreetRd_331_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 92, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.b893.StreetRd_331_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 48, 
+        "type": "Floor_lamp", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Window.1c66.StreetRd_331_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Door.e0a6.StreetRd_331_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "connection": "context-StreetRd_331_interior", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Aquarium.62ad.StreetRd_331_interior", 
+    "mods": [
+      {
+        "y": 195, 
+        "x": 100, 
+        "type": "Aquarium", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Aquarium", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Garbage_can.7f18.StreetRd_331_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 147, 
+        "x": 144, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Window.9a69.StreetRd_331_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 1, 
+        "y": 63, 
+        "x": 68, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Chair.195a.StreetRd_331_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 41
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-StreetRd_331_interior"
+  }, 
+  {
+    "ref": "item-Chair.c3d9.StreetRd_331_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 44, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-StreetRd_331_interior"
+  }
+]

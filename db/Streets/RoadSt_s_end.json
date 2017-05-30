@@ -1,0 +1,155 @@
+[
+  {
+    "ref": "context-RoadSt_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "RoadSt_s_end", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-RoadSt_132_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.db16.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Wall.13c3.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Wall.9a2c.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Teleport.8467.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 40, 
+        "type": "Teleport", 
+        "orientation": 228, 
+        "address": "Road St South"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Bush.2a71.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 76, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Bush.b472.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 55, 
+        "x": 112, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Bush.a945.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 140, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Street.ba72.RoadSt_s_end", 
+    "mods": [
+      {
+        "orientation": 236,
+        "gr_state": 4, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-RoadSt_s_end"
+  }, 
+  {
+    "ref": "item-Bush.0af5.RoadSt_s_end", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_s_end"
+  }
+]

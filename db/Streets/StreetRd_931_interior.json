@@ -1,0 +1,177 @@
+[
+  {
+    "ref": "context-StreetRd_931_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Street Rd #931", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-StreetRd_931_front", 
+          "", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.5e34.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Wall.6f45.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Window.5944.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Couch.02d2.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Chest.8173.StreetRd_931_interior", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Door.c17e.StreetRd_931_interior", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "connection": "context-StreetRd_931_interior", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.312c.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Window.fde1.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 88, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-House_cat.a096.StreetRd_931_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 8, 
+        "type": "House_cat", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "House_cat", 
+    "in": "context-StreetRd_931_interior"
+  }, 
+  {
+    "ref": "item-Knick_knack.9413.StreetRd_931_interior", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 87, 
+        "x": 12, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-StreetRd_931_interior"
+  }
+]

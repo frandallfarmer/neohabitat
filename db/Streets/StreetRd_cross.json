@@ -1,0 +1,155 @@
+[
+  {
+    "ref": "context-StreetRd_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "StreetRd_cross", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-StreetRd_631_front", 
+          "context-RoadSt_cross", 
+          "context-StreetRd_531_front", 
+          "context-HyperDr_cross"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2b71.StreetRd_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-StreetRd_cross"
+  }, 
+  {
+    "ref": "item-Sky.a970.StreetRd_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-StreetRd_cross"
+  }, 
+  {
+    "ref": "item-Street.87b9.StreetRd_cross", 
+    "mods": [
+      {
+        "orientation": 252,
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-StreetRd_cross"
+  }, 
+  {
+    "ref": "item-Sign.88f6.StreetRd_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          116, 
+          114, 
+          101, 
+          101, 
+          116, 
+          82, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-StreetRd_cross"
+  }, 
+  {
+    "ref": "item-Plant.c7a8.StreetRd_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 30, 
+        "x": 92, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-StreetRd_cross"
+  }, 
+  {
+    "ref": "item-Teleport.0f51.StreetRd_cross", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "orientation": 24, 
+        "address": "Street Rd Cross"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-StreetRd_cross"
+  }
+]

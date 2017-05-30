@@ -1,0 +1,212 @@
+[
+  {
+    "ref": "context-StreetRd_1031_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Street Rd #1031", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-StreetRd_n_end", 
+          "", 
+          "context-StreetRd_931_front", 
+          "context-StreetRd_1031_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8c61.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Wall.1aba.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Wall.f937.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Building.6e9c.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 36, 
+        "type": "Building",
+        "connection": "context-StreetRd_1031_interior",
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Bush.49a4.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 96, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Bush.2479.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 16, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Mailbox.aec9.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Bush.1f11.StreetRd_1031_front", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 124, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Sign.cb80.StreetRd_1031_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 252, 
+        "ascii": [
+          32, 
+          32, 
+          49, 
+          48, 
+          51, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 29, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-StreetRd_1031_front"
+  }, 
+  {
+    "ref": "item-Street.a2a7.StreetRd_1031_front", 
+    "mods": [
+      {
+        "orientation": 252,
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-StreetRd_1031_front"
+  }
+]

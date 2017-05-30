@@ -1,0 +1,203 @@
+[
+  {
+    "ref": "context-OutamyWy_229_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Outamy Wy #229", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-OutamyWy_329_front", 
+          "", 
+          "context-OutamyWy_129_front", 
+          "context-OutamyWy_229_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.57c9.OutamyWy_229_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Wall.ddf1.OutamyWy_229_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Wall.4f98.OutamyWy_229_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Building.285b.OutamyWy_229_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "type": "Building",
+        "connection": "context-OutamyWy_229_interior", 
+        "orientation": 188, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Bush.e37a.OutamyWy_229_front", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 54, 
+        "x": 16, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Sign.1806.OutamyWy_229_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          50, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Mailbox.b2cf.OutamyWy_229_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 92, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Street.fa66.OutamyWy_229_front", 
+    "mods": [
+      {
+        "orientation": 56,
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-OutamyWy_229_front"
+  }, 
+  {
+    "ref": "item-Bush.9dff.OutamyWy_229_front", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 33, 
+        "x": 100, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-OutamyWy_229_front"
+  }
+]

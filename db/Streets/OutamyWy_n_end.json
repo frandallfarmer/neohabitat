@@ -1,0 +1,130 @@
+[
+  {
+    "ref": "context-OutamyWy_n_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "OutamyWy_n_end", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-OutamyWy_1029_front", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2712.OutamyWy_n_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-OutamyWy_n_end"
+  }, 
+  {
+    "ref": "item-Wall.5f11.OutamyWy_n_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_n_end"
+  }, 
+  {
+    "ref": "item-Wall.fd41.OutamyWy_n_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.651e.OutamyWy_n_end", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 156, 
+        "x": 88, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-OutamyWy_n_end"
+  }, 
+  {
+    "ref": "item-Teleport.be22.OutamyWy_n_end", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 112, 
+        "type": "Teleport", 
+        "orientation": 204, 
+        "address": "Outamy Wy North"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-OutamyWy_n_end"
+  }, 
+  {
+    "ref": "item-Street.d115.OutamyWy_n_end", 
+    "mods": [
+      {
+        "orientation": 56,
+        "gr_state": 3, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-OutamyWy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.d88b.OutamyWy_n_end", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 159, 
+        "x": 28, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-OutamyWy_n_end"
+  }
+]

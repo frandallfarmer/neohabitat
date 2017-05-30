@@ -1,0 +1,176 @@
+[
+  {
+    "ref": "context-HyperDr_130_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Hyper Dr #130", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-HyperDr_130_front", 
+          "", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "",		
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.9b80.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Wall.2c37.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Table.92e9.HyperDr_130_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 108, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Window.4beb.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Window.b63f.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Door.b549.HyperDr_130_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "connection": "context-HyperDr_130_interior", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Chair.5f09.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 80, 
+        "type": "Chair", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Window.b3b6.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 80, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.f6e4.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 104, 
+        "type": "Floor_lamp", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-HyperDr_130_interior"
+  }, 
+  {
+    "ref": "item-Chair.7515.HyperDr_130_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-HyperDr_130_interior"
+  }
+]

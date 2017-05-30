@@ -1,0 +1,140 @@
+[
+  {
+    "ref": "context-HyperDr_n_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "HyperDr_n_end", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-HyperDr_1030_front", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.3cd3.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Wall.5c18.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Wall.504e.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Bush.1fe8.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 47, 
+        "x": 48, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Bush.1e30.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 4, 
+        "type": "Bush", 
+        "orientation": 212
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Teleport.4bb6.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 120, 
+        "type": "Teleport", 
+        "orientation": 0, 
+        "address": "Hyper Dr North"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Atm.8f91.HyperDr_n_end", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Atm", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Atm", 
+    "in": "context-HyperDr_n_end"
+  }, 
+  {
+    "ref": "item-Street.6f53.HyperDr_n_end", 
+    "mods": [
+      {
+        "orientation": 252,
+        "gr_state": 3, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-HyperDr_n_end"
+  }
+]

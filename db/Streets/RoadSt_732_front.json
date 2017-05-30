@@ -1,0 +1,215 @@
+[
+  {
+    "ref": "context-RoadSt_732_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Road St #732", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-RoadSt_832_front", 
+          "", 
+          "context-RoadSt_632_front", 
+          "context-RoadSt_732_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.734f.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Wall.824b.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Wall.ae24.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Building.81cd.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 52, 
+        "type": "Building",
+        "connection": "context-RoadSt_732_interior", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Bush.e515.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 136, 
+        "type": "Bush", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Sign.8436.RoadSt_732_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          55, 
+          51, 
+          50, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Mailbox.9367.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 108, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Street.4dbe.RoadSt_732_front", 
+    "mods": [
+      {
+        "orientation": 88,
+        "gr_state": 6, 
+        "y": 6, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Plant.b40b.RoadSt_732_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 159, 
+        "x": 132, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-RoadSt_732_front"
+  }, 
+  {
+    "ref": "item-Bush.a206.RoadSt_732_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 12, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_732_front"
+  }
+]

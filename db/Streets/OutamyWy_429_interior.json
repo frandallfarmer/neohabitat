@@ -1,0 +1,176 @@
+[
+  {
+    "ref": "context-OutamyWy_429_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Outamy Wy #429", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-OutamyWy_429_front", 
+          "", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.aca3.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Wall.8dd9.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Table.894f.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 108, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Window.8d2b.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Window.6fe2.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Door.ec65.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "connection": "context-OutamyWy_429_interior", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Chair.6df7.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 80, 
+        "type": "Chair", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Window.5464.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 80, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.5765.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 104, 
+        "type": "Floor_lamp", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-OutamyWy_429_interior"
+  }, 
+  {
+    "ref": "item-Chair.4754.OutamyWy_429_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-OutamyWy_429_interior"
+  }
+]

@@ -1,0 +1,213 @@
+[
+  {
+    "ref": "context-StreetRd_531_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Street Rd #531", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-StreetRd_cross", 
+          "", 
+          "context-StreetRd_431_front", 
+          "context-StreetRd_531_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.a5b6.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Wall.759f.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Wall.f580.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Building.1031.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "type": "Building",
+        "connection": "context-StreetRd_531_interior", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Bush.27f6.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Sign.67ca.StreetRd_531_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 252, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          53, 
+          51, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 29, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Mailbox.890b.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 32, 
+        "type": "Mailbox", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Street.a236.StreetRd_531_front", 
+    "mods": [
+      {
+        "orientation": 252,
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Fence.d038.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-StreetRd_531_front"
+  }, 
+  {
+    "ref": "item-Bush.635d.StreetRd_531_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-StreetRd_531_front"
+  }
+]

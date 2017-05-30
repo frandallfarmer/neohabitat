@@ -1,0 +1,212 @@
+[
+  {
+    "ref": "context-RoadSt_332_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Road St #332", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-RoadSt_432_front", 
+          "", 
+          "context-RoadSt_232_front", 
+          "context-RoadSt_332_interior"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.cf5c.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Wall.8c6a.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Wall.3009.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Building.d8c6.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 36, 
+        "type": "Building",
+        "connection": "context-RoadSt_332_interior", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Bush.8ee4.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 96, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Bush.14e3.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 16, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Mailbox.b196.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Bush.002f.RoadSt_332_front", 
+    "mods": [
+      {
+        "y": 61, 
+        "x": 124, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Sign.84b9.RoadSt_332_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          51, 
+          51, 
+          50, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-RoadSt_332_front"
+  }, 
+  {
+    "ref": "item-Street.c08a.RoadSt_332_front", 
+    "mods": [
+      {
+        "orientation": 32,
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-RoadSt_332_front"
+  }
+]

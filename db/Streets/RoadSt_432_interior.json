@@ -1,0 +1,133 @@
+[
+  {
+    "ref": "context-RoadSt_432_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Road St #432", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-RoadSt_432_front", 
+          "", 
+          ""
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8d8d.RoadSt_432_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-RoadSt_432_interior"
+  }, 
+  {
+    "ref": "item-Wall.cbff.RoadSt_432_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-RoadSt_432_interior"
+  }, 
+  {
+    "ref": "item-Table.b352.RoadSt_432_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-RoadSt_432_interior"
+  }, 
+  {
+    "ref": "item-Chest.936e.RoadSt_432_interior", 
+    "mods": [
+      {
+        "orientation": 196, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 112, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-RoadSt_432_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.d6e2.RoadSt_432_interior", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 140, 
+        "type": "Floor_lamp", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-RoadSt_432_interior"
+  }, 
+  {
+    "ref": "item-Door.9840.RoadSt_432_interior", 
+    "mods": [
+      {
+        "orientation": 156, 
+        "key_lo": 0, 
+        "connection": "context-RoadSt_432_interior", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 8, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-RoadSt_432_interior"
+  }, 
+  {
+    "ref": "item-Bed.f436.RoadSt_432_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 84, 
+        "type": "Bed", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-RoadSt_432_interior"
+  }
+]
