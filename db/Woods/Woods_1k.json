@@ -3,7 +3,7 @@
     "ref": "context-Woods_1k", 
     "capacity": 64, 
     "type": "context", 
-    "name": "", 
+    "name": "Woods_1k", 
     "mods": [
       {
         "town_dir": "", 
