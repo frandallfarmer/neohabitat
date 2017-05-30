@@ -3,7 +3,7 @@
     "ref": "context-Woods_eq", 
     "capacity": 64, 
     "type": "context", 
-    "name": "", 
+    "name": "Woods_eq", 
     "mods": [
       {
         "town_dir": "", 

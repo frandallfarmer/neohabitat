@@ -167,7 +167,7 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0, 
-        "item_price": 0
+        "item_price": 50
       }
     ], 
     "type": "item", 
