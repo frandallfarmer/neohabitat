@@ -3,15 +3,15 @@
     "capacity": 64, 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": DOWN, 
         "neighbors": [
           "", 
-          "context-Woods_6f", 
+          "context-Popustop.afront2.line1106", 
           "", 
-          "context-Popustop.afront2.line1106"
+          "context-Woods_5x"
         ], 
         "realm": "Popustop", 
-        "orientation": 0, 
+        "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 
         "type": "Region"
@@ -40,7 +40,7 @@
     "ref": "item-ground.Popustop.aprominade2.line1107", 
     "mods": [
       {
-        "y": 4, 
+        "y": 1, 
         "x": 0, 
         "style": 1, 
         "type": "Ground", 
@@ -50,37 +50,22 @@
     "type": "item", 
     "name": ".", 
     "in": "context-Popustop.aprominade2.line1107"
-  }, 
+  },  
   {
     "type": "item", 
     "mods": [
       {
-        "y": 3, 
+        "y": 4, 
         "x": 0, 
         "style": 0, 
-        "type": "Sky", 
+        "type": "Ground", 
         "orientation": 228
       }
     ], 
     "ref": "item-sky2.Popustop.aprominade2.line1107", 
     "name": "Sky", 
     "in": "context-Popustop.aprominade2.line1107"
-  }, 
-  {
-    "ref": "item-street1.Popustop.aprominade2.line1107", 
-    "mods": [
-      {
-        "y": 12, 
-        "x": 68, 
-        "type": "Street", 
-        "orientation": 8, 
-        "gr_state": 6
-      }
-    ], 
-    "type": "item", 
-    "name": ".", 
-    "in": "context-Popustop.aprominade2.line1107"
-  }, 
+  },  
   {
     "ref": "item-supertrap1.Popustop.aprominade2.line1107", 
     "mods": [
@@ -277,14 +262,14 @@
     "ref": "item-trap5.Popustop.aprominade2.line1107", 
     "mods": [
       {
-        "lower_right_x": 20, 
-        "upper_left_x": 9, 
-        "upper_right_x": 11, 
+        "lower_right_x": 40, 
+        "upper_left_x": 16,
+        "upper_right_x": 20,
         "lower_left_x": 0, 
         "trapezoid_type": 0, 
-        "y": 28, 
-        "x": 66, 
-        "height": 20, 
+        "y": 5, 
+        "x": 56, 
+        "height": 44, 
         "type": "Trapezoid", 
         "orientation": 8
       }

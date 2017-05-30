@@ -21,12 +21,13 @@ const MongoClient	= require('mongodb').MongoClient;
 const Assert 		= require('assert');
 const ObjectId 		= require('mongodb').ObjectID;
 
-const DefDefs	= { context:	'context-test',
+const DefDefs	= { 
+		context:	'context-Downtown_5f',
 		listen:		'127.0.0.1:1337',
 		elko:		'127.0.0.1:9000',
 		mongo:		'127.0.0.1:27017/elko',
 		rate:		1200,
-		realm:  'Popustop',
+		realm:		'Popustop',
 		trace:		'info'};
 var	 Defaults	= DefDefs;
 
@@ -38,7 +39,7 @@ try {
 			elko:		userDefs.elko		|| DefDefs.elko,
 			mongo:		userDefs.mongo  	|| DefDefs.mongo,
 			rate:		userDefs.rate		|| DefDefs.rate,
-			realm:   userDefs.realm || DefDefs.realm,
+			realm:		userDefs.realm		|| DefDefs.realm,
 			trace:		userDefs.trace		|| DefDefs.trace};
 } catch (e) {
 	console.log("Missing/invalid defaults.elko configuration file. Proceeding with factory defaults.");
@@ -54,7 +55,7 @@ const Argv 		 = require('yargs')
 .option('elko',		{ alias: 'e', default: Defaults.elko,    describe: 'Host:Port of the Habitat Elko Server'})
 .option('mongo',	{ alias: 'm', default: Defaults.mongo,   describe: 'Mongodb server URL'})
 .option('rate',		{ alias: 'r', default: Defaults.rate,	 describe: 'Data rate in bits-per-second for transmitting to c64 clients'})
-.option('realm',		{ alias: 'a', default: Defaults.realm,	 describe: 'Realm within which to assign turfs'})
+.option('realm',	{ alias: 'a', default: Defaults.realm,	 describe: 'Realm within which to assign turfs'})
 .argv;
 
 Trace.level 	 = Argv.trace;

@@ -9,8 +9,8 @@
         "town_dir": "|", 
         "neighbors": [
           "context-Woods_5y", 
-          "", 
-          "", 
+          "context-Popustop.aprominade2.line1107",
+          "context-beach_2f", 
           "context-Downtown_7f"
         ], 
         "orientation": 0, 
@@ -119,106 +119,6 @@
     "name": "Sign", 
     "in": "context-Woods_5x"
   },
-	{
-		"type": "item",
-		"ref": "item-warningsign.Woods_5x",
-		"in": "context-Woods_5x",
-		"name": "Warning Sign",
-		"mods": [
-			{
-				"type": "Glue",
-				"x": 0,
-				"y": 128,
-				"gr_state": 1,
-				"open_flags": 3,
-				"x_offset_1": 254,
-				"y_offset_1": 248,
-				"x_offset_2": 254,
-				"y_offset_2": 0,
-				"x_offset_3": 254,
-				"y_offset_3": 0,
-				"x_offset_4": 0,
-				"y_offset_4": 0,
-				"x_offset_5": 0,
-				"y_offset_5": 0,
-				"x_offset_6": 0,
-				"y_offset_6": 0
-			}
-			]
-	},  
-	{
-		"ref": "item-warningtape.Woods_5x",
-		"mods": [
-			{
-				"y": 0,
-				"trapezoid_type": 2,
-				"upper_left_x": 60,
-				"upper_right_x": 103,
-				"lower_left_x": 60,
-				"lower_right_x": 103,
-				"height": 16,
-				"pattern_x_size": 1,
-				"pattern_y_size": 7,
-				"pattern": [
-					170,	85,
-					106,	149,
-					90,		165,
-					86,		169,
-					85,		170,
-					149,	106,
-					165,	90,
-					169,	86,
-					0,	0,	0,	0,
-					0,	0,	0,	0,
-					0,	0,	0,	0,
-					0,	0,	0,	0
-					],
-					"type": "Super_trapezoid",
-					"orientation": 184
-			}
-			],
-			"type": "item",
-			"name": "Warning Sign",
-			"in": "item-warningsign.Woods_5x"
-	},
-	{
-		"ref": "item-leftSignSupport.Woods_5x", 
-		"mods": [
-			{
-				"y": 1,
-				"trapezoid_type": 2, 
-				"upper_left_x": 64, 
-				"upper_right_x": 66, 
-				"lower_left_x": 64,
-				"lower_right_x": 66, 
-				"height": 12, 
-				"type": "Trapezoid", 
-				"orientation": 224
-			}
-			],
-			"type": "item",
-			"name": "Warning Sign",
-			"in": "item-warningsign.Woods_5x"
-	},
-	{
-		"ref": "item-rightSignSupport.Woods_5x", 
-		"mods": [
-			{
-				"y": 2,
-				"trapezoid_type": 2, 
-				"upper_left_x": 96, 
-				"upper_right_x": 98, 
-				"lower_left_x": 96,
-				"lower_right_x": 98, 
-				"height": 12, 
-				"type": "Trapezoid", 
-				"orientation": 224
-			}
-			],
-			"type": "item",
-			"name": "Warning Sign",
-			"in": "item-warningsign.Woods_5x"
-	},
   {
     "ref": "item-tree1.Woods_5x", 
     "mods": [

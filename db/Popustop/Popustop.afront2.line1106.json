@@ -3,17 +3,17 @@
     "capacity": 64, 
     "mods": [
       {
-        "town_dir": "|", 
+        "town_dir": DOWN, 
         "neighbors": [
           "", 
-          "context-Popustop.aprominade2.line1107", 
+          "context-Popustop.lobby.line3", 
           "", 
-          "context-Popustop.lobby.line3"
+          "context-Popustop.aprominade2.line1107"
         ], 
         "realm": "Popustop", 
-        "orientation": 0, 
+        "orientation": 2, 
         "nitty_bits": 3, 
-        "port_dir": "|", 
+        "port_dir": DOWN, 
         "type": "Region"
       }
     ], 
