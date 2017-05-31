@@ -6,7 +6,7 @@
     "name": "Street Rd North End", 
     "mods": [
       {
-        "town_dir": "LEFT", 
+        "town_dir": LEFT, 
         "neighbors": [
           "", 
           "", 
