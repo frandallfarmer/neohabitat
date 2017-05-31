@@ -65,10 +65,6 @@ String.prototype.format = function() {
 var successful = true;
 var updates_in_flight = 0;
 
-function eget(db, ref) {
-  return ;
-}
-
 function esave(db, obj, callback) {
   db.collection('odb').save(obj, function(err, o) {
     if (err) {
