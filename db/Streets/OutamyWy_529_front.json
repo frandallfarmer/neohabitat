@@ -6,7 +6,7 @@
     "name": "Outamy Wy #529", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": RIGHT, 
         "neighbors": [
           "context-OutamyWy_cross", 
           "", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": RIGHT, 
         "type": "Region"
       }
     ]
@@ -219,7 +219,8 @@
         "y": 83, 
         "x": 16, 
         "type": "Building", 
-        "orientation": 196, 
+        "orientation": 196,
+        "connection": "context-OutamyWy_529_interior",		
         "gr_state": 10
       }
     ], 
@@ -234,7 +235,8 @@
         "y": 90, 
         "x": 20, 
         "type": "Building", 
-        "orientation": 0, 
+        "orientation": 0,
+        "connection": "context-OutamyWy_529_interior",		
         "gr_state": 4
       }
     ], 
@@ -249,7 +251,8 @@
         "y": 123, 
         "x": 24, 
         "type": "Building", 
-        "orientation": 0, 
+        "orientation": 0,
+        "connection": "context-OutamyWy_529_interior",		
         "gr_state": 9
       }
     ], 

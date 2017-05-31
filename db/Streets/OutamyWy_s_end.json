@@ -3,10 +3,10 @@
     "ref": "context-OutamyWy_s_end", 
     "capacity": 64, 
     "type": "context", 
-    "name": "OutamyWy_s_end", 
+    "name": "Outamy Wy South End", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": RIGHT, 
         "neighbors": [
           "context-OutamyWy_129_front", 
           "", 

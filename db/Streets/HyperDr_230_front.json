@@ -6,7 +6,7 @@
     "name": "Hyper Dr #230", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": RIGHT, 
         "neighbors": [
           "context-HyperDr_330_front", 
           "", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": LEFT, 
         "type": "Region"
       }
     ]

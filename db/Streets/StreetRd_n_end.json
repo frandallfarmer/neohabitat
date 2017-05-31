@@ -3,10 +3,10 @@
     "ref": "context-StreetRd_n_end", 
     "capacity": 64, 
     "type": "context", 
-    "name": "StreetRd_n_end", 
+    "name": "Street Rd North End", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": "LEFT", 
         "neighbors": [
           "", 
           "", 
