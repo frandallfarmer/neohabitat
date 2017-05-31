@@ -79,7 +79,6 @@
         "style": 1,
         "orientation": 0,
         "gr_state": 0,
-        "gr_width": 20,
         "y": 33,
         "x": 96,
         "type": "Window"
@@ -96,7 +95,6 @@
         "style": 1,
         "orientation": 0,
         "gr_state": 0,
-        "gr_width": 20,
         "y": 33,
         "x": 72,
         "type": "Window"
@@ -130,7 +128,6 @@
         "style": 1,
         "orientation": 0,
         "gr_state": 0,
-        "gr_width": 20,
         "y": 33,
         "x": 48,
         "type": "Window"
@@ -148,7 +145,6 @@
         "x": 96,
         "style": 1,
         "open_flags": 3,
-        "gr_width": 24,
         "type": "Chair",
         "orientation": 237
       }
@@ -165,7 +161,6 @@
         "x": 48,
         "style": 1,
         "open_flags": 3,
-        "gr_width": 24,
         "type": "Chair",
         "orientation": 236
       }

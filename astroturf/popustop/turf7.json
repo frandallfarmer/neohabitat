@@ -77,7 +77,6 @@
         "style": 1,
         "orientation": 0,
         "gr_state": 2,
-        "gr_width": 20,
         "y": 104,
         "x": 20,
         "type": "Window"
@@ -128,7 +127,6 @@
         "style": 1,
         "orientation": 0,
         "gr_state": 1,
-        "gr_width": 20,
         "y": 63,
         "x": 56,
         "type": "Window"
@@ -146,7 +144,6 @@
         "x": 96,
         "style": 1,
         "open_flags": 3,
-        "gr_width": 24,
         "type": "Chair",
         "orientation": 113
       }
@@ -163,7 +160,6 @@
         "x": 44,
         "style": 1,
         "open_flags": 3,
-        "gr_width": 24,
         "type": "Chair",
         "orientation": 112
       }

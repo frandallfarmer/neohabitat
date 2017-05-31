@@ -79,7 +79,6 @@
       {
         "style": 1, 
         "orientation": 0, 
-        "gr_width": 20, 
         "x": 96, 
         "y": 33, 
         "gr_state": 0, 
@@ -96,7 +95,6 @@
       {
         "style": 1, 
         "orientation": 0, 
-        "gr_width": 20, 
         "x": 72, 
         "y": 33, 
         "gr_state": 0, 
@@ -130,7 +128,6 @@
       {
         "style": 1, 
         "orientation": 0, 
-        "gr_width": 20, 
         "x": 48, 
         "y": 33, 
         "gr_state": 0, 
@@ -147,7 +144,6 @@
       {
         "style": 1, 
         "orientation": 237, 
-        "gr_width": 24, 
         "y": 130, 
         "x": 96, 
         "type": "Chair", 
@@ -164,7 +160,6 @@
       {
         "style": 1, 
         "orientation": 236, 
-        "gr_width": 24, 
         "y": 131, 
         "x": 48, 
         "type": "Chair", 

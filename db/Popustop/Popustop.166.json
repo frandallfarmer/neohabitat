@@ -77,7 +77,6 @@
       {
         "style": 1, 
         "orientation": 0, 
-        "gr_width": 20, 
         "x": 20, 
         "y": 104, 
         "gr_state": 2, 
@@ -128,7 +127,6 @@
       {
         "style": 1, 
         "orientation": 0, 
-        "gr_width": 20, 
         "x": 56, 
         "y": 63, 
         "gr_state": 1, 
@@ -145,7 +143,6 @@
       {
         "style": 1, 
         "orientation": 17, 
-        "gr_width": 24, 
         "y": 130, 
         "x": 96, 
         "type": "Chair", 
@@ -162,7 +159,6 @@
       {
         "style": 1, 
         "orientation": 16, 
-        "gr_width": 24, 
         "y": 131, 
         "x": 44, 
         "type": "Chair", 

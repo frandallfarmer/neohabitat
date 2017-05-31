@@ -75,7 +75,6 @@
         "style": 0,
         "orientation": 0,
         "gr_state": 1,
-        "gr_width": 20,
         "y": 51,
         "x": 16,
         "type": "Window"
@@ -124,7 +123,6 @@
         "style": 0,
         "orientation": 0,
         "gr_state": 1,
-        "gr_width": 20,
         "y": 51,
         "x": 124,
         "type": "Window"

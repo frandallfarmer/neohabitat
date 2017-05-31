@@ -220,7 +220,6 @@
 				"y": 160, 
 				"x": 24, 
 				"type": "Flag",
-				"gr_width": 4,
 				"mass": 1,
 				"orientation": 48
 			}

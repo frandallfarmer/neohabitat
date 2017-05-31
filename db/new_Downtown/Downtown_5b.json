@@ -257,7 +257,6 @@
         "mass": 1, 
         "y": 5, 
         "x": 5,
-        "gr_width": 20,		
         "type": "Plant"
       }
     ], 
@@ -274,7 +273,6 @@
         "mass": 1, 
         "y": 1, 
         "x": 1,
-        "gr_width": 20,		
         "type": "Plant"
       }
     ], 
@@ -291,7 +289,6 @@
         "mass": 1, 
         "y": 2, 
         "x": 2,
-        "gr_width": 20,		
         "type": "Plant"
       }
     ], 
@@ -308,7 +305,6 @@
         "mass": 1, 
         "y": 4, 
         "x": 4,
-        "gr_width": 20,		
         "type": "Plant"
       }
     ], 
@@ -324,7 +320,6 @@
         "x": 3, 
         "mass": 1, 
         "type": "Plant",
-        "gr_width": 20,		
         "orientation": 237
       }
     ], 

@@ -72,7 +72,6 @@
 				"y": 137, 
 				"x": 24, 
 				"mass": 1,
-				"gr_width": 4,
 				"type": "Flag", 
 				"orientation": 204
 			}
@@ -102,7 +101,6 @@
 				"y": 137, 
 				"x": 132, 
 				"mass": 1,
-				"gr_width": 4,		
 				"type": "Flag", 
 				"orientation": 244
 			}
