@@ -72,6 +72,7 @@ public abstract class Weapon extends HabitatMod {
 			send_private_msg(from, fromAvatar.noid, from, "SPEAK$",
 				"I can't attack.  I am stunned.");
 		} else if (current_region().nitty_bits[WEAPONS_FREE]) {
+			success = FALSE;
 			object_say(from,
 				"This is a weapons-free zone.  Your weapon will not operate here.");
 		} else if (adjacent(target) || is_ranged_weapon()) {

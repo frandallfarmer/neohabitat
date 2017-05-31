@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Neoclassical Habitat",
   "dependencies": {
+    "backoff": "^2.5.0",
     "mongodb": "^2.2.21",
     "system-sleep": "^1.3.5",
     "walk": "^2.3.9",

@@ -193,7 +193,7 @@
         "x": 108,
 		"open_flags": 3,
 		"gr_state": 1,
-		"connection": "context-test",
+		"connection": "context-Downtown_8e",
         "type": "Door"
       }
     ], 
@@ -211,7 +211,7 @@
         "x": 148,
 		"open_flags": 3,
 		"gr_state": 1,
-		"connection": "context-test",		
+		"connection": "context-Downtown_8e",		
         "type": "Door"
       }
     ], 
