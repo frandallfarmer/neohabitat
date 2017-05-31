@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+NEOHABITAT_MONGO_HOST="${1}"
+
+mongo $NEOHABITAT_MONGO_HOST --verbose --shell shell.js

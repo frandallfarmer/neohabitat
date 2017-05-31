@@ -12,10 +12,12 @@ RUN yum -y install \
   cronie \
   curl \
   git \
+  htop \
   java-1.8.0-openjdk \
   make \
   mariadb \
   tar \
+  vim \
   wget \
   which && \
   yum clean all
