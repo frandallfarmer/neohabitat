@@ -3,6 +3,7 @@
     "capacity": 64, 
     "mods": [
       {
+        "resident":"user-ricky",
         "town_dir": "", 
         "neighbors": [
           "", 

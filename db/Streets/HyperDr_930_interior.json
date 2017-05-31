@@ -6,6 +6,7 @@
     "name": "Hyper Dr #930", 
     "mods": [
       {
+        "resident":"user-jason",
         "town_dir": "", 
         "neighbors": [
           "", 
