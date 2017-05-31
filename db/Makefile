@@ -106,7 +106,7 @@ nuke:
 	@rm -f  $(DATABASE_OBJECTS) .errs	
 	@echo 'db.odb.remove({});' | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
 
-all: teleports regions book
+all: regions book teleports
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
