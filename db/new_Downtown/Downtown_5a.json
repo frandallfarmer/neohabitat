@@ -460,7 +460,6 @@
         "y": 138, 
         "x": 96,
         "open_flags": 3,
-        "gr_width": 24,		
         "type": "Chair", 
         "orientation": 88
       }
@@ -476,7 +475,6 @@
         "y": 128, 
         "x": 68,
         "open_flags": 3,
-        "gr_width": 24,		
         "style": 1, 
         "type": "Chair", 
         "orientation": 188
@@ -493,7 +491,6 @@
         "y": 128, 
         "x": 128,
         "open_flags": 3,
-        "gr_width": 24,		
         "style": 1, 
         "type": "Chair", 
         "orientation": 189
