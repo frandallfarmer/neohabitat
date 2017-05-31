@@ -65,26 +65,19 @@ String.prototype.format = function() {
 var successful = true;
 var updates_in_flight = 0;
 
-function esave(db, obj, callback) {
-  db.collection('odb').save(obj, function(err, o) {
-    if (err) {
-      callback(err);
-    }
-    callback(null);
-  });
-}
-
 function eupdateOne(db, obj, callback) {
-  db.collection('odb').findOne({ ref: obj.ref }, function(err, o) {
-    if (err) {
-      callback(err);
-      return;
+  db.collection('odb').findOneAndUpdate(
+    { ref: obj.ref },
+    { $set: obj },
+    { upsert: true },
+    function(err, o) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      callback(null);
     }
-    if (o !== null) {
-      obj._id = o._id;
-    }
-    esave(db, obj, callback);
-  });
+  );
 }
 
 function templateStringJoins(data) {
@@ -145,7 +138,12 @@ function populateModels() {
     process.exit(-1);
   }
 
-  MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), function(err, db) {
+  MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), {
+    poolSize: 2,
+    connectTimeoutMS: 60000,
+    socketTimeoutMS: 60000,
+    keepAlive: 300000
+  }, function(err, db) {
     if (err) {
       console.error('Could not open Mongo connection:', mongoHost);
       return console.error(err);
