@@ -4,6 +4,7 @@
 // Examples:
 //   node populateModels.js 127.0.0.1:27017 all
 
+var backoff = require('backoff');
 var fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 var path = require('path');
@@ -61,38 +62,33 @@ String.prototype.format = function() {
 };
 
 // Adapted from mongohelper.js:
+var successful = true;
 var updates_in_flight = 0;
 
 function eget(db, ref) {
-  return db.collection('odb').findOne({ ref: ref });
+  return ;
 }
 
-function esave(db, obj) {
-  db.collection('odb').save(obj, function(err, record) {
+function esave(db, obj, callback) {
+  db.collection('odb').save(obj, function(err, o) {
     if (err) {
-      console.error('Encountered error while saving to MongoDB: ', err);
+      callback(err);
     }
-    updates_in_flight--;
+    callback(null);
   });
 }
 
-function eupdateOne(db, obj) {
-  updates_in_flight++;
-  var o = eget(db, obj.ref);
-  if (o !== null) {
-    obj._id = o._id;
-  }
-  esave(db, obj);
-}
-
-function eupdate(db, obj, callback) {
-  if (obj instanceof Array) {
-    obj.forEach(function (o) { 
-      eupdateOne(db, o);
-    });
-  } else {
-    eupdateOne(db, obj);
-  }
+function eupdateOne(db, obj, callback) {
+  db.collection('odb').findOne({ ref: obj.ref }, function(err, o) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    if (o !== null) {
+      obj._id = o._id;
+    }
+    esave(db, obj, callback);
+  });
 }
 
 function templateStringJoins(data) {
@@ -149,7 +145,7 @@ function populateModels() {
   var fileRootName = process.argv[3];
 
   if (!(fileRootName in fileRoots)) {
-    console.log('Invalid root: ', fileRootName);
+    console.error('Invalid root: ', fileRootName);
     process.exit(-1);
   }
 
@@ -173,17 +169,38 @@ function populateModels() {
           }
           var templatedJSON = '';
           try {
+            // Templates and attempts to parse the object's JSON.
             templatedJSON = templateHabitatObject(data);
             var mongoObj = JSON.parse(templatedJSON);
-            try {
-              eupdate(db, mongoObj);
-            } catch (e) {
-              console.error('Failed to update Habitat object:', mongoObj.ref);
-              return console.error(e);
+
+            var mongoObjects = [];
+            if (mongoObj instanceof Array) {
+              mongoObjects = mongoObj;
+            } else {
+              mongoObjects = [mongoObj];
             }
+
+            // Attempts to write all objects to MongoDB.
+            mongoObjects.forEach(function (obj) {
+              var updateWithRetries = backoff.call(eupdateOne, db, obj,
+                function(err) {
+                  updates_in_flight--;
+                  if (err) {
+                    console.error('Failed to update Habitat object:', obj.ref);
+                    successful=false;
+                    return console.error(err);
+                  }
+                }
+              );
+              updateWithRetries.retryIf(function(err) { err != null; });
+              updateWithRetries.setStrategy(new backoff.ExponentialStrategy());
+              updateWithRetries.failAfter(10);
+              updates_in_flight++;
+              updateWithRetries.start();
+            });
           } catch (e) {
             console.error('Failed to parse file:', objectPath);
-            console.log(templatedJSON);
+            console.error(templatedJSON);
             return console.error(e);
           }
         });
@@ -204,8 +221,14 @@ function populateModels() {
         console.log('Waiting for in-flight Habitat object updates: ', updates_in_flight);
         sleep(1000);
       }
-      console.log('Completed Habitat object population: ', fileRootName);
-      process.exit(0);
+      db.close();
+      if (successful) {
+        console.log('Completed Habitat object population: ', fileRootName);
+        process.exit(0);
+      } else {
+        console.error('Encountered errors with Habitat object population: ', fileRootName);
+        process.exit(-2);
+      }
     });
   });
 }
