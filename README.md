@@ -11,7 +11,7 @@ We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), 
 Play Habitat Now!
 -----------------
 
-We maintain a demo server running the latest Git master and you can connect to it at any time.
+We maintain a demo server running the latest Neohabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
 
 **Please note**: Neohabitat is currently in alpha, so there will likely be some instability. If you see anything weird, please [tell us about it in our Slack](http://slack.neohabitat.org/).
 
@@ -53,19 +53,23 @@ Major thanks to **Gary Lake-Schaal** who developed our custom loader and built t
 
 Insert the **Habitat-Boot.d64** into **Drive 8** via **File->Attach Disk Image->Unit #8**. After insertion, run the following BASIC command:
 
-```LOAD"*",8,1
+```
+LOAD"*",8,1
 ```
 
 You'll see the following messages:
 
-```SEARCHING FOR *
+```
+SEARCHING FOR *
 LOADING
 READY.
 ```
 
 After these messages conclude, run the following BASIC command:
 
-```RUN```
+```
+RUN
+```
 
 In a few moments, you'll be brought to the Neohabitat splash screen:
 
