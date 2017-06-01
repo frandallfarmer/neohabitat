@@ -542,8 +542,13 @@ public class Paper extends HabitatMod implements Copyable {
                 ascii = new int[byteArray.size()];
                 int i = 0;
                 for (; chars.hasNext(); i++) {
-                    int c = ((Long) chars.next()).intValue();
-                    if (c == 0) {
+                    int c;
+					try {
+						c = ((Double) chars.next()).intValue();			// TODO Two ways to build the mongo DB produce differnt types.
+					} catch (Exception e)  {								
+						c = ((Long) chars.next()).intValue();
+					}
+					if (c == 0) {
                         break;
                     }
                     ascii[i] = c;
@@ -585,8 +590,13 @@ public class Paper extends HabitatMod implements Copyable {
             ascii = new int[byteBlocks.size()];
             int i = 0;
             for (; chars.hasNext(); i++) {
-                int c = ((Long) chars.next()).intValue();
-                if (c == 0) {
+                int c;
+				try {
+					c = ((Double) chars.next()).intValue();			// TODO Two ways to build the mongo DB produce differnt types.
+				} catch (Exception e)  {								
+					c = ((Long) chars.next()).intValue();
+				}
+				if (c == 0) {
                     break;
                 }
                 ascii[i] = c;

@@ -138,7 +138,12 @@ public abstract class Document extends HabitatMod {
 					for (int i = 0; i < last_page; i++) {
 						Iterator<Object> chars = ((JSONArray) bytePage.next()).iterator();
 						for (int j = 0; chars.hasNext() ; j++) {
-							int c = ((Long) chars.next()).intValue();
+							int c;
+							try {
+								c = ((Double) chars.next()).intValue();			// TODO Two ways to build the mongo DB produce differnt types.
+							} catch (Exception e)  {								
+								c = ((Long) chars.next()).intValue();
+							}
 							if (c == 0) {
 								break;
 							}

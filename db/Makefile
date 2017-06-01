@@ -35,15 +35,27 @@ define NL
 
 endef
 
+clean: fast
 
-clean: nuke all
+fast: nuke all
 
+all: regions book teleports
+
+slow: nuke
+	@make -s crawl
+	@make -s book
+	@make -s teleports
+	
 help:
 	@echo ""
 	@echo "Valid 'make' targets are 'teleports', 'text', 'regions', 'book', 'all', 'clean', or JSONFILENAME.o . Default is 'clean'"
 	@echo "'make version' only when a major version is declared, or the beta.jlist changes for the client resources."
 	@echo "Mongo output is in .errs"
 	@echo ""
+
+crawl:
+	@echo "Building everything in the /db tree, one file at at time"
+	@$(foreach F,$(MONGODB_OBJECTS), make -s `dirname $F!`/`basename $F .json`.o;) >> .errs 2>&1
 	
 book:
 	@echo "Regenerating Book of Records"
@@ -88,7 +100,8 @@ teleports:
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $(TELEPORTDB) >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
-	
+	@rm -f $(TELEPORTDB)
+		
 version:
 	@echo "Building Class Source for NeoHabitat.java"	
 	@node convertClientDataToJava.js
@@ -99,14 +112,11 @@ version:
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $*.json >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
 	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
-	@tail -3 .errs
 
 nuke:
 	@echo "Nuking database"
 	@rm -f  $(DATABASE_OBJECTS) .errs	
 	@echo 'db.odb.remove({});' | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
-
-all: regions book teleports
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)

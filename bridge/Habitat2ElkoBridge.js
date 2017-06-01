@@ -277,6 +277,7 @@ function confirmOrCreateUser(fullName, client) {
 							"mods": [
 								{
 									"type": "Avatar",
+									"firstConnection": true,
 									"x": 10,
 									"y": 128 + rnd(32),
 									"bodyType": "male",
