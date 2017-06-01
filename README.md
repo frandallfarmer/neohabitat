@@ -75,9 +75,9 @@ Help!
 
 If you're having trouble getting Neohabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
 
-If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then, drag and drop the "Habitat-Boot.d64" file onto the emulator and procede as normally.
+If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then drag and drop the "Habitat-Boot.d64" file onto the emulator and procede as normally.
 
-If you encounter a glitch that's unreported in Habitat then please open an issue at https://github.com/frandallfarmer/neohabitat/issues.
+If you encounter a glitch that's unreported in Habitat please open an issue at https://github.com/frandallfarmer/neohabitat/issues.
 
 Developer Documentation
 -----------------------
