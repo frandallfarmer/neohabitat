@@ -87,11 +87,11 @@ At this point, insert the **Habitat-B.d64** disk into **Drive 8** via **File->At
 
 If all goes well, you'll materialize in downtown Populopolis:
 
-![Habitat Start Screen](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_start.png)
+![Avatar In Populopolis](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_downtown.png)
 
 **OS X**
 
-The OS X application bundles all Habitat disks, so simply **launch the Neohabitat application** you dragged to Applications.
+The OS X application bundles all Habitat disks, so simply **launch the Neohabitat application** you dragged to **Applications**.
 
 **Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
