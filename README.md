@@ -17,103 +17,50 @@ We maintain a demo server running the latest Neohabitat code and you can connect
 
 With all that out of the way, here's how to get started:
 
-### Step 1 - Download and Configure a C64 Emulator
-
-To connect to the Neohabitat server, you'll need to install a C64 emulator and download the necessary client software.  We strongly recommend using [Vice](http://vice-emu.sourceforge.net/):
+### Step 1 - Download and Install either the Windows or OSX Habitat package (which comes with VICE, the C64 emulator)
 
 **Windows**
 
-Download the latest Windows Vice emulator from the above link then make the following configuration changes:
+- Download [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true)
 
-- Go to **Settings –> RS232 Settings**:
-  - Set **RS232 Device 1** to the following: **52.87.109.252:1986**
+- Unzip onto the desktop
+	- This is not yet an installer. Want to help build one? Join us at http://slack.neohabitat.org
+	
+- Open the Neohabitat folder
 
-- Go to **Settings –> Cart I/O Settings –> RS232 Userport settings**:
-  - Enable **RS232 Userport** and **Userport Device RS232 Device 1**
-  - Set **Userport baud rate** to the following: **1200**
-
+- Double-click the **= Launch Habitat =** icon.
+	
 **OS X**
 
 Download the [Neohabitat DMG](https://s3.amazonaws.com/ssalevan/Neohabitat.dmg) then drag the Neohabitat application to the **Applications** folder.
-
-### Step 2 - Download the Neohabitat Client
-
-**If you're running OS X, you can skip this step.**
-
-The Neohabitat client software can be downloaded here:
-
-- [Habitat Loader](http://cloud.cbm8bit.com/brataccas/Habitat-Boot.d64)
-- [Habitat disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/Habitat-B.d64)
-
-Major thanks to **Gary Lake-Schaal** who developed our custom loader and built the original Habitat client from the original 1985 source!
-
-### Step 3 - Run Neohabitat
-
-**Windows**
-
-Insert the **Habitat-Boot.d64** into **Drive 8** via **File->Attach Disk Image->Unit #8**. After insertion, run the following BASIC command:
-
-```
-LOAD"*",8,1
-```
-
-You'll see the following messages:
-
-```
-SEARCHING FOR *
-LOADING
-READY.
-```
-
-After these messages conclude, run the following BASIC command:
-
-```
-RUN
-```
-
-In a few moments, you'll be brought to the Neohabitat splash screen:
-
-![Neohabitat Splash Screen](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_splash.png)
-
-At this point, **press Enter** then enter your username:
-
-![Neohabitat Login](https://s3.amazonaws.com/ssalevan/neohabitat/launcher_login.png)
-
-**Press enter again**, then wait until the Habitat client loads and asks you to insert your imagery disk:
-
-![Habitat Imagery Disk Step](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_imagery.png)
-
-At this point, insert the **Habitat-B.d64** disk into **Drive 8** via **File->Attach Disk Image->Unit #8** then **press Enter**.
-
-If all goes well, you'll materialize in downtown Populopolis:
-
-![Avatar In Populopolis](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_downtown.png)
-
-**OS X**
 
 The OS X application bundles all Habitat disks, so simply **launch the Neohabitat application** you dragged to **Applications**.
 
 **Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
+### Step 2 - Login and play!
+
 In a few moments, you'll be brought to the Neohabitat splash screen:
 
 ![Neohabitat Splash Screen](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_splash.png)
 
-At this point, **press Enter** then enter your username:
+Major thanks to **Gary Lake-Schaal** who developed our custom loader and built the original Habitat client from the original 1985 source!
+
+At this point, **Press Enter** then enter your username:
 
 ![Neohabitat Login](https://s3.amazonaws.com/ssalevan/neohabitat/launcher_login.png)
 
-**Press enter again**, then wait until the Habitat client loads and asks you to insert your imagery disk:
+**Press Enter again**, then wait until the Habitat client loads and asks you to insert your imagery disk:
 
 ![Habitat Imagery Disk Step](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_imagery.png)
 
-This disk is **stored within your VICE Fliplist**, so simply **press ⌘-n to load up the next disk**, then **press Enter**.
+At this point, **Press Alt-n or ⌘-n **, then **Press Enter**.
 
 If all goes well, you'll materialize in downtown Populopolis:
 
 ![Avatar In Populopolis](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_downtown.png)
 
-### Step 4 - Learn How to Play
+### Step 3 - Learn How to Play
 
 Welcome to Neohabitat! There's a whole lot you can do here and thousands of exotic places to visit.
 
