@@ -6,7 +6,7 @@
     "name": "Road St South End", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": RIGHT, 
         "neighbors": [
           "context-RoadSt_132_front", 
           "", 

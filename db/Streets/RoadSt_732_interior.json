@@ -106,7 +106,7 @@
       {
         "orientation": 236, 
         "key_lo": 0, 
-        "connection": "context-RoadSt_732_interior", 
+        "connection": "context-RoadSt_732_front", 
         "key_hi": 0, 
         "y": 33, 
         "x": 4, 

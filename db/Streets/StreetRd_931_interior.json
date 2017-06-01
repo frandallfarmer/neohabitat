@@ -102,7 +102,7 @@
       {
         "orientation": 172, 
         "key_lo": 0, 
-        "connection": "context-StreetRd_931_interior", 
+        "connection": "context-StreetRd_931_front", 
         "key_hi": 0, 
         "y": 33, 
         "x": 120, 
