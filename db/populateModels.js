@@ -66,7 +66,7 @@ var foundTeleports = false;
 var teleportDirectory = { 
   ref: "teleports", 
   type: "map",
-  map: { " End Of Directory": "eod" }
+  map: {}
 };
 var updatesInFlight = 0;
 
@@ -293,6 +293,7 @@ function populateModels() {
           clearInterval();
 
           if (fileRootName === 'all' && foundTeleports) {
+            teleportDirectory.map[' End of Directory'] = 'eod';
             console.log('Writing teleport directory:', JSON.stringify(teleportDirectory));
             db.collection('odb').save(teleportDirectory, function(err, o) {
               db.close();
