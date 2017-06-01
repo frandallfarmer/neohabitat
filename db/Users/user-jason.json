@@ -1,0 +1,69 @@
+[ {
+	"type" : "item",
+	"ref" : "item-jasontokens",
+	"name" : "Money!",
+	"in" : "user-jason",
+	"mods" : [ {
+		"type" : "Tokens",
+		"y" : 0,
+		"denom_hi" : 4,
+		"denom_lo" : 0
+	} ]
+}, {
+	"type" : "user",
+	"ref" : "user-jason",
+	"name" : "jason",
+	"mods" : [ {
+		"type" : "Avatar",
+        "turf": "context-HyperDr_930_interior",
+		"x" : 0,
+		"y" : 110,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 0, 0 ],
+		"nitty_bits" : 8
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-jason.changomatic",
+	"name" : "Paintin' yer turf",
+	"in" : "user-jason",
+	"mods" : [ {
+		"type" : "Changomatic",
+		"y" : 2
+	} ]
+},  {
+	"type" : "item",
+	"ref" : "item-jason.godtool",
+	"name" : "Tool to rule the universe.",
+	"in" : "user-jason",
+	"mods" : [ {
+		"type" : "Knick_knack",
+		"style" : 2,
+		"y" : 1,
+		"orientation" : 8,
+		"magic_type" : 17,
+		"charges" : 255
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-jason.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-jason",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-jason.head.json",
+	"name" : "jason's Head",
+	"in" : "user-jason",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 122,
+		"orientation" : 0,
+		"y" : 6
+	} ]
+} ]

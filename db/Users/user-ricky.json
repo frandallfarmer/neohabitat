@@ -1,0 +1,55 @@
+[ {
+	"type" : "item",
+	"ref" : "item-rickytokens",
+	"name" : "Money!",
+	"in" : "user-ricky",
+	"mods" : [ {
+		"type" : "Tokens",
+		"y" : 0,
+		"denom_hi" : 4,
+		"denom_lo" : 0
+	} ]
+}, {
+	"type" : "user",
+	"ref" : "user-ricky",
+	"name" : "ricky",
+	"mods" : [ {
+		"type" : "Avatar",
+        "turf": "context-Popustop.253",
+		"x" : 0,
+		"y" : 110,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 17, 17 ]
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-ricky.changomatic",
+	"name" : "Paintin' yer turf",
+	"in" : "user-ricky",
+	"mods" : [ {
+		"type" : "Changomatic",
+		"y" : 2
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-ricky.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-ricky",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-ricky.head.json",
+	"name" : "ricky's Head",
+	"in" : "user-ricky",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 121,
+		"orientation" : 16,
+		"y" : 6
+	} ]
+} ]
