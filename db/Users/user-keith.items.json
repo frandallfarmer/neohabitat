@@ -23,7 +23,8 @@
 		"mods": [
 			{
 				"type": "Knick_knack",
-				"style": 2,
+				"style": 12,
+				"pattern": 3,
 				"y": 1,
 				"orientation": 8,
 				"magic_type": 17,
