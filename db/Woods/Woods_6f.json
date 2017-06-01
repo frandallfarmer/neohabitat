@@ -12,7 +12,7 @@
           "context-Woods_6g", 
           "context-Woods_7f", 
           "context-Woods_6e", 
-          "context-Popustop.aprominade2.line1107"
+          ""
         ], 
         "orientation": 0, 
         "nitty_bits": 1, 
@@ -56,7 +56,7 @@
         "orientation": 80, 
         "height": 0, 
         "width": 0, 
-        "gr_state": 14, 
+        "gr_state": 6, 
         "y": 12, 
         "x": 68, 
         "type": "Street"
