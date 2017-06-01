@@ -78,7 +78,7 @@ function lookForAliases(o, target) {
   if (o.aliases) {
     foundTeleports = true;
     for (var i = 0; i < o.aliases.length; i++) {
-      teleportDirectory.map[o.aliases[i]] = target;
+      teleportDirectory.map[squish(o.aliases[i])] = target;
     }
   } 
 }
@@ -88,11 +88,11 @@ function lookForTeleportEntries(o) {
     var mod = o.mods[0];
     if (mod.type === "Teleport") {
       foundTeleports = true;
-      teleportDirectory.map[mod.address] = o.in;
+      teleportDirectory.map[squish(mod.address)] = o.in;
       lookForAliases(mod, o.in);
     } else if (mod.type === "Elevator") {
       foundTeleports = true;
-      teleportDirectory.map['otis-{0}'.format(mod.address)] = o.in;
+      teleportDirectory.map[squish('otis-{0}'.format(mod.address))] = o.in;
     }
     if (o.type === "context") {
       lookForAliases(o, o.ref);
