@@ -8,31 +8,16 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 
 We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
-Documentation
--------------
-
-If you'd like to contribute to Habitat, developer documentation can be found here:
-
-  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
-  - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
-
-Slack
------
-
-If you'd like to join the Neohabitat community, come join our Slack: [Neoclassical Habitat](http://slack.neohabitat.org/)
-
-If you have any issues when playing Habitat, feel free to ask questions in the **#troubleshooting** room.
-
 Play Habitat Now!
 -----------------
 
-We maintain a demo server running the latest Git master and you can connect to it at any time.
+We maintain a demo server running the latest Neohabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
 
-**Please note**: this server is under **constant development**, so it may **reboot at any time**.  Furthermore, **the game will crash** if there are **more than 6 avatars in any room**, so **please avoid doing so**.
+**Please note**: Neohabitat is currently in alpha, so there will likely be some instability. If you see anything weird, please [tell us about it in our Slack](http://slack.neohabitat.org/).
 
 With all that out of the way, here's how to get started:
 
-### Step 1 - Download and Configure Vice
+### Step 1 - Download and Configure a C64 Emulator
 
 To connect to the Neohabitat server, you'll need to install a C64 emulator and download the necessary client software.  We strongly recommend using [Vice](http://vice-emu.sourceforge.net/):
 
@@ -41,99 +26,115 @@ To connect to the Neohabitat server, you'll need to install a C64 emulator and d
 Download the latest Windows Vice emulator from the above link then make the following configuration changes:
 
 - Go to **Settings –> RS232 Settings**:
-  - Set **RS232 Device 1** to the following: **52.87.109.252:5190**
+  - Set **RS232 Device 1** to the following: **52.87.109.252:1986**
+
 - Go to **Settings –> Cart I/O Settings –> RS232 Userport settings**:
   - Enable **RS232 Userport** and **Userport Device RS232 Device 1**
   - Set **Userport baud rate** to the following: **1200**
 
 **OS X**
 
-Newer versions of Vice are not compatible with QuantumLink, so be sure to download **version 2.4** of the **Cocoa UI variant**.  Once you've done so, open the DMG and follow this configuration procedure:
+Download the [Neohabitat DMG](https://s3.amazonaws.com/ssalevan/Neohabitat.dmg) then drag the Neohabitat application to the **Applications** folder.
 
-- Drag the x64 application from the Vice D64 to your Applications folder
-- Establish a shell alias in your **~/.bashrc** or **~/.zshrc** to force the enabling of the RS232 userport:
+### Step 2 - Download the Neohabitat Client
 
-```bash
-alias c64='/Applications/x64.app/Contents/MacOS/x64 -rsuser -rsuserbaud 1200 -rsuserdev 0'
-```
+**If you're running OS X, you can skip this step.**
 
-- Launch Vice via the above alias then go to **Settings -> Resource Inspector**
-- Under **Peripherals -> RS232**, set **Device 1** to the following: ```|nc neohabitat.demo.spi.ne 5190```
-- Under **Peripherals -> RS232**, set **Device 1 Baud Rate** to the following: ```1200```
-- Save these new settings via **Settings -> Save current Settings**
+The Neohabitat client software can be downloaded here:
 
-### Step 2 - Download the C64 Clients
-
-Client software can be downloaded here:
-
-- [QuantumLink (with Habitat support)](http://cloud.cbm8bit.com/brataccas/QLink-Habitat.d64)
-- [Habitat disk A (a.k.a. side 3)](http://cloud.cbm8bit.com/brataccas/Habitat-A.d64)
+- [Habitat Loader](http://cloud.cbm8bit.com/brataccas/Habitat-Boot.d64)
 - [Habitat disk B (a.k.a. Imagery)](https://s3.amazonaws.com/ssalevan/neohabitat/Habitat-B.d64)
 
-Major thanks to Gary Lake-Schaal who rebuilt the Habitat client from the original 1985 source!
+Major thanks to **Gary Lake-Schaal** who developed our custom loader and built the original Habitat client from the original 1985 source!
 
-**NOTE:** Make a backup of QuantumLink.d64, as it gets modified with your account information and a link to the Club Caribe game disk.
+### Step 3 - Run Neohabitat
 
-The **Club Caribe client software is identical to the Habitat software**, so please note this as we continue.
+**Windows**
 
-### Step 3 - Connect to QuantumLink Reloaded
-
-Load the QuantumLink D64 image you just downloaded into Unit #8 of your emulated C64.  You can do so via **File -> Attach Disk Image -> Unit #8**.
-
-After the QuantumLink disk is loaded, you can start it by running the following C64 command:
+Insert the **Habitat-Boot.d64** into **Drive 8** via **File->Attach Disk Image->Unit #8**. After insertion, run the following BASIC command:
 
 ```
 LOAD"*",8,1
 ```
 
-Eventually, you'll be brought to a screen that asks you to establish your initial modem settings.  You can use the arrow keys and enter to select each configuration field; use the following settings:
+You'll see the following messages:
 
-- Modem: **Other command driven modems**
-- Speed: **1200 Baud**
-- Dial: **Automatic**
-- Phone: **Tone**
-- Number: **+5551212**
+```
+SEARCHING FOR *
+LOADING
+READY.
+```
 
-After finishing this process, select **SIGN ON TO Q-LINK**.  You'll be brought to a green-framed screen which states ```Type commands to the modem, then press F1 when connection is made.```:
+After these messages conclude, run the following BASIC command:
 
-![QuantumLink Connect Screen](https://s3.amazonaws.com/ssalevan/neohabitat/connect_qlink.png)
+```
+RUN
+```
 
-Press **F1**, and if all goes well, your client will connect to QuantumLink Reloaded and present you with a set of registration prompts.  **Enter the information prompted** and when this task is complete, you'll be brought to the QuantumLink home screen; it'll look something like this:
+In a few moments, you'll be brought to the Neohabitat splash screen:
 
-![QuantumLink Home Screen](http://toastytech.com/guis/c64gquantumlink.gif)
+![Neohabitat Splash Screen](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_splash.png)
 
-### Step 4 - Launch Habitat
+At this point, **press Enter** then enter your username:
 
-On the Commodore 64, the function keys were placed prominently to the right of the main keyboard and were used heavily by many applications.  As a result, much of the navigation you'll use within QuantumLink will depend upon the usage of function keys.  These are the ones you'll use during your QuantumLink experience:
+![Neohabitat Login](https://s3.amazonaws.com/ssalevan/neohabitat/launcher_login.png)
 
-- **F1** - Selects whatever is highlighted
-- **F3** - Saves whatever you're looking at to disk (you can likely ignore this one)
-- **F5** - Goes back, similar to the back button in a web browser
-- **F7** - Brings up a department menu
-- **Arrow Keys** - Moves the selector, whether in a menu or on the Home screen
+**Press enter again**, then wait until the Habitat client loads and asks you to insert your imagery disk:
 
-At the QuantumLink home screen, ensure that the selector is placed over the **People Connection** department then press **F1**.  There will be a short load period which will lead you to the People Connection screen:
+![Habitat Imagery Disk Step](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_imagery.png)
 
-![QuantumLink People Connection Screen](https://s3.amazonaws.com/ssalevan/neohabitat/people_connection.png)
+At this point, insert the **Habitat-B.d64** disk into **Drive 8** via **File->Attach Disk Image->Unit #8** then **press Enter**.
 
-After reaching it, press **F7** to bring up the department menu.  Select **Play or observe an online game** with the **arrow keys** and press **F1**:
+If all goes well, you'll materialize in downtown Populopolis:
 
-![QuantumLink People Connection Department Menu](https://s3.amazonaws.com/ssalevan/neohabitat/department_menu.png)
+![Avatar In Populopolis](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_downtown.png)
 
-Select **Start a game (pick your partners)** with the and press **F1** again.
+**OS X**
 
-Finally, select **Club Caribe** from the list and press **F1** one last time.
+The OS X application bundles all Habitat disks, so simply **launch the Neohabitat application** you dragged to **Applications**.
 
-You'll be asked to insert **Game Disk 3**, which is **Club Caribe Disk A (club-caribe-a.d64)**.  Attach this disk using the above procedure and hit **Enter**.  After doing so, you can engage Warp Mode to expedite the load process.
+**Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
-Eventually, you'll reach a screen that looks something like this:
+In a few moments, you'll be brought to the Neohabitat splash screen:
 
-![QuantumLink Home Screen](http://vzn.eddcoates.com/clubcaribe/sitepics/ClubCarFront.gif)
+![Neohabitat Splash Screen](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_splash.png)
 
-You'll be asked to insert the **Imagery Disk**, which is **Club Caribe Disk B (club-caribe-b.d64)**.  Attach this disk using the above procedure and hit **Enter**.  You can engage Warp Mode here as well.
+At this point, **press Enter** then enter your username:
 
-If all goes well, you'll be brought to the first Habitat screen:
+![Neohabitat Login](https://s3.amazonaws.com/ssalevan/neohabitat/launcher_login.png)
 
-![Habitat Start Screen](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_start.png)
+**Press enter again**, then wait until the Habitat client loads and asks you to insert your imagery disk:
 
-If so, welcome to Habitat!  You can learn more about how to play by reading the [official Habitat manual from 1988](https://s3.amazonaws.com/ssalevan/Habitat_Manual_1988.pdf).
+![Habitat Imagery Disk Step](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_imagery.png)
+
+This disk is **stored within your VICE Fliplist**, so simply **press ⌘-n to load up the next disk**, then **press Enter**.
+
+If all goes well, you'll materialize in downtown Populopolis:
+
+![Avatar In Populopolis](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_downtown.png)
+
+### Step 4 - Learn How to Play
+
+Welcome to Neohabitat! There's a whole lot you can do here and thousands of exotic places to visit.
+
+To learn about all the things you can do, read the [official Habitat manual from 1988](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html).
+
+You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**.
+
+Help!
+-----
+
+If you're having trouble getting Neohabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
+
+Developer Documentation
+-----------------------
+
+If you'd like to contribute to Habitat, there are plenty of great opportunities! Come check our our extensive developer documentation:
+
+  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
+  - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
+
+Have Fun!
+---------
+
+On behalf of the entire Neohabitat Project, we hope that you have a great time, and we'll see you in-world!
