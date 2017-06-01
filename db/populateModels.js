@@ -79,8 +79,9 @@ function eupdateOne(db, obj, callback) {
         callback(null);
       }
     );
+  } catch (e) {
+    callback(e);
   }
-
 }
 
 function templateStringJoins(data) {
