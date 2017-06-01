@@ -39,7 +39,7 @@ clean: fast
 
 fast: nuke all
 
-all: regions book teleports
+all: regions book
 
 slow: nuke
 	@make -s crawl
