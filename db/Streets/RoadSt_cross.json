@@ -6,7 +6,7 @@
     "name": "Road St Cross",
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": UP, 
         "neighbors": [
           "context-RoadSt_632_front", 
           "",
