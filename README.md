@@ -29,6 +29,8 @@ With all that out of the way, here's how to get started:
 - Open the Neohabitat folder
 
 - Double-click the **= Launch Habitat =** icon.
+	- If double clicking on the launcher does not work, try running it as administrator. If you are still encountering issues then 		scroll down to the "Help!" section of the readme for other alternatives.
+	
 	
 **OS X**
 
@@ -66,12 +68,16 @@ Welcome to Neohabitat! There's a whole lot you can do here and thousands of exot
 
 To learn about all the things you can do, read the [official Habitat manual from 1988](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html).
 
-You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**.
+You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
 
 Help!
 -----
 
 If you're having trouble getting Neohabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
+
+If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then, drag and drop the "Habitat-Boot.d64" file onto the emulator and procede as normally.
+
+If you encounter a glitch that's unreported in Habitat then please open an issue at https://github.com/frandallfarmer/neohabitat/issues.
 
 Developer Documentation
 -----------------------
