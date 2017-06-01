@@ -66,18 +66,21 @@ var successful = true;
 var updates_in_flight = 0;
 
 function eupdateOne(db, obj, callback) {
-  db.collection('odb').findOneAndUpdate(
-    { ref: obj.ref },
-    { $set: obj },
-    { upsert: true },
-    function(err, o) {
-      if (err) {
-        callback(err);
-        return;
+  try {
+    db.collection('odb').findOneAndUpdate(
+      { ref: obj.ref },
+      { $set: obj },
+      { upsert: true },
+      function(err, o) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        callback(null);
       }
-      callback(null);
-    }
-  );
+    );
+  }
+
 }
 
 function templateStringJoins(data) {
@@ -139,7 +142,7 @@ function populateModels() {
   }
 
   MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), {
-    poolSize: 2,
+    poolSize: 1,
     connectTimeoutMS: 60000,
     socketTimeoutMS: 60000,
     keepAlive: 300000
