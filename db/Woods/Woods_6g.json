@@ -3,10 +3,11 @@
     "ref": "context-Woods_6g", 
     "capacity": 64, 
     "type": "context", 
-    "name": "", 
+    "name": "Woods Rd", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": LEFT,
+        "port_dir": LEFT, 
         "neighbors": [
           "context-Woods_6h", 
           "context-Woods_7g", 
@@ -14,8 +15,7 @@
           "context-Woods_5g"
         ], 
         "orientation": 0, 
-        "nitty_bits": 1, 
-        "port_dir": "", 
+        "nitty_bits": 1,         
         "type": "Region"
       }
     ]

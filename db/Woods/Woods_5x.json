@@ -3,19 +3,19 @@
     "ref": "context-Woods_5x", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Woods_5x", 
+    "name": "Woods Rd", 
     "mods": [
       {
-        "town_dir": "|", 
+        "town_dir": UP,
+        "port_dir": UP,
         "neighbors": [
           "context-Woods_5y", 
-          "context-Popustop.aprominade2.line1107",
+          "",
           "context-beach_2f", 
           "context-Downtown_7f"
         ], 
         "orientation": 0, 
         "nitty_bits": 1, 
-        "port_dir": "|", 
         "type": "Region"
       }
     ]
