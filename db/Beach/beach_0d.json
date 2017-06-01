@@ -6,7 +6,7 @@
     "name": "The Beach", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": DOWN RIGHT, 
         "neighbors": [
           "context-beach_0e", 
           "context-beach_1d", 
@@ -15,7 +15,7 @@
         ], 
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": DOWN RIGHT, 
         "type": "Region"
       }
     ]
