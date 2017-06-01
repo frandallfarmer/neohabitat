@@ -62,9 +62,47 @@ String.prototype.format = function() {
 
 // Adapted from mongohelper.js:
 var successful = true;
+var foundTeleports = false;
+var teleportDirectory = { 
+  ref: "teleports", 
+  type: "map",
+  map: { " End Of Directory": "eod" }
+};
 var updatesInFlight = 0;
 
+function squish(s) {
+  return s.toLowerCase().replace(/\s/g,'');
+}
+
+function lookForAliases(o, target) {
+  if (o.aliases) {
+    foundTeleports = true;
+    for (var i = 0; i < o.aliases.length; i++) {
+      teleportDirectory.map[o.aliases[i]] = target;
+    }
+  } 
+}
+
+function lookForTeleportEntries(o) {
+  if (o.type && (o.type == 'item' || o.type == 'context')) {
+    var mod = o.mods[0];
+    if (mod.type === "Teleport") {
+      foundTeleports = true;
+      teleportDirectory.map[mod.address] = o.in;
+      lookForAliases(mod, o.in);
+    } else if (mod.type === "Elevator") {
+      foundTeleports = true;
+      teleportDirectory.map['otis-{0}'.format(mod.address)] = o.in;
+    }
+    if (o.type === "context") {
+      lookForAliases(o, o.ref);
+      lookForAliases(mod, o.ref);
+    }
+  }
+}
+
 function eupdateOne(db, obj, callback) {
+  lookForTeleportEntries(obj);
   try {
     db.collection('odb').findOneAndUpdate(
       { ref: obj.ref },
@@ -76,6 +114,32 @@ function eupdateOne(db, obj, callback) {
           return;
         }
         callback(null);
+      }
+    );
+  } catch (e) {
+    callback(e);
+  }
+}
+
+function eupdateArray(db, array, callback) {
+  if (array.length == 0) {
+    callback(null);
+    return;
+  }
+  var localArray = array.slice();
+  try {
+    var curObj = localArray.shift();
+    lookForTeleportEntries(curObj);
+    db.collection('odb').findOneAndUpdate(
+      { ref: curObj.ref },
+      { $set: curObj },
+      { upsert: true },
+      function(err, o) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        eupdateArray(db, localArray, callback);
       }
     );
   } catch (e) {
@@ -126,6 +190,25 @@ function templateHabitatObject(data) {
   return templateStringJoins(templated);
 }
 
+function habitatObjectUpdateFinished(err) {
+  updatesInFlight--;
+  if (err) {
+    console.error('Failed to update Habitat object:');
+    successful=false;
+    return console.error(err);
+  }
+}
+
+function exit(fileRootName) {
+  if (successful) {
+    console.log('Completed Habitat object population:', fileRootName);
+    process.exit(0);
+  } else {
+    console.error('Encountered errors with Habitat object population:', fileRootName);
+    process.exit(-2);
+  }
+}
+
 function populateModels() {
   if (process.argv.length < 4) {
     console.error('Populates pre-made Habitat Elko objects into MongoDB.');
@@ -142,7 +225,6 @@ function populateModels() {
   }
 
   MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), {
-    poolSize: 5,
     connectTimeoutMS: 15000
   }, function(err, db) {
     if (err) {
@@ -166,33 +248,26 @@ function populateModels() {
           try {
             // Templates and attempts to parse the object's JSON.
             templatedJSON = templateHabitatObject(data);
-            var mongoObj = JSON.parse(templatedJSON);
+            var habitatObject = JSON.parse(templatedJSON);
 
-            var mongoObjects = [];
-            if (mongoObj instanceof Array) {
-              mongoObjects = mongoObj;
+            // Figures out how we're going to write the object to Mongo.
+            var updateWithRetries = null;
+            if (habitatObject instanceof Array) {
+              updateWithRetries = backoff.call(
+                eupdateArray, db, habitatObject, habitatObjectUpdateFinished);
             } else {
-              mongoObjects = [mongoObj];
+              updateWithRetries = backoff.call(
+                eupdateOne, db, habitatObject, habitatObjectUpdateFinished);
             }
 
-            // Attempts to write all objects to MongoDB.
-            mongoObjects.forEach(function (obj) {
-              var updateWithRetries = backoff.call(eupdateOne, db, obj,
-                function(err) {
-                  updatesInFlight--;
-                  if (err) {
-                    console.error('Failed to update Habitat object:', obj.ref);
-                    successful=false;
-                    return console.error(err);
-                  }
-                }
-              );
-              updateWithRetries.retryIf(function(err) { return err != null; });
-              updateWithRetries.setStrategy(new backoff.ExponentialStrategy());
-              updateWithRetries.failAfter(10);
-              updatesInFlight++;
-              updateWithRetries.start();
-            });
+            // Sets retry parameters.
+            updateWithRetries.retryIf(function(err) { return err != null; });
+            updateWithRetries.setStrategy(new backoff.ExponentialStrategy());
+            updateWithRetries.failAfter(10);
+
+            // Starts the Habitat object update process.
+            updatesInFlight++;
+            updateWithRetries.start();
           } catch (e) {
             console.error('Failed to parse file:', objectPath);
             console.error(templatedJSON);
@@ -206,24 +281,27 @@ function populateModels() {
     });
 
     walker.on('errors', function (root, nodeStatsArray, next) {
-      console.error('Encountered error at: ', root);
+      console.error('Encountered error at:', root);
       next();
     });
 
     walker.on('end', function () {
       setInterval(function() {
         if (updatesInFlight > 0) {
-          console.log('Waiting for in-flight Habitat object updates: ', updatesInFlight);
+          console.log('Waiting for in-flight Habitat object updates:', updatesInFlight);
         } else {
           clearInterval();
-          db.close();
-          if (successful) {
-            console.log('Completed Habitat object population: ', fileRootName);
-            process.exit(0);
+
+          if (fileRootName === 'all' && foundTeleports) {
+            console.log('Writing teleport directory:', JSON.stringify(teleportDirectory));
+            db.collection('odb').save(teleportDirectory, function(err, o) {
+              db.close();
+              exit(fileRootName);
+            });         
           } else {
-            console.error('Encountered errors with Habitat object population: ', fileRootName);
-            process.exit(-2);
-          }  
+            db.close();
+            exit(fileRootName);
+          }
         }
       }, 1000);
     });
