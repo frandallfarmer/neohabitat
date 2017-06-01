@@ -9,7 +9,6 @@ var fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 var path = require('path');
 var process = require('process');
-var sleep = require('system-sleep');
 var walk = require('walk');
 
 const fileRoots = {
@@ -63,7 +62,7 @@ String.prototype.format = function() {
 
 // Adapted from mongohelper.js:
 var successful = true;
-var updates_in_flight = 0;
+var updatesInFlight = 0;
 
 function eupdateOne(db, obj, callback) {
   try {
@@ -143,10 +142,8 @@ function populateModels() {
   }
 
   MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), {
-    poolSize: 1,
-    connectTimeoutMS: 60000,
-    socketTimeoutMS: 60000,
-    keepAlive: 300000
+    poolSize: 5,
+    connectTimeoutMS: 15000
   }, function(err, db) {
     if (err) {
       console.error('Could not open Mongo connection:', mongoHost);
@@ -182,7 +179,7 @@ function populateModels() {
             mongoObjects.forEach(function (obj) {
               var updateWithRetries = backoff.call(eupdateOne, db, obj,
                 function(err) {
-                  updates_in_flight--;
+                  updatesInFlight--;
                   if (err) {
                     console.error('Failed to update Habitat object:', obj.ref);
                     successful=false;
@@ -190,10 +187,10 @@ function populateModels() {
                   }
                 }
               );
-              updateWithRetries.retryIf(function(err) { err != null; });
+              updateWithRetries.retryIf(function(err) { return err != null; });
               updateWithRetries.setStrategy(new backoff.ExponentialStrategy());
               updateWithRetries.failAfter(10);
-              updates_in_flight++;
+              updatesInFlight++;
               updateWithRetries.start();
             });
           } catch (e) {
@@ -213,20 +210,22 @@ function populateModels() {
       next();
     });
 
-    walker.on('end', function () { 
-      sleep(1000);
-      while (updates_in_flight > 0) {
-        console.log('Waiting for in-flight Habitat object updates: ', updates_in_flight);
-        sleep(1000);
-      }
-      db.close();
-      if (successful) {
-        console.log('Completed Habitat object population: ', fileRootName);
-        process.exit(0);
-      } else {
-        console.error('Encountered errors with Habitat object population: ', fileRootName);
-        process.exit(-2);
-      }
+    walker.on('end', function () {
+      setInterval(function() {
+        if (updatesInFlight > 0) {
+          console.log('Waiting for in-flight Habitat object updates: ', updatesInFlight);
+        } else {
+          clearInterval();
+          db.close();
+          if (successful) {
+            console.log('Completed Habitat object population: ', fileRootName);
+            process.exit(0);
+          } else {
+            console.error('Encountered errors with Habitat object population: ', fileRootName);
+            process.exit(-2);
+          }  
+        }
+      }, 1000);
     });
   });
 }

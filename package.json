@@ -4,8 +4,7 @@
   "description": "Neoclassical Habitat",
   "dependencies": {
     "backoff": "^2.5.0",
-    "mongodb": "^2.2.21",
-    "system-sleep": "^1.3.5",
+    "mongodb": "^2.2.27",
     "walk": "^2.3.9",
     "winston": "^2.3.0",
     "yargs": "^6.6.0"
