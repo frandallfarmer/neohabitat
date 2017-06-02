@@ -138,13 +138,7 @@ public abstract class Document extends HabitatMod {
 					for (int i = 0; i < last_page; i++) {
 						Iterator<Object> chars = ((JSONArray) bytePage.next()).iterator();
 						for (int j = 0; chars.hasNext() ; j++) {
-							int c = 0;
-							Object nextChar = chars.next();
-							if (nextChar instanceof Double) {
-								c = ((Double) chars.next()).intValue();
-							} else if (nextChar instanceof Long) {
-								c = ((Long) chars.next()).intValue();
-							}
+							int c = ((Long) chars.next()).intValue();
 							if (c == 0) {
 								break;
 							}
