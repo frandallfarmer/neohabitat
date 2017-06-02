@@ -15,7 +15,7 @@
 	"name" : "Stu",
 	"mods" : [ {
 		"type" : "Avatar",
-        "turf": "context-OutamyWy_529_front",
+        "turf": "context-OutamyWy_529_interior",
 		"x" : 0,
 		"y" : 110,
 		"bodyType" : "male",
