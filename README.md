@@ -69,7 +69,7 @@ Welcome to Neohabitat! There's a whole lot you can do here and thousands of exot
 
 To learn about all the things you can do, read the [official Habitat manual from 1988](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html).
 
-You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
+You'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
 
   Right-Ctrl + Numpad 8 initiates the "GO" command
 	Right-Ctrl + Numpad 2 initiates the "DO" comamnd
@@ -83,9 +83,9 @@ If you don't own a joystick and wish to change the controls to suit your needs t
 - At the top of your VICE emulator, select "Settings"
 - Hover your mouse over "Joystick Settings" and then select "Joystick Settings..." (Windows) or "Joystick" (OS X)
 - A window should now popup saying "Joystick settings"
-- For "Joystick #1" select "Keyset A"
-- Then click "Configure Keyset A" and map the controls whatever you like
-- If you are running into issues, head on over to the #troubleshooting channel [on our Slack](http://slack.neohabitat.org).
+- For "Joystick #1", select "Keyset A"
+- Click "Configure Keyset A" (Windows) or "Keyset" (OS X) and map the controls to whatever you like
+- If you are running into issues, head on over to the #troubleshooting channel [on our Slack](http://slack.neohabitat.org)
 
 Help!
 -----
