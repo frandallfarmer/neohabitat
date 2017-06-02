@@ -14,8 +14,7 @@
         "orientation": 3, 
         "nitty_bits": 3, 
         "locked": true, 
-        "is_turf": true,
-        "resident": "user-stu",		
+        "is_turf": true,	
         "port_dir": "", 
         "type": "Region"
       }
