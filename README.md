@@ -80,7 +80,7 @@ You'll also need to hook up a joystick, whether it's physical or virtual. To set
 If you don't own a joystick and wish to change the controls to suit your needs then follow these steps.
 
 	At the top of your VICE emulator select "Settings"
-	Hove your mouse over "Joystick Settings" and then select "Joystick Settings..." (Minor differences, I know)
+	Hover your mouse over "Joystick Settings" and then select "Joystick Settings..." (Minor differences, I know)
 	A window should now popup saying "Joystick settings"
 	For "Joystick #1" select "Keyset A"
 	Then click "Configure Keyset A" and map the controls whatever you like.
