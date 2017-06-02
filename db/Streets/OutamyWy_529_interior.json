@@ -6,6 +6,7 @@
     "name": "Outamy Wy #529", 
     "mods": [
       {
+	    "resident":"user-stu",
         "town_dir": "", 
         "neighbors": [
           "", 
