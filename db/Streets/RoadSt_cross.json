@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Road St Cross",
+    "aliases" : [ "pop-roadstreet", "pop-roadstreetx", "pop-roadstx" ],
     "mods": [
       {
         "town_dir": UP, 

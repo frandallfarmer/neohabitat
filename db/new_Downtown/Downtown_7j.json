@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Skid Row & Broadway", 
+    "aliases" : [ "pop-skidrow", "pop-broadway", "pop-skidrowandbroadway", "pop-skidrow&broadway", "pop-theskids" ],
     "mods": [
       {
         "town_dir": "", 

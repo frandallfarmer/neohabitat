@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Outamy Wy North End", 
+    "aliases" : [ "pop-outamywaynorth", "pop-outamywayn", "pop-outamywyn" ],
     "mods": [
       {
         "town_dir": LEFT, 

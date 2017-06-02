@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Hyper Dr Cross",	
+    "aliases" : [ "pop-hyperdrive", "pop-hyperdr", "pop-hyperdrx" ],
     "mods": [
       {
         "town_dir": UP, 

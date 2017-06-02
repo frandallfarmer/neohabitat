@@ -11,6 +11,7 @@
           "context-Woods_5x"
         ], 
         "realm": "Popustop", 
+        "aliases" : [ "pop-hotel", "pop-motel", "pop-apartment", "pop-apt" ],
         "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 

@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Outamy Wy Cross",
+    "aliases" : [ "pop-outamyway", "pop-outamywayx", "pop-outamywyx" ],
     "mods": [
       {
         "town_dir": UP, 

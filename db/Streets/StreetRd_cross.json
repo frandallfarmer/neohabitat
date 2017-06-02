@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Street Rd Cross",
+    "aliases" : [ "pop-streetroad", "pop-streetroadx", "pop-streetrdx" ],
     "mods": [
       {
         "town_dir": UP, 

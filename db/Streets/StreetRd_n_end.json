@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Street Rd North End", 
+    "aliases" : [ "pop-streetroadnorth", "pop-streetroadn", "pop-streetrdn" ],
     "mods": [
       {
         "town_dir": LEFT, 

@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Hyper Dr North End", 
+    "aliases" : [ "pop-hyperdrivenorth", "pop-hyperdriven", "pop-hyperdrn" ],
     "mods": [
       {
         "town_dir": LEFT, 

@@ -4,6 +4,7 @@
     "capacity": 64, 
     "type": "context", 
     "name": "42nd St & Maine", 
+    "aliases": [ "pop-42","pop-42nd","pop-maine", "pop-main", "pop-42andmaine", "pop-42&maine", "pop-theritz" ],
     "mods": [
       {
         "town_dir": "", 

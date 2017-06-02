@@ -56,7 +56,7 @@ At this point, **Press Enter** then enter your username:
 
 ![Habitat Imagery Disk Step](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_imagery.png)
 
-At this point, **Press Alt-n or ⌘-n **, then **Press Enter**.
+At this point, **Press Alt-n or ⌘-n**, then **Press Enter**.
 
 If all goes well, you'll materialize in downtown Populopolis:
 
