@@ -70,6 +70,11 @@ To learn about all the things you can do, read the [official Habitat manual from
 
 You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
 
+Right-Ctrl + Numpad 8 initiates the "GO" command
+Right-Ctrl + Numpad 2 initiates the "DO" comamnd
+Right-Ctrl + Numpad 6 initiates the "GET" command
+Right-Ctrl + Numpad 4 initiates the "PUT" command
+
 Help!
 -----
 
