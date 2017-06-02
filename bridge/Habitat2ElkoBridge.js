@@ -278,6 +278,7 @@ function confirmOrCreateUser(fullName, client) {
 								{
 									"type": "Avatar",
 									"firstConnection": true,
+									"amAGhost": true,
 									"x": 10,
 									"y": 128 + rnd(32),
 									"bodyType": "male",
@@ -815,7 +816,8 @@ function parseHabitatClientMessage(client, server, data) {
 						context = client.user.mods[0].lastArrivedIn;
 						client.user.mods[0].lastArrivedIn = "";
 					} else {
-						context = Argv.context;
+						choices = ["context-Downtown_5f","context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j"];
+						context = choices[rnd(5)];
 					}
 				} else if (client.state.nextRegion !== "") {
 					context = client.state.nextRegion;
