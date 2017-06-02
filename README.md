@@ -28,15 +28,16 @@ With all that out of the way, here's how to get started:
 	
 - Open the Neohabitat folder
 
-- Double-click the **= Launch Habitat =** icon.
-	- If double clicking on the launcher does not work, try running it as administrator. If you are still encountering issues then 		scroll down to the "Help!" section of the readme for other alternatives.
-	
-	
+- Double-click the **Launch Habitat** icon.
+	- If double clicking on the launcher does not work, try running it as administrator. If you are still encountering issues then scroll down to the "Help!" section of the readme for other alternatives.
+
 **OS X**
 
-Download the [Neohabitat DMG](https://s3.amazonaws.com/ssalevan/Neohabitat.dmg) then drag the Neohabitat application to the **Applications** folder.
+- Download [Neohabitat.dmg](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.dmg?raw=true) and double-click on the DMG file.
 
-The OS X application bundles all Habitat disks, so simply **launch the Neohabitat application** you dragged to **Applications**.
+- Drag the **Neohabitat** application to the **Applications** folder.
+
+- **Launch the Neohabitat application** you dragged to **Applications**.
 
 **Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
@@ -44,23 +45,23 @@ The OS X application bundles all Habitat disks, so simply **launch the Neohabita
 
 In a few moments, you'll be brought to the Neohabitat splash screen:
 
-![Neohabitat Splash Screen](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_splash.png)
+![Neohabitat Splash Screen](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_splash.png)
 
 Major thanks to **Gary Lake-Schaal** who developed our custom loader and built the original Habitat client from the original 1985 source!
 
 At this point, **Press Enter** then enter your username:
 
-![Neohabitat Login](https://s3.amazonaws.com/ssalevan/neohabitat/launcher_login.png)
+![Neohabitat Login](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/launcher_login.png)
 
 **Press Enter again**, then wait until the Habitat client loads and asks you to insert your imagery disk:
 
-![Habitat Imagery Disk Step](https://s3.amazonaws.com/ssalevan/neohabitat/habitat_imagery.png)
+![Habitat Imagery Disk Step](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/habitat_imagery.png)
 
 At this point, **Press Alt-n or ⌘-n**, then **Press Enter**.
 
 If all goes well, you'll materialize in downtown Populopolis:
 
-![Avatar In Populopolis](https://s3.amazonaws.com/ssalevan/neohabitat/neohabitat_downtown.png)
+![Avatar In Populopolis](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_downtown.png)
 
 ### Step 3 - Learn How to Play
 
@@ -68,32 +69,30 @@ Welcome to Neohabitat! There's a whole lot you can do here and thousands of exot
 
 To learn about all the things you can do, read the [official Habitat manual from 1988](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html).
 
-You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
+You'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
 
-	Right-Ctrl + Numpad 8 initiates the "GO" command
+  Right-Ctrl + Numpad 8 initiates the "GO" command
 	Right-Ctrl + Numpad 2 initiates the "DO" comamnd
 	Right-Ctrl + Numpad 6 initiates the "GET" command
 	Right-Ctrl + Numpad 4 initiates the "PUT" command
 
 ### Step 4 (Optional) - Controls
 
-If you don't own a joystick and wish to change the controls to suit your needs then follow these steps.
+If you don't own a joystick and wish to change the controls to suit your needs then follow these steps:
 
-	At the top of your VICE emulator select "Settings"
-	Hover your mouse over "Joystick Settings" and then select "Joystick Settings..." (Minor differences, I know)
-	A window should now popup saying "Joystick settings"
-	For "Joystick #1" select "Keyset A"
-	Then click "Configure Keyset A" and map the controls whatever you like.
-	If you are stil suffering issues then please head on over to the #troubleshooting channel on the Slack.
-	
-	
+- At the top of your VICE emulator, select "Settings"
+- Hover your mouse over "Joystick Settings" and then select "Joystick Settings..." (Windows) or "Joystick" (OS X)
+- A window should now popup saying "Joystick settings"
+- For "Joystick #1", select "Keyset A"
+- Click "Configure Keyset A" (Windows) or "Keyset" (OS X) and map the controls to whatever you like
+- If you are running into issues, head on over to the #troubleshooting channel [on our Slack](http://slack.neohabitat.org)
 
 Help!
 -----
 
 If you're having trouble getting Neohabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
 
-If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then drag and drop the "Habitat-Boot.d64" file onto the emulator and procede as normally.
+If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then drag and drop the "Habitat-Boot.d64" file onto the emulator and proceed as normally.
 
 If you encounter a glitch that's unreported in Habitat please open an issue at https://github.com/frandallfarmer/neohabitat/issues.
 
