@@ -30,6 +30,7 @@ clusters:
         NEOHABITAT_SCHEMA_DIR: db
         NEOHABITAT_SHOULD_ENABLE_CRON: "true"
         NEOHABITAT_SHOULD_ENABLE_DEBUGGER: "false"
+        NEOHABITAT_SHOULD_UPDATE_SCHEMA: "false"
       synapses:
         - resource: neohabitatmongo
           port: 27017
