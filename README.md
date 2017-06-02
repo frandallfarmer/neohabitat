@@ -70,10 +70,23 @@ To learn about all the things you can do, read the [official Habitat manual from
 
 You'll also need to hook up a joystick, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
 
-Right-Ctrl + Numpad 8 initiates the "GO" command
-Right-Ctrl + Numpad 2 initiates the "DO" comamnd
-Right-Ctrl + Numpad 6 initiates the "GET" command
-Right-Ctrl + Numpad 4 initiates the "PUT" command
+	Right-Ctrl + Numpad 8 initiates the "GO" command
+	Right-Ctrl + Numpad 2 initiates the "DO" comamnd
+	Right-Ctrl + Numpad 6 initiates the "GET" command
+	Right-Ctrl + Numpad 4 initiates the "PUT" command
+
+### Step 4 (Optional) - Controls
+
+If you don't own a joystick and wish to change the controls to suit your needs then follow these steps.
+
+	At the top of your VICE emulator select "Settings"
+	Hover your mouse over "Joystick Settings" and then select "Joystick Settings..." (Minor differences, I know)
+	A window should now popup saying "Joystick settings"
+	For "Joystick #1" select "Keyset A"
+	Then click "Configure Keyset A" and map the controls whatever you like.
+	If you are stil suffering issues then please head on over to the #troubleshooting channel on the Slack.
+	
+	
 
 Help!
 -----
