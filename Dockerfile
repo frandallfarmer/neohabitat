@@ -49,7 +49,7 @@ RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && make book' >> /v
 
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
-RUN rm -rf lib && ./build
+RUN rm -rf lib && mvn clean package
 
 ENTRYPOINT /neohabitat/run
 
