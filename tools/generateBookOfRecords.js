@@ -216,8 +216,8 @@ MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
 		if (undefined !== users) {
 			processUserStats(users);
 		}
+		db.close();
 	});
-	db.close();
 });
 
 
