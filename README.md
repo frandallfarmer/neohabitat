@@ -17,6 +17,8 @@ We maintain a demo server running the latest Neohabitat code and you can connect
 
 With all that out of the way, here's how to get started:
 
+- If you want to use Habitat with a real C64, please switch over to [these instructions](https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md) for making disks and using modern connection hardware.
+
 ### Step 1 - Download and Install either the Windows or OSX Habitat package (which comes with VICE, the C64 emulator)
 
 **Windows**
