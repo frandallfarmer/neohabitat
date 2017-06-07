@@ -1,1 +1,3 @@
-{"to":"context","op":"SET_MOTD","MOTD":"Welcome to the NeoHabitat Open Alpha Launch Party! Please, emulate only at 100% speed for the event."}
+{"to":"session", "op":"entercontext", "user":"user-randy", "context":"context-test", "Telko": { "delay": 2, "logtime": true } }
+{"to":"context","op":"SET_MOTD","MOTD":"Welcome to Habitat! Doc/Chat: neohabitat.org slack.neohabitat.org"}
+{"to":"session", "op":"disconnect"}
