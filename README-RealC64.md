@@ -1,5 +1,5 @@
 # Setting up a real C64 to play Neohabitat
-Guide written June 7th 2017 by Goethe ([Github](https://github.com/napi-goethe) / [Website](http://www.carpeludum.com) / [Twitter @Goe_The](https://twitter.com/Goe_The)),
+Guide written June 7th 2017 by Goethe ([Github](https://github.com/napi-goethe) / [Website](http://www.carpeludum.com) / [Twitter](https://twitter.com/Goe_The)),
 with many thanks to the Neohabitat Slack #troubleshooting channel team: @stu, @glake1 and of course @randy
 
 ## What hardware do you need
@@ -25,7 +25,7 @@ with many thanks to the Neohabitat Slack #troubleshooting channel team: @stu, @g
 
 ## Required D64 disk images
 
-The archive `Neohabitat-RealC64SuccessPackage.zip` contains the exact files with which I was successful in connecting to Neohabitat:
+The archive [`Neohabitat-RealC64SuccessPackage.zip`](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat-RealC64SuccessPackage.zip) contains the exact files with which I was successful in connecting to Neohabitat:
 * `Habitat-A.d64`
 * `Habitat-B.d64`
 * `hb-zipped.d64`
@@ -44,8 +44,8 @@ IMPORTANT: After first use of the disks on the real C64, stuff is written to bot
 Unfortunately, this is a hen-and-egg problem. You need **someone** to get you the C64 program `WARPCOPY06` from following step 1 to a real C64 disk, so you can continue with steps 2 and 3... Have you visited a retro computer party lately? :)
 
 1. Get and start warpcopy06 [from CSDB here](http://csdb.dk/release/?id=147362)
-2. Using warpcopy06, write QLink-Habitat.d64 to side A of your first real C64 disk
-3. Using warpcopy06, write Habitat-A.d64 to side A of your second real C64 disk
+2. Using warpcopy06, write `QLink-Habitat.d64` to side A of your first real C64 disk
+3. Using warpcopy06, write `Habitat-A.d64` to side A of your second real C64 disk
 
 #### using any other method
 
@@ -139,6 +139,8 @@ If you don't see it, there may be a problem with your internet connection - or w
 3. When prompted, insert Habitat Disk B (your second real C64 disk, side B)
 
 # Enjoy Neohabitat on your real C64!
+
+![Goethe's real C64 connecting to Neohabitat on Launch Day](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/images/GoetheRealC64Launchday.JPG)
 
 And join the slack for further discussions.
 Please extend this guide for other connection methods (photo proof needed :) ).
