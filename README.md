@@ -43,6 +43,12 @@ With all that out of the way, here's how to get started:
 
 **Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
+**Linux**
+
+- Install Vice via your package manager
+- Use the D64-Files from [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true)
+- Check [this link]([Neohabitat.zip](http://vice-emu.sourceforge.net/vice_6.html#SEC80) for how to configure your RS-232 settings.
+
 ### Step 2 - Login and play!
 
 In a few moments, you'll be brought to the Neohabitat splash screen:
@@ -88,6 +94,7 @@ If you don't own a joystick and wish to change the controls to suit your needs t
 - For "Joystick #1", select "Keyset A"
 - Click "Configure Keyset A" (Windows) or "Keyset" (OS X) and map the controls to whatever you like
 - If you are running into issues, head on over to the #troubleshooting channel [on our Slack](http://slack.neohabitat.org)
+- If you have a **localized keyboard** (e.g. German QWERTZ) you might not be able to find some essential keys, like ":". It might help if you change "Settings - Keyboard Settings - Active Keymap" from Symbolic to Positional, the keyboard will behave like a C64 keyboard. 
 
 Help!
 -----
