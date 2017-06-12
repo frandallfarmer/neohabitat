@@ -47,7 +47,7 @@ With all that out of the way, here's how to get started:
 
 - Install Vice via your package manager
 - Use the D64-Files from [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true)
-- Check [this link]([Neohabitat.zip](http://vice-emu.sourceforge.net/vice_6.html#SEC80) for how to configure your RS-232 settings.
+- Check [this link](http://vice-emu.sourceforge.net/vice_6.html#SEC80) for how to configure your RS-232 settings.
 
 ### Step 2 - Login and play!
 
