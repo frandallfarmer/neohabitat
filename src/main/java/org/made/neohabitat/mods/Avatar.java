@@ -604,7 +604,7 @@ public class Avatar extends Container implements UserMod {
 					ESPTargetName	= name;
 					in_esp			= TRUE;
 					if (Region.NEOHABITAT_FEATURES) {
-						object_say(from, UPGRADE_PREFIX + "Tranmitting thoughts to " + user.name() + "...");
+						object_say(from, UPGRADE_PREFIX + "Transmitting thoughts to " + user.name() + "...");
 					}
 				} else {
 					send_private_msg(from, this.noid, from, "SPEAK$", "Cannot contact " + name + ".");
