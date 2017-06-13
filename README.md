@@ -43,7 +43,7 @@ With all that out of the way, here's how to get started:
 
 **Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
-**Linux**
+**Linux and \*BSD**
 
 - Install VICE and `nc` (netcat) via your package manager
 - Extract the Windows release of [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true) to get the `.d64` files and `fliplist-C64.vfl`
