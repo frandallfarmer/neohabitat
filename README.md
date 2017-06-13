@@ -43,11 +43,12 @@ With all that out of the way, here's how to get started:
 
 **Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
 
-**Linux**
+**Linux and \*BSD**
 
-- Install Vice via your package manager
-- Use the D64-Files from [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true)
-- Check [this link](http://vice-emu.sourceforge.net/vice_6.html#SEC80) for how to configure your RS-232 settings.
+- Install VICE and `nc` (netcat) via your package manager
+- Extract the Windows release of [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true) to get the `.d64` files and `fliplist-C64.vfl`
+- Run the VICE C64 emulator with these options set:  
+  `x64 -rsuser -rsuserdev 0 -rsdev1 '|nc 52.87.109.252 1986' -rsuserbaud 1200 -flipname fliplist-C64.vfl Habitat-Boot.d64`
 
 ### Step 2 - Login and play!
 
