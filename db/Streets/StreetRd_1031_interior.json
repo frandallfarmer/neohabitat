@@ -120,7 +120,8 @@
       {
         "y": 130, 
         "x": 60, 
-        "type": "Floor_lamp", 
+        "type": "Floor_lamp",
+	"on": 1,
         "orientation": 188
       }
     ], 
