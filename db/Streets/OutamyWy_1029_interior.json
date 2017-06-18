@@ -90,7 +90,8 @@
       {
         "y": 135, 
         "x": 140, 
-        "type": "Floor_lamp", 
+        "type": "Floor_lamp",
+	"on": 1,
         "orientation": 48
       }
     ], 

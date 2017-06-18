@@ -119,7 +119,8 @@
     "mods": [
       {
         "y": 133, 
-        "x": 100, 
+        "x": 100,
+	"on": 1,
         "type": "Floor_lamp", 
         "orientation": 8
       }
