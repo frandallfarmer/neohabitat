@@ -394,7 +394,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 */
 	public void generic_GET(User from) {
 
-		HabitatMod cont = container();
+		Container cont = container();
 		int selfClass = this.HabitatClass();
 		int contClass = cont.HabitatClass();
 
@@ -427,14 +427,26 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		 * return; }
 		 */
 
-		String avatar_userid = from.ref();
-		if (contClass == CLASS_DISPLAY_CASE) {
-			if (/* TODO DisplayCase dcont.locked(self.position+1)&dcont.owner */ "" != avatar_userid) {
-				object_say(from, cont.noid, "You are not the shopkeeper.  You cannot pick this item up.");
-				send_reply_error(from);
-				return;
-			}
+//		FRF: The old model of limited access to containers was display-case only.
+//		Limiting access is now changed to be for all containers in a turf or residence.
+//		
+//		This is the old code that was display-case only:		
+//		String avatar_userid = from.ref();
+//		if (contClass == CLASS_DISPLAY_CASE) {
+//			if (/* TODO DisplayCase dcont.locked(self.position+1)&dcont.owner */ "" != avatar_userid) {
+//				object_say(from, cont.noid, "You are not the shopkeeper.  You cannot pick this item up.");
+//				send_reply_error(from);
+//				return;
+//			}
+//		}
+		
+		// NEW FRF: Don't let visitors to turfs manipulate immobile containers/contents.
+		if (contClass != CLASS_AVATAR && contClass != CLASS_REGION && !cont.meetsOwnershipRestrictions(from)) {
+			object_say(from, cont.noid, "This is somone else's property.  You cannot pick this item up.");
+			send_reply_error(from);
+			return;
 		}
+		
 
 		/*
 		 * All the preemptive tests have passed, we can really try to pick this
@@ -597,18 +609,31 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The new orientation for this once transfered.
 	 */
 	public boolean generic_PUT(User from, Container cont, int pos_x, int pos_y, int obj_orient) {
+		
+		
+		final int TO_AVATAR = 1;
+		final int TO_GROUND = 0;
 
-		if (this.gen_flags[RESTRICTED] && this.lastRestrictedContainer != null && this.lastRestrictedContainer != cont) {
+		Item item 				= (Item) this.object();
+		int selfClass			= this.HabitatClass();
+		int contClass			= cont.HabitatClass();
+		HabitatMod oldContainer = this.container();
+		int oldY 				= y;
+		
+		if (gen_flags[RESTRICTED] && lastRestrictedContainer != null && lastRestrictedContainer != cont) {
 			send_reply_error(from);			// Nope. Let's put it back instead.
 			putMeBack(from, true);
 			return false;
 		}
 		
-		final int TO_AVATAR = 1;
-		final int TO_GROUND = 0;
+		// NEW FRF: Don't let visitors to turfs manipulate immobile containers/contents.
+		if (contClass != CLASS_AVATAR && contClass != CLASS_REGION && !cont.meetsOwnershipRestrictions(from)) {
+			object_say(from, cont.noid, "This is somone else's property.  You cannot put that there.");			
+			send_reply_error(from);  // No leaving presents in turf furniture.
+			return false;
 
-		HabitatMod oldContainer = this.container();
-		int oldY = y;
+		}
+
 
 		if (this.container() == null) {
 			send_reply_error(from);
@@ -619,9 +644,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			return false;
 		}
 
-		Item item = (Item) this.object();
-		int selfClass = this.HabitatClass();
-		int contClass = cont.HabitatClass();
 		// boolean put_success = false; /* TODO FIX THIS ORIGINAL GLOBAL */
 		/*
 		 * Check to see of the object being PUT (this) is a container and it's
@@ -637,7 +659,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 		if (cont.noid != THE_REGION) {
 			if (contClass != CLASS_AVATAR && cont instanceof Openable && !((Openable) cont).open_flags[OPEN_BIT]) {
-				send_reply_error(from); // Tried to put into a CLOSED container
+				send_reply_error(from); // Tried to put into a CLOSED or OWNED container
 				return false;
 			}
 			pos_y = -1;
@@ -749,15 +771,18 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			else
 				this.orientation &= ~FACING_BIT;
 		}
-
-		/* If putting into a display case, adjust the locked bit */
-		if (contClass == CLASS_DISPLAY_CASE && !going_away_flag) {
-			/*
-			 * TODO DisplayCase DisplayCase case = (DisplayCase) this;
-			 * case.locked[this.position() + 1] = (from.name() == case.owner);
-			 * case.gen_flags[MODIFIED] = true;
-			 */
-		}
+		
+//		FRF: The CLASS_DISPLAY_CASE original implementation has been obsoleted with a turf/resident based security model.
+//		The commented code below is here for reference..
+//		
+//		/* If putting into a display case, adjust the locked bit */
+//		if (contClass == CLASS_DISPLAY_CASE && !going_away_flag) {
+//			/*
+//			 * TODO DisplayCase DisplayCase case = (DisplayCase) this;
+//			 * case.locked[this.position() + 1] = (from.name() == case.owner);
+//			 * case.gen_flags[MODIFIED] = true;
+//			 */
+//		}
 
 		/*
 		 * If the object is a switched on flashlight and is being put into an
@@ -1375,8 +1400,67 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				|| object.HabitatClass() == CLASS_PLANT) {
 			return (((Massive) object).mass == 0);
 		}
-		return (true);
+		return true;
 	}
+
+	public boolean immobile(HabitatMod object) {
+		switch (object.HabitatClass()) {
+			case CLASS_ATM:	
+			case CLASS_BED:
+			case CLASS_BUILDING:
+			case CLASS_BUSH:
+			case CLASS_CHAIR:
+			case CLASS_CHANGOMATIC:
+			case CLASS_CHEST:
+			case CLASS_COKE_MACHINE:
+			case CLASS_COUCH:
+			case CLASS_COUNTERTOP:
+			case CLASS_DISPLAY_CASE:
+			case CLASS_DOOR:
+			case CLASS_DROPBOX:
+			case CLASS_ELEVATOR:
+			case CLASS_FENCE:
+			case CLASS_FLAT:
+			case CLASS_FLOOR_LAMP:
+			case CLASS_FORTUNE_MACHINE:
+			case CLASS_FOUNTAIN:
+			case CLASS_GARBAGE_CAN:
+			case CLASS_GHOST:
+			case CLASS_GLUE:
+			case CLASS_GROUND:
+			case CLASS_HOLE:
+			case CLASS_HOT_TUB:
+			case CLASS_HOUSE_CAT:
+			case CLASS_MAGIC_IMMOBILE:
+			case CLASS_MAILBOX:
+			case CLASS_PAWN_MACHINE:
+			case CLASS_PICTURE:
+			case CLASS_PLAQUE:
+			case CLASS_POND:
+			case CLASS_ROOF:
+			case CLASS_SAFE:
+			case CLASS_SEX_CHANGER:
+			case CLASS_SHORT_SIGN:
+			case CLASS_SIGN:
+			case CLASS_SKY:
+			case CLASS_STREET:
+			case CLASS_STREETLAMP:
+			case CLASS_SUPER_TRAPEZOID:
+			case CLASS_TABLE:
+			case CLASS_TELEPORT:
+			case CLASS_TRAPEZOID:
+			case CLASS_TREE:
+			case CLASS_VENDO_FRONT:
+			case CLASS_VENDO_INSIDE:
+			case CLASS_WALL:
+			case CLASS_WINDOW:
+				return true;			
+			default:
+				break;
+		}
+		return !getable(object);
+	}
+	
 
 	/**
 	 * grabable -- Return true iff a given object can be grabbed from an

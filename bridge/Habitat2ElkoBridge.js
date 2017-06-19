@@ -586,7 +586,8 @@ var vectorize = function (client, newObj , containerRef) {
 
 var ContentsVector = function (replySeq, noid, ref, type) {
 	this.container		= new HabBuf();
-	this.contents		= {};
+	this.noids			= [];
+	this.objects		= new HabBuf();
 	this.containers		= {};
 	this.containerRef   = ref;
 	this.containerNoid  = noid;
@@ -601,22 +602,15 @@ var ContentsVector = function (replySeq, noid, ref, type) {
 			this.containerRef  = o.to;
 			this.containerNoid = mod.noid;
 			this.containers[this.containerNoid] = this;
-		}
+		}	
 		if (mod.noid !== this.containerNoid) {
-			o.clientStateBundle = new HabBuf();
-			habitatEncodeElkoModState(mod, o.container, o.clientStateBundle);
-			if (undefined === this.containers[this.containerNoid].contents[o.to]) {
-				this.containers[this.containerNoid].contents[o.to] = [];
-			}
-			this.containers[this.containerNoid].contents[o.to].push(mod.noid);
+			habitatEncodeElkoModState(mod, o.container, this.containers[this.containerNoid].objects);
+			this.containers[this.containerNoid].noids.push(mod.noid, HCode.CLASSES[mod.type]);
 		} else {
 			habitatEncodeElkoModState(mod, o.container, this.containers[this.containerNoid].container);
 		}
 	};
-	this.send = function (client) {	
-		client.NoidContents = {};
-		client.NoidClassList = [];
-		client.ObjectStateBundles = new HabBuf();
+	this.send = function (client) {		
 		var buf = new HabBuf(
 				true,
 				true,
@@ -634,38 +628,13 @@ var ContentsVector = function (replySeq, noid, ref, type) {
 			}
 			buf.add(this.container.data);
 		}
-		// Make nested contents noid-based...
-		for (cont in this.contents) {
-			var contnoid = client.state.refToNoid[cont] || 0;
-			client.NoidContents[contnoid] = this.contents[cont];
-		}
-		// start recursively adding contents, properly in order.
-		addContentsToCV(client, 0);
-//		Trace.debug("\n\n\n" + JSON.stringify(this.contents) + "\n"
-//				 + JSON.stringify(client.NoidContents) + "\n"
-//				 + JSON.stringify(client.NoidClassList) + "\n"
-//				 + JSON.stringify(client.ObjectStateBundles.data) + "\n\n\n" );		
-		buf.add(client.NoidClassList)
+		buf.add(this.noids);
 		buf.add(0);
-		buf.add(client.ObjectStateBundles.data);
+		buf.add(this.objects.data);
 		buf.add(0);
 		buf.send(client, true);
 	};
 };
-
-function addContentsToCV(client, contnoid) {
-	for (item in client.NoidContents[contnoid]) {
-		var noid = client.NoidContents[contnoid][item];
-		var o    = client.state.objects[noid];
-		var mod  = o.obj.mods[0];
-		if (undefined !== client.NoidContents[noid]) {
-			// item IS a container with contents, so write those contents first. Recurse!					
-			addContentsToCV(client, noid);			
-		}
-		client.NoidClassList.push(noid, HCode.CLASSES[mod.type]);
-		client.ObjectStateBundles.add(o.clientStateBundle.data);
-	}
-}
 
 function toElko(connection, data) {
 	connection.write(data + "\n\n");

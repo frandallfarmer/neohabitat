@@ -113,4 +113,25 @@ public abstract class Container extends HabitatMod {
             }
         }
     }
+
+    /**
+     * Determine if the avatar manipulating this container exclusively "owns" this (in possession or in turf.)
+     * 
+     * TODO: NOTE - this replaces having "owner" state on display cases. That can be added back in later for "shop owners" FRF
+     * It's more general and can be applied to all turf containers. Only turf owners can manipulate contents.
+     * 
+     * @param from
+     * @return
+     */
+    public boolean meetsOwnershipRestrictions(User from) {
+		Avatar avatar = (Avatar) avatar(from);
+		Region region = current_region();
+		if (!immobile(this) || !region.is_turf) { // Test only immobile containers in turfs.
+			return true;
+		}
+		if (region.resident.equals(avatar.object().baseRef())) {
+				return true;
+		}
+    	return false;
+    }
 }
