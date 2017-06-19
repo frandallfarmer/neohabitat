@@ -952,6 +952,30 @@ public class Avatar extends Container implements UserMod {
 		}
 		send_reply_success(from);
 	}
+	
+	private int LastF8Sent = -1;
+	
+	private static String F8_HELP[] = {
+			"F7 is object HELP. Move your cursor to an object and press it for more details.",
+			"F7 while pointing at the ground often gives helpful navigational information.",
+			"Pressing F3 will tell you who is currently online.",
+			"Use ESP to contact other avatars currenly online. Type TO:NAME and enter to start the link.",
+			"Habitat is better with a joystick. If you have one, set it up and restart.",
+			"The Avatar Handbook is at http://neohabitat.org",
+			"Some objects require you to be precisely positioned to work. Make sure to first perform a GO command.",
+			"Yes, you can customize your avatar with body paint and different heads. Visit the stores on Rodeo Drive.",
+			"There is a sex-change machine in the backroom of Kelly's",
+			"Teleporters, like other machines in Habitat, require you to PUT tokens in them to activate.",
+			"You have a turf(home). You can teleport there typing 'home' into any active teleporter.",
+			"Type in '42nd' or 'plaza' into a teleporter if you want to get back to the city.",
+			"To use an elevator:GO, then type the floor number while pointing at it. Use 'Lobby' for the bottom floor.",
+			"People sometimes congregate on the roof of the Popustop apartment complex.",
+			"Habitat has it's own mail system, GET paper from your pocket. DO to start writing on it. Start with TO:NAME",
+			"Did you know the originaly Habitat Beta Test was more than 30 years ago?",
+			"The NeoHabitat Project is 100% Open Source: all work is provided by 100% volunteers. http://neohabitat.org",
+			"Always read the plaque.",
+			"Need tokens? Stop by an ATM and GET some more."
+	};
 
 	/**
 	 * Verb (Specific): TODO Deal with FN Key presses.
@@ -968,21 +992,21 @@ public class Avatar extends Container implements UserMod {
 
 		switch (key.value(0)) {
 		case 16: // F8
-			object_say(from, UPGRADE_PREFIX + "       You are connected to          ");
-			object_say(from, "   The Neoclassical Habitat Server    ");
-			//                object_say(from, "                                     ".substring(BuildVersion.version.length())
-			//                       + BuildVersion.version + " ");
-			object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
-			object_say(from, "                                      ");
-			object_say(from, "Open source - Join us! NeoHabitat.org ");
-			object_say(from, NeoHabitat.GetBuildVersion());
+			LastF8Sent = (LastF8Sent + 1) % F8_HELP.length;
+			object_say(from, F8_HELP[LastF8Sent]);
 			send_reply_success(from);
 			break;
 		case 11: // F3 & F4 (Users list)
 			sayUserList(from);
 			break;
 		case 13: // F5 & F6 (Change Skin Color)
-			object_say(from, String.format("Light level: " + current_region().lighting + " Current heap: %d", current_region().space_usage));
+			object_say(from, UPGRADE_PREFIX + "       You are connected to          ");
+			object_say(from, "   The Neoclassical Habitat Server    ");
+			object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
+			object_say(from, "                                      ");
+//			object_say(from, String.format("Light level: " + current_region().lighting + " Current heap: %d", current_region().space_usage));
+			object_say(from, "Open source - Join us! NeoHabitat.org ");
+			object_say(from, NeoHabitat.GetBuildVersion());
 			send_reply_success(from);
 			break;
 		default:

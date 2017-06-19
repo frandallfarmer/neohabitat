@@ -1251,7 +1251,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		if (the_message == "-") { /* non-existent objects */
 			the_message = "This object does not exist.";
 		} else if (the_message == "s") { /* background scenic objects */
-			the_message = "For HELP, point at an object and press the F7 key.";
+			the_message = "For HELP, point at an object and press the F7 key. Press F8 for general tips.";
 		} else if (the_message == "u") { /* unimplemented help features */
 			the_message = "Sorry, no help here yet.";
 		} else if (the_message == "i") { /* impossible to get messages */

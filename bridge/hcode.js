@@ -633,6 +633,9 @@ this.translate = {
 			toServer: function(a, m) {
 				m.key    = a[0]; 
 				m.target = a[1];
+			},
+			toClient: function(o,b) {
+				b.add(o.err);
 			}
 		},
 		CORPORATE: 	{
