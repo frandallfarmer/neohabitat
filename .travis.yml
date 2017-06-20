@@ -39,11 +39,10 @@ script:
 after_success:
   # Pushes the Docker image then deploys it to Spine.
   - if [ "${TRAVIS_BRANCH}" == "master" ]; then
+      cd ${TRAVIS_BUILD_DIR};
+      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
+      docker push ${DOCKER_USERNAME}/neohabitat;
       if [[ "${SPINE_DEPLOY}" == true ]]; then
-        cd ${TRAVIS_BUILD_DIR};
-        docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
-        docker push ${DOCKER_USERNAME}/neohabitat;
-
         curl -o ./spinecli.tgz https://bin.equinox.io/c/jSZ5ZhbDXZ9/spine-cli-stable-linux-amd64.tgz && tar xvzf spinecli.tgz;
         ./spine cluster deploy neohabitat;
       fi
