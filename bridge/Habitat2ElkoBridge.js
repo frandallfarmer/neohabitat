@@ -159,7 +159,7 @@ function setFirstConnection(db, userRef) {
 		"ref": userRef
 	}, function(err, user) {
 		user.mods[0].firstConnection = true;
-		user.mods[0].amAGhost = true;
+//		user.mods[0].amAGhost = true;				// TODO Once ghosts are working well, return the ARRIVE AS GHOST feature! FRF
 		db.collection('odb').updateOne(
 				{ref: user.ref},
 				user,
