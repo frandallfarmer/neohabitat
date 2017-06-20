@@ -13,7 +13,7 @@ this.ESCAPE_XOR			= 0x55;
 this.BYTE_MASK			= 0b00000000000000000000000011111111;
 this.PHANTOM_REQUEST	= 0xFA;
 
-this.MAX_PACKET_SIZE    = 110;	// Really about half 255 - account for every char being 'escaped'
+this.MAX_PACKET_SIZE    = 100;
 this.SPLIT_START		= 0x20;
 this.SPLIT_MIDDLE		= 0x40;
 this.SPLIT_END			= 0x80;
