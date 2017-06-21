@@ -104,7 +104,22 @@
     "ref": "item-street.Popustop.elevator1.line355", 
     "name": "Street", 
     "in": "context-Popustop.elevator1.line355"
-  }, 
+  },
+  {
+    "type" : "item",
+    "ref" : "item-plaque.Popustop.elevator1.line355",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line355",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 50,
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },    
   {
     "type": "item", 
     "mods": [
