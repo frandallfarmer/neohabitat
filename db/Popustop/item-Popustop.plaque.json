@@ -1,0 +1,194 @@
+[
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.lobby.line3",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2,
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque0",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line55",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque1",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line155",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },      
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque2",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line255",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque3",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line355",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque4",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line455",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque5",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line555",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque6",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line655",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque7",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line755",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque8",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line855",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque9",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line955",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Popustop.plaque10",
+    "name" : "Elevator Plaque",
+    "in" : "context-Popustop.elevator1.line1055",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 1,
+        "path" : "text-elevatorhelp.1"
+      } 
+    ]
+  }
+]     
