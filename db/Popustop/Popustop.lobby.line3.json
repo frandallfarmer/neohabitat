@@ -108,7 +108,7 @@
     "ref": "item-street.Popustop.lobby.line3", 
     "name": "Street", 
     "in": "context-Popustop.lobby.line3"
-  }, 
+  },
   {
     "type": "item", 
     "mods": [
