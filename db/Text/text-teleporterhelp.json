@@ -1,0 +1,35 @@
+{
+	"ref": "text-teleporterhelp",
+	"pages": [
+		 "----------------------------------------" +
+		 "       HOW TO USE THE TELEPORTER        " + 
+		 "                                        " +
+		 "Using a teleporter requires tokens, so  " +
+		 "you must first GET tokens out of your   " +
+		 "pocket and then place your cursor on the" +
+		 "teleporter. While your cursor is still  " +
+		 "on the elevator perform a PUT command.  " +
+		 "Upon inserting a token you should hear  " +
+		 "a brief sound indicating success. Make  " +
+		 "sure your avatar is inside the teleport " +
+		 "and that your cursor is placed on the   " +
+		 "teleporter itself. Now, type in '42nd'  " +
+		 "or 'plaza' and press RETURN. Typing in  " +
+		 "'home' will also take you to your       " +
+		 "own private turf.",
+     
+ 		"----------------------------------------" +
+		"          THE PHONE HOME BOOK           " +
+		"Hyper Dr Cross: pop-hyperdrive          " +
+		"Hyper Dr North End: pop-hyperdrivenorth " +
+		"Hyper Dr South End: pop-hyperdrivesouth " +
+		"Outamy Wy Cross: pop-outamyway          " +
+		"Outamy Wy North End: pop-outamywaynorth " +
+		"Outamy Wy South End: pop-outamywaysouth " +
+		"Road St Cross: pop-roadstreet           " +
+		"Road St North End: pop-roadstreetnorth  " +
+		"Road St South End: pop-roadstreetsouth  " +
+		"Street Rd Cross: pop-streetroad         " +
+		"Street Rd North End: pop-streetroadnorth" +
+		"Street Rd South End: pop-streetroadsouth"]
+}
