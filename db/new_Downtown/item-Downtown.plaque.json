@@ -1,0 +1,98 @@
+[
+  {
+    "type" : "item",
+    "ref" : "item-Downtown.plaque",
+    "name" : "Teleporter Plaque",
+    "in" : "context-Downtown_3b", 
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2,
+        "last_page" : 2,
+        "path" : "text-teleporterhelp"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Downtown.plaque0",
+    "name" : "Teleporter Plaque",
+    "in" : "context-Downtown_4e", 
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 30,
+        "y" : 140,
+        "style": 2, 
+        "last_page" : 2,
+        "path" : "text-teleporterhelp"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Downtown.plaque1",
+    "name" : "Teleporter Plaque",
+    "in" : "context-Downtown_4g", 
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 110,
+        "y" : 140,
+        "style": 2, 
+        "last_page" : 2,
+        "path" : "text-teleporterhelp"
+      } 
+    ]
+  },      
+  {
+    "type" : "item",
+    "ref" : "item-Downtown.plaque2",
+    "name" : "Teleporter Plaque",
+    "in" : "context-Downtown_6e",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 40,
+        "y" : 140,
+        "style": 2, 
+        "last_page" : 2,
+        "path" : "text-teleporterhelp"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Downtown.plaque3",
+    "name" : "Teleporter Plaque",
+    "in" : "context-Downtown_6g",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 120,
+        "y" : 140,
+        "style": 2, 
+        "last_page" : 2,
+        "path" : "text-teleporterhelp"
+      } 
+    ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-Downtown.plaque4",
+    "name" : "Teleporter Plaque",
+    "in" : "context-Downtown_7j",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 80,
+        "y" : 60,
+        "style": 2, 
+        "last_page" : 2,
+        "path" : "text-teleporterhelp"
+      } 
+    ]
+  }
+]     
