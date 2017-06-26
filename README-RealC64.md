@@ -4,7 +4,7 @@ with many thanks to the Neohabitat Slack #troubleshooting channel team: @stu, @g
 
 ## What hardware do you need
 
-* a C64 (any model)
+* a C64 (any model) or C128
 * at least one floppy drive - I used a 1541-II.
   * step 2.3 will be much faster if you have two floppy drives, but one is ok too
 * two **working** 5,25" floppy disks
@@ -17,10 +17,13 @@ with many thanks to the Neohabitat Slack #troubleshooting channel team: @stu, @g
     * ... (to be extended by the community)
 * special hardware for connecting the C64 to the Internet via the serial port method (user port)
   * for this guide, I used the "Australian" userport WiFi modem [available here from Melbourne Console Reproductions](http://melbourneconsolerepros.com/product_info.php?products_id=125)
+  * also the [Strikelink modem](https://1200baud.wordpress.com/2017/03/17/strikelink-c64-300-9600-baud-wifi-modem-on-sale/) works
   * other possibilities exist, but have not been tested yet - the C64 community is welcome to test and add experiences, for example:
     * other C64 WiFi userport modems such as the U.S. one (cbmstuff.com)
     * RR-Net MK3
-    * 1541 Ultimate
+    * Connecting the C64 to PC via RS-232 and emulating the modem via PC ([see here](http://orrtech.us/qlink/)).
+    * using a [DreamPi](http://blog.kazade.co.uk/p/dreampi.html) as gateway
+    * 1541 Ultimate (not ready for modem connection yet)
     * ... (to be extended by the community)
 
 ## Required D64 disk images
@@ -46,6 +49,13 @@ Unfortunately, this is a hen-and-egg problem. You need **someone** to get you th
 1. Get and start warpcopy06 [from CSDB here](http://csdb.dk/release/?id=147362)
 2. Using warpcopy06, write `QLink-Habitat.d64` to side A of your first real C64 disk
 3. Using warpcopy06, write `Habitat-A.d64` to side A of your second real C64 disk
+
+#### using the 1541 Ultimate
+
+- Use the D64 images you used with Vice on your PC.
+- All you need is "Habitat-Boot.d64" and "Habitat-B.d64".
+- Run them on your 1541-U directly or transfer them do disk (e.g. via disk copy utilities from the Action Cartdrige 6.0 included with your 1541-U)
+- Make sure that you only have one drive connected when you run the game. Habitat won't start if you have more than one drive connected. If you have a C128 or SX64 with internal drive you have either to switch the drive or the drive emulation of the 1541-U off.
 
 #### using any other method
 
@@ -103,6 +113,14 @@ e.g. using Striketerm to issue modem commands.
   * `at&z0=52.87.109.252:5190`
 4. Don't forget to save the defaults
   * `at&w`
+
+#### using Alwyz Strikelink modem
+
+1. Start [CCGMS](http://csdb.dk/release/index.php?id=156523). We assume you already did your Wifi settings and initialization.
+2. Change the baud rate to 1200 by typing "at$sb=1200". Press F7 and also change the baud rate there.
+3. Type at&k0 for turning off hardware flow control
+4. Dial NEOHABITAT.DEMO.SPI.NE, port 1986. You might press F7 and use your phonebook for doing so.
+5. Quit CCGMS and start the game (e.g. reset the computer without turning it off).
 
 #### using any other method
 
