@@ -118,7 +118,7 @@
         "key_hi": 0, 
         "y": 34, 
         "x": 68, 
-        "open_flags": 0,
+        "open_flags": 2,
         "gr_state": 0,
         "type": "Door"
       }
@@ -154,7 +154,7 @@
     "type": "item", 
     "name": "Short_sign", 
     "in": "context-Downtown_7b"
-  }, 
+  },
   {
     "ref": "item-street.476d.Downtown_7b", 
     "mods": [
