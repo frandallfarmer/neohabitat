@@ -41,9 +41,11 @@
       {
         "style": 8, 
         "orientation": 0, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 0, 
-        "x": 0, 
+        "x": 0,
+        "title": "Stocks",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -57,9 +59,11 @@
       {
         "style": 8, 
         "orientation": 16, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 1, 
-        "x": 1, 
+        "x": 1,
+        "title": "Stocks",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -92,9 +96,11 @@
       {
         "style": 8, 
         "orientation": 8, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 1, 
         "x": 1, 
+        "title": "Stocks",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -125,9 +131,11 @@
       {
         "style": 8, 
         "orientation": 24, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 0, 
-        "x": 0, 
+        "x": 0,
+        "title": "Bonds",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -141,9 +149,11 @@
       {
         "style": 8, 
         "orientation": 32, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 1, 
-        "x": 1, 
+        "x": 1,
+        "title": "Bonds",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -176,9 +186,11 @@
       {
         "style": 8, 
         "orientation": 32, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 1, 
-        "x": 1, 
+        "x": 1,
+        "title": "Bonds",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -209,9 +221,11 @@
       {
         "style": 8, 
         "orientation": 48, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 0, 
-        "x": 0, 
+        "x": 0,
+        "title": "Commods",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -225,9 +239,11 @@
       {
         "style": 8, 
         "orientation": 56, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 1, 
-        "x": 1, 
+        "x": 1,
+        "path" : "text-stock",
+        "title": "Commods",
         "type": "Book"
       }
     ], 
@@ -241,9 +257,11 @@
       {
         "style": 8, 
         "orientation": 32, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 2, 
-        "x": 2, 
+        "x": 2,
+        "title": "Commods",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
@@ -276,9 +294,11 @@
       {
         "style": 8, 
         "orientation": 40, 
-        "last_page": 0, 
+        "last_page": 1, 
         "y": 1, 
-        "x": 1, 
+        "x": 1,
+        "title": "Commods",
+        "path" : "text-stock",
         "type": "Book"
       }
     ], 
