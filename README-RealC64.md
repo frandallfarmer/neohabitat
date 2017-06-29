@@ -1,26 +1,35 @@
 # Setting up a real C64 to play Neohabitat
-Guide written June 7th 2017 by Goethe ([Github](https://github.com/napi-goethe) / [Website](http://www.carpeludum.com) / [Twitter](https://twitter.com/Goe_The)),
-with many thanks to the Neohabitat Slack #troubleshooting channel team: @stu, @glake1 and of course @randy
+Guide written June 7th-29th 2017 by Goethe ([Github](https://github.com/napi-goethe) / [Website](http://www.carpeludum.com) / [Twitter](https://twitter.com/Goe_The)) and Flexman
+with many thanks to the Neohabitat Slack #troubleshooting and #c64 channel team: @stu, @glake1 and of course @randy
 
 ## What hardware do you need
 
 * a C64 (any model) or C128
-* at least one floppy drive - I used a 1541-II.
-  * step 2.3 will be much faster if you have two floppy drives, but one is ok too
-* two **working** 5,25" floppy disks
+* at least one floppy drive - I used a 1541-II. Tests with other drives pending.
+* a **working** 5,25" floppy disk
   * disks die over time. Please make sure you have two still good ones. I wasted one hour of Neohabitat launch night testing with a weak/defective disk.
-* special hardware to transfer D64 disk images from PC to real C64 floppy disks
-  * for this guide, I used an RR-Net MK3 expansion port ethernet adapter [available here from Individual Computers](https://icomp.de/shop-icomp/de/shop/product/rr-net-mk3.html)
-  * other possibilities exist, but have not been tested yet - the C64 community is welcome to test and add experiences, for example:
-    * XM/XA/XAP transfer cables
-    * 1541 Ultimate
-    * ... (to be extended by the community)
+* special hardware to use D64 disk images on a real C64 or special hardware to transfer them to real C64 floppy disks. Options are:
+  * Use D64 disk images on a real C64 (emulation of a real floppy drive)
+    * tested and working:
+      * 1541 Ultimate / Ultimate II+
+    * not tested yet:
+      * SD2IEC
+      * ... (to be extended by the community)
+  * Transfer disk images to real C64 floppy disks
+    * tested and working:
+      * 1541 Ultimate / Ultimate II+
+      * RR-Net MK3 expansion port ethernet adapter [available here from Individual Computers](https://icomp.de/shop-icomp/de/shop/product/rr-net-mk3.html)
+      * XAP transfer cable other possibilities exist, but have not been tested yet - the C64 community is welcome to test and add experiences, for example:
+    * not tested yet:
+      * other transfer cables (XM/XA etc.)
+      * ... (to be extended by the community)
 * special hardware for connecting the C64 to the Internet via the serial port method (user port)
-  * for this guide, I used the "Australian" userport WiFi modem [available here from Melbourne Console Reproductions](http://melbourneconsolerepros.com/product_info.php?products_id=125)
-  * also the [Strikelink modem](https://1200baud.wordpress.com/2017/03/17/strikelink-c64-300-9600-baud-wifi-modem-on-sale/) works
-  * other possibilities exist, but have not been tested yet - the C64 community is welcome to test and add experiences, for example:
+  * tested and working:
+    * The "Australian" userport WiFi modem [available here from Melbourne Console Reproductions](http://melbourneconsolerepros.com/product_info.php?products_id=125)
+    * The [Strikelink modem](https://1200baud.wordpress.com/2017/03/17/strikelink-c64-300-9600-baud-wifi-modem-on-sale/) works
+  * not tested yet:
     * other C64 WiFi userport modems such as the U.S. one (cbmstuff.com)
-    * RR-Net MK3
+    * RR-Net MK3 (not ready for modem connection yet, modem emulation driver would have to be programmed first)
     * Connecting the C64 to PC via RS-232 and emulating the modem via PC ([see here](http://orrtech.us/qlink/)).
     * using a [DreamPi](http://blog.kazade.co.uk/p/dreampi.html) as gateway
     * 1541 Ultimate (not ready for modem connection yet)
@@ -28,80 +37,59 @@ with many thanks to the Neohabitat Slack #troubleshooting channel team: @stu, @g
 
 ## Required D64 disk images
 
-The archive [`Neohabitat-RealC64SuccessPackage.zip`](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat-RealC64SuccessPackage.zip) contains the exact files with which I was successful in connecting to Neohabitat:
-* `Habitat-A.d64`
+The archive [`Neohabitat-RealC64.zip`](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat-RealC64.zip) contains the exact files with which I was successful in connecting to Neohabitat:
+* `Habitat-Boot_v1.1-modemenabled.d64`
 * `Habitat-B.d64`
-* `hb-zipped.d64`
-* `QLink-Habitat.d64`
 
-Other disk images exist in various places in the internet.
-Using binary compare, the "other" disk images I found all have slight differences to the ones in the above package.
-Until the similarities or differences between them have been identified, I recommend to go with the disk set attached to this readme, because it reproducibly leads to a connection success.
+## Guide Step 1 - Directly Use D64 images on real C64 or transfer D64 images to real C64 floppy disks
 
-IMPORTANT: After first use of the disks on the real C64, stuff is written to both the QLink-Habitat "boot" disk, and Habitat-B disk. I suppose the authentication information is saved on both disks. It might also be possible that some online state information is saved on disk B. This has to be investigated. In any case it leads to the situation that you should not create new disk images from the real disks, otherwise your authentication and/or online status information may be propagated unintentionally.
+### DIRECT IMAGE USE options for step 1
 
-## Guide Step 1 - Transfer QLink-Habitat and Habitat-A to real C64 floppy disks
+#### (Option 1) DIRECT IMAGE USE using the 1541 Ultimate
 
-#### using RR-Net MK3
-
-Unfortunately, this is a hen-and-egg problem. You need **someone** to get you the C64 program `WARPCOPY06` from following step 1 to a real C64 disk, so you can continue with steps 2 and 3... Have you visited a retro computer party lately? :)
-
-1. Get and start warpcopy06 [from CSDB here](http://csdb.dk/release/?id=147362)
-2. Using warpcopy06, write `QLink-Habitat.d64` to side A of your first real C64 disk
-3. Using warpcopy06, write `Habitat-A.d64` to side A of your second real C64 disk
-
-#### using the 1541 Ultimate
-
-- Use the D64 images you used with Vice on your PC.
-- All you need is "Habitat-Boot.d64" and "Habitat-B.d64".
-- Run them on your 1541-U directly or transfer them do disk (e.g. via disk copy utilities from the Action Cartdrige 6.0 included with your 1541-U)
-- Make sure that you only have one drive connected when you run the game. Habitat won't start if you have more than one drive connected. If you have a C128 or SX64 with internal drive you have either to switch the drive or the drive emulation of the 1541-U off.
+* Use the D64 images (you could also use them with Vice on a PC)
+* All you need is `Habitat-Boot_v1.1-modemenabled.d64` and `Habitat-B.d64`.
+* Run them on your 1541-U directly
+* Make sure that you only have one drive connected when you run the game. Habitat won't start if you have more than one drive connected. If you have a C128 or SX64 with internal drive you have either to switch the drive or the drive emulation of the 1541-U/II+ off.
 
 #### using any other method
 
 (to be written by the community, when successfully tested)
 
-## Guide Step 2 - Transfer the Habitat-B to real C64 floppy disks
+### TRANSFER options for step 1
 
-This is where it gets weird (see end of this guide - open questions).
+#### (Option 1) TRANSFER using the 1541 Ultimate / II+
 
-### Step 2.1 - Prepare C64-zipped image of Habitat-B.D64
+* Use the D64 images (you could also use them with Vice on a PC)
+* All you need is `Habitat-Boot_v1.1-modemenabled.d64` and `Habitat-B.d64`
+* Transfer them to disk (e.g. via disk copy utilities from the Action Cartdrige 6.0 included with your 1541-U/II+)
+  * write `Habitat-Boot_v1.1-modemenabled.d64` to side A of your real C64 disk
+  * write `Habitat-B.d64` to side B of your real C64 disk
+* Make sure that you only have one drive connected when you run the game. Habitat won't start if you have more than one drive connected. If you have a C128 or SX64 with internal drive you have either to switch the drive or the drive emulation of the 1541-U/II+ off.
 
-This is just for purpose of documentation of how I did this. You can skip doing this step and directly continue with step 2.2, because the resulting disk image `hb-zipped.d64` is already contained in the archive `Neohabitat-RealC64SuccessPackage.zip`.
+#### (Option 2) TRANSFER using RR-Net MK3
 
-1. Get Zip Collection V2.0 [from CSDB here](http://csdb.dk/release/?id=57186)
-2. Fire up Vice C64 emulator
-3. attach Zip Collection to drive 8
-4. attach `Habitat-B.d64` to drive 9
-5. attach a newly created empty disk `hb-zipped.d64` to drive 10
-6. load Zip Collection application `ZIP-COLL.V2 /AFL` from drive 8
-7. choose option 1 "Diskpacker" to create a "C64-zipped" version of Habitat-B disk named `hbz` from source drive 9 to target drive 10
-8. copy Zip Collection application from drive 8 to drive 10, so that the disk contains both the C64-compressed disk image of Habitat-B and the uncompression tool to use on the real C64
-9. close Vice C64 emulator. You now have a disk image `hb-zipped.d64` to transfer to the real C64
+Unfortunately, this is a hen-and-egg problem. You need **someone** to get you the C64 program `WARPCOPY06` from following step 1 to a real C64 disk, so you can continue with steps 2 and 3... Have you visited a retro computer party lately? :)
 
-### Step 2.2 - Transfer image to real C64 floppy disk
+1. Get and start warpcopy06 [from CSDB here](http://csdb.dk/release/?id=147362)
+2. Using warpcopy06, write `Habitat-Boot_v1.1-modemenabled.d64` to side A of your real C64 disk
+3. Using warpcopy06, write `Habitat-B.d64` to side B of your real C64 disk
 
-Follow step 1 to transfer `hb-zipped.d64` to side B of your first real C64 disk.
+#### (Option 3) TRANSFER using OpenCBM's d64copy.exe and a XAP1541 cable
 
-### Step 2.3 - C64-unzip prepared image 
+For this option, you need a XAP1541 cable and a PC with a parallel port (hardware) and OpenCBM (software). Writing of disk images is working with the serial part of the XAP1541 cable too (only slower), so you do not need to install a parallel cable to your 1541 disk drive (only when you want a fast transfer).
 
-1. On the real C64, load up side B of your first real C64 disk and load the zip application tool `ZIP-COLL.V2 /AFL`
-2. choose option 2 "Diskunpacker"
-3. enter filename `hbz`, choose source drive and target drive accordingly
-4. use the side B of your second real floppy as target disk
-3. if source and target drive are the same (if you have only one floppy drive), you will now do a lot of disk swapping
+1. Get and install OpenCBM tools
+2. Using d64copy, write `Habitat-Boot_v1.1-modemenabled.d64` to side A of your real C64 disk
+3. Using d64copy, write `Habitat-B.d64` to side B of your real C64 disk
 
-Now finally, you have full working real C64 disk set for connecting to Neohabitat
-* Disk 1
-  * Side A: QLink-Habitat boot disk
-  * Side B: (can be formatted again, no use anymore)
-* Disk 2
-  * Side A: Habitat Disk A
-  * Side B: Habitat Disk B
+#### using any other method
 
-## Guide Step 3 - Prepare the WiFi Modem for Neohabitat
+(to be written by the community, when successfully tested)
 
-#### using Australian WiFi modem from Melbourne Console Reproductions
+## Guide Step 2 - Prepare the WiFi Modem for Neohabitat
+
+#### (Option 1) using Australian WiFi modem from Melbourne Console Reproductions
 
 This section assumes you are familiar with the general setup of the modem according to it's user manual,
 e.g. using Striketerm to issue modem commands.
@@ -110,51 +98,68 @@ e.g. using Striketerm to issue modem commands.
 2. For use with Neohabitat, the modem needs to be set to 1200 baud
   * `at$sb=1200`
 3. If you are lazy, you can set the Neohabitat Q-Link server to a speed dial slot, e.g. 0:
-  * `at&z0=52.87.109.252:5190`
+  * `at&z0=neohabitat.demo.spi.ne:1986`
 4. Don't forget to save the defaults
   * `at&w`
 
-#### using Alwyz Strikelink modem
+#### (Option 2) using Alwyz Strikelink modem
 
 1. Start [CCGMS](http://csdb.dk/release/index.php?id=156523). We assume you already did your Wifi settings and initialization.
 2. Change the baud rate to 1200 by typing "at$sb=1200". Press F7 and also change the baud rate there.
 3. Type at&k0 for turning off hardware flow control
-4. Dial NEOHABITAT.DEMO.SPI.NE, port 1986. You might press F7 and use your phonebook for doing so.
-5. Quit CCGMS and start the game (e.g. reset the computer without turning it off).
+3. @flexman does the Strikelink modem support speed dial? If so, please add the command(s) here
+4. @flexman does the Strikelink modem support saving the configuration? If so, please add the command(s) here
 
 #### using any other method
 
 (to be written by the community, when successfully tested)
 
-## Guide Step 4 - Connect to Q-Link
+## Guide Step 3 - Boot Neohabitat
 
-Starting from here, we can begin following [@randy's "secret" guide for the Q-Link boot located here, at Step 3](https://github.com/frandallfarmer/neohabitat/blob/9e998ac6779459c392e5e516d05981066a1012be/README.md#step-3---connect-to-quantumlink-reloaded)
+Insert disk `Habitat-Boot_v1.1-modemenabled.d64`
+Down to C64 basic commands:
+`LOAD"*",8,1`
+...wait a while...
+`RUN`
 
-#### using Australian WiFi modem from Melbourne Console Reproductions
+Now you see the beautiful new Neohabitat picture.
+Press `SPACE`.
+In the following screen, you can enter your desired user name.
+Press `F7` to enter Terminal mode to issue modem commands.
 
-When you reach the following step
-* After finishing this process, select SIGN ON TO Q-LINK. You'll be brought to a green-framed screen which states `Type commands to the modem, then press F1 when connection is made.`
+#### (Option 1) using Australian WiFi modem from Melbourne Console Reproductions
 
-Here, you enter the commands required to connect the "Australian" WiFi modem to the Neohabitat Q-Link Login server:
+Currently, it may be that modem responses are garbled, but this does not affect functionality. Just disregard it and blindly type the required modem commands.
+
+Here, you enter the commands required to connect the "Australian" WiFi modem to the Neohabitat server:
 * `ati`
   * (modem responds with hello, and connects to your WiFi network)
 * `atc1` (optional)
   * (modem connects to your WiFi network, if first connection attempt has failed, which happens quite often to me)
 * `atds0`
-  * (modem connects to speed dial 0, i.e. the Neohabitat Q-Link login server)
+  * (modem connects to speed dial 0, i.e. the Neohabitat server)
 
-Then you should see `CONNECT 1200` - then press `F1`
+Then you should see `CONNECT 1200` - then press `RUN/STOP`
 If you don't see it, there may be a problem with your internet connection - or with the Neohabitat server (it may be down from time to time).
+
+#### (Option 1) using Strikelink modem
+
+@flexman please add specifics for Strikelink modem here
 
 #### using any other method
 
 (to be written by the community, when successfully tested)
 
-## Guide Step 4 - Login to Q-Link and Start Neohabitat
+## Guide Step 4 - Start Neohabitat
 
-1. Continue with [@randy's "secret" guide for the Q-Link boot located here, in step 3, with the instructions  ](https://github.com/frandallfarmer/neohabitat/blob/9e998ac6779459c392e5e516d05981066a1012be/README.md#step-3---connect-to-quantumlink-reloaded)
-2. When prompted, insert Habitat Disk A (your second real C64 disk, side A)
-3. When prompted, insert Habitat Disk B (your second real C64 disk, side B)
+After the modem commands have been issued and the connection to the Neohabitat server is active and RUN/STOP has been pressed, simply press `RETURN`.
+
+Habitat is launched (some further stuff is loaded from disk).
+
+When the message "press alt-n/cmd-n" is displayed, insert or virtually-mount the Habitat-B disk.
+Press `SPACE`.
+
+After a short while, your avatar should spawn somewhere in the Neohabitat world. :-)
 
 # Enjoy Neohabitat on your real C64!
 
@@ -163,11 +168,6 @@ If you don't see it, there may be a problem with your internet connection - or w
 And join the slack for further discussions.
 Please extend this guide for other connection methods (photo proof needed :) ).
 
-## Why is this so complicated? / Open questions
+## Open questions
 
-The B disk of Habitat is "special". Regular transfer of the D64 image (using the same method as in step 1 or 2.1 for the QLink-Boot and A disks) **does not work** for currently unknown reasons.
-Is that a problem of warpcopy06? Would a transfer of disk B with XM/XA/XAP1541 cables work? What other methods are there to write a working B disk for a real C64?
-
-The other open questions are
-* What is written on QLink-Habitat "boot" disk? Assumed, it is the authentication information (username only? secret password?). How can it be deleted again so that a new registration is possible, so as to have a "clean" boot disk again?
 * What is written on Habitat-B disk after inseration? Online status information? Room information? Also authentication information? How can it be deleted again so as to have a "clean" B disk image again?
