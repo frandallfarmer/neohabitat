@@ -83,6 +83,11 @@ For this option, you need a XAP1541 cable and a PC with a parallel port (hardwar
 2. Using d64copy, write `Habitat-Boot_v1.1-modemenabled.d64` to side A of your real C64 disk
 3. Using d64copy, write `Habitat-B.d64` to side B of your real C64 disk
 
+#### (Option 4) TRANSFER using your modem to get the files via BBS
+
+Since you obviously have a modem for playing this game, you can connect to a Bulletin Board System which offers the game for download.
+The BBS where you can get Habitat is to be annouced soon...
+
 #### using any other method
 
 (to be written by the community, when successfully tested)
@@ -104,11 +109,14 @@ e.g. using Striketerm to issue modem commands.
 
 #### (Option 2) using Alwyz Strikelink modem
 
-1. Start [CCGMS](http://csdb.dk/release/index.php?id=156523). We assume you already did your Wifi settings and initialization.
+1. Start [CCGMS](http://csdb.dk/release/index.php?id=156523). We assume you already did your Wifi settings and initialization,
+   and know how your modem works (e.g. using 9600 baud for the first command after it has been switchted on).
 2. Change the baud rate to 1200 by typing "at$sb=1200". Press F7 and also change the baud rate there.
 3. Type at&k0 for turning off hardware flow control
-3. @flexman does the Strikelink modem support speed dial? If so, please add the command(s) here
-4. @flexman does the Strikelink modem support saving the configuration? If so, please add the command(s) here
+4. You could now dial the URL from the terminal, or use your phone book (press F7 and "A" for Autodialer/Phone Book)
+5. Add neohabitat.demo.spi.ne with port 1986 to your phone book and call it from there by pressing "C". (You might want
+   to exit the phone book and save it with "S" when doing this the 1st time).
+6. After you modem is connected, the blue light will turn off. You can press reset and proceed with the next step.
 
 #### using any other method
 
@@ -116,16 +124,16 @@ e.g. using Striketerm to issue modem commands.
 
 ## Guide Step 3 - Boot Neohabitat
 
-Insert disk `Habitat-Boot_v1.1-modemenabled.d64`
-Down to C64 basic commands:
+* Insert disk `Habitat-Boot_v1.1-modemenabled.d64`
+* Down to C64 basic commands:
 `LOAD"*",8,1`
 ...wait a while...
 `RUN`
 
-Now you see the beautiful new Neohabitat picture.
-Press `SPACE`.
-In the following screen, you can enter your desired user name.
-Press `F7` to enter Terminal mode to issue modem commands.
+* Now you see the beautiful new Neohabitat picture.
+* Press `SPACE`.
+* In the following screen, you can enter your desired user name.
+* If your modem already is connected, you can proceed with step 4. If your modem is not connected because you don't have a reset button, or prefer to do it from within the game, press `F7` to enter Terminal mode to issue modem commands.
 
 #### (Option 1) using Australian WiFi modem from Melbourne Console Reproductions
 
@@ -161,11 +169,14 @@ Press `SPACE`.
 
 After a short while, your avatar should spawn somewhere in the Neohabitat world. :-)
 
+If the game stops loading before your avatar shows up, you might check your modem connection. In case the modem is not connected,
+there will not be any error message, the game just will stop loading at this point.
+
 # Enjoy Neohabitat on your real C64!
 
 ![Goethe's real C64 connecting to Neohabitat on Launch Day](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/images/GoetheRealC64Launchday.JPG)
 
-And join the slack for further discussions.
+And join [the slack](https://neohabitat.slack.com/messages/C5Y62JZK8/) for further discussions.
 Please extend this guide for other connection methods (photo proof needed :) ).
 
 ## Open questions
