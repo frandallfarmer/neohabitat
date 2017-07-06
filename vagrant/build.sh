@@ -9,6 +9,7 @@ set -eo pipefail
 sed -i 's/^mesg n$/tty -s \&\& mesg n/g' /root/.profile
 
 SHOULD_INSTALL_MARIADB="${VAGRANT_SHOULD_INSTALL_MARIADB-true}"
+VAGRANT_CUSTOM_MOUNT_LOCATION='/media/sf_neohabitat'
 
 PACKAGES=(
   build-essential
@@ -23,6 +24,11 @@ PACKAGES=(
   mongodb-org-tools
   nodejs
 )
+
+# Handles Vagrant inexplicably overriding our mount directory into /media/sf_<volumename>.
+if [ -d "${VAGRANT_CUSTOM_MOUNT_LOCATION}" ]; then
+  ln -s "${VAGRANT_CUSTOM_MOUNT_LOCATION}" /neohabitat
+fi
 
 if [ "${SHOULD_INSTALL_MARIADB}" == true ]; then
   # Installs the MariaDB APT repository.
@@ -73,7 +79,7 @@ sudo systemctl start mysql.service
 # Launches the Neohabitat build process.
 cd /neohabitat
 npm install --no-bin-links
-./build
+mvn clean package
 
 # Installs Neohabitat MongoDB schema and models.
 cd /neohabitat/db
