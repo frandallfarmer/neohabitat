@@ -79,7 +79,7 @@ sudo systemctl start mysql.service
 # Launches the Neohabitat build process.
 cd /neohabitat
 npm install --no-bin-links
-./build
+mvn clean package
 
 # Installs Neohabitat MongoDB schema and models.
 cd /neohabitat/db
