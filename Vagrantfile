@@ -11,6 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_check_update = false
 
   config.vm.network "forwarded_port", guest: 1337, host: 1337, host_ip: "0.0.0.0"
+  config.vm.network "forwarded_port", guest: 1986, host: 1986, host_ip: "0.0.0.0"
   config.vm.network "forwarded_port", guest: 3307, host: 3307, host_ip: "0.0.0.0"
   config.vm.network "forwarded_port", guest: 5190, host: 5190, host_ip: "0.0.0.0"
   config.vm.network "forwarded_port", guest: 9000, host: 9000, host_ip: "0.0.0.0"
