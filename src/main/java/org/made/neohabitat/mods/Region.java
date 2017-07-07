@@ -556,7 +556,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * to every user currently online.
      * 
      * @param from
-     * @param MOTD
      */
     @JSONMethod ({ "text", "ascii" })
     public void TELL_EVERYONE(User from, OptString text, int[] ascii) {
@@ -591,6 +590,16 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
                 return;
             }
             avatar.savedMagical.god_tool_revisited(from, body);
+            return;
+        } else if (prompt.contains(TRICORDER_PROMPT)) {
+            body = prompt.substring(TRICORDER_PROMPT.length());
+            String trimBody = body.trim().toLowerCase();
+            if (0 == body.length() || trimBody.equals("q") || trimBody.equals("quit")) {
+                avatar.savedMagical = null;
+                avatar.savedTarget = null;
+                return;
+            }
+            avatar.savedMagical.tricorder_revisited(from, body);
             return;
         }
     }

@@ -510,6 +510,7 @@ public interface Constants {
     
     /* Prompt strings */
     public static final String   GOD_TOOL_PROMPT            = "Edit:";
+    public static final String   TRICORDER_PROMPT           = "TRCO:";
     public static final String   MAGIC_OPEN_PROMPT          = "Yes?";
     public static final String   LOTTO_PROMPT               = "Enter your 3 digit number:";
     public static final int      MAX_WORD_BALLON_LEN        = 80;

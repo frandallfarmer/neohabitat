@@ -8,6 +8,7 @@ import org.elkoserver.server.context.ObjectCompletionWatcher;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -3614,6 +3615,17 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 			asInts[i] = s.charAt(i);
 		}
 		return asInts;
+	}
+
+	/**
+	 * Converts a Teleport booth location to a key suitable for Teleport
+	 * directory lookup
+	 *
+	 * @param value booth location string
+	 * @return squished key for directory lookup
+     */
+	protected String squish(String value) {
+		return value.toLowerCase().replaceAll("\\s","");
 	}
 
 }

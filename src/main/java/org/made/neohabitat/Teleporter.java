@@ -51,6 +51,18 @@ public abstract class Teleporter extends Coinop {
         return result;
     }
 
+    /**
+     * Looks up a teleport destination in the static Teleport directory.
+     *
+     * @param key destination to lookup
+     * @return destination region suitable for teleportation
+     */
+    public String lookupTeleportDestination(String key) {
+        @SuppressWarnings("unchecked")
+        Map<String, String> directory = (Map<String, String>) context().getStaticObject("teleports");
+        return (String) directory.get(squish(key));
+    }
+
     protected void setTeleportState(int activeState, String address) {
         this.activeState = activeState;
         this.address = address;
@@ -92,16 +104,6 @@ public abstract class Teleporter extends Coinop {
 
     protected void activate_teleporter(User from, String destination) {
         activate_teleporter(from, destination, 0, 0);
-    }
-
-    public String lookupTeleportDestination(String key) {
-        @SuppressWarnings("unchecked")
-        Map<String, String> directory = (Map<String, String>) context().getStaticObject("teleports");
-        return (String) directory.get(squish(key));
-    }
-
-    protected String squish(String value) {
-        return value.toLowerCase().replaceAll("\\s","");
     }
 
     protected String area_code(String value) {

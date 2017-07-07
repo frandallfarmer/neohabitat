@@ -48,16 +48,16 @@
 	} ]
 }, {
 	"type" : "item",
-	"ref" : "item-steve.spraycan",
-	"name" : "Stylin' body paint",
+	"ref" : "item-steve.tricorder",
+	"name" : "Tricorder",
 	"in" : "user-steve",
 	"mods" : [ {
-		"type" : "Spray_can",
-		"style" : 0,
-		"x" : 10,
+		"type" : "Knick_knack",
+		"style" : 2,
 		"y" : 3,
-		"gr_state" : 0,
-		"orientation" : 64
+		"orientation" : 8,
+		"magic_type" : 31,
+		"charges" : 255
 	} ]
 }, {
 	"type" : "item",
