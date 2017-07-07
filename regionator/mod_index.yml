@@ -130,10 +130,6 @@ Shovel: {}
 Sign:
   CHOMP: ascii
 
-Street:
-  8: width
-  9: height
-
 Super_trapezoid:
   <<: *polygonal
   14: pattern_x_size
