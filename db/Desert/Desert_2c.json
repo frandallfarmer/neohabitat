@@ -1,0 +1,160 @@
+[
+  {
+    "ref": "context-Desert_2c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_3c", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.890d.Desert_2c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Flat.3c7f.Desert_2c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.2b89.Desert_2c", 
+    "mods": [
+      {
+        "lower_right_x": 8, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 249, 
+        "trapezoid_type": 0, 
+        "y": 20, 
+        "x": 52, 
+        "height": 21, 
+        "type": "Trapezoid", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Bush.f46f.Desert_2c", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 24, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Bush.9b40.Desert_2c", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 9, 
+        "gr_state": 1, 
+        "y": 139, 
+        "x": 132, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.216f.Desert_2c", 
+    "mods": [
+      {
+        "lower_right_x": 15, 
+        "upper_left_x": 2, 
+        "upper_right_x": 2, 
+        "lower_left_x": 7, 
+        "trapezoid_type": 0, 
+        "y": 19, 
+        "x": 52, 
+        "height": 16, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.acd2.Desert_2c", 
+    "mods": [
+      {
+        "lower_right_x": 1, 
+        "upper_left_x": 0, 
+        "upper_right_x": 7, 
+        "lower_left_x": 1, 
+        "trapezoid_type": 0, 
+        "y": 131, 
+        "x": 60, 
+        "height": 4, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Desert_2c"
+  }, 
+  {
+    "ref": "item-Flat.2052.Desert_2c", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_2c"
+  }
+]

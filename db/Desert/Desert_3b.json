@@ -1,0 +1,69 @@
+[
+  {
+    "ref": "context-Desert_3b", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_3c", 
+          "context-Desert_2c", 
+          "", 
+          "context-Desert_1b"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.a902.Desert_3b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_3b"
+  }, 
+  {
+    "ref": "item-Flat.b8cc.Desert_3b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3b"
+  }, 
+  {
+    "ref": "item-Flat.10d2.Desert_3b", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3b"
+  }
+]

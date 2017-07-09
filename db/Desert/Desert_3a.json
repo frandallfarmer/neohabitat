@@ -1,0 +1,115 @@
+[
+  {
+    "ref": "context-Desert_3a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_4b", 
+          "context-Desert_4a", 
+          "", 
+          "context-Desert_2b"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.75b9.Desert_3a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_3a"
+  }, 
+  {
+    "ref": "item-Flat.549c.Desert_3a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3a"
+  }, 
+  {
+    "ref": "item-Street.ed24.Desert_3a", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 60, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 5
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Desert_3a"
+  }, 
+  {
+    "ref": "item-Knick_knack.b64a.Desert_3a", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 16, 
+        "y": 154, 
+        "x": 76, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Desert_3a"
+  }, 
+  {
+    "ref": "item-Street.300e.Desert_3a", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 72, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 5
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Desert_3a"
+  }, 
+  {
+    "ref": "item-Flat.9d44.Desert_3a", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3a"
+  }
+]

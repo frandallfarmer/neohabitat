@@ -1,0 +1,130 @@
+[
+  {
+    "ref": "context-Desert_5b", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_4c", 
+          "", 
+          "", 
+          "context-Desert_5c"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.6f24.Desert_5b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_5b"
+  }, 
+  {
+    "ref": "item-Flat.3053.Desert_5b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_5b"
+  }, 
+  {
+    "ref": "item-Tree.f909.Desert_5b", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 84, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_5b"
+  }, 
+  {
+    "ref": "item-Tree.5d72.Desert_5b", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 64, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_5b"
+  }, 
+  {
+    "ref": "item-Tree.3e99.Desert_5b", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 16, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_5b"
+  }, 
+  {
+    "ref": "item-Flat.0dcc.Desert_5b", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_5b"
+  }, 
+  {
+    "ref": "item-Bush.7c06.Desert_5b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 128, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Desert_5b"
+  }
+]

@@ -1,0 +1,130 @@
+[
+  {
+    "ref": "context-Desert_3d", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_2e", 
+          "", 
+          "", 
+          "context-Desert_2d"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.250b.Desert_3d", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_3d"
+  }, 
+  {
+    "ref": "item-Flat.edb3.Desert_3d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3d"
+  }, 
+  {
+    "ref": "item-Teleport.ce63.Desert_3d", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 92, 
+        "type": "Teleport", 
+        "orientation": 0, 
+        "address": "desert"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Desert_3d"
+  }, 
+  {
+    "ref": "item-Tree.c29a.Desert_3d", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 64, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_3d"
+  }, 
+  {
+    "ref": "item-Tree.8737.Desert_3d", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 16, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_3d"
+  }, 
+  {
+    "ref": "item-Flat.3958.Desert_3d", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3d"
+  }, 
+  {
+    "ref": "item-Bush.5d74.Desert_3d", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 128, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Desert_3d"
+  }
+]

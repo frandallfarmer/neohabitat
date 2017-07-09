@@ -1,0 +1,114 @@
+[
+  {
+    "ref": "context-Desert_3f", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Desert_1f", 
+          "", 
+          "context-Desert_5f"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.6c09.Desert_3f", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_3f"
+  }, 
+  {
+    "ref": "item-Flat.80ef.Desert_3f", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3f"
+  }, 
+  {
+    "ref": "item-Tree.9910.Desert_3f", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 84, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_3f"
+  }, 
+  {
+    "ref": "item-Tree.6e47.Desert_3f", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 32, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_3f"
+  }, 
+  {
+    "ref": "item-Tree.49de.Desert_3f", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 16, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_3f"
+  }, 
+  {
+    "ref": "item-Flat.1f8d.Desert_3f", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3f"
+  }
+]

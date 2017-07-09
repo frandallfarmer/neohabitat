@@ -1,0 +1,148 @@
+[
+  {
+    "ref": "context-Desert_2e", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_1f", 
+          "context-Desert_3e", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.0529.Desert_2e", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Flat.8806.Desert_2e", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Tree.c5f0.Desert_2e", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 8, 
+        "gr_state": 4, 
+        "y": 60, 
+        "x": 72, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Tree.029d.Desert_2e", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 8, 
+        "gr_state": 3, 
+        "y": 67, 
+        "x": 64, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Tree.3e9d.Desert_2e", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 8, 
+        "gr_state": 1, 
+        "y": 29, 
+        "x": 64, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Tree.4e64.Desert_2e", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 16, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Flat.3f97.Desert_2e", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_2e"
+  }, 
+  {
+    "ref": "item-Bush.312b.Desert_2e", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 128, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Desert_2e"
+  }
+]

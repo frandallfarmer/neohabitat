@@ -1,0 +1,130 @@
+[
+  {
+    "ref": "context-Desert_4c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_3d", 
+          "", 
+          "", 
+          "context-Desert_4b"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.a931.Desert_4c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_4c"
+  }, 
+  {
+    "ref": "item-Flat.2995.Desert_4c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_4c"
+  }, 
+  {
+    "ref": "item-Street.727f.Desert_4c", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Desert_4c"
+  }, 
+  {
+    "ref": "item-Rock.3012.Desert_4c", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 56, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-Desert_4c"
+  }, 
+  {
+    "ref": "item-Rock.9043.Desert_4c", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 120, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-Desert_4c"
+  }, 
+  {
+    "ref": "item-Rock.64f8.Desert_4c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 88, 
+        "mass": 1, 
+        "y": 129, 
+        "x": 144, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-Desert_4c"
+  }, 
+  {
+    "ref": "item-Flat.52f2.Desert_4c", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_4c"
+  }
+]

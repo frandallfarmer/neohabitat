@@ -1,0 +1,114 @@
+[
+  {
+    "ref": "context-Desert_2d", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Desert_3d", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.0dee.Desert_2d", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_2d"
+  }, 
+  {
+    "ref": "item-Flat.0bc6.Desert_2d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_2d"
+  }, 
+  {
+    "ref": "item-Street.dafa.Desert_2d", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 60, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 5
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Desert_2d"
+  }, 
+  {
+    "ref": "item-Tree.dd3d.Desert_2d", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 120, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_2d"
+  }, 
+  {
+    "ref": "item-Street.0511.Desert_2d", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 72, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 5
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Desert_2d"
+  }, 
+  {
+    "ref": "item-Flat.1d6c.Desert_2d", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_2d"
+  }
+]

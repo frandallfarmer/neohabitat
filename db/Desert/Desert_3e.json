@@ -1,0 +1,126 @@
+[
+  {
+    "ref": "context-Desert_3e", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_4d", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.33a8.Desert_3e", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_3e"
+  }, 
+  {
+    "ref": "item-Flat.a49e.Desert_3e", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3e"
+  }, 
+  {
+    "ref": "item-Street.fda4.Desert_3e", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Desert_3e"
+  }, 
+  {
+    "ref": "item-Tree.b456.Desert_3e", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 20, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_3e"
+  }, 
+  {
+    "ref": "item-Short_sign.41d5.Desert_3e", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "ascii": [
+          138, 
+          128, 
+          133, 
+          131, 
+          56, 
+          48, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 32, 
+        "x": 116, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Desert_3e"
+  }, 
+  {
+    "ref": "item-Flat.6ef4.Desert_3e", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_3e"
+  }
+]
