@@ -1,0 +1,186 @@
+[
+  {
+    "ref": "context-Desert_4d", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_4e", 
+          "context-Desert_5d", 
+          "", 
+          "context-Desert_3d"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.8bc5.Desert_4d", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Flat.dd6a.Desert_4d", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Couch.2fea.Desert_4d", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 20, 
+        "type": "Couch", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Rock.61df.Desert_4d", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 56, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Rock.d696.Desert_4d", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 120, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Sign.1fe4.Desert_4d", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "ascii": [
+          134, 
+          128, 
+          82, 
+          69, 
+          83, 
+          84, 
+          134, 
+          128, 
+          83, 
+          84, 
+          79, 
+          80, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 35, 
+        "x": 108, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Rock.6ce3.Desert_4d", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 88, 
+        "mass": 1, 
+        "y": 129, 
+        "x": 144, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-Desert_4d"
+  }, 
+  {
+    "ref": "item-Flat.ee64.Desert_4d", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_4d"
+  }
+]

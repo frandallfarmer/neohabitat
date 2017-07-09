@@ -1,0 +1,148 @@
+[
+  {
+    "ref": "context-Desert_4a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Desert", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Desert_4d", 
+          "context-Desert_5a", 
+          "", 
+          "context-Desert_3a"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.50c2.Desert_4a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Flat.a714.Desert_4a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Tree.f4bb.Desert_4a", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 8, 
+        "gr_state": 4, 
+        "y": 60, 
+        "x": 56, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Tree.9089.Desert_4a", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 67, 
+        "x": 48, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Tree.9f21.Desert_4a", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 8, 
+        "gr_state": 1, 
+        "y": 29, 
+        "x": 48, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Tree.f418.Desert_4a", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 9, 
+        "gr_state": 2, 
+        "y": 77, 
+        "x": 44, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Tree.8777.Desert_4a", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 84, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Desert_4a"
+  }, 
+  {
+    "ref": "item-Flat.bda2.Desert_4a", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Desert_4a"
+  }
+]
