@@ -1447,6 +1447,7 @@ this.Amulet				= this.magical;
 this.Bag				= this.portableContainer;
 this.Ball				= this.portable;
 this.Box				= this.portableContainer;
+this.Bridge				= this.help;
 this.Building			= this.help;
 this.Bush				= this.help;
 this.Chair				= this.help;
