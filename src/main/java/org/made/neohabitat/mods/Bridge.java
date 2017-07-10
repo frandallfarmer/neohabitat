@@ -61,7 +61,7 @@ public class Bridge extends HabitatMod implements Copyable {
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Fence(style, x, y, orientation, gr_state, restricted);
+        return new Bridge(style, x, y, orientation, gr_state, restricted);
     }
 
     @Override
