@@ -618,8 +618,11 @@ public abstract class Magical extends HabitatMod {
 				for (tries = 0; tries < MAX_RANDOM_TELEPORT_RETRIES; tries++) {
 					String randBooth = boothKeys[rand.nextInt(boothKeys.length - 1)];
 					if (!randBooth.startsWith("otis-")) {
-						avatar.change_regions(directory.get(randBooth), AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
-						break;
+						String destination = directory.get(randBooth);
+						if (Region.IsRoomForMyAvatarIn(destination, from)) {
+							avatar.change_regions(destination, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+							break;
+						}
 					}
 				}
 				if (tries == MAX_RANDOM_TELEPORT_RETRIES) {
