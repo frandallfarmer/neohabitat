@@ -53,8 +53,10 @@ public abstract class Magical extends HabitatMod {
 		"l/listteleport PREFIX - Find booths",
 		"t/teleport WHERE - Teleport to booth",
 		"g/goavatar AVATAR - Goto Avatar",
+		"r/random - Teleport to a random booth",
 		"q/quit - Deactivates Tricorder"
 	};
+	public static final int MAX_RANDOM_TELEPORT_RETRIES = 50;
 
 	public Magical(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			OptInteger magic_type, OptInteger charges, OptInteger magic_data, OptInteger magic_data2,
@@ -606,6 +608,23 @@ public abstract class Magical extends HabitatMod {
 				send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
 				for (String help_line : TRICORDER_HELP) {
 					object_say(from, help_line);
+				}
+				break;
+			case "r":
+			case "random":
+				String[] boothKeys = {};
+				boothKeys = directory.keySet().toArray(boothKeys);
+				int tries;
+				for (tries = 0; tries < MAX_RANDOM_TELEPORT_RETRIES; tries++) {
+					String randBooth = boothKeys[rand.nextInt(boothKeys.length - 1)];
+					if (!randBooth.startsWith("otis-")) {
+						avatar.change_regions(directory.get(randBooth), AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+						break;
+					}
+				}
+				if (tries == MAX_RANDOM_TELEPORT_RETRIES) {
+					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
+					object_say(from, "Unable to teleport, please try again!");
 				}
 				break;
 			case "t":
