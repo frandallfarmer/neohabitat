@@ -71,6 +71,15 @@ public class Avatar extends Container implements UserMod {
 		"/j AVATAR - Asks this Avatar to teleport you to them"
 	};
 
+	public static final String[] GOD_SPECIAL_COMMAND_HELP = {
+		"Special commands for Oracles:",
+		"//a MESSAGE - Broadcasts a message globally",
+		"//g AVATAR - Teleports to an Avatar's location",
+		"//h - Shows this help",
+		"//n - Enables/disables Neohabitat features globally",
+		"//y AVATAR - Teleports an Avatar to your location"
+	};
+
 	public int HabitatClass() {
 		return CLASS_AVATAR;
 	}
@@ -610,142 +619,6 @@ public class Avatar extends Container implements UserMod {
 		// }
 	}
 
-	public void run_special_command(User from, String msg) {
-		// Parses command and arguments for ease of use.
-		String command = msg.split(" ")[0];
-		String[] commandSplit = msg.split(command);
-		String remainder = "";
-		if (commandSplit.length > 0) {
-			remainder = commandSplit[commandSplit.length - 1].trim();
-		}
-
-		switch (command) {
-			// God-level commands:
-			case "//announce":
-			case "//a":
-				if (nitty_bits[GOD_FLAG]) {
-					if (remainder.length() > 0) {
-						Region.tellEveryone(remainder);
-					} else {
-						object_say(from, UPGRADE_PREFIX + "ERROR: Must enter a message to announce.");
-					}
-				}
-				break;
-
-			// Mortal-level commands:
-			case "/ai":
-			case "/acceptinvite":
-				if (lastInviteRequestUser.length() == 0 ||
-						lastInviteRequestTimestamp < System.currentTimeMillis() - AVATAR_REQUEST_TIMEOUT_MILLIS) {
-					object_say(from, UPGRADE_PREFIX + "No invite request is active.");
-					break;
-				}
-				User invitingUser = Region.getUserByName(lastInviteRequestUser);
-				if (invitingUser != null) {
-					object_say(from, UPGRADE_PREFIX +
-						String.format("OK, joining %s...", lastInviteRequestUser));
-					Avatar invitingAvatar = avatar(invitingUser);
-					x = SAFE_X;
-					y = SAFE_Y;
-					action = STAND;
-					lastInviteRequestUser = "";
-					lastInviteRequestTimestamp = 0;
-					change_regions(invitingAvatar.lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
-				} else {
-					object_say(from, UPGRADE_PREFIX +
-						String.format("Cannot accept, %s is no longer online.", lastInviteRequestUser));
-					lastInviteRequestUser = "";
-					lastInviteRequestTimestamp = 0;
-					checkpoint_object(this);
-				}
-				break;
-			case "/aj":
-			case "/acceptjoin":
-				if (lastJoinRequestUser.length() == 0 ||
-					lastJoinRequestTimestamp < System.currentTimeMillis() - AVATAR_REQUEST_TIMEOUT_MILLIS) {
-					object_say(from, UPGRADE_PREFIX + "No join request is active.");
-					break;
-				}
-				User joiningUser = Region.getUserByName(lastJoinRequestUser);
-				if (joiningUser != null) {
-					object_say(from, UPGRADE_PREFIX +
-						String.format("OK, %s is joining you...", joiningUser.name()));
-					Avatar joiningAvatar = avatar(joiningUser);
-					joiningAvatar.x = SAFE_X;
-					joiningAvatar.y = SAFE_Y;
-					joiningAvatar.action = STAND;
-					lastJoinRequestUser = "";
-					lastJoinRequestTimestamp = 0;
-					joiningAvatar.change_regions(lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
-				} else {
-					object_say(from, UPGRADE_PREFIX +
-						String.format("Cannot accept, %s is no longer online.", lastJoinRequestUser));
-					lastJoinRequestUser = "";
-					lastJoinRequestTimestamp = 0;
-					checkpoint_object(this);
-				}
-				break;
-			case "/i":
-			case "/invite":
-				if (remainder.length() == 0) {
-					object_say(from, UPGRADE_PREFIX + "ERROR: Must specify an Avatar name.");
-					break;
-				}
-				User userToInvite = Region.getUserByName(remainder);
-				if (userToInvite != null) {
-					Avatar avatarToInvite = avatar(userToInvite);
-					if (avatarToInvite.lastArrivedIn.equals(current_region().object().ref())) {
-						object_say(from, UPGRADE_PREFIX + "They're already there!");
-					} else {
-						avatarToInvite.lastInviteRequestUser = object().name();
-						avatarToInvite.lastInviteRequestTimestamp = System.currentTimeMillis();
-						avatarToInvite.checkpoint_object(avatarToInvite);
-						avatarToInvite.object_say(userToInvite, UPGRADE_PREFIX +
-							String.format("%s invited you to join them, enter /ai to accept.", object().name()));
-						object_say(from, UPGRADE_PREFIX +
-							String.format("OK, invited %s to join you.", userToInvite.name()));
-					}
-				} else {
-					object_say(from, UPGRADE_PREFIX +
-						String.format("Cannot invite, %s is not online right now.", remainder));
-				}
-				break;
-			case "/j":
-			case "/join":
-				if (remainder.length() == 0) {
-					object_say(from, UPGRADE_PREFIX + "ERROR: Must specify an Avatar name.");
-					break;
-				}
-				User userToJoin = Region.getUserByName(remainder);
-				if (userToJoin != null) {
-					Avatar avatarToJoin = avatar(userToJoin);
-					if (avatarToJoin.lastArrivedIn.equals(current_region().object().ref())) {
-						object_say(from, UPGRADE_PREFIX + "You're already there!");
-					} else {
-						avatarToJoin.lastJoinRequestUser = object().name();
-						avatarToJoin.lastJoinRequestTimestamp = System.currentTimeMillis();
-						avatarToJoin.checkpoint_object(avatarToJoin);
-						avatarToJoin.object_say(userToJoin, UPGRADE_PREFIX +
-							String.format("%s asked to join you, enter /aj to accept.", object().name()));
-						object_say(from, UPGRADE_PREFIX +
-							String.format("OK, asked to join %s.", userToJoin.name()));
-					}
-				} else {
-					object_say(from, UPGRADE_PREFIX +
-						String.format("Cannot join, %s is not online right now.", remainder));
-				}
-				break;
-			case "/h":
-			case "/help":
-				for (String line : SPECIAL_COMMAND_HELP) {
-					object_say(from, UPGRADE_PREFIX + line);
-				}
-				break;
-			default:
-				object_say(from, UPGRADE_PREFIX + "Invalid special command, enter /h for help.");
-		}
-	}
-
 	/**
 	 * Verb (Specific)
 	 * 
@@ -768,13 +641,8 @@ public class Avatar extends Container implements UserMod {
 		String	msg		= text.value("(missing text)");
 
 		if (FALSE == in_esp) {
-			if (msg.toLowerCase().startsWith("//neohabitat") && nitty_bits[GOD_FLAG]) {
-				if (Region.NEOHABITAT_FEATURES) {
-					Region.tellEveryone("Original Habitat interface enabled globally.");
-				} else {
-					Region.tellEveryone("Upgraded NeoHabitat interface enabled globally.");
-				}
-				Region.NEOHABITAT_FEATURES = !Region.NEOHABITAT_FEATURES;
+			if (msg.toLowerCase().startsWith("//") && nitty_bits[GOD_FLAG]) {
+				run_godmode_command(from, msg);
 			} else if (msg.toLowerCase().startsWith("/") && Region.NEOHABITAT_FEATURES) {
 				run_special_command(from, msg);
 			} else if (msg.toLowerCase().startsWith("to:")) {
@@ -1449,6 +1317,239 @@ public class Avatar extends Container implements UserMod {
 		return false;
 	}
 
+	/**
+	 * Runs all logic for Neohabitat godmode commands (e.g. commands prefixed with a //)
+	 *
+	 * @param from User issuing the special command
+	 * @param msg Full contents of special command message
+	 */
+	public void run_godmode_command(User from, String msg) {
+		if (!nitty_bits[GOD_FLAG]) {
+			trace_msg("User %s attempted to run a godmode command not as a god", from.name());
+			return;
+		}
+
+		// Parses command and arguments for ease of use.
+		String command = msg.split(" ")[0];
+		String[] commandSplit = msg.split(command);
+		String remainder = "";
+		if (commandSplit.length > 0) {
+			remainder = commandSplit[commandSplit.length - 1].trim();
+		}
+
+		switch (command) {
+			case "//a":
+			case "//announce":
+				if (remainder.length() > 0) {
+					Region.tellEveryone(remainder);
+				} else {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must enter a message to announce.");
+				}
+				break;
+			case "//g":
+			case "//goto":
+				if (remainder.length() > 0) {
+					User userToGoto = Region.getUserByName(remainder);
+					if (userToGoto != null) {
+						Avatar avatarToGoto = avatar(userToGoto);
+						if (avatarToGoto.lastArrivedIn.equals(current_region().object().ref())) {
+							object_say(from, UPGRADE_PREFIX + "You're already there!");
+						} else {
+							x = SAFE_X;
+							y = SAFE_Y;
+							action = STAND;
+							change_regions(avatarToGoto.lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+						}
+					} else {
+						object_say(from, UPGRADE_PREFIX +
+							String.format("Cannot teleport, %s is not online.", remainder));
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must enter an Avatar to go to.");
+				}
+				break;
+			case "//h":
+			case "//help":
+				for (String line : GOD_SPECIAL_COMMAND_HELP) {
+					object_say(from, UPGRADE_PREFIX + line);
+				}
+				break;
+			case "//n":
+			case "//neohabitat":
+				if (Region.NEOHABITAT_FEATURES) {
+					Region.tellEveryone("Original Habitat interface enabled globally.");
+				} else {
+					Region.tellEveryone("Upgraded NeoHabitat interface enabled globally.");
+				}
+				Region.NEOHABITAT_FEATURES = !Region.NEOHABITAT_FEATURES;
+				break;
+			case "//y":
+			case "//yank":
+				if (remainder.length() > 0) {
+					User userToYank = Region.getUserByName(remainder);
+					if (userToYank != null) {
+						Avatar avatarToYank = avatar(userToYank);
+						if (avatarToYank.lastArrivedIn.equals(current_region().object().ref())) {
+							object_say(from, UPGRADE_PREFIX + "They're already there!");
+						} else {
+							avatarToYank.object_say(userToYank, UPGRADE_PREFIX +
+								"You are being summoned to an Oracle, please wait.");
+							avatarToYank.x = SAFE_X;
+							avatarToYank.y = SAFE_Y;
+							avatarToYank.action = STAND;
+							avatarToYank.change_regions(lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+						}
+					} else {
+						object_say(from, UPGRADE_PREFIX +
+							String.format("Cannot yank, %s is not online.", remainder));
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must enter an Avatar to yank.");
+				}
+				break;
+			default:
+				object_say(from, UPGRADE_PREFIX + "Unknown command, enter //h for help.");
+		}
+	}
+
+	/**
+	 * Runs all logic for Neohabitat special commands (e.g. commands prefixed with a /)
+	 *
+	 * @param from User issuing the special command
+	 * @param msg Full contents of special command message
+     */
+	public void run_special_command(User from, String msg) {
+		// Parses command and arguments for ease of use.
+		String command = msg.split(" ")[0];
+		String[] commandSplit = msg.split(command);
+		String remainder = "";
+		if (commandSplit.length > 0) {
+			remainder = commandSplit[commandSplit.length - 1].trim();
+		}
+
+		switch (command) {
+			case "/ai":
+			case "/acceptinvite":
+				if (lastInviteRequestUser.length() == 0 ||
+					lastInviteRequestTimestamp < System.currentTimeMillis() - AVATAR_REQUEST_TIMEOUT_MILLIS) {
+					object_say(from, UPGRADE_PREFIX + "No invite request is active.");
+					break;
+				}
+				User invitingUser = Region.getUserByName(lastInviteRequestUser);
+				lastInviteRequestUser = "";
+				lastInviteRequestTimestamp = 0;
+
+				if (invitingUser != null) {
+					Avatar invitingAvatar = avatar(invitingUser);
+					if (current_region().object().ref().equals(invitingAvatar.lastArrivedIn)) {
+						object_say(from, UPGRADE_PREFIX + "You're already there!");
+						checkpoint_object(this);
+					} else {
+						object_say(from, UPGRADE_PREFIX +
+							String.format("OK, joining %s...", invitingUser.name()));
+						x = SAFE_X;
+						y = SAFE_Y;
+						action = STAND;
+						change_regions(invitingAvatar.lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot accept, %s is no longer online.", lastInviteRequestUser));
+					checkpoint_object(this);
+				}
+				break;
+			case "/aj":
+			case "/acceptjoin":
+				if (lastJoinRequestUser.length() == 0 ||
+					lastJoinRequestTimestamp < System.currentTimeMillis() - AVATAR_REQUEST_TIMEOUT_MILLIS) {
+					object_say(from, UPGRADE_PREFIX + "No join request is active.");
+					break;
+				}
+				User joiningUser = Region.getUserByName(lastJoinRequestUser);
+				lastJoinRequestUser = "";
+				lastJoinRequestTimestamp = 0;
+
+				if (joiningUser != null) {
+					Avatar joiningAvatar = avatar(joiningUser);
+					if (joiningAvatar.current_region().object().ref().equals(current_region().object().ref())) {
+						object_say(from, UPGRADE_PREFIX + "They're already there!");
+						checkpoint_object(this);
+					} else {
+						object_say(from, UPGRADE_PREFIX +
+							String.format("OK, %s is joining you...", joiningUser.name()));
+						joiningAvatar.x = SAFE_X;
+						joiningAvatar.y = SAFE_Y;
+						joiningAvatar.action = STAND;
+						joiningAvatar.change_regions(lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot accept, %s is no longer online.", lastJoinRequestUser));
+					lastJoinRequestUser = "";
+					lastJoinRequestTimestamp = 0;
+					checkpoint_object(this);
+				}
+				break;
+			case "/i":
+			case "/invite":
+				if (remainder.length() == 0) {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must specify an Avatar name.");
+					break;
+				}
+				User userToInvite = Region.getUserByName(remainder);
+				if (userToInvite != null) {
+					Avatar avatarToInvite = avatar(userToInvite);
+					if (avatarToInvite.lastArrivedIn.equals(current_region().object().ref())) {
+						object_say(from, UPGRADE_PREFIX + "They're already there!");
+					} else {
+						avatarToInvite.lastInviteRequestUser = object().name();
+						avatarToInvite.lastInviteRequestTimestamp = System.currentTimeMillis();
+						avatarToInvite.checkpoint_object(avatarToInvite);
+						avatarToInvite.object_say(userToInvite, UPGRADE_PREFIX +
+							String.format("%s invited you to join them, enter /ai to accept.", object().name()));
+						object_say(from, UPGRADE_PREFIX +
+							String.format("OK, invited %s to join you.", userToInvite.name()));
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot invite, %s is not online right now.", remainder));
+				}
+				break;
+			case "/j":
+			case "/join":
+				if (remainder.length() == 0) {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must specify an Avatar name.");
+					break;
+				}
+				User userToJoin = Region.getUserByName(remainder);
+				if (userToJoin != null) {
+					Avatar avatarToJoin = avatar(userToJoin);
+					if (avatarToJoin.lastArrivedIn.equals(current_region().object().ref())) {
+						object_say(from, UPGRADE_PREFIX + "You're already there!");
+					} else {
+						avatarToJoin.lastJoinRequestUser = object().name();
+						avatarToJoin.lastJoinRequestTimestamp = System.currentTimeMillis();
+						avatarToJoin.checkpoint_object(avatarToJoin);
+						avatarToJoin.object_say(userToJoin, UPGRADE_PREFIX +
+							String.format("%s asked to join you, enter /aj to accept.", object().name()));
+						object_say(from, UPGRADE_PREFIX +
+							String.format("OK, asked to join %s.", userToJoin.name()));
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot join, %s is not online right now.", remainder));
+				}
+				break;
+			case "/h":
+			case "/help":
+				for (String line : SPECIAL_COMMAND_HELP) {
+					object_say(from, UPGRADE_PREFIX + line);
+				}
+				break;
+			default:
+				object_say(from, UPGRADE_PREFIX + "Invalid special command, enter /h for help.");
+		}
+	}
 
 	/**
 	 * Set a user's record value.
