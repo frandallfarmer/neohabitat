@@ -19,7 +19,8 @@ const fileRoots = {
   beach: './Beach',
   back4t: './Back4t',
   streets: "./Streets",
-  text: './Text'
+  text: './Text',
+  users: './Users'
 };
 
 const replacements = [
