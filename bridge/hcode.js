@@ -174,7 +174,11 @@ this.SERVER_OPS = {
 		"DIG$": 				{ reqno: 8 },
 		"DRIVE$": 				{ reqno: 8 },
 		"EXPIRE_$": 			{ reqno: 9 },
-		"EXPLODE_$": 			{ reqno: 8 },
+		"EXPLODE_$": 			{ reqno: 8,
+			toClient: function (o,b) {
+				b.add(o.pinpulled);
+			}
+       },
 		"FAKESHOOT$": 			{ reqno: 8,
 			toClient: function (o,b) { 
 				b.add(o.state);
@@ -828,6 +832,11 @@ this.translate = {
 				}
 			}
 		},
+		PULLPIN: {
+			toClient: function(o, b) {
+				b.add(o.PULLPIN_SUCCESS);
+			}
+		},
 		SPLIT: {
 			toServer: function(a,m) {
 				m.amount_lo = a[0];
@@ -996,6 +1005,16 @@ this.Avatar = {
 		}
 };
 
+this.Grenade = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"PULLPIN" }
+		}
+};
+
 this.Ghost = {
 		clientMessages: {
 			0: { op:"HELP" },
@@ -1003,7 +1022,7 @@ this.Ghost = {
 			9: { op:"NEWREGION" },
 			10:{ op:"CORPORATE" }
 		}
-}
+};
 
 this.Head = {
 		clientMessages: {

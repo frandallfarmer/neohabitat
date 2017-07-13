@@ -847,7 +847,7 @@ function parseHabitatClientMessage(client, server, data) {
 						context = client.user.mods[0].lastArrivedIn;
 						client.user.mods[0].lastArrivedIn = "";
 					} else {
-						choices = ["context-Downtown_5f"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
+						choices = ["context-test"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
 						context = choices[rnd(choices.length)];
 					}
 				} else if (client.state.nextRegion !== "") {
@@ -1033,6 +1033,11 @@ var encodeState = {
 			buf.add(state.pattern_x_size);
 			buf.add(state.pattern_y_size);
 			buf.add(state.pattern);
+			return buf;
+		},
+		Grenade: function (state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.pinpulled || 0);
 			return buf;
 		},
 		Glue: function (state, container, buf) {

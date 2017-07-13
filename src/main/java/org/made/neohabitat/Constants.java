@@ -212,6 +212,18 @@ public interface Constants {
     public static final int      MAGIC_LAMP_WAITING         = 0;
     public static final int      MAGIC_LAMP_GENIE           = 1;
     
+    /* Weapon constants */
+	public static final int 	 DAMAGE_DECREMENT 			= 20;
+	public static final int 	 MISS 						= 0;
+	public static final int 	 DESTROY					= 1;
+	public static final int 	 HIT 						= 2;
+	public static final int 	 DEATH 						= 3;
+	public static final int 	 GRENADE_FUSE_DELAY 		= 20;
+	public static final int 	 GET_SHOT_POSTURE 			= 138;
+	
+	/* Drugs constants */		
+	public static final int 	 NUMBER_OF_DRUG_EFFECTS 	= 3;
+    
     /* general flag constants */
     public static final int      RESTRICTED                 = 1;
     public static final int      MODIFIED                   = 2;
