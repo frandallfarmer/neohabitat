@@ -11,6 +11,11 @@ import org.elkoserver.server.context.UserMod;
 import org.elkoserver.util.ArgRunnable;
 import org.made.neohabitat.*;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * The Avatar Mod (attached to an Elko User.)
  * 
@@ -51,9 +56,20 @@ public class Avatar extends Container implements UserMod {
 	public static final int DOOR_OFFSET = 12;
 	public static final int BUILDING_OFFSET = 28;
 
+	public static final long AVATAR_REQUEST_TIMEOUT_MILLIS = 60 * 60 * 1000;
+
 	public static final String DEFAULT_TURF = "context-test";
 
 	public static final String MAIL_ARRIVED_MSG = "* You have MAIL in your pocket. *";
+
+	public static final String[] SPECIAL_COMMAND_HELP = {
+		"Special commands:",
+		"/ai - Accepts an invite request",
+		"/aj - Accepts a join request",
+		"/h or /help - Shows this help",
+		"/i AVATAR - Invites this Avatar to teleport to you",
+		"/j AVATAR - Asks this Avatar to teleport you to them"
+	};
 
 	public int HabitatClass() {
 		return CLASS_AVATAR;
@@ -174,6 +190,12 @@ public class Avatar extends Container implements UserMod {
 	public int		  lastConnectedTime = 0;
 	public String	  lastArrivedIn		= "";
 
+	private String    lastJoinRequestUser = "";
+	private long      lastJoinRequestTimestamp = 0;
+
+	private String    lastInviteRequestUser = "";
+	private long      lastInviteRequestTimestamp = 0;
+
 	/** Used to indicate that this avatar-instance should be treated as the "first" instantiation of the session */
 	public boolean	  firstConnection	= false;
 
@@ -183,14 +205,19 @@ public class Avatar extends Container implements UserMod {
 
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
 		"activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
-		"to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "lastArrivedIn", "?stats" })
+		"to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "lastArrivedIn",
+		"lastInviteRequestUser", "lastInviteRequestTimestamp", "lastJoinRequestUser", "lastJoinRequestTimestamp",
+		"?stats" })
 	public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
 			OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
 			OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
 			OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
 			OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
 			OptString turf, int[] custom, OptInteger lastConnectedDay, OptInteger lastConnectedTime,
-			OptBoolean amAGhost, OptBoolean firstConnection, OptString lastArrivedIn, int[] stats) {
+			OptBoolean amAGhost, OptBoolean firstConnection, OptString lastArrivedIn,
+			OptString lastInviteRequestUser, OptInteger lastInviteRequestTimestamp,
+			OptString lastJoinRequestUser, OptInteger lastJoinRequestTimestamp,
+			int[] stats) {
 		super(style, x, y, orientation, gr_state, new OptBoolean(false));
 		if (null == stats) {
 			stats = new int[HS$MAX];
@@ -219,6 +246,10 @@ public class Avatar extends Container implements UserMod {
 				amAGhost.value(false),
 				firstConnection.value(false),
 				lastArrivedIn.value(""),
+				lastInviteRequestUser.value(""),
+				lastInviteRequestTimestamp.value(0),
+				lastJoinRequestUser.value(""),
+				lastJoinRequestTimestamp.value(0),
 				stats);
 	}
 
@@ -226,18 +257,21 @@ public class Avatar extends Container implements UserMod {
 			int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
 			int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
 			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
-			boolean firstConnection, String lastArrivedIn, int[] stats) {
+			boolean firstConnection, String lastArrivedIn, String lastInviteRequestUser, long lastInviteRequestTimestamp,
+			String lastJoinRequestUser, long lastJoinRequestTimestamp, int[] stats) {
 		super(style, x, y, orientation, gr_state, false);
 		setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
 				from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime,
-				amAGhost, firstConnection, lastArrivedIn, stats);
+				amAGhost, firstConnection, lastArrivedIn, lastInviteRequestUser, lastInviteRequestTimestamp,
+				lastJoinRequestUser, lastJoinRequestTimestamp, stats);
 	}
 
 	protected void setAvatarState(boolean[] nitty_bits, String bodyType,
 			int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
 			int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
 			String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
-			boolean firstConnection, String lastArrivedIn, int[] stats) {
+			boolean firstConnection, String lastArrivedIn, String lastInviteRequestUser, long lastInviteRequestTimestamp,
+			String lastJoinRequestUser, long lastJoinRequestTimestamp, int[] stats) {
 		this.nitty_bits = nitty_bits;
 		this.bodyType = bodyType;
 		this.stun_count = stun_count;
@@ -260,6 +294,10 @@ public class Avatar extends Container implements UserMod {
 		this.amAGhost = amAGhost;
 		this.firstConnection = firstConnection;
 		this.lastArrivedIn = lastArrivedIn;
+		this.lastInviteRequestUser = lastInviteRequestUser;
+		this.lastInviteRequestTimestamp = lastInviteRequestTimestamp;
+		this.lastJoinRequestUser = lastJoinRequestUser;
+		this.lastJoinRequestTimestamp = lastJoinRequestTimestamp;
 		this.stats = stats;
 	}
 
@@ -280,18 +318,22 @@ public class Avatar extends Container implements UserMod {
 		result.addParameter("custom", 		custom);
 		result.addParameter("amAGhost",		amAGhost);
 		if (result.control().toRepository()) {
-			result.addParameter("transition_type",	transition_type);
-			result.addParameter("from_orientation", from_orientation);
-			result.addParameter("from_direction",   from_direction);
-			result.addParameter("from_region",      from_region);
-			result.addParameter("to_region",      	to_region);
-			result.addParameter("to_x",		      	to_x);
-			result.addParameter("to_y",		      	to_y);
-			result.addParameter("turf", 			turf);
-			result.addParameter("lastConnectedDay", lastConnectedDay);
-			result.addParameter("lastConnectedTime",lastConnectedTime);
-			result.addParameter("firstConnection",	firstConnection);
-			result.addParameter("lastArrivedIn",	lastArrivedIn);
+			result.addParameter("transition_type",				transition_type);
+			result.addParameter("from_orientation", 			from_orientation);
+			result.addParameter("from_direction",   			from_direction);
+			result.addParameter("from_region",      			from_region);
+			result.addParameter("to_region",      				to_region);
+			result.addParameter("to_x",		      				to_x);
+			result.addParameter("to_y",		      				to_y);
+			result.addParameter("turf", 						turf);
+			result.addParameter("lastConnectedDay", 			lastConnectedDay);
+			result.addParameter("lastConnectedTime",			lastConnectedTime);
+			result.addParameter("firstConnection",				firstConnection);
+			result.addParameter("lastArrivedIn",				lastArrivedIn);
+			result.addParameter("lastInviteRequestUser",		lastInviteRequestUser);
+			result.addParameter("lastInviteRequestTimestamp",	lastInviteRequestTimestamp);
+			result.addParameter("lastJoinRequestUser",			lastJoinRequestUser);
+			result.addParameter("lastJoinRequestTimestamp",		lastJoinRequestTimestamp);
 			result.addParameter("stats", 			stats);
 		}
 		if (result.control().toClient() && sittingIn != 0) {
@@ -568,6 +610,142 @@ public class Avatar extends Container implements UserMod {
 		// }
 	}
 
+	public void run_special_command(User from, String msg) {
+		// Parses command and arguments for ease of use.
+		String command = msg.split(" ")[0];
+		String[] commandSplit = msg.split(command);
+		String remainder = "";
+		if (commandSplit.length > 0) {
+			remainder = commandSplit[commandSplit.length - 1].trim();
+		}
+
+		switch (command) {
+			// God-level commands:
+			case "//announce":
+			case "//a":
+				if (nitty_bits[GOD_FLAG]) {
+					if (remainder.length() > 0) {
+						Region.tellEveryone(remainder);
+					} else {
+						object_say(from, UPGRADE_PREFIX + "ERROR: Must enter a message to announce.");
+					}
+				}
+				break;
+
+			// Mortal-level commands:
+			case "/ai":
+			case "/acceptinvite":
+				if (lastInviteRequestUser.length() == 0 ||
+						lastInviteRequestTimestamp < System.currentTimeMillis() - AVATAR_REQUEST_TIMEOUT_MILLIS) {
+					object_say(from, UPGRADE_PREFIX + "No invite request is active.");
+					break;
+				}
+				User invitingUser = Region.getUserByName(lastInviteRequestUser);
+				if (invitingUser != null) {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("OK, joining %s...", lastInviteRequestUser));
+					Avatar invitingAvatar = avatar(invitingUser);
+					x = SAFE_X;
+					y = SAFE_Y;
+					action = STAND;
+					lastInviteRequestUser = "";
+					lastInviteRequestTimestamp = 0;
+					change_regions(invitingAvatar.lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot accept, %s is no longer online.", lastInviteRequestUser));
+					lastInviteRequestUser = "";
+					lastInviteRequestTimestamp = 0;
+					checkpoint_object(this);
+				}
+				break;
+			case "/aj":
+			case "/acceptjoin":
+				if (lastJoinRequestUser.length() == 0 ||
+					lastJoinRequestTimestamp < System.currentTimeMillis() - AVATAR_REQUEST_TIMEOUT_MILLIS) {
+					object_say(from, UPGRADE_PREFIX + "No join request is active.");
+					break;
+				}
+				User joiningUser = Region.getUserByName(lastJoinRequestUser);
+				if (joiningUser != null) {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("OK, %s is joining you...", joiningUser.name()));
+					Avatar joiningAvatar = avatar(joiningUser);
+					joiningAvatar.x = SAFE_X;
+					joiningAvatar.y = SAFE_Y;
+					joiningAvatar.action = STAND;
+					lastJoinRequestUser = "";
+					lastJoinRequestTimestamp = 0;
+					joiningAvatar.change_regions(lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot accept, %s is no longer online.", lastJoinRequestUser));
+					lastJoinRequestUser = "";
+					lastJoinRequestTimestamp = 0;
+					checkpoint_object(this);
+				}
+				break;
+			case "/i":
+			case "/invite":
+				if (remainder.length() == 0) {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must specify an Avatar name.");
+					break;
+				}
+				User userToInvite = Region.getUserByName(remainder);
+				if (userToInvite != null) {
+					Avatar avatarToInvite = avatar(userToInvite);
+					if (avatarToInvite.lastArrivedIn.equals(current_region().object().ref())) {
+						object_say(from, UPGRADE_PREFIX + "They're already there!");
+					} else {
+						avatarToInvite.lastInviteRequestUser = object().name();
+						avatarToInvite.lastInviteRequestTimestamp = System.currentTimeMillis();
+						avatarToInvite.checkpoint_object(avatarToInvite);
+						avatarToInvite.object_say(userToInvite, UPGRADE_PREFIX +
+							String.format("%s invited you to join them, enter /ai to accept.", object().name()));
+						object_say(from, UPGRADE_PREFIX +
+							String.format("OK, invited %s to join you.", userToInvite.name()));
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot invite, %s is not online right now.", remainder));
+				}
+				break;
+			case "/j":
+			case "/join":
+				if (remainder.length() == 0) {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must specify an Avatar name.");
+					break;
+				}
+				User userToJoin = Region.getUserByName(remainder);
+				if (userToJoin != null) {
+					Avatar avatarToJoin = avatar(userToJoin);
+					if (avatarToJoin.lastArrivedIn.equals(current_region().object().ref())) {
+						object_say(from, UPGRADE_PREFIX + "You're already there!");
+					} else {
+						avatarToJoin.lastJoinRequestUser = object().name();
+						avatarToJoin.lastJoinRequestTimestamp = System.currentTimeMillis();
+						avatarToJoin.checkpoint_object(avatarToJoin);
+						avatarToJoin.object_say(userToJoin, UPGRADE_PREFIX +
+							String.format("%s asked to join you, enter /aj to accept.", object().name()));
+						object_say(from, UPGRADE_PREFIX +
+							String.format("OK, asked to join %s.", userToJoin.name()));
+					}
+				} else {
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Cannot join, %s is not online right now.", remainder));
+				}
+				break;
+			case "/h":
+			case "/help":
+				for (String line : SPECIAL_COMMAND_HELP) {
+					object_say(from, UPGRADE_PREFIX + line);
+				}
+				break;
+			default:
+				object_say(from, UPGRADE_PREFIX + "Invalid special command, enter /h for help.");
+		}
+	}
+
 	/**
 	 * Verb (Specific)
 	 * 
@@ -590,13 +768,15 @@ public class Avatar extends Container implements UserMod {
 		String	msg		= text.value("(missing text)");
 
 		if (FALSE == in_esp) {
-			if (msg.toLowerCase().startsWith("//neohabitat")) {
+			if (msg.toLowerCase().startsWith("//neohabitat") && nitty_bits[GOD_FLAG]) {
 				if (Region.NEOHABITAT_FEATURES) {
 					Region.tellEveryone("Original Habitat interface enabled globally.");
 				} else {
 					Region.tellEveryone("Upgraded NeoHabitat interface enabled globally.");
 				}
 				Region.NEOHABITAT_FEATURES = !Region.NEOHABITAT_FEATURES;
+			} else if (msg.toLowerCase().startsWith("/") && Region.NEOHABITAT_FEATURES) {
+				run_special_command(from, msg);
 			} else if (msg.toLowerCase().startsWith("to:")) {
 				String name = msg.substring(3).trim();
 				User   user = Region.getUserByName(name);

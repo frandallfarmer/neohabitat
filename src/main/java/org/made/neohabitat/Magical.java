@@ -1,6 +1,9 @@
 package org.made.neohabitat;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import org.elkoserver.foundation.json.JSONMethod;
@@ -44,19 +47,6 @@ public abstract class Magical extends HabitatMod {
 
 	private static final int	NO_CHARGES = -1;
 
-	public static final String[] TRICORDER_HELP = new String[]{
-		"The Tricorder helps you to get around",
-		"Habitat and meet new Avatars.",
-		"Commands:",
-		"h/help - Shows this help",
-		"l/listteleport - List teleport booths",
-		"l/listteleport PREFIX - Find booths",
-		"t/teleport WHERE - Teleport to booth",
-		"g/goavatar AVATAR - Goto Avatar",
-		"r/random - Teleport to a random booth",
-		"q/quit - Deactivates Tricorder"
-	};
-	public static final int MAX_RANDOM_TELEPORT_RETRIES = 50;
 
 	public Magical(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
 			OptInteger magic_type, OptInteger charges, OptInteger magic_data, OptInteger magic_data2,
@@ -117,10 +107,9 @@ public abstract class Magical extends HabitatMod {
 	}
 
 	/** The number of magical methods available. NOTE: This is expandable */
-	private final static int NUMBER_OF_MAGICS = 31; /* This should grow! */
+	private final static int NUMBER_OF_MAGICS = 30; /* This should grow! */
 
 	private final static int MAGIC_GOD_TOOL	  = 17;
-	private final static int TRICORDER_TOOL   = 31;
 
 	/**
 	 * Verb (Magical): Activate any magic on this, if there are charges left.
@@ -234,10 +223,7 @@ public abstract class Magical extends HabitatMod {
 			break;
 		case 30:
 			magic_default(from, targetMod);
-			break;
-		case TRICORDER_TOOL:
-			tricorder(from, targetMod);
-			break;
+			break;			
 		}
 	}
 
@@ -511,168 +497,6 @@ public abstract class Magical extends HabitatMod {
 
 	static public boolean isGodTool(Magical magic) {
 		return (magic.magic_type == MAGIC_GOD_TOOL);
-	}
-
-	public void tricorder(User from, HabitatMod target) {
-		Avatar avatar = avatar(from);
-		avatar.savedTarget = target;
-		avatar.savedMagical = this; // We have to return to this object to keep
-		object_say(from, "Tricorder activated.");
-		object_say(from, "Enter h for help.");
-		send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-		send_reply_success(from);
-	}
-
-	/** CALLBACK for the Tricorder device
-	 *
-	 * @param from User holding the Tricorder device
-	 * @param request_string contents of a user's command
-     */
-	public void tricorder_revisited(User from, String request_string) {
-		Avatar avatar = avatar(from);
-		String[] split_command = request_string.split(" ");
-		String command = split_command[0];
-		String[] args = Arrays.copyOfRange(split_command, 1, split_command.length);
-		boolean hasArgs = args.length > 0;
-
-		@SuppressWarnings("unchecked")
-		TreeMap<String, String> directory = new TreeMap<>(
-			(Map <String, String>) context().getStaticObject("teleports"));
-
-		switch (command.toLowerCase()) {
-			case "g":
-			case "goavatar":
-				if (!hasArgs) {
-					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-					object_say(from, "Please enter a valid Avatar name.");
-					break;
-				}
-				User user = Region.getUserByName(args[0]);
-				if (user != null) {
-					Avatar otherAvatar = avatar(user);
-					if (current_region().object().ref().equals(otherAvatar.lastArrivedIn)) {
-						send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-						object_say(from, "You're already there!");
-					} else if (Region.IsRoomForMyAvatarIn(otherAvatar.lastArrivedIn, from)) {
-						avatar.x = SAFE_X;
-						avatar.y = SAFE_Y;
-						avatar.action = STAND;
-						avatar.change_regions(otherAvatar.lastArrivedIn, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
-					} else {
-						send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-						object_say(from, "Flash crowd detected at that destination. Try a different location.");
-					}
-				} else {
-					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-					object_say(from, "Unable to find: " + args[0]);
-				}
-				break;
-			case "l":
-			case "listteleport":
-				send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-				String prefix = "";
-
-				if (hasArgs) {
-					prefix = args[0];
-					object_say(from, String.format("Teleports with prefix %s:", prefix));
-				} else {
-					object_say(from, "All teleports:");
-				}
-
-				boolean foundBooth = false;
-				for (String key : directory.navigableKeySet()) {
-					if (key.contains("End of Directory")) {
-						continue;
-					}
-					String[] splitKey = key.split("-");
-					String realm = splitKey[0];
-					if (!realm.equals("otis")) {
-						String booth = null;
-						if (splitKey.length > 1) {
-							booth = splitKey[1];
-						} else {
-							booth = splitKey[0];
-						}
-						if (booth.startsWith(prefix)) {
-							foundBooth = true;
-							object_say(from, booth);
-						}
-					}
-				}
-				if (!foundBooth) {
-					object_say(from, "No teleports found.");
-				}
-				break;
-			case "h":
-			case "help":
-				send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-				for (String help_line : TRICORDER_HELP) {
-					object_say(from, help_line);
-				}
-				break;
-			case "r":
-			case "random":
-				String[] boothKeys = {};
-				boothKeys = directory.keySet().toArray(boothKeys);
-				int tries;
-				for (tries = 0; tries < MAX_RANDOM_TELEPORT_RETRIES; tries++) {
-					String randBooth = boothKeys[rand.nextInt(boothKeys.length - 1)];
-					if (!randBooth.startsWith("otis-")) {
-						String destination = directory.get(randBooth);
-						if (Region.IsRoomForMyAvatarIn(destination, from)) {
-							avatar.change_regions(destination, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
-							break;
-						}
-					}
-				}
-				if (tries == MAX_RANDOM_TELEPORT_RETRIES) {
-					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-					object_say(from, "Unable to teleport, please try again!");
-				}
-				break;
-			case "t":
-			case "teleport":
-				if (!hasArgs) {
-					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-					object_say(from, "Please enter a valid destination.");
-					break;
-				}
-
-				String directoryKey = squish(String.join("", args));
-
-				String destinationRegion = null;
-				if (directoryKey.equals("home")) {
-					destinationRegion = avatar.turf;
-				} else {
-					if (directoryKey.indexOf('-') == -1) {
-						directoryKey = "pop-" + directoryKey;
-					}
-					if (directory.containsKey(directoryKey)) {
-						destinationRegion = directory.get(directoryKey);
-					} else {
-						send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-						object_say(from, "Invalid teleport destination: " + directoryKey);
-						break;
-					}
-				}
-
-				if (current_region().object().ref().equals(destinationRegion)) {
-					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-					object_say(from, "You're already there!");
-				} else if (Region.IsRoomForMyAvatarIn(destinationRegion, from)) {
-					avatar.x = SAFE_X;
-					avatar.y = SAFE_Y;
-					avatar.action = STAND;
-					avatar.change_regions(destinationRegion, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
-				} else {
-					send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-					object_say(from, "Flash crowd detected at that destination. Try a different location.");
-				}
-				break;
-			default:
-				send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", TRICORDER_PROMPT + " ");
-				object_say(from, "Unknown command, enter h for help.");
-		}
 	}
 
 	/**
