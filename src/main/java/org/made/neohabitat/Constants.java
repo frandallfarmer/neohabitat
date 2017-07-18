@@ -602,7 +602,7 @@ public interface Constants {
     /** This prefix is to always be displayed before a feature that did not exist in either Lucasfilm's Habitat Beta or Club Caribe */
     public static final String	 UPGRADE_PREFIX				= "" + (char) ARROW_R;
     
-    public static final long	 ONE_DAY				    = 1000 * 60 * 60 * 24;	// Millis
+    public static final long	 ONE_DAY			        = 1000 * 60 * 60 * 24;	// Millis
     
     public static final int		 HS$lifetime          		=   1;
     public static final int		 HS$max_lifetime      		=   2;
