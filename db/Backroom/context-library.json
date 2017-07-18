@@ -30,6 +30,22 @@
 				"key_hi" : 5
 			} ]
 		},
+		
+		{
+			"type": "item",
+			"ref": "item-library.grenade",
+			"name": "Grenade",
+			"in": "context-library",
+			"mods": [ {
+				"type" : "Grenade",
+				"style" : 0,
+				"x": 10, 
+				"y": 130,
+				"orientation" : 16,
+				"pinpulled" : 0,
+				"gr_state": 0
+		} ]
+		},
 		{
 			"ref" : "item-library.genie",
 			"mods" : [ {

@@ -847,7 +847,7 @@ function parseHabitatClientMessage(client, server, data) {
 						context = client.user.mods[0].lastArrivedIn;
 						client.user.mods[0].lastArrivedIn = "";
 					} else {
-						choices = ["context-test"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
+						choices = ["context-Downtown_5f"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
 						context = choices[rnd(choices.length)];
 					}
 				} else if (client.state.nextRegion !== "") {

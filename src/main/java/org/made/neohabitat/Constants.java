@@ -18,12 +18,12 @@ public interface Constants {
     public static final int      CONNECTION_HABITAT         = 0;
     public static final int      MAX_HEALTH                 = 255;
 
-    public static final int 	BOOK$HELP	= 0;
-    public static final int 	BOOK$VENDO	= 1;
-    public static final int 	PAPER$HELP	= 2;
+    public static final int 	BOOK$HELP					= 0;
+    public static final int 	BOOK$VENDO					= 1;
+    public static final int 	PAPER$HELP					= 2;
     
-    public static final int		SAFE_X		= 8;
-    public static final int		SAFE_Y		= 132;
+    public static final int		SAFE_X						= 8;
+    public static final int		SAFE_Y						= 132;
     
     /*
      * defs_class.incl.pl1
@@ -213,10 +213,15 @@ public interface Constants {
     public static final int      MAGIC_LAMP_GENIE           = 1;
     
     /* Weapon constants */
+    /* The total amount of damage to be rendered by an ATTACK. */
 	public static final int 	 DAMAGE_DECREMENT 			= 20;
+	/* no effect, beep at player */
 	public static final int 	 MISS 						= 0;
+	/* destroy object that is target */
 	public static final int 	 DESTROY					= 1;
+	/* keester avatar that is target */
 	public static final int 	 HIT 						= 2;
+	/* kill avatar that is target */
 	public static final int 	 DEATH 						= 3;
 	public static final int 	 GRENADE_FUSE_DELAY 		= 20;
 	public static final int 	 GET_SHOT_POSTURE 			= 138;

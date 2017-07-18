@@ -113,8 +113,7 @@ public class Grenade extends Weapon implements Copyable {
 	
 	@JSONMethod
     public void PULLPIN(User from) {
-	    curAvatar = avatar(from);
-		checkpoint_object(heldObject(curAvatar));
+		curAvatar = avatar(from);
 		grenadeObj = curAvatar.contents(HANDS);
 		checkpoint_object(grenadeObj);
         if(current_region().nitty_bits[WEAPONS_FREE]){
@@ -128,14 +127,14 @@ public class Grenade extends Weapon implements Copyable {
         	object_broadcast(noid, "Sproing!!!");
         	curAvatar.checkpoint_object(this); 
         	checkpoint_object(this); 
-          	new Thread(Grenade_Timer).start(); 
+			new Thread(Grenade_Timer).start(); 
         }
         else
         	success = FALSE;
     	send_reply_msg(from, noid, "PULLPIN_SUCCESS", success);
     }
 
-	 protected Runnable Grenade_Timer = new Runnable() {
+	protected Runnable Grenade_Timer = new Runnable() {
 	    	@Override
 	    	public void run() {
 	    		try {
@@ -156,29 +155,27 @@ public class Grenade extends Weapon implements Copyable {
 	    							trace_msg("Killing Avatar %s...", damageableAvatar.obj_id());
 	    							kill_avatar(damageableAvatar);
 	    						}
-	    				    	send_reply_msg(curAvatar.elko_user(), noid, "PULLPIN_SUCCESS", success);
+								send_reply_msg(curAvatar.elko_user(), noid, "PULLPIN_SUCCESS", success);
 	    					}
-	    					
 	    				}
 	    				curAvatar.checkpoint_object(grenadeObj);
 	    				if(curAvatar.holding_class(CLASS_GRENADE)){
-				    		destroy_object(heldObject(curAvatar));
+							destroy_object(heldObject(curAvatar));
 				    	}
 				    	else
 				    		((Item) grenadeObj.object()).delete(); 
-	    				
-	    		} catch (Exception e) {
+	    		} 
+				catch (Exception e) {
 	    			trace_msg("Grenade thread interrupted.");
-	    		}    		
+	    		}
 	    	}
-	    };
+	};
 
-	public void grenade_HELP(User from){
+	public void grenade_HELP(User from) {
 		if(pinpulled != TRUE){
 			send_reply_msg(from, "Grenade: Select DO (while holding) to pull pin, then throw to ground and leave the region quickly.");
 		}
 		else
 			send_reply_msg(from, "Grenade: Pin pulled! Run away now!!!");
 	}
-
 }

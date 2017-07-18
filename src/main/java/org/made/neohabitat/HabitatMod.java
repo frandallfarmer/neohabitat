@@ -3283,7 +3283,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		return isSeating(this);
 	}
 	
-	
 	public int damage_avatar(Avatar who) {
 		trace_msg("Damaging Avatar %s...", who.obj_id());
 		who.health -= DAMAGE_DECREMENT;
@@ -3328,7 +3327,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	public boolean is_ranged_weapon() {
 		return HabitatClass() == CLASS_GUN;
 	}
-	
 
 	/**
 	 * Terminates an avatar with extreme prejudice.
