@@ -10,6 +10,7 @@ import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Weapon;
+import org.elkoserver.foundation.run.Runner;
 
 /**
  * Habitat Grenade Mod 
@@ -59,8 +60,7 @@ public class Grenade extends Weapon implements Copyable {
 
 	public int success;
 	public int pinpulled = FALSE;
-	HabitatMod grenadeObj;
-	Avatar curAvatar;
+	private HabitatMod grenadeObj;
 
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "pinpulled" })
 	public Grenade(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
@@ -110,19 +110,19 @@ public class Grenade extends Weapon implements Copyable {
 
 	@JSONMethod
 	public void PULLPIN(User from) {
-	    curAvatar = avatar(from);
-	    grenadeObj = curAvatar.contents(HANDS);
+	    Avatar pinPuller = avatar(from);
+	    grenadeObj = pinPuller.contents(HANDS);
 	    checkpoint_object(grenadeObj);
 	    if(current_region().nitty_bits[WEAPONS_FREE]){
 		    success = FALSE;
 		    object_say(from, noid, "This is a weapons-free zone. Your grenade will not operate here.");
 	    }
-	    else if(holding(curAvatar, this) && pinpulled == FALSE){
+	    else if(holding(pinPuller, this) && pinpulled == FALSE){
 		    pinpulled = TRUE;
 		    gen_flags[MODIFIED] = true;
 		    success = TRUE;
 		    object_broadcast(noid, "Sproing!!!");
-		    curAvatar.checkpoint_object(this); 
+		    pinPuller.checkpoint_object(this); 
 		    checkpoint_object(this); 
 		    new Thread(Grenade_Timer).start(); 
 	    }
@@ -135,36 +135,36 @@ public class Grenade extends Weapon implements Copyable {
 		    @Override
 		    public void run() {
 			    try {
-				    Thread.sleep(GRENADE_FUSE_DELAY * 1000);
-				    int result;
-				    send_broadcast_msg(noid, "EXPLODE_$", "pinpulled", pinpulled);
-				    for(int i = 1; i <= 255; i++){
-					    HabitatMod obj = current_region().noids[i];
-					    if(obj != null && obj.HabitatClass() == CLASS_AVATAR){
-							    Avatar damageableAvatar = (Avatar) obj;
-							    checkpoint_object(damageableAvatar);
-							    result = damage_avatar(damageableAvatar, 180);
-							    trace_msg("Avatar %s damaged, health=%d, success=%d", damageableAvatar.obj_id(),damageableAvatar.health, result);
-							    if(result > 0){
-								    send_broadcast_msg(damageableAvatar.noid, "POSTURE$", "new_posture",   GET_SHOT_POSTURE);
-							    }
-							    if(result == DEATH){
-								    trace_msg("Killing Avatar %s...", damageableAvatar.obj_id());
-								    kill_avatar(damageableAvatar);
-							    }
-							    send_reply_msg(curAvatar.elko_user(), noid, "PULLPIN_SUCCESS", success);
-						    }
-					    }
-					    curAvatar.checkpoint_object(grenadeObj);
-					    if(curAvatar.holding_class(CLASS_GRENADE)){
-						     destroy_object(heldObject(curAvatar));
-					    }
-					    else
-						    ((Item) grenadeObj.object()).delete(); 
-			    } 
+			        Thread.sleep(GRENADE_FUSE_DELAY * 1000);
+			        int resultAvatar;
+			        send_broadcast_msg(noid, "EXPLODE_$", "pinpulled", pinpulled);
+			        for(int i = 1; i <= 255; i++){
+				        HabitatMod obj = current_region().noids[i];
+				        if(obj != null && obj.HabitatClass() == CLASS_AVATAR){
+						        Avatar damageableAvatar = (Avatar) obj;
+						        checkpoint_object(damageableAvatar);
+						        resultAvatar = damage_avatar(damageableAvatar, 180);
+						        trace_msg("Avatar %s damaged, health=%d, success=%d", damageableAvatar.obj_id(),damageableAvatar.health, resultAvatar);
+						        if(resultAvatar == HIT){
+							        send_broadcast_msg(damageableAvatar.noid, "POSTURE$", "new_posture",   GET_SHOT_POSTURE);
+						        }
+						        if(resultAvatar == DEATH){
+							        trace_msg("Killing Avatar %s...", damageableAvatar.obj_id());
+							        kill_avatar(damageableAvatar);
+						        }
+					        }
+				        }
+		        } 
 			    catch (Exception e) {
 				    trace_msg("Grenade thread interrupted.");
 			    }
+			    try {
+				    ((Item) grenadeObj.object()).delete(); 
+			    }
+			    catch (Exception e) {
+				    trace_msg("Grenade deletion thread interrupted.");
+			    }
+			    
 		    }
     };
 
