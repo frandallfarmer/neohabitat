@@ -11,6 +11,15 @@ import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 import org.made.neohabitat.Weapon;
 
+/**
+ * Habitat Grenade Mod 
+ * 
+ * A little bomb that goes boom.
+ * 
+ * @author TheCarlSaganExpress
+ * 
+ */
+
 public class Grenade extends Weapon implements Copyable {
 
 	@Override
@@ -50,6 +59,8 @@ public class Grenade extends Weapon implements Copyable {
 	
 	public int success;
 	public int pinpulled = FALSE;
+	HabitatMod grenadeObj;
+	Avatar curAvatar;
 	
 	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "pinpulled" })
     public Grenade(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
@@ -96,15 +107,16 @@ public class Grenade extends Weapon implements Copyable {
 	
 	@JSONMethod({ "target", "x", "y" })
     public void THROW(User from, int target, int x, int y) {
-        generic_THROW(from, target, x, y);
+		generic_THROW(from, target, x, y);
+        
     }
 	
 	@JSONMethod
     public void PULLPIN(User from) {
-		Avatar curAvatar = avatar(from);
+	    curAvatar = avatar(from);
 		checkpoint_object(heldObject(curAvatar));
-		HabitatMod obj = curAvatar.contents(HANDS);
-		checkpoint_object(obj);
+		grenadeObj = curAvatar.contents(HANDS);
+		checkpoint_object(grenadeObj);
         if(current_region().nitty_bits[WEAPONS_FREE]){
         	success = FALSE;
         	object_say(from, noid, "This is a weapons-free zone. Your grenade will not operate here.");
@@ -114,41 +126,53 @@ public class Grenade extends Weapon implements Copyable {
         	gen_flags[MODIFIED] = true;
         	success = TRUE;
         	object_broadcast(noid, "Sproing!!!");
-        	Grenade_Explosion(from, curAvatar);
+        	curAvatar.checkpoint_object(this); 
+        	checkpoint_object(this); 
+          	new Thread(Grenade_Timer).start(); 
         }
         else
         	success = FALSE;
     	send_reply_msg(from, noid, "PULLPIN_SUCCESS", success);
-    	curAvatar.checkpoint_object(this);
-    	if(curAvatar.holding_class(CLASS_GRENADE)){
-    		destroy_object(heldObject(curAvatar));
-    	}
-    	else
-    		((Item) obj.object()).delete();
     }
-	
-	public void Grenade_Explosion(User from, HabitatMod target){
-		int result;
-		send_broadcast_msg(noid, "EXPLODE_$", "pinpulled", pinpulled);
-			for(int i = 1; i <= 255; i++){
-				checkpoint_object(this);
-				HabitatMod obj = current_region().noids[i];
-				if(obj != null && obj.HabitatClass() == CLASS_AVATAR){
-					Avatar damageableAvatar = (Avatar) obj;
-					damageableAvatar.checkpoint_object(damageableAvatar);
-					result = damage_avatar(damageableAvatar, 180);
-					trace_msg("Avatar %s damaged, health=%d, success=%d", damageableAvatar.obj_id(),damageableAvatar.health, result);
-					if(result > 0){
-						send_broadcast_msg(damageableAvatar.noid, "POSTURE$", "new_posture",   GET_SHOT_POSTURE);
-					}
-					if(result == DEATH){
-						trace_msg("Killing Avatar %s...", damageableAvatar.obj_id());
-						kill_avatar(damageableAvatar);
-					}
-				}
-			}
-	}
-	
+
+	 protected Runnable Grenade_Timer = new Runnable() {
+	    	@Override
+	    	public void run() {
+	    		try {
+	    			Thread.sleep(GRENADE_FUSE_DELAY * 1000);
+	    			int result;
+	    			send_broadcast_msg(noid, "EXPLODE_$", "pinpulled", pinpulled);
+	    				for(int i = 1; i <= 255; i++){
+	    					HabitatMod obj = current_region().noids[i];
+	    					if(obj != null && obj.HabitatClass() == CLASS_AVATAR){
+	    						Avatar damageableAvatar = (Avatar) obj;
+	    						checkpoint_object(damageableAvatar);
+	    						result = damage_avatar(damageableAvatar, 180);
+	    						trace_msg("Avatar %s damaged, health=%d, success=%d", damageableAvatar.obj_id(),damageableAvatar.health, result);
+	    						if(result > 0){
+	    							send_broadcast_msg(damageableAvatar.noid, "POSTURE$", "new_posture",   GET_SHOT_POSTURE);
+	    						}
+	    						if(result == DEATH){
+	    							trace_msg("Killing Avatar %s...", damageableAvatar.obj_id());
+	    							kill_avatar(damageableAvatar);
+	    						}
+	    				    	send_reply_msg(curAvatar.elko_user(), noid, "PULLPIN_SUCCESS", success);
+	    					}
+	    					
+	    				}
+	    				curAvatar.checkpoint_object(grenadeObj);
+	    				if(curAvatar.holding_class(CLASS_GRENADE)){
+				    		destroy_object(heldObject(curAvatar));
+				    	}
+				    	else
+				    		((Item) grenadeObj.object()).delete(); 
+	    				
+	    		} catch (Exception e) {
+	    			trace_msg("Grenade thread interrupted.");
+	    		}    		
+	    	}
+	    };
+
 	public void grenade_HELP(User from){
 		if(pinpulled != TRUE){
 			send_reply_msg(from, "Grenade: Select DO (while holding) to pull pin, then throw to ground and leave the region quickly.");
