@@ -13,6 +13,7 @@ import org.made.neohabitat.*;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,15 +69,19 @@ public class Avatar extends Container implements UserMod {
 		"/aj - Accepts a join request",
 		"/h or /help - Shows this help",
 		"/i AVATAR - Invites this Avatar to teleport to you",
-		"/j AVATAR - Asks this Avatar to teleport you to them"
+		"/j AVATAR - Asks this Avatar to teleport you to them",
+		"/o MESSAGE - Requests help from online Oracles"
 	};
 
 	public static final String[] GOD_SPECIAL_COMMAND_HELP = {
 		"Special commands for Oracles:",
 		"//a MESSAGE - Broadcasts a message globally",
+		"//c MESSAGE - Sends a message to all Oracles",
 		"//g AVATAR - Teleports to an Avatar's location",
+		"//l AVATAR - Locates an Avatar",
 		"//h - Shows this help",
 		"//n - Enables/disables Neohabitat features globally",
+		"//w - Displays the current Elko context",
 		"//y AVATAR - Teleports an Avatar to your location"
 	};
 
@@ -872,6 +877,13 @@ public class Avatar extends Container implements UserMod {
 					if (msg.length() < 4) {
 						msg = " " + msg + " ";
 					}
+					// Plays a message received sound if new features are enabled.
+					if (Region.NEOHABITAT_FEATURES) {
+						Avatar toAvatar = avatar(to);
+						send_private_msg(to, THE_REGION, to, "PLAY_$",
+							"sfx_number", 8,
+							"from_noid", toAvatar.noid);
+					}
 					object_say(to, msg);
 					inc_record(HS$esp_send_count);
 					Avatar.inc_record(to, HS$esp_recv_count);
@@ -1341,9 +1353,27 @@ public class Avatar extends Container implements UserMod {
 			case "//a":
 			case "//announce":
 				if (remainder.length() > 0) {
-					Region.tellEveryone(remainder);
+					Region.tellEveryone(remainder, true);
 				} else {
 					object_say(from, UPGRADE_PREFIX + "ERROR: Must enter a message to announce.");
+				}
+				break;
+			case "//c":
+			case "//oraclechat":
+				if (remainder.length() == 0) {
+					object_say(from, UPGRADE_PREFIX + "ERROR: Must enter a message to send to all Oracles.");
+				}
+				List<Avatar> oracles = Region.findOracles();
+				for (Avatar oracle : oracles) {
+					User oracleUser = oracle.elko_user();
+					// Beeps only if this user is not the sender of the message.
+					if (!oracleUser.name().equals(elko_user().name())) {
+						send_private_msg(oracleUser, THE_REGION, oracleUser, "PLAY_$",
+							"sfx_number", 8,
+							"from_noid", oracle.noid);
+					}
+					object_say(oracleUser, UPGRADE_PREFIX +
+						String.format("Oracle %s says: %s", elko_user().name(), remainder));
 				}
 				break;
 			case "//g":
@@ -1374,6 +1404,18 @@ public class Avatar extends Container implements UserMod {
 					object_say(from, UPGRADE_PREFIX + line);
 				}
 				break;
+			case "//l":
+			case "//locate":
+				User userToLocate = Region.getUserByName(remainder);
+				if (userToLocate != null) {
+					Avatar avatarToLocate = avatar(userToLocate);
+					object_say(from, UPGRADE_PREFIX +
+						String.format("Avatar %s is located in: %s",
+							userToLocate.name(), avatarToLocate.lastArrivedIn));
+				} else {
+					object_say(from, UPGRADE_PREFIX + String.format("Avatar %s is not online.", remainder));
+				}
+				break;
 			case "//n":
 			case "//neohabitat":
 				if (Region.NEOHABITAT_FEATURES) {
@@ -1382,6 +1424,10 @@ public class Avatar extends Container implements UserMod {
 					Region.tellEveryone("Upgraded NeoHabitat interface enabled globally.");
 				}
 				Region.NEOHABITAT_FEATURES = !Region.NEOHABITAT_FEATURES;
+				break;
+			case "//w":
+			case "//where":
+				object_say(from, UPGRADE_PREFIX + "You are at: " + current_region().object().ref());
 				break;
 			case "//y":
 			case "//yank":
@@ -1392,6 +1438,8 @@ public class Avatar extends Container implements UserMod {
 						if (avatarToYank.lastArrivedIn.equals(current_region().object().ref())) {
 							object_say(from, UPGRADE_PREFIX + "They're already there!");
 						} else {
+							object_say(from, UPGRADE_PREFIX +
+								String.format("OK, yanking %s...", userToYank.user().name()));
 							avatarToYank.object_say(userToYank, UPGRADE_PREFIX +
 								"You are being summoned to an Oracle, please wait.");
 							avatarToYank.x = SAFE_X;
@@ -1544,6 +1592,28 @@ public class Avatar extends Container implements UserMod {
 			case "/help":
 				for (String line : SPECIAL_COMMAND_HELP) {
 					object_say(from, UPGRADE_PREFIX + line);
+				}
+				break;
+			case "/o":
+			case "/oracle":
+				List<Avatar> onlineOracles = Region.findOracles();
+				if (onlineOracles.isEmpty()) {
+					object_say(from, UPGRADE_PREFIX + "No Oracles are currently online, try again later.");
+				} else {
+					String helpMessage = String.format("Oracle! Avatar %s in %s is requesting help.",
+						elko_user().name(), lastArrivedIn);
+					for (Avatar oracle : onlineOracles) {
+						User oracleUser = oracle.elko_user();
+						send_private_msg(oracleUser, THE_REGION, oracleUser, "PLAY_$",
+							"sfx_number", 8,
+							"from_noid", oracle.noid);
+						object_say(oracleUser, UPGRADE_PREFIX + helpMessage);
+						if (remainder.length() > 0) {
+							object_say(oracleUser, UPGRADE_PREFIX +
+								String.format("%s says: %s", elko_user().name(), remainder));
+						}
+					}
+					object_say(from, UPGRADE_PREFIX + "OK, asked the Oracles for help.");
 				}
 				break;
 			default:
