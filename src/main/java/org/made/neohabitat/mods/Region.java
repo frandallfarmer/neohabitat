@@ -1,6 +1,8 @@
 package org.made.neohabitat.mods;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptBoolean;
@@ -286,7 +288,18 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	avatar.note_object_deletion(avatar);
     	removeFromObjList(avatar);
     }
-    
+
+    public synchronized static List<Avatar> findOracles() {
+        List<Avatar> oracleList = new ArrayList<>();
+        for (User user : NameToUser.values()) {
+            Avatar avatar = (Avatar) (user.getMod(Avatar.class));
+            if (avatar.nitty_bits[GOD_FLAG]) {
+                oracleList.add(avatar);
+            }
+        }
+        return oracleList;
+    }
+
     public static User getUserByName(String name) {
     	if (name != null) {    		
         	return (User) NameToUser.get(name.toLowerCase());
@@ -423,19 +436,37 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     	
     	removeFromObjList(obj);
     }
-    
+
     public static void tellEveryone(String text) {
+        tellEveryone(text, false);
+    }
+
+    public static void tellEveryone(String text, boolean shouldBeep) {
     	for (String key: NameToUser.keySet()) {
     		User	user	= NameToUser.get(key);
     		Avatar	avatar	= (Avatar) user.getMod(Avatar.class);
+            if (shouldBeep) {
+                avatar.send_private_msg(user, THE_REGION, user, "PLAY_$",
+                    "sfx_number", 8,
+                    "from_noid", avatar.noid);
+            }
     		avatar.object_say(user, UPGRADE_PREFIX + text);
         }
     }
-    
+
     public static void tellEveryone(int[] ascii) {
+        tellEveryone(ascii, false);
+    }
+
+    public static void tellEveryone(int[] ascii, boolean shouldBeep) {
     	for (String key: NameToUser.keySet()) {
     		User		user	= NameToUser.get(key);
     		Avatar		avatar	= (Avatar) user.getMod(Avatar.class);
+            if (shouldBeep) {
+                avatar.send_private_msg(user, THE_REGION, user, "PLAY_$",
+                    "sfx_number", 8,
+                    "from_noid", avatar.noid);
+            }
     		JSONLiteral msg 	= avatar.new_private_msg(THE_REGION, "OBJECTSPEAK_$");
     		int 		send[]  = new int[ascii.length + 1];
     		send[0] = UPGRADE_PREFIX.charAt(0);
