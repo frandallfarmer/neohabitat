@@ -14,16 +14,16 @@ public interface Constants {
     
     /* Some Java-Server only constants */
     
-    public static final int      CONNECTION_JSON            = 0;
-    public static final int      CONNECTION_HABITAT         = 0;
-    public static final int      MAX_HEALTH                 = 255;
+    public static final int     CONNECTION_JSON             = 0;
+    public static final int     CONNECTION_HABITAT          = 0;
+    public static final int     MAX_HEALTH                  = 255;
 
-    public static final int 	BOOK$HELP	= 0;
-    public static final int 	BOOK$VENDO	= 1;
-    public static final int 	PAPER$HELP	= 2;
+    public static final int 	BOOK$HELP                   = 0;
+    public static final int 	BOOK$VENDO                  = 1;
+    public static final int 	PAPER$HELP                  = 2;
     
-    public static final int		SAFE_X		= 8;
-    public static final int		SAFE_Y		= 132;
+    public static final int 	SAFE_X                      = 8;
+    public static final int 	SAFE_Y                      = 132;
     
     /*
      * defs_class.incl.pl1
@@ -212,6 +212,23 @@ public interface Constants {
     public static final int      MAGIC_LAMP_WAITING         = 0;
     public static final int      MAGIC_LAMP_GENIE           = 1;
     
+    /* Weapon constants */
+    /* The total amount of damage to be rendered by an ATTACK. */
+	public static final int      DAMAGE_DECREMENT           = 20;
+	/* no effect, beep at player */
+	public static final int      MISS                       = 0;
+	/* destroy object that is target */
+	public static final int      DESTROY                    = 1;
+	/* keester avatar that is target */
+	public static final int      HIT                        = 2;
+	/* kill avatar that is target */
+	public static final int      DEATH                      = 3;
+	public static final int      GRENADE_FUSE_DELAY         = 20;
+	public static final int      GET_SHOT_POSTURE           = 138;
+	
+	/* Drugs constants */		
+	public static final int      NUMBER_OF_DRUG_EFFECTS     = 3;
+    
     /* general flag constants */
     public static final int      RESTRICTED                 = 1;
     public static final int      MODIFIED                   = 2;
@@ -227,13 +244,13 @@ public interface Constants {
     public static final int      MISC_FLAG2                 = 6;
     public static final int      MISC_FLAG3                 = 7;
     /* avatar NEOHabitat nitty_bit flags start at the top and work down. */
-    public static final int		 INTENTIONAL_GHOST			= 31;
+    public static final int      INTENTIONAL_GHOST          = 31;
     
     /* object nitty-bits constants */
     public static final int      DOOR_AVATAR_RESTRICTED_BIT = 32;
     public static final int      DOOR_GHOST_RESTRICTED_BIT  = 31;
     
-    public static final int		 UNASSIGNED_NOID			= 256;
+    public static final int      UNASSIGNED_NOID            = 256;
     public static final int      THE_REGION                 = 0;
     public static final int      GHOST_NOID                 = 255;
 
@@ -275,16 +292,16 @@ public interface Constants {
     public static final int      TELEPORT_ENTRY             = 1;
     public static final int      DEATH_ENTRY                = 2;
     
-    public static final int		 WEST						= 0;
-    public static final int		 EAST						= 1;
-    public static final int		 NORTH						= 2;
-    public static final int		 SOUTH						= 3;
+    public static final int      WEST                       = 0;
+    public static final int      EAST                       = 1;
+    public static final int      NORTH                      = 2;
+    public static final int      SOUTH                      = 3;
     public static final int      AUTO_TELEPORT_DIR          = 4;
     
-    public static final int		 MAP_NORTH					= 0;
-    public static final int		 MAP_EAST					= 1;
-    public static final int		 MAP_SOUTH					= 2;
-    public static final int	     MAP_WEST					= 3;
+    public static final int      MAP_NORTH                  = 0;
+    public static final int      MAP_EAST                   = 1;
+    public static final int      MAP_SOUTH                  = 2;
+    public static final int      MAP_WEST                   = 3;
     
     public static final int      SIT_GROUND                 = 132;
     public static final int      SIT_CHAIR                  = 133;
@@ -585,7 +602,7 @@ public interface Constants {
     /** This prefix is to always be displayed before a feature that did not exist in either Lucasfilm's Habitat Beta or Club Caribe */
     public static final String	 UPGRADE_PREFIX				= "" + (char) ARROW_R;
     
-    public static final long	 ONE_DAY					= 1000 * 60 * 60 * 24;		// Millis
+    public static final long	 ONE_DAY			        = 1000 * 60 * 60 * 24;	// Millis
     
     public static final int		 HS$lifetime          		=   1;
     public static final int		 HS$max_lifetime      		=   2;
@@ -609,7 +626,7 @@ public interface Constants {
     public static final int		 HS$esp_send_count    		=  20;
     public static final int		 HS$esp_recv_count    		=  21;
     public static final int		 HS$requests          		=  22;
-    public static final int		 HS$MAX						= HS$requests + 1;
+    public static final int		 HS$MAX               		= HS$requests + 1;
     
     
     public static final String[] CLIENT_ERRORS              = { "user_requested_dump", "memory_full", "memory_fault",

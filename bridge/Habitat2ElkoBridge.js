@@ -1035,6 +1035,11 @@ var encodeState = {
 			buf.add(state.pattern);
 			return buf;
 		},
+		Grenade: function (state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.pinpulled || 0);
+			return buf;
+		},
 		Glue: function (state, container, buf) {
 			buf = this.openable(state, container, buf);
 			buf.add(state.x_offset_1 || 0 );

@@ -1192,8 +1192,8 @@ public class Avatar extends Container implements UserMod {
 		int         direction_index = (direction + region.orientation + 2) % 4;
 
 		if (direction != AUTO_TELEPORT_DIR && passage_id != 0 &&
-				passage.HabitatClass() == CLASS_DOOR || 
-				passage.HabitatClass() == CLASS_BUILDING) {
+				(passage.HabitatClass() == CLASS_DOOR || 
+				passage.HabitatClass() == CLASS_BUILDING)) {
 
 			if (passage.HabitatClass() == CLASS_DOOR) {
 				Door door = (Door) passage;

@@ -3282,6 +3282,51 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	public boolean isSeating() {
 		return isSeating(this);
 	}
+	
+	public int damage_avatar(Avatar who) {
+		trace_msg("Damaging Avatar %s...", who.obj_id());
+		who.health -= DAMAGE_DECREMENT;
+		if (who.health <= 0) {
+			// He's dead, Jim.
+			trace_msg("Avatar %s has been killed", who.obj_id());
+			return DEATH;
+		} else {
+			// Naw, he's only wounded.
+			trace_msg("Avatar %s has been wounded", who.obj_id());
+			return HIT;
+		}
+	}
+	
+	public int damage_avatar(Avatar who, int damage) {
+		trace_msg("Damaging Avatar %s...", who.obj_id());
+		who.health -= damage;
+		if (who.health <= 0) {
+			// He's dead, Jim.
+			trace_msg("Avatar %s has been killed", who.obj_id());
+			return DEATH;
+		} else {
+			// Naw, he's only wounded.
+			trace_msg("Avatar %s has been wounded", who.obj_id());
+			return HIT;
+		}
+	}
+	
+	public int damage_object(HabitatMod object) {
+		if (damageable(object)) {
+			destroy_object(object);
+			return DESTROY;
+		} else {
+			return FALSE;
+		}
+	}
+	
+	public boolean damageable(HabitatMod object) {
+		return object.HabitatClass() == CLASS_MAILBOX;
+	}
+	
+	public boolean is_ranged_weapon() {
+		return HabitatClass() == CLASS_GUN;
+	}
 
 	/**
 	 * Terminates an avatar with extreme prejudice.

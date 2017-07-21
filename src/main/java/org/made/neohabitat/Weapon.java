@@ -16,20 +16,6 @@ import org.made.neohabitat.mods.Avatar;
  */
 public abstract class Weapon extends HabitatMod {
 
-	/* The total amount of damage to be rendered by an ATTACK. */
-	public static final int DAMAGE_DECREMENT = 20;
-
-	/* The activity ID of sitting on the ground */
-	public static final int SIT_GROUND = 132;
-	/* no effect, beep at player */
-	public static final int MISS = 0;
-	/* destroy object that is target */
-	public static final int DESTROY = 1;
-	/* keester avatar that is target */
-	public static final int HIT = 2;
-	/* kill avatar that is target */
-	public static final int DEATH = 3;
-	
 	public Weapon(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
 		OptInteger gr_state, OptBoolean restricted) {
 		super(style, x, y, orientation, gr_state, restricted);
@@ -117,36 +103,4 @@ public abstract class Weapon extends HabitatMod {
 			Avatar.inc_record(from, HS$kills);
 		}
 	}
-
-	public int damage_avatar(Avatar who) {
-		trace_msg("Damaging Avatar %s...", who.obj_id());
-		who.health -= DAMAGE_DECREMENT;
-		if (who.health <= 0) {
-			// He's dead, Jim.
-			trace_msg("Avatar %s has been killed", who.obj_id());
-			return DEATH;
-		} else {
-			// Naw, he's only wounded.
-			trace_msg("Avatar %s has been wounded", who.obj_id());
-			return HIT;
-		}
-	}
-	
-	public int damage_object(HabitatMod object) {
-		if (damageable(object)) {
-			destroy_object(object);
-			return DESTROY;
-		} else {
-			return FALSE;
-		}
-	}
-	
-	public boolean damageable(HabitatMod object) {
-		return object.HabitatClass() == CLASS_MAILBOX;
-	}
-	
-	public boolean is_ranged_weapon() {
-		return HabitatClass() == CLASS_GUN;
-	}
-
 }
