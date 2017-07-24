@@ -5,6 +5,7 @@ import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
+import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;
 
@@ -50,23 +51,33 @@ public class Bridge extends HabitatMod implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
-    public Bridge(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
+    public int width;  
+    public int length;
+    
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "width", "length" })
+    public Bridge(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+             OptInteger width, OptInteger length) {
         super(style, x, y, orientation, gr_state, restricted);
+        this.width = width.value(0);
+        this.length = length.value(0);
     }
 
-    public Bridge(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+    public Bridge(int style, int x, int y, int orientation, int gr_state, boolean restricted, int width, int length) {
         super(style, x, y, orientation, gr_state, restricted);
+        this.width = width;
+        this.length = width;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Bridge(style, x, y, orientation, gr_state, restricted);
+        return new Bridge(style, x, y, orientation, gr_state, restricted, width, length);
     }
 
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
+        result.addParameter("width", width);
+        result.addParameter("length", length);
         result.finish();
         return result;
     }

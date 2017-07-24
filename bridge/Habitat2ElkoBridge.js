@@ -1087,6 +1087,12 @@ var encodeState = {
 			buf.add(state.filled);
 			return buf;
 		},
+		Bridge:  function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			buf.add(state.width);
+			buf.add(state.height);
+			return buf;
+		},
 		Teleport: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.activeState || 0);
@@ -1136,7 +1142,6 @@ var encodeState = {
 		Bed:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Book:			function (state, container, buf) { return (this.document(state, container, buf)); },
 		Box:			function (state, container, buf) { return (this.openable(state, container, buf)); },
-		Bridge: 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Building:		function (state, container, buf) { return (this.common	(state, container, buf)); },
 		Bush: 			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Chair:  	    function (state, container, buf) { return (this.common  (state, container, buf)); },
