@@ -45,7 +45,7 @@
         "y": 0, 
         "x": 0,
         "title": "Stocks",
-        "path" : "text-stock",
+        "path" : "text-stocknron",
         "type": "Book"
       }
     ], 
@@ -63,7 +63,7 @@
         "y": 1, 
         "x": 1,
         "title": "Stocks",
-        "path" : "text-stock",
+        "path" : "text-stockaliens",
         "type": "Book"
       }
     ], 
@@ -100,7 +100,7 @@
         "y": 1, 
         "x": 1, 
         "title": "Stocks",
-        "path" : "text-stock",
+        "path" : "text-stockoilbribe",
         "type": "Book"
       }
     ], 
@@ -135,7 +135,7 @@
         "y": 0, 
         "x": 0,
         "title": "Bonds",
-        "path" : "text-stock",
+        "path" : "text-stockmachiuta",
         "type": "Book"
       }
     ], 
@@ -153,7 +153,7 @@
         "y": 1, 
         "x": 1,
         "title": "Bonds",
-        "path" : "text-stock",
+        "path" : "text-stocksirtech",
         "type": "Book"
       }
     ], 
@@ -190,7 +190,7 @@
         "y": 1, 
         "x": 1,
         "title": "Bonds",
-        "path" : "text-stock",
+        "path" : "text-stockblackthorn",
         "type": "Book"
       }
     ], 
@@ -225,7 +225,7 @@
         "y": 0, 
         "x": 0,
         "title": "Commods",
-        "path" : "text-stock",
+        "path" : "text-stockoilbribe",
         "type": "Book"
       }
     ], 
@@ -242,7 +242,7 @@
         "last_page": 1, 
         "y": 1, 
         "x": 1,
-        "path" : "text-stock",
+        "path" : "text-stockmachiuta",
         "title": "Commods",
         "type": "Book"
       }
@@ -298,7 +298,7 @@
         "y": 1, 
         "x": 1,
         "title": "Commods",
-        "path" : "text-stock",
+        "path" : "text-stocksirtech",
         "type": "Book"
       }
     ], 
