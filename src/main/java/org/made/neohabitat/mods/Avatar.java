@@ -1721,7 +1721,7 @@ public class Avatar extends Container implements UserMod {
 		} else {
 			try {
 				String[] splitContext = turf.split("-");
-				String[] splitTurf = splitContext[1].split("\\.");
+				String[] splitTurf = splitContext[1].split("\\.|_");
 				String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
 				String turfId = splitTurf[1];
 				return String.format("%s #%s", realm, turfId);
@@ -1731,7 +1731,7 @@ public class Avatar extends Container implements UserMod {
 			}
 		}
 	}
-
+	
 	/**
 	 * Checks for new Mail and sends a MAILARRIVED$ notification to the Avatar if so.
 	 */
