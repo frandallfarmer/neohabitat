@@ -662,7 +662,40 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 				send_reply_error(from); // Tried to put into a CLOSED or OWNED container
 				return false;
 			}
-			
+			pos_y = -1;
+			int token_at = -1;
+			int j = cont.capacity();
+			if (contClass == CLASS_AVATAR) {
+				j = j - 3;
+			}
+			for (int i = 0; i < j; i++) {
+				HabitatMod obj = cont.contents(i);
+				if (obj == null) {
+					if (pos_y == -1)
+						pos_y = i;
+				} else {
+					if (obj.HabitatClass() == CLASS_TOKENS) {
+						token_at = i;
+					}
+				}
+			}
+			if (selfClass == CLASS_TOKENS && token_at != -1) {
+				Tokens inHand      = (Tokens) this;
+				Tokens inContainer = (Tokens) cont.contents(token_at); 
+				int	   newDenom  = inHand.tget() + inContainer.tget();
+				if (newDenom > 65535)  {
+					send_reply_error(from);
+					return false;
+				}
+				inContainer.tset(newDenom);
+				inContainer.gen_flags[MODIFIED] = true;
+				checkpoint_object(inContainer);
+				send_fiddle_msg(THE_REGION, inContainer.noid, C64_TOKEN_DENOM_OFFSET, new int []{newDenom % 256, newDenom/256});
+				send_goaway_msg(inHand.noid);
+				inHand.destroy_object(inHand);
+				send_reply_error(from);			// Well, a merge isn't really a failure, but the client doesn't understand otherwise;				
+				return false;
+			}
 			if (pos_y == -1) {
 				if (selfClass != CLASS_PAPER) {
 					send_reply_error(from);
@@ -802,40 +835,6 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		}
  */       
 		send_reply_msg(from, noid, "err", TRUE, "pos", this.y);
-		
-		pos_y = -1;
-		int token_at = -1;
-		int j = cont.capacity();
-		if (contClass == CLASS_AVATAR) {
-			j = j - 3;
-		}
-		for (int i = 0; i < j; i++) {
-			HabitatMod obj = cont.contents(i);
-			if (obj == null) {
-				if (pos_y == -1)
-					pos_y = i;
-			} else {
-				if (obj.HabitatClass() == CLASS_TOKENS) {
-					token_at = i;
-				}
-			}
-		}
-		if (selfClass == CLASS_TOKENS && token_at != -1) {
-			Tokens inHand      = (Tokens) this;
-			Tokens inContainer = (Tokens) cont.contents(token_at); 
-			int	   newDenom  = inHand.tget() + inContainer.tget();
-			if (newDenom > 65535)  {
-				send_reply_error(from);
-				return false;
-			}
-			inContainer.tset(newDenom);
-			inContainer.gen_flags[MODIFIED] = true;
-			checkpoint_object(inContainer);
-			checkpoint_object(inHand);
-			send_fiddle_msg(THE_REGION, inContainer.noid, C64_TOKEN_DENOM_OFFSET, new int []{newDenom % 256, newDenom/256});
-			send_goaway_msg(inHand.noid);
-			inHand.destroy_object(inHand);
-		}
 
 		/* If putting into a pawn machine, announce the value of the object */
 		if (contClass == CLASS_PAWN_MACHINE)
