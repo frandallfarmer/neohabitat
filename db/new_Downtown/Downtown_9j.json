@@ -59,7 +59,9 @@
         "orientation": 48, 
         "last_page": 0, 
         "y": 0, 
-        "x": 0, 
+        "x": 0,
+        "title": "History of TelePort",
+        "path" : "text-telehistory",
         "type": "Book"
       }
     ], 
@@ -75,7 +77,9 @@
         "orientation": 0, 
         "last_page": 0, 
         "y": 4, 
-        "x": 4, 
+        "x": 4,
+        "title": "A Note from Dada Salesh",
+        "path" : "text-dadasalesh",
         "type": "Book"
       }
     ], 
@@ -91,7 +95,9 @@
         "orientation": 0, 
         "last_page": 0, 
         "y": 2, 
-        "x": 2, 
+        "x": 2,
+        "title": "History of Organized Crime",
+        "path" : "text-crimehistory",
         "type": "Book"
       }
     ], 
@@ -107,7 +113,9 @@
         "orientation": 24, 
         "last_page": 0, 
         "y": 3, 
-        "x": 3, 
+        "x": 3,
+        "title": "History of TelePort",
+        "path" : "text-telehistory",
         "type": "Book"
       }
     ], 
@@ -141,6 +149,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1, 
+        "title": "A Note from Dada Salesh",
+        "path" : "text-dadasalesh",
         "type": "Book"
       }
     ], 
@@ -156,7 +166,9 @@
         "orientation": 0, 
         "last_page": 0, 
         "y": 4, 
-        "x": 4, 
+        "x": 4,
+        "title": "History of Organized Crime",
+        "path" : "text-crimehistory",
         "type": "Book"
       }
     ], 
@@ -172,7 +184,9 @@
         "orientation": 8, 
         "last_page": 0, 
         "y": 3, 
-        "x": 3, 
+        "x": 3,
+        "title": "History of TelePort",
+        "path" : "text-telehistory",
         "type": "Book"
       }
     ], 
@@ -188,7 +202,9 @@
         "orientation": 8, 
         "last_page": 0, 
         "y": 0, 
-        "x": 0, 
+        "x": 0,
+        "title": "History of Organized Crime",
+        "path" : "text-crimehistory",
         "type": "Book"
       }
     ], 
@@ -205,6 +221,8 @@
         "last_page": 0, 
         "y": 2, 
         "x": 2, 
+        "title": "A Note from Dada Salesh",
+        "path" : "text-dadasalesh",
         "type": "Book"
       }
     ], 
