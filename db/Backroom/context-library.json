@@ -57,7 +57,7 @@
 				"gr_state" : 1,
 				"style" : 0,
 				"orientation" : 16
-		    } ]
+            } ]
 		},
 		{
 			"type": "item",
@@ -70,7 +70,7 @@
 				"y": 0,
 				"orientation": 8,
 				"gr_state": 1
-		    } ]
+            } ]
 		},
 		{
 			"ref" : "item-library.genie",
