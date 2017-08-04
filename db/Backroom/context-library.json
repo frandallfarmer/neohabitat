@@ -30,7 +30,6 @@
 				"key_hi" : 5
 			} ]
 		},
-		
 		{
 			"type": "item",
 			"ref": "item-library.grenade",
@@ -39,12 +38,39 @@
 			"mods": [ {
 				"type" : "Grenade",
 				"style" : 0,
-				"x": 10, 
+				"x": 40, 
 				"y": 130,
 				"orientation" : 16,
 				"pinpulled" : 0,
 				"gr_state": 0
-		} ]
+			} ]
+		},
+		{
+			"type": "item",
+			"ref": "item-library.bureaucrat",
+			"name": "Bureaucrat",
+			"in": "context-library",
+			"mods": [ {
+				"type" : "Bureaucrat",
+				"x": 10, 
+				"y": 130,
+				"gr_state" : 1,
+				"style" : 0,
+				"orientation" : 16
+            } ]
+		},
+		{
+			"type": "item",
+			"ref": "item-library.head.bureaucrat",
+			"name": "Head",
+			"in": "item-library.bureaucrat",
+			"mods": [ {
+				"type": "Head",
+				"style": 2,
+				"y": 0,
+				"orientation": 8,
+				"gr_state": 1
+            } ]
 		},
 		{
 			"ref" : "item-library.genie",

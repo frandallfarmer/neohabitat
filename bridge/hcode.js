@@ -516,6 +516,7 @@ this.CLASSES 			= {
 		"Table":	155, 155:"Table",
 		"Tree":		156, 156:"Tree",
 		"Window":	157, 157:"Window",
+		"Bureaucrat":	158, 158:"Bureaucrat",
 		"Zone":		255, 255:"Zone"
 };
 
@@ -1307,6 +1308,13 @@ this.Book = {
 			2:{ op:"PUT" },
 			3:{ op:"THROW" },
 			4:{ op:"READ" }
+		}
+};
+
+this.Bureaucrat = {
+		clientMessages: {
+			0:{ op:"HELP" },
+			4:{ op:"ASK" }
 		}
 };
 
