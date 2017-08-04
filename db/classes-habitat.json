@@ -16,6 +16,7 @@
 		{ "type": "class", "tag": "Bridge", "name": "org.made.neohabitat.mods.Bridge" },
 		{ "type": "class", "tag": "Building", "name": "org.made.neohabitat.mods.Building" },
 		{ "type": "class", "tag": "Bush", "name": "org.made.neohabitat.mods.Bush" },
+		{ "type": "class", "tag": "Bureaucrat", "name": "org.made.neohabitat.mods.Bureaucrat" },
 		{ "type": "class", "tag": "Chair", "name": "org.made.neohabitat.mods.Chair" },
 		{ "type": "class", "tag": "Changomatic", "name": "org.made.neohabitat.mods.Changomatic" },
 		{ "type": "class", "tag": "Chest", "name": "org.made.neohabitat.mods.Chest" },

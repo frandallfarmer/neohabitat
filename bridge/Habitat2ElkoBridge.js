@@ -1093,6 +1093,10 @@ var encodeState = {
 			buf.add(state.height);
 			return buf;
 		},
+		Bureaucrat:  function(state, container, buf) {
+			buf = this.common(state, container, buf);
+			return buf;
+		},
 		Teleport: function(state, container, buf) {
 			buf = this.common(state, container, buf);
 			buf.add(state.activeState || 0);

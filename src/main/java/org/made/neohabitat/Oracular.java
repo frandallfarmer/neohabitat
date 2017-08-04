@@ -40,34 +40,4 @@ public abstract class Oracular extends HabitatMod {
 		return result;
 	}
 
-	/**
-	 * Verb (Specific): TODO Ask of the Oracle!
-	 *
-	 * @param from
-	 *            User representing the connection making the request.
-	 * @param text
-	 *            The string to ask!
-	 */
-	public void generic_ASK(User from, OptString text) {
-		String question = text.value("");
-		Avatar avatar   = (Avatar) from.getMod(Avatar.class);
-		if (question.toLowerCase().indexOf("to:") == 0) {
-			object_say(from, "I don't do ESP.  Point somewhere else.");
-		} else {
-			if (question.length() < 4)
-				question = " " + question + " ";
-			object_say(from, avatar.noid, question);
-			message_to_god(this, avatar, question);
-			if (this.HabitatClass() == CLASS_FOUNTAIN) {
-				object_say(from, noid, "Someday, I'll see what I can do.");
-				if (question.toLowerCase().equals("willy willy nilly billy")) {
-					object_say(from, noid, "That IS the correct phrase.");
-				}
-				if (avatar.curse_type > 0) {
-					object_say(from, noid, "By the way, to remove the curse you must give it to someone else." );
-				}
-			}
-		}
-	}
-
 }
