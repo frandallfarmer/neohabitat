@@ -1,0 +1,104 @@
+[
+  {
+    "ref": "context-dnalsi_85", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-dnalsi_84", 
+          "context-dnalsi_75"
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.f422.dnalsi_85", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_85"
+  }, 
+  {
+    "ref": "item-Wall.814f.dnalsi_85", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_85"
+  }, 
+  {
+    "ref": "item-Trapezoid.d98e.dnalsi_85", 
+    "mods": [
+      {
+        "lower_right_x": 27, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "upper_right_x": 27, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 164, 
+        "x": 116, 
+        "height": 35, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_85"
+  }, 
+  {
+    "ref": "item-Head.c2a6.dnalsi_85", 
+    "mods": [
+      {
+        "y": 38, 
+        "x": 136, 
+        "style": 12, 
+        "type": "Head", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "context-dnalsi_85"
+  }, 
+  {
+    "ref": "item-Ground.cbcf.dnalsi_85", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 200, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_85"
+  }
+]

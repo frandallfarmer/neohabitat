@@ -1,0 +1,175 @@
+[
+  {
+    "ref": "context-dnalsi_7b", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_7c", 
+          "", 
+          "context-dnalsi_7a", 
+          "context-dnalsi_6b"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8371.dnalsi_7b", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_7b"
+  }, 
+  {
+    "ref": "item-Wall.68ab.dnalsi_7b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_7b"
+  }, 
+  {
+    "ref": "item-Sign.732c.dnalsi_7b", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign", 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "ascii": [
+          133, 
+          89, 
+          79, 
+          85, 
+          32, 
+          65, 
+          82, 
+          69, 
+          32, 
+          84, 
+          79, 
+          79, 
+          32, 
+          76, 
+          65, 
+          84, 
+          69, 
+          33, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "item-Box.db75.dnalsi_7b"
+  }, 
+  {
+    "ref": "item-Box.db75.dnalsi_7b", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 140, 
+        "x": 24, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "context-dnalsi_7b"
+  }, 
+  {
+    "ref": "item-Tree.a5f8.dnalsi_7b", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "gr_state": 3, 
+        "y": 78, 
+        "x": 100, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_7b"
+  }, 
+  {
+    "ref": "item-Tree.5534.dnalsi_7b", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "gr_state": 1, 
+        "y": 28, 
+        "x": 112, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_7b"
+  }, 
+  {
+    "ref": "item-Ground.db10.dnalsi_7b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_7b"
+  }
+]

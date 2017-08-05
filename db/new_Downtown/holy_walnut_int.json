@@ -1,0 +1,257 @@
+[
+  {
+	"ref": "context-holy_walnut_int",
+	"capacity": 64,
+    "type": "context",
+    "name": "The Order of the Holy Walnut",
+    "mods": [
+      {
+        "town_dir": "",
+        "port_dir": DOWN,
+        "type": "Region",
+		"orientation": 1,
+        "neighbors": [
+          "",
+          "",
+          "context-holy_walnut_front",
+          ""
+        ],
+		"nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.holy_walnut_int",
+    "in": "context-holy_walnut_int",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Ground",
+        "x": 0,
+        "y": 4,
+        "orientation": 112,
+        "style": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap1.holy_walnut_int",
+    "in": "context-holy_walnut_int",
+    "name": "Trapezoid 1",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 8,
+        "y": 30,
+        "orientation": 48,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 19,
+        "lower_left_x": 0,
+        "lower_right_x": 19,
+        "height": 168
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall.holy_walnut_int",
+    "in": "context-holy_walnut_int",
+    "name": "Wall",
+    "mods": [
+      {
+        "type": "Wall",
+        "x": 0,
+        "y": 0,
+        "orientation": 204,
+        "style": 4
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-glue.holy_walnut_int",
+    "in": "context-holy_walnut_int",
+    "name": "Glue",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 44,
+        "y": 70,
+        "gr_state": 1,
+		"open_flags": 3,
+        "x_offset_1": 245,
+        "y_offset_1": 0,
+        "x_offset_2": 20,
+        "y_offset_2": 0,
+        "x_offset_3": 5,
+        "y_offset_3": 227,
+        "x_offset_4": 4,
+        "y_offset_4": 239,
+        "x_offset_5": 0,
+        "y_offset_5": 0,
+        "x_offset_6": 0,
+        "y_offset_6": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-chair1.holy_walnut_int",
+    "name": "Chair 1",
+    "in": "context-holy_walnut_int",
+    "mods": [
+    {
+        "type": "Chair",
+        "style": 1,
+        "x": 132,
+        "y": 128,
+        "orientation": 245,
+		"open_flags": 3,
+        "gr_width": 24
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-chair2.holy_walnut_int",
+    "name": "Chair 2",
+    "in": "context-holy_walnut_int",
+    "mods": [
+    {
+        "type": "Chair",
+        "style": 1,
+        "x": 104,
+        "y": 135,
+        "orientation": 17,
+		"open_flags": 3,
+        "gr_width": 24
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-chair3.holy_walnut_int",
+    "name": "Chair 3",
+    "in": "context-holy_walnut_int",
+    "mods": [
+    {
+        "type": "Chair",
+        "style": 1,
+        "x": 8,
+        "y": 128,
+        "orientation": 244,
+		"open_flags": 3,
+        "gr_width": 24
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-chair4.holy_walnut_int",
+    "name": "Chair 4",
+    "in": "context-holy_walnut_int",
+    "mods": [
+    {
+        "type": "Chair",
+        "style": 1,
+        "x": 36,
+        "y": 134,
+        "orientation": 16,
+		"open_flags": 3,
+        "gr_width": 24
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap2.holy_walnut_int",
+    "in": "context-holy_walnut_int",
+    "name": "Trapezoid 2",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 132,
+        "y": 30,
+        "orientation": 48,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 19,
+        "lower_left_x": 0,
+        "lower_right_x": 19,
+        "height": 168
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-knick_knack1.holy_walnut_int",
+    "in": "item-glue.holy_walnut_int",
+    "name": "Knicknack 1",
+    "mods": [
+      {
+        "type": "Knick_knack",
+        "y": 0,
+		"gr_width": 3,
+        "orientation": 48
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-knick_knack2.holy_walnut_int",
+    "in": "item-glue.holy_walnut_int",
+    "name": "Knicknack 2",
+    "mods": [
+      {
+        "type": "Knick_knack",
+        "y": 1,
+		"gr_width": 3,
+        "orientation": 48
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-trap3.holy_walnut_int",
+    "in": "context-holy_walnut_int",
+    "name": "Trapezoid 3",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 68,
+        "y": 144,
+        "orientation": 236,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 19,
+        "lower_left_x": 0,
+        "lower_right_x": 19,
+        "height": 168
+      }
+    ]
+  },
+  {
+	"type": "item",
+	"ref": "item-shortsign.holy_walnut_int",
+	"name": "Holy Walnut Sign",
+	"in": "context-holy_walnut_int",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 0,
+			"x": 72,
+			"y": 122,
+			"gr_state": 1,
+			"orientation": 0,
+			"ascii": [
+			133,
+			131,
+			28
+			]
+		}
+	]
+  }
+]

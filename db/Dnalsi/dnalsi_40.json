@@ -1,0 +1,131 @@
+[
+  {
+    "ref": "context-dnalsi_40", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-dnalsi_50", 
+          "", 
+          "context-dnalsi_30"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6f47.dnalsi_40", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_40"
+  }, 
+  {
+    "ref": "item-Wall.2a8a.dnalsi_40", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_40"
+  }, 
+  {
+    "ref": "item-Tree.8407.dnalsi_40", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "gr_state": 3, 
+        "y": 152, 
+        "x": 44, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_40"
+  }, 
+  {
+    "ref": "item-Tree.6fdf.dnalsi_40", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "gr_state": 4, 
+        "y": 146, 
+        "x": 48, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_40"
+  }, 
+  {
+    "ref": "item-Tree.05b6.dnalsi_40", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "gr_state": 3, 
+        "y": 79, 
+        "x": 100, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_40"
+  }, 
+  {
+    "ref": "item-Tree.3b2b.dnalsi_40", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "gr_state": 1, 
+        "y": 27, 
+        "x": 112, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_40"
+  }, 
+  {
+    "ref": "item-Ground.a1a9.dnalsi_40", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_40"
+  }
+]

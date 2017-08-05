@@ -1,0 +1,322 @@
+[
+  {
+    "ref": "context-dnalsi_60", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_61", 
+          "", 
+          "", 
+          "context-dnalsi_50"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.e8f1.dnalsi_60", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Wall.4629.dnalsi_60", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Flat.ef26.dnalsi_60", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 52, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Hole.d0c1.dnalsi_60", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 159, 
+        "x": 96, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Tree.883b.dnalsi_60", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 91, 
+        "x": 132, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Tree.6be2.dnalsi_60", 
+    "mods": [
+      {
+        "y": 128, 
+        "x": 60, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Tree.e955.dnalsi_60", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 1, 
+        "gr_state": 4, 
+        "y": 21, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Flat.3d24.dnalsi_60", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 52, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Tree.e0d5.dnalsi_60", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 17, 
+        "gr_state": 3, 
+        "y": 111, 
+        "x": 116, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Bush.3774.dnalsi_60", 
+    "mods": [
+      {
+        "y": 137, 
+        "x": 56, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_60"
+  }, 
+  {
+    "ref": "item-Knick_knack.6225.dnalsi_60", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Knick_knack", 
+        "orientation": 0, 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Box.6a0a.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Knick_knack.224d.dnalsi_60", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "orientation": 0, 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Box.6a0a.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Knick_knack.795c.dnalsi_60", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Box.6a0a.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Knick_knack.3b94.dnalsi_60", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Box.6a0a.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Box.6a0a.dnalsi_60", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 80, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-Hole.6922.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Plant.b9d5.dnalsi_60", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-Hole.6922.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Plant.dc95.dnalsi_60", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "item-Hole.6922.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Knife.b561.dnalsi_60", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Knife", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-Hole.6922.dnalsi_60"
+  }, 
+  {
+    "ref": "item-Hole.6922.dnalsi_60", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 144, 
+        "x": 104, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_60"
+  }
+]

@@ -1,0 +1,169 @@
+[
+  {
+    "ref": "context-welcomecenterext", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "the Welcome Center", 
+    "mods": [
+      {
+        "town_dir": RIGHT,
+        "port_dir": RIGHT,
+        "type": "Region",
+        "orientation": 3,
+        "neighbors": [
+          "",
+          "context-Woods_5x",
+          "context-welcomecenterint",
+          "context-Downtown_7f"
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wallff5e.welcomecenterext", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-welcomecenterext"
+  }, 
+  {
+    "ref": "item-ground5x44.welcomecenterext", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-welcomecenterext"
+  }, 
+  {
+    "ref": "item-doorl8k0.welcomecenterext", 
+    "mods": [
+      {
+        "orientation": 176, 
+        "type": "Door", 
+        "y": 33, 
+        "x": 68,
+		"open_flags": 0,
+		"style": 1,
+		"gr_state": 0,
+		"connection": "context-welcomecenterint"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-welcomecenterext"
+  },
+  {
+	"ref": "item-window1.welcomecenterext",
+	"mods": [
+	  {
+		"type": "Window",
+		"style": 1,
+		"x": 132,
+		"y": 49,
+		"orientation": 0,
+		"gr_width": 20
+	  }
+	],
+	"type": "item",
+	"name": "Window",
+	"in": "context-welcomecenterext"	
+	},
+  {
+	"ref": "item-window2.welcomecenterext",
+	"mods": [
+	  {
+		"type": "Window",
+		"style": 1,
+		"x": 8,
+		"y": 49,
+		"orientation": 0,
+		"gr_width": 20
+	  }
+	],
+	"type": "item",
+	"name": "Window",
+	"in": "context-welcomecenterext"	
+	},
+  {
+    "ref": "item-sign8k9h.welcomecenterext", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "ascii": [
+		  32,
+		  32,
+		  32,
+		  32,
+          87,
+		  101,
+		  108,
+		  99,
+		  111,
+		  109,
+		  101,
+		  32,
+		  67,
+		  101,
+		  110,
+		  116,
+		  101,
+		  114
+        ], 
+        "gr_state": 2, 
+        "y": 108, 
+        "x": 38, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-welcomecenterext"
+  },
+  {
+    "ref": "item-atm4b43.welcomecenterext", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 46, 
+        "type": "Atm", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Atm", 
+    "in": "context-welcomecenterext"
+  },   
+  {
+    "ref": "item-streetk0f3.welcomecenterext", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-welcomecenterext"
+  }
+]

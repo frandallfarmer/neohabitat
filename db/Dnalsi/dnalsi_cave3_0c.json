@@ -1,0 +1,196 @@
+[
+  {
+    "ref": "context-dnalsi_cave3_0c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Caves", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-dnalsi_cave3_1c", 
+          "", 
+          ""
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7739.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Trapezoid.03e9.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "lower_right_x": 248, 
+        "upper_left_x": 240, 
+        "upper_right_x": 0, 
+        "lower_left_x": 248, 
+        "trapezoid_type": 1, 
+        "y": 86, 
+        "x": 152, 
+        "height": 170, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Wall.0efb.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Trapezoid.020e.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 244, 
+        "upper_right_x": 15, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "y": 99, 
+        "x": 32, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Trapezoid.101f.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "lower_right_x": 7, 
+        "upper_left_x": 0, 
+        "upper_right_x": 17, 
+        "lower_left_x": 5, 
+        "trapezoid_type": 1, 
+        "y": 90, 
+        "x": 108, 
+        "height": 166, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Rock.5bfd.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "mass": 1, 
+        "y": 142, 
+        "x": 44, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Trapezoid.c9e7.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 245, 
+        "upper_right_x": 6, 
+        "lower_left_x": 253, 
+        "trapezoid_type": 1, 
+        "y": 98, 
+        "x": 68, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Rock.3c27.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 116, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Rock.15d9.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 136, 
+        "x": 4, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave3_0c"
+  }, 
+  {
+    "ref": "item-Rock.1c27.dnalsi_cave3_0c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "mass": 1, 
+        "y": 139, 
+        "x": 76, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave3_0c"
+  }
+]

@@ -1,0 +1,210 @@
+[
+  {
+    "ref": "context-dnalsi_83", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_84", 
+          "context-dnalsi_93", 
+          "context-dnalsi_82", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.b43b.dnalsi_83", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Wall.f391.dnalsi_83", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Tree.79c5.dnalsi_83", 
+    "mods": [
+      {
+        "y": 22, 
+        "x": 28, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Pond.db7c.dnalsi_83", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 24, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Pond.cc26.dnalsi_83", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 48, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Tree.e8c9.dnalsi_83", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 173, 
+        "gr_state": 1, 
+        "y": 27, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Tree.773b.dnalsi_83", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 92, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Ground.3a2c.dnalsi_83", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Pond.3af6.dnalsi_83", 
+    "mods": [
+      {
+        "y": 15, 
+        "x": 40, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Tree.49fd.dnalsi_83", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 173, 
+        "gr_state": 3, 
+        "y": 77, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Aquarium.daa2.dnalsi_83", 
+    "mods": [
+      {
+        "y": 140, 
+        "x": 52, 
+        "type": "Aquarium", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Aquarium", 
+    "in": "context-dnalsi_83"
+  }, 
+  {
+    "ref": "item-Trapezoid.937c.dnalsi_83", 
+    "mods": [
+      {
+        "lower_right_x": 38, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "upper_right_x": 38, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "y": 138, 
+        "x": 44, 
+        "height": 22, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_83"
+  }
+]

@@ -1,0 +1,207 @@
+[
+  {
+    "ref": "context-dnalsi_5b", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_5c", 
+          "context-dnalsi_6b", 
+          "context-dnalsi_5a", 
+          "context-dnalsi_4b"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.1169.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Flat.ce73.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Bush.61a1.dnalsi_5b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 25, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 72, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Bush.04df.dnalsi_5b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 8, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Bush.5711.dnalsi_5b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 24, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 76, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Pond.16c7.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 16, 
+        "x": 40, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Pond.3f7d.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 16, 
+        "x": 60, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Pond.9571.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 26, 
+        "x": 52, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Flat.54cf.dnalsi_5b", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Bush.0726.dnalsi_5b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 24, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 120, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Pond.6f6b.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 9, 
+        "x": 60, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_5b"
+  }, 
+  {
+    "ref": "item-Bridge.b67d.dnalsi_5b", 
+    "mods": [
+      {
+        "y": 146, 
+        "x": 32, 
+        "type": "Bridge", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Bridge", 
+    "in": "context-dnalsi_5b"
+  }
+]

@@ -1,0 +1,237 @@
+[
+  {
+    "ref": "context-dnalsi_36", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_37", 
+          "", 
+          "context-dnalsi_cave3_2c", 
+          "context-dnalsi_26"
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.dd72.dnalsi_36", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Wall.01f1.dnalsi_36", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Ground.1ed6.dnalsi_36", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 68, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Rock.c1a2.dnalsi_36", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 148, 
+        "x": 64, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Tree.612f.dnalsi_36", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 48, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Tree.3434.dnalsi_36", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 128, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Tree.9b48.dnalsi_36", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 92, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Ground.09d3.dnalsi_36", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Sky.2652.dnalsi_36", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 68, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_36"
+  }, 
+  {
+    "ref": "item-Rock.9c2b.dnalsi_36", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Hole.0eac.dnalsi_36"
+  }, 
+  {
+    "ref": "item-Rock.4268.dnalsi_36", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 72, 
+        "mass": 1, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Hole.0eac.dnalsi_36"
+  }, 
+  {
+    "ref": "item-Rock.5792.dnalsi_36", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Hole.0eac.dnalsi_36"
+  }, 
+  {
+    "ref": "item-Rock.d78a.dnalsi_36", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Hole.0eac.dnalsi_36"
+  }, 
+  {
+    "ref": "item-Hole.0eac.dnalsi_36", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 149, 
+        "x": 112, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_36"
+  }
+]

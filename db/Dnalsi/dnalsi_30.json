@@ -1,0 +1,192 @@
+[
+  {
+    "ref": "context-dnalsi_30", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_31", 
+          "context-dnalsi_40", 
+          "", 
+          ""
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.8443.dnalsi_30", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Wall.c5f4.dnalsi_30", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 168, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Sign.e48f.dnalsi_30", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 188, 
+        "ascii": [
+          139, 
+          32, 
+          82, 
+          73, 
+          80, 
+          134, 
+          84, 
+          73, 
+          68, 
+          69, 
+          83, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 26, 
+        "x": 56, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Head.1628.dnalsi_30", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 100, 
+        "style": 38, 
+        "type": "Head", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Trapezoid.448c.dnalsi_30", 
+    "mods": [
+      {
+        "lower_right_x": 66, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "upper_right_x": 66, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 156, 
+        "x": 96, 
+        "height": 37, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Head.1d04.dnalsi_30", 
+    "mods": [
+      {
+        "y": 34, 
+        "x": 136, 
+        "style": 38, 
+        "type": "Head", 
+        "orientation": 96
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Flat.cdee.dnalsi_30", 
+    "mods": [
+      {
+        "flat_type": 3, 
+        "style": 4, 
+        "orientation": 0, 
+        "y": 0, 
+        "x": 72, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_30"
+  }, 
+  {
+    "ref": "item-Ground.7d28.dnalsi_30", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 168, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_30"
+  }
+]

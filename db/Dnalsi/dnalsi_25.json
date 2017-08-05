@@ -1,0 +1,127 @@
+[
+  {
+    "ref": "context-dnalsi_25", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_26", 
+          "", 
+          "", 
+          "context-dnalsi_15"
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.eb01.dnalsi_25", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_25"
+  }, 
+  {
+    "ref": "item-Wall.74e2.dnalsi_25", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_25"
+  }, 
+  {
+    "ref": "item-Ground.401e.dnalsi_25", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 68, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_25"
+  }, 
+  {
+    "ref": "item-Tree.8408.dnalsi_25", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 0, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_25"
+  }, 
+  {
+    "ref": "item-Tree.4e8a.dnalsi_25", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 135, 
+        "x": 112, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_25"
+  }, 
+  {
+    "ref": "item-Ground.dbea.dnalsi_25", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_25"
+  }, 
+  {
+    "ref": "item-Sky.914c.dnalsi_25", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 68, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_25"
+  }
+]

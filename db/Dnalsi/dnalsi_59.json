@@ -1,0 +1,320 @@
+[
+  {
+    "ref": "context-dnalsi_59", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_5a", 
+          "context-dnalsi_69", 
+          "context-dnalsi_58", 
+          "context-dnalsi_49"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.7945.dnalsi_59", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Flat.4237.dnalsi_59", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.29d4.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 9, 
+        "gr_state": 2, 
+        "y": 158, 
+        "x": 80, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.225d.dnalsi_59", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 6, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.7b54.dnalsi_59", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.76d8.dnalsi_59", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.6f90.dnalsi_59", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.ac69.dnalsi_59", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.cf2f.dnalsi_59", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bottle.6a8e.dnalsi_59", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.b552.dnalsi_59"
+  }, 
+  {
+    "ref": "item-Hole.b552.dnalsi_59", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 156, 
+        "x": 56, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Flat.1e89.dnalsi_59", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 12, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Flat.cbf6.dnalsi_59", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.04d2.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 25, 
+        "gr_state": 2, 
+        "y": 143, 
+        "x": 52, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.aa30.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 2, 
+        "y": 42, 
+        "x": 128, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.3111.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 104, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.72bb.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 2, 
+        "y": 42, 
+        "x": 80, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.b7c3.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 57, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 80, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }, 
+  {
+    "ref": "item-Bush.08e9.dnalsi_59", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 57, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 44, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_59"
+  }
+]

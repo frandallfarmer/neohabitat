@@ -1,0 +1,99 @@
+[
+  {
+    "ref": "context-dnalsi_11", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_12", 
+          "context-dnalsi_21", 
+          "", 
+          ""
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.a06c.dnalsi_11", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_11"
+  }, 
+  {
+    "ref": "item-Wall.666c.dnalsi_11", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_11"
+  }, 
+  {
+    "ref": "item-Ground.cc0d.dnalsi_11", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 192, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_11"
+  }, 
+  {
+    "ref": "item-Bush.960d.dnalsi_11", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 17, 
+        "gr_state": 2, 
+        "y": 145, 
+        "x": 24, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_11"
+  }, 
+  {
+    "ref": "item-Bush.5258.dnalsi_11", 
+    "mods": [
+      {
+        "y": 17, 
+        "x": 64, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 9
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_11"
+  }
+]

@@ -1,0 +1,151 @@
+[
+  {
+    "ref": "context-dnalsi_08", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_09", 
+          "context-dnalsi_18", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.75db.dnalsi_08", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 92, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Wall.9b35.dnalsi_08", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 92, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Knick_knack.2bf1.dnalsi_08", 
+    "mods": [
+      {
+        "style": 7, 
+        "orientation": 0, 
+        "y": 26, 
+        "x": 24, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Knick_knack.9d3a.dnalsi_08", 
+    "mods": [
+      {
+        "style": 7, 
+        "orientation": 16, 
+        "y": 24, 
+        "x": 12, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Flat.9e5d.dnalsi_08", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 188, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Flat.ff35.dnalsi_08", 
+    "mods": [
+      {
+        "flat_type": 3, 
+        "style": 4, 
+        "orientation": 0, 
+        "y": 0, 
+        "x": 188, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Trapezoid.41ea.dnalsi_08", 
+    "mods": [
+      {
+        "lower_right_x": 33, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "upper_right_x": 33, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 149, 
+        "x": 8, 
+        "height": 21, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_08"
+  }, 
+  {
+    "ref": "item-Ground.7c63.dnalsi_08", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 92, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_08"
+  }
+]

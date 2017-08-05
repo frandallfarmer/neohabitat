@@ -1,0 +1,198 @@
+[
+  {
+    "ref": "context-dnalsi_02", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_03", 
+          "context-dnalsi_12", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.ff39.dnalsi_02", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Wall.f540.dnalsi_02", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Trapezoid.d217.dnalsi_02", 
+    "mods": [
+      {
+        "lower_right_x": 1, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 246, 
+        "trapezoid_type": 0, 
+        "y": 56, 
+        "x": 32, 
+        "height": 18, 
+        "type": "Trapezoid", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Trapezoid.23a9.dnalsi_02", 
+    "mods": [
+      {
+        "lower_right_x": 19, 
+        "upper_left_x": 254, 
+        "upper_right_x": 24, 
+        "lower_left_x": 6, 
+        "trapezoid_type": 0, 
+        "y": 48, 
+        "x": 16, 
+        "height": 8, 
+        "type": "Trapezoid", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Tree.e66d.dnalsi_02", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 12, 
+        "style": 7, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Tree.9f9e.dnalsi_02", 
+    "mods": [
+      {
+        "y": 142, 
+        "x": 20, 
+        "style": 7, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Tree.0e36.dnalsi_02", 
+    "mods": [
+      {
+        "y": 151, 
+        "x": 28, 
+        "style": 7, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Flat.7722.dnalsi_02", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 24, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Bottle.4213.dnalsi_02", 
+    "mods": [
+      {
+        "y": 150, 
+        "x": 88, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Bottle.b1b4.dnalsi_02", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 104, 
+        "type": "Bottle", 
+        "orientation": 1, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-dnalsi_02"
+  }, 
+  {
+    "ref": "item-Ground.699b.dnalsi_02", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 24, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_02"
+  }
+]

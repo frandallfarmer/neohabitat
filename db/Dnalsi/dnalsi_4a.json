@@ -1,0 +1,261 @@
+[
+  {
+    "ref": "context-dnalsi_4a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_4b", 
+          "context-dnalsi_5a", 
+          "context-dnalsi_49", 
+          "context-dnalsi_3a"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.084b.dnalsi_4a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Flat.4b06.dnalsi_4a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Bush.ff38.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 25, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 72, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Book.156c.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-Vendo_front.ca00.dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Book.a9b9.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-Vendo_front.ca00.dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Vendo_front.ca00.dnalsi_4a", 
+    "mods": [
+      {
+        "display_item": 3, 
+        "style": 1, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 3, 
+        "item_price": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-Vendo_inside.c74b.dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Book.c330.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "last_page": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "item-Vendo_inside.c74b.dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Vendo_inside.c74b.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 236, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 3, 
+        "y": 27, 
+        "x": 12, 
+        "type": "Vendo_inside", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Bush.3e5a.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 24, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 88, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Flat.3756.dnalsi_4a", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Bush.b1de.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 24, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 120, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Dropbox.180e.dnalsi_4a", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 124, 
+        "type": "Dropbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Dropbox", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Rock.c47e.dnalsi_4a", 
+    "mods": [
+      {
+        "y": 137, 
+        "x": 88, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_4a"
+  }, 
+  {
+    "ref": "item-Short_sign.161a.dnalsi_4a", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          80, 
+          79, 
+          83, 
+          84, 
+          67, 
+          65, 
+          82, 
+          68, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 81, 
+        "x": 4, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-dnalsi_4a"
+  }
+]

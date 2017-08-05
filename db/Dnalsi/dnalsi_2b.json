@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-dnalsi_2b", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_2c", 
+          "context-dnalsi_3b", 
+          "context-dnalsi_2a", 
+          "context-dnalsi_1b"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.bf0b.dnalsi_2b", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Flat.c287.dnalsi_2b", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Bush.b4ba.dnalsi_2b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 56, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Bush.e209.dnalsi_2b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 24, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Bush.043e.dnalsi_2b", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 76, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Rock.304d.dnalsi_2b", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 24, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Rock.f76a.dnalsi_2b", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 124, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Rock.6545.dnalsi_2b", 
+    "mods": [
+      {
+        "y": 149, 
+        "x": 132, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_2b"
+  }, 
+  {
+    "ref": "item-Flat.e872.dnalsi_2b", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_2b"
+  }
+]

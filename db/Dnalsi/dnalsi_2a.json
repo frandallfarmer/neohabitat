@@ -1,0 +1,220 @@
+[
+  {
+    "ref": "context-dnalsi_2a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_2b", 
+          "context-dnalsi_3a", 
+          "context-dnalsi_29", 
+          "context-dnalsi_1a"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.d731.dnalsi_2a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Flat.b178.dnalsi_2a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Bush.e944.dnalsi_2a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 25, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 64, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Bush.a7db.dnalsi_2a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 2, 
+        "y": 40, 
+        "x": 8, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Bush.7d77.dnalsi_2a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 24, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 76, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Teleport.9ef6.dnalsi_2a", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 104, 
+        "type": "Teleport", 
+        "orientation": 204, 
+        "address": "dnalsi"
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Bush.7f76.dnalsi_2a", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 8, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 33
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Sign.136a.dnalsi_2a", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 196, 
+        "ascii": [
+          136, 
+          133, 
+          87, 
+          69, 
+          76, 
+          67, 
+          79, 
+          77, 
+          69, 
+          134, 
+          32, 
+          32, 
+          84, 
+          79, 
+          134, 
+          68, 
+          133, 
+          39, 
+          133, 
+          110, 
+          97, 
+          108, 
+          115, 
+          105, 
+          134, 
+          73, 
+          115, 
+          108, 
+          97, 
+          110, 
+          100, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 42, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Flat.b30b.dnalsi_2a", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_2a"
+  }, 
+  {
+    "ref": "item-Bush.d77e.dnalsi_2a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 24, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 120, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_2a"
+  }
+]

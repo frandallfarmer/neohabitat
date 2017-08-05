@@ -1,0 +1,246 @@
+[
+  {
+    "ref": "context-dnalsi_82", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_83", 
+          "context-dnalsi_92", 
+          "", 
+          ""
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.7da8.dnalsi_82", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Wall.a2b5.dnalsi_82", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.3faf.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 237, 
+        "gr_state": 1, 
+        "y": 22, 
+        "x": 28, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.1564.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 74, 
+        "x": 96, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.4e5c.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 172, 
+        "gr_state": 1, 
+        "y": 139, 
+        "x": 48, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.f3d0.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 173, 
+        "gr_state": 1, 
+        "y": 27, 
+        "x": 88, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.5fa5.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 21, 
+        "x": 112, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Ground.f2a2.dnalsi_82", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 244, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Knick_knack.9cb1.dnalsi_82", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Hole.6767.dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.d418.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 72, 
+        "gr_state": 3, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "item-Hole.6767.dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.8167.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 33, 
+        "gr_state": 3, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "item-Hole.6767.dnalsi_82"
+  }, 
+  {
+    "ref": "item-Hole.6767.dnalsi_82", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 145, 
+        "x": 68, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.b778.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 70, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }, 
+  {
+    "ref": "item-Tree.f837.dnalsi_82", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 90, 
+        "x": 124, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_82"
+  }
+]

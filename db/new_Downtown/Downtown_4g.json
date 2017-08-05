@@ -11,7 +11,7 @@
         "type": "Region",
         "orientation": 0,		
         "neighbors": [
-          "context-Downtown_4h", 
+          "context-holy_walnut_front", 
           "context-Downtown_5g", 
           "context-Downtown_4f", 
           "context-Downtown_3g"

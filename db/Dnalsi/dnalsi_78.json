@@ -1,0 +1,98 @@
+[
+  {
+    "ref": "context-dnalsi_78", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_79", 
+          "", 
+          "", 
+          "context-dnalsi_68"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.ed52.dnalsi_78", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_78"
+  }, 
+  {
+    "ref": "item-Wall.b211.dnalsi_78", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_78"
+  }, 
+  {
+    "ref": "item-Tree.9a7a.dnalsi_78", 
+    "mods": [
+      {
+        "y": 22, 
+        "x": 28, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 237
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_78"
+  }, 
+  {
+    "ref": "item-Tree.0911.dnalsi_78", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 72, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_78"
+  }, 
+  {
+    "ref": "item-Ground.84ba.dnalsi_78", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 204, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_78"
+  }
+]

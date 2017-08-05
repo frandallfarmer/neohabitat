@@ -1,0 +1,196 @@
+[
+  {
+    "ref": "context-dnalsi_cave2_2c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Caves", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_cave2_2d", 
+          "context-dnalsi_62", 
+          "context-dnalsi_cave2_2b", 
+          "context-dnalsi_cave2_1c"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.0399.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.4647.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "lower_right_x": 248, 
+        "upper_left_x": 240, 
+        "upper_right_x": 0, 
+        "lower_left_x": 248, 
+        "trapezoid_type": 1, 
+        "y": 86, 
+        "x": 36, 
+        "height": 170, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Wall.8f6d.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.2c67.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 244, 
+        "upper_right_x": 15, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "y": 99, 
+        "x": 80, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.a261.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "lower_right_x": 7, 
+        "upper_left_x": 0, 
+        "upper_right_x": 17, 
+        "lower_left_x": 5, 
+        "trapezoid_type": 1, 
+        "y": 90, 
+        "x": 116, 
+        "height": 166, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Rock.ea73.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "mass": 1, 
+        "y": 141, 
+        "x": 12, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Trapezoid.4a63.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 245, 
+        "upper_right_x": 6, 
+        "lower_left_x": 253, 
+        "trapezoid_type": 1, 
+        "y": 98, 
+        "x": 104, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Rock.e9af.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 153, 
+        "x": 64, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Sky.aa3b.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 16, 
+        "style": 9, 
+        "type": "Sky", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_cave2_2c"
+  }, 
+  {
+    "ref": "item-Rock.3bda.dnalsi_cave2_2c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "mass": 1, 
+        "y": 149, 
+        "x": 76, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave2_2c"
+  }
+]

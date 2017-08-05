@@ -1,0 +1,133 @@
+[
+  {
+    "ref": "context-dnalsi_73", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-dnalsi_72", 
+          "context-dnalsi_63"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.4dd6.dnalsi_73", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_73"
+  }, 
+  {
+    "ref": "item-Wall.1a2f.dnalsi_73", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_73"
+  }, 
+  {
+    "ref": "item-Garbage_can.a804.dnalsi_73", 
+    "mods": [
+      {
+        "orientation": 228, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 144, 
+        "x": 100, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-dnalsi_73"
+  }, 
+  {
+    "ref": "item-Plant.f6f4.dnalsi_73", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 148, 
+        "x": 76, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_73"
+  }, 
+  {
+    "ref": "item-Plant.1f48.dnalsi_73", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 138, 
+        "x": 92, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_73"
+  }, 
+  {
+    "ref": "item-Plant.773f.dnalsi_73", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 148, 
+        "x": 116, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_73"
+  }, 
+  {
+    "ref": "item-Ground.6d8f.dnalsi_73", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 80, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_73"
+  }
+]

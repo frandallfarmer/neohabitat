@@ -1,0 +1,219 @@
+[
+  {
+    "ref": "context-dnalsi_92", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_93", 
+          "", 
+          "", 
+          "context-dnalsi_82"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.1aaa.dnalsi_92", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Wall.d3cd.dnalsi_92", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Tree.d1d4.dnalsi_92", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 236, 
+        "gr_state": 3, 
+        "y": 110, 
+        "x": 108, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Fountain.620f.dnalsi_92", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 40, 
+        "type": "Fountain", 
+        "orientation": 16, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fountain", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Sign.30c3.dnalsi_92", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 252, 
+        "ascii": [
+          128, 
+          65, 
+          115, 
+          107, 
+          32, 
+          111, 
+          102, 
+          134, 
+          77, 
+          101, 
+          32, 
+          119, 
+          104, 
+          97, 
+          116, 
+          134, 
+          121, 
+          111, 
+          117, 
+          128, 
+          119, 
+          105, 
+          108, 
+          108, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 22, 
+        "x": 40, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Tree.0e1a.dnalsi_92", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 88, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Tree.0be7.dnalsi_92", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 21, 
+        "x": 112, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Ground.8dc6.dnalsi_92", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 16, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Tree.e6d9.dnalsi_92", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 70, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_92"
+  }, 
+  {
+    "ref": "item-Tree.e175.dnalsi_92", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 90, 
+        "x": 124, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_92"
+  }
+]

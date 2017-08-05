@@ -1,0 +1,207 @@
+[
+  {
+    "ref": "context-dnalsi_57", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_58", 
+          "context-dnalsi_67", 
+          "", 
+          "context-dnalsi_47"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.5a0b.dnalsi_57", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Flat.9ea1.dnalsi_57", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Trapezoid.3ca5.dnalsi_57", 
+    "mods": [
+      {
+        "lower_right_x": 28, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 245, 
+        "trapezoid_type": 0, 
+        "y": 48, 
+        "x": 48, 
+        "height": 19, 
+        "type": "Trapezoid", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Bush.d022.dnalsi_57", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 12, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Trapezoid.e0d7.dnalsi_57", 
+    "mods": [
+      {
+        "lower_right_x": 27, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 232, 
+        "trapezoid_type": 0, 
+        "y": 48, 
+        "x": 92, 
+        "height": 28, 
+        "type": "Trapezoid", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Flat.22ea.dnalsi_57", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 12, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Trapezoid.eaec.dnalsi_57", 
+    "mods": [
+      {
+        "lower_right_x": 38, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 231, 
+        "trapezoid_type": 0, 
+        "y": 48, 
+        "x": 136, 
+        "height": 21, 
+        "type": "Trapezoid", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Tree.646a.dnalsi_57", 
+    "mods": [
+      {
+        "y": 90, 
+        "x": 24, 
+        "style": 9, 
+        "type": "Tree", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Flat.5332.dnalsi_57", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Bush.b2bd.dnalsi_57", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 100, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_57"
+  }, 
+  {
+    "ref": "item-Bush.744f.dnalsi_57", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 35, 
+        "x": 128, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_57"
+  }
+]
