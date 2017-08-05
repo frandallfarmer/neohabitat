@@ -94,5 +94,21 @@
         "path" : "text-teleporterhelp"
       } 
     ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-welcomecenter.plaque1",
+    "name" : "Welcome Center Plaque",
+    "in" : "context-welcomecenterext",
+    "mods" : [ 
+      {
+        "type" : "Plaque",
+        "x" : 100,
+        "y" : 66,
+        "style": 2, 
+        "last_page" : 2,
+        "path" : "text-welcomecenterext"
+      } 
+    ]
   }
 ]     

@@ -1,0 +1,180 @@
+[
+  {
+    "ref": "context-dnalsi_cave2_1c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Caves", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_cave2_1d", 
+          "context-dnalsi_cave2_2d", 
+          "", 
+          "context-dnalsi_cave2_0c"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.28ef.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Trapezoid.996d.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "lower_right_x": 248, 
+        "upper_left_x": 240, 
+        "upper_right_x": 253, 
+        "lower_left_x": 248, 
+        "trapezoid_type": 1, 
+        "y": 86, 
+        "x": 20, 
+        "height": 170, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Wall.526c.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Trapezoid.f096.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 244, 
+        "upper_right_x": 15, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "y": 99, 
+        "x": 72, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Trapezoid.1bc3.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "lower_right_x": 7, 
+        "upper_left_x": 0, 
+        "upper_right_x": 17, 
+        "lower_left_x": 5, 
+        "trapezoid_type": 1, 
+        "y": 90, 
+        "x": 136, 
+        "height": 166, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Rock.1d8d.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "mass": 1, 
+        "y": 141, 
+        "x": 12, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Trapezoid.78f3.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 245, 
+        "upper_right_x": 6, 
+        "lower_left_x": 253, 
+        "trapezoid_type": 1, 
+        "y": 98, 
+        "x": 84, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Sky.85b5.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 60, 
+        "style": 9, 
+        "type": "Sky", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_cave2_1c"
+  }, 
+  {
+    "ref": "item-Rock.0233.dnalsi_cave2_1c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "mass": 1, 
+        "y": 149, 
+        "x": 100, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_cave2_1c"
+  }
+]

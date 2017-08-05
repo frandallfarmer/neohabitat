@@ -1,0 +1,205 @@
+[
+  {
+    "ref": "context-dnalsi_75", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_76", 
+          "context-dnalsi_85", 
+          "context-dnalsi_74", 
+          ""
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.0eae.dnalsi_75", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 68, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Wall.d120.dnalsi_75", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 68, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Ground.734b.dnalsi_75", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Knife.563f.dnalsi_75", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Knife", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Knife", 
+    "in": "item-Hole.0f8e.dnalsi_75"
+  }, 
+  {
+    "ref": "item-Head.4096.dnalsi_75", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "style": 18, 
+        "type": "Head", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-Hole.0f8e.dnalsi_75"
+  }, 
+  {
+    "ref": "item-Hole.0f8e.dnalsi_75", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 146, 
+        "x": 12, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Plant.a799.dnalsi_75", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 138, 
+        "x": 24, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Tree.4940.dnalsi_75", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 116, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Tree.b3d4.dnalsi_75", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 44, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Ground.1741.dnalsi_75", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Sky.f077.dnalsi_75", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_75"
+  }, 
+  {
+    "ref": "item-Plant.be0c.dnalsi_75", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 142, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_75"
+  }
+]

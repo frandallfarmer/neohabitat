@@ -1,0 +1,155 @@
+[
+  {
+    "ref": "context-dnalsi_05", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-dnalsi_15", 
+          "context-dnalsi_04", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.357e.dnalsi_05", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_05"
+  }, 
+  {
+    "ref": "item-Wall.bc21.dnalsi_05", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_05"
+  }, 
+  {
+    "ref": "item-Sign.42da.dnalsi_05", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          68, 
+          110, 
+          97, 
+          108, 
+          115, 
+          105, 
+          134, 
+          134, 
+          32, 
+          80, 
+          111, 
+          105, 
+          110, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 18, 
+        "x": 48, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-dnalsi_05"
+  }, 
+  {
+    "ref": "item-Rock.f6ff.dnalsi_05", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "mass": 1, 
+        "y": 131, 
+        "x": 44, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_05"
+  }, 
+  {
+    "ref": "item-Ground.3001.dnalsi_05", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 64, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_05"
+  }, 
+  {
+    "ref": "item-Ground.fa4b.dnalsi_05", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_05"
+  }
+]

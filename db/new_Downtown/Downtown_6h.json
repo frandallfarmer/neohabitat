@@ -97,7 +97,7 @@
       {
         "y": 33, 
         "x": 68, 
-        "open_flags": 0, 
+        "open_flags": 2, 
         "type": "Door", 
         "orientation": 220,
 		"connection": "context-Downtown_6i"

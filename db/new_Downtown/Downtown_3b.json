@@ -12,7 +12,7 @@
         "type": "Region",
         "orientation": 3,		
         "neighbors": [
-          "context-Downtown_3c",
+          "context-sheriff_front",
           "context-Downtown_4b", 
           "", 
           ""         

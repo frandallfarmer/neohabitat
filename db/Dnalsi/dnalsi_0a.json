@@ -1,0 +1,159 @@
+[
+  {
+    "ref": "context-dnalsi_0a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-dnalsi_1a", 
+          "context-dnalsi_09", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.f765.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Wall.c976.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Rock.1dd0.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 92, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Rock.3784.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 148, 
+        "x": 100, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Rock.37fc.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 100, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Ground.a7b1.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Bush.bd37.dnalsi_0a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 16, 
+        "gr_state": 2, 
+        "y": 22, 
+        "x": 120, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Bush.3498.dnalsi_0a", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 17, 
+        "gr_state": 2, 
+        "y": 17, 
+        "x": 24, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_0a"
+  }, 
+  {
+    "ref": "item-Bush.4e76.dnalsi_0a", 
+    "mods": [
+      {
+        "y": 17, 
+        "x": 48, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_0a"
+  }
+]

@@ -1,0 +1,130 @@
+[
+  {
+    "ref": "context-dnalsi_84", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_85", 
+          "context-dnalsi_94", 
+          "context-dnalsi_83", 
+          "context-dnalsi_74"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.0cd3.dnalsi_84", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_84"
+  }, 
+  {
+    "ref": "item-Flat.6700.dnalsi_84", 
+    "mods": [
+      {
+        "flat_type": 0, 
+        "style": 4, 
+        "orientation": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_84"
+  }, 
+  {
+    "ref": "item-Bush.5102.dnalsi_84", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 16, 
+        "gr_state": 2, 
+        "y": 29, 
+        "x": 76, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_84"
+  }, 
+  {
+    "ref": "item-Bush.4bac.dnalsi_84", 
+    "mods": [
+      {
+        "y": 128, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_84"
+  }, 
+  {
+    "ref": "item-Bush.66ad.dnalsi_84", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 17, 
+        "gr_state": 2, 
+        "y": 25, 
+        "x": 72, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_84"
+  }, 
+  {
+    "ref": "item-Ground.165d.dnalsi_84", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_84"
+  }, 
+  {
+    "ref": "item-Bush.9361.dnalsi_84", 
+    "mods": [
+      {
+        "y": 22, 
+        "x": 136, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_84"
+  }
+]

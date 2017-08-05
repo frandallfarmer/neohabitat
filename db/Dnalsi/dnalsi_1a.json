@@ -1,0 +1,301 @@
+[
+  {
+    "ref": "context-dnalsi_1a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_1b", 
+          "context-dnalsi_2a", 
+          "context-dnalsi_19", 
+          "context-dnalsi_0a"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fcd3.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 68, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Wall.8be3.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 68, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Flat.a0c8.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 164, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Rock.f373.dnalsi_1a", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 148, 
+        "x": 64, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Tree.acb4.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 48, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Tree.5597.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 27, 
+        "x": 128, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Tree.d93f.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 92, 
+        "style": 2, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Ground.e9dd.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Sky.171a.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 164, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Rock.13d9.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 132, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Rock.e0ee.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Box.daba.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Rock.d2fe.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Box.daba.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Box.daba.dnalsi_1a", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-Hole.ca0d.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Rock.c9ae.dnalsi_1a", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Hole.ca0d.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Rock.286e.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "mass": 1, 
+        "type": "Rock", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "item-Hole.ca0d.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Bottle.3b3a.dnalsi_1a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.ca0d.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Bottle.a7ef.dnalsi_1a", 
+    "mods": [
+      {
+        "orientation": 56, 
+        "gr_state": 1, 
+        "y": 3, 
+        "x": 3, 
+        "type": "Bottle", 
+        "filled": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Hole.ca0d.dnalsi_1a"
+  }, 
+  {
+    "ref": "item-Hole.ca0d.dnalsi_1a", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 149, 
+        "x": 112, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_1a"
+  }
+]

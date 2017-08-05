@@ -1,0 +1,256 @@
+[
+  {
+    "ref": "context-dnalsi_26", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-dnalsi_36", 
+          "context-dnalsi_25", 
+          ""
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.e92c.dnalsi_26", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Wall.6bfa.dnalsi_26", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 136, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Hole.5ac7.dnalsi_26", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 148, 
+        "x": 64, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Knick_knack.0eaf.dnalsi_26", 
+    "mods": [
+      {
+        "style": 7, 
+        "orientation": 17, 
+        "y": 24, 
+        "x": 8, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Knick_knack.e7aa.dnalsi_26", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 96, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Hole.ce92.dnalsi_26"
+  }, 
+  {
+    "ref": "item-Hole.ce92.dnalsi_26", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 148, 
+        "x": 112, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Bag.07d6.dnalsi_26", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-Box.8a4f.dnalsi_26"
+  }, 
+  {
+    "ref": "item-Box.8a4f.dnalsi_26", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 138, 
+        "x": 100, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Ground.4a6d.dnalsi_26", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 44, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Plant.be5a.dnalsi_26", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 143, 
+        "x": 40, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Plant.7cc4.dnalsi_26", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 128, 
+        "x": 36, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Flat.476c.dnalsi_26", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 44, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Flat.f13e.dnalsi_26", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_26"
+  }, 
+  {
+    "ref": "item-Trapezoid.8ffa.dnalsi_26", 
+    "mods": [
+      {
+        "lower_right_x": 23, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "upper_right_x": 23, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 148, 
+        "x": 0, 
+        "height": 21, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_26"
+  }
+]

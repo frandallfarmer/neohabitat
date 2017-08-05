@@ -1,0 +1,158 @@
+[
+  {
+    "ref": "context-dnalsi_71", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_72", 
+          "", 
+          "", 
+          "context-dnalsi_61"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Flat.7f63.dnalsi_71", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Wall.11d1.dnalsi_71", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Tree.3a9a.dnalsi_71", 
+    "mods": [
+      {
+        "y": 78, 
+        "x": 24, 
+        "style": 9, 
+        "type": "Tree", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Tree.8a6b.dnalsi_71", 
+    "mods": [
+      {
+        "y": 88, 
+        "x": 52, 
+        "style": 9, 
+        "type": "Tree", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Flat.648e.dnalsi_71", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 184, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Tree.25e5.dnalsi_71", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 48, 
+        "style": 7, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Pond.da86.dnalsi_71", 
+    "mods": [
+      {
+        "y": 9, 
+        "x": 12, 
+        "type": "Pond", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Pond.d338.dnalsi_71", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 32, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_71"
+  }, 
+  {
+    "ref": "item-Pond.93a6.dnalsi_71", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 16, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_71"
+  }
+]

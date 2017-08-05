@@ -1,0 +1,268 @@
+[
+  {
+    "ref": "context-dnalsi_58", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-dnalsi_59", 
+          "context-dnalsi_68", 
+          "context-dnalsi_57", 
+          "context-dnalsi_48"
+        ], 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.6d4f.dnalsi_58", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Flat.01c9.dnalsi_58", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat", 
+        "orientation": 188, 
+        "flat_type": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Bush.f7af.dnalsi_58", 
+    "mods": [
+      {
+        "y": 38, 
+        "x": 48, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 25
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Bush.209e.dnalsi_58", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 2, 
+        "y": 45, 
+        "x": 8, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Countertop.f111.dnalsi_58", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 100, 
+        "type": "Countertop", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Plant.1d70.dnalsi_58", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 138, 
+        "x": 44, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Sign.7e4a.dnalsi_58", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 212, 
+        "ascii": [
+          133, 
+          73, 
+          115, 
+          108, 
+          97, 
+          110, 
+          100, 
+          134, 
+          128, 
+          66, 
+          111, 
+          98, 
+          39, 
+          115, 
+          134, 
+          32, 
+          99, 
+          111, 
+          108, 
+          100, 
+          134, 
+          100, 
+          114, 
+          105, 
+          110, 
+          107, 
+          115, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 50, 
+        "x": 92, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Bottle.aaa4.dnalsi_58", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Bottle", 
+        "filled": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Countertop.eefd.dnalsi_58"
+  }, 
+  {
+    "ref": "item-Bottle.0910.dnalsi_58", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Countertop.eefd.dnalsi_58"
+  }, 
+  {
+    "ref": "item-Bottle.2497.dnalsi_58", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "item-Countertop.eefd.dnalsi_58"
+  }, 
+  {
+    "ref": "item-Countertop.eefd.dnalsi_58", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 88, 
+        "type": "Countertop", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Flat.b894.dnalsi_58", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 1, 
+        "orientation": 188, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_58"
+  }, 
+  {
+    "ref": "item-Bottle.c033.dnalsi_58", 
+    "mods": [
+      {
+        "y": 149, 
+        "x": 100, 
+        "type": "Bottle", 
+        "orientation": 0, 
+        "filled": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bottle", 
+    "in": "context-dnalsi_58"
+  }
+]

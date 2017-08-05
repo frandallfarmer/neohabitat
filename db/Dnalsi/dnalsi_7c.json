@@ -1,0 +1,233 @@
+[
+  {
+    "ref": "context-dnalsi_7c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "D'nalsi Island", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-dnalsi_7b", 
+          "context-dnalsi_6c"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.4a00.dnalsi_7c", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 60, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Wall.dd93.dnalsi_7c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 60, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Hole.03d5.dnalsi_7c", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 143, 
+        "x": 124, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Hole.d068.dnalsi_7c", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 1, 
+        "y": 159, 
+        "x": 96, 
+        "type": "Hole", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hole", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Tree.b802.dnalsi_7c", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 91, 
+        "x": 132, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Pond.f9f6.dnalsi_7c", 
+    "mods": [
+      {
+        "y": 40, 
+        "x": 28, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Tree.fb2a.dnalsi_7c", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 1, 
+        "gr_state": 4, 
+        "y": 21, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Ground.9efd.dnalsi_7c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 60, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Tree.917e.dnalsi_7c", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 17, 
+        "gr_state": 3, 
+        "y": 111, 
+        "x": 116, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Bush.c35e.dnalsi_7c", 
+    "mods": [
+      {
+        "y": 137, 
+        "x": 64, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Flat.6bad.dnalsi_7c", 
+    "mods": [
+      {
+        "flat_type": 3, 
+        "style": 4, 
+        "orientation": 0, 
+        "y": 0, 
+        "x": 160, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Flat.a734.dnalsi_7c", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 160, 
+        "type": "Flat", 
+        "orientation": 244, 
+        "flat_type": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-dnalsi_7c"
+  }, 
+  {
+    "ref": "item-Trapezoid.3019.dnalsi_7c", 
+    "mods": [
+      {
+        "lower_right_x": 30, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "upper_right_x": 30, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 3, 
+        "y": 164, 
+        "x": 24, 
+        "height": 24, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-dnalsi_7c"
+  }
+]

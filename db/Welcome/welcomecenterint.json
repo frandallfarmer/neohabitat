@@ -1,0 +1,282 @@
+[
+  {
+    "capacity": 64, 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-welcomecenterext", 
+          "context-welcomecenterintvendo", 
+          "", 
+          "context-welcomecenterinthatch"
+        ],
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ], 
+    "ref": "context-welcomecenterint", 
+    "name": "the Welcome Center", 
+    "type": "context"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 176
+      }
+    ], 
+    "ref": "item-wall.welcomecenterint", 
+    "name": "Wall", 
+    "in": "context-welcomecenterint"
+  }, 
+  {
+    "type": "item", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "ref": "item-ground.welcomecenterint", 
+    "name": "Ground", 
+    "in": "context-welcomecenterint"
+  },
+  {
+    "ref": "item-countertop41c0.welcomecenterint", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 108, 
+        "open_flags": 3, 
+        "type": "Countertop", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-welcomecenterint"
+  },
+  {
+    "ref": "item-sign1.welcomecenterint", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 216, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          32, 
+          133, 
+          129,
+          130,
+		  131,
+		  132,
+          78,
+		  101,
+		  111,
+		  134,
+		  72,
+		  97,
+		  98,
+		  105,
+		  116,
+		  97,
+		  116
+        ], 
+        "gr_state": 4, 
+        "y": 54, 
+        "x": 10, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-welcomecenterint"
+  },
+  {
+    "ref": "item-sign2.welcomecenterint", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 216, 
+        "ascii": [
+          133, 
+          129,
+          130,
+		  131,
+		  132,
+          87,
+		  101,
+		  108,
+		  99,
+		  111,
+		  109,
+		  101,
+		  134,
+		  32,
+		  32,
+		  128,
+		  116,
+		  111
+        ], 
+        "gr_state": 4, 
+        "y": 110, 
+        "x": 10, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-welcomecenterint"
+  },
+  {
+    "ref": "item-picturek309.welcomecenterint", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Picture",
+		"mass": 1,
+        "style": 1, 
+        "y": 106, 
+        "x": 76
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-welcomecenterint"
+  },
+  {
+    "ref": "item-picture2d9j.welcomecenterint", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Picture",
+		"mass": 1,
+        "style": 2, 
+        "y": 88, 
+        "x": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-welcomecenterint"
+  }, 
+{
+	"type": "item",
+	"ref": "item-head1.welcomecenterint",
+	"name": "Chipmonk Head",
+	"in": "item-glue.welcomecenterint",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 108,
+			"x": 0,
+			"y": 0,
+			"orientation": 0,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-head2.welcomecenterint",
+	"name": "Cool Cat Head",
+	"in": "item-glue.welcomecenterint",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 28,
+			"x": 1,
+			"y": 1,
+			"orientation": 16,
+			"gr_state": 1
+		}
+	]
+},
+  {
+    "ref": "item-chair1.welcomecenterint", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 112,
+        "open_flags": 3,
+		"style": 2,
+        "type": "Chair", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-welcomecenterint"
+  },
+  {
+    "ref": "item-chair2.welcomecenterint", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 132,
+        "open_flags": 3,
+		"style": 2,
+        "type": "Chair", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-welcomecenterint"
+  },   
+  {
+    "type": "item",
+    "ref": "item-glue.welcomecenterint",
+    "in": "context-welcomecenterint",
+    "name": ".",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 88,
+        "y": 124,
+        "gr_state": 1,
+		"open_flags": 3,
+        "x_offset_1": 234,
+        "y_offset_1": 55,
+        "x_offset_2": 242,
+        "y_offset_2": 55,
+        "x_offset_3": 0,
+        "y_offset_3": 0,
+        "x_offset_4": 0,
+        "y_offset_4": 0,
+        "x_offset_5": 0,
+        "y_offset_5": 0,
+        "x_offset_6": 0,
+        "y_offset_6": 0
+      }
+    ]
+  },    
+  {
+    "ref": "item-door.welcomecenterint", 
+    "mods": [
+      {
+        "orientation": 176, 
+        "connection": "context-welcomecenterext", 
+        "y": 32, 
+        "x": 68,
+        "style": 1,		
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-welcomecenterint"
+  }
+]
