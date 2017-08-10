@@ -49,7 +49,6 @@
 		{ "type": "class", "tag": "Grenade", "name": "org.made.neohabitat.mods.Grenade" },
 		{ "type": "class", "tag": "Ground", "name": "org.made.neohabitat.mods.Ground" },
 		{ "type": "class", "tag": "Gun", "name": "org.made.neohabitat.mods.Gun" },
-		{ "type": "class", "tag": "Hat", "name": "org.made.neohabitat.mods.Hat" },
 		{ "type": "class", "tag": "Head", "name": "org.made.neohabitat.mods.Head" },
 		{ "type": "class", "tag": "Hole", "name": "org.made.neohabitat.mods.Hole" },
 		{ "type": "class", "tag": "Hot_tub", "name": "org.made.neohabitat.mods.Hot_tub" },

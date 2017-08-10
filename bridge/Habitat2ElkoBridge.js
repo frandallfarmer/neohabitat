@@ -847,7 +847,7 @@ function parseHabitatClientMessage(client, server, data) {
 						context = client.user.mods[0].lastArrivedIn;
 						client.user.mods[0].lastArrivedIn = "";
 					} else {
-						choices = ["context-Downtown_5f"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
+						choices = ["context-table"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
 						context = choices[rnd(choices.length)];
 					}
 				} else if (client.state.nextRegion !== "") {
@@ -1199,7 +1199,6 @@ var encodeState = {
 		Rock: 			function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Roof:	 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Safe:			function (state, container, buf) { return (this.openable(state, container, buf)); },
-		Security_device:function (state, container, buf) { return (this.toggle  (state, container, buf)); },
 		Sex_changer:	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Short_sign:		function (state, container, buf) { return (this.Sign	(state, container, buf)); },
 		Shovel:   		function (state, container, buf) { return (this.common  (state, container, buf)); },

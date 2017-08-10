@@ -327,7 +327,6 @@ this.SERVER_OPS = {
 				b.add(o.RUB_MESSAGE.getBytes());
 			}
 		},
-		//"SCAN$":	 			{ reqno: 8 },
 		"SCAN$":	 			{ reqno: 8, 
 			toClient: function (o,b) {
 				b.add(o.scan_type);
@@ -1114,17 +1113,6 @@ this.Fake_gun = {
 };
 
 this.Flashlight	= {
-		clientMessages: {
-			0:{ op:"HELP" },
-			1:{ op:"GET" },
-			2:{ op:"PUT" },
-			3:{ op:"THROW" },
-			4:{ op:"OFF" },
-			5:{ op:"ON" }
-		}		
-};
-
-this.Security_device	= {
 		clientMessages: {
 			0:{ op:"HELP" },
 			1:{ op:"GET" },
