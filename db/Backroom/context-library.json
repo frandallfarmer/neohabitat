@@ -47,29 +47,16 @@
 		},
 		{
 			"type": "item",
-			"ref": "item-library.bureaucrat",
-			"name": "Bureaucrat",
+			"ref": "item-library.sensor",
+			"name": "Sensor",
 			"in": "context-library",
 			"mods": [ {
-				"type" : "Bureaucrat",
+				"type" : "Sensor",
 				"x": 10, 
 				"y": 130,
-				"gr_state" : 1,
 				"style" : 0,
-				"orientation" : 16
-            } ]
-		},
-		{
-			"type": "item",
-			"ref": "item-library.head.bureaucrat",
-			"name": "Head",
-			"in": "item-library.bureaucrat",
-			"mods": [ {
-				"type": "Head",
-				"style": 2,
-				"y": 0,
-				"orientation": 8,
-				"gr_state": 1
+				"scan_type": 1,
+				"orientation" : 0
             } ]
 		},
 		{

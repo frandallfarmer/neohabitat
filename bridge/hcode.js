@@ -327,7 +327,12 @@ this.SERVER_OPS = {
 				b.add(o.RUB_MESSAGE.getBytes());
 			}
 		},
-		"SCAN$":	 			{ reqno: 8 },
+		//"SCAN$":	 			{ reqno: 8 },
+		"SCAN$":	 			{ reqno: 8, 
+			toClient: function (o,b) {
+				b.add(o.scan_type);
+			} 
+		},
 		"SELL$": 				{ reqno: 9, 
 			toClient: function (o,b,client) {
 				b.add(o.buyer);
@@ -758,6 +763,11 @@ this.translate = {
  				b.add(o.ROLL_STATE); 
  			}
 		},		
+		SCAN: { 
+ 			toClient: function(o, b) {
+ 				b.add(o.SCAN_DETECTION); 
+ 			}
+		},	
 		LEAVE: {
 			toServer: function(a, m) {
 				m.reason = a[0];
@@ -1114,6 +1124,26 @@ this.Flashlight	= {
 		}		
 };
 
+this.Security_device	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"OFF" },
+			5:{ op:"ON" }
+		}		
+};
+
+this.Sensor	= {
+		clientMessages: {
+			0:{ op:"HELP" },
+			1:{ op:"GET" },
+			2:{ op:"PUT" },
+			3:{ op:"THROW" },
+			4:{ op:"SCAN" }
+		}		
+};
 
 this.Movie_camera = {
 		clientMessages: {
