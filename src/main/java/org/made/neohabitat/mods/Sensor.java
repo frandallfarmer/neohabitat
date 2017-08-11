@@ -75,7 +75,9 @@ public class Sensor extends HabitatMod implements Copyable {
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-        result.addParameter("scan_type", scan_type);
+        if (result.control().toRepository()) {
+            result.addParameter("scan_type", scan_type);
+        }
         result.finish();
         return result;
     }
@@ -114,7 +116,7 @@ public class Sensor extends HabitatMod implements Copyable {
                 object_say(from, "This sensor is broken.");
                 result = FALSE;
             }
-            else
+            else    
                 for(int i = 0; i < 255; i++) {
                     HabitatMod obj = current_region().noids[i];
                     if(obj != null && 

@@ -847,7 +847,7 @@ function parseHabitatClientMessage(client, server, data) {
 						context = client.user.mods[0].lastArrivedIn;
 						client.user.mods[0].lastArrivedIn = "";
 					} else {
-						choices = ["context-table"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
+						choices = ["context-library"/* ,"context-Downtown_3b","context-Downtown_7g","context-Downtown_7b","context-Downtown_3j" */];
 						context = choices[rnd(choices.length)];
 					}
 				} else if (client.state.nextRegion !== "") {
@@ -1015,11 +1015,6 @@ var encodeState = {
 			buf = this.common(state, container, buf);
 			buf.add(state.key_number_lo	||   0);
 			buf.add(state.key_number_hi	||   0);
-			return buf;
-		},
-		Sensor: function (state, container, buf) {
-			buf = this.common(state, container, buf);
-			//buf.add(state.scan_type || 0);
 			return buf;
 		},
 		Sign:  function (state, container, buf) {
@@ -1199,6 +1194,7 @@ var encodeState = {
 		Rock: 			function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Roof:	 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Safe:			function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Sensor:         function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Sex_changer:	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Short_sign:		function (state, container, buf) { return (this.Sign	(state, container, buf)); },
 		Shovel:   		function (state, container, buf) { return (this.common  (state, container, buf)); },
