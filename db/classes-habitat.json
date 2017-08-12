@@ -74,6 +74,7 @@
 		{ "type": "class", "tag": "Rock", "name": "org.made.neohabitat.mods.Rock" },
 		{ "type": "class", "tag": "Roof", "name": "org.made.neohabitat.mods.Roof" },
 		{ "type": "class", "tag": "Safe", "name": "org.made.neohabitat.mods.Safe" },
+		{ "type": "class", "tag": "Sensor", "name": "org.made.neohabitat.mods.Sensor" },
 		{ "type": "class", "tag": "Sex_changer", "name": "org.made.neohabitat.mods.Sex_changer" },
 		{ "type": "class", "tag": "Short_sign", "name": "org.made.neohabitat.mods.Short_sign" },
 		{ "type": "class", "tag": "Shovel", "name": "org.made.neohabitat.mods.Shovel" },

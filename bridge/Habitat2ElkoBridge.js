@@ -1194,6 +1194,7 @@ var encodeState = {
 		Rock: 			function (state, container, buf) { return (this.massive (state, container, buf)); },
 		Roof:	 		function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Safe:			function (state, container, buf) { return (this.openable(state, container, buf)); },
+		Sensor:			function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Sex_changer:	function (state, container, buf) { return (this.common  (state, container, buf)); },
 		Short_sign:		function (state, container, buf) { return (this.Sign	(state, container, buf)); },
 		Shovel:   		function (state, container, buf) { return (this.common  (state, container, buf)); },
