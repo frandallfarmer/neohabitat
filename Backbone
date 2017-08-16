@@ -12,10 +12,10 @@ clusters:
   - neohabitatmariadb:
       image: mariadb
       environment:
-        MYSQL_ROOT_PASSWORD: "{{ vault.mysql_root_password }}"
-        MYSQL_DATABASE: qlink
-        MYSQL_USER: spine
-        MYSQL_PASSWORD: spine
+        - "MYSQL_ROOT_PASSWORD={{ vault.mysql_root_password }}"
+        - MYSQL_DATABASE=qlink
+        - MYSQL_USER=spine
+        - MYSQL_PASSWORD=spine
       volumes:
         - mount_location: /var/lib/mysql
           size_gb: 10
@@ -25,12 +25,12 @@ clusters:
   - neohabitat:
       image: philcollins/neohabitat
       environment:
-        NEOHABITAT_DEFAULT_CONTEXT: context-Downtown_5f
-        NEOHABITAT_MONGO_HOST: 127.0.0.1:27017
-        NEOHABITAT_SCHEMA_DIR: db
-        NEOHABITAT_SHOULD_ENABLE_CRON: "true"
-        NEOHABITAT_SHOULD_ENABLE_DEBUGGER: "false"
-        NEOHABITAT_SHOULD_UPDATE_SCHEMA: "false"
+        - NEOHABITAT_DEFAULT_CONTEXT=context-Downtown_5f
+        - NEOHABITAT_MONGO_HOST=127.0.0.1:27017
+        - NEOHABITAT_SCHEMA_DIR=db
+        - NEOHABITAT_SHOULD_ENABLE_CRON=true
+        - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=false
+        - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
       synapses:
         - resource: neohabitatmongo
           port: 27017
@@ -41,21 +41,21 @@ clusters:
   - neohabitatslackin:
       image: chk1/slackin
       environment:
-        SLACK_ORG: neohabitat
-        SLACK_API_TOKEN: "{{ vault.neohabitat_slack_token }}"
+        - SLACK_ORG=neohabitat
+        - "SLACK_API_TOKEN={{ vault.neohabitat_slack_token }}"
       ports:
         - port: 3000
 
   - neohabitatqlink:
       image: philcollins/qlink
       environment:
-        QLINK_DB_HOST: 127.0.0.1
-        QLINK_DB_JDBC_URI: jdbc:mysql://127.0.0.1:3306/qlink
-        QLINK_DB_USERNAME: spine
-        QLINK_DB_PASSWORD: spine
-        QLINK_HABITAT_HOST: 127.0.0.1
-        QLINK_SHOULD_CREATE_DB: true
-        QLINK_SHOULD_PING: true
+        - QLINK_DB_HOST=127.0.0.1
+        - QLINK_DB_JDBC_URI=jdbc:mysql://127.0.0.1:3306/qlink
+        - QLINK_DB_USERNAME=spine
+        - QLINK_DB_PASSWORD=spine
+        - QLINK_HABITAT_HOST=127.0.0.1
+        - QLINK_SHOULD_CREATE_DB=true
+        - QLINK_SHOULD_PING=true
       synapses:
         - resource: neohabitat
           port: 1337
