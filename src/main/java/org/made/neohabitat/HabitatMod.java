@@ -3506,6 +3506,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		context().send(msg);
 	}
 	
+	public void modify_variable(User from, HabitatMod target, int offset, int new_value) {
+		target.gen_flags[MODIFIED] = true;
+		send_fiddle_msg(THE_REGION, target.noid, offset, new_value);
+	}
+	
 	
 	/**
 	 * Pays the provided amount of Tokens to the specified Avatar.

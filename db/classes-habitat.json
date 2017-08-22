@@ -50,6 +50,7 @@
 		{ "type": "class", "tag": "Ground", "name": "org.made.neohabitat.mods.Ground" },
 		{ "type": "class", "tag": "Gun", "name": "org.made.neohabitat.mods.Gun" },
 		{ "type": "class", "tag": "Head", "name": "org.made.neohabitat.mods.Head" },
+		{ "type": "class", "tag": "Hand_of_god", "name": "org.made.neohabitat.mods.Hand_of_god" },
 		{ "type": "class", "tag": "Hole", "name": "org.made.neohabitat.mods.Hole" },
 		{ "type": "class", "tag": "Hot_tub", "name": "org.made.neohabitat.mods.Hot_tub" },
 		{ "type": "class", "tag": "House_cat", "name": "org.made.neohabitat.mods.House_cat" },
