@@ -653,7 +653,7 @@ public abstract class Magical extends HabitatMod {
 				}
 				break;
 			case 'g':
-			//	context().closeGate("Hand of God has been activated. No users may come in");
+			case 'G': //MOD does not kill the victim
 				String text = request_string.substring(1);
 				User   victimUser = Region.getUserByName(text);
 				Avatar victim = avatar(victimUser);
@@ -664,41 +664,7 @@ public abstract class Magical extends HabitatMod {
 				announce_object(item, victim.current_region());
 				checkpoint_object(god);
 		        object_broadcast(noid, "Thou shalt pay, " + victimUser.name() + "!");
-				GodTimer gt = new GodTimer(god, godAnimation, victimUser);
-			
-		
-		        
-		            
-
-		//		 trace_msg("Deleting grenade object %s ", god.object().ref());
-	//   				destroy_object(god);
-
-			//	destroy_object(god);
-			  //  object().contextor().remove(item.baseRef());
-			   
-			//	item.ref().
-	
-			//	item.checkpoint();
-			//	checkpoint_object(god);
-			//	object_say(from, "Deleting");
-			//	item.delete();
-
-				//destroy_object(god);
-				//context().checkpoint();
-			//	new Thread(Genie_Gets_Impatient).start();
-	         //   GodTimer gt = new GodTimer(god);
-	            
-	    	//	send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", 1, "from_noid", noid);
-				
-	          //  context().scheduleContextEvent(GRENADE_FUSE_DELAY * 1000, gt);
-			//	god.HELP(from);
-			//	if (user != null && user != from) {
-			//		kill_avatar(victim);
-			//	}
-			//	if(target.HabitatClass() == CLASS_AVATAR)
-				//{
-					//kill_avatar((Avatar)target);
-			//	}
+				GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
 				break;
 			case '?':
 			case 'h':
@@ -841,11 +807,13 @@ public abstract class Magical extends HabitatMod {
         private HabitatMod mod;
         private HabitatMod modAnimation;
         private User from;
+        private char command;
         private Clock clockTimer = Timer.theTimer().every(5000, this);
-        public GodTimer(HabitatMod mod, HabitatMod modAnimation, User from) {
+        public GodTimer(HabitatMod mod, HabitatMod modAnimation, User from, char command) {
                this.mod = mod;
                this.modAnimation = modAnimation;
                this.from = from;
+               this.command = command;
                clockTimer.start();
                
         }
@@ -853,25 +821,35 @@ public abstract class Magical extends HabitatMod {
 		@Override
 		public void noticeTimeout() {
 	    	Avatar avatar = avatar(from);
+	    	if(command == 'G')
+			{
+				avatar.DISCORPORATE(from);
+			}
+			else
+				kill_avatar(avatar);
 			trace_msg("Timer has ended.");
 			checkpoint_object(mod);
             trace_msg("Deleting Hand of God object %s ", mod.object().ref());	                
             send_goaway_msg(mod.noid);
             destroy_object(mod);
-        	modify_variable(from, modAnimation, C64_GR_STATE_OFFSET, 2);
+			
+        	modify_variable(from, modAnimation, C64_GR_STATE_OFFSET, 3);
 			Head skull = new Head(18, modAnimation.x, modAnimation.y+6, 0, 0, false);
 			Item item = create_object("Mistakes were made.", skull, null, false);
-			announce_object(item, avatar.current_region());
+			announce_object(item, current_region());
+
+	
 		}
 
 		@Override
 		public void noticeTick(int ticks) {
 	        Avatar avatar = avatar(from);
 	    	trace_msg("Ticks: " + ticks);
-	        if(avatar.x != mod.x){
+	        if(avatar.x != mod.x && avatar.y != mod.y){
 			   modify_variable(from, mod, C64_XPOS_OFFSET, avatar.x+20);
 			   modify_variable(from, mod, C64_YPOS_OFFSET, avatar.y+30);
 	        }
+	        
 		
 			if(ticks >= 5)
 			{
@@ -880,11 +858,8 @@ public abstract class Magical extends HabitatMod {
 				Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
 				announce_object(newitem, avatar.current_region());
 				Timer.theTimer().after(5000*2, this);
-				
-				
-			
+
 			}
-			
 		} 
     }
 }
