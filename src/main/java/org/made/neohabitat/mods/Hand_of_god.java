@@ -23,7 +23,6 @@ import org.made.neohabitat.HabitatMod;
  * gr_state: 3 Animation
  * gr_state: 4 Small dot/cinder
  *
- *
  * @author TheCarlSaganExpress
  *
  */

@@ -132,11 +132,7 @@ this.SERVER_OPS = {
 			}
 		},
 		"BEEP$": 				{ reqno: 8 },
-		"BLAST$": 				{ reqno: 8 
-			//toClient: function (o, b) {
-				//b.add(o.state);
-			//},
-		},
+		"BLAST$": 				{ reqno: 8 },
 		"CAUGHT_UP_$":	 		{ reqno: 17,
 			toClient: function (o, b) {
 				b.add(o.err);

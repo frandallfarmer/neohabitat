@@ -652,8 +652,8 @@ public abstract class Magical extends HabitatMod {
 					avatar.change_regions(context, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
 				}
 				break;
-			case 'g':
-			case 'G': //G turns the victim into a ghost
+			case 'g': // Summons the Hand of God
+			case 'G': // G turns the victim into a ghost
 				String text = request_string.substring(1);
 				User   victimUser = Region.getUserByName(text);
 				Avatar victim = avatar(victimUser);
@@ -803,8 +803,6 @@ public abstract class Magical extends HabitatMod {
 		else
 			return (magic_help[magic_type - 1]);
 	}
-    
-    
         
     private class GodTimer implements TimeoutNoticer, TickNoticer {
         private HabitatMod mod;
@@ -852,11 +850,11 @@ public abstract class Magical extends HabitatMod {
                modify_variable(from, mod, C64_YPOS_OFFSET, avatar.y+30);
             }
             if(ticks >= 4) {
-                clockTimer.stop();
-                send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
-                Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
-                announce_object(newitem, avatar.current_region());
-                Timer.theTimer().after(5000*2, this);
+               clockTimer.stop();
+               send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
+               Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
+               announce_object(newitem, avatar.current_region());
+               Timer.theTimer().after(5000*2, this);
             }
         } 
     }
