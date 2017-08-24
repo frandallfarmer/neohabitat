@@ -653,18 +653,20 @@ public abstract class Magical extends HabitatMod {
 				}
 				break;
 			case 'g':
-			case 'G': //MOD does not kill the victim
+			case 'G': //G turns the victim into a ghost
 				String text = request_string.substring(1);
 				User   victimUser = Region.getUserByName(text);
 				Avatar victim = avatar(victimUser);
-				Region.tellEveryone("The clouds begin to darken.");
-				Hand_of_god god = new Hand_of_god(0, victim.x, victim.y+20, 0, 0, false, 0);
+				Region.tellEveryone("The sky begins to turn dark.");
+				Hand_of_god god = new Hand_of_god(0, victim.x+6, victim.y+20, 0, 0, false, 0);
 				Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
 				Item item = create_object("Hand of God", god, null, true);
 				announce_object(item, victim.current_region());
 				checkpoint_object(god);
-		        object_broadcast(noid, "Thou shalt pay, " + victimUser.name() + "!");
+				trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
+				object_broadcast(noid, "Thou shalt pay, " + victimUser.name() + "!");
 				GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
+                send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
 				break;
 			case '?':
 			case 'h':
@@ -793,6 +795,7 @@ public abstract class Magical extends HabitatMod {
 	 * @return Magical help string
 	 */
 	public String magic_vendo_info() {
+		
 		if (magic_type < 1)
 			return ("Dead magic item.");
 		else if (magic_type > NUMBER_OF_MAGICS)
@@ -800,66 +803,61 @@ public abstract class Magical extends HabitatMod {
 		else
 			return (magic_help[magic_type - 1]);
 	}
-	
-	  
-	    
-	private class GodTimer implements TimeoutNoticer, TickNoticer{
+    
+    
+        
+    private class GodTimer implements TimeoutNoticer, TickNoticer {
         private HabitatMod mod;
         private HabitatMod modAnimation;
         private User from;
-        private char command;
-        private Clock clockTimer = Timer.theTimer().every(5000, this);
-        public GodTimer(HabitatMod mod, HabitatMod modAnimation, User from, char command) {
+        private char text;
+        private Clock clockTimer = Timer.theTimer().every(3000, this);
+        
+        public GodTimer(HabitatMod mod, HabitatMod modAnimation, User from, char text) {
                this.mod = mod;
                this.modAnimation = modAnimation;
                this.from = from;
-               this.command = command;
+               this.text = text;
                clockTimer.start();
-               
         }
         
-		@Override
-		public void noticeTimeout() {
-	    	Avatar avatar = avatar(from);
-	    	if(command == 'G')
-			{
-				avatar.DISCORPORATE(from);
-			}
-			else
-				kill_avatar(avatar);
-			trace_msg("Timer has ended.");
-			checkpoint_object(mod);
-            trace_msg("Deleting Hand of God object %s ", mod.object().ref());	                
+        @Override
+        public void noticeTimeout() {
+            send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 113, "from_noid", noid);
+            Avatar avatar = avatar(from);
+            checkpoint_object(avatar);
+            if(text == 'G') {
+           //   avatar.DISCORPORATE(from); Not working?
+            }
+            else
+                kill_avatar(avatar);
+            trace_msg("Timer has ended.");
+            checkpoint_object(mod);
+            trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
             send_goaway_msg(mod.noid);
             destroy_object(mod);
-			
-        	modify_variable(from, modAnimation, C64_GR_STATE_OFFSET, 3);
-			Head skull = new Head(18, modAnimation.x, modAnimation.y+6, 0, 0, false);
-			Item item = create_object("Mistakes were made.", skull, null, false);
-			announce_object(item, current_region());
+            modify_variable(from, modAnimation, C64_GR_STATE_OFFSET, 1);
+            Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false);
+            Item item = create_object("Mistakes were made.", skull, null, false);
+            announce_object(item, current_region());
+            Region.tellEveryone("The sky is clear again.");
+        }
 
-	
-		}
-
-		@Override
-		public void noticeTick(int ticks) {
-	        Avatar avatar = avatar(from);
-	    	trace_msg("Ticks: " + ticks);
-	        if(avatar.x != mod.x && avatar.y != mod.y){
-			   modify_variable(from, mod, C64_XPOS_OFFSET, avatar.x+20);
-			   modify_variable(from, mod, C64_YPOS_OFFSET, avatar.y+30);
-	        }
-	        
-		
-			if(ticks >= 5)
-			{
-				clockTimer.stop();
-				send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
-				Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
-				announce_object(newitem, avatar.current_region());
-				Timer.theTimer().after(5000*2, this);
-
-			}
-		} 
+        @Override
+        public void noticeTick(int ticks) {
+            Avatar avatar = avatar(from);
+            trace_msg("Ticks: " + ticks);
+            if(avatar.x != mod.x && avatar.y != mod.y) {
+               modify_variable(from, mod, C64_XPOS_OFFSET, avatar.x+24);
+               modify_variable(from, mod, C64_YPOS_OFFSET, avatar.y+30);
+            }
+            if(ticks >= 4) {
+                clockTimer.stop();
+                send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
+                Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
+                announce_object(newitem, avatar.current_region());
+                Timer.theTimer().after(5000*2, this);
+            }
+        } 
     }
 }

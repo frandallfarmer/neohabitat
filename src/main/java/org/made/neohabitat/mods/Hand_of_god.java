@@ -14,7 +14,15 @@ import org.made.neohabitat.HabitatMod;
 /**
  * Habitat Hand of God Mod
  * 
- * 
+ * The hand of god is a giant animated hand that comes down off the top of the
+ * screen and destroys the designated victim. This class was orgiginally unfinished 
+ * and utilizes an unusual implementation that can be found in Magical.java
+ *
+ * gr_state: 1 Pile of cinder
+ * gr_state: 2 "Static" Lightning bolt
+ * gr_state: 3 Animation
+ * gr_state: 4 Small dot/cinder
+ *
  *
  * @author TheCarlSaganExpress
  *
@@ -84,5 +92,4 @@ public class Hand_of_god extends HabitatMod implements Copyable {
     public void HELP(User from) {
         generic_HELP(from);
     }
-    
 }
