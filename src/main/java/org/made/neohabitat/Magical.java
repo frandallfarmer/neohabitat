@@ -666,7 +666,7 @@ public abstract class Magical extends HabitatMod {
 				trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
 				object_broadcast(noid, "Thou shalt pay, " + victimUser.name() + "!");
 				GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
-                send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
+				send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
 				break;
 			case '?':
 			case 'h':
@@ -795,7 +795,6 @@ public abstract class Magical extends HabitatMod {
 	 * @return Magical help string
 	 */
 	public String magic_vendo_info() {
-		
 		if (magic_type < 1)
 			return ("Dead magic item.");
 		else if (magic_type > NUMBER_OF_MAGICS)
@@ -821,7 +820,7 @@ public abstract class Magical extends HabitatMod {
         
         @Override
         public void noticeTimeout() {
-            send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 113, "from_noid", noid);
+            send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
             Avatar avatar = avatar(from);
             checkpoint_object(avatar);
             if(text == 'G') {
