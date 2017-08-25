@@ -654,20 +654,27 @@ public abstract class Magical extends HabitatMod {
 				break;
 			case 'g': // Summons the Hand of God
 			case 'G': // G turns the victim into a ghost
-				String text = request_string.substring(1);
+				String text = request_string.substring(1); 
 				User   victimUser = Region.getUserByName(text);
 				Avatar victim = avatar(victimUser);
 				Region.tellEveryone("The sky begins to turn dark.");
-				Hand_of_god god = new Hand_of_god(0, victim.x+6, victim.y+20, 0, 0, false, 0);
+				Hand_of_god god = new Hand_of_god(0, victim.x, 208, 0, 0, false, 0);
 				Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
 				Item item = create_object("Hand of God", god, null, true);
 				announce_object(item, victim.current_region());
 				checkpoint_object(god);
 				trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
-				object_broadcast(noid, "Thou shalt pay, " + victimUser.name() + "!");
 				GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
 				send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
 				break;
+			case 'a': //Allows you to send messages as the Hand of God
+                for(int i = 1; i <= 255; i++){
+                    HabitatMod obj = current_region().noids[i];
+                    if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD){
+                        object_broadcast(obj.noid, request_string.substring(1)); 
+                    }
+                }
+			    break;
 			case '?':
 			case 'h':
 				object_say(from, "?-help l-list d-dump f-forgrnd b-back");
@@ -806,14 +813,14 @@ public abstract class Magical extends HabitatMod {
     private class GodTimer implements TimeoutNoticer, TickNoticer {
         private HabitatMod mod;
         private HabitatMod modAnimation;
-        private User from;
+        private User victim;
         private char text;
         private Clock clockTimer = Timer.theTimer().every(3000, this);
         
-        public GodTimer(HabitatMod mod, HabitatMod modAnimation, User from, char text) {
+        public GodTimer(HabitatMod mod, HabitatMod modAnimation, User victim, char text) {
                this.mod = mod;
                this.modAnimation = modAnimation;
-               this.from = from;
+               this.victim = victim;
                this.text = text;
                clockTimer.start();
         }
@@ -821,10 +828,10 @@ public abstract class Magical extends HabitatMod {
         @Override
         public void noticeTimeout() {
             send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
-            Avatar avatar = avatar(from);
+            Avatar avatar = avatar(victim);
             checkpoint_object(avatar);
             if(text == 'G') {
-           //   avatar.DISCORPORATE(from); Not working?
+            //  avatar.DISCORPORATE(from); Broken?
             }
             else
                 kill_avatar(avatar);
@@ -833,7 +840,7 @@ public abstract class Magical extends HabitatMod {
             trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
             send_goaway_msg(mod.noid);
             destroy_object(mod);
-            modify_variable(from, modAnimation, C64_GR_STATE_OFFSET, 1);
+            modify_variable(victim, modAnimation, C64_GR_STATE_OFFSET, 1);
             Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false);
             Item item = create_object("Mistakes were made.", skull, null, false);
             announce_object(item, current_region());
@@ -842,18 +849,22 @@ public abstract class Magical extends HabitatMod {
 
         @Override
         public void noticeTick(int ticks) {
-            Avatar avatar = avatar(from);
+            Avatar avatar = avatar(victim);
             trace_msg("Ticks: " + ticks);
-            if(avatar.x != mod.x && avatar.y != mod.y) {
-               modify_variable(from, mod, C64_XPOS_OFFSET, avatar.x+24);
-               modify_variable(from, mod, C64_YPOS_OFFSET, avatar.y+30);
+            if(avatar.x != mod.x) {
+               modify_variable(victim, mod, C64_XPOS_OFFSET, avatar.x+24);
             }
-            if(ticks >= 4) {
-               clockTimer.stop();
-               send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
-               Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
-               announce_object(newitem, avatar.current_region());
-               Timer.theTimer().after(5000*2, this);
+            switch(ticks){
+            case 1:
+                object_broadcast(mod.noid, "Thou shalt pay, " + victim.name() + "!");    
+                break;
+            case 6:
+                clockTimer.stop();
+                send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
+                Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
+                announce_object(newitem, avatar.current_region());
+                Timer.theTimer().after(5000*2, this);
+                break;
             }
         } 
     }
