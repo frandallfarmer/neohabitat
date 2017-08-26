@@ -835,8 +835,6 @@ public abstract class Magical extends HabitatMod {
                this.victim = victim;
                this.text = text;
                clockTimer.start();
-            //   mod.current_region().context().registerContextShutdownWatcher(this);
-            //   mod.current_region().context().registerUserWatcher(this);
                mod.avatar(victim).current_region().context().registerContextShutdownWatcher(this);
                mod.avatar(victim).current_region().context().registerUserWatcher(this);
                
@@ -884,7 +882,7 @@ public abstract class Magical extends HabitatMod {
                 case 2:
                     send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid);
                     break;
-                case 15:
+                case 3:
                     clockTimer.stop();
                     send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", GET_SHOT_POSTURE);
                     Item newitem = create_object("Hand of God Animation", modAnimation, null, true);
@@ -892,20 +890,21 @@ public abstract class Magical extends HabitatMod {
                     Timer.theTimer().after(5000*2, this);
                     break;
                 }
-          }
-          catch (Exception e) {
+            } 
+            catch (Exception e) {
                 trace_msg("Notice tick interrupted.");
                 clockTimer.stop();
             }
        }
 
+        
         @Override
         public void noteContextShutdown() {
             clockTimer.stop();
-            trace_msg("Context shutdown" + current_region().obj_id() + " with Hand of God.");         
+            trace_msg("Context shutdown with Hand of God.");         
             if (didDelete == false) {
                 trace_msg("Cleaning up Hand of God object %s ", mod.object().ref());         
-                //send_goaway_msg(mod.noid); Causing issues?
+                mod.send_goaway_msg(mod.noid);
                 destroy_object(mod);
                 didDelete = true;           
             }
@@ -913,16 +912,16 @@ public abstract class Magical extends HabitatMod {
 
         @Override
         public void noteUserArrival(User who) {
-            trace_msg(who.name() + " has entered while a Hand of God was activated.");
+            
         }
 
+        //If the victim leaves the region, stop the timer and delete the HoG
         @Override
-        public void noteUserDeparture(User who) {
-            trace_msg(who.name() + " has left while a Hand of God was activated.");  
+        public void noteUserDeparture(User who) { 
             clockTimer.stop();
             if (didDelete == false) {
                 trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
-              //send_goaway_msg(mod.noid);
+                mod.send_goaway_msg(mod.noid);
                 destroy_object(mod);
                 didDelete = true;
             }           
