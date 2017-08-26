@@ -1384,6 +1384,12 @@ this.Hole = {
 		}
 };
 
+this.Hand_of_god = {
+		clientMessages: {
+			0:{ op:"HELP" }
+		}
+};
+
 this.Matchbook = {
 		clientMessages: {
 			0:{ op:"HELP" },
