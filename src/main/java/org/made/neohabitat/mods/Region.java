@@ -577,7 +577,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * @param MOTD
      */
     @JSONMethod ({ "MOTD" })
-    public void SET_MOTD(User from, String MOTD) {
+    public static void SET_MOTD(User from, String MOTD) {
     	// TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
     	Region.MOTD = MOTD;
     }
