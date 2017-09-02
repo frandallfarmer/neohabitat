@@ -1,14 +1,11 @@
 package org.made.neohabitat.mods;
 
-import java.util.regex.Pattern;
-
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptBoolean;
 import org.elkoserver.foundation.json.OptInteger;
 import org.elkoserver.foundation.json.OptString;
 import org.elkoserver.json.EncodeControl;
 import org.elkoserver.json.JSONLiteral;
-import org.elkoserver.json.JSONObject;
 import org.elkoserver.server.context.User;
 import org.made.neohabitat.Copyable;
 import org.made.neohabitat.HabitatMod;

@@ -745,10 +745,10 @@ public class Avatar extends Container implements UserMod {
 			if (holding_restricted_object())
 				object_say(from, "You can't turn into a ghost while you are holding that.");
 			else {
-			    trace_msg(from.name() + " is turning into a ghost.");
-	    		send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", 5, "from_noid", noid);
+				trace_msg(from.name() + " is turning into a ghost.");
+				send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", 5, "from_noid", noid);
 				switch_to_ghost(from);
-	    		nitty_bits[INTENTIONAL_GHOST] = true;
+				nitty_bits[INTENTIONAL_GHOST] = true;
 				return;
 			}
 		send_reply_error(from);
