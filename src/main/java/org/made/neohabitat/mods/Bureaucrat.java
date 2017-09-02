@@ -91,11 +91,9 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
         return result;
     }
     
-    
     public void bureaucrat_ASK(User from, OptString text) {
         String question = text.value("");
         Avatar avatar   = avatar(from);
- 
         if (question.toLowerCase().indexOf("to:") == 0) {
             object_say(from, "I don't do ESP. Point somewhere else.");
         } 
@@ -106,7 +104,6 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
             if (commandSplit.length > 0) {
                 remainder = commandSplit[commandSplit.length - 1].trim();
             }
-            
             switch(gr_state) { //Use the gr_state to differentiate the bureaucrats
             case 0:
                 switch(command) {
@@ -210,7 +207,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                         object_say(from, noid, "A timer is already running!");
                     break;
                 default:
-                    bureaucrat_HELP(from, 3);
+                    bureaucrat_HELP(from, 0);
                 }
                 break;
             }
