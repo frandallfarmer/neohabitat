@@ -739,6 +739,7 @@ public class Avatar extends Container implements UserMod {
 		//		if (amAGhost)
 		//			trace_msg("Invalid request: Avatar.DISCORPORATE called with avatar.amAGhost == true.");
 		//		else
+		trace_msg("Avatar turning into a ghost.");
 		if (holding_class(CLASS_MAGIC_LAMP) && heldObject().gr_state == MAGIC_LAMP_GENIE) 
 			object_say(from, "You can't turn into a ghost while you are holding the Genie.");
 		else 
