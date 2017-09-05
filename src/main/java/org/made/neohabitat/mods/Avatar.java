@@ -1412,42 +1412,42 @@ public class Avatar extends Container implements UserMod {
 				}
 				break;
 			  
-	          case "//s": // Summons the Hand of God
-	          case "//smite": 
-	          case "//safesmite": // TODO: Implement ghosting for avatar
-	              User   victimUser = Region.getUserByName(remainder);
-	              if(victimUser == null) {
-                      object_say(from, "We cannot find an avatar named " + remainder);
-	                  return;
-	              }
-	              for(int i = 1; i <= 255; i++) {
-	                  HabitatMod obj = current_region().noids[i];
-	                  if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD) {
-	                      object_say(from, "A Hand of God has already been summoned.");
-	                      return;       
-	                  }
-	             }
-	             Avatar victim = avatar(victimUser);
-	             Region.tellEveryone("A sinister darkness covers the sky.");
-	             Hand_of_god god = new Hand_of_god(0, victim.x, 208, 0, 0, false, 0);
-	             Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
-	             Item item = create_object("Hand of God", god, null, true);
-	             victim.current_region().announce_object(item, victim.current_region());
-	             checkpoint_object(god);
-	             trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
-	             GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
-	             break;
-	          case "//t": //Allows you to send messages as the Hand of God
-	          case "//talk":
-	              for(int i = 1; i <= 255; i++) {
-	                  HabitatMod obj = current_region().noids[i];
-	                      if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD){
-	                          object_broadcast(obj.noid, remainder);
-	                          break;
-	                     }
-	            }
-	            break;
-	        case "//l":
+			case "//s": // Summons the Hand of God
+			case "//smite": 
+			case "//safesmite": // TODO: Implement ghosting for avatar
+				User   victimUser = Region.getUserByName(remainder);
+				if(victimUser == null) {
+					object_say(from, "We cannot find an avatar named " + remainder);
+					return;
+				}
+				for(int i = 1; i <= 255; i++) {
+					HabitatMod obj = current_region().noids[i];
+					if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD) {
+						object_say(from, "A Hand of God has already been summoned.");
+						return;       
+					}
+				}
+				Avatar victim = avatar(victimUser);
+				Region.tellEveryone("A sinister darkness covers the sky.");
+				Hand_of_god god = new Hand_of_god(0, victim.x, 208, 0, 0, false, 0);
+				Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
+				Item item = create_object("Hand of God", god, null, true);
+				victim.current_region().announce_object(item, victim.current_region());
+				checkpoint_object(god);
+				trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
+				GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
+				break;
+			case "//t": //Allows you to send messages as the Hand of God
+			case "//talk":
+				for(int i = 1; i <= 255; i++) {
+					HabitatMod obj = current_region().noids[i];
+					if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD){
+						object_broadcast(obj.noid, remainder);
+						break;
+					}
+				}
+				break;
+			case "//l":
 			case "//locate":
 				User userToLocate = Region.getUserByName(remainder);
 				if (userToLocate != null) {
@@ -2040,15 +2040,15 @@ public class Avatar extends Container implements UserMod {
        }
 
         //If the victim leaves the region, stop the timer and delete the HoG
-       @Override
-       public void noteUserDeparture(User who) { 
-           clockTimer.stop();
-           if (didDelete == false) {
-               trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
-               mod.send_goaway_msg(mod.noid);
-               destroy_object(mod);
-               didDelete = true;
-          }           
-      }
-   }
+        @Override
+        public void noteUserDeparture(User who) { 
+            clockTimer.stop();
+            if (didDelete == false) {
+                trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
+                mod.send_goaway_msg(mod.noid);
+                destroy_object(mod);
+                didDelete = true;
+            }           
+        }
+    }
 }
