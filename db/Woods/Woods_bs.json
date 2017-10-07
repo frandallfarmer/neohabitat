@@ -48,7 +48,44 @@
     "type": "item", 
     "name": "Sky", 
     "in": "context-Woods_bs"
-  }, 
+  },
+  {
+    "ref": "item-vendo_inside.108c.Woods_bs", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 72, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Woods_bs"
+  },
+  {
+    "ref": "item-vendo_front.5022.Woods_bs", 
+    "mods": [
+      {
+        "display_item": 9, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front",
+        "prices": [5000, 5000, 5000, 5000, 5000, 10000, 5000, 2800, 5000, 10000],
+        "open_flags": 0, 
+        "item_price": 10000
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.108c.Woods_bs"
+  },  
   {
     "ref": "item-head.fbc5.Woods_bs", 
     "mods": [
@@ -124,7 +161,21 @@
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.5022.Woods_bs"
-  }, 
+  },
+  {
+    "ref": "item-grenade.eb05.Woods_bs", 
+    "mods": [
+      { 
+        "orientation": 0, 
+        "y": 7, 
+        "x": 7, 
+        "type": "Grenade"
+      }
+    ], 
+    "type": "item", 
+    "name": "Grenade", 
+    "in": "item-vendo_front.5022.Woods_bs"
+  },  
   {
     "ref": "item-head.1e2c.Woods_bs", 
     "mods": [
@@ -154,26 +205,7 @@
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.5022.Woods_bs"
-  }, 
-  {
-    "ref": "item-vendo_front.5022.Woods_bs", 
-    "mods": [
-      {
-        "display_item": 8, 
-        "orientation": 0, 
-        "key_lo": 0, 
-        "key_hi": 0, 
-        "y": 0, 
-        "x": 0, 
-        "type": "Vendo_front", 
-        "open_flags": 0, 
-        "item_price": 75
-      }
-    ], 
-    "type": "item", 
-    "name": "Vendo_front", 
-    "in": "item-vendo_inside.108c.Woods_bs"
-  }, 
+  },  
   {
     "ref": "item-head.eb04.Woods_bs", 
     "mods": [
@@ -189,24 +221,7 @@
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_inside.108c.Woods_bs"
-  }, 
-  {
-    "ref": "item-vendo_inside.108c.Woods_bs", 
-    "mods": [
-      {
-        "orientation": 0, 
-        "key_lo": 0, 
-        "key_hi": 0, 
-        "y": 32, 
-        "x": 72, 
-        "type": "Vendo_inside", 
-        "open_flags": 0
-      }
-    ], 
-    "type": "item", 
-    "name": "Vendo_inside", 
-    "in": "context-Woods_bs"
-  }, 
+  },   
   {
     "ref": "item-bush.58de.Woods_bs", 
     "mods": [
