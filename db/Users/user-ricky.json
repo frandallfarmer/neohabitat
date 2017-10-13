@@ -15,12 +15,13 @@
 	"name" : "ricky",
 	"mods" : [ {
 		"type" : "Avatar",
-        "turf": "context-Popustop.253",
+		"turf": "context-Popustop.253",
 		"x" : 0,
 		"y" : 110,
 		"bodyType" : "male",
 		"bankBalance" : 50000,
-		"custom" : [ 17, 17 ]
+		"custom" : [ 17, 17 ],
+		"nitty_bits" : 8
 	} ]
 }, {
 	"type" : "item",
@@ -31,7 +32,22 @@
 		"type" : "Changomatic",
 		"y" : 2
 	} ]
-}, {
+},
+{
+	"type" : "item",
+	"ref" : "item-ricky.godtool",
+	"name" : "Tool to rule the universe.",
+	"in" : "user-ricky",
+	"mods" : [ {
+		"type" : "Knick_knack",
+		"style" : 2,
+		"y" : 1,
+		"orientation" : 8,
+		"magic_type" : 17,
+		"charges" : 255
+	} ]
+},
+{
 	"type" : "item",
 	"ref" : "item-ricky.paper",
 	"name" : "Pad and mailbox",
