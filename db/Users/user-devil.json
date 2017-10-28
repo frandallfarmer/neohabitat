@@ -9,13 +9,14 @@
 		"denom_hi" : 4,
 		"denom_lo" : 0
 	} ]
-}, {
+}, 
+{
 	"type" : "user",
 	"ref" : "user-devil",
 	"name" : "Devil",
 	"mods" : [ {
 		"type" : "Avatar",
-        "turf": "context-hell_1a",
+		"turf": "context-hell_1a",
 		"x" : 0,
 		"y" : 110,
 		"bodyType" : "male",
@@ -23,7 +24,8 @@
 		"custom" : [ 0, 0 ],
 		"nitty_bits" : 8
 	} ]
-},  {
+},  
+{
 	"type" : "item",
 	"ref" : "item-devil.godtool",
 	"name" : "Tool to rule the universe.",
@@ -36,7 +38,8 @@
 		"magic_type" : 17,
 		"charges" : 255
 	} ]
-}, {
+}, 
+{
 	"type" : "item",
 	"ref" : "item-devil.paper",
 	"name" : "Pad and mailbox",
@@ -46,7 +49,8 @@
 		"orientation" : 16,
 		"y" : 4
 	} ]
-}, {
+}, 
+{
 	"type" : "item",
 	"ref" : "item-devil.head.json",
 	"name" : "Devil's Head",

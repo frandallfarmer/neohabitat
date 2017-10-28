@@ -1415,40 +1415,39 @@ public class Avatar extends Container implements UserMod {
 			case "//s": // Summons the Hand of God
 			case "//smite": 
 			case "//safesmite": // TODO: Implement ghosting for avatar
-				User   victimUser = Region.getUserByName(remainder);
-				
-				if(victimUser == null) {
-					object_say(from, "We cannot find an avatar named " + remainder);
-					return;
-				}
-				
-				Avatar victim = avatar(victimUser);
+                User victimUser = Region.getUserByName(remainder);
+                if(victimUser == null) {
+                    object_say(from, "We cannot find an avatar named " + remainder);
+                    return;
+                }
+                
+                Avatar victim = avatar(victimUser);
+                if(victim.current_region() != current_region()) {
+                    object_say(from, "You must be in the same region as the victim to use the Hand of God.");
+                    return;
+                }
+
+                for(int i = 1; i <= 255; i++) {
+                    HabitatMod obj = current_region().noids[i];
+                    if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD) {
+                        object_say(from, "A Hand of God has already been summoned.");
+                        return;       
+                    }
+                }
+
                 if(victim.current_region() != current_region()) {
                     object_say(from,"You must be in the same region as the victim to use the Hand of God.");
                     return;
                 }
-				
-				for(int i = 1; i <= 255; i++) {
-					HabitatMod obj = current_region().noids[i];
-					if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD) {
-						object_say(from, "A Hand of God has already been summoned.");
-						return;       
-					}
-				}
-
-				if(victim.current_region().object().ref() != current_region().object().ref()) {
-                    object_say(from,"You must be in the same region as the victim to use the Hand of God.");
-                    return;
-                }
-				Region.tellEveryone("A sinister darkness covers the sky.");
-				Hand_of_god god = new Hand_of_god(0, victim.x, 208, 0, 0, false, 0);
-				Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
-				Item item = create_object("Hand of God", god, null, true);
-				victim.current_region().announce_object(item, victim.current_region());
-				checkpoint_object(god);
-				trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
-				GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
-				break;
+                Region.tellEveryone("A sinister darkness covers the sky.");
+                Hand_of_god god = new Hand_of_god(0, victim.x, 208, 0, 0, false, 0);
+                Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
+                Item item = create_object("Hand of God", god, null, true);
+                victim.current_region().announce_object(item, victim.current_region());
+                checkpoint_object(god);
+                trace_msg(from.name() + " used the Hand of God on " + victimUser.name());
+                GodTimer gt = new GodTimer(god, godAnimation, victimUser, command);
+                break;
 			case "//t": //Allows you to send messages as the Hand of God
 			case "//talk":
 				for(int i = 1; i <= 255; i++) {
@@ -1989,7 +1988,8 @@ public class Avatar extends Container implements UserMod {
                     object_broadcast(mod.noid, "Thou shalt pay, " + victim.name() + "!");    
                     break;
                 case 2:
-                    send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid); //TODO: Find the correct sound to play for HoG
+                    //TODO: Find out why a horrible beeping occurs instead of the intended sound
+                    //send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid); 
                     break;
                 case 3:
                     clockTimer.stop();
@@ -2004,35 +2004,35 @@ public class Avatar extends Container implements UserMod {
                 trace_msg("Notice tick interrupted.");
                 clockTimer.stop();
             }
-       }
+        }
         
-       @Override
-       public void noticeTimeout() {
-           try {
-               Avatar avatar = avatar(victim);
-               checkpoint_object(avatar);
-               if(text.contains("//safesmite")) {
+        @Override
+        public void noticeTimeout() {
+            try {
+                Avatar avatar = avatar(victim);
+                checkpoint_object(avatar);
+                if(text.contains("//safesmite")) {
                    //TODO: Fix/implement forcing an avatar into a ghost
                //    avatar.DISCORPORATE(victim);
-               }
-               else
-                   avatar.kill_avatar(avatar);
-               trace_msg("Timer has ended.");
-               checkpoint_object(mod);
-               trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
-               send_goaway_msg(mod.noid);
-               destroy_object(mod);
-               didDelete = true;
-               avatar.current_region().modify_variable(victim, modAnimation, C64_GR_STATE_OFFSET, 1);
-               Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false);
-               Item item = create_object("Mistakes were made.", skull, null, false);
-               avatar.current_region().announce_object(item, avatar.current_region()); //
-               Region.tellEveryone("The dark sky quickly dissipates.");
-          }
-          catch (Exception e) {
-              trace_msg("Notice timeout method interupted.");
-          }
-     }
+                }
+                else
+                    avatar.kill_avatar(avatar);
+                trace_msg("Timer has ended.");
+                checkpoint_object(mod);
+                trace_msg("Deleting Hand of God object %s ", mod.object().ref());         
+                send_goaway_msg(mod.noid);
+                destroy_object(mod);
+                didDelete = true;
+                avatar.current_region().modify_variable(victim, modAnimation, C64_GR_STATE_OFFSET, 1);
+                Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false);
+                Item item = create_object("Mistakes were made.", skull, null, false);
+                avatar.current_region().announce_object(item, avatar.current_region()); //
+                Region.tellEveryone("The dark sky quickly dissipates.");
+            }
+            catch (Exception e) {
+                trace_msg("Notice timeout method interupted.");
+            }
+        }
 
         @Override
         public void noteContextShutdown() {
@@ -2044,12 +2044,12 @@ public class Avatar extends Container implements UserMod {
                 destroy_object(mod);
                 didDelete = true;           
             }
-       }
+        }
 
-       @Override
-       public void noteUserArrival(User who) {
+        @Override
+        public void noteUserArrival(User who) {
             
-       }
+        }
 
         //If the victim leaves the region, stop the timer and delete the HoG
         @Override

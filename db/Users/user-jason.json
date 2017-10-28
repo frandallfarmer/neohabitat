@@ -15,7 +15,7 @@
 	"name" : "Jason",
 	"mods" : [ {
 		"type" : "Avatar",
-        "turf": "context-HyperDr_930_interior",
+		"turf": "context-HyperDr_930_interior",
 		"x" : 0,
 		"y" : 110,
 		"bodyType" : "male",
