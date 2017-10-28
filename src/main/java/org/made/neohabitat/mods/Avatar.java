@@ -1416,10 +1416,18 @@ public class Avatar extends Container implements UserMod {
 			case "//smite": 
 			case "//safesmite": // TODO: Implement ghosting for avatar
 				User   victimUser = Region.getUserByName(remainder);
+				
 				if(victimUser == null) {
 					object_say(from, "We cannot find an avatar named " + remainder);
 					return;
 				}
+				
+				Avatar victim = avatar(victimUser);
+                if(victim.current_region() != current_region()) {
+                    object_say(from,"You must be in the same region as the victim to use the Hand of God.");
+                    return;
+                }
+				
 				for(int i = 1; i <= 255; i++) {
 					HabitatMod obj = current_region().noids[i];
 					if(obj != null && obj.HabitatClass() == CLASS_HAND_OF_GOD) {
@@ -1427,7 +1435,11 @@ public class Avatar extends Container implements UserMod {
 						return;       
 					}
 				}
-				Avatar victim = avatar(victimUser);
+
+				if(victim.current_region().object().ref() != current_region().object().ref()) {
+                    object_say(from,"You must be in the same region as the victim to use the Hand of God.");
+                    return;
+                }
 				Region.tellEveryone("A sinister darkness covers the sky.");
 				Hand_of_god god = new Hand_of_god(0, victim.x, 208, 0, 0, false, 0);
 				Hand_of_god godAnimation = new Hand_of_god(1, victim.x, victim.y, 0, 3, false, 0);
@@ -1977,7 +1989,7 @@ public class Avatar extends Container implements UserMod {
                     object_broadcast(mod.noid, "Thou shalt pay, " + victim.name() + "!");    
                     break;
                 case 2:
-                    //send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid); TODO: Find the correct sound to play for HoG
+                    send_broadcast_msg(THE_REGION, "PLAY_$", "sfx_number", 44, "from_noid", noid); //TODO: Find the correct sound to play for HoG
                     break;
                 case 3:
                     clockTimer.stop();

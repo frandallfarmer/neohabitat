@@ -1,0 +1,213 @@
+[
+  {
+    "ref": "context-hell_1a", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Avatar Hell", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+    {
+    "ref": "item-Ground.8f3e.hell_1a", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-hell_1a"
+  }, 
+  {
+    "ref": "item-Wall.168d.hell_1a", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 144
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-hell_1a"
+  }, 
+  {
+    "ref": "item-Trapezoid.7ca4.hell_1a", 
+    "mods": [
+      {
+        "lower_right_x": 7, 
+        "upper_left_x": 0, 
+        "upper_right_x": 17, 
+        "lower_left_x": 5, 
+        "trapezoid_type": 1, 
+        "y": 90, 
+        "x": 116, 
+        "height": 166, 
+        "type": "Trapezoid", 
+        "orientation": 200
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-hell_1a"
+  },
+{
+    "ref": "item-Trapezoid.a9bz.hell_1a", 
+    "mods": [
+      {
+        "lower_right_x": 12, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 250, 
+        "trapezoid_type": 2, 
+        "y": 128, 
+        "x": 40, 
+        "height": 160, 
+        "type": "Trapezoid", 
+        "orientation": 200
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-hell_1a"
+  },   
+  {
+    "ref": "item-Trapezoid.f63a.hell_1a", 
+    "mods": [
+      {
+        "lower_right_x": 7, 
+        "upper_left_x": 0, 
+        "upper_right_x": 0, 
+        "lower_left_x": 245, 
+        "trapezoid_type": 2, 
+        "y": 128, 
+        "x": 128, 
+        "height": 160, 
+        "type": "Trapezoid", 
+        "orientation": 200
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-hell_1a"
+  }, 
+  {
+    "ref": "item-Trapezoid.f13c.hell_1a", 
+    "mods": [
+      {
+        "lower_right_x": 0, 
+        "upper_left_x": 245, 
+        "upper_right_x": 6, 
+        "lower_left_x": 253, 
+        "trapezoid_type": 1, 
+        "y": 98, 
+        "x": 36, 
+        "height": 158, 
+        "type": "Trapezoid", 
+        "orientation": 200
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-hell_1a"
+  }, 
+  {
+    "ref": "item-Sky.c225.hell_1a", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 60, 
+        "style": 9, 
+        "type": "Sky", 
+        "orientation": 160
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-hell_1a"
+  },
+  {
+    "ref": "item-Head.b725.hell_1a", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 50, 
+        "style": 18, 
+        "type": "Head", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Skull", 
+    "in": "context-hell_1a"
+  },
+   {
+    "ref": "item-Head.u54n.hell_1a", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 20,
+        "gr_state": 1,
+        "style": 18, 
+        "type": "Head", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Skull", 
+    "in": "context-hell_1a"
+  },
+  {
+    "ref": "item-Flashlight.2ec8.hell_1a", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 52, 
+        "on": 1,
+        "gr_state":1,
+        "style": 1,
+        "type": "Flashlight", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Torch", 
+    "in": "context-hell_1a"
+  },
+  {
+    "ref": "item-Flashlight.3ab4.hell_1a", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 114, 
+        "on": 1,
+        "gr_state":1,
+        "style": 1,
+        "type": "Flashlight", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Torch", 
+    "in": "context-hell_1a"
+  }
+]

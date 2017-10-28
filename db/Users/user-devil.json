@@ -1,8 +1,8 @@
 [ {
 	"type" : "item",
-	"ref" : "item-jasontokens",
+	"ref" : "item-deviltokens",
 	"name" : "Money!",
-	"in" : "user-jason",
+	"in" : "user-devil",
 	"mods" : [ {
 		"type" : "Tokens",
 		"y" : 0,
@@ -11,11 +11,11 @@
 	} ]
 }, {
 	"type" : "user",
-	"ref" : "user-jason",
-	"name" : "Jason",
+	"ref" : "user-devil",
+	"name" : "Devil",
 	"mods" : [ {
 		"type" : "Avatar",
-        "turf": "context-HyperDr_930_interior",
+        "turf": "context-hell_1a",
 		"x" : 0,
 		"y" : 110,
 		"bodyType" : "male",
@@ -23,20 +23,11 @@
 		"custom" : [ 0, 0 ],
 		"nitty_bits" : 8
 	} ]
-}, {
-	"type" : "item",
-	"ref" : "item-jason.changomatic",
-	"name" : "Paintin' yer turf",
-	"in" : "user-jason",
-	"mods" : [ {
-		"type" : "Changomatic",
-		"y" : 2
-	} ]
 },  {
 	"type" : "item",
-	"ref" : "item-jason.godtool",
+	"ref" : "item-devil.godtool",
 	"name" : "Tool to rule the universe.",
-	"in" : "user-jason",
+	"in" : "user-devil",
 	"mods" : [ {
 		"type" : "Knick_knack",
 		"style" : 2,
@@ -47,9 +38,9 @@
 	} ]
 }, {
 	"type" : "item",
-	"ref" : "item-jason.paper",
+	"ref" : "item-devil.paper",
 	"name" : "Pad and mailbox",
-	"in" : "user-jason",
+	"in" : "user-devil",
 	"mods" : [ {
 		"type" : "Paper",
 		"orientation" : 16,
@@ -57,12 +48,12 @@
 	} ]
 }, {
 	"type" : "item",
-	"ref" : "item-jason.head.json",
-	"name" : "jason's Head",
-	"in" : "user-jason",
+	"ref" : "item-devil.head.json",
+	"name" : "Devil's Head",
+	"in" : "user-devil",
 	"mods" : [ {
 		"type" : "Head",
-		"style" : 122,
+		"style" : 97,
 		"orientation" : 0,
 		"y" : 6
 	} ]

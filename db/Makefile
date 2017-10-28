@@ -89,7 +89,11 @@ beach:
 back4t:
 	@echo "Building the Back Forty Only"
 	@node populateModels.js $(NEOHABITAT_MONGO_HOST) back4t >>.errs 2>&1	
-	
+
+hell:
+	@echo "Building Hell Only"
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) hell >>.errs 2>&1	
+    
 users:
 	@echo "Building Users Only"
 	@node populateModels.js $(NEOHABITAT_MONGO_HOST) users >>.errs 2>&1
