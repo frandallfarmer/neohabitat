@@ -26,7 +26,7 @@ clusters:
       image: philcollins/neohabitat
       environment:
         - NEOHABITAT_DEFAULT_CONTEXT=context-Downtown_5f
-        - NEOHABITAT_MONGO_HOST=127.0.0.1:27017
+        - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
         - NEOHABITAT_SCHEMA_DIR=db
         - NEOHABITAT_SHOULD_ENABLE_CRON=true
         - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=false
@@ -49,11 +49,11 @@ clusters:
   - neohabitatqlink:
       image: philcollins/qlink
       environment:
-        - QLINK_DB_HOST=127.0.0.1
-        - QLINK_DB_JDBC_URI=jdbc:mysql://127.0.0.1:3306/qlink
+        - QLINK_DB_HOST=neohabitatmariadb
+        - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink
         - QLINK_DB_USERNAME=spine
         - QLINK_DB_PASSWORD=spine
-        - QLINK_HABITAT_HOST=127.0.0.1
+        - QLINK_HABITAT_HOST=neohabitat
         - QLINK_SHOULD_CREATE_DB=true
         - QLINK_SHOULD_PING=true
       synapses:
