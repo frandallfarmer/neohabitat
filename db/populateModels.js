@@ -17,6 +17,7 @@ const fileRoots = {
   downtown_regions: './new_Downtown',
   woods: './Woods',
   beach: './Beach',
+  hell:  './Hell',
   back4t: './Back4t',
   streets: "./Streets",
   text: './Text',
