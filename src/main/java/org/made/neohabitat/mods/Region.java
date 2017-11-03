@@ -227,9 +227,17 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             avatar.set_record(HS$wealth, avatar.bankBalance);
     		avatar.inc_record(HS$lifetime);
     	}
-    	avatar.lastArrivedIn		= context().baseRef();
+    	avatar.lastArrivedIn		= context().baseRef(); 
 		avatar.lastConnectedDay  	= today;
     	avatar.lastConnectedTime 	= time;
+    	
+    	if(today > avatar.lastConnectedDay && avatar.health < MAX_HEALTH) {
+            avatar.health += 25;
+            if(avatar.health > MAX_HEALTH) {
+                avatar.health = MAX_HEALTH;
+            }
+        }
+    	
     	if (avatar.amAGhost) {
     		getGhost().total_ghosts++; // Make sure the user has a ghost object..
     	}
