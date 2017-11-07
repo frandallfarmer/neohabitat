@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.github.FUDCo</groupId>
             <artifactId>Elko</artifactId>
-            <version>master-v2.0.3-g61c78f4-45</version>
+            <version>master-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
