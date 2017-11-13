@@ -106,7 +106,7 @@
         "x": 104, 
         "type": "Teleport", 
         "orientation": 204, 
-        "address": "dnalsi"
+        "address": "pop-dnalsi"
       }
     ], 
     "type": "item", 

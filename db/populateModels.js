@@ -19,6 +19,7 @@ const fileRoots = {
   beach: './Beach',
   hell:  './Hell',
   back4t: './Back4t',
+  dnalsi: './Dnalsi',
   streets: "./Streets",
   text: './Text',
   users: './Users'
