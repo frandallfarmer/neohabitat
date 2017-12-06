@@ -3,7 +3,8 @@
     "ref": "context-Desert_3d", 
     "capacity": 64, 
     "type": "context", 
-    "name": "The Desert", 
+    "name": "The Desert",
+    "aliases": ["pop-sandy", "pop-barren"],
     "mods": [
       {
         "town_dir": "", 
@@ -58,7 +59,7 @@
         "x": 92, 
         "type": "Teleport", 
         "orientation": 0, 
-        "address": "desert"
+        "address": "Pop-Desert"
       }
     ], 
     "type": "item", 
