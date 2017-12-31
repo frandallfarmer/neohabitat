@@ -25,6 +25,8 @@ import org.made.neohabitat.HabitatMod;
 
 public class Head extends HabitatMod implements Copyable {
     
+    public int true_head = 0; //Replacement for true_head_style
+    
     public int HabitatClass() {
         return CLASS_HEAD;
     }
@@ -53,18 +55,20 @@ public class Head extends HabitatMod implements Copyable {
         return false;
     }
     
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
-    public Head(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "true_head" })
+    public Head(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, OptInteger true_head) {
         super(style, x, y, orientation, gr_state, restricted);
+        this.true_head = style.value(0);
     }
 
-    public Head(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
+    public Head(int style, int x, int y, int orientation, int gr_state, boolean restricted, int true_head) {
         super(style, x, y, orientation, gr_state, restricted);
+        this.true_head = style;
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Head(style, x, y, orientation, gr_state, restricted);
+        return new Head(style, x, y, orientation, gr_state, restricted, true_head);
     }
 
     @Override

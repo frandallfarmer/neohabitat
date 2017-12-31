@@ -682,7 +682,7 @@ public class Avatar extends Container implements UserMod {
                     msg = " Have a nice day! "; 
                 }
                 else if (sender.curse_type == CURSE_FLY) {
-                    
+                    msg = buzzify(msg);
                 }
                 send_broadcast_msg(this.noid, "SPEAK$", msg);
                 inc_record(HS$talkcount);
@@ -1005,27 +1005,26 @@ public class Avatar extends Container implements UserMod {
             return;
         }
         
-        //int new_posture = AV_ACT_point;
-        
-        //send_neighbor_msg(from, noid, "POSTURE$", "new_posture", new_posture);
+        send_neighbor_msg(from, noid, "POSTURE$", "new_posture", AV_ACT_hand_out);
         send_private_msg(from, noid, from, "SPEAK$", "Gotcha!");
-        send_private_msg(victim.elko_user(), noid, victim.elko_user(), "SPEAK$", "Gotcha! Hello Victim");
+        send_private_msg(from, noid, victim.elko_user(), "SPEAK$", "Gotcha Victim!");
         send_reply_success(from);
         if (curAvatar.curse_type != 0){
             curse_touch(curAvatar, victim);
         }
-       /* else if (victim.curse_type != 0){
+        else if (victim.curse_type != 0){
             curse_touch(victim, curAvatar);
-        }*/
+        }
     }
     
     public void curse_touch(Avatar curseGiver, Avatar victim){
-        trace_msg("Curse_touch has been activated");
-        if (victim.curse_type != CURSE_NONE/* || victim.nitty_bits[CURSE_IMMUNITY_BIT]*/){
+     
+        if (victim.curse_type != CURSE_NONE || victim.nitty_bits[CURSE_IMMUNITY_BIT]){
             return; 
         }
         
         if (curseGiver.curse_type == CURSE_COOTIES || curseGiver.curse_type == CURSE_SMILEY || curseGiver.curse_type == CURSE_MUTANT){
+            trace_msg(curseGiver.elko_user().name() + " has cursed " + victim.elko_user().name());
             activate_head_curse(victim, curseGiver.curse_type);
         }
         
@@ -1036,16 +1035,14 @@ public class Avatar extends Container implements UserMod {
     }
     
     public void activate_head_curse(Avatar victim, int curse){
-        trace_msg("Activate_head_curse has been activated");
         HabitatMod curHeadObj = victim.contents(Avatar.HEAD);
         Head curHead = (Head) curHeadObj;
-        
         if(victim.curse_type == curse || curHead == null) {
             return;
         }
+        
         victim.true_head_style = curHead.style;
         victim.curse_type = curse;
-        
         switch(curse) {
         case CURSE_FLY:
             curHead.style = HEAD_FLY;
@@ -1064,18 +1061,39 @@ public class Avatar extends Container implements UserMod {
            victim.curse_count = 32767;
            break;
         case CURSE_NONE:
-           trace_msg("CURSE_NONE current style: " + victim.true_head_style);
-           curHead.style = victim.true_head_style;
+           curHead.style = curHead.true_head;
            victim.curse_count = 0;
-           //victim.nitty_bits[CURSE_IMMUNITY_BIT] = true;
+           victim.nitty_bits[CURSE_IMMUNITY_BIT] = true;
            break;
         }
        
         curHead.gen_flags[MODIFIED] = true;
         checkpoint_object(curHead);  
         victim.send_goaway_msg(curHead.noid);
+        destroy_object(curHead);
         Item item = create_object("Eww! Cooties!", curHead, victim, false);
         victim.current_region().announce_object(item, victim);
+    }
+    
+    public static String buzzify(String text){
+        StringBuilder sb = new StringBuilder();
+        char[] ar = text.toCharArray();
+        if(ar.length <= 4) {
+            return "Bzzz";
+        }
+        
+        sb.append("B");
+        for(int i = 1; i <= ar.length-1; i++) {
+            if(ar[i] >= 'A' && ar[i] <= 'Z') {
+                sb.append("Z");
+            }
+            else if(ar[i] == ' '){
+                sb.append(" b");
+            }
+            else
+                sb.append("z");
+        }
+        return sb.toString();
     }
 
     /**
@@ -2113,7 +2131,7 @@ public class Avatar extends Container implements UserMod {
                 destroy_object(mod);
                 didDelete = true;
                 avatar.current_region().modify_variable(victim, modAnimation, C64_GR_STATE_OFFSET, 1);
-                Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false);
+                Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false, 18);
                 Item item = create_object("Mistakes were made.", skull, null, false);
                 avatar.current_region().announce_object(item, avatar.current_region()); //
                 Region.tellEveryone("The dark sky quickly dissipates.");

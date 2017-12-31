@@ -208,6 +208,11 @@ public interface Constants {
     public static final int      CURSE_MUTANT               = 3;
     public static final int      CURSE_FLY                  = 4;
     
+    public static final int      HEAD_COOTIE                = 117;
+    public static final int      HEAD_SMILEY                = 110;
+    public static final int      HEAD_MUTANT                = 27;
+    public static final int      HEAD_FLY                   = 13;
+    
     /* Magic lamp constants */
     public static final int      MAGIC_LAMP_WAITING         = 0;
     public static final int      MAGIC_LAMP_GENIE           = 1;
@@ -238,6 +243,7 @@ public interface Constants {
     public static final int      STEAL_FREE                 = 2;
     
     /* avatar nitty_bit constants */
+    public static final int      CURSE_IMMUNITY_BIT         = 31;
     public static final int      VOTED_FLAG                 = 3;
     public static final int      GOD_FLAG                   = 4;
     public static final int      MISC_FLAG1                 = 5;
