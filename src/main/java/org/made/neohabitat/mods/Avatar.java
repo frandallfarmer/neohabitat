@@ -1007,7 +1007,7 @@ public class Avatar extends Container implements UserMod {
         
         send_neighbor_msg(from, noid, "POSTURE$", "new_posture", AV_ACT_hand_out);
         send_private_msg(from, noid, from, "SPEAK$", "Gotcha!");
-        send_private_msg(from, noid, victim.elko_user(), "SPEAK$", "Gotcha Victim!");
+        send_private_msg(from, noid, victim.elko_user(), "SPEAK$", "Gotcha");
         send_reply_success(from);
         if (curAvatar.curse_type != 0){
             curse_touch(curAvatar, victim);
