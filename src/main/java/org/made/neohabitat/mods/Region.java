@@ -38,14 +38,14 @@ import org.made.neohabitat.Toggle;
 
 public class Region extends Container implements UserWatcher, ContextMod, ContextShutdownWatcher,  Constants {
     
-	public static String	MOTD = "Welcome to Habitat! For help see http://neohabitat.org";
-	
-	/** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
-	public static boolean	NEOHABITAT_FEATURES = true;	
-	
-	/** The number of tokens to give to an avatar each new day that the user loggs in */
-	public static final int	STIPEND = 100;
-	
+    public static String    MOTD = "Welcome to Habitat! For help see http://neohabitat.org";
+    
+    /** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
+    public static boolean   NEOHABITAT_FEATURES = true; 
+    
+    /** The number of tokens to give to an avatar each new day that the user loggs in */
+    public static final int STIPEND = 100;
+    
     /** The default depth for a region. */
     public static final int DEFAULT_REGION_DEPTH = 32;
 
@@ -102,12 +102,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * room.
      */
     public HabitatMod noids[]      = new HabitatMod[256];
-    public int		  nextNoid	   = 1;
+    public int        nextNoid     = 1;
     public String     neighbors[]  = { "", "", "", "" };
     /** Direction to nearest Town */
-    public String	  town_dir     = "";
+    public String     town_dir     = "";
     /** Direction to nearest Teleport Booth */
-    public String	  port_dir     = "";    
+    public String     port_dir     = "";    
 
     public boolean is_turf  = false;
     public String  resident = "";
@@ -115,9 +115,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public boolean locked   = false;
 
     /** C64 Heap Emulation */
-    public	int[]	class_ref_count		= new int[256];
-    public	int[][]	resource_ref_count	= new int[4][256];		// images, heads, behaviors, sounds
-    public	int		space_usage			= 0;
+    public  int[]   class_ref_count     = new int[256];
+    public  int[][] resource_ref_count  = new int[4][256];      // images, heads, behaviors, sounds
+    public  int     space_usage         = 0;
     
     /** A handle to the mandatory singleton ghost object for this region */    
     
@@ -167,21 +167,21 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public void objectIsComplete() {
         ((Context) object()).registerUserWatcher((UserWatcher) this);
         noids[THE_REGION] = this;
-		note_object_creation(this);
+        note_object_creation(this);
         Region.RefToRegion.put(obj_id(), this);
     }
     
-    private	Ghost regionGhost() {
-    	return (Ghost) noids[GHOST_NOID];
+    private Ghost regionGhost() {
+        return (Ghost) noids[GHOST_NOID];
     }
 
     public Ghost getGhost() {
-    	Ghost ghost = regionGhost();
+        Ghost ghost = regionGhost();
         if (ghost == null) {
-        	ghost 		= new Ghost(0, 4, 240, 0, 0, false);
-        	ghost.noid	= GHOST_NOID;
-        	create_object("Ghost", ghost, this, true);
-        	new Thread(announceGhostLater).start();        	 
+            ghost       = new Ghost(0, 4, 240, 0, 0, false);
+            ghost.noid  = GHOST_NOID;
+            create_object("Ghost", ghost, this, true);
+            new Thread(announceGhostLater).start();          
         }
         return ghost;
     }
@@ -190,103 +190,111 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * It could be that the ghost is getting created at startup time, which is too soon to send messages to the clients.
      */
     protected Runnable announceGhostLater = new Runnable() {
-    	@Override
-    	public void run() {
-    		try {
-    		    Thread.sleep(1000);
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(1000);
                 announce_object(current_region().noids[GHOST_NOID].object(), current_region());
-    		} catch (InterruptedException neverHappens) {
-    		    Thread.currentThread().interrupt();
-    		}
-    	}
+            } catch (InterruptedException neverHappens) {
+                Thread.currentThread().interrupt();
+            }
+        }
     };
     
     public void destroyGhost(User from) {
-    	Ghost ghost = regionGhost();
-    	if (ghost != null) {
-    		if (from != null)
-    			send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", GHOST_NOID);
-    		destroy_object(ghost);
-    	}
+        Ghost ghost = regionGhost();
+        if (ghost != null) {
+            if (from != null)
+                send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", GHOST_NOID);
+            destroy_object(ghost);
+        }
     }
     
     
     @Override
     public void noteContextShutdown() {
-    	destroyGhost(null);
-    	Region.RefToRegion.remove(obj_id());
+        destroyGhost(null);
+        Region.RefToRegion.remove(obj_id());
     }
     
     public void noteUserArrival(User who) {
-    	Avatar avatar = (Avatar) who.getMod(Avatar.class);
-    	avatar.inc_record(HS$travel);
-    	int today = (int) (System.currentTimeMillis() / ONE_DAY);
-    	int time  = (int) (System.currentTimeMillis() % ONE_DAY);
-    	if (today > avatar.lastConnectedDay) {
-    		avatar.bankBalance += STIPEND;
+        Avatar avatar = (Avatar) who.getMod(Avatar.class);
+        avatar.inc_record(HS$travel);
+        int today = (int) (System.currentTimeMillis() / ONE_DAY);
+        int time  = (int) (System.currentTimeMillis() % ONE_DAY);
+        if (today > avatar.lastConnectedDay) {
+            avatar.bankBalance += STIPEND;
             avatar.set_record(HS$wealth, avatar.bankBalance);
-    		avatar.inc_record(HS$lifetime);
-    	}
-    	avatar.lastArrivedIn		= context().baseRef();
-		avatar.lastConnectedDay  	= today;
-    	avatar.lastConnectedTime 	= time;
-    	if (avatar.amAGhost) {
-    		getGhost().total_ghosts++; // Make sure the user has a ghost object..
-    	}
-    	if (avatar.firstConnection) {
-    		object_say(who, MOTD);
-    		if (NEOHABITAT_FEATURES) {
-    			if (NameToUser.size() < 2) {
-    				object_say(who, UPGRADE_PREFIX + "You are the only one here right now.");
-    			} else {
-    				object_say(who, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " others here" +
-    						(avatar.amAGhost ? "." : " Press F3 to see a list."));
-    			}
-    			if (avatar.amAGhost) {
-    				object_say(who, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
-    			}
-    			tellEveryone(who.name() + " has arrived.");
-    		}
-    	}
-    	avatar.check_mail();
-    	Region.addUser(who);
+            avatar.inc_record(HS$lifetime);
+        }
+        avatar.lastArrivedIn        = context().baseRef(); 
+        avatar.lastConnectedDay     = today;
+        avatar.lastConnectedTime    = time;
+        
+        if(today > avatar.lastConnectedDay && avatar.health < MAX_HEALTH) {
+            avatar.health += 25;
+            if(avatar.health > MAX_HEALTH) {
+                avatar.health = MAX_HEALTH;
+            }
+        }
+        
+        if (avatar.amAGhost) {
+            getGhost().total_ghosts++; // Make sure the user has a ghost object..
+        }
+        if (avatar.firstConnection) {
+            object_say(who, MOTD);
+            if (NEOHABITAT_FEATURES) {
+                if (NameToUser.size() < 2) {
+                    object_say(who, UPGRADE_PREFIX + "You are the only one here right now.");
+                } else {
+                    object_say(who, UPGRADE_PREFIX + "There are " + (NameToUser.size() - 1) + " others here" +
+                            (avatar.amAGhost ? "." : " Press F3 to see a list."));
+                }
+                if (avatar.amAGhost) {
+                    object_say(who, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
+                }
+                tellEveryone(who.name() + " has arrived.");
+            }
+        }
+        avatar.check_mail();
+        Region.addUser(who);
     }
     
     public void noteUserDeparture(User who) {
-    	Region.removeUser(who);
-    	Avatar avatar = avatar(who);
-    	Ghost  ghost  = regionGhost();
+        Region.removeUser(who);
+        Avatar avatar = avatar(who);
+        Ghost  ghost  = regionGhost();
         if (avatar.holding_restricted_object()) {
-        	avatar.heldObject().putMeBack(who, false);
+            avatar.heldObject().putMeBack(who, false);
         }
         if (avatar.amAGhost) {
-        	ghost.total_ghosts--;
-        	if (ghost.total_ghosts == 0) {
-        		destroyGhost(who);
-        	}
+            ghost.total_ghosts--;
+            if (ghost.total_ghosts == 0) {
+                destroyGhost(who);
+            }
         } else {
-        	lights_off(avatar);
+            lights_off(avatar);
         }
-    	avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
-    	avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
-		avatar.gen_flags[MODIFIED] = true;    					
-    	avatar.checkpoint_object(avatar);
+        avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
+        avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
+        avatar.gen_flags[MODIFIED] = true;                      
+        avatar.checkpoint_object(avatar);
     }
     
     private int avatarsPresent() {
-    	return class_ref_count[CLASS_AVATAR];
+        return class_ref_count[CLASS_AVATAR];
     }
     
     public synchronized static void addUser(User from) {
-    	NameToUser.put(from.name().toLowerCase(), from);
+        NameToUser.put(from.name().toLowerCase(), from);
     }
     
     public synchronized static void removeUser(User from) {
-    	Avatar avatar = (Avatar) from.getMod(Avatar.class);
-    	NameToUser.remove(from.name().toLowerCase());
-    	removeContentsFromRegion(avatar);
-    	avatar.note_object_deletion(avatar);
-    	removeFromObjList(avatar);
+        Avatar avatar = (Avatar) from.getMod(Avatar.class);
+        NameToUser.remove(from.name().toLowerCase());
+        removeContentsFromRegion(avatar);
+        avatar.note_object_deletion(avatar);
+        removeFromObjList(avatar);
     }
 
     public synchronized static List<Avatar> findOracles() {
@@ -301,32 +309,32 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public static User getUserByName(String name) {
-    	if (name != null) {    		
-        	return (User) NameToUser.get(name.toLowerCase());
-    	}
-    	return null;
+        if (name != null) {         
+            return (User) NameToUser.get(name.toLowerCase());
+        }
+        return null;
     }
     
     public static final int AVERAGE_C64_AVATAR_LOAD = 1000; // bytes. Non-scientific spitball guess of additional headroom needed for head image + 4 unique items.
     
     public static boolean IsRoomForMyAvatarIn(String regionRef, User from) {
-    	Region region = Region.RefToRegion.get(regionRef);
-    	
-    	if (region == null)
-    		return true;				// if there is no instantiated region, there must be room!
-    			
-    	return region.isRoomForMyAvatar(from);
+        Region region = Region.RefToRegion.get(regionRef);
+        
+        if (region == null)
+            return true;                // if there is no instantiated region, there must be room!
+                
+        return region.isRoomForMyAvatar(from);
     }
     
     public boolean isRoomForMyAvatar(User from) {
-    	if (avatarsPresent() == max_avatars)
-    		return false;
-    	
-    	// TODO: Remove the silly headroom estimate below with something real someday?
-    	if (space_usage + AVERAGE_C64_AVATAR_LOAD >= C64_HEAP_SIZE)
-    		return false;
-    	
-    	return mem_check_container(avatar(from)); // Check the pocket contents for other overflows.
+        if (avatarsPresent() == max_avatars)
+            return false;
+        
+        // TODO: Remove the silly headroom estimate below with something real someday?
+        if (space_usage + AVERAGE_C64_AVATAR_LOAD >= C64_HEAP_SIZE)
+            return false;
+        
+        return mem_check_container(avatar(from)); // Check the pocket contents for other overflows.
 
     }
     
@@ -342,8 +350,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         result.addParameter("neighbors", neighbors);
         if (control.toRepository()) {
             result.addParameter("max_avatars", max_avatars);
-        	result.addParameter("town_dir", town_dir);
-        	result.addParameter("port_dir", port_dir);
+            result.addParameter("town_dir", town_dir);
+            result.addParameter("port_dir", port_dir);
             result.addParameter("is_turf", is_turf);
             result.addParameter("resident", resident);
             result.addParameter("realm", realm);
@@ -354,14 +362,14 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
     
     private static int incNoid(int noid) {
-    	noid++;
-    	switch (noid) {
-    		case THE_REGION:
-    		case GHOST_NOID:
-    		case 256:
-	    		return 1;
-	    }
-    	return noid;
+        noid++;
+        switch (noid) {
+            case THE_REGION:
+            case GHOST_NOID:
+            case 256:
+                return 1;
+        }
+        return noid;
     }
     
     /**
@@ -374,25 +382,25 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * @param mod
      */
     public static boolean addToNoids(HabitatMod mod) {
-    	Region			region	= mod.current_region();
-        int				noid	= region.nextNoid;
-        HabitatMod[] 	noids	= region.noids;
+        Region          region  = mod.current_region();
+        int             noid    = region.nextNoid;
+        HabitatMod[]    noids   = region.noids;
         
         if (region.nextNoid == -1) {
-        	return false; /* Too many things in this region!*/
+            return false; /* Too many things in this region!*/
         }
 
-        noids[noid] 	= mod;
-        mod.noid 		= noid;
+        noids[noid]     = mod;
+        mod.noid        = noid;
         
         noid = incNoid(noid);
         
         while (null != noids[noid]) {
-        	noid = incNoid(noid);
-        	if (noid == region.nextNoid) {
-        		noid = -1;
-        		break;	// Searched everything, none free.
-        	}
+            noid = incNoid(noid);
+            if (noid == region.nextNoid) {
+                noid = -1;
+                break;  // Searched everything, none free.
+            }
         }
         region.nextNoid = noid;
         return true; // noid added, even if no
@@ -405,10 +413,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      *            The object to remove from the noid list.
      */
     public static void removeFromObjList(HabitatMod mod) {
-    	if (mod.noid < UNASSIGNED_NOID) {
-    		mod.current_region().noids[mod.noid] = null;
-    		mod.noid = UNASSIGNED_NOID;
-    	}
+        if (mod.noid < UNASSIGNED_NOID) {
+            mod.current_region().noids[mod.noid] = null;
+            mod.noid = UNASSIGNED_NOID;
+        }
     }
         
     /**
@@ -417,24 +425,24 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * @param cont
      */
     public static void removeContentsFromRegion(Container cont) {
-    	for (int i = 0; i < cont.capacity(); i++) {
-    		HabitatMod obj = cont.contents(i);
-    		if (obj != null)
-    			removeObjectFromRegion(obj);
-    	}
+        for (int i = 0; i < cont.capacity(); i++) {
+            HabitatMod obj = cont.contents(i);
+            if (obj != null)
+                removeObjectFromRegion(obj);
+        }
     }
     
     public static void removeObjectFromRegion(HabitatMod obj) {
-    	if (obj == null)
-    		return;
-    	
-    	Container cont = obj.container();
-       	if (cont != null & cont.opaque_container())
-    		obj.note_instance_deletion(obj);
-    	else
-			obj.note_object_deletion(obj);
-    	
-    	removeFromObjList(obj);
+        if (obj == null)
+            return;
+        
+        Container cont = obj.container();
+        if (cont != null & cont.opaque_container())
+            obj.note_instance_deletion(obj);
+        else
+            obj.note_object_deletion(obj);
+        
+        removeFromObjList(obj);
     }
 
     public static void tellEveryone(String text) {
@@ -442,15 +450,15 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public static void tellEveryone(String text, boolean shouldBeep) {
-    	for (String key: NameToUser.keySet()) {
-    		User	user	= NameToUser.get(key);
-    		Avatar	avatar	= (Avatar) user.getMod(Avatar.class);
+        for (String key: NameToUser.keySet()) {
+            User    user    = NameToUser.get(key);
+            Avatar  avatar  = (Avatar) user.getMod(Avatar.class);
             if (shouldBeep) {
                 avatar.send_private_msg(user, THE_REGION, user, "PLAY_$",
                     "sfx_number", 8,
                     "from_noid", avatar.noid);
             }
-    		avatar.object_say(user, UPGRADE_PREFIX + text);
+            avatar.object_say(user, UPGRADE_PREFIX + text);
         }
     }
 
@@ -459,22 +467,22 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public static void tellEveryone(int[] ascii, boolean shouldBeep) {
-    	for (String key: NameToUser.keySet()) {
-    		User		user	= NameToUser.get(key);
-    		Avatar		avatar	= (Avatar) user.getMod(Avatar.class);
+        for (String key: NameToUser.keySet()) {
+            User        user    = NameToUser.get(key);
+            Avatar      avatar  = (Avatar) user.getMod(Avatar.class);
             if (shouldBeep) {
                 avatar.send_private_msg(user, THE_REGION, user, "PLAY_$",
                     "sfx_number", 8,
                     "from_noid", avatar.noid);
             }
-    		JSONLiteral msg 	= avatar.new_private_msg(THE_REGION, "OBJECTSPEAK_$");
-    		int 		send[]  = new int[ascii.length + 1];
-    		send[0] = UPGRADE_PREFIX.charAt(0);
-    		System.arraycopy(ascii, 0, send, 1, ascii.length);
-       		msg.addParameter("ascii", send);
-    		msg.addParameter("speaker", avatar.noid);
-    		msg.finish();
-    		user.send(msg);
+            JSONLiteral msg     = avatar.new_private_msg(THE_REGION, "OBJECTSPEAK_$");
+            int         send[]  = new int[ascii.length + 1];
+            send[0] = UPGRADE_PREFIX.charAt(0);
+            System.arraycopy(ascii, 0, send, 1, ascii.length);
+            msg.addParameter("ascii", send);
+            msg.addParameter("speaker", avatar.noid);
+            msg.finish();
+            user.send(msg);
         }
     }
     
@@ -520,12 +528,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      */ 
     @JSONMethod
     public void I_AM_HERE(User from) {
-    	Avatar who = avatar(from);
-    	who.gr_state &= ~INVISIBLE;
-    	who.showDebugInfo(from);
-    	send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
-		// If the avatar has any objects in their hands, perform any necessary side effects.
-		lights_on(who);
+        Avatar who = avatar(from);
+        who.gr_state &= ~INVISIBLE;
+        who.showDebugInfo(from);
+        send_broadcast_msg(0, "APPEARING_$", "appearing", who.noid);
+        // If the avatar has any objects in their hands, perform any necessary side effects.
+        lights_on(who);
     }
 
     public boolean grabable(HabitatMod mod) {
@@ -540,33 +548,33 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public void lights_off(Avatar avatar) {
-    	if (!empty_handed(avatar)) {
-    		HabitatMod light = avatar.contents(HANDS);
-    		if (light.HabitatClass() == CLASS_FLASHLIGHT) {
-    			if (((Toggle) light).on == TRUE) {
-    				lighting -= 1;
-    				send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", -1);
-    			}
-    		}    		
-    	}
+        if (!empty_handed(avatar)) {
+            HabitatMod light = avatar.contents(HANDS);
+            if (light.HabitatClass() == CLASS_FLASHLIGHT) {
+                if (((Toggle) light).on == TRUE) {
+                    lighting -= 1;
+                    send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", -1);
+                }
+            }           
+        }
     }
     
     public void lights_on(Avatar avatar) {
-    	if (!empty_handed(avatar)) {
-    		HabitatMod held = avatar.contents(HANDS);
+        if (!empty_handed(avatar)) {
+            HabitatMod held = avatar.contents(HANDS);
             /* If holding a flashheld.on entry, turn on the held. */
-    		if (held.HabitatClass() == CLASS_FLASHLIGHT) {
-    			if (((Toggle) held).on == TRUE) {
-    				lighting += 1;
-    				send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", +1);
-    			}
-    		}    		
+            if (held.HabitatClass() == CLASS_FLASHLIGHT) {
+                if (((Toggle) held).on == TRUE) {
+                    lighting += 1;
+                    send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", +1);
+                }
+            }           
             /* If holding a compass, set the arrow pointer */
-    		if (held.HabitatClass() ==  CLASS_COMPASS) {
-    			held.gr_state = orientation;
-    			held.gen_flags[MODIFIED] = true;
-    		}
-    	}
+            if (held.HabitatClass() ==  CLASS_COMPASS) {
+                held.gr_state = orientation;
+                held.gen_flags[MODIFIED] = true;
+            }
+        }
     }
         
     /**
@@ -578,8 +586,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      */
     @JSONMethod ({ "MOTD" })
     public static void SET_MOTD(User from, String MOTD) {
-    	// TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
-    	Region.MOTD = MOTD;
+        // TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
+        Region.MOTD = MOTD;
     }
     
     /**
@@ -591,13 +599,13 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      */
     @JSONMethod ({ "text", "ascii" })
     public void TELL_EVERYONE(User from, OptString text, int[] ascii) {
-    	// TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
-    	tellEveryone(" From: The Oracle   To: All Avatars: ");
-    	if (ascii != null) {
-        	tellEveryone(ascii);
-    	} else {
-    		tellEveryone(text.value("... nevermind ..."));
-    	}
+        // TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
+        tellEveryone(" From: The Oracle   To: All Avatars: ");
+        if (ascii != null) {
+            tellEveryone(ascii);
+        } else {
+            tellEveryone(text.value("... nevermind ..."));
+        }
     }    
     
     /**
@@ -627,20 +635,20 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public void describeRegion(User from, int noid) {
-	     String name_str = object().name();
-	     String help_str = "";
-	     if (name_str.isEmpty()) 
-	          help_str = "This region has no name";
-	     else
-	          help_str = "This region is " + name_str;
-	     
-	     if (!town_dir.isEmpty()) 
-	          help_str += ".  The nearest town is " + town_dir;
-	               
-	     if (!port_dir.isEmpty()) 
-	          help_str += ".  The nearest teleport booth is " + port_dir;
-	     
-	     help_str += ".";
-	        send_reply_msg(from, noid, "text", help_str);
+         String name_str = object().name();
+         String help_str = "";
+         if (name_str.isEmpty()) 
+              help_str = "This region has no name";
+         else
+              help_str = "This region is " + name_str;
+         
+         if (!town_dir.isEmpty()) 
+              help_str += ".  The nearest town is " + town_dir;
+                   
+         if (!port_dir.isEmpty()) 
+              help_str += ".  The nearest teleport booth is " + port_dir;
+         
+         help_str += ".";
+            send_reply_msg(from, noid, "text", help_str);
     }
 }
