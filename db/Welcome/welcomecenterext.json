@@ -58,7 +58,7 @@
         "type": "Door", 
         "y": 33, 
         "x": 68,
-		"open_flags": 0,
+		"open_flags": 2,
 		"style": 1,
 		"gr_state": 0,
 		"connection": "context-welcomecenterint"

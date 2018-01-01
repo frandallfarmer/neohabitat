@@ -51,88 +51,145 @@
     "in": "context-welcomecenterintvendo"
   },
   {
-    "ref": "item-gemstone.e77d.welcomecenterintvendo", 
-    "mods": [
-      {
-        "y": 2, 
-        "x": 2, 
-        "type": "Gemstone", 
-        "orientation": 0, 
-        "gr_state": 1,
-		"magic_type": 1
-      }
-    ], 
-    "type": "item", 
-    "name": "Gemstone", 
-    "in": "item-vendo_front.77de.welcomecenterintvendo"
-  }, 
-  {
-    "ref": "item-escape_device.b2c7.welcomecenterintvendo", 
-    "mods": [
-      {
-        "y": 1, 
-        "x": 1, 
-        "charge": 10, 
-        "type": "Escape_device", 
-        "orientation": 0
-      }
-    ], 
-    "type": "item", 
-    "name": "Escape_device", 
-    "in": "item-vendo_front.77de.welcomecenterintvendo"
-  }, 
-  {
-    "ref": "item-ring.b006.welcomecenterintvendo", 
-    "mods": [
-      {
-        "y": 3, 
-        "x": 3, 
-        "type": "Ring", 
-        "orientation": 0,
-		"magic_type": 1
-      }
-    ], 
-    "type": "item", 
-    "name": "Ring", 
-    "in": "item-vendo_front.77de.welcomecenterintvendo"
-  }, 
-  {
-    "ref": "item-gemstone.69df.welcomecenterintvendo", 
-    "mods": [
-      {
-        "y": 4, 
-        "x": 4, 
-        "type": "Gemstone", 
-        "orientation": 8, 
-        "gr_state": 1,
-		"magic_type": 1
-      }
-    ], 
-    "type": "item", 
-    "name": "Gemstone", 
-    "in": "item-vendo_front.77de.welcomecenterintvendo"
-  }, 
-  {
-    "ref": "item-gemstone.3e7e.welcomecenterintvendo", 
+    "ref": "item-head.f9k3.welcomecenterintvendo", 
     "mods": [
       {
         "y": 0, 
         "x": 0, 
-        "type": "Gemstone", 
-        "orientation": 252, 
-        "gr_state": 1,
-		"magic_type": 1
+        "style": 18, 
+        "type": "Head", 
+        "orientation": 56
       }
     ], 
     "type": "item", 
-    "name": "Gemstone", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.f7h9.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "style": 21, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.h9k4.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "style": 22, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.m3g9.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "style": 25, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.d0m3.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "style": 28, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.g2m5.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "style": 31, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.n0n0.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 6, 
+        "style": 34, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.f3u5.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 7, 
+        "style": 40, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.77de.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-head.q1d1.welcomecenterintvendo", 
+    "mods": [
+      {
+        "y": 8, 
+        "x": 8, 
+        "style": 56, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
     "in": "item-vendo_front.77de.welcomecenterintvendo"
   }, 
   {
     "ref": "item-vendo_front.77de.welcomecenterintvendo", 
     "mods": [
       {
-        "display_item": 5, 
+        "display_item": 9, 
         "orientation": 16, 
         "key_hi": 0, 
         "key_lo": 0, 
@@ -140,9 +197,9 @@
         "y": 0, 
         "x": 184, 
         "type": "Vendo_front",
-        "prices": [5000, 1145, 4500, 3200, 8500, 1200],		
+        "prices": [175, 120, 250, 150, 175, 135, 155, 125, 145, 185],		
         "open_flags": 0, 
-        "item_price": 1200
+        "item_price": 185
       }
     ], 
     "type": "item", 
@@ -150,18 +207,18 @@
     "in": "item-vendo_inside.27d8.welcomecenterintvendo"
   }, 
   {
-    "ref": "item-amulet.e89e.welcomecenterintvendo", 
+    "ref": "item-head.d6o2.welcomecenterintvendo", 
     "mods": [
       {
         "y": 1, 
         "x": 1, 
-        "type": "Amulet", 
-        "orientation": 0,
-		"magic_type": 1
+        "style": 101, 
+        "type": "Head", 
+        "orientation": 56
       }
     ], 
     "type": "item", 
-    "name": "Amulet", 
+    "name": "Head", 
     "in": "item-vendo_inside.27d8.welcomecenterintvendo"
   }, 
   {
@@ -182,50 +239,54 @@
     "in": "context-welcomecenterintvendo"
   }, 
   {
-    "ref": "item-crystal_ball.2941.welcomecenterintvendo", 
-    "mods": [
-      {
-        "y": 1, 
-        "x": 1, 
-        "type": "Crystal_ball", 
-        "orientation": 0, 
-        "gr_state": 1
-      }
-    ], 
-    "type": "item", 
-    "name": "Crystal_ball", 
-    "in": "item-vendo_front.522d.welcomecenterintvendo"
-  }, 
-  {
-    "ref": "item-magic_lamp.f831.welcomecenterintvendo", 
-    "mods": [
-      {
-        "y": 2, 
-        "x": 2, 
-        "type": "Magic_lamp", 
-        "orientation": 0,
-		"magic_type": 11
-      }
-    ], 
-    "type": "item", 
-    "name": "Magic_lamp", 
-    "in": "item-vendo_front.522d.welcomecenterintvendo"
-  }, 
-  {
-    "ref": "item-magic_staff.591d.welcomecenterintvendo", 
+    "ref": "item-compass.j8k9.welcomecenterintvendo", 
     "mods": [
       {
         "y": 0, 
         "x": 0, 
-        "type": "Magic_staff", 
-        "orientation": 0,
-		"magic_type": 2
+        "type": "Compass", 
+        "orientation": 0
       }
     ], 
     "type": "item", 
-    "name": "Magic_staff", 
+    "name": "Compass", 
     "in": "item-vendo_front.522d.welcomecenterintvendo"
-  }, 
+  },
+  {
+	"ref": "item-book.j9k4.welcomecenterintvendo",
+	"mods": [
+      {
+	    "style": 3,
+		"orientation": 16,
+		"last_page": 0,
+		"y": 1, 
+		"x": 1,
+		"path": "text-popmap",
+		"title": "Map of Populopolis",
+		"type": "Book"
+	  }
+	  ],
+	  "type": "item",
+	  "name": "Map",
+	  "in": "item-vendo_front.522d.welcomecenterintvendo"
+  },
+  {
+    "ref": "item-bag.f9m3.welcomecenterintvendo", 
+    "mods": [
+      {
+        "orientation": 40, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Bag", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Bag", 
+    "in": "item-vendo_front.522d.welcomecenterintvendo"
+  },    
   {
     "ref": "item-vendo_front.522d.welcomecenterintvendo", 
     "mods": [
@@ -238,9 +299,9 @@
         "y": 0, 
         "x": 181, 
         "type": "Vendo_front",
-        "prices": [999, 30000, 1495, 1800],		
+        "prices": [195, 20, 135, 100],		
         "open_flags": 0, 
-        "item_price": 1800
+        "item_price": 100
       }
     ], 
     "type": "item", 
@@ -248,20 +309,22 @@
     "in": "item-vendo_inside.9a50.welcomecenterintvendo"
   }, 
   {
-    "ref": "item-magic_wand.b4e9.welcomecenterintvendo", 
+    "ref": "item-box.l2k5.welcomecenterintvendo", 
     "mods": [
       {
+        "orientation": 80, 
+        "key_lo": 0, 
+        "key_hi": 0, 
         "y": 1, 
         "x": 1, 
-        "type": "Magic_wand", 
-        "orientation": 0,
-		"magic_type": 1
+        "type": "Box", 
+        "open_flags": 2
       }
     ], 
     "type": "item", 
-    "name": "Magic_wand", 
+    "name": "Box", 
     "in": "item-vendo_inside.9a50.welcomecenterintvendo"
-  }, 
+  },
   {
     "ref": "item-vendo_inside.9a50.welcomecenterintvendo", 
     "mods": [
