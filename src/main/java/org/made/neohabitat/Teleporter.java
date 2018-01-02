@@ -66,7 +66,7 @@ public abstract class Teleporter extends Coinop {
             object_say(from, "Malfunction! You may not teleport to the same location.");
         } else {
             Avatar avatar = avatar(from);
-            if (adjacent(avatar) &&
+            if (adjacent(avatar, from) &&
             		(activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
             	if (Region.IsRoomForMyAvatarIn(destination, from)) {
             		send_reply_success(from);

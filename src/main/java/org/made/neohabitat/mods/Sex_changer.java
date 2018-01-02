@@ -77,7 +77,7 @@ public class Sex_changer extends HabitatMod implements Copyable {
     }
 
     public void sex_changer_SEXCHANGE(User from, Avatar sexChangingAvatar) {
-        if (adjacent(sexChangingAvatar)) {
+        if (adjacent(sexChangingAvatar, from)) {
             trace_msg("Avatar %s is adjacent to sex changer: %s", sexChangingAvatar.object().ref(), object().ref());
             if (test_bit(sexChangingAvatar.orientation, 8)) {
                 trace_msg("Bit 8 is set on sex changing Avatar %s; clearing it", sexChangingAvatar.object().ref());

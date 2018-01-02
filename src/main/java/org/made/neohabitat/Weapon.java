@@ -61,7 +61,7 @@ public abstract class Weapon extends HabitatMod {
 			success = FALSE;
 			object_say(from,
 				"This is a weapons-free zone.  Your weapon will not operate here.");
-		} else if (adjacent(target) || is_ranged_weapon()) {
+		} else if (adjacent(target, from) || is_ranged_weapon()) {
 			HabitatMod damageableTarget = target;
 			if (target.HabitatClass() == CLASS_HEAD) {
 				// If the weapon is attacking an Avatar's head, set the target to the

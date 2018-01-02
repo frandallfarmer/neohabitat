@@ -160,7 +160,7 @@ public class Avatar extends Container implements UserMod {
     /** Non-zero when the Avatar-User is cursed. */
     public int        curse_type      = CURSE_NONE;
     /** Upon reaching zero an Avatar is cured of their curse. */
-    public int        curse_count     = 1;
+    public int        curse_count     = 0;
     /** Non-zero when the Avatar-User is stunned. */
     public int        stun_count      = 0;
     /** The number of tokens this avatar has in the bank (not cash-on-hand.) */
@@ -1018,7 +1018,7 @@ public class Avatar extends Container implements UserMod {
     }
     
     public void curse_touch(Avatar curseGiver, Avatar victim){
-     
+        //Return if the victim is already cursed or immune 
         if (victim.curse_type != CURSE_NONE || victim.nitty_bits[CURSE_IMMUNITY_BIT]){
             return; 
         }
@@ -1044,9 +1044,9 @@ public class Avatar extends Container implements UserMod {
         victim.true_head_style = curHead.style;
         victim.curse_type = curse;
         switch(curse) {
-        case CURSE_FLY:
+        case CURSE_FLY: //Unlike the other curses this one doesn't spread
             curHead.style = HEAD_FLY;
-            victim.curse_count = 0; //Doesn't spread
+            victim.curse_count = 0; 
             break;
         case CURSE_COOTIES:
            curHead.style = HEAD_COOTIE;
