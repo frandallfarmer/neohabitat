@@ -401,7 +401,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		final int FROM_POCKET = 1;
 		final int FROM_GROUND = 0;
 
-		if (!empty_handed(avatar(from)) || !getable(this) || (!accessable(this) && selfClass != CLASS_GAME_PIECE)
+		if (!empty_handed(avatar(from)) || !getable(this) || (!accessable(this, from) && selfClass != CLASS_GAME_PIECE)
 				|| contClass == CLASS_BUREAUCRAT || contClass == CLASS_VENDO_FRONT || contClass == CLASS_VENDO_INSIDE
 				|| contClass == CLASS_GLUE) {
 			send_reply_error(from);
@@ -1542,9 +1542,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *            The object being tested.
 	 * @return Can we access this object given container nesting??
 	 */
-	public boolean accessable(HabitatMod object) {
+	public boolean accessable(HabitatMod object, User from) {
 		if (container(object).noid == THE_REGION)
-			return (adjacent(object));
+			return (adjacent(object, from));
 		else
 			/*
 			 * return(accessable(ObjList(object.container))); TODO Placeholder
@@ -1565,7 +1565,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 	 *         object?
 	 */
 	public boolean elsewhere(HabitatMod object, User user) {
-		return (container(object) != (Container) avatar(user) && !adjacent(object));
+		return (container(object) != (Container) avatar(user) && !adjacent(object, user));
 	}
 
 	/**
@@ -1619,18 +1619,75 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 		goto_new_region(avatar, contextRef, direction, transition_type, 0, 0);
 	}
 
-	/**
-	 * Are we standing next to the object so we can manipulate it properly?
-	 * 
-	 * @param object
-	 *            The object being tested.
-	 * @return Is our avatar standing next to the object?
-	 */
-	public boolean adjacent(HabitatMod object) {
-		/* TODO Implement a real adjacent test */
-		/* TODO Mising parameter? */
-		return true;
-	}
+    /**
+    * Are we standing next to the object so we can manipulate it properly?
+    * 
+    * @param object
+    *            The object being tested.
+    * @return Is our avatar standing next to the object?
+    */
+    public boolean adjacent(HabitatMod object, User from) {
+        Avatar curAvatar = avatar(from);
+        int obase = image_base[object.HabitatClass()] + object.style;
+        int x_right, x_left, y;
+        int X_MAX = 156;
+        if(object.noid == curAvatar.noid) {
+            return true;
+        }
+    
+        /*JSN: Is this PL/1 hack really necessary?*/
+        if(object.HabitatClass() == CLASS_HEAD) {
+            return true;
+        }
+    
+        if(test_bit(object.orientation, ORIENTATION_BIT)){
+            x_right = object.x - image_x_right[obase] - image_celWidth[obase];
+            x_left = object.x - image_x_left[obase] - image_celWidth[obase];
+        }
+        else
+            x_right = object.x + image_x_right[obase];
+            x_left = object.x + image_x_left[obase];
+    
+        y = object.y;
+        y = clear_bit(y, 8);
+        y = y + image_y[obase];
+    
+        if(y < 0) {
+            y = 0;
+        }
+        if(y > current_region().depth) {
+            y = current_region().depth;
+        }
+        y = clear_bit(y, 1);
+
+        if(x_right < 0) {
+            x_right = 0;
+        }
+        else if(x_right > X_MAX){
+            x_right = X_MAX;
+        }
+        x_right = clear_bit(x_right, 1);
+        x_right = clear_bit(x_right, 2);
+    
+        if(x_left < 0) {
+            x_left = 0;
+        }
+        else if(x_left > X_MAX){
+            x_left = X_MAX;
+        }
+        x_left = clear_bit(x_left, 1);
+        x_left = clear_bit(x_left, 2);
+    
+        int av_x = curAvatar.x;
+        av_x = clear_bit(av_x, 1);
+        av_x = clear_bit(av_x, 2);
+    
+        int av_y = curAvatar.y;
+        av_y = clear_bit(av_y, 1);
+        av_y = clear_bit(av_y, 8);
+        
+        return (av_x == x_left || av_x == x_right) && av_y == y;
+    }
 
 
 	/**

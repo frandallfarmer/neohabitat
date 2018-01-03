@@ -90,7 +90,7 @@ public class Pawn_machine extends Openable implements Copyable {
     @JSONMethod
     public void MUNCH(User from) {
     	HabitatMod recycle = contents(0);
-    	if (adjacent(this) && recycle != null) {
+    	if (adjacent(this, from) && recycle != null) {
     		if (TRUE == Tokens.pay_to(avatar(from), pawn_values[recycle.HabitatClass()])) {
     	        send_neighbor_msg(from, noid, "MUNCH$");
     	        destroy_contents();

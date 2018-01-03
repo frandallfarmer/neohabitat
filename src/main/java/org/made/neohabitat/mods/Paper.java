@@ -217,7 +217,7 @@ public class Paper extends HabitatMod implements Copyable {
         Item paperItem = null;
 
         if (empty_handed(avatar) && getable(this) &&
-            accessable(this) && container.HabitatClass() != CLASS_GLUE) {
+            accessable(this, from) && container.HabitatClass() != CLASS_GLUE) {
             if (container.noid == avatar.noid) {
                 how = FROM_POCKET;
             } else {

@@ -160,7 +160,8 @@ public abstract class Magical extends HabitatMod {
 			magic_default(from, targetMod);
 			break;
 		case 6:
-			magic_default(from, targetMod);
+			avatar(from).activate_head_curse(avatar(from), CURSE_COOTIES);
+			object_say(from, "Your mistake.");
 			break;
 		case 7:
 			magic_default(from, targetMod);

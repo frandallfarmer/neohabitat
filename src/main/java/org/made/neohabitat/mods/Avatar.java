@@ -159,6 +159,8 @@ public class Avatar extends Container implements UserMod {
     public int        true_head_style = 0;
     /** Non-zero when the Avatar-User is cursed. */
     public int        curse_type      = CURSE_NONE;
+    /** Upon reaching zero an Avatar is cured of their curse. */
+    public int        curse_count     = 0;
     /** Non-zero when the Avatar-User is stunned. */
     public int        stun_count      = 0;
     /** The number of tokens this avatar has in the bank (not cash-on-hand.) */
@@ -223,13 +225,13 @@ public class Avatar extends Container implements UserMod {
     /** Flag to indicate this User/Connection/Avatar is in Ghost state: Observer only **/
     public boolean    amAGhost          = false;
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "bankBalance",
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "curse_type", "curse_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
         "to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "lastArrivedIn",
         "lastInviteRequestUser", "lastInviteRequestTimestamp", "lastJoinRequestUser", "lastJoinRequestTimestamp",
         "?stats" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
-            OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger bankBalance,
+            OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger curse_type, OptInteger curse_count, OptInteger bankBalance,
             OptInteger activity, OptInteger action, OptInteger health, OptInteger restrainer, 
             OptInteger transition_type, OptInteger from_orientation, OptInteger from_direction,
             OptString from_region, OptString to_region, OptInteger to_x, OptInteger to_y,
@@ -247,6 +249,8 @@ public class Avatar extends Container implements UserMod {
         setAvatarState(nitty_bits.present() ? unpackBits(nitty_bits.value()) :  new boolean[32],
                 bodyType.value("male"),
                 stun_count.value(0),
+                curse_type.value(CURSE_NONE),
+                curse_count.value(0),
                 bankBalance.value(0),
                 activity.value(STAND_FRONT),
                 action.value(this.activity),
@@ -274,20 +278,20 @@ public class Avatar extends Container implements UserMod {
     }
 
     public Avatar(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits, String bodyType,
-            int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
+            int stun_count, int curse_type, int curse_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
             int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
             String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
             boolean firstConnection, String lastArrivedIn, String lastInviteRequestUser, long lastInviteRequestTimestamp,
             String lastJoinRequestUser, long lastJoinRequestTimestamp, int[] stats) {
         super(style, x, y, orientation, gr_state, false);
-        setAvatarState(nitty_bits, bodyType, stun_count, bankBalance, activity, action, health, restrainer, transition_type,
+        setAvatarState(nitty_bits, bodyType, stun_count, curse_type, curse_count, bankBalance, activity, action, health, restrainer, transition_type,
                 from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime,
                 amAGhost, firstConnection, lastArrivedIn, lastInviteRequestUser, lastInviteRequestTimestamp,
                 lastJoinRequestUser, lastJoinRequestTimestamp, stats);
     }
 
     protected void setAvatarState(boolean[] nitty_bits, String bodyType,
-            int stun_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
+            int stun_count, int curse_type, int curse_count, int bankBalance, int activity, int action, int health, int restrainer, int transition_type,
             int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
             String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
             boolean firstConnection, String lastArrivedIn, String lastInviteRequestUser, long lastInviteRequestTimestamp,
@@ -295,6 +299,8 @@ public class Avatar extends Container implements UserMod {
         this.nitty_bits = nitty_bits;
         this.bodyType = bodyType;
         this.stun_count = stun_count;
+        this.curse_type = curse_type;
+        this.curse_count = curse_count;
         this.bankBalance = bankBalance;
         this.activity = activity;
         this.action = action;
@@ -330,6 +336,8 @@ public class Avatar extends Container implements UserMod {
         }
         result.addParameter("bodyType",     bodyType);
         result.addParameter("stun_count",   stun_count);
+        result.addParameter("curse_type",   curse_type);
+        result.addParameter("curse_count",  curse_count);
         result.addParameter("bankBalance",  bankBalance);
         result.addParameter("activity",     activity);
         result.addParameter("action",       action);
@@ -669,6 +677,13 @@ public class Avatar extends Container implements UserMod {
                     send_private_msg(from, this.noid, from, "SPEAK$", "Cannot contact " + name + ".");
                 }
             } else {
+                Avatar sender = avatar(from);
+                if(sender.curse_type == CURSE_SMILEY) {
+                    msg = " Have a nice day! "; 
+                }
+                else if (sender.curse_type == CURSE_FLY) {
+                    msg = buzzify(msg);
+                }
                 send_broadcast_msg(this.noid, "SPEAK$", msg);
                 inc_record(HS$talkcount);
             }
@@ -979,14 +994,114 @@ public class Avatar extends Container implements UserMod {
      * @param from
      *            User representing the connection making the request.
      */
-    @JSONMethod
-    public void TOUCH(User from) {
+    @JSONMethod({ "target" })
+    public void TOUCH(User from,  OptInteger target) {
+        Avatar curAvatar = avatar(from);
+        HabitatMod targetMod = current_region().noids[target.value(0)];
+        Avatar victim = (Avatar) targetMod;
+        
         if (amAGhost) { 
             illegal_request(from, "Avatar commands not allowed when a ghost.");
             return;
         }
-
-        unsupported_reply(from, noid, "Avatar.TOUCH not implemented yet.");
+        
+        if(!adjacent(victim, from)){
+            send_reply_error(from);
+            return;
+        }
+        
+        
+        send_neighbor_msg(from, noid, "POSTURE$", "new_posture", AV_ACT_hand_out);
+        send_private_msg(from, noid, from, "SPEAK$", "Gotcha!");
+        send_private_msg(from, noid, victim.elko_user(), "SPEAK$", "Gotcha");
+        send_reply_success(from);
+        if (curAvatar.curse_type != 0){
+            curse_touch(curAvatar, victim);
+        }
+        else if (victim.curse_type != 0){
+            curse_touch(victim, curAvatar);
+        }
+        
+        
+    }
+    
+    public void curse_touch(Avatar curseGiver, Avatar victim){
+        //Return if the victim is already cursed or immune 
+        if (victim.curse_type != CURSE_NONE || victim.nitty_bits[CURSE_IMMUNITY_BIT]){
+            return; 
+        }
+        
+        if (curseGiver.curse_type == CURSE_COOTIES || curseGiver.curse_type == CURSE_SMILEY || curseGiver.curse_type == CURSE_MUTANT){
+            trace_msg(curseGiver.elko_user().name() + " has cursed " + victim.elko_user().name());
+            activate_head_curse(victim, curseGiver.curse_type);
+        }
+        
+        curseGiver.curse_count = curseGiver.curse_count - 1;
+        if (curseGiver.curse_count <= 0){
+           activate_head_curse(curseGiver, CURSE_NONE); 
+        }
+    }
+    
+    public void activate_head_curse(Avatar victim, int curse){
+        HabitatMod curHeadObj = victim.contents(Avatar.HEAD);
+        Head curHead = (Head) curHeadObj;
+        if(victim.curse_type == curse || curHead == null) {
+            return;
+        }
+        
+        victim.true_head_style = curHead.style;
+        victim.curse_type = curse;
+        switch(curse) {
+        case CURSE_FLY: //Unlike the other curses this one doesn't spread
+            curHead.style = HEAD_FLY;
+            victim.curse_count = 0; 
+            break;
+        case CURSE_COOTIES:
+           curHead.style = HEAD_COOTIE;
+           victim.curse_count = 1;
+           break;
+        case CURSE_SMILEY:
+           curHead.style = HEAD_SMILEY;
+           victim.curse_count = 2;
+           break;
+        case CURSE_MUTANT:
+           curHead.style = HEAD_MUTANT;
+           victim.curse_count = 32767;
+           break;
+        case CURSE_NONE:
+           curHead.style = curHead.true_head;
+           victim.curse_count = 0;
+           victim.nitty_bits[CURSE_IMMUNITY_BIT] = true;
+           break;
+        }
+       
+        curHead.gen_flags[MODIFIED] = true;
+        checkpoint_object(curHead);  
+        victim.send_goaway_msg(curHead.noid);
+        destroy_object(curHead);
+        Item item = create_object("Eww! Cooties!", curHead, victim, false);
+        victim.current_region().announce_object(item, victim);
+    }
+    
+    public static String buzzify(String text){
+        StringBuilder sb = new StringBuilder();
+        char[] ar = text.toCharArray();
+        if(ar.length <= 4) {
+            return "Bzzz";
+        }
+        
+        sb.append("B");
+        for(int i = 1; i <= ar.length-1; i++) {
+            if(ar[i] >= 'A' && ar[i] <= 'Z') {
+                sb.append("Z");
+            }
+            else if(ar[i] == ' '){
+                sb.append(" b");
+            }
+            else
+                sb.append("z");
+        }
+        return sb.toString();
     }
 
     /**
@@ -2024,7 +2139,7 @@ public class Avatar extends Container implements UserMod {
                 destroy_object(mod);
                 didDelete = true;
                 avatar.current_region().modify_variable(victim, modAnimation, C64_GR_STATE_OFFSET, 1);
-                Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false);
+                Head skull = new Head(18, modAnimation.x+2, modAnimation.y+10, 0, 0, false, 18);
                 Item item = create_object("Mistakes were made.", skull, null, false);
                 avatar.current_region().announce_object(item, avatar.current_region()); //
                 Region.tellEveryone("The dark sky quickly dissipates.");
