@@ -1,0 +1,42 @@
+[
+  {
+    "type" : "user",
+    "ref" : "user-phil",
+    "name" : "Phil",
+    "mods" : [ {
+      "type" : "Avatar",
+      "x" : 100,
+      "y" : 130,
+      "bodyType" : "male",
+      "bankBalance" : 50000,
+      "custom" : [ 17, 151 ],
+      "nitty_bits" : 8
+    } ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-phil.head",
+    "name" : "Steve's Head",
+    "in" : "user-phil",
+    "mods" : [ {
+      "type" : "Head",
+      "style" : 28,
+      "orientation" : 16,
+      "y" : 6
+    } ]
+  },
+  {
+    "type" : "item",
+    "ref" : "item-phil.godtool",
+    "name" : "Tool to rule the universe.",
+    "in" : "user-phil",
+    "mods" : [ {
+      "type" : "Knick_knack",
+      "style" : 2,
+      "y" : 2,
+      "orientation" : 8,
+      "magic_type" : 17,
+      "charges" : 255
+    } ]
+  }
+]
