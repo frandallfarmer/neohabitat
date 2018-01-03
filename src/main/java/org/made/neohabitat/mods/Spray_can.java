@@ -62,7 +62,7 @@ public class Spray_can extends HabitatMod implements Copyable {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "charge" })
     public Spray_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
-    		OptInteger charge) {
+            OptInteger charge) {
         super(style, x, y, orientation, gr_state, restricted);
         this.charge = charge.value(100);
     }
@@ -105,7 +105,7 @@ public class Spray_can extends HabitatMod implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
 
     @JSONMethod({ "limb" })
@@ -167,15 +167,15 @@ public class Spray_can extends HabitatMod implements Copyable {
         // Tells the Avatar's client whether the spray was a success and what the Avatar's new custom[] is.
         send_reply_msg(from, noid,
             "SPRAY_SUCCESS", success ? TRUE : FALSE,
-        	"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
-        	"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
+            "SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
+            "SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
         
         if (success) {
             // The spray succeeded, so tells the Avatar's neighbors about the change and handles charge reduction.
-        	this.send_neighbor_msg(from, noid, "SPRAY$",
-        		"SPRAY_SPRAYEE", curAvatar.noid,
-        		"SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
-        		"SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
+            this.send_neighbor_msg(from, noid, "SPRAY$",
+                "SPRAY_SPRAYEE", curAvatar.noid,
+                "SPRAY_CUSTOMIZE_0", curAvatar.custom[0],
+                "SPRAY_CUSTOMIZE_1", curAvatar.custom[1]);
             charge--;
             curAvatar.inc_record(HS$body_changes);
             gen_flags[MODIFIED] = true;

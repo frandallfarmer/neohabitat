@@ -16,32 +16,32 @@ import org.elkoserver.json.JSONLiteral;
  */
 public abstract class Coinop extends HabitatMod {
 
-	public boolean changeable() { return true; }
+    public boolean changeable() { return true; }
 
-	/** A server-only field. How many tokens has this coin operated device taken in? */
-	protected int take = 0;
+    /** A server-only field. How many tokens has this coin operated device taken in? */
+    protected int take = 0;
 
-	public Coinop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-			OptInteger take) {
-		super(style, x, y, orientation, gr_state, restricted);
-		this.take = take.value(0);
-	}
+    public Coinop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+            OptInteger take) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.take = take.value(0);
+    }
 
-	public Coinop(int style, int x, int y, int orientation, int gr_state, boolean restricted, int take) {
-		super(style, x, y, orientation, gr_state, restricted);
-		this.take = take;
-	}
-	
-	public JSONLiteral encodeCoinop(JSONLiteral result) {
-		result = super.encodeCommon(result);
-		if (result.control().toRepository()) {
-			result.addParameter("take", take);
-		}
-		return result;
-	}
-	
-	public void addToTake(int amount) {
-		take += amount;
-		gen_flags[MODIFIED] = true;	
-	}
+    public Coinop(int style, int x, int y, int orientation, int gr_state, boolean restricted, int take) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.take = take;
+    }
+    
+    public JSONLiteral encodeCoinop(JSONLiteral result) {
+        result = super.encodeCommon(result);
+        if (result.control().toRepository()) {
+            result.addParameter("take", take);
+        }
+        return result;
+    }
+    
+    public void addToTake(int amount) {
+        take += amount;
+        gen_flags[MODIFIED] = true; 
+    }
 }

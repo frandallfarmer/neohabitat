@@ -46,7 +46,9 @@ public class Teleport extends Teleporter implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
@@ -88,13 +90,13 @@ public class Teleport extends Teleporter implements Copyable {
     public void PAY(User from) {
         int success = FALSE;
         if (activeState == PORT_READY) {
-            Avatar	avatar = (Avatar) from.getMod(Avatar.class);
+            Avatar  avatar = (Avatar) from.getMod(Avatar.class);
             success = Tokens.spend(from, TELEPORT_COST, Tokens.CLIENT_DESTROYS_TOKEN);
             if (success == TRUE) {
                 addToTake(TELEPORT_COST);
-                activeState			= PORT_ACTIVE;
-                gr_state			= PORT_ACTIVE;
-                gen_flags[MODIFIED]	= true;
+                activeState         = PORT_ACTIVE;
+                gr_state            = PORT_ACTIVE;
+                gen_flags[MODIFIED] = true;
                 send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, PORT_ACTIVE);
                 send_neighbor_msg(from, noid, "PAYTO$", "payer", avatar.noid, "amount_lo", TELEPORT_COST, "amount_hi", 0);
             } else {

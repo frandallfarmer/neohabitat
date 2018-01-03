@@ -45,7 +45,9 @@ public class Coke_machine extends Coinop implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
@@ -73,21 +75,21 @@ public class Coke_machine extends Coinop implements Copyable {
         return result;
     }
     
-    static final int	COKE_COST	= 5;			// Coke costs a nickel.
+    static final int    COKE_COST   = 5;    // Coke costs a nickel.
     
     @JSONMethod
     public void PAY(User from) {
-    	Avatar	avatar = (Avatar) from.getMod(Avatar.class);
-    	int		success = Tokens.spend(from, COKE_COST, Tokens.CLIENT_DESTROYS_TOKEN);
-    	if (success == TRUE) {
-    		addToTake(COKE_COST);
-    		send_neighbor_msg(from, noid, "PAY$",
+        Avatar  avatar = (Avatar) from.getMod(Avatar.class);
+        int     success = Tokens.spend(from, COKE_COST, Tokens.CLIENT_DESTROYS_TOKEN);
+        if (success == TRUE) {
+            addToTake(COKE_COST);
+            send_neighbor_msg(from, noid, "PAY$",
                 "amount_lo", COKE_COST,
                 "amount_hi", 0);
-    		send_neighbor_msg(from, avatar.noid, "POSTURE$", "new_posture", OPERATE);
-    	} else {
-    		object_say(from,  "You don't have enough money.  A Choke costs $" +  COKE_COST +  ".");
-    	}
-    	this.send_reply_msg(from, noid, "err", success, "amount_lo", COKE_COST, "amount_hi", 0);
+            send_neighbor_msg(from, avatar.noid, "POSTURE$", "new_posture", OPERATE);
+        } else {
+            object_say(from,  "You don't have enough money.  A Choke costs $" +  COKE_COST +  ".");
+        }
+        this.send_reply_msg(from, noid, "err", success, "amount_lo", COKE_COST, "amount_hi", 0);
     }
 }

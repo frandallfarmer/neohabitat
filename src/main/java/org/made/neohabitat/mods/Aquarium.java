@@ -55,7 +55,7 @@ public class Aquarium extends HabitatMod implements Copyable {
     }
     
     /** The current state of being fed */
-    private	int	fed = TRUE;
+    private int fed = TRUE;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "fed" })
     public Aquarium(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
@@ -91,7 +91,7 @@ public class Aquarium extends HabitatMod implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
 
 
@@ -107,6 +107,6 @@ public class Aquarium extends HabitatMod implements Copyable {
      */
     @JSONMethod
     public void FEED(User from) {
-		illegal(from, this.HabitatModName() + ".FEED");
+        illegal(from, this.HabitatModName() + ".FEED");
     }
 }

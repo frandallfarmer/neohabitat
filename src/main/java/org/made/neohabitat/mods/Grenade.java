@@ -23,90 +23,90 @@ import org.made.neohabitat.Weapon;
 
 public class Grenade extends Weapon implements Copyable {
 
-	@Override
-	public int HabitatClass() {
-	    return CLASS_GRENADE;
-	}
+    @Override
+    public int HabitatClass() {
+        return CLASS_GRENADE;
+    }
 
-	@Override
-	public String HabitatModName() {
-	    return "Grenade";
-	}
+    @Override
+    public String HabitatModName() {
+        return "Grenade";
+    }
 
-	@Override
-	public int capacity() {
-	    return 0;
-	}
+    @Override
+    public int capacity() {
+        return 0;
+    }
 
-	@Override
-	public int pc_state_bytes() {
-	    return 1;
-	}
+    @Override
+    public int pc_state_bytes() {
+        return 1;
+    }
 
-	@Override
-	public boolean known() {
-	    return true;
-	}
+    @Override
+    public boolean known() {
+        return true;
+    }
 
-	@Override
-	public boolean opaque_container() {
-	    return false;
-	}
+    @Override
+    public boolean opaque_container() {
+        return false;
+    }
 
-	@Override
-	public boolean filler() {
-	    return false;
-	}
+    @Override
+    public boolean filler() {
+        return false;
+    }
 
-	public int success;
-	public int pinpulled = FALSE;
-	private User grenadeHolder;
+    public int success;
+    public int pinpulled = FALSE;
+    private User grenadeHolder;
 
-	@JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "pinpulled" })
-	public Grenade(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
-	    OptInteger pinpulled) {
-	    super(style, x, y, orientation, gr_state, restricted);
-	    this.pinpulled = pinpulled.value(0);
-	}
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "pinpulled" })
+    public Grenade(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
+        OptInteger pinpulled) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.pinpulled = pinpulled.value(0);
+    }
 
-	public Grenade(int style, int x, int y, int orientation, int gr_state, boolean restricted, int pinpulled) {
-	    super(style, x, y, orientation, gr_state, restricted);
-	    this.pinpulled = pinpulled;
-	}
+    public Grenade(int style, int x, int y, int orientation, int gr_state, boolean restricted, int pinpulled) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.pinpulled = pinpulled;
+    }
 
-	@Override
-	public HabitatMod copyThisMod() {
+    @Override
+    public HabitatMod copyThisMod() {
         return new Grenade(style, x, y, orientation, gr_state, restricted, pinpulled);
-	}
+    }
 
-	@Override
-	public JSONLiteral encode(EncodeControl control) {
-	    JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
-	    result.addParameter("pinpulled", pinpulled);
-	    result.finish();
-	    return result;
-	}
+    @Override
+    public JSONLiteral encode(EncodeControl control) {
+        JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
+        result.addParameter("pinpulled", pinpulled);
+        result.finish();
+        return result;
+    }
 
-	@JSONMethod
-	public void HELP(User from) {
-	    grenade_HELP(from);
-	}
+    @JSONMethod
+    public void HELP(User from) {
+        grenade_HELP(from);
+    }
 
-	@JSONMethod
-	public void GET(User from) {
-	    generic_GET(from);
-	}
+    @JSONMethod
+    public void GET(User from) {
+        generic_GET(from);
+    }
 
-	@JSONMethod({ "containerNoid", "x", "y", "orientation" })
-	public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
-	    generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
+    @JSONMethod({ "containerNoid", "x", "y", "orientation" })
+    public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
+        generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
                 orientation.value(avatar(from).orientation));
-	}
+    }
 
-	@JSONMethod({ "target", "x", "y" })
-	public void THROW(User from, int target, int x, int y) {
-	    generic_THROW(from, target, x, y);    
-	}
+    @JSONMethod({ "target", "x", "y" })
+    public void THROW(User from, int target, int x, int y) {
+        generic_THROW(from, target, x, y);    
+    }
 
     @JSONMethod
     public void PULLPIN(User from) {
@@ -132,10 +132,10 @@ public class Grenade extends Weapon implements Copyable {
     }
 
     public void grenade_HELP(User from) {
-	    if(pinpulled != TRUE){
+        if(pinpulled != TRUE){
             send_reply_msg(from, "Grenade: Select DO (while holding) to pull pin, then throw to ground and leave the region quickly.");
-	    }
-	    else
+        }
+        else
             send_reply_msg(from, "Grenade: Pin pulled! Run away now!!!");
     } 
     

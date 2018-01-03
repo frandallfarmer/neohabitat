@@ -46,7 +46,9 @@ public class Elevator extends Teleporter implements Copyable {
         return false;
     }
 
-	public boolean  changeable		 () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;

@@ -44,7 +44,9 @@ public class Sky extends HabitatMod implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
