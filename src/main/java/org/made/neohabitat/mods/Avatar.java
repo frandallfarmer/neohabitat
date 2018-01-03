@@ -1005,6 +1005,12 @@ public class Avatar extends Container implements UserMod {
             return;
         }
         
+        if(!adjacent(victim, from)){
+            send_reply_error(from);
+            return;
+        }
+        
+        
         send_neighbor_msg(from, noid, "POSTURE$", "new_posture", AV_ACT_hand_out);
         send_private_msg(from, noid, from, "SPEAK$", "Gotcha!");
         send_private_msg(from, noid, victim.elko_user(), "SPEAK$", "Gotcha");
@@ -1015,6 +1021,8 @@ public class Avatar extends Container implements UserMod {
         else if (victim.curse_type != 0){
             curse_touch(victim, curAvatar);
         }
+        
+        
     }
     
     public void curse_touch(Avatar curseGiver, Avatar victim){
