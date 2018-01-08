@@ -814,6 +814,14 @@ this.translate = {
 				b.add(o.ATTACK_target);
 			}
 		},
+		TOUCH: {
+			toServer: function(a,m) {
+				m.target = a[0];
+			},
+			toClient: function(o, b) {
+				b.add(o.err);
+			}
+		},
 		TAKE: {
  			toClient: function(o, b) {
  				b.add(o.TAKE_SUCCESS);
