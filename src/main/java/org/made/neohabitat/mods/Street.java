@@ -43,7 +43,9 @@ public class Street extends HabitatMod implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
@@ -87,6 +89,6 @@ public class Street extends HabitatMod implements Copyable {
     @Override
     @JSONMethod
     public void HELP(User from) {
-	   current_region().describeRegion(from, noid); 	        
+       current_region().describeRegion(from, noid);             
     } 
 }

@@ -19,18 +19,18 @@ import org.made.neohabitat.Seating;
  */
 public class Chair extends Seating implements Copyable {
 
-    public int		HabitatClass 	 () { return CLASS_CHAIR; }
-    public String	HabitatModName	 () { return "Chair"; }
-    public int		capacity 		 () { return 1; }
-    public int		pc_state_bytes 	 () { return 0; };
-    public boolean	known 			 () { return true; }
-    public boolean	opaque_container () { return false; }
-	public boolean  changeable		 () { return true; }
-    public boolean	filler 			 () { return false; }
+    public int      HabitatClass     () { return CLASS_CHAIR; }
+    public String   HabitatModName   () { return "Chair"; }
+    public int      capacity         () { return 1; }
+    public int      pc_state_bytes   () { return 0; };
+    public boolean  known            () { return true; }
+    public boolean  opaque_container () { return false; }
+    public boolean  changeable       () { return true; }
+    public boolean  filler           () { return false; }
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags"})
     public Chair(OptInteger style, OptInteger x, OptInteger y,OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
-    		OptInteger open_flags) {
+            OptInteger open_flags) {
         super(style, x, y, orientation, gr_state, restricted, open_flags);
     }
 

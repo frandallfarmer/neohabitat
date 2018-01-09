@@ -62,19 +62,19 @@ public class Tokens extends HabitatMod implements Copyable {
      * @return
      */
     public int tget() {
-    	return denom_hi * 256 + denom_lo;
+        return denom_hi * 256 + denom_lo;
     }
     
     public void tset(int amount) {
-    	denom_lo = amount % 256;
-    	denom_hi = (amount - denom_lo) / 256 ;
-    	gen_flags[MODIFIED] = true;
-    	checkpoint_object(this);
+        denom_lo = amount % 256;
+        denom_hi = (amount - denom_lo) / 256 ;
+        gen_flags[MODIFIED] = true;
+        checkpoint_object(this);
     }
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "denom_lo", "denom_hi" })
     public Tokens(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-    		int denom_lo, int denom_hi) {
+            int denom_lo, int denom_hi) {
         super(style, x, y, orientation, gr_state, restricted);
         setTokensState(denom_lo, denom_hi);
 
@@ -106,7 +106,7 @@ public class Tokens extends HabitatMod implements Copyable {
     
     @JSONMethod
     public void HELP(User from) {
-    	this.send_reply_msg(from, "$" + tget() + " token.  Choose DO to make change (remainder will be put back in your pocket)." );
+        this.send_reply_msg(from, "$" + tget() + " token.  Choose DO to make change (remainder will be put back in your pocket)." );
     }
     
     @JSONMethod
@@ -117,7 +117,7 @@ public class Tokens extends HabitatMod implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }        
 
     @JSONMethod({ "target", "x", "y" })
@@ -127,48 +127,48 @@ public class Tokens extends HabitatMod implements Copyable {
     
     @JSONMethod ({"target_id", "amount_lo", "amount_hi" })
     public void PAYTO(User from, int target_id, int amount_lo, int amount_hi) {
-    	int			amount		= amount_lo + amount_hi * 256;
-    	int			old_amount	= tget();
-    	HabitatMod	target  	= current_region().noids[target_id];
-    	if (target.HabitatClass() == CLASS_AVATAR) {
-    		Avatar payer	= avatar(from);
-    		Avatar other	= (Avatar) target;
-    		if (this.empty_handed(other)) {
-    			if (spend(amount, SERVER_DESTROYS_TOKEN) == TRUE) {
-    				Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, false, amount_lo, amount_hi);
-    				Item item = create_object("money", tokens, other, false);
-    				if (item == null) {
-    					send_reply_err(from, noid, BOING_FAILURE);
-    					return;
-    				}
-    				JSONLiteral itemLiteral = item.encode(EncodeControl.forClient);
-    				// Tell the neighbors about the new tokens and how to deduct the giver
-    				JSONLiteral msg = new_neighbor_msg(other.noid, "PAID$");
-    				msg.addParameter("payer", 		payer.noid);
-    		        msg.addParameter("amount_lo",	amount_lo);
-    		        msg.addParameter("amount_hi",	amount_hi);
-    		        msg.addParameter("container",   other.object().ref());
-    		        msg.addParameter("object",		itemLiteral);
-    		        msg.finish();
-    		        context().sendToNeighbors(from, msg);
-    		        // Reply including the new tokens
-    		        msg = new_reply_msg(noid);
-    		        msg.addParameter("success",		TRUE);
-    		        msg.addParameter("amount_lo",	amount_lo);
-    		        msg.addParameter("amount_hi",	amount_hi);
-    		        msg.addParameter("container",   other.object().ref());
-    		        msg.addParameter("object",		itemLiteral);
-    		        msg.finish();
-    		        from.send(msg);
-    				if (old_amount == amount) {
-    					send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", noid);
-    					destroy_object(this);
-    				}
-    				return;
-    			}
-    		}
-    	}
-    	send_reply_error(from);
+        int         amount      = amount_lo + amount_hi * 256;
+        int         old_amount  = tget();
+        HabitatMod  target      = current_region().noids[target_id];
+        if (target.HabitatClass() == CLASS_AVATAR) {
+            Avatar payer    = avatar(from);
+            Avatar other    = (Avatar) target;
+            if (this.empty_handed(other)) {
+                if (spend(amount, SERVER_DESTROYS_TOKEN) == TRUE) {
+                    Tokens tokens = new Tokens(0, 0, HANDS, 0, 0, false, amount_lo, amount_hi);
+                    Item item = create_object("money", tokens, other, false);
+                    if (item == null) {
+                        send_reply_err(from, noid, BOING_FAILURE);
+                        return;
+                    }
+                    JSONLiteral itemLiteral = item.encode(EncodeControl.forClient);
+                    // Tell the neighbors about the new tokens and how to deduct the giver
+                    JSONLiteral msg = new_neighbor_msg(other.noid, "PAID$");
+                    msg.addParameter("payer",       payer.noid);
+                    msg.addParameter("amount_lo",   amount_lo);
+                    msg.addParameter("amount_hi",   amount_hi);
+                    msg.addParameter("container",   other.object().ref());
+                    msg.addParameter("object",      itemLiteral);
+                    msg.finish();
+                    context().sendToNeighbors(from, msg);
+                    // Reply including the new tokens
+                    msg = new_reply_msg(noid);
+                    msg.addParameter("success",     TRUE);
+                    msg.addParameter("amount_lo",   amount_lo);
+                    msg.addParameter("amount_hi",   amount_hi);
+                    msg.addParameter("container",   other.object().ref());
+                    msg.addParameter("object",      itemLiteral);
+                    msg.finish();
+                    from.send(msg);
+                    if (old_amount == amount) {
+                        send_neighbor_msg(from, THE_REGION, "GOAWAY_$", "target", noid);
+                        destroy_object(this);
+                    }
+                    return;
+                }
+            }
+        }
+        send_reply_error(from);
     } 
 
     @JSONMethod ({"amount_lo", "amount_hi"})
@@ -235,7 +235,7 @@ public class Tokens extends HabitatMod implements Copyable {
     }
 
     
-    public static final boolean	CLIENT_DESTROYS_TOKEN = true;
+    public static final boolean CLIENT_DESTROYS_TOKEN = true;
     public static final boolean SERVER_DESTROYS_TOKEN = false;
     
     /** 
@@ -246,16 +246,16 @@ public class Tokens extends HabitatMod implements Copyable {
      * @return
      */
     public int spend(int amount, boolean destroy) {
-		int tvalue = tget();
-		if (tvalue >= amount) {
-			tvalue -= amount;
-			tset(tvalue);
-			if (destroy && tvalue == 0) {
-				destroy_object(this);		// does not inform client.
-			}
-			return TRUE;
-		}
-		return FALSE;
+        int tvalue = tget();
+        if (tvalue >= amount) {
+            tvalue -= amount;
+            tset(tvalue);
+            if (destroy && tvalue == 0) {
+                destroy_object(this);       // does not inform client.
+            }
+            return TRUE;
+        }
+        return FALSE;
     }
     
     /** 
@@ -268,12 +268,12 @@ public class Tokens extends HabitatMod implements Copyable {
      * @return
      */
     public static int spend(User from, int amount, boolean destroy) {
-    	Avatar avatar = (Avatar) from.getMod(Avatar.class);
-    	HabitatMod held = avatar.heldObject();
-    	if (held.HabitatClass() == CLASS_TOKENS) {
-    		Tokens tokens= (Tokens) held;
-    		return tokens.spend(amount, destroy);
-    	}
-    	return FALSE;    	
+        Avatar avatar = (Avatar) from.getMod(Avatar.class);
+        HabitatMod held = avatar.heldObject();
+        if (held.HabitatClass() == CLASS_TOKENS) {
+            Tokens tokens= (Tokens) held;
+            return tokens.spend(amount, destroy);
+        }
+        return FALSE;       
     }
 }

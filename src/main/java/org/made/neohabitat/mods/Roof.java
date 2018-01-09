@@ -42,28 +42,28 @@ public class Roof extends HabitatMod implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable       () { return true; }
 
     public boolean filler() {
         return false;
     }
     
-    private	int	base	= 0;
-    private int pattern	= 0;
+    private int base    = 0;
+    private int pattern = 0;
    
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "base", "pattern" })
     public Roof(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger base, OptInteger pattern) {
         super(style, x, y, orientation, gr_state, restricted);
-        this.base		= base.value(0);
-        this.pattern	= pattern.value(0);
+        this.base       = base.value(0);
+        this.pattern    = pattern.value(0);
     }
 
     public Roof(int style, int x, int y, int orientation, int gr_state, boolean restricted, int base, int pattern) {
         super(style, x, y, orientation, gr_state, restricted);
-        this.base		= base;
-        this.pattern	= pattern;
+        this.base       = base;
+        this.pattern    = pattern;
     }
 
     @Override

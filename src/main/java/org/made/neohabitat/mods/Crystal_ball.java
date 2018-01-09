@@ -72,19 +72,19 @@ public class Crystal_ball extends Oracular implements Copyable {
         return result;
     }
 
-	/**
-	 * Verb (Specific): TODO Ask of the Oracle!
-	 * 
-	 * @param from
-	 *            User representing the connection making the request.
-	 * @param text
-	 *            The string to ask!
-	 */
+    /**
+     * Verb (Specific): TODO Ask of the Oracle!
+     * 
+     * @param from
+     *            User representing the connection making the request.
+     * @param text
+     *            The string to ask!
+     */
     @Override
-	@JSONMethod({ "text" })
-	public void ASK(User from, OptString text) {
-		generic_ASK(from, text);
-	}
+    @JSONMethod({ "text" })
+    public void ASK(User from, OptString text) {
+        generic_ASK(from, text);
+    }
 
 
     @JSONMethod

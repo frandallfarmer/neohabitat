@@ -17,8 +17,8 @@ import org.elkoserver.json.JSONLiteral;
  * by other operations.
  */
 public abstract class Massive extends HabitatMod {
-	
-	public boolean  changeable		 () { return (mass != 0); } // May only change things that are too heavy to carry.
+    
+    public boolean  changeable       () { return (mass != 0); } // May only change things that are too heavy to carry.
     
     /** The weight of this object - only ever 1 (immobile) or 0 (portable) */
     protected int mass = 0;
@@ -71,7 +71,7 @@ public abstract class Massive extends HabitatMod {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
     
     /**

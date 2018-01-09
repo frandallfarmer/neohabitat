@@ -543,7 +543,7 @@ public class Paper extends HabitatMod implements Copyable {
                 int i = 0;
                 for (; chars.hasNext(); i++) {
                     int c = ((Long) chars.next()).intValue();
-					if (c == 0) {
+                    if (c == 0) {
                         break;
                     }
                     ascii[i] = c;
@@ -586,7 +586,7 @@ public class Paper extends HabitatMod implements Copyable {
             int i = 0;
             for (; chars.hasNext(); i++) {
                 int c = ((Long) chars.next()).intValue();
-				if (c == 0) {
+                if (c == 0) {
                     break;
                 }
                 ascii[i] = c;

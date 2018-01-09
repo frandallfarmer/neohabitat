@@ -66,9 +66,9 @@ public abstract class Openable extends Container {
     }
     
     protected void setOpenableState(int open_flags) {
-    	if (open_flags != -1) {
-    		setOpenableState(unpackBits(open_flags));
-    	}    
+        if (open_flags != -1) {
+            setOpenableState(unpackBits(open_flags));
+        }    
     }
     
     protected void setOpenableState(boolean[] open_flags) {
@@ -185,18 +185,18 @@ public abstract class Openable extends Container {
     public void OPENCONTAINER(User from) {
         /** Was generic_OPENCONTAINER */
         HabitatMod held = heldObject(from);
-        Region region	= current_region();
+        Region region   = current_region();
         boolean have_key = (held != null) && (held.HabitatClass() == CLASS_KEY)
                 && (((Key) held).key_number_hi == key_hi) && (((Key) held).key_number_lo == key_lo);
         if (!open_flags[OPEN_BIT] && // OPEN
                 (have_key || open_flags[UNLOCKED_BIT]) &&   // Holding Key or UNLOCKED
                 container().noid == THE_REGION) {           // AND in the REGION alone.
-        	if (region.space_usage + AVERAGE_C64_OBJ_LOAD * capacity() >= C64_HEAP_SIZE) {		
-        		// TODO Best guess. No science behind this. FRF
+            if (region.space_usage + AVERAGE_C64_OBJ_LOAD * capacity() >= C64_HEAP_SIZE) {      
+                // TODO Best guess. No science behind this. FRF
                 object_say(from, noid, "There is too much stuff in this region.");
                 send_reply_error(from);
                 return;
-        	}
+            }
             open_flags[OPEN_BIT] = true;
             open_flags[UNLOCKED_BIT] = true;
             gr_state = 1;

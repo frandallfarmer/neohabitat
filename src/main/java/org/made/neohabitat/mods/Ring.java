@@ -67,7 +67,7 @@ public class Ring extends Magical implements Copyable {
     }
 
     public Ring(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
-    	int magic_type, int charges,
+        int magic_type, int charges,
         int magic_data, int magic_data2, int magic_data3, int magic_data4, int magic_data5) {
         super(style, x, y, orientation, gr_state, restricted, magic_type, charges, magic_data, magic_data2, magic_data3,
                 magic_data4, magic_data5);
@@ -76,7 +76,7 @@ public class Ring extends Magical implements Copyable {
     @Override
     public HabitatMod copyThisMod() {
         return new Ring(style, x, y, orientation, gr_state, restricted,
-        	magic_type, charges, magic_data, magic_data2, magic_data3, magic_data4, magic_data5);
+            magic_type, charges, magic_data, magic_data2, magic_data3, magic_data4, magic_data5);
     }
 
     @Override

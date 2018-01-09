@@ -18,7 +18,7 @@ import org.made.neohabitat.mods.Region;
  */
 public abstract class Teleporter extends Coinop {
 
-	public boolean changeable() { return true; }
+    public boolean changeable() { return true; }
 
     public static final int TELEPORT_COST = 10;
     public static final int PORT_READY    = 0;
@@ -67,24 +67,24 @@ public abstract class Teleporter extends Coinop {
         } else {
             Avatar avatar = avatar(from);
             if (adjacent(avatar, from) &&
-            		(activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
-            	if (Region.IsRoomForMyAvatarIn(destination, from)) {
-            		send_reply_success(from);
-            		avatar.inc_record(HS$teleports);
-                	// Moved arrival positioning logic to avatar.objectIsComplete
-            		goto_new_region(avatar, destination, EAST, TELEPORT_ENTRY, x, y);
-            		send_neighbor_msg(from, noid, "ZAPTO$");
-            		if (HabitatClass() == CLASS_TELEPORT) {
-            			activeState			= PORT_READY;
-            			gr_state			= PORT_READY;
-            			gen_flags[MODIFIED]	= true;
-            			send_neighbor_fiddle_msg(from, THE_REGION, noid, C64_GR_STATE_OFFSET, PORT_READY);
-            		}
-            	} else {
-            		object_say(from, "Flash crowd detected at that destination. Try a different location.");
+                    (activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
+                if (Region.IsRoomForMyAvatarIn(destination, from)) {
+                    send_reply_success(from);
+                    avatar.inc_record(HS$teleports);
+                    // Moved arrival positioning logic to avatar.objectIsComplete
+                    goto_new_region(avatar, destination, EAST, TELEPORT_ENTRY, x, y);
+                    send_neighbor_msg(from, noid, "ZAPTO$");
+                    if (HabitatClass() == CLASS_TELEPORT) {
+                        activeState         = PORT_READY;
+                        gr_state            = PORT_READY;
+                        gen_flags[MODIFIED] = true;
+                        send_neighbor_fiddle_msg(from, THE_REGION, noid, C64_GR_STATE_OFFSET, PORT_READY);
+                    }
+                } else {
+                    object_say(from, "Flash crowd detected at that destination. Try a different location.");
                     send_reply_error(from);
-            	}
-            	return;
+                }
+                return;
             }
         }
         send_reply_error(from);

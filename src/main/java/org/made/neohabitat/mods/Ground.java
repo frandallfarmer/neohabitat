@@ -43,8 +43,8 @@ public class Ground extends Walkable implements Copyable {
         return true;
     }
     
-	public boolean  changeable		 () { return true; }
-	
+    public boolean  changeable       () { return true; }
+    
     public boolean opaque_container() {
         return false;
     }
@@ -78,6 +78,6 @@ public class Ground extends Walkable implements Copyable {
     
    @JSONMethod
     public void HELP(User from) {
-	   current_region().describeRegion(from, noid); 	        
+       current_region().describeRegion(from, noid);             
     }    
 }

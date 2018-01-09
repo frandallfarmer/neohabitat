@@ -53,8 +53,8 @@ public class Book extends Document implements Copyable {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "last_page", "pages", "ascii", "path", "title" })
     public Book(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-        int last_page, String pages[], int[][] ascii, OptString path, OptString title) {    	
-    	super(style, x, y, orientation, gr_state, restricted, last_page, pages, ascii, path);  		
+        int last_page, String pages[], int[][] ascii, OptString path, OptString title) {        
+        super(style, x, y, orientation, gr_state, restricted, last_page, pages, ascii, path);       
         this.title = title.value("");
     }
 
@@ -155,12 +155,12 @@ public class Book extends Document implements Copyable {
     }    
     @JSONMethod
     public void HELP(User from) {
-		send_reply_msg(from, "BOOK: DO while holding to read the book.");
-		object_say(from, noid, get_title_page(title, BOOK$HELP));
+        send_reply_msg(from, "BOOK: DO while holding to read the book.");
+        object_say(from, noid, get_title_page(title, BOOK$HELP));
     }
     
     public String book_vendo_info() {
-    	return get_title_page(title, BOOK$VENDO);
+        return get_title_page(title, BOOK$VENDO);
     }    
 
 

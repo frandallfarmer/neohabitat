@@ -49,7 +49,7 @@ public class Windup_toy extends HabitatMod implements Copyable {
     }
     
     /* The number of times this has been wound. */
-    private int	wind_level = 0;
+    private int wind_level = 0;
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "wind_level"})
     public Windup_toy(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
@@ -81,14 +81,14 @@ public class Windup_toy extends HabitatMod implements Copyable {
     
     @JSONMethod
     public void WIND(User from) {
-    	if (holding(avatar(from), this)) {
-    		wind_level = Math.min(wind_level + 1, 4);
-    		gr_state   = 1;
-    		gen_flags[MODIFIED] = true;
-    		send_neighbor_msg(from, noid, "WIND$");    		
-    	}
-    	this.send_reply_success(from);
-    	// Strangely, there is no "wrap around" for winding, so I decided that it would reset on object db load.
+        if (holding(avatar(from), this)) {
+            wind_level = Math.min(wind_level + 1, 4);
+            gr_state   = 1;
+            gen_flags[MODIFIED] = true;
+            send_neighbor_msg(from, noid, "WIND$");         
+        }
+        this.send_reply_success(from);
+        // Strangely, there is no "wrap around" for winding, so I decided that it would reset on object db load.
     }
 
     
@@ -101,7 +101,7 @@ public class Windup_toy extends HabitatMod implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
 
 
