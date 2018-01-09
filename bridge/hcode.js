@@ -1413,7 +1413,6 @@ this.translate = {
                 b.add(o.err);
             }
         }
->>>>>>> origin
 };
 
 this.portable = {
