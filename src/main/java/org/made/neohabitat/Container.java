@@ -95,8 +95,8 @@ public abstract class Container extends HabitatMod {
      *            User representing the connection making the request.
      */
     public void close_container(User from) {
-       	Region.removeContentsFromRegion(this);		// Do this Game Logic before any delete messages get sent...
-       	((Item) object()).closeContainer();			// Elko will really remove the instances  TODO: FRF Can this fail?
+        Region.removeContentsFromRegion(this);      // Do this Game Logic before any delete messages get sent...
+        ((Item) object()).closeContainer();         // Elko will really remove the instances  TODO: FRF Can this fail?
         /* Original code was in regionproc.pl1 - ELKO handles this now */
         // TODO Client Memory Management and several messages are missing from
         // this interim implementation
@@ -124,14 +124,14 @@ public abstract class Container extends HabitatMod {
      * @return
      */
     public boolean meetsOwnershipRestrictions(User from) {
-		Avatar avatar = (Avatar) avatar(from);
-		Region region = current_region();
-		if (!immobile(this) || !region.is_turf) { // Test only immobile containers in turfs.
-			return true;
-		}
-		if (region.resident.equals(avatar.object().baseRef())) {
-				return true;
-		}
-    	return false;
+        Avatar avatar = (Avatar) avatar(from);
+        Region region = current_region();
+        if (!immobile(this) || !region.is_turf) { // Test only immobile containers in turfs.
+            return true;
+        }
+        if (region.resident.equals(avatar.object().baseRef())) {
+                return true;
+        }
+        return false;
     }
 }

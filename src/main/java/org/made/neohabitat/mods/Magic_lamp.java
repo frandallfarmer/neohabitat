@@ -49,21 +49,21 @@ public class Magic_lamp extends Oracular implements Copyable {
     }
     
     /* Client shared state */
-    public int 	lamp_state	= 0;
+    public int  lamp_state  = 0;
     /* Client shared state */
-    public int 	wisher	= 0;
+    public int  wisher  = 0;
 
     /* Server only state */
-    public int		lampNoid	= UNASSIGNED_NOID;
-    public boolean	gaveWarning = false;
-    public User		wisherUser	= null;
+    public int      lampNoid    = UNASSIGNED_NOID;
+    public boolean  gaveWarning = false;
+    public User     wisherUser  = null;
     
     private static final int GENIE_TIMEOUT = 30; // seconds
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "live", "lamp_state", "wisher" })
     public Magic_lamp(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger live, OptInteger lamp_state, OptInteger wisher) {
-        super(style, x, y, orientation, new OptInteger(MAGIC_LAMP_WAITING), restricted, live);		// Reading from disk? Always reset.
+        super(style, x, y, orientation, new OptInteger(MAGIC_LAMP_WAITING), restricted, live);      // Reading from disk? Always reset.
         this.lamp_state = lamp_state.value(MAGIC_LAMP_WAITING);
         this.wisher = wisher.value(UNASSIGNED_NOID);
     }
@@ -90,64 +90,64 @@ public class Magic_lamp extends Oracular implements Copyable {
     
     @JSONMethod
     public void RUB(User from) {
-    	Avatar 	avatar = avatar(from);
-    	int		success = FALSE;
-    	String	genie_speech = "";
-    	
-    	if (holding(avatar, this) && lamp_state == MAGIC_LAMP_WAITING) {
-            lamp_state			= MAGIC_LAMP_GENIE;
-            gr_state			= MAGIC_LAMP_GENIE;
-            wisher				= avatar.noid;
-            success 			= TRUE;
-            lampNoid			= noid;
-            gaveWarning			= false;
-        	new Thread(Genie_Gets_Impatient).start();        	 
+        Avatar  avatar = avatar(from);
+        int     success = FALSE;
+        String  genie_speech = "";
+        
+        if (holding(avatar, this) && lamp_state == MAGIC_LAMP_WAITING) {
+            lamp_state          = MAGIC_LAMP_GENIE;
+            gr_state            = MAGIC_LAMP_GENIE;
+            wisher              = avatar.noid;
+            success             = TRUE;
+            lampNoid            = noid;
+            gaveWarning         = false;
+            new Thread(Genie_Gets_Impatient).start();            
             genie_speech = "Oh, Master " + avatar.object().name() + ", your wish is my command!";
             send_neighbor_msg(from, noid, "RUB$", "RUB_MESSAGE", genie_speech);
-    	}
-    	JSONLiteral msg = this.new_reply_msg(noid);
-    	msg.addParameter("RUB_SUCCESS", success);
-    	msg.addParameter("RUB_MESSAGE", genie_speech);
-    	msg.finish();
-    	from.send(msg);
+        }
+        JSONLiteral msg = this.new_reply_msg(noid);
+        msg.addParameter("RUB_SUCCESS", success);
+        msg.addParameter("RUB_MESSAGE", genie_speech);
+        msg.finish();
+        from.send(msg);
     }
 
     @JSONMethod({ "text" })
     public void WISH(User from, String text) {
-    	Avatar 	avatar = avatar(from);    	
-    	send_broadcast_msg(avatar.noid, "SPEAK$", "text", text);
-    	if (wisher == avatar.noid) {
-    		lampNoid = UNASSIGNED_NOID;
-    		message_to_god(this, avatar, text);
-    		send_broadcast_msg(noid, "WISH$", "WISH_MESSAGE", "Very well, I'll see what I can do.");
-    		destroy_object(this);
-    	} else {
-    		if (wisher != UNASSIGNED_NOID) {
-    			object_broadcast("Buzz off " + avatar.object().name()  + ", you creep!  It's not *your* wish.");
-    		}
-    	}
+        Avatar  avatar = avatar(from);      
+        send_broadcast_msg(avatar.noid, "SPEAK$", "text", text);
+        if (wisher == avatar.noid) {
+            lampNoid = UNASSIGNED_NOID;
+            message_to_god(this, avatar, text);
+            send_broadcast_msg(noid, "WISH$", "WISH_MESSAGE", "Very well, I'll see what I can do.");
+            destroy_object(this);
+        } else {
+            if (wisher != UNASSIGNED_NOID) {
+                object_broadcast("Buzz off " + avatar.object().name()  + ", you creep!  It's not *your* wish.");
+            }
+        }
     }
     
     protected Runnable Genie_Gets_Impatient = new Runnable() {
-    	@Override
-    	public void run() {
-    		try {
-    			Thread.sleep(GENIE_TIMEOUT * 1000);
-    			Magic_lamp lamp = (Magic_lamp) ((lampNoid == UNASSIGNED_NOID) ? null : current_region().noids[lampNoid]);
-    			if (null != lamp && CLASS_MAGIC_LAMP == lamp.HabitatClass()) {
-    				if (!gaveWarning) {
-    					object_broadcast("Come on now, I don't have all day!");
-    					gaveWarning = true;
-    					new Thread(Genie_Gets_Impatient).start();        	 
-    					return;
-    				}
-    				send_broadcast_msg(noid, "WISH$", "WISH_MESSAGE", "Sorry, I just don't have time for indecisiveness!");
-    				destroy_object(lamp);
-    			}
-    		} catch (Exception e) {
-    			trace_msg("Genie thread did not run to completion correctly. Something interrupted the flow.");
-    		}    		
-    	}
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(GENIE_TIMEOUT * 1000);
+                Magic_lamp lamp = (Magic_lamp) ((lampNoid == UNASSIGNED_NOID) ? null : current_region().noids[lampNoid]);
+                if (null != lamp && CLASS_MAGIC_LAMP == lamp.HabitatClass()) {
+                    if (!gaveWarning) {
+                        object_broadcast("Come on now, I don't have all day!");
+                        gaveWarning = true;
+                        new Thread(Genie_Gets_Impatient).start();            
+                        return;
+                    }
+                    send_broadcast_msg(noid, "WISH$", "WISH_MESSAGE", "Sorry, I just don't have time for indecisiveness!");
+                    destroy_object(lamp);
+                }
+            } catch (Exception e) {
+                trace_msg("Genie thread did not run to completion correctly. Something interrupted the flow.");
+            }           
+        }
     };
 
     @JSONMethod

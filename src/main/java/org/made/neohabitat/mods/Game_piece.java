@@ -47,8 +47,8 @@ public class Game_piece extends HabitatMod implements Copyable {
         return false;
     }
     
-    public static final int CHECKER_PIECE	= 6;
-    public static final int CHECKER_KING	= 7;
+    public static final int CHECKER_PIECE   = 6;
+    public static final int CHECKER_KING    = 7;
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
     public Game_piece(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
@@ -81,7 +81,7 @@ public class Game_piece extends HabitatMod implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
 
 
@@ -92,23 +92,23 @@ public class Game_piece extends HabitatMod implements Copyable {
     
     @JSONMethod
     public void HELP(User from) {
-    	String msg = "Game piece: GET brings it to you. DO the board to throw piece to desired spot.";
-    	if (gr_state == CHECKER_PIECE)
-    		msg += " DO the piece itself to \"king\" it.";
-    	else
-    		msg += " DO the piece itself to \"unking\" it.";
-    	send_reply_msg(from, msg);
+        String msg = "Game piece: GET brings it to you. DO the board to throw piece to desired spot.";
+        if (gr_state == CHECKER_PIECE)
+            msg += " DO the piece itself to \"king\" it.";
+        else
+            msg += " DO the piece itself to \"unking\" it.";
+        send_reply_msg(from, msg);
     }
     
     @JSONMethod
     public void KING(User from) {
-    	if (gr_state == CHECKER_PIECE)
-    		gr_state = CHECKER_KING;
-    	else if (gr_state == CHECKER_KING)
-    		gr_state = CHECKER_PIECE;
-    	gen_flags[MODIFIED] = true;
-    	send_neighbor_msg(from, noid, "ROLL$", "state", gr_state);
-    	this.send_reply_msg(from, noid, "state", gr_state);
+        if (gr_state == CHECKER_PIECE)
+            gr_state = CHECKER_KING;
+        else if (gr_state == CHECKER_KING)
+            gr_state = CHECKER_PIECE;
+        gen_flags[MODIFIED] = true;
+        send_neighbor_msg(from, noid, "ROLL$", "state", gr_state);
+        this.send_reply_msg(from, noid, "state", gr_state);
     }
     
     

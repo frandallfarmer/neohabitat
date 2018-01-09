@@ -34,7 +34,7 @@ public class Mailbox extends HabitatMod implements Copyable {
     }
     
     public int pc_state_bytes() {
-        return 1;					// THIS IS VESTIGIAL.
+        return 1;                   // THIS IS VESTIGIAL.
     };
     
     public boolean known() {
@@ -45,7 +45,7 @@ public class Mailbox extends HabitatMod implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable       () { return true; }
 
     public boolean filler() {
         return false;

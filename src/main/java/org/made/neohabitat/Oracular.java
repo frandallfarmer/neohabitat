@@ -18,26 +18,26 @@ import org.elkoserver.json.JSONLiteral;
  */
 public abstract class Oracular extends HabitatMod {
 
-	/** The weight of this object - only ever 1 (immobile) or 0 (portable) */
-	protected int live = 0;
+    /** The weight of this object - only ever 1 (immobile) or 0 (portable) */
+    protected int live = 0;
 
-	public Oracular(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-			OptInteger live) {
-		super(style, x, y, orientation, gr_state, restricted);
-		this.live = live.value(0);
-	}
+    public Oracular(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+            OptInteger live) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.live = live.value(0);
+    }
 
-	public Oracular(int style, int x, int y, int orientation, int gr_state, boolean restricted, int live) {
-		super(style, x, y, orientation, gr_state, restricted);
-		this.live = live;
-	}
+    public Oracular(int style, int x, int y, int orientation, int gr_state, boolean restricted, int live) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.live = live;
+    }
 
-	public JSONLiteral encodeOracular(JSONLiteral result) {
-		result = super.encodeCommon(result);
-		if (result.control().toRepository()) {
-			result.addParameter("live", live);
-		}
-		return result;
-	}
+    public JSONLiteral encodeOracular(JSONLiteral result) {
+        result = super.encodeCommon(result);
+        if (result.control().toRepository()) {
+            result.addParameter("live", live);
+        }
+        return result;
+    }
 
 }

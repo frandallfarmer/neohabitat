@@ -19,14 +19,14 @@ import org.made.neohabitat.Seating;
  */
 public class Couch extends Seating implements Copyable {
 
-    public int		HabitatClass 	 () { return CLASS_COUCH; }
-    public String	HabitatModName	 () { return "Couch"; }
-    public int		capacity 		 () { return 2; }
-    public int		pc_state_bytes 	 () { return 0; };
-    public boolean	known 			 () { return true; }
-    public boolean	opaque_container () { return false; }
-	public boolean  changeable		 () { return true; }
-    public boolean	filler 			 () { return false; }
+    public int      HabitatClass     () { return CLASS_COUCH; }
+    public String   HabitatModName   () { return "Couch"; }
+    public int      capacity         () { return 2; }
+    public int      pc_state_bytes   () { return 0; };
+    public boolean  known            () { return true; }
+    public boolean  opaque_container () { return false; }
+    public boolean  changeable       () { return true; }
+    public boolean  filler           () { return false; }
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "open_flags", "restricted"})
     public Couch(OptInteger style, OptInteger x, OptInteger y,  OptInteger orientation, OptInteger gr_state, OptBoolean restricted,

@@ -44,7 +44,7 @@ public class Hole extends Openable implements Copyable {
         return true;
     }
 
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable       () { return true; }
 
     public boolean filler() {
         return false;

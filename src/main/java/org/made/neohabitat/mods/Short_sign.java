@@ -44,7 +44,7 @@ public class Short_sign extends Poster implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable       () { return true; }
 
     public boolean filler() {
         return false;

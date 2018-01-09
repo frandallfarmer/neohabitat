@@ -51,7 +51,7 @@ public class Picture extends Massive implements Copyable {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "mass", "picture" })
     public Picture(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
-    		OptInteger mass, OptInteger picture) {
+            OptInteger mass, OptInteger picture) {
         super(style, x, y, orientation, gr_state, restricted, mass);
         this.picture = picture.value(0);
     }

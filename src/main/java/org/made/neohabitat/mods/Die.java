@@ -50,11 +50,11 @@ public class Die extends HabitatMod implements Copyable {
         return false;
     }
     
-	public int state = 6; //See struct_die.incl.pl1
+    public int state = 6; //See struct_die.incl.pl1
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "state" })
     public Die(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-    		OptInteger state ) {
+            OptInteger state ) {
         super(style, x, y, orientation, gr_state, restricted);
         this.state = state.value(6);
     }
@@ -65,23 +65,23 @@ public class Die extends HabitatMod implements Copyable {
     }
     
     @Override
-	public HabitatMod copyThisMod() {
-    	return new Die(style, x, y, orientation, gr_state, restricted, state);
-	}
+    public HabitatMod copyThisMod() {
+        return new Die(style, x, y, orientation, gr_state, restricted, state);
+    }
     
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         result.addParameter("state", state);
         result.finish();
-		return result;
+        return result;
     }
-	
-	@JSONMethod
+    
+    @JSONMethod
     public void HELP(User from) {
-		generic_HELP(from);
+        generic_HELP(from);
     }
-	
+    
 
     @JSONMethod
     public void GET(User from) {
@@ -92,7 +92,7 @@ public class Die extends HabitatMod implements Copyable {
     @JSONMethod({ "containerNoid", "x", "y", "orientation" })
     public void PUT(User from, OptInteger containerNoid, OptInteger x, OptInteger y, OptInteger orientation) {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
-        		orientation.value(avatar(from).orientation));
+                orientation.value(avatar(from).orientation));
     }
     
 
@@ -109,11 +109,11 @@ public class Die extends HabitatMod implements Copyable {
      * https://github.com/Museum-of-Art-and-Digital-Entertainment/habitat
      */
     @JSONMethod
-	public void ROLL(User from) {
+    public void ROLL(User from) {
       gr_state = rand.nextInt(state) + 1;
-	  gen_flags[MODIFIED] = true;
-	  send_neighbor_msg(from, THE_REGION, "PLAY_$", "sfx_number", sfx_number(6), "from_noid", noid);
-	  send_neighbor_msg(from, noid, "ROLL$", "state", gr_state); //Look at "ROLL$" in hcode.js
-	  send_reply_msg(from, noid, "ROLL_STATE", gr_state); //Look at ROLL: in hcode.js 
+      gen_flags[MODIFIED] = true;
+      send_neighbor_msg(from, THE_REGION, "PLAY_$", "sfx_number", sfx_number(6), "from_noid", noid);
+      send_neighbor_msg(from, noid, "ROLL$", "state", gr_state); //Look at "ROLL$" in hcode.js
+      send_reply_msg(from, noid, "ROLL_STATE", gr_state); //Look at ROLL: in hcode.js 
     }
 }

@@ -24,26 +24,26 @@ import org.elkoserver.json.JSONLiteral;
  */
 public abstract class Seating extends Openable {
 
-	public boolean changeable() { return true; }
+    public boolean changeable() { return true; }
 
-	/** This state is never persisted, but used by the Bridge to sort out the contents vector */
-	public int sitters[] = {0, 0};
+    /** This state is never persisted, but used by the Bridge to sort out the contents vector */
+    public int sitters[] = {0, 0};
 
-	public Seating(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-			OptInteger open_flags) {
-		super(style, x, y, orientation, gr_state, restricted, open_flags);
-	}
+    public Seating(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+            OptInteger open_flags) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags);
+    }
 
-	public Seating(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags) {
-		super(style, x, y, orientation, gr_state, restricted, open_flags);
-	}
+    public Seating(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags);
+    }
 
-	public JSONLiteral encodeSeating(JSONLiteral result) {
-		result = super.encodeOpenable(result); 
-		if (result.control().toClient()) {
-			result.addParameter("sitters", Arrays.copyOfRange(sitters, 0, this.capacity()));
-		}
-		return result;
-	}
+    public JSONLiteral encodeSeating(JSONLiteral result) {
+        result = super.encodeOpenable(result); 
+        if (result.control().toClient()) {
+            result.addParameter("sitters", Arrays.copyOfRange(sitters, 0, this.capacity()));
+        }
+        return result;
+    }
 
 }

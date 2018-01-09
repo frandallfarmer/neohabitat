@@ -45,7 +45,7 @@ public class Flat extends Walkable implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable       () { return true; }
 
     public boolean filler() {
         return false;
@@ -77,9 +77,9 @@ public class Flat extends Walkable implements Copyable {
     @JSONMethod
     public void HELP(User from) {
        if (flat_type == GROUND_FLAT) {
-    	   current_region().describeRegion(from, noid);
+           current_region().describeRegion(from, noid);
        } else {
-    	   generic_HELP(from);
+           generic_HELP(from);
        }
     } 
 }

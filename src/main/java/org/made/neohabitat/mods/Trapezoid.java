@@ -44,7 +44,9 @@ public class Trapezoid extends Polygonal implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
@@ -59,7 +61,7 @@ public class Trapezoid extends Polygonal implements Copyable {
     }
 
     public Trapezoid(int style, int x, int y, int orientation, int gr_state, boolean restricted, 
-    		int trapezoid_type, int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height) {
+            int trapezoid_type, int upper_left_x, int upper_right_x, int lower_left_x, int lower_right_x, int height) {
         super(style, x, y, orientation, gr_state, restricted, trapezoid_type, upper_left_x, upper_right_x, lower_left_x, lower_right_x, height);
     }
 

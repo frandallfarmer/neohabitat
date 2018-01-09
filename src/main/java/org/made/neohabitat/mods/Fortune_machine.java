@@ -43,7 +43,9 @@ public class Fortune_machine extends Coinop implements Copyable {
         return false;
     }
     
-	public boolean  changeable		 () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
@@ -148,7 +150,7 @@ public class Fortune_machine extends Coinop implements Copyable {
 
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "take" })
     public Fortune_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-    		OptInteger take) {
+            OptInteger take) {
         super(style, x, y, orientation, gr_state, restricted, take);
     }
 
@@ -171,7 +173,7 @@ public class Fortune_machine extends Coinop implements Copyable {
     @JSONMethod
     public void PAY(User from) {
         Avatar avatar = avatar(from);
-        int	success = Tokens.spend(from, FORTUNE_COST, Tokens.CLIENT_DESTROYS_TOKEN);
+        int success = Tokens.spend(from, FORTUNE_COST, Tokens.CLIENT_DESTROYS_TOKEN);
         String text;
         if (success == TRUE) {
             text = getFortune();

@@ -45,7 +45,7 @@ public class Garbage_can extends Openable implements Copyable {
         return true;
     }
 
-	public boolean  changeable		 () { return true; }
+    public boolean  changeable       () { return true; }
 
     public boolean filler() {
         return false;
@@ -58,7 +58,7 @@ public class Garbage_can extends Openable implements Copyable {
     }
 
     public Garbage_can(int style, int x, int y, int orientation, int gr_state, boolean restricted,
-    		boolean[] open_flags, int key_hi, int key_lo) {
+            boolean[] open_flags, int key_hi, int key_lo) {
         super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo);
     }
 

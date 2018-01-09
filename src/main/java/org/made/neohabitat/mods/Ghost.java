@@ -60,7 +60,7 @@ public class Ghost extends HabitatMod implements Copyable {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted" })
     public Ghost(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
         super(style, x, y, orientation, gr_state, restricted);
-        total_ghosts = 0;		// TODO Ideally, there should never be a ghost in the db, but just in case, make sure it has NO ghost users attached.
+        total_ghosts = 0;       // TODO Ideally, there should never be a ghost in the db, but just in case, make sure it has NO ghost users attached.
     }
 
     public Ghost(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
@@ -77,7 +77,7 @@ public class Ghost extends HabitatMod implements Copyable {
         JSONLiteral result = super.encodeCommon(new JSONLiteral(HabitatModName(), control));
         result.finish();
         if (control.toRepository()) {
-        	trace_msg("Why is ghost being persisted?");
+            trace_msg("Why is ghost being persisted?");
         }
         return result;
     }
@@ -87,15 +87,15 @@ public class Ghost extends HabitatMod implements Copyable {
      * involved in the multiplex rigging...     * 
      */
     public void objectIsComplete() {
-    	Region region = current_region();
-    	noid = GHOST_NOID;
+        Region region = current_region();
+        noid = GHOST_NOID;
         region.noids[noid] = this;
-		note_object_creation(this);
+        note_object_creation(this);
     }
     
     @JSONMethod
     public void HELP(User from) {
-    	send_reply_msg(from, (total_ghosts == 1) ? "There is 1 ghost here." : "There are " + total_ghosts + " ghosts here." );
+        send_reply_msg(from, (total_ghosts == 1) ? "There is 1 ghost here." : "There are " + total_ghosts + " ghosts here." );
     }
         
     /**
@@ -106,78 +106,78 @@ public class Ghost extends HabitatMod implements Copyable {
      */
     @JSONMethod
     public void CORPORATE(User from) {
-    	Avatar avatar = avatar(from); 	// The user always has an Avatar-connection on the server side, it's just forgotten on the client side.
-    	Region region = current_region();
-    	if (avatar.amAGhost) {
-    		send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", 8, "from_noid", THE_REGION);
-    		if (/*avatar.firstConnection && */ Region.NEOHABITAT_FEATURES) {
-    			region.object_say(from, UPGRADE_PREFIX + "Please wait for your Avatar...");
-    		}
-    		avatar.switch_to_avatar(from);
-    		if (/*avatar.firstConnection && */ Region.NEOHABITAT_FEATURES) {
-    			region.object_say(from, UPGRADE_PREFIX + "Ready to go!");
-    		}
-    		avatar.nitty_bits[INTENTIONAL_GHOST] = false;
-    	} else {
-    		trace_msg("Attempt to switch from ghost to avatar for a non-ghosted avatar.");
-    		send_reply_error(from);
-    	}
+        Avatar avatar = avatar(from);   // The user always has an Avatar-connection on the server side, it's just forgotten on the client side.
+        Region region = current_region();
+        if (avatar.amAGhost) {
+            send_private_msg(from, THE_REGION, from, "PLAY_$", "sfx_number", 8, "from_noid", THE_REGION);
+            if (/*avatar.firstConnection && */ Region.NEOHABITAT_FEATURES) {
+                region.object_say(from, UPGRADE_PREFIX + "Please wait for your Avatar...");
+            }
+            avatar.switch_to_avatar(from);
+            if (/*avatar.firstConnection && */ Region.NEOHABITAT_FEATURES) {
+                region.object_say(from, UPGRADE_PREFIX + "Ready to go!");
+            }
+            avatar.nitty_bits[INTENTIONAL_GHOST] = false;
+        } else {
+            trace_msg("Attempt to switch from ghost to avatar for a non-ghosted avatar.");
+            send_reply_error(from);
+        }
     }
     
     
-	/**
-	 * Verb (Specific): TODO Leave the region for another region.
-	 * 
-	 * @param from
-	 *            User representing the connection making the request.
-	 */
-	@JSONMethod({ "direction", "passage_id" })
-	public void NEWREGION(User from, OptInteger direction, OptInteger passage_id) {
-		ghost_NEWREGION(from, direction.value(1), passage_id.value(0));
-	}
-	
-	public void ghost_NEWREGION(User from, int direction, int passage_id ) {		
-		Avatar		avatar			= avatar(from);
-		Region      region          = current_region();
-		String      new_region      = "";
-		int			entry_type		= WALK_ENTRY;
-		HabitatMod  passage         = region.noids[passage_id];
-		int         direction_index = (direction + region.orientation + 2) % 4;
-		
+    /**
+     * Verb (Specific): TODO Leave the region for another region.
+     * 
+     * @param from
+     *            User representing the connection making the request.
+     */
+    @JSONMethod({ "direction", "passage_id" })
+    public void NEWREGION(User from, OptInteger direction, OptInteger passage_id) {
+        ghost_NEWREGION(from, direction.value(1), passage_id.value(0));
+    }
+    
+    public void ghost_NEWREGION(User from, int direction, int passage_id ) {        
+        Avatar      avatar          = avatar(from);
+        Region      region          = current_region();
+        String      new_region      = "";
+        int         entry_type      = WALK_ENTRY;
+        HabitatMod  passage         = region.noids[passage_id];
+        int         direction_index = (direction + region.orientation + 2) % 4;
+        
 
-		if (direction != AUTO_TELEPORT_DIR && 
-				passage_id != 0 &&
-				passage.HabitatClass() == CLASS_DOOR || 
-				passage.HabitatClass() == CLASS_BUILDING) {
-			
-			if (passage.HabitatClass() == CLASS_DOOR) {
-				Door door = (Door) passage;
-				if (!door.getOpenFlag(OPEN_BIT) || door.gen_flags[DOOR_AVATAR_RESTRICTED_BIT]) {
-					send_reply_error(from);
-					return;
-				} else {
-					new_region = door.connection;
-				}
-			} else {
-				new_region = ((Building) passage).connection;
-			}
-		} else {
-			if (direction >= 0 && direction < 4) {
-				new_region = region.neighbors[direction_index]; // East,  West, North, South
-			} else {     // direction == AUTO_TELEPORT_DIR 
-				send_reply_error(from);
-				new_region = avatar.to_region;
-				entry_type = TELEPORT_ENTRY;
-				direction  = WEST; // TODO Randy needs to revisit this little hack to prevent a loop..
-			}
-		}
-		
-		if (!new_region.isEmpty()) {
-			send_reply_success(from);
-			avatar.change_regions(new_region, direction, entry_type);
-			return;
-		}       
-		object_say(from, "There is nowhere to go in that direction.");
-		send_reply_error(from);     
-	}    
+        if (direction != AUTO_TELEPORT_DIR && 
+                passage_id != 0 &&
+                passage.HabitatClass() == CLASS_DOOR || 
+                passage.HabitatClass() == CLASS_BUILDING) {
+            
+            if (passage.HabitatClass() == CLASS_DOOR) {
+                Door door = (Door) passage;
+                if (!door.getOpenFlag(OPEN_BIT) || door.gen_flags[DOOR_AVATAR_RESTRICTED_BIT]) {
+                    send_reply_error(from);
+                    return;
+                } else {
+                    new_region = door.connection;
+                }
+            } else {
+                new_region = ((Building) passage).connection;
+            }
+        } else {
+            if (direction >= 0 && direction < 4) {
+                new_region = region.neighbors[direction_index]; // East,  West, North, South
+            } else {     // direction == AUTO_TELEPORT_DIR 
+                send_reply_error(from);
+                new_region = avatar.to_region;
+                entry_type = TELEPORT_ENTRY;
+                direction  = WEST; // TODO Randy needs to revisit this little hack to prevent a loop..
+            }
+        }
+        
+        if (!new_region.isEmpty()) {
+            send_reply_success(from);
+            avatar.change_regions(new_region, direction, entry_type);
+            return;
+        }       
+        object_say(from, "There is nowhere to go in that direction.");
+        send_reply_error(from);     
+    }    
 }
