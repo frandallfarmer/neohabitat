@@ -814,6 +814,453 @@ this.translate = {
                 b.add(o.ATTACK_target);
             }
         },
+        TOUCH: {
+            toServer: function(a,m) {
+                m.target = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        TAKE: {
+            toClient: function(o, b) {
+                b.add(o.TAKE_SUCCESS);
+            }
+        },
+        PAYTO: {
+            toServer: function(a,m) {
+                m.target_id = a[0];
+                m.amount_lo = a[1];
+                m.amount_hi = a[2];
+            },
+            toClient: function(o, b, client) {
+                b.add(o.success);
+                b.add(o.amount_lo);
+                b.add(o.amount_hi);
+                b.add(client.backdoor.vectorize(client, o.object, o.container));
+            }
+        },
+        PAY: {
+            toClient: function(o, b) {
+                b.add(o.err);
+                b.add(o.amount_lo);
+                b.add(o.amount_hi);
+                if ('text' in o) {
+                    b.add(o.text.getBytes());
+                }
+            }
+        },
+        PULLPIN: {
+            toClient: function(o, b) {
+                b.add(o.PULLPIN_SUCCESS);
+            }
+        },
+        SPLIT: {
+            toServer: function(a,m) {
+                m.amount_lo = a[0];
+                m.amount_hi = a[1];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        MUNCH: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        STUN: {
+            toServer: function(a,m) {
+                m.target = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        DEPOSIT: {
+            toServer: function(a, m) {
+                m.token_noid = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        ZAPTO: {
+            toServer: function(a,m) {
+                m.port_number = String.fromCharCode.apply(null, a);
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        WITHDRAW: {
+            toServer: function(a, m) {
+                m.amount_lo = a[0];
+                m.amount_hi = a[1];
+            },
+            toClient: function(o, b) {
+                b.add(o.amount_lo);
+                b.add(o.amount_hi);
+                b.add(o.result_code);
+            }
+        },
+        FILL: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        POUR: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        SEXCHANGE: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        VSELECT: {
+            toClient: function(o,b) {
+                b.add(o.price_lo);
+                b.add(o.price_hi);
+                b.add(o.display_item);
+            }
+        },
+        VEND: {
+            toClient: function (o,b, client) {
+                b.add(o.success);
+                b.add(o.item_price_lo);
+                b.add(o.item_price_hi);
+                b.add(client.backdoor.vectorize(client, o.object, 0));
+            }           
+        },
+        FLUSH: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        BUGOUT: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        DIG: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        README: {
+            toClient: function(o, b) {
+                b.add(o.ascii);
+            }
+        },
+        PSENDMAIL: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        KING: {
+            toClient: function(o, b) {
+                b.add(o.state);
+            }
+        },
+        GRAB: {
+            toClient: function(o, b) {
+                b.add(o.item_noid);
+            }
+        },
+        HAND: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        }
+        HELP:    { 
+            toClient: function(o, b) {
+                if ("ascii" in o) {
+                    b.add(o.ascii);
+                } else if (o.text) {
+                    b.add(o.text.getBytes());
+                } 
+            }
+        },
+        GET:     {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        PUT:     {
+            toServer: function(a, m) {
+                m.containerNoid = a[0];
+                m.x             = a[1]; 
+                m.y             = a[2];
+                m.orientation   = a[3];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+                b.add(o.pos);
+            }       
+        },
+        WEAR:   {
+            toClient: function(o, b) {
+                b.add(o.err);
+                b.add(o.err);
+            }           
+        },
+        THROW:   {
+            toServer: function(a, m) {
+                m.target    = a[0] || 0;
+                m.x         = a[1] || 8; 
+                m.y         = a[2] || 130;
+            },
+            toClient: function(o, b) {
+                b.add(o.target);
+                b.add(o.x);
+                b.add(o.y);
+                b.add(o.err);
+            }
+        },
+        SPEAK:   {
+            toServer: function(a, m) {
+                m.esp   = a[0];
+                m.text  = String.fromCharCode.apply(null, a.slice(1));
+            },
+            toClient: function(o, b) {
+                b.add(o.esp);
+            } 
+        },
+        ESP:     {
+            toServer: function(a, m) {
+                m.esp   = 1; // Ignore a[0] ESP is implied.
+                m.text  = String.fromCharCode.apply(null, a.slice(1));
+            },
+            toClient: function(o, b) {
+                b.add(o.esp);
+            } 
+        },
+        ASK:    {
+            toServer: function(a, m) {
+                m.text  = String.fromCharCode.apply(null, a);
+            }
+        },
+        WISH: {
+            toServer: function(a, m) {
+                m.text = String.fromCharCode.apply(null, a);
+            }           
+        },
+        RUB: {
+            toClient: function(o, b) {
+                b.add(o.RUB_SUCCESS);
+                b.add(o.RUB_MESSAGE.getBytes())
+            }
+        },
+        POSTURE: { 
+            toServer: function(a, m) {
+                m.pose = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },      
+        WALK:    {
+            toServer: function(a, m) {
+                m.x    = a[0]; 
+                m.y    = a[1];
+                m.how  = a[2];
+            },
+            toClient: function(o, b) {
+                b.add(o.x);
+                b.add(o.y);
+                if ('how' in o) {
+                    b.add(o.how);
+                }
+            }
+        },
+        SITORSTAND: {
+            toServer: function(a,m) {
+                m.up_or_down    = a[0];
+                m.seat_id       = a[1];
+            },
+            toClient: function(o,b) {
+                b.add(o.err);
+                b.add(o.slot);
+            }
+        },
+        FNKEY:      {
+            toServer: function(a, m) {
+                m.key    = a[0]; 
+                m.target = a[1];
+            },
+            toClient: function(o,b) {
+                b.add(o.err);
+            }
+        },
+        CORPORATE:  {
+            toClient: function(o,b, client) {
+                b.add(o.success);
+                b.add(o.newNoid);
+                b.add((o.balance & 0x000000FF));
+                b.add((o.balance & 0x0000FF00) >> 8);
+                b.add((o.balance & 0x00FF0000) >> 16);
+                b.add((o.balance & 0xFF000000) >> 24);
+                if (o.body) {
+                    b.add(client.backdoor.vectorize(client, o.body, 0));
+                } else {
+                    b.add(0);
+                }
+            }
+        },
+        DISCORPORATE:   {
+            toClient: function(o,b, client) {
+                b.add(o.success);
+                b.add(o.newNoid);
+                b.add((o.balance & 0x000000FF));
+                b.add((o.balance & 0x0000FF00) >> 8);
+                b.add((o.balance & 0x00FF0000) >> 16);
+                b.add((o.balance & 0xFF000000) >> 24);
+                if (o.body) {
+                    b.add(client.backdoor.vectorize(client, o.body, 0));
+                } else {
+                    b.add(0);
+                }
+            }
+        },
+        PROMPT_REPLY: {
+            toServer: function(a,m) {
+                m.text  = String.fromCharCode.apply(null, a);
+            }
+        },
+        MAGIC:  {
+            toClient: function(o, b) {
+                b.add(o.err);
+            },
+            toServer: function(a,m) {
+                m.target = a[0];
+            }
+        },
+        OFF:    {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        ON:     {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        OPEN:   {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }           
+        },
+        CLOSE:  {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }           
+        },
+        OPENCONTAINER:  {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }           
+        },
+        CLOSECONTAINER: {
+            toClient: function(o, b) {
+                b.add(o.err);
+            }           
+        },
+        FAKESHOOT: { 
+            toClient: function(o, b) {
+                b.add(o.FAKESHOOT_SUCCESS); 
+            }
+        },      
+        READ: {
+            toServer: function(a, m) {
+                m.page = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.nextpage);
+                b.add(o.ascii);
+                return true;        // This reply should be split upon transmission to the client.
+            }
+        },
+        WRITE: {
+            toServer: function(a, m, client, start, end) {
+                m.suppressReply = true;
+                if (start) {
+                    client.largeRequestCache = [];
+                }
+                Array.prototype.push.apply(client.largeRequestCache, a)
+                if (end) {
+                    m.request_ascii = client.largeRequestCache;
+                    delete m.suppressReply;
+                    delete client.largeRequestCache;
+                }
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        RESET: { 
+            toClient: function(o, b) {
+                b.add(o.RESET_SUCCESS); 
+            }
+        },      
+        ROLL: { 
+            toClient: function(o, b) {
+                b.add(o.ROLL_STATE); 
+            }
+        },      
+        SCAN: { 
+            toClient: function(o, b) {
+                b.add(o.SCAN_DETECTION); 
+            }
+        },  
+        LEAVE: {
+            toServer: function(a, m) {
+                m.reason = a[0];
+            }
+        },
+        NEWREGION: {
+            toServer: function(a,m) {
+                m.direction  = a[0];
+                m.passage_id = a[1];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+            }
+        },
+        SPRAY: {
+            toServer: function(a, m) {
+                m.limb = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.SPRAY_SUCCESS);
+                b.add(o.SPRAY_CUSTOMIZE_0);
+                b.add(o.SPRAY_CUSTOMIZE_1);
+            }
+        },
+        CHANGE: {
+            toServer: function(a, m) {
+                m.targetNoid = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.err);
+                b.add(o.CHANGE_NEW_ORIENTATION);
+            }
+        },
+        DIRECT: {
+            toClient: function(o, b) {
+                b.add(o.text.getBytes());
+            }
+        },
+        ATTACK: {
+            toServer: function(a, m) {
+                m.pointed_noid = a[0];
+            },
+            toClient: function(o, b) {
+                b.add(o.ATTACK_result);
+                b.add(o.ATTACK_target);
+            }
+        },
         TAKE: {
             toClient: function(o, b) {
                 b.add(o.TAKE_SUCCESS);
