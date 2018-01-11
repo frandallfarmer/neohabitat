@@ -81,5 +81,44 @@
     "type": "item", 
     "name": "Couch", 
     "in": "context-welcomecenterinthatch"
+  },
+  {
+    "ref": "item-picture.v2c7.welcomecenterinthatch", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Picture",
+		"mass": 1,
+        "style": 1, 
+        "y": 106, 
+        "x": 134
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-welcomecenterinthatch"
+  },
+  {
+    "ref": "item-short_sign.k2d9.welcomecenterinthatch", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 121, 
+        "x": 148, 
+        "ascii": [
+          133, 
+          131, 
+          127, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-welcomecenterinthatch"
   }
 ]
