@@ -31,7 +31,7 @@
         "orientation": 176
       }
     ], 
-    "ref": "item-wall.welcomecenterinthatch", 
+    "ref": "item-wall.f8k2.welcomecenterinthatch", 
     "name": "Wall", 
     "in": "context-welcomecenterinthatch"
   }, 
@@ -46,12 +46,12 @@
         "orientation": 56
       }
     ], 
-    "ref": "item-ground.welcomecenterinthatch", 
+    "ref": "item-ground.d9m2.welcomecenterinthatch", 
     "name": "Ground", 
     "in": "context-welcomecenterinthatch"
   },
   {
-    "ref": "item-couch1j8j.welcomecenterinthatch", 
+    "ref": "item-couch1.s8j8.welcomecenterinthatch", 
     "mods": [
       {
         "style": 0, 
@@ -67,7 +67,7 @@
     "in": "context-welcomecenterinthatch"
   },
   {
-    "ref": "item-couch2h6j.welcomecenterinthatch", 
+    "ref": "item-couch2.a9m2.welcomecenterinthatch", 
     "mods": [
       {
         "style": 0, 
@@ -80,6 +80,45 @@
     ], 
     "type": "item", 
     "name": "Couch", 
+    "in": "context-welcomecenterinthatch"
+  },
+  {
+    "ref": "item-picture.v2c7.welcomecenterinthatch", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Picture",
+		"mass": 1,
+        "style": 1, 
+        "y": 106, 
+        "x": 134
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-welcomecenterinthatch"
+  },
+  {
+    "ref": "item-short_sign.k2d9.welcomecenterinthatch", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 121, 
+        "x": 148, 
+        "ascii": [
+          133, 
+          131, 
+          127, 
+          32, 
+          32, 
+          32
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
     "in": "context-welcomecenterinthatch"
   }
 ]
