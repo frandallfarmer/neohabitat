@@ -124,7 +124,7 @@
     "mods": [
       {
         "y": 36, 
-        "x": 103, 
+        "x": 100, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 174
@@ -138,7 +138,7 @@
     "ref": "item-tree2.Woods_5x", 
     "mods": [
       {
-        "y": 38, 
+        "y": 39, 
         "x": 12, 
         "style": 1, 
         "type": "Tree", 
@@ -154,7 +154,7 @@
     "mods": [
       {
         "y": 30, 
-        "x": 54, 
+        "x": 52, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 172
@@ -169,7 +169,7 @@
     "mods": [
       {
         "y": 28, 
-        "x": 146, 
+        "x": 144, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 172
