@@ -1635,7 +1635,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             return true;
         }
     
-        /*JSN: Is this PL/1 hack really necessary?*/
+        //JSN: Is this PL/1 hack really necessary?
         if(object.HabitatClass() == CLASS_HEAD) {
             return true;
         }
@@ -1685,8 +1685,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         int av_y = curAvatar.y;
         av_y = clear_bit(av_y, 1);
         av_y = clear_bit(av_y, 8);
-        
         return (av_x == x_left || av_x == x_right) && av_y == y;
+    
     }
 
 
@@ -3599,7 +3599,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             who.trace_msg("Updated tokens in HANDS of Avatar %s: %d", who.obj_id(), tokens.tget());
             tokens.tset(amount);
         } else {
-            tokens = new Tokens(0, who.x, who.y, 0, 0, false, 0, 0);
+            tokens = new Tokens(0, who.x-4, who.y, 0, 0, false, 0, 0);
             who.trace_msg("Attempting to create tokens in region %s for Avatar %s: %d", region.obj_id(),
                 who.obj_id(), tokens.tget());
             Item item = who.create_object("money", tokens, region, false);
