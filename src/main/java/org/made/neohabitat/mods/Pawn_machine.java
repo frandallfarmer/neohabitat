@@ -33,7 +33,7 @@ public class Pawn_machine extends Openable implements Copyable {
 
     public int pc_state_bytes() {
         return 3;
-    };
+    }
 
     public boolean known() {
         return true;
@@ -43,7 +43,9 @@ public class Pawn_machine extends Openable implements Copyable {
         return true;
     }
     
-    public boolean  changeable       () { return true; }
+    public boolean changeable() { 
+        return true; 
+    }
 
     public boolean filler() {
         return false;
@@ -89,19 +91,21 @@ public class Pawn_machine extends Openable implements Copyable {
    
     @JSONMethod
     public void MUNCH(User from) {
-        HabitatMod recycle = contents(0);
+        Avatar curAvatar = avatar(from);
+        HabitatMod recycle = curAvatar.contents(HANDS);
         if (adjacent(this, from) && recycle != null) {
-            if (TRUE == Tokens.pay_to(avatar(from), pawn_values[recycle.HabitatClass()])) {
+            if (TRUE == pay_to(avatar(from), pawn_values[recycle.HabitatClass()])) {
                 send_neighbor_msg(from, noid, "MUNCH$");
-                destroy_contents();
-                send_goaway_msg(recycle.noid);
-                send_reply_success(from);
+                checkpoint_object(recycle); 
+                curAvatar.send_goaway_msg(recycle.noid);
+                destroy_object(recycle);
+                send_reply_msg(from, noid, "MUNCH_SUCCESS", TRUE);
                 return;
             }
             send_reply_err(from, noid, BOING_FAILURE);
             return;
         }
-        this.send_reply_error(from, noid);
+        send_reply_error(from);
     }
 
 }
