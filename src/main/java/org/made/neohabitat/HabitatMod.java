@@ -1627,7 +1627,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     * @return Is our avatar standing next to the object?
     */
     public boolean adjacent(HabitatMod object, User from) {
-        Avatar curAvatar = avatar(from);
+        /*Avatar curAvatar = avatar(from);
         int obase = image_base[object.HabitatClass()] + object.style;
         int x_right, x_left, y;
         int X_MAX = 156;
@@ -1686,7 +1686,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         av_y = clear_bit(av_y, 1);
         av_y = clear_bit(av_y, 8);
         return (av_x == x_left || av_x == x_right) && av_y == y;
-    
+    */
+        return true; //JSN: Uncomment this adjacency is fixed
     }
 
 
