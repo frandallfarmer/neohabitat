@@ -122,12 +122,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     /** A handle to the mandatory singleton ghost object for this region */    
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
-        "town_dir", "port_dir", "max_avatars", "neighbors", "is_turf", "resident", "realm", "locked" })
+        "town_dir", "port_dir", "max_avatars", "neighbors", "is_turf", "resident", "realm", "locked", "noid" })
     public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
         OptInteger nitty_bits, OptInteger depth, OptInteger lighting,
         OptString town_dir, OptString port_dir, OptInteger max_avatars,
         String[] neighbors, OptBoolean is_turf, OptString resident, OptString realm,
-        OptBoolean locked) {
+        OptBoolean locked, OptInteger noid) {
         super(style, x, y, orientation, gr_state, new OptBoolean(false));
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
@@ -147,7 +147,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 
     public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits,
         int depth, int lighting, String town_dir, String port_dir, int max_avatars,
-        String[] neighbors, boolean is_turf, String resident, String realm, boolean locked) {
+        String[] neighbors, boolean is_turf, String resident, String realm, boolean locked, int noid) {
         super(style, x, y, orientation, gr_state, false);
         this.nitty_bits = nitty_bits;
         this.depth = depth;
@@ -347,6 +347,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         }
         result.addParameter("depth", depth);
         result.addParameter("lighting", lighting);
+        result.addParameter("noid", noid);
         result.addParameter("neighbors", neighbors);
         if (control.toRepository()) {
             result.addParameter("max_avatars", max_avatars);
