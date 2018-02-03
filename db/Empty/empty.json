@@ -1,0 +1,53 @@
+[
+  {
+    "ref": "context-empty", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Empty Region", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 0,		
+        "neighbors": [
+          "",
+          "", 
+          "",
+          ""
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground.d8j1.empty", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-empty"
+  },
+  {
+    "ref": "item-wall.a9t4.empty", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-empty"
+  }
+]
