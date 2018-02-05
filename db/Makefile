@@ -93,7 +93,11 @@ back4t:
 hell:
 	@echo "Building Hell Only"
 	@node populateModels.js $(NEOHABITAT_MONGO_HOST) hell >>.errs 2>&1	
-    
+
+dnalsi:
+	@echo "Building Dnalsi Only"
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) dnalsi >>.errs 2>&1
+
 users:
 	@echo "Building Users Only"
 	@node populateModels.js $(NEOHABITAT_MONGO_HOST) users >>.errs 2>&1
@@ -107,7 +111,7 @@ teleports:
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $(TELEPORTDB) >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
+	@cat $(DBINIT_SCRIPT) | mongo --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
 	@rm -f $(TELEPORTDB)
 		
 version:
@@ -119,12 +123,12 @@ version:
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $*.json >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
+	@cat $(DBINIT_SCRIPT) | mongo --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
 
 nuke:
 	@echo "Nuking database"
 	@rm -f  $(DATABASE_OBJECTS) .errs	
-	@echo 'db.odb.remove({});' | mongo $(NEOHABITAT_MONGO_HOST)/elko --verbose --shell mongohelper.js >> .errs 2>&1
+	@echo 'db.odb.remove({});' | mongo --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
