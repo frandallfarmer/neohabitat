@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import uuid
 
 from json import JSONEncoder
@@ -99,7 +100,12 @@ class Mod(object):
           break
       mod_json['display_item'] = display_item
     elif self.neohabitat_name == 'Door':
-      mod_json['connection'] = self.region.neohabitat_context
+      mod_json['connection'] = self.find_connection_context('front')
+    elif self.neohabitat_name == 'Building':
+      mod_json['connection'] = self.find_connection_context('interior')
+    elif self.neohabitat_name in ('Teleport', 'Elevator'):
+      # Add in an empty address string, which will be filled in separately
+      mod_json['address'] = ''
 
     return mod_json
 
@@ -114,6 +120,17 @@ class Mod(object):
   def neohabitat_ref(self):
     return 'item-{0}.{1}.{2}'.format(self.neohabitat_name, self.id,
         self.region.name.replace('-', '.'))
+
+  def find_connection_context(self, suffix):
+    '''
+    Look for a region parameter that has the given suffix. This is used to
+    connect a Building or Door object to their destination.
+    '''
+    for location in self.region.params.values():
+      m = re.match(r'(\w+_{})'.format(suffix), location)
+      if m:
+        return 'context-{}'.format(m.group(1))
+    return ''
 
   def _chomped_params(self, start_index=8):
     params_with_numeric_keys = {
