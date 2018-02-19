@@ -163,7 +163,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @return The container mod for the item containing the obj.
      */
     public Container container(HabitatMod obj) {
-        return (Container) obj.object().container().getMod(Container.class);
+    	Container cont;
+    	try {
+    		cont = (Container) obj.object().container().getMod(Container.class);
+    	} catch (java.lang.NullPointerException e) {
+    		cont = (Container) null;
+    	}
+		return (cont);
     }
 
     /**
@@ -1338,11 +1344,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @return Is this slot, of this container, visible to the region?
      */
     public boolean container_is_opaque(HabitatMod cont, int pos) {
+    	/* FRF - Though the original Habitat server understood that the Avatar's pocket is an opaque container, this is being ignored in order to expedite region capacity support.
+    	 * 
         if (cont.HabitatClass() == CLASS_AVATAR)
             if (pos == HANDS || pos == HEAD)
                 return (false);
             else
                 return (true);
+        */
         return cont.opaque_container();
     }
 
@@ -1773,40 +1782,60 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     }
     
     private void note_instance_creation_internal(HabitatMod obj) {
+    	note_instance_creation_internal(obj, current_region());
+    }
+    
+    protected void note_instance_creation_internal(HabitatMod obj, Container cont) {
         int class_number= obj.HabitatClass();
-        Region region   = current_region();
 
-        region.space_usage += obj.instance_size();
-        region.class_ref_count[class_number]++;
-        if (region.class_ref_count[class_number] == 1)
-            region.space_usage += obj.class_size();
+        cont.space_usage += obj.instance_size();
+        cont.class_ref_count[class_number]++;
+//        String s = " Instance creation: " + obj.HabitatModName() + "(" + class_number + ") change: +" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];
+        if (cont.class_ref_count[class_number] == 1) {
+            cont.space_usage += obj.class_size();
+//            s += " change +" + obj.class_size() + "(class)";
+        }
+//        trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
+    }
+    
+    
+    
+    public static final String[] RESOURCES = {"IMAGE", "ACTION", "SOUND", "HEAD"};
+    
+    private void note_resource_creation_internal(HabitatMod obj, int style) {
+    	note_resource_creation_internal(obj, style, current_region());
     }
 
-        private void note_resource_creation_internal(HabitatMod obj, int style) {
+    protected void note_resource_creation_internal(HabitatMod obj, int style, Container cont) {
         int     class_number= obj.HabitatClass();
 
         int type = NeoHabitat.RESOURCE_IMAGE;
         if (class_number == CLASS_HEAD)
-            note_resource_usage(NeoHabitat.RESOURCE_HEAD, style);
+            note_resource_usage(NeoHabitat.RESOURCE_HEAD, style, cont);
         else if (NeoHabitat.ClassResources[class_number][type].length > 0)
-            note_resource_usage(type, style);
-
+            note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][style], cont);		// TODO: style bounds checking?
+       
         type++;     
         while (type <= NeoHabitat.RESOURCE_SOUND) {
             for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
-                note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][i]);
+                note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][i], cont);
             }
             type++;
         }
     }
-
-    private void note_resource_usage(int type, int resource) {
-        Region region = current_region();
-        
-        region.resource_ref_count[type][resource] += 1;
-         if (region.resource_ref_count[type][resource] == 1)
-              region.space_usage += NeoHabitat.ResourceSizes[type][resource];       
+    
+    protected void note_resource_usage(int type, int resource, Container cont) {        
+    	
+        cont.resource_ref_count[type][resource] += 1;
+//        String s = " Resource creation: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
+        if (cont.resource_ref_count[type][resource] == 1) {
+        	  int size = NeoHabitat.ResourceSizes[type][resource] + 5; /* Check the Client source for details on the 5 byte usage. FRF */
+              cont.space_usage += size;
+//              s += " change +" + size + ", heap: " + cont.space_usage;
+        }
+//        trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
     }
+    
     
     /**
      * Recover and object and it's class resources from the C64 heap.
@@ -1844,42 +1873,59 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         note_instance_deletion_internal(obj);
     }
     
-    private void note_instance_deletion_internal(HabitatMod obj) {
-        int class_number= obj.HabitatClass();
-        Region region   = current_region();
-
-        region.space_usage -= obj.instance_size();
-        region.class_ref_count[class_number]--;
-        if (region.class_ref_count[class_number] == 0)
-            region.space_usage -= obj.class_size();
+    private void note_instance_deletion_internal(HabitatMod obj) {        
+        note_instance_deletion_internal(obj, current_region());
     }
 
+    private void note_instance_deletion_internal(HabitatMod obj, Container cont) {
+        int class_number= obj.HabitatClass();
+        cont.space_usage -= obj.instance_size();
+        
+        cont.class_ref_count[class_number]--;
+//        String s = " Instance deletion from " + obj.HabitatModName() + "(" + class_number + ") change: -" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];        
+        if (cont.class_ref_count[class_number] == 0) {
+            cont.space_usage -= obj.class_size();
+//            s += " change -" + obj.class_size() + "(class)";
+        }
+//        trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
+    }
+
+    
     private void note_resource_deletion_internal(HabitatMod obj, int style) {
-        int     class_number= obj.HabitatClass();
+        int       class_number = obj.HabitatClass();
 
         int type = NeoHabitat.RESOURCE_IMAGE;
         if (class_number == CLASS_HEAD)
-            note_resource_removal(NeoHabitat.RESOURCE_HEAD, style);
+            note_resource_removal(obj, NeoHabitat.RESOURCE_HEAD, style);
         else if (NeoHabitat.ClassResources[class_number][type].length > 0) 
-            note_resource_removal(type, style);
+            note_resource_removal(obj, type, NeoHabitat.ClassResources[class_number][type][style]);
 
         type++;     
         while (type <= NeoHabitat.RESOURCE_SOUND) {
             for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
-                note_resource_removal(type, NeoHabitat.ClassResources[class_number][type][i]);
+                note_resource_removal(obj, type, NeoHabitat.ClassResources[class_number][type][i]);
             }
             type++;
         }
     }
 
-    private void note_resource_removal(int type, int resource) {
-        Region region = current_region();
-        
-        region.resource_ref_count[type][resource] -= 1;
-         if (region.resource_ref_count[type][resource] == 0)
-              region.space_usage -= NeoHabitat.ResourceSizes[type][resource];       
+    private void note_resource_removal(HabitatMod obj, int type, int resource) {        
+    	note_resource_removal(type, resource, current_region());
+
     }
     
+    
+    private void note_resource_removal(int type, int resource, Container cont) { 
+    	
+        cont.resource_ref_count[type][resource] -= 1;
+//        String s = " Resource removal: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
+         if (cont.resource_ref_count[type][resource] == 0) {
+        	 int size = NeoHabitat.ResourceSizes[type][resource] + 5; /* Check the Client source for details on the 5 byte usage. FRF */
+             cont.space_usage -= size;
+//             s += " change -" + size + ", heap: " + cont.space_usage;
+         }
+//         trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
+    }
     
     /**
      * Check to make sure various limits related to the C64 heap manager
@@ -1898,7 +1944,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public boolean mem_checks_ok(HabitatMod obj) {
         
         Region region = current_region();
-        if (region.space_usage > C64_HEAP_SIZE)
+        
+        if (region.space_usage > c64_capacity(region))
             return false;        
 
         int the_class = obj.HabitatClass();
@@ -1912,6 +1959,19 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         return true;
     }
 
+    public int c64_capacity() {
+    	return(C64_HEAP_SIZE - FIRST_GHOST_HEAP_SIZE);		// When in doubt, reserve space for the Ghost
+    }
+    
+    public int c64_capacity(Region region) {
+    	
+    	if (region.regionGhost() == null)
+    		return c64_capacity();
+    	
+    	return C64_HEAP_SIZE;							// If the ghost is instantiated, we can use all the of the heap.
+    }
+    
+    
     public boolean mem_check_container(Container cont) {
         for (int i = 0; i < cont.capacity(); i++) {
             HabitatMod obj = cont.contents(i);
@@ -1927,7 +1987,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     }
     
     public int instance_size() {
-        return 6 + this.capacity() + pc_state_bytes();
+        return NeoHabitat.InstanceSizes[HabitatClass()];
     }
     
     

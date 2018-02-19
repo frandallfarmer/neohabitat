@@ -57,7 +57,7 @@ public class Glue extends Openable implements Copyable {
             OptInteger x_offset_1, OptInteger y_offset_1, OptInteger x_offset_2, OptInteger y_offset_2,
             OptInteger x_offset_3, OptInteger y_offset_3, OptInteger x_offset_4, OptInteger y_offset_4,
             OptInteger x_offset_5, OptInteger y_offset_5, OptInteger x_offset_6, OptInteger y_offset_6) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, new OptInteger(0));
         setGlueState(
                 x_offset_1.value(0), y_offset_1.value(0),
                 x_offset_2.value(0), y_offset_2.value(0),

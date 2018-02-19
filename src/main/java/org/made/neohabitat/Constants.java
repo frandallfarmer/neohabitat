@@ -271,7 +271,9 @@ public interface Constants {
     
     public static final int      Separation_Char            = 144;
     
-    public static final int      C64_HEAP_SIZE              = 16244;
+    public static final int      C64_HEAP_SIZE              = 16704; /* 0xeb40 (top_of_heap) - 0xaa00 (static_end_of_heap) Historically 16244 from source  FRF*/
+    public static final int      FIRST_AVATAR_HEAP_SIZE     = 5736;  /* The number of C64 heap bytes for an empty avatar object added to an empty region */
+    public static final int      FIRST_GHOST_HEAP_SIZE      = 137;   /* The number of 64 heap bytes for the singleton Ghost object in an empty region */
                                                                                                                 
     public static final int      FIRST                      = 3;
     public static final int      SECOND                     = 4;

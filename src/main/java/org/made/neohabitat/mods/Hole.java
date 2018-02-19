@@ -50,21 +50,21 @@ public class Hole extends Openable implements Copyable {
         return false;
     }
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_lo", "key_hi" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_lo", "key_hi", "shutdown_size"  })
     public Hole(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation,
         OptInteger gr_state, OptBoolean restricted, OptInteger open_flags, OptInteger key_lo,
-        OptInteger key_hi) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        OptInteger key_hi, OptInteger shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, shutdown_size);
     }
 
     public Hole(int style, int x, int y, int orientation, int gr_state, boolean restricted,
-        boolean[] open_flags, int key_lo, int key_hi) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        boolean[] open_flags, int key_lo, int key_hi, int shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, shutdown_size);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Hole(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        return new Hole(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, shutdown_size);
     }
 
     @Override

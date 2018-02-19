@@ -46,24 +46,51 @@ public abstract class Openable extends Container {
                     OptInteger open_flags) {
         super(style, x, y, orientation, gr_state, restricted);
         setOpenableState(open_flags.value(-1));
+        this.shutdown_size = 0;
     }
+    
+    public Openable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
+            OptInteger open_flags, OptInteger shutdown_size) {
+    	super(style, x, y, orientation, gr_state, restricted);
+    	setOpenableState(open_flags.value(-1));
+    	this.shutdown_size = shutdown_size.value(0);
+    }    
 
     public Openable(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-            OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
+            OptInteger open_flags, OptInteger key_lo, OptInteger key_hi, OptInteger shutdown_size) {
         this(style, x, y, orientation, gr_state, restricted, open_flags);
         setKeyedState(key_lo.value(0), key_hi.value(0));
+        this.shutdown_size = shutdown_size.value(0);
     }
-
+    
     public Openable(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags) {
         super(style, x, y, orientation, gr_state, restricted);
         setOpenableState(open_flags);
+        this.shutdown_size = 0;
+
+    }
+    
+    public Openable(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags, int shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted);
+        setOpenableState(open_flags);
+        this.shutdown_size = shutdown_size;
+
     }
 
     public Openable(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags,
         int key_lo, int key_hi) {
         this(style, x, y, orientation, gr_state, restricted, open_flags);
         setKeyedState(key_lo, key_hi);
+        this.shutdown_size = 0;
     }
+    
+    public Openable(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags,
+            int key_lo, int key_hi, int shutdown_size) {
+            this(style, x, y, orientation, gr_state, restricted, open_flags);
+            setKeyedState(key_lo, key_hi);
+            this.shutdown_size = shutdown_size;
+        }
+        
     
     protected void setOpenableState(int open_flags) {
         if (open_flags != -1) {
@@ -81,7 +108,7 @@ public abstract class Openable extends Container {
     }
 
     public JSONLiteral encodeOpenable(JSONLiteral result) {
-        result = super.encodeCommon(result);
+        result = super.encodeContainer(result);
         if (0 != packBits(open_flags)) {
             result.addParameter("open_flags", packBits(open_flags));
         }
@@ -171,10 +198,7 @@ public abstract class Openable extends Container {
         } else
             send_reply_error(from);
     }
-    
-    
-    public int AVERAGE_C64_OBJ_LOAD = 200; // bytes
-    
+        
     /**
      * Verb (Openable): Open [and unlock] this container.
      * 
@@ -191,8 +215,7 @@ public abstract class Openable extends Container {
         if (!open_flags[OPEN_BIT] && // OPEN
                 (have_key || open_flags[UNLOCKED_BIT]) &&   // Holding Key or UNLOCKED
                 container().noid == THE_REGION) {           // AND in the REGION alone.
-            if (region.space_usage + AVERAGE_C64_OBJ_LOAD * capacity() >= C64_HEAP_SIZE) {      
-                // TODO Best guess. No science behind this. FRF
+            if (region.space_usage + shutdown_size >= c64_capacity(region)) {      
                 object_say(from, noid, "There is too much stuff in this region.");
                 send_reply_error(from);
                 return;

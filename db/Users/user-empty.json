@@ -1,0 +1,15 @@
+[ {
+	"type" : "user",
+	"ref" : "user-empty",
+	"name" : "Empty",
+	"mods" : [ {
+		"type" : "Avatar",
+		"turf": "context-empty",
+		"x" : 0,
+		"y" : 150,
+		"bodyType" : "male",
+		"bankBalance" : 50000,
+		"custom" : [ 17, 17 ],
+		"nitty_bits" : 8
+	} ]
+} ]

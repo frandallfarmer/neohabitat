@@ -1,0 +1,5 @@
+{"to":"session", "op":"entercontext", "user":"user-empty", "Telko": { "delay": 2, "logtime": true } }
+
+{"to":"ME","op":"POSTURE","pose":141, "Telko": { "delay": 1 } }
+
+{"to":"ME","op":"SPEAK","esp":0,"text":"My name is $ME.name$, and that is what I am.", "Telko": { "delay": 2 } }

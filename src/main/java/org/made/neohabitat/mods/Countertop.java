@@ -49,19 +49,19 @@ public class Countertop extends Openable implements Copyable {
         return false;
     }
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "shutdown_size"  })
     public Countertop(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
-                 OptInteger open_flags) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags);
+                 OptInteger open_flags, OptInteger shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags, shutdown_size);
     }
 
-    public Countertop(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags);
+    public Countertop(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags, int shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags, shutdown_size);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Countertop(style, x, y, orientation, gr_state, restricted, open_flags);
+        return new Countertop(style, x, y, orientation, gr_state, restricted, open_flags, shutdown_size);
     }
 
     @Override

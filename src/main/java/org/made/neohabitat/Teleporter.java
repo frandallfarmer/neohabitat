@@ -68,7 +68,7 @@ public abstract class Teleporter extends Coinop {
             Avatar avatar = avatar(from);
             if (adjacent(avatar, from) &&
                     (activeState == PORT_ACTIVE || HabitatClass() == CLASS_ELEVATOR)) {
-                if (Region.IsRoomForMyAvatarIn(destination, from)) {
+                if (Region.IsRoomForMyAvatarIn(destination, avatar)) {
                     send_reply_success(from);
                     avatar.inc_record(HS$teleports);
                     // Moved arrival positioning logic to avatar.objectIsComplete

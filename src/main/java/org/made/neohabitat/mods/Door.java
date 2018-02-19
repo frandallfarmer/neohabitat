@@ -59,7 +59,7 @@ public class Door extends Openable implements Copyable {
     public Door(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger open_flags, OptInteger key_lo, OptInteger key_hi,
         String connection) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, new OptInteger(0));
         this.connection = connection;
     }
 
