@@ -1960,7 +1960,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     }
 
     public int c64_capacity() {
-    	return(C64_HEAP_SIZE - FIRST_GHOST_HEAP_SIZE);		// When in doubt, reserve space for the Ghost
+    	return(C64_HEAP_SIZE - HEAP_SAFETY_MARGIN - FIRST_GHOST_HEAP_SIZE);		// When in doubt, reserve space for the Ghost
     }
     
     public int c64_capacity(Region region) {
@@ -1968,7 +1968,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     	if (region.regionGhost() == null)
     		return c64_capacity();
     	
-    	return C64_HEAP_SIZE;							// If the ghost is instantiated, we can use all the of the heap.
+    	return C64_HEAP_SIZE - HEAP_SAFETY_MARGIN;							// If the ghost is instantiated, we can use all the of the heap.
     }
     
     
