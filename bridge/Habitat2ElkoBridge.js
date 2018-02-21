@@ -308,6 +308,59 @@ function confirmOrCreateUser(fullName, client) {
     return userRef;
 }
 
+function enterContextAfterRegionChecks(client, server, context) {			// Deal with first connection into a nearly full region.
+    var userRef = client.userRef;
+    var modified= false;
+
+    MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+    	Assert.equal(null, err);
+    	db.collection('odb').findOne({
+    		"ref": userRef
+    	}, function(err, user) {
+    		Assert.equal(err, null);
+    		Assert.notEqual(user, null);
+
+    		if (user.mods[0].amAGhost) {								// All ghosts always allowed (there is a limit, not tracked.)
+    			return enterContext(client, server, context);        
+    		}
+
+    		//Check the region to see how full it is.
+    		db.collection('odb').findOne({
+    			"ref": context
+    		}, function(err, region) {
+    			Assert.equal(err, null);
+    			if (region === null) {
+    				Trace.error("Unable to find last Region %s for User: %s. Setting to Turf %s.", context, userRef, user.mods[0].turf);
+    				user.mods[0].amAGhost = true;
+    				context = user.mods[0].turf;
+    				modified = true;
+    			} else {
+    				if (region.mods[0].shutdown_size > 8000) {			// TODO Other tests go here, such as avatars, heads, and instances.
+    					Trace.error("Forcing %s to ghost. Region heap at %d.", userRef, region.mods[0].shutdown_size)
+    					user.mods[0].amAGhost = true;
+    					modified = true;
+    				}
+    			}
+
+    			// Updates the User's Elko document with ghost status.
+    			if (modified) {
+    				db.collection('odb').updateOne(
+    						{ref: user.ref},
+    						user,
+    						{upsert: true},
+    						function(err, result) {
+    							Assert.equal(err, null);
+    							enterContext(client, server, context);
+    						});
+    			} else {
+    				enterContext(client, server, context);
+    			}
+    		});
+        });
+    });
+}
+
+
 String.prototype.getBytes = function () {
     var bytes = [];
     for (var i = 0; i < this.length; ++i) {
@@ -855,8 +908,11 @@ function parseHabitatClientMessage(client, server, data) {
                 } else {
                     return; // Ignore this request, the client is hanging but a changecontext/immdiate message is coming to fix this.
                 }
-                enterContext(client, server, context);
-                client.firstConnection = false;
+                if (client.firstConnection) {
+                	enterContextAfterRegionChecks(client, server, context);
+                } else {
+                	enterContext(client, server, context);
+                }
                 return;
             }
         }
@@ -904,6 +960,7 @@ function enterContext(client, server, context) {
     toElko(server, JSON.stringify(enterContextMessage));
     initializeClientState(client, client.userRef, replySeq);
     client.state.nextRegion = "";
+    client.firstConnection = false;
 }
 
 function removeNoidFromClient(client, noid) {
@@ -1292,7 +1349,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 
     if (o.type === "changeContext") {
         client.state.nextRegion = o.context;        // Save for MESSAGE_DESCRIBE to deal with later.
-        var immediate = o.immediate || false;           // Force enterContext after reconnect? aka Client has prematurely sent MESSAGE_DESCRIBE and we ignored it.
+        var immediate = o.immediate || false;       // Force enterContext after reconnect? aka Client has prematurely sent MESSAGE_DESCRIBE and we ignored it.
         createServerConnection(client.port, client.host, client, immediate, o.context); 
         // create a new connection for the new context
         return true;                                // Signal this connection to die now that it's obsolete.

@@ -815,7 +815,7 @@ public class Avatar extends Container implements UserMod {
         Region region   = current_region();
         Ghost  ghost    = region.getGhost();
         int    result   = COPOREAL_FAIL;
-        if (region.isRoomForMyAvatar(this)) {
+        if (Region.isRoomForMyAvatar(this, region)) {
             for (int i = 0; i < capacity(); i++) {
                 HabitatMod obj = contents(i);
                 if (obj != null) {

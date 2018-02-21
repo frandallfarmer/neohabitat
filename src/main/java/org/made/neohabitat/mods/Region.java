@@ -318,17 +318,21 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
         
     public static boolean IsRoomForMyAvatarIn(String regionRef, Avatar avatar) {
-        Region region = Region.RefToRegion.get(regionRef);
+        Region target = Region.RefToRegion.get(regionRef);
         
-        if (region != null)
-        	return region.isRoomForMyAvatar(avatar);		// Region is instantiated, so ask that region for permission...
+        if (target != null)
+        	return isRoomForMyAvatar(avatar, target);		// Region is instantiated, so ask that region for permission...
 
         // Region is "offline" - not instantiated - So we use the global store of region Heap sizes to consider rejecting the request.
         
         if (!RefToHeap.containsKey(regionRef))				// Never set, so there must be room. A region design constraint. 
         	return true;									// TODO: RefToHeap loader at server boot to make this true across boots. FRF
+        
+        int heapAvatar = avatar.setContainerShutdownSize();
+        int heapRegion = RefToHeap.get(regionRef);
+        int heapRequired = heapAvatar + heapRegion + FIRST_AVATAR_HEAP_SIZE + FIRST_GHOST_HEAP_SIZE;
         										
-        if (FIRST_AVATAR_HEAP_SIZE + avatar.setContainerShutdownSize() + FIRST_GHOST_HEAP_SIZE + RefToHeap.get(regionRef) >= C64_HEAP_SIZE)
+        if (heapRequired >= C64_HEAP_SIZE)
         	return false;          // There must be room for me, my stuff, a ghost, and whatever is already there...
         
         return true;
@@ -341,12 +345,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
    
     // If the region we want to travel to is instantiated, we can do an in-memory check in the target region for the anticipated storage requried by the incoming avatar.
-    public boolean isRoomForMyAvatar(Avatar avatar) {
+    public static boolean isRoomForMyAvatar(Avatar avatar, Region target) {
     	
     	int    instanceSize = avatar.instance_size();		// If there are other avatars, we need only account for instance + contents.
-    	int    bodies       = avatarsPresent();
+    	int    bodies       = target.avatarsPresent();
     	
-    	if (bodies == max_avatars)							// TODO: Since multiple people can be between regions at once, this is currently a race. FRF
+    	if (bodies == target.max_avatars)							// TODO: Since multiple people can be between regions at once, this is currently a race. FRF
             return false;
         
         if (bodies == 0)
@@ -354,10 +358,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 
         instanceSize += avatar.setContainerShutdownSize();        
         
-        if (space_usage + instanceSize >= c64_capacity())
+        if (target.space_usage + instanceSize >= target.c64_capacity())
             return false;
         
-        return mem_check_container(avatar); 				// Check the pocket contents for other overflows.
+        return target.limits_ok(avatar, target); 				// Check the pocket contents for other overflows.
 
     }
     
@@ -464,8 +468,9 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         
         Container cont = obj.container();
         
-        if (cont != null & cont.opaque_container()) {
+        if (cont != null & obj.container_is_opaque(cont, obj.y)) {
             obj.note_instance_deletion(obj);
+            obj.note_image_deletion(obj);
         } else {
             obj.note_object_deletion(obj);
         }

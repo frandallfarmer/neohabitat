@@ -225,8 +225,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         HabitatMod container = container();
         if (!(container.HabitatClass() == CLASS_AVATAR && ((Avatar) container).amAGhost)) {
             Region.addToNoids(this);
-            if (container.opaque_container()) {
+            if (container_is_opaque(container, this.y)) {
                 note_instance_creation(this);
+            	note_image_creation(this);
             } else {
                 note_object_creation(this);
             }
@@ -1344,14 +1345,16 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @return Is this slot, of this container, visible to the region?
      */
     public boolean container_is_opaque(HabitatMod cont, int pos) {
-    	/* FRF - Though the original Habitat server understood that the Avatar's pocket is an opaque container, this is being ignored in order to expedite region capacity support.
-    	 * 
+    	    	
+    	/* TODO FRF Opaque Avatars are still a problem
+
         if (cont.HabitatClass() == CLASS_AVATAR)
             if (pos == HANDS || pos == HEAD)
                 return (false);
             else
                 return (true);
-        */
+       	 */
+    	
         return cont.opaque_container();
     }
 
@@ -1785,17 +1788,21 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     	note_instance_creation_internal(obj, current_region());
     }
     
+    public static final boolean DUMP_HEAP = true;
+	String s;
+    
     protected void note_instance_creation_internal(HabitatMod obj, Container cont) {
         int class_number= obj.HabitatClass();
 
         cont.space_usage += obj.instance_size();
         cont.class_ref_count[class_number]++;
-//        String s = " Instance creation: " + obj.HabitatModName() + "(" + class_number + ") change: +" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];
+        if (Region.DUMP_HEAP) s = " Instance creation: " + obj.HabitatModName() + "(" + class_number + ") change: +" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];
+        
         if (cont.class_ref_count[class_number] == 1) {
             cont.space_usage += obj.class_size();
-//            s += " change +" + obj.class_size() + "(class)";
+            if (Region.DUMP_HEAP) s += " change +" + obj.class_size() + "(class)";
         }
-//        trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
+        if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
     }
     
     
@@ -1805,18 +1812,31 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     private void note_resource_creation_internal(HabitatMod obj, int style) {
     	note_resource_creation_internal(obj, style, current_region());
     }
-
-    protected void note_resource_creation_internal(HabitatMod obj, int style, Container cont) {
-        int     class_number= obj.HabitatClass();
-
-        int type = NeoHabitat.RESOURCE_IMAGE;
+    
+    public void note_image_creation(HabitatMod obj) {
+    	
+//  	note_image_creation_internal(obj, obj.style, current_region());   TODO FRF This Doesn't Work.
+    	
+    }
+    
+    protected void note_image_creation_internal(HabitatMod obj, int style, Container cont) {
+        int class_number = obj.HabitatClass();
+        int type         = NeoHabitat.RESOURCE_IMAGE;
+        
         if (class_number == CLASS_HEAD)
             note_resource_usage(NeoHabitat.RESOURCE_HEAD, style, cont);
         else if (NeoHabitat.ClassResources[class_number][type].length > 0)
             note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][style], cont);		// TODO: style bounds checking?
-       
-        type++;     
-        while (type <= NeoHabitat.RESOURCE_SOUND) {
+        
+    }
+
+    protected void note_resource_creation_internal(HabitatMod obj, int style, Container cont) {
+        int class_number = obj.HabitatClass(); 
+        int type = NeoHabitat.RESOURCE_ACTION;
+        
+    	note_image_creation_internal(obj, style, cont);
+
+    	while (type <= NeoHabitat.RESOURCE_SOUND) {
             for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
                 note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][i], cont);
             }
@@ -1827,13 +1847,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     protected void note_resource_usage(int type, int resource, Container cont) {        
     	
         cont.resource_ref_count[type][resource] += 1;
-//        String s = " Resource creation: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
+        if (Region.DUMP_HEAP) s = " Resource creation: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
+        
         if (cont.resource_ref_count[type][resource] == 1) {
         	  int size = NeoHabitat.ResourceSizes[type][resource] + 5; /* Check the Client source for details on the 5 byte usage. FRF */
               cont.space_usage += size;
-//              s += " change +" + size + ", heap: " + cont.space_usage;
+              if (Region.DUMP_HEAP) s += " change +" + size + ", heap: " + cont.space_usage;
         }
-//        trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
+        if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
     }
     
     
@@ -1882,25 +1903,36 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         cont.space_usage -= obj.instance_size();
         
         cont.class_ref_count[class_number]--;
-//        String s = " Instance deletion from " + obj.HabitatModName() + "(" + class_number + ") change: -" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];        
+        if (Region.DUMP_HEAP) s = " Instance deletion from " + obj.HabitatModName() + "(" + class_number + ") change: -" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];        
+        
         if (cont.class_ref_count[class_number] == 0) {
             cont.space_usage -= obj.class_size();
-//            s += " change -" + obj.class_size() + "(class)";
+            if (Region.DUMP_HEAP) s += " change -" + obj.class_size() + "(class)";
         }
-//        trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
+        if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
+    }
+    
+    public void note_image_deletion(HabitatMod obj) {
+//  	note_image_deletion_internal(obj, obj.style);  TODO FRF This doesn't work.
     }
 
-    
-    private void note_resource_deletion_internal(HabitatMod obj, int style) {
-        int       class_number = obj.HabitatClass();
+    private void note_image_deletion_internal(HabitatMod obj, int style) {
+        int class_number = obj.HabitatClass();
+        int         type = NeoHabitat.RESOURCE_IMAGE;
 
-        int type = NeoHabitat.RESOURCE_IMAGE;
         if (class_number == CLASS_HEAD)
             note_resource_removal(obj, NeoHabitat.RESOURCE_HEAD, style);
         else if (NeoHabitat.ClassResources[class_number][type].length > 0) 
             note_resource_removal(obj, type, NeoHabitat.ClassResources[class_number][type][style]);
+ 
+    }
+    
+    private void note_resource_deletion_internal(HabitatMod obj, int style) {
+        int       class_number = obj.HabitatClass();
+        int         type = NeoHabitat.RESOURCE_ACTION;
 
-        type++;     
+        note_image_deletion_internal(obj, style);
+        
         while (type <= NeoHabitat.RESOURCE_SOUND) {
             for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
                 note_resource_removal(obj, type, NeoHabitat.ClassResources[class_number][type][i]);
@@ -1911,20 +1943,19 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     private void note_resource_removal(HabitatMod obj, int type, int resource) {        
     	note_resource_removal(type, resource, current_region());
-
     }
-    
     
     private void note_resource_removal(int type, int resource, Container cont) { 
     	
         cont.resource_ref_count[type][resource] -= 1;
-//        String s = " Resource removal: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
+        if (Region.DUMP_HEAP) s = " Resource removal: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
+        
          if (cont.resource_ref_count[type][resource] == 0) {
         	 int size = NeoHabitat.ResourceSizes[type][resource] + 5; /* Check the Client source for details on the 5 byte usage. FRF */
              cont.space_usage -= size;
-//             s += " change -" + size + ", heap: " + cont.space_usage;
+             if (Region.DUMP_HEAP) s += " change -" + size + ", heap: " + cont.space_usage;
          }
-//         trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
+         if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
     }
     
     /**
@@ -1948,7 +1979,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         if (region.space_usage > c64_capacity(region))
             return false;        
 
+        return limits_ok(obj, region);
+    }
+    
+    public boolean limits_ok(HabitatMod obj, Region region) {   	
         int the_class = obj.HabitatClass();
+        
         if (the_class == CLASS_HEAD)
             if (region.class_ref_count[the_class] > 31)
                 return false;
@@ -2012,11 +2048,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         
         if (container_is_opaque(old_container, obj.y)) {
             note_instance_deletion(obj);
+            note_image_deletion(obj);
         } else {
             note_object_deletion(obj);
         }
         if (container_is_opaque(new_container, new_position)) {
             note_instance_creation(obj);
+            note_image_creation(obj);
         } else {
             note_object_creation(obj);
         }
@@ -2027,11 +2065,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
         if (container_is_opaque(new_container, new_position)) {
             note_instance_deletion(obj);
+            note_image_deletion(obj);
         } else {
             note_object_deletion(obj);
         }
         if (container_is_opaque(old_container, obj.y)) {
             note_instance_creation(obj);
+            note_image_creation(obj);
+
         } else {
             note_object_creation(obj);
         }

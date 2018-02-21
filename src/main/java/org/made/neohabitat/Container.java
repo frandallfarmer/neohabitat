@@ -132,11 +132,18 @@ public abstract class Container extends HabitatMod {
     public int setContainerShutdownSize() {
     	// Calculate the memory maximum memory footprint
     	space_usage = 0;
+        class_ref_count     = new int[256];
+        resource_ref_count  = new int[4][256];
+        
         for (int i = 0; i < capacity(); i++) {
             HabitatMod obj = contents(i);
             if (obj != null) {
                 note_instance_creation_internal(obj, this);
-                note_resource_creation_internal(obj, obj.style, this);
+                if (container_is_opaque(this, obj.y)) {
+                	note_image_creation_internal(obj, obj.style, this);
+                } else {
+                	note_resource_creation_internal(obj, obj.style, this);
+                }
             }
         }
         shutdown_size = space_usage;
