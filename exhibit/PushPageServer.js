@@ -38,8 +38,6 @@ var   SavedMessage      = {};
 
 const GameHost    = "localhost";
 const GamePort    = 3001;
-var   GameClient  = {};
-
 
 function stringifyID(socket) {
 	return "" + socket.remoteAddress + "." + socket.remotePort;
@@ -130,12 +128,34 @@ Trace.info('Push WebServer listening on ' + WebHost +':'+ WebPort);
  * html: Raw html string to be displayed on the web client (exclusive with file:)
  * target: the identity of the target client(s).
  * 
+ * OR
+ * 
+ * users: an array of users currently connected, sent whenever that changes
+ *        this allows this server to 1) cleanup and 2) generate a prompt to link sessions.
+ * 
  * 
  */
+
+var GameUsers = [];
+
+function buildUsersPrompt() {
+	var prompt = "";
+	
+	prompt = '<font size="+3">Which is your avatar?</p><ol>';
+	for (user in GameUsers) {
+		target = GameUsers[user];
+		if (!WebClientUsers[target]) {
+			prompt += '<li>';		
+			prompt += '<a target="_parent" href="?target=' + target + '">';
+			prompt += target;
+			prompt += '</a></li>';
+		}
+	}
+	prompt += '</ol></font>';
+	return prompt;
+}
+
 const GameServer = Net.createServer(function (client) {
-	Trace.info("Neohabitat Server has connected!")
-	GameClient = client;
-	// Singleton - uses IP address? to map user sessions to web clients for pushing html files...
 	Trace.info("NeoHabitat Server at " + stringifyID(client));
 	client.on('data', function(data) {
 		var message = {};
@@ -147,35 +167,45 @@ const GameServer = Net.createServer(function (client) {
 			client.end();
 			return;
 		}
-		var file   = message.file   || "";
-		var html   = message.html   || "";
-		var target = message.target || "";
-
-		var webClient;					// Grab any unknown client. Consider grabbing all of them!
-
-		if (target == "") {									// TODO Remove this default. It's wrong. Must have target?
-			if (Object.keys(WebClients).length == 0) {
-				Trace.error("No target specified, and no clients connected");
-				return;
-			} else {
-				webClient = WebClients.keys[0];					// Grab any unknown client. Consider grabbing all of them!
-				pushToClient(webClient, file, html);
+		if (message.users) {
+			GameUsers = message.users;
+			Trace.info(JSON.stringify(GameUsers));
+			for (target in WebClientUsers) {
+				if (!GameUsers.includes(target)) { // If a game user went away, we need to clean up.
+					pushToClient(WebClientUsers[target], "", '$window.top.location.href = "";');
+				}
 			}
 		} else {
-			webClient = WebClientUsers[target];
-			SavedMessage[target] = {"target":target, "html":html, "file":file };	// Cache this if we don't have a link, or for later after a refresh.
-			if (webClient) {
-				pushToClient(webClient, file, html);			// We have already linked the user and the web session...
-			} else {
-				// Need to link the user to the web session - so we ask the web session to self-identify.
-				var html = "";
-				if (Object.keys(WebClients).length == 1) {
-					html = '$window.top.location.href = "?target=' + target + '";';
+			var file   = message.file   || "";
+			var html   = message.html   || "";
+			var target = message.target || "";
+
+			var webClient;					// Grab any unknown client. Consider grabbing all of them!
+
+			if (target == "") {									// TODO Remove this default. It's wrong. Must have target?
+				if (Object.keys(WebClients).length == 0) {
+					Trace.error("No target specified, and no clients connected");
+					return;
 				} else {
-					html = '<font size="+3">Which is your avatar?</p><ol><li><a href="?target=randy" target="_parent">Randy</a></li><li><a href="?target=chip" target="_parent">Chip</a></li></ol></font>';
+					webClient = WebClients.keys[0];					// Grab any unknown client. Consider grabbing all of them!
+					pushToClient(webClient, file, html);
 				}
-				for (var anonymousID in WebClients) {
-					pushToClient(WebClients[anonymousID], "", html);
+			} else {
+				webClient = WebClientUsers[target];
+				SavedMessage[target] = {"target":target, "html":html, "file":file };	// Cache this if we don't have a link, or for later after a refresh.
+				if (webClient) {
+					pushToClient(webClient, file, html);			// We have already linked the user and the web session...
+				} else {
+					// Need to link the user to the web session - so we ask the web session to self-identify.
+					var html = "";
+					if (Object.keys(WebClients).length == 1) {
+						html = '$window.top.location.href = "?target=' + target + '";';
+					} else {
+						html = buildUsersPrompt();
+					}
+					for (var anonymousID in WebClients) {
+						pushToClient(WebClients[anonymousID], "", html);
+					}
 				}
 			}
 		}
