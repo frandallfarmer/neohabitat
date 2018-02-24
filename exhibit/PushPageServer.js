@@ -150,11 +150,11 @@ const GameServer = Net.createServer(function (client) {
 		var file   = message.file   || "";
 		var html   = message.html   || "";
 		var target = message.target || "";
-		
+
 		var webClient;					// Grab any unknown client. Consider grabbing all of them!
 
-		if (target == "") {										// TODO Remove this default. It's wrong. Must have target?
-			if (WebClients.length == 0) {
+		if (target == "") {									// TODO Remove this default. It's wrong. Must have target?
+			if (Object.keys(WebClients).length == 0) {
 				Trace.error("No target specified, and no clients connected");
 				return;
 			} else {
@@ -168,8 +168,14 @@ const GameServer = Net.createServer(function (client) {
 				pushToClient(webClient, file, html);			// We have already linked the user and the web session...
 			} else {
 				// Need to link the user to the web session - so we ask the web session to self-identify.
+				var html = "";
+				if (Object.keys(WebClients).length == 1) {
+					html = '$window.top.location.href = "?target=' + target + '";';
+				} else {
+					html = '<font size="+3">Which is your avatar?</p><ol><li><a href="?target=randy" target="_parent">Randy</a></li><li><a href="?target=chip" target="_parent">Chip</a></li></ol></font>';
+				}
 				for (var anonymousID in WebClients) {
-					pushToClient(WebClients[anonymousID], "", '<ol><li><a href="?target=randy" target="_parent">Randy</a></li><li><a href="?target=chip" target="_parent">Chip</a></li></ol>');
+					pushToClient(WebClients[anonymousID], "", html);
 				}
 			}
 		}

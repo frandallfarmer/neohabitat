@@ -11,7 +11,10 @@ function getParameterByName(name, url) {
   var target = getParameterByName("target")
   var source = new EventSource('/events' + (target ? "?target=" + target : ""));
   source.onmessage = function(e) {
-    document.body.innerHTML = e.data;
-    console.log(e.data);
+    if (e.data.charAt(0) == '$') {
+    	eval(e.data.slice(1));
+    } else {
+	    document.body.innerHTML = e.data;
+	}
   };
 </script>
