@@ -10,10 +10,11 @@ const RegionNotFoundLocation = RegionDocsDir + 'NOT_FOUND.md';
 
 
 class DocsRoutes {
-  constructor(habiproxy) {
+  constructor(habiproxy, config) {
     var self = this;
 
     self.habiproxy = habiproxy;
+    self.config = config;
     self.mdConverter = new showdown.Converter();
     self.router = express.Router();
 

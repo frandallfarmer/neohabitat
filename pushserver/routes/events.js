@@ -2,6 +2,13 @@ const express = require('express');
 
 
 function sendEvent(res, type, msg) {
+  var event = {
+    type: type,
+    msg: {},
+  };
+  if (msg !== undefined) {
+    event['msg'] = msg;
+  }
   res.write('data: ' + JSON.stringify(event) + '\n\n');
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -12,17 +19,17 @@ function sendEvent(res, type, msg) {
 
 
 class EventRoutes {
-  constructor(habiproxy, externalPages) {
+  constructor(habiproxy, config) {
     var self = this;
     self.habiproxy = habiproxy;
-    self.externalPages = externalPages;
+    self.config = config;
     self.router = express.Router();
     self.setRoutes();
   }
 
   getRegionDocsURL(regionName) {
-    if (regionName in this.externalPages) {
-      return this.externalPages[regionName];
+    if (regionName in this.config.externalPages) {
+      return this.config.externalPages[regionName];
     }
     return '/docs/region/' + regionName;
   }
@@ -41,6 +48,7 @@ class EventRoutes {
 
       res.render('events', {
         avatarName: req.params.avatarName,
+        config: this.config,
         habiproxy: self.habiproxy,
         regionDescription: session.avatarContext.name,
         regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
@@ -63,20 +71,15 @@ class EventRoutes {
       req.socket.setTimeout(Infinity);
 
       session.on('enteredRegion', function() {
-        sendEvent(res, {
-          type: 'REGION_CHANGE',
-          msg: {
-            regionDescription: session.avatarContext.name,
-            regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
-            regionName: session.avatarRegion(),
-          }
+        sendEvent(res, 'REGION_CHANGE', {
+          regionDescription: session.avatarContext.name,
+          regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
+          regionName: session.avatarRegion(),
         });
       });
 
       session.on('disconnect', function() {
-        sendEvent(res, {
-          type: 'DISCONNECT'
-        });
+        sendEvent(res, 'DISCONNECT');
       });
     });
   }

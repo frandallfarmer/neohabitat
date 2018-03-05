@@ -2,8 +2,9 @@ const express = require('express');
 
 
 class IndexRoutes {
-  constructor(habiproxy) {
+  constructor(habiproxy, config) {
     this.habiproxy = habiproxy;
+    this.config = config;
     this.router = express.Router();
     this.setRoutes();
   }
@@ -14,6 +15,7 @@ class IndexRoutes {
       res.render('index', {
         title: 'Welcome to Neohabitat!',
         habiproxy: self.habiproxy,
+        config: self.config,
       });
     });
   }

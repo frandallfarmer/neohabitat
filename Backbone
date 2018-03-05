@@ -36,6 +36,7 @@ clusters:
           port: 27017
       ports:
         - port: 1337
+        - port: 1701
         - port: 9000
 
   - neohabitatslackin:
@@ -66,6 +67,12 @@ clusters:
         - port: 5190
 
 balancers:
+  - exhibit:
+      synapses:
+        - resource: neohabitat
+          protocol: http
+          remote_port: 1701
+
   - neohabitat:
       synapses:
         - resource: neohabitat

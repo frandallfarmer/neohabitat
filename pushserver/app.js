@@ -61,18 +61,21 @@ var habiproxy = new HabiproxyServer(
 habiproxy.start();
 
 var YAML = require('yamljs');
-var externalPages = YAML.load('./externalPages.yml');
+var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.yml');
 
 // Establishes the PushServer's web application.
+var APIRoutes = require('./routes/api');
 var DocsRoutes = require('./routes/docs');
 var EventsRoutes = require('./routes/events');
 var IndexRoutes = require('./routes/index');
 
-const docsRoutes = new DocsRoutes(habiproxy);
-const eventsRoutes = new EventsRoutes(habiproxy, externalPages);
-const indexRoutes = new IndexRoutes(habiproxy);
+const apiRoutes = new APIRoutes(habiproxy, config);
+const docsRoutes = new DocsRoutes(habiproxy, config);
+const eventsRoutes = new EventsRoutes(habiproxy, config);
+const indexRoutes = new IndexRoutes(habiproxy, config);
 
 app.use('/', indexRoutes.router);
+app.use('/api/v1', apiRoutes.router);
 app.use('/docs', docsRoutes.router);
 app.use('/events', eventsRoutes.router);
 

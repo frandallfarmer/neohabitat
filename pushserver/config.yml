@@ -1,0 +1,9 @@
+---
+backgroundImages:
+  - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_splash.png
+  - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/launcher_login.png
+  - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/habitat_imagery.png
+  - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_downtown.png
+
+external_pages:
+  unknown: /region/unknown
