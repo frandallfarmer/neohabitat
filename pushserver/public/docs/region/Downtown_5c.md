@@ -1,8 +1,7 @@
 # The Vendroid
 ![](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/vendo.png "Vendroid")
 
-The Vendroid was an automated machine which sold multiple items at varying prices. Aside receiving prizes and gifts, Vendroids served as the primary way of buying and obtaining new items. Also, much like the Pawn Machine, the Vendroid played a big role in
-[The Big-Money Scam](https://www.crockford.com/ec/anecdotes.html#scam).
+The Vendroid was an automated machine which sold multiple items at varying prices. Aside receiving prizes and gifts, Vendroids served as the primary way of buying and obtaining new items. Also, much like the Pawn Machine, the Vendroid played a big role in [The Big-Money Scam](https://www.crockford.com/ec/anecdotes.html#scam).
 
 **[Creator Anecdote](https://www.crockford.com/ec/anecdotes.html)**
 ~~~~
