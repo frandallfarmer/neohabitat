@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <% include ./header.ejs %>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h3>Welcome to Neohabitat!</h3>
+          <h4>Please select your avatar below:</h4>
+          <table class="table">
+            <thead>
+              <th>Avatar</th>
+            </thead>
+            <tbody>
+              <% Object.keys(habiproxy.sessions).forEach(function(avatarName) { %>
+                <tr>
+                  <td><%= avatarName %><td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <% include ./footer.ejs %>
+</html>

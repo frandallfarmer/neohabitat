@@ -4,6 +4,7 @@ bin/
 lib/
 log/
 node_modules/
+pushserver/node_modules/
 target/
 hooks/
 .classpath
