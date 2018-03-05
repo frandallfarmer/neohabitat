@@ -14,6 +14,7 @@ class HabitatSession {
     this.elkoPort = elkoPort;
     this.client = client;
 
+    this.avatarContext = null;
     this.avatarObj = null;
     this.avatarName = 'unknown';
     this.elkoConnection = null;
@@ -48,6 +49,13 @@ class HabitatSession {
       this.elkoConnection.on('data', this.handleElkoData.bind(this));
       this.elkoConnection.on('end', this.handleElkoDisconnect.bind(this));
     }
+  }
+
+  avatarRegion() {
+    if (this.avatarContext === null) {
+      return 'unknown';
+    }
+    return this.avatarContext.ref.split('-')[1];
   }
 
   // Proxies any data from the client to this session's Elko connection.
@@ -102,7 +110,7 @@ class HabitatSession {
     log.debug('Elko connection established on: %s', this.id());
     this.connected = true;
     for (var i in this.callbacks.connected) {
-      log.debug('Running callback for connected on: %s', this.id());
+      log.debug('Running callback for session connected on: %s', this.id());
       this.callbacks.connected[i](this);
     }
   }
@@ -114,12 +122,19 @@ class HabitatSession {
   on(eventType, callback) {
     if (eventType in this.callbacks) {
       this.callbacks[eventType].push(callback);
+      return this.callbacks[eventType].length - 1;
     } else {
       this.callbacks[eventType] = [callback];
+      return 0
     }
   }
 
   processMessage(message) {
+    // If this is a new context, tracks it within this session for ease of rendering.
+    if (message.op === 'make' && message.obj.type === 'context') {
+      this.avatarContext = message.obj;
+    }
+
     // If the Elko message indicates that it is directed to the client of this proxy
     // session, it will BOTH contain the Avatar's object and indicate that the Avatar has
     // entered a new Habitat region.
@@ -150,6 +165,14 @@ class HabitatSession {
     // Fires any generic message callbacks.
     for (var i in this.callbacks.msg) {
       this.callbacks.msg[i](this, message)
+    }
+  }
+
+  removeCallback(eventType, index) {
+    if (eventType in this.callbacks) {
+      if (index >= 0 && index < this.callbacks[eventType].length) {
+        this.callbacks[eventType].splice(index, 1);
+      }
     }
   }
 }

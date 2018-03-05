@@ -7,15 +7,18 @@
       <div class="row">
         <div class="col-md-12 text-center">
           <h3>Welcome to Neohabitat!</h3>
+          <h4><%= Object.keys(habiproxy.sessions).length %> avatars are currently in world.</h4>
           <h4>Please select your avatar below:</h4>
           <table class="table">
             <thead>
               <th>Avatar</th>
+              <th>Location</th>
             </thead>
             <tbody>
               <% Object.keys(habiproxy.sessions).forEach(function(avatarName) { %>
                 <tr>
                   <td><%= avatarName %><td>
+                  <td><%= habiproxy.sessions[avatarName].avatarContext.name %></td>
                 </tr>
               <% }); %>
             </tbody>

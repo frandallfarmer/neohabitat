@@ -84,7 +84,7 @@ function start_bridge() {
 }
 
 function start_pushserver() {
-  (cd "${GIT_BASE_DIR}/pushserver" && npm run debug 2>&1 | tee pushserver.log)
+  (cd "${GIT_BASE_DIR}/pushserver" && npm run debug 2>&1 | tee ../pushserver.log)
 }
 
 function start_elko_server() {

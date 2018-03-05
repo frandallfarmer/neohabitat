@@ -82,8 +82,10 @@ class HabiproxyServer {
   on(eventType, callback) {
     if (eventType in this.callbacks) {
       this.callbacks[eventType].push(callback);
+      return this.callbacks[eventType].length - 1;
     } else {
       this.callbacks[eventType] = [callback];
+      return 0;
     }
   }
 }
