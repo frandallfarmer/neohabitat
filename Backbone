@@ -37,6 +37,7 @@ clusters:
       ports:
         - port: 1337
         - port: 1701
+        - port: 2018
         - port: 9000
 
   - neohabitatslackin:
@@ -77,6 +78,7 @@ balancers:
       synapses:
         - resource: neohabitat
           port: 1337
+          remote_port: 2018
         - resource: neohabitatqlink
           port: 1986
         - resource: neohabitatqlink

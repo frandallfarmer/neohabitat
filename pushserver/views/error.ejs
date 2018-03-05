@@ -9,14 +9,24 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
 
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style type="text/css">
+      body, html {
+        height: 100%;
+        padding: 20px;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 18px;
+        background: linear-gradient(rgba(30, 33, 42, 0.5), rgba(30, 33, 42, 0.5)), url("https://preview.ibb.co/bXJXcn/guru_meditation_error_animated.gif") center/cover;
+
+      }
+    </style>
   </head>
   <body>
     <div class="container d-flex h-100">
       <div class="row align-self-center w-100">
         <div class="col-8 mx-auto">
           <div class="jumbotron">
-            <h1 class="display-4 text-center"><%= message %></h1>
-            <h2><%= error.status %></h2>
+            <h1 class="display-4 text-center"><%= error.status %></h2>
+            <h2 class="text-center"><%= message %></h1>
           </div>
         </div>
       </div>

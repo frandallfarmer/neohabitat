@@ -36,25 +36,27 @@ class EventRoutes {
 
   setRoutes() {
     var self = this;
-    self.router.get('/:avatarName', function(req, res, next) {
-      if (!(req.params.avatarName in self.habiproxy.sessions)) {
+    self.router.get('/', function(req, res, next) {
+      var avatarName = req.query.avatar_name;
+
+      if (!(avatarName in self.habiproxy.sessions)) {
         var err = new Error('Avatar is not currently logged in.');
         err.status = 404;
         next(err);
         return;
       }
 
-      var session = self.habiproxy.sessions[req.params.avatarName];
+      var session = self.habiproxy.sessions[avatarName];
 
       res.render('events', {
-        avatarName: req.params.avatarName,
+        avatarName: avatarName,
         config: this.config,
         habiproxy: self.habiproxy,
         regionDescription: session.avatarContext.name,
         regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
         regionName: session.avatarRegion(),
         session: session,
-        title: 'Neohabitat - ' + req.params.avatarName,
+        title: 'Neohabitat - ' + avatarName,
       });
     });
 
