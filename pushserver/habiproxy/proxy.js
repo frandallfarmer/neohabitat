@@ -45,17 +45,26 @@ class HabiproxyServer {
   }
 
   handleSessionReady(session) {
+    if (session == null) {
+      return;
+    }
     this.sessions[session.avatarName] = session;
     for (var i in this.callbacks.sessionReady) {
+      log.debug('Handling callback for sessionReady on: %s', session.id())
       this.callbacks.sessionReady[i](session);
     }
   }
 
   handleSessionTerminate(session) {
-    if (session.ready) {
+    if (session == null) {
+      return;
+    }
+    if (session.avatarName in this.sessions) {
+      log.debug('Removing Habiproxy session: %s', session.id())
       delete this.sessions[session.avatarName];
     }
     for (var i in this.callbacks.sessionTerminated) {
+      log.debug('Handling callback for sessionTerminated on: %s', session.id())
       this.callbacks.sessionTerminated[i](session);
     }
   }

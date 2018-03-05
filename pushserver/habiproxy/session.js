@@ -52,12 +52,12 @@ class HabitatSession {
 
   // Proxies any data from the client to this session's Elko connection.
   handleClientData(buffer) {
-    log.info('%s -> %s', stringifyID(this.client), buffer);    
+    log.debug('%s -> %s', this.id(), buffer);    
     this.elkoConnection.write(buffer);
   }
 
   handleClientDisconnect() {
-    log.debug('Habiproxy session disconnected on: %s', stringifyID(this.client));
+    log.debug('Habiproxy session disconnected on: %s', this.id());
     this.handleElkoDisconnect();
   }
 
@@ -66,7 +66,7 @@ class HabitatSession {
   // callbacks.
   handleElkoData(buffer) {
     // Sends the Elko message to this session's client.
-    log.info('%s -> %s', buffer, stringifyID(this.client));
+    log.debug('%s -> %s', buffer, this.id());
     this.client.write(buffer);
 
     // Parses Elko message; if we receive bad data from Elko, terminates this session.
@@ -79,7 +79,7 @@ class HabitatSession {
       try {
         var parsedMessage = JSON.parse(message);
       } catch (err) {
-        log.error('JSON failed to parse, ignoring: %s %s', message, err);
+        log.error('JSON failed to parse, ignoring: "%s" %s', message, err);
         continue;
       }
       this.processMessage(parsedMessage)
@@ -87,24 +87,28 @@ class HabitatSession {
   }
 
   handleElkoDisconnect() {
-    log.debug('Disconnecting Elko connection on: %s', stringifyID(this.client));
+    log.debug('Disconnecting Elko connection on: %s', this.id());
     this.connected = false;
     this.ready = false;
     this.client.end();
     this.elkoConnection.destroy();
     for (var i in this.callbacks.disconnected) {
-      log.debug('Running callback for disconnected on: %s', stringifyID(this.client));
+      log.debug('Running callback for session disconnected on: %s', this.id());
       this.callbacks.disconnected[i](this);
     }
   }
 
   handleElkoConnect() {
-    log.debug('Elko connection established on: %s', stringifyID(this.client));
+    log.debug('Elko connection established on: %s', this.id());
     this.connected = true;
     for (var i in this.callbacks.connected) {
-      log.debug('Running callback for connected on: %s', stringifyID(this.client));
+      log.debug('Running callback for connected on: %s', this.id());
       this.callbacks.connected[i](this);
     }
+  }
+
+  id() {
+    return stringifyID(this.client) + ' (' + this.avatarName + ')';
   }
 
   on(eventType, callback) {
@@ -121,23 +125,23 @@ class HabitatSession {
     // entered a new Habitat region.
     if (message.you) {
       this.avatarObj = message.obj;
-      this.avatarName = this.avatarObj.name;
       if (!this.ready) {
         this.ready = true;
+        this.avatarName = this.avatarObj.name;
         for (var i in this.callbacks.sessionReady) {
-          log.debug('Running callbacks for sessionReady on: %s', stringifyID(this.client));
+          log.debug('Running callbacks for sessionReady on: %s', this.id());
           this.callbacks.sessionReady[i](this, message);
         }
       }
       for (var i in this.callbacks.enteredRegion) {
-        log.debug('Running callbacks for enteredRegion on: %s', stringifyID(this.client));
+        log.debug('Running callbacks for enteredRegion on: %s', this.id());
         this.callbacks.enteredRegion[i](this, message);
       }
     }
 
     // Fires any message-specific callbacks.
     if (message.op in this.callbacks) {
-      log.debug('Running callbacks for %s on: %s', o.op, stringifyID(this.client));
+      log.debug('Running callbacks for %s on: %s', o.op, this.id());
       for (var i in this.callbacks[message.op]) {
         this.callbacks[message.op][i](this, message);
       }
