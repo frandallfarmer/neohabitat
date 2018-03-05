@@ -1,5 +1,4 @@
 const express = require('express');
-const log = require('winston');
 
 
 class IndexRoutes {
@@ -12,12 +11,6 @@ class IndexRoutes {
   setRoutes() {
     var self = this;
     this.router.get('/', function(req, res, next) {
-      res.render('index', {
-        title: 'Welcome to Neohabitat!',
-        habiproxy: self.habiproxy,
-      });
-    });
-    this.router.get('/region/', function(req, res, next) {
       res.render('index', {
         title: 'Welcome to Neohabitat!',
         habiproxy: self.habiproxy,

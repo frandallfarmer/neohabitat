@@ -3,11 +3,11 @@
   <% include ./header.ejs %>
 
   <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12 text-center">
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-6 text-center">
           <h3>Welcome to Neohabitat!</h3>
-          <h4><%= Object.keys(habiproxy.sessions).length %> avatars are currently in world.</h4>
+          <h4><%= Object.keys(habiproxy.sessions).length %> avatars are currently in-world.</h4>
           <h4>Please select your avatar below:</h4>
           <table class="table">
             <thead>

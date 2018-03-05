@@ -1,7 +1,7 @@
 A Pretty Chill Habitat Region
 -----------------------------
 
-Oh dang, looks like you're in a pretty neat Habitat region!
+Oh dang, looks like you're in a Habitat region!
 
 To help you explore, here are some useful docs:
 

@@ -1,7 +1,7 @@
 const express = require('express');
 
 
-function sendEvent(res, event) {
+function sendEvent(res, type, msg) {
   res.write('data: ' + JSON.stringify(event) + '\n\n');
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -13,23 +13,24 @@ function sendEvent(res, event) {
 
 class EventRoutes {
   constructor(habiproxy, externalPages) {
-    this.habiproxy = habiproxy;
-    this.externalPages = externalPages;
-    this.router = express.Router();
-    this.setRoutes();
+    var self = this;
+    self.habiproxy = habiproxy;
+    self.externalPages = externalPages;
+    self.router = express.Router();
+    self.setRoutes();
   }
 
   getRegionDocsURL(regionName) {
     if (regionName in this.externalPages) {
       return this.externalPages[regionName];
     }
-    return '/region/' + regionName;
+    return '/docs/region/' + regionName;
   }
 
   setRoutes() {
     var self = this;
-    this.router.get('/:avatarName', function(req, res, next) {
-      if (!(req.params.avatarName in this.habiproxy.sessions)) {
+    self.router.get('/:avatarName', function(req, res, next) {
+      if (!(req.params.avatarName in self.habiproxy.sessions)) {
         var err = new Error('Avatar is not currently logged in.');
         err.status = 404;
         next(err);
@@ -49,8 +50,8 @@ class EventRoutes {
       });
     });
 
-    this.router.get('/:avatarName/eventStream', function(req, res, next) {
-      if (!(req.params.avatarName in this.habiproxy.sessions)) {
+    self.router.get('/:avatarName/eventStream', function(req, res, next) {
+      if (!(req.params.avatarName in self.habiproxy.sessions)) {
         var err = new Error('Avatar is not currently logged in.');
         err.status = 404;
         next(err);
@@ -61,7 +62,7 @@ class EventRoutes {
 
       req.socket.setTimeout(Infinity);
 
-      var regionCallbackIndex = session.on('enteredRegion', function() {
+      session.on('enteredRegion', function() {
         sendEvent(res, {
           type: 'REGION_CHANGE',
           msg: {
@@ -76,8 +77,7 @@ class EventRoutes {
         sendEvent(res, {
           type: 'DISCONNECT'
         });
-      })
-
+      });
     });
   }
 }

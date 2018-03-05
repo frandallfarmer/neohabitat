@@ -122,10 +122,8 @@ class HabitatSession {
   on(eventType, callback) {
     if (eventType in this.callbacks) {
       this.callbacks[eventType].push(callback);
-      return this.callbacks[eventType].length - 1;
     } else {
       this.callbacks[eventType] = [callback];
-      return 0
     }
   }
 
@@ -165,14 +163,6 @@ class HabitatSession {
     // Fires any generic message callbacks.
     for (var i in this.callbacks.msg) {
       this.callbacks.msg[i](this, message)
-    }
-  }
-
-  removeCallback(eventType, index) {
-    if (eventType in this.callbacks) {
-      if (index >= 0 && index < this.callbacks[eventType].length) {
-        this.callbacks[eventType].splice(index, 1);
-      }
     }
   }
 }

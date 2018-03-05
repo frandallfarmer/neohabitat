@@ -5,28 +5,34 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var IndexRoutes = require('./routes/index');
-var EventsRoutes = require('./routes/events');
-
 var log = require('winston');
-// log.remove(log.transports.Console);
-// log.add(log.transports.Console, { 'timestamp': true });
 log.level = process.env.PUSH_SERVER_LOG_LEVEL || 'debug';
 
-const winstonCommon = require('winston/lib/winston/common');
+// Override to use real console.log etc for the Chrome/VSCode debugger.
+var logToDebugger = process.env.LOG_TO_DEBUGGER || 'true';
 
-// Override to use real console.log etc for VSCode debugger
-log.transports.Console.prototype.log = function (level, message, meta, callback) {
-  const output = winstonCommon.log(Object.assign({}, this, {
-    level,
-    message,
-    meta,
-  }));
+if (logToDebugger === 'true') {
+  var winstonCommon = require('winston/lib/winston/common');
 
-  console[level in console ? level : 'log'](output);
+  log.transports.Console.prototype.log = function (level, message, meta, callback) {
+    const output = winstonCommon.log(Object.assign({}, this, {
+      level,
+      message,
+      meta,
+    }));
 
-  setImmediate(callback, null, true);
-};
+    console[level in console ? level : 'log'](output);
+
+    setImmediate(callback, null, true);
+  };
+} else {
+  log.remove(log.transports.Console);
+  log.add(log.transports.Console, { 'timestamp': true });
+}
+
+// Ensures all Markdown is rendered as GitHub Flavored Markdown.
+var showdown = require('showdown');
+showdown.setFlavor('github');
 
 var app = express();
 
@@ -58,10 +64,16 @@ var YAML = require('yamljs');
 var externalPages = YAML.load('./externalPages.yml');
 
 // Establishes the PushServer's web application.
-const indexRoutes = new IndexRoutes(habiproxy);
+var DocsRoutes = require('./routes/docs');
+var EventsRoutes = require('./routes/events');
+var IndexRoutes = require('./routes/index');
+
+const docsRoutes = new DocsRoutes(habiproxy);
 const eventsRoutes = new EventsRoutes(habiproxy, externalPages);
+const indexRoutes = new IndexRoutes(habiproxy);
 
 app.use('/', indexRoutes.router);
+app.use('/docs', docsRoutes.router);
 app.use('/events', eventsRoutes.router);
 
 // catch 404 and forward to error handler
