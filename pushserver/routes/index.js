@@ -12,9 +12,10 @@ class IndexRoutes {
   setRoutes() {
     var self = this;
     this.router.get('/', function(req, res, next) {
+      var awakeSessions = self.habiproxy.awakeSessions();
       res.render('index', {
         title: 'Welcome to Neohabitat!',
-        habiproxy: self.habiproxy,
+        awakeSessions: awakeSessions,
         config: self.config,
       });
     });
