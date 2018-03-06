@@ -9,7 +9,7 @@
         "town_dir": "", 
         "port_dir": DOWN, 
         "type": "Region",
-        "orientation": 1,		
+        "orientation": 1,
         "neighbors": [
           "context-Downtown_4i",
           "context-Downtown_5h",
@@ -146,10 +146,10 @@
       {
         "y": 33, 
         "x": 16, 
-        "open_flags": 0, 
+        "open_flags": 2,
+        "orientation": 244,        
         "type": "Door", 
-        "orientation": 244,
-		"connection": "context-Downtown_4h"
+        "connection": "context-Downtown_4i"
       }
     ], 
     "type": "item", 
