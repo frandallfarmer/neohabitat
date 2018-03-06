@@ -7,6 +7,7 @@ function processEvent(event) {
   switch (event.type) {
     case REGION_CHANGE:
       $('#avatarRegion').text(event.msg.description);
+      $('#docsFrame').attr('src', event.msg.docsURL);
     default:
       console.log('Unknown event type: ', event.type)
   }

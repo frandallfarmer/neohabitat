@@ -34,10 +34,27 @@ class HabitatSession {
     if (!this.clientAttached) {
       // Begins listening for client events.
       this.client.on('data', this.handleClientData.bind(this));
-      this.client.on('end', this.handleClientDisconnect.bind(this));
+      this.client.on('end', this.handleProxyDisconnect.bind(this));
       this.elkoConnection.on('data', this.handleElkoData.bind(this));
-      this.elkoConnection.on('end', this.handleElkoDisconnect.bind(this));
+      this.elkoConnection.on('end', this.handleProxyDisconnect.bind(this));
       this.clientAttached = true;
+    }
+  }
+
+  avatarHealth() {
+    if (this.avatarObj === null) {
+      return 'Unknown';
+    }
+    if (this.avatarObj.health > 200) {
+      return 'Peak';
+    } else if (this.avatarObj.health > 150) {
+      return 'Good';
+    } else if (this.avatarObj.health > 100) {
+      return 'Fair';
+    } else if (this.avatarObj.health > 50) {
+      return 'Poor';
+    } else {
+      return "Near Death";
     }
   }
 
@@ -119,11 +136,6 @@ class HabitatSession {
     this.elkoConnection.write(buffer);
   }
 
-  handleClientDisconnect() {
-    log.debug('Habiproxy session disconnected on: %s', this.id());
-    this.handleElkoDisconnect();
-  }
-
   // Proxies data between the session's Elko connection to the client, then processes
   // the JSON message sent from Elko to both set session state and trigger any assigned
   // callbacks.
@@ -149,8 +161,9 @@ class HabitatSession {
     }
   }
 
-  handleElkoDisconnect() {
-    log.debug('Disconnecting Elko connection on: %s', this.id());
+  handleProxyDisconnect() {
+    log.debug('Disconnecting Habiproxy connection on: %s', this.id());
+
     var shouldFireDisconnected = false;
     if (this.connected) {
       shouldFireDisconnected = true;

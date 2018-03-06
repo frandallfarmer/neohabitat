@@ -24,6 +24,14 @@ class APIRoutes {
       }
     });
 
+    self.router.get('/avatar/:avatarName/health', function(req, res, next) {
+      if (req.params.avatarName in self.habiproxy.sessions) {
+        res.json({health: self.habiproxy.sessions[req.params.avatarName].avatarHealth()});
+      } else {
+        res.error('Avatar not found.');
+      }
+    });
+
     self.router.get('/avatar/:avatarName/region', function(req, res, next) {
       if (req.params.avatarName in self.habiproxy.sessions) {
         res.json(self.habiproxy.sessions[req.params.avatarName].regionContents);
