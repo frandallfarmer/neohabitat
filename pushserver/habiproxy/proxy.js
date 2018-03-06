@@ -23,8 +23,20 @@ class HabiproxyServer {
 
     this.callbacks = {
       sessionReady: [],
-      sessionTerminated: [],
     };
+  }
+
+  awakeSessions() {
+    var awakeSessions = {};
+    var sessionAvatars = Object.keys(this.sessions);
+    for (var i in sessionAvatars) {
+      var avatarName = sessionAvatars[i];
+      var avatarSession = this.sessions[avatarName];
+      if (avatarSession.ready) {
+        awakeSessions[avatarName] = avatarSession;
+      }
+    }
+    return awakeSessions;
   }
 
   handleClientConnect(client) {
@@ -32,7 +44,6 @@ class HabiproxyServer {
     
     var clientSession = new Session(this.elkoHost, this.elkoPort, client);
     clientSession.on('sessionReady', this.handleSessionReady.bind(this));
-    clientSession.on('disconnected', this.handleSessionTerminate.bind(this));
 
     try {
       clientSession.start();
@@ -48,24 +59,19 @@ class HabiproxyServer {
     if (session == null) {
       return;
     }
-    this.sessions[session.avatarName] = session;
+    var readySession = session;
+    if (session.avatarName in this.sessions) {
+      readySession = this.sessions[session.avatarName].resume(readySession);
+      log.debug('Moved Habiproxy session to AWAKE: %s', readySession.id());
+      this.sessions[readySession.avatarName] = readySession;
+    } else {
+      readySession = session;
+      log.debug('NEW Habiproxy session: %s', readySession.id())
+      this.sessions[readySession.avatarName] = readySession;
+    }
     for (var i in this.callbacks.sessionReady) {
       log.debug('Handling callback for sessionReady on: %s', session.id())
-      this.callbacks.sessionReady[i](session);
-    }
-  }
-
-  handleSessionTerminate(session) {
-    if (session == null) {
-      return;
-    }
-    if (session.avatarName in this.sessions) {
-      log.debug('Removing Habiproxy session: %s', session.id())
-      delete this.sessions[session.avatarName];
-    }
-    for (var i in this.callbacks.sessionTerminated) {
-      log.debug('Handling callback for sessionTerminated on: %s', session.id())
-      this.callbacks.sessionTerminated[i](session);
+      this.callbacks.sessionReady[i](readySession);
     }
   }
 

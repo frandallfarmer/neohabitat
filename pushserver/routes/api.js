@@ -24,15 +24,24 @@ class APIRoutes {
       }
     });
 
+    self.router.get('/avatar/:avatarName/region', function(req, res, next) {
+      if (req.params.avatarName in self.habiproxy.sessions) {
+        res.json(self.habiproxy.sessions[req.params.avatarName].regionContents);
+      } else {
+        res.error('Avatar not found.');
+      }
+    });
+
     self.router.get('/worldview/avatars', function(req, res, next) {
-      var avatarNames = Object.keys(self.habiproxy.sessions).sort();
+      var awakeSessions = self.habiproxy.awakeSessions();
+      var avatarNames = Object.keys(awakeSessions).sort();
       var avatarWorldview = {
         totalAvatars: avatarNames.length,
         avatars: [],
       };
       for (var i in avatarNames) {
         var avatarName = avatarNames[i];
-        var avatarLocation = self.habiproxy.sessions[avatarNames].avatarContext.name;
+        var avatarLocation = awakeSessions[avatarName].avatarContext.name;
         avatarWorldview.avatars.push({avatar: avatarName, location: avatarLocation});
       }
       res.json(avatarWorldview);

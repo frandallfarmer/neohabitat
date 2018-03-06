@@ -1,4 +1,5 @@
 const express = require('express');
+const log = require('winston');
 
 
 function sendEvent(res, type, msg) {
@@ -9,12 +10,8 @@ function sendEvent(res, type, msg) {
   if (msg !== undefined) {
     event['msg'] = msg;
   }
+  log.debug('Sending push event: %s', JSON.stringify(event));
   res.write('data: ' + JSON.stringify(event) + '\n\n');
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive'
-  });
 }
 
 
@@ -37,20 +34,21 @@ class EventRoutes {
   setRoutes() {
     var self = this;
     self.router.get('/', function(req, res, next) {
-      var avatarName = req.query.avatar_name;
+      var avatarName = req.query.avatar;
+      var awakeSessions = self.habiproxy.awakeSessions();
 
-      if (!(avatarName in self.habiproxy.sessions)) {
+      if (!(avatarName in awakeSessions)) {
         var err = new Error('Avatar is not currently logged in.');
         err.status = 404;
         next(err);
         return;
       }
 
-      var session = self.habiproxy.sessions[avatarName];
+      var session = awakeSessions[avatarName];
 
       res.render('events', {
         avatarName: avatarName,
-        config: this.config,
+        config: self.config,
         habiproxy: self.habiproxy,
         regionDescription: session.avatarContext.name,
         regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
@@ -61,27 +59,30 @@ class EventRoutes {
     });
 
     self.router.get('/:avatarName/eventStream', function(req, res, next) {
-      if (!(req.params.avatarName in self.habiproxy.sessions)) {
+      var awakeSessions = self.habiproxy.awakeSessions();
+
+      if (!(req.params.avatarName in awakeSessions)) {
         var err = new Error('Avatar is not currently logged in.');
         err.status = 404;
         next(err);
         return;
       }
 
-      var session = self.habiproxy.sessions[req.params.avatarName];
+      var session = awakeSessions[req.params.avatarName];
 
-      req.socket.setTimeout(Infinity);
+      req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      });
 
       session.on('enteredRegion', function() {
         sendEvent(res, 'REGION_CHANGE', {
-          regionDescription: session.avatarContext.name,
-          regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
-          regionName: session.avatarRegion(),
+          description: session.avatarContext.name,
+          docsURL: self.getRegionDocsURL(session.avatarRegion()),
+          name: session.avatarRegion(),
         });
-      });
-
-      session.on('disconnect', function() {
-        sendEvent(res, 'DISCONNECT');
       });
     });
   }

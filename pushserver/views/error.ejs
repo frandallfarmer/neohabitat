@@ -16,7 +16,6 @@
         font-family: 'Source Sans Pro', sans-serif;
         font-size: 18px;
         background: linear-gradient(rgba(30, 33, 42, 0.5), rgba(30, 33, 42, 0.5)), url("https://preview.ibb.co/bXJXcn/guru_meditation_error_animated.gif") center/cover;
-
       }
     </style>
   </head>
@@ -27,6 +26,7 @@
           <div class="jumbotron">
             <h1 class="display-4 text-center"><%= error.status %></h2>
             <h2 class="text-center"><%= message %></h1>
+            <pre><code><%= error.stack %></code></pre>
           </div>
         </div>
       </div>

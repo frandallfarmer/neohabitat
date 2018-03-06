@@ -22,7 +22,7 @@ function refreshAvatars() {
 }
 
 $(document).ready(function() {
-  // Checks for new Avatars every 5 seconds.
   refreshAvatars();
+  // Checks for new Avatars every 5 seconds.
   setInterval(refreshAvatars, 5000);
 });
