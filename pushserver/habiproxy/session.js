@@ -247,7 +247,7 @@ class HabitatSession {
 
     // Fires any message-specific callbacks.
     if (message.op in this.callbacks) {
-      log.debug('Running callbacks for %s on: %s', o.op, this.id());
+      log.debug('Running callbacks for %s on: %s', message.op, this.id());
       for (var i in this.callbacks[message.op]) {
         this.callbacks[message.op][i](this, message);
       }
