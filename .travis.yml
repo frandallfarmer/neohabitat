@@ -34,7 +34,7 @@ script:
   - sleep 60
 
   # Executes functional tests:
-  - cd test && node Telko.js -f chip
+  - cd test && node Telko.js -p 2018 -f chip
 
 after_success:
   # Pushes the Docker image then deploys it to Spine.
