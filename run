@@ -85,7 +85,7 @@ function start_bridge() {
 
 function start_pushserver() {
   if [[ "${NODE_ENV}" == "production" ]]; then
-    (cd "${GIT_BASE_DIR}/pushserver" && node bin/pushserver | tee ../pushserver.log)
+    (cd "${GIT_BASE_DIR}/pushserver" && npm run start 2>&1 | tee ../pushserver.log)
   else
     (cd "${GIT_BASE_DIR}/pushserver" && npm run debug 2>&1 | tee ../pushserver.log)
   fi
