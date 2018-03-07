@@ -4,8 +4,8 @@
   "license": "MIT",
   "homepage": "https://frandallfarmer.github.io/neohabitat/",
   "scripts": {
-    "start": "node ./bin/pushserver",
-    "debug": "./node_modules/supervisor/lib/cli-wrapper.js --inspect -i public,views -w . -- bin/pushserver"
+    "start": "./node_modules/supervisor/lib/cli-wrapper.js -i public,views -w bin,habiproxy,routes -- ./bin/pushserver",
+    "debug": "./node_modules/supervisor/lib/cli-wrapper.js --inspect -i public,views -w bin,habiproxy,routes -- bin/pushserver"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
