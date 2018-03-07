@@ -1,6 +1,5 @@
 .idea/
 .vagrant/
-bin/
 lib/
 log/
 node_modules/
