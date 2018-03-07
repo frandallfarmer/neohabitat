@@ -32,6 +32,7 @@ DEBUG_PORT="${NEOHABITAT_DEBUG_PORT-1985}"
 MONGO_HOST="${NEOHABITAT_MONGO_HOST-127.0.0.1:27017}"
 BRIDGE_HOST="${NEOHABITAT_BRIDGE_HOST-0.0.0.0}"
 BRIDGE_PORT="${NEOHABITAT_BRIDGE_PORT-1337}"
+BRIDGE_ELKO_HOST="${NEOHABITAT_BRIDGE_ELKO_HOST-127.0.0.1:9000}"
 DEFAULT_CONTEXT="${NEOHABITAT_DEFAULT_CONTEXT-context-Downtown_5f}"
 SCHEMA_DIR="${NEOHABITAT_SCHEMA_DIR-db}"
 SERVER_HOST="${NEOHABITAT_SERVER_HOST-0.0.0.0}"
@@ -44,6 +45,7 @@ SHOULD_ENABLE_DEBUGGER="${NEOHABITAT_SHOULD_ENABLE_DEBUGGER-false}"
 SHOULD_ENABLE_CRON="${NEOHABITAT_SHOULD_ENABLE_CRON-false}"
 SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE-true}"
 SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT-true}"
+SHOULD_RUN_PUSHSERVER="${NEOHABITAT_SHOULD_RUN_PUSHSERVER-true}"
 SHOULD_UPDATE_SCHEMA="${NEOHABITAT_SHOULD_UPDATE_SCHEMA-true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP-9000}"
 
@@ -75,9 +77,14 @@ JVM_ARGS=(
 function start_bridge() {
   supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js \
     -l "${BRIDGE_HOST}:${BRIDGE_PORT}" \
+    -e "${BRIDGE_ELKO_HOST}" \
     -m "${MONGO_HOST}/elko" \
     -c "${DEFAULT_CONTEXT}" \
     -t debug 2>&1 | tee bridge.log
+}
+
+function start_pushserver() {
+  (cd "${GIT_BASE_DIR}/pushserver" && npm run debug 2>&1 | tee ../pushserver.log)
 }
 
 function start_elko_server() {
@@ -114,6 +121,11 @@ if [ "${SHOULD_RUN_BRIDGE}" == true ]; then
   else
     start_bridge
   fi
+fi
+
+# Starts the Exhibit's HTML push server if requested.
+if [ "${SHOULD_RUN_PUSHSERVER}" == true ]; then
+  start_pushserver &
 fi
 
 # Starts the Habitat Elko server if requested.

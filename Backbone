@@ -26,16 +26,21 @@ clusters:
       image: philcollins/neohabitat
       environment:
         - NEOHABITAT_DEFAULT_CONTEXT=context-Downtown_5f
+        - NEOHABITAT_BRIDGE_ELKO_HOST=127.0.0.1:2018
         - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
         - NEOHABITAT_SCHEMA_DIR=db
         - NEOHABITAT_SHOULD_ENABLE_CRON=true
         - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=false
+        - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
         - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+        - NODE_ENV=production
       synapses:
         - resource: neohabitatmongo
           port: 27017
       ports:
         - port: 1337
+        - port: 1701
+        - port: 2018
         - port: 9000
 
   - neohabitatslackin:
@@ -66,10 +71,17 @@ clusters:
         - port: 5190
 
 balancers:
+  - exhibit:
+      synapses:
+        - resource: neohabitat
+          protocol: http
+          remote_port: 1701
+
   - neohabitat:
       synapses:
         - resource: neohabitat
           port: 1337
+          remote_port: 2018
         - resource: neohabitatqlink
           port: 1986
         - resource: neohabitatqlink

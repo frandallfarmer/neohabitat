@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <% include ./header.ejs %>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#avatarStatus" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <a class="navbar-brand" href="#">Neohabitat</a>
+      <div class="collapse navbar-collapse" id="avatarStatus">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            Region: <span id="avatarRegion"><%= regionDescription %></span>
+          </li>
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0">
+          <li class="nav-item">
+            <div class="dropdown show">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= avatarName %>
+              </a>
+
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="/">Logout</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container d-flex h-100">
+      <div class="row align-self-center w-100">
+        <div class="col-10 mx-auto">
+          <div class="embed-responsive embed-responsive-4by3 rounded">
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item" src="<%= regionDocsURL %>"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% include ./footer.ejs %>
+    <script type="text/javascript">
+      var avatarName = "<%= avatarName %>";
+    </script>
+    <script src="/javascripts/eventStream.js" type="text/javascript"></script>
+  </body>
+</html>

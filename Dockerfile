@@ -53,4 +53,4 @@ RUN rm -rf lib && mvn clean package
 
 ENTRYPOINT /neohabitat/run
 
-EXPOSE 1337 9000
+EXPOSE 1337 1701 2018 3000 9000

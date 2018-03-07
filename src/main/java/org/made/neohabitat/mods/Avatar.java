@@ -345,6 +345,8 @@ public class Avatar extends Container implements UserMod {
         result.addParameter("restrainer",   restrainer);
         result.addParameter("custom",       custom);
         result.addParameter("amAGhost",     amAGhost);
+        result.addParameter("turf",         turf);
+
         if (result.control().toRepository()) {
             result.addParameter("transition_type",              transition_type);
             result.addParameter("from_orientation",             from_orientation);
@@ -353,7 +355,6 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("to_region",                    to_region);
             result.addParameter("to_x",                         to_x);
             result.addParameter("to_y",                         to_y);
-            result.addParameter("turf",                         turf);
             result.addParameter("lastConnectedDay",             lastConnectedDay);
             result.addParameter("lastConnectedTime",            lastConnectedTime);
             result.addParameter("firstConnection",              firstConnection);
