@@ -51,6 +51,10 @@ RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && make book' >> /v
 WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
 
+WORKDIR /neohabitat/pushserver
+RUN rm -rf node_modules && npm install
+
+WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run
 
 EXPOSE 1337 1701 2018 3000 9000
