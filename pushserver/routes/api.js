@@ -18,17 +18,45 @@ class APIRoutes {
 
     self.router.get('/avatar/:avatarName', function(req, res, next) {
       if (req.params.avatarName in self.habiproxy.sessions) {
-        res.json(self.habiproxy.sessions[req.params.avatarName].avatarObj);
+        var session = self.habiproxy.sessions[req.params.avatarName];
+        res.json({
+          avatar: session.avatarObj,
+          health: session.avatarHealth(),
+          context: session.avatarContext,
+        });
       } else {
-        res.error('Avatar not found.');
+        var err = new Error('Avatar unknown.');
+        err.status = 404;
+        next(err);
+        return;
       }
     });
 
-    self.router.get('/avatar/:avatarName/health', function(req, res, next) {
+    self.router.post('/avatar/:avatarName/action', function(req, res, next) {
       if (req.params.avatarName in self.habiproxy.sessions) {
-        res.json({health: self.habiproxy.sessions[req.params.avatarName].avatarHealth()});
+        var session = self.habiproxy.sessions[req.params.avatarName];
+        var action = req.body;
+        if ('type' in action && 'params' in action) {
+          var success = session.doAction(action);
+          if (success) {
+            res.json({success: success});
+          } else {
+            var err = new Error('Action was unsuccessful.');
+            err.status = 400;
+            next(err);
+            return;
+          }
+        } else {
+          var err = new Error('Action objects require "type" and "params" keys.');
+          err.status = 400;
+          next(err);
+          return;
+        }
       } else {
-        res.error('Avatar not found.');
+        var err = new Error('Avatar unknown.');
+        err.status = 404;
+        next(err);
+        return;
       }
     });
 
@@ -36,7 +64,10 @@ class APIRoutes {
       if (req.params.avatarName in self.habiproxy.sessions) {
         res.json(self.habiproxy.sessions[req.params.avatarName].regionContents);
       } else {
-        res.error('Avatar not found.');
+        var err = new Error('Avatar unknown.');
+        err.status = 404;
+        next(err);
+        return;
       }
     });
 

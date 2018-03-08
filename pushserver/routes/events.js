@@ -41,13 +41,17 @@ class EventRoutes {
         next(err);
         return;
       }
+      req.session.avatarName = req.query.avatar;
 
       var session = self.habiproxy.sessions[avatarName];
 
       res.render('events', {
         avatarName: avatarName,
+        avatarObj: session.avatarObj,
         config: self.config,
         habiproxy: self.habiproxy,
+        health: session.avatarHealth(),
+        orientation: session.avatarOrientation(),
         regionDescription: session.avatarContext.name,
         regionDocsURL: self.getRegionDocsURL(session.avatarRegion()),
         regionName: session.avatarRegion(),
@@ -72,11 +76,18 @@ class EventRoutes {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
       });
+      res.write('\n');
 
       // Sends the CONNECTED event upon first connection.
       sendEvent(res, 'CONNECTED');
+      sendEvent(res, 'REGION_CHANGE', {
+        description: session.avatarContext.name,
+        docsURL: self.getRegionDocsURL(session.avatarRegion()),
+        name: session.avatarRegion(),
+        orientation: session.avatarOrientation(),
+      });
 
       // Sends a REGION_CHANGE event when the Avatar changes regions.
       session.on('enteredRegion', function() {
@@ -84,6 +95,7 @@ class EventRoutes {
           description: session.avatarContext.name,
           docsURL: self.getRegionDocsURL(session.avatarRegion()),
           name: session.avatarRegion(),
+          orientation: session.avatarOrientation(),
         });
       });
     });

@@ -2,6 +2,8 @@ const net = require('net');
 
 const log = require('winston');
 
+const ActionTypes = require('./actionTypes');
+
 
 function stringifyID(socket) {
   return '' + socket.remoteAddress + ':' + socket.remotePort;
@@ -45,16 +47,34 @@ class HabitatSession {
     if (this.avatarObj === null) {
       return 'Unknown';
     }
-    if (this.avatarObj.health > 200) {
+    if (this.avatarObj.mods[0].health > 200) {
       return 'Peak';
-    } else if (this.avatarObj.health > 150) {
+    } else if (this.avatarObj.mods[0].health > 150) {
       return 'Good';
-    } else if (this.avatarObj.health > 100) {
+    } else if (this.avatarObj.mods[0].health > 100) {
       return 'Fair';
-    } else if (this.avatarObj.health > 50) {
+    } else if (this.avatarObj.mods[0].health > 50) {
       return 'Poor';
     } else {
       return "Near Death";
+    }
+  }
+
+  avatarOrientation() {
+    if (this.avatarContext === null) {
+      return 'Unknown';
+    }
+    switch (this.avatarContext.mods[0].orientation) {
+      case 0:
+        return 'West';
+      case 1:
+        return 'North';
+      case 2:
+        return 'East';
+      case 3:
+        return 'West';
+      default:
+        return 'Unknown';
     }
   }
 
@@ -120,6 +140,41 @@ class HabitatSession {
     this.client.removeAllListeners();
     this.elkoConnection.removeAllListeners();
     this.clientAttached = false;
+  }
+
+  doAction(action) {
+    if (!this.ready) {
+      console.info('Tried to do action %s on unready session: %s',
+        JSON.stringify(action), this.id());
+      return false;
+    }
+    log.debug('Performing ACTION on session %s: %s', this.id(), JSON.stringify(action));
+    switch (action.type) {
+      case ActionTypes.START_ESP:
+        return this.sendMessage({
+          "to": this.avatarObj.ref,
+          "op": "SPEAK",
+          "esp": 0,
+          "text": "to:"+action.params.avatar,
+        });
+      case ActionTypes.SEND_TELEPORT_INVITE:
+        return this.sendMessage({
+          "to": this.avatarObj.ref,
+          "op": "SPEAK",
+          "esp": 0,
+          "text": "/i "+action.params.avatar,
+        });
+      case ActionTypes.SEND_TELEPORT_REQUEST:
+        return this.sendMessage({
+          "to": this.avatarObj.ref,
+          "op": "SPEAK",
+          "esp": 0,
+          "text": "/j "+action.params.avatar,
+        });
+      default:
+        log.error('Unknown action type: %s', action.type);
+        return false;
+    }
   }
 
   fireEnteredRegion() {
@@ -257,6 +312,19 @@ class HabitatSession {
     for (var i in this.callbacks.msg) {
       this.callbacks.msg[i](this, message)
     }
+  }
+
+  sendMessage(message) {
+    if (!this.ready) {
+      console.info('Tried to send message %s on unready session: %s',
+        JSON.stringify(message), this.id());
+      return false;
+    }
+    var jsonMessage = JSON.stringify(message);
+    log.debug('Sending Habiproxy-injected Elko message for client %s: %s',
+      this.id(), jsonMessage);
+    this.elkoConnection.write(jsonMessage + '\n\n');
+    return true;
   }
 }
 
