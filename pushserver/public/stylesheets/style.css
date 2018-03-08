@@ -13,3 +13,57 @@ pre {
 .nav-div {
   background-color: #DFE2DB;
 }
+
+.users-panel {
+  background-color: #DFE2DB;
+  margin-top: 15px;
+}
+
+.status-panel {
+  background-color: #DFE2DB;
+  margin-bottom: 15px;
+}
+
+.docent-region {
+  padding-top: 10px;
+}
+
+.container.control-panel {
+  margin: 0 auto;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.action-button {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+tbody {
+  overflow-y: scroll;      
+  height: 400px;
+  width: 84%;
+  position: absolute;
+}
+
+tr {
+  width: 100%;
+  display: inline-table;
+}
+
+table {
+  height: 400px; 
+}

@@ -3,7 +3,11 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
+
+var YAML = require('yamljs');
+var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.yml');
 
 var log = require('winston');
 log.level = process.env.PUSH_SERVER_LOG_LEVEL || 'debug';
@@ -48,6 +52,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cookieSession({
+  name: 'session',
+  keys: config.cookieSessionKeys,
+  maxAge: 365 * 24 * 60 * 60 * 1000 // 1 year
+}));
+
 /**
  * Starts the Habitat proxy service.
  */
@@ -59,9 +69,6 @@ var habiproxy = new HabiproxyServer(
   process.env.HABIPROXY_ELKO_PORT || '9000'
 );
 habiproxy.start();
-
-var YAML = require('yamljs');
-var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.yml');
 
 // Establishes the PushServer's web application.
 var APIRoutes = require('./routes/api');

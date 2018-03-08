@@ -41,6 +41,7 @@ class EventRoutes {
         next(err);
         return;
       }
+      req.session.avatarName = req.query.avatar;
 
       var session = self.habiproxy.sessions[avatarName];
 
