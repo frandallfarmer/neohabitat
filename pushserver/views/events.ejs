@@ -33,9 +33,29 @@
 
     <div class="container d-flex h-100">
       <div class="row align-self-center w-100">
-        <div class="col-10 mx-auto">
+        <!-- Navigation pane: -->
+        <div class="col-2 nav-div rounded text-center">
+          You are facing:
+          <h4 id="orientationHeader" class="text-center"><%= orientation %></h4>
+          <div class="compass-div text-center">
+            <img id="compass" src="/images/compass.png"></img>
+          </div>
+          <hr/>
+          Your health:
+          <h4 id="orientationHeader" class="text-center"><%= health %></h4>
+          <hr/>
+          Bank balance:
+          <h4 id="balanceHeader" class="text-center"><%= avatarObj.mods[0].bankBalance %>T</h4>
+          <hr/>
+          In-world Avatars:
+          <h4 id="totalAvatarsHeader" class="text-center"></h4>
+          <hr/>
+        </div>
+
+        <!-- Docent docs pane: -->
+        <div class="col-10 mx-auto rounded">
           <div class="embed-responsive embed-responsive-4by3 rounded docs-div">
-            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item" src="<%= regionDocsURL %>"></iframe>
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item rounded" src="<%= regionDocsURL %>"></iframe>
           </div>
         </div>
       </div>

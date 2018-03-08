@@ -45,16 +45,34 @@ class HabitatSession {
     if (this.avatarObj === null) {
       return 'Unknown';
     }
-    if (this.avatarObj.health > 200) {
+    if (this.avatarObj.mods[0].health > 200) {
       return 'Peak';
-    } else if (this.avatarObj.health > 150) {
+    } else if (this.avatarObj.mods[0].health > 150) {
       return 'Good';
-    } else if (this.avatarObj.health > 100) {
+    } else if (this.avatarObj.mods[0].health > 100) {
       return 'Fair';
-    } else if (this.avatarObj.health > 50) {
+    } else if (this.avatarObj.mods[0].health > 50) {
       return 'Poor';
     } else {
       return "Near Death";
+    }
+  }
+
+  avatarOrientation() {
+    if (this.avatarContext === null) {
+      return 'Unknown';
+    }
+    switch (this.avatarContext.mods[0].orientation) {
+      case 0:
+        return 'West';
+      case 1:
+        return 'North';
+      case 2:
+        return 'East';
+      case 3:
+        return 'West';
+      default:
+        return 'Unknown';
     }
   }
 
