@@ -81,6 +81,10 @@ cd /neohabitat
 npm install --no-bin-links
 mvn clean package
 
+# Brings in Pushserver dependencies.
+cd /neohabitat/pushserver
+npm install --no-bin-links
+
 # Installs Neohabitat MongoDB schema and models.
 cd /neohabitat/db
 make clean
@@ -133,6 +137,7 @@ Wants=network.target
 WorkingDirectory=/neohabitat
 ExecStart=/neohabitat/run
 Environment=NEOHABITAT_MONGO_HOST=127.0.0.1:27017
+Environment=NEOHABITAT_BRIDGE_ELKO_HOST=127.0.0.1:2018
 Environment=NEOHABITAT_SHOULD_BACKGROUND_BRIDGE=false
 Environment=NEOHABITAT_SHOULD_RUN_BRIDGE=true
 Environment=NEOHABITAT_SHOULD_RUN_NEOHABITAT=false
@@ -148,6 +153,29 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable neohabitat-bridge.service
 sudo systemctl start neohabitat-bridge.service
+
+cat <<EOF | sudo tee /etc/systemd/system/neohabitat-pushserver.service
+[Unit]
+Description=Neohabitat to Habitat protocol pushserver
+After=network.target
+Wants=network.target
+
+[Service]
+WorkingDirectory=/neohabitat/pushserver
+ExecStart=npm run debug
+Environment=NODE_ENV=development
+Restart=always
+RestartSec=20
+LimitNOFILE=16384
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Starts Neohabitat pushserver and enables it for launch upon next boot.
+sudo systemctl daemon-reload
+sudo systemctl enable neohabitat-pushserver.service
+sudo systemctl start neohabitat-pushserver.service
 
 # Writes a Systemd service for QuantumLink Reloaded.
 cat <<EOF | sudo tee /etc/systemd/system/qlink.service

@@ -35,16 +35,14 @@ class EventRoutes {
     var self = this;
     self.router.get('/', function(req, res, next) {
       var avatarName = req.query.avatar;
-      var awakeSessions = self.habiproxy.awakeSessions();
-
-      if (!(avatarName in awakeSessions)) {
-        var err = new Error('Avatar is not currently logged in.');
+      if (!(avatarName in self.habiproxy.sessions)) {
+        var err = new Error('Avatar unknown.');
         err.status = 404;
         next(err);
         return;
       }
 
-      var session = awakeSessions[avatarName];
+      var session = self.habiproxy.sessions[avatarName];
 
       res.render('events', {
         avatarName: avatarName,
@@ -59,24 +57,28 @@ class EventRoutes {
     });
 
     self.router.get('/:avatarName/eventStream', function(req, res, next) {
-      var awakeSessions = self.habiproxy.awakeSessions();
-
-      if (!(req.params.avatarName in awakeSessions)) {
-        var err = new Error('Avatar is not currently logged in.');
+      if (!(req.params.avatarName in self.habiproxy.sessions)) {
+        var err = new Error('Avatar unknown.');
         err.status = 404;
         next(err);
         return;
       }
 
-      var session = awakeSessions[req.params.avatarName];
+      var session = self.habiproxy.sessions[req.params.avatarName];
 
       req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
+
+      // Establishes the response as an EventStream readable by an EventSource.
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'
       });
 
+      // Sends the CONNECTED event upon first connection.
+      sendEvent(res, 'CONNECTED');
+
+      // Sends a REGION_CHANGE event when the Avatar changes regions.
       session.on('enteredRegion', function() {
         sendEvent(res, 'REGION_CHANGE', {
           description: session.avatarContext.name,
