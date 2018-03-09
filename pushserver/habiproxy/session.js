@@ -24,6 +24,7 @@ class HabitatSession {
     this.regionContents = {};
 
     this.clientAttached = false;
+    this.elkoAttached = false;
     this.connected = false;
     this.ready = false;
 
@@ -36,11 +37,28 @@ class HabitatSession {
     if (!this.clientAttached) {
       // Begins listening for client events.
       this.client.on('data', this.handleClientData.bind(this));
-      this.client.on('end', this.handleProxyDisconnect.bind(this));
-      this.elkoConnection.on('data', this.handleElkoData.bind(this));
-      this.elkoConnection.on('end', this.handleProxyDisconnect.bind(this));
+      this.client.on('end', this.handleClientDisconnect.bind(this));
       this.clientAttached = true;
     }
+  }
+
+  attachElko() {
+    if (!this.elkoAttached) {
+      // Begins listening for Elko events.
+      this.elkoConnection.on('data', this.handleElkoData.bind(this));
+      this.elkoConnection.on('end', this.handleElkoDisconnect.bind(this));
+      this.elkoAttached = true;
+    }
+  }
+
+  handleElkoDisconnect() {
+    log.debug('Elko disconnected for client %s, moving session to ASLEEP', this.id());
+    this.handleProxyDisconnect();
+  }
+
+  handleClientDisconnect() {
+    log.debug('Client disconnected for client %s, moving session to ASLEEP', this.id());
+    this.handleProxyDisconnect();
   }
 
   avatarHealth() {
@@ -78,23 +96,28 @@ class HabitatSession {
     }
   }
 
-  ensureConnected() {
-    if (!this.connected) {
+  ensureElkoConnected() {
+    if (!this.connected || this.elkoConnection === null) {
       // Opens a connection to Elko and begins listening for events.
+      this.elkoAttached = false;
       this.elkoConnection = new net.Socket();
       this.elkoConnection.connect(this.elkoPort, this.elkoHost,
         this.handleElkoConnect.bind(this));
+      this.attachElko();
+      this.connected = true;
     }
   }
 
   start() {
-    this.ensureConnected();
+    this.ensureElkoConnected();
     this.attachClient();
+    this.attachElko();
   }
 
   // Wakes up an asleep Habitat session with the contents of a freshly-ready session.
   resume(readySession) {
     readySession.detachClient();
+    readySession.detachElko();
     readySession.clearCallbacks();
 
     this.client = readySession.client;
@@ -107,12 +130,15 @@ class HabitatSession {
     this.regionContents = readySession.regionContents;
 
     this.clientAttached = false;
+    this.elkoAttached = false;
     this.connected = true;
     this.ready = true;
 
     this.updatedAt = Math.round((new Date()).getTime() / 1000);
 
+    this.ensureElkoConnected();
     this.attachClient();
+    this.attachElko();
     this.fireEnteredRegion();
 
     return this;
@@ -138,8 +164,12 @@ class HabitatSession {
 
   detachClient() {
     this.client.removeAllListeners();
-    this.elkoConnection.removeAllListeners();
     this.clientAttached = false;
+  }
+
+  detachElko() {
+    this.elkoConnection.removeAllListeners();
+    this.elkoAttached = false;
   }
 
   doAction(action) {
@@ -187,8 +217,12 @@ class HabitatSession {
 
   // Proxies any data from the client to this session's Elko connection.
   handleClientData(buffer) {
-    log.silly('%s -> %s', this.id(), buffer);    
-    this.elkoConnection.write(buffer);
+    log.debug('%s -> %s', this.id(), buffer);
+    try {
+      this.elkoConnection.write(buffer);
+    } catch (err) {
+      log.error('Unable to write to Elko connection: %s', err)
+    }
   }
 
   // Proxies data between the session's Elko connection to the client, then processes
@@ -196,8 +230,12 @@ class HabitatSession {
   // callbacks.
   handleElkoData(buffer) {
     // Sends the Elko message to this session's client.
-    log.silly('%s -> %s', buffer, this.id());
-    this.client.write(buffer);
+    log.debug('%s -> %s', buffer, this.id());
+    try {
+      this.client.write(buffer);
+    } catch (err) {
+      log.error('Unable to write to client: %s', err)
+    }
 
     // Parses Elko message; if we receive bad data from Elko, terminates this session.
     var messages = buffer.toString('utf8').split('\n');
@@ -218,6 +256,9 @@ class HabitatSession {
 
   handleProxyDisconnect() {
     log.debug('Disconnecting Habiproxy connection on: %s', this.id());
+
+    this.detachClient();
+    this.detachElko();
 
     var shouldFireDisconnected = false;
     if (this.connected) {
@@ -311,6 +352,11 @@ class HabitatSession {
     // Fires any generic message callbacks.
     for (var i in this.callbacks.msg) {
       this.callbacks.msg[i](this, message)
+    }
+
+    if (message.type === 'changeContext' && message.immediate) {
+      log.debug('Client %s received changeContext with immediate=true, disconnecting...');
+      this.handleProxyDisconnect();
     }
   }
 

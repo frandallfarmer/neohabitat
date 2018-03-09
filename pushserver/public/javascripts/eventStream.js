@@ -163,7 +163,7 @@ function refreshAvatarStatus() {
   $.get('/api/v1/avatar/'+AvatarName, function(data) {
     $('#healthHeader').text(data.health);
     $('#stunCountHeader').text(data.avatar.mods[0].stun_count);
-    $('#bankBalanceHeader').text(data.avatar.mods[0].bankBalance);
+    $('#bankBalanceHeader').text(data.avatar.mods[0].bankBalance+'T');
   }, 'json');
 }
 
