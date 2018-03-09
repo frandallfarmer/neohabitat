@@ -1788,7 +1788,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     	note_instance_creation_internal(obj, current_region());
     }
     
-    public static final boolean DUMP_HEAP = true;
+    public static final boolean DUMP_HEAP = false;
 	String s;
     
     protected void note_instance_creation_internal(HabitatMod obj, Container cont) {
