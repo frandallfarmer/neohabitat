@@ -1,4 +1,5 @@
 # Fortune_machine help
 
-PUT tokens for significant message.
+*Wanna know your future?*
 
+**PUT* while holding 2 tokens for significant message.

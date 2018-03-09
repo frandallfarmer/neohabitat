@@ -1,4 +1,4 @@
-# Instant_object help
+# Instant Object help
 
-Add water to activate.
+*Add water to activate.*
 

@@ -1,4 +1,7 @@
 # Couch help
 
-COUCH: If standing by couch, point at it and select GO to sit.  If sitting, point at couch and GO to stand again.
+*Two can sit side by side on a couch*
+
+**GO** to a couch with an empty cushion, then select **GO** again to sit.
+If sitting, point at couch and **GO** to stand again.
 

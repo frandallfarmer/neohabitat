@@ -1,4 +1,7 @@
 # Die help
 
-DIE: DO rolls the die
+*Wanna try your luck?*
+
+Select **DO** while holding, or while pointing at the die to roll it for a random result.
+
 

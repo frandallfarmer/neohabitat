@@ -1,4 +1,5 @@
-# Hand_of_god help
+# Hand of God help
 
-How dare you!
+*How dare you!*
 
+Oh my. Someone's done something to anger the gods...

@@ -1,4 +1,4 @@
 # Plant help
 
-Acme Landscaping Company
+*Acme Landscaping Company*
 

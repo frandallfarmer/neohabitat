@@ -1,4 +1,3 @@
 # Dropbox help
 
-Don't ever antagonize the horn.
-
+*Don't ever antagonize the horn.*

@@ -1,4 +1,6 @@
-# Crystal_ball help
+# Crystal Ball help
 
-Fragile, do not drop.
+*Fragile, do not drop.*
+
+**DO** to activate.
 

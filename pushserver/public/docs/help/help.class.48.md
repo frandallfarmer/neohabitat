@@ -1,4 +1,3 @@
 # Mailbox help
 
-We Await Silent Tristero's Empire
-
+*We Await Silent Tristero's Empire*

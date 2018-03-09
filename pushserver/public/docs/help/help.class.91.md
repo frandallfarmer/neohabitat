@@ -1,4 +1,5 @@
-# Stun_gun help
+# Stun Gun help
 
-STUN GUN: do not overuse.
+*Do not over use.*
 
+Point at a target Avatar, choose **DO** while holding - target will be stunned.

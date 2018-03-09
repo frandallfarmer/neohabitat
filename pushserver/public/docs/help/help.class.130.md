@@ -1,4 +1,8 @@
 # Bed help
 
-BED: If standing by bed, point at it and select GO to sit.  If sitting, point at bed and GO to stand again.
+*A place to rest your Avatar*
+
+Select **GO** to stand near, then **GO** again to get in bed.
+If already in the bed, point at bed and select **GO** to stand again.
+
 

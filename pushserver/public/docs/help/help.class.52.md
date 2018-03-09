@@ -1,4 +1,6 @@
-# Movie_camera help
+# Movie Camera help
 
-Select DO to turn on or off.
+*Time for your close up!*
+
+Select **DO** to turn on or off.
 

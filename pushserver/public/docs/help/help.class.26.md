@@ -1,4 +1,6 @@
-# Escape_dev help
+# Escape Device help
 
-Select DO to activate.
+*There's no place like home. There's no place like home...*
+
+Select **DO** while holding to activate.
 

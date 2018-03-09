@@ -1,4 +1,4 @@
 # Bridge help
 
-"Beware of troll"
+*"Beware of troll"*
 

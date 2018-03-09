@@ -1,4 +1,4 @@
 # Streetlamp help
 
-Acme Streetlamp Co.
+*Acme Streetlamp Co.*
 

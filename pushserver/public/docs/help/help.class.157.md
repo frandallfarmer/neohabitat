@@ -1,4 +1,4 @@
 # Window help
 
-Acme Window Co.
+*Acme Window Co.*
 

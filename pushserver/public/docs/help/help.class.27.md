@@ -1,4 +1,5 @@
-# Fake_gun help
+# Fake Gun help
 
-Use with care.
+*Use with care.*
 
+Point at a target, choose **DO** while holding.

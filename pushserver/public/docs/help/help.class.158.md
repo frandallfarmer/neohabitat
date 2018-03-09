@@ -1,4 +1,7 @@
 # Bureaucrat help
 
-BUREAUCRAT: TALK sends your request to the bureaucracy.  Please be sure this is the right bureaucrat.
+*How may I help you?*
 
+This official helps you with various complicated functions. Please read any nearby signs for details.
+
+You interact with the a bureaucrat by **TALK**ing to it (typing) to send your request.

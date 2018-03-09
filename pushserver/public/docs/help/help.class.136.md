@@ -1,4 +1,4 @@
 # Coke_machine help
 
-"Have A Choke!"  Insert coin.
+*"Have A Choke!"  Insert coin.*
 

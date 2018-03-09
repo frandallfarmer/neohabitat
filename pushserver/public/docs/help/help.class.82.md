@@ -1,4 +1,6 @@
-# Windup_toy help
+# Windup Toy help
 
-Select DO to wind.
+*Whhhirr... whhirr... whirrr...*
+
+Select **DO** while holding to wind.
 
