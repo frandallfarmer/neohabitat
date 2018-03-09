@@ -34,6 +34,7 @@ function processEvent(event) {
       return;
     case SHOW_HELP:
       $('#docsFrame').attr('src', event.msg.docsURL);
+      return;
     default:
       console.log('Unknown event type: ', event.type)
       return;
