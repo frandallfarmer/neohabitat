@@ -11,20 +11,20 @@ function stringifyID(socket) {
 
 
 class HabitatSession {
-  constructor(elkoHost, elkoPort, client) {
-    this.elkoHost = elkoHost;
-    this.elkoPort = elkoPort;
+  constructor(serverHost, serverPort, client) {
+    this.serverHost = serverHost;
+    this.serverPort = serverPort;
 
-    this.client = client;
+    this.clientConnection = client;
+    this.serverConnection = null;
     this.avatarContext = null;
     this.avatarObj = null;
     this.avatarName = 'unknown';
-    this.elkoConnection = null;
     this.region = 'unknown';
     this.regionContents = {};
 
-    this.clientAttached = false;
-    this.elkoAttached = false;
+    this.clientConnectionAttached = false;
+    this.serverConnectionAttached = false;
     this.connected = false;
     this.ready = false;
 
@@ -33,32 +33,28 @@ class HabitatSession {
     this.clearCallbacks();
   }
 
+  start() {
+    this.ensureServerConnected();
+    this.attachClient();
+    this.attachServer();
+  }
+
   attachClient() {
-    if (!this.clientAttached) {
-      // Begins listening for client events.
-      this.client.on('data', this.handleClientData.bind(this));
-      this.client.on('end', this.handleClientDisconnect.bind(this));
-      this.clientAttached = true;
+    if (!this.clientConnectionAttached) {
+      // Begins listening for Client events.
+      this.clientConnection.on('data', this.handleClientData.bind(this));
+      this.clientConnection.on('end', this.handleClientDisconnect.bind(this));
+      this.clientConnectionAttached = true;
     }
   }
 
-  attachElko() {
-    if (!this.elkoAttached) {
-      // Begins listening for Elko events.
-      this.elkoConnection.on('data', this.handleElkoData.bind(this));
-      this.elkoConnection.on('end', this.handleElkoDisconnect.bind(this));
-      this.elkoAttached = true;
+  attachServer() {
+    if (!this.serverConnectionAttached) {
+      // Begins listening for Server events.
+      this.serverConnection.on('data', this.handleServerData.bind(this));
+      this.serverConnection.on('end', this.handleServerDisconnect.bind(this));
+      this.serverConnectionAttached = true;
     }
-  }
-
-  handleElkoDisconnect() {
-    log.debug('Elko disconnected for client %s, moving session to ASLEEP', this.id());
-    this.handleProxyDisconnect();
-  }
-
-  handleClientDisconnect() {
-    log.debug('Client disconnected for client %s, moving session to ASLEEP', this.id());
-    this.handleProxyDisconnect();
   }
 
   avatarHealth() {
@@ -96,54 +92,6 @@ class HabitatSession {
     }
   }
 
-  ensureElkoConnected() {
-    if (!this.connected || this.elkoConnection === null) {
-      // Opens a connection to Elko and begins listening for events.
-      this.elkoAttached = false;
-      this.elkoConnection = new net.Socket();
-      this.elkoConnection.connect(this.elkoPort, this.elkoHost,
-        this.handleElkoConnect.bind(this));
-      this.attachElko();
-      this.connected = true;
-    }
-  }
-
-  start() {
-    this.ensureElkoConnected();
-    this.attachClient();
-    this.attachElko();
-  }
-
-  // Wakes up an asleep Habitat session with the contents of a freshly-ready session.
-  resume(readySession) {
-    readySession.detachClient();
-    readySession.detachElko();
-    readySession.clearCallbacks();
-
-    this.client = readySession.client;
-
-    this.avatarContext = readySession.avatarContext;
-    this.avatarObj = readySession.avatarObj;
-    this.avatarName = readySession.avatarName;
-    this.elkoConnection = readySession.elkoConnection;
-    this.region = readySession.region;
-    this.regionContents = readySession.regionContents;
-
-    this.clientAttached = false;
-    this.elkoAttached = false;
-    this.connected = true;
-    this.ready = true;
-
-    this.updatedAt = Math.round((new Date()).getTime() / 1000);
-
-    this.ensureElkoConnected();
-    this.attachClient();
-    this.attachElko();
-    this.fireEnteredRegion();
-
-    return this;
-  }
-
   avatarRegion() {
     if (this.avatarContext === null) {
       return 'unknown';
@@ -152,7 +100,10 @@ class HabitatSession {
   }
 
   clearCallbacks() {
-    this.callbacks = {
+    this.clientCallbacks = {
+      msg: [],
+    };
+    this.serverCallbacks = {
       connected: [],
       delete: [],
       disconnected: [],
@@ -163,13 +114,13 @@ class HabitatSession {
   }
 
   detachClient() {
-    this.client.removeAllListeners();
-    this.clientAttached = false;
+    this.clientConnection.removeAllListeners();
+    this.clientConnectionAttached = false;
   }
 
-  detachElko() {
-    this.elkoConnection.removeAllListeners();
-    this.elkoAttached = false;
+  detachServer() {
+    this.serverConnection.removeAllListeners();
+    this.serverConnectionAttached = false;
   }
 
   doAction(action) {
@@ -181,21 +132,21 @@ class HabitatSession {
     log.debug('Performing ACTION on session %s: %s', this.id(), JSON.stringify(action));
     switch (action.type) {
       case ActionTypes.START_ESP:
-        return this.sendMessage({
+        return this.sendServerMessage({
           "to": this.avatarObj.ref,
           "op": "SPEAK",
           "esp": 0,
           "text": "to:"+action.params.avatar,
         });
       case ActionTypes.SEND_TELEPORT_INVITE:
-        return this.sendMessage({
+        return this.sendServerMessage({
           "to": this.avatarObj.ref,
           "op": "SPEAK",
           "esp": 0,
           "text": "/i "+action.params.avatar,
         });
       case ActionTypes.SEND_TELEPORT_REQUEST:
-        return this.sendMessage({
+        return this.sendServerMessage({
           "to": this.avatarObj.ref,
           "op": "SPEAK",
           "esp": 0,
@@ -207,37 +158,99 @@ class HabitatSession {
     }
   }
 
+  disconnectProxy() {
+    log.debug('Disconnecting Habiproxy connection on: %s', this.id());
+
+    this.detachClient();
+    this.detachServer();
+
+    var shouldFireDisconnected = false;
+    if (this.connected) {
+      shouldFireDisconnected = true;
+    }
+    
+    if (this.clientConnection !== null) {
+      this.clientConnection.end();
+      this.clientConnection = null;
+    }
+
+    if (this.serverConnection !== null) {
+      this.serverConnection.destroy();
+      this.serverConnection = null;
+    }
+
+    this.connected = false;
+    this.ready = false;
+
+    if (shouldFireDisconnected) {
+      for (var i in this.serverCallbacks.disconnected) {
+        log.debug('Running callback for session disconnected on: %s', this.id());
+        this.serverCallbacks.disconnected[i](this);
+      }
+    }
+  }
+
+  ensureServerConnected() {
+    if (!this.connected || this.serverConnection === null) {
+      // Opens a connection to Server and begins listening for events.
+      this.serverConnectionAttached = false;
+      this.serverConnection = new net.Socket();
+      this.serverConnection.connect(this.serverPort, this.serverHost,
+        this.handleServerConnect.bind(this));
+      this.attachServer();
+      this.connected = true;
+    }
+  }
+
+  // Wakes up an asleep Habitat session with the contents of a freshly-ready session.
+  resume(readySession) {
+    readySession.detachClient();
+    readySession.detachServer();
+    readySession.clearCallbacks();
+
+    this.clientConnection = readySession.clientConnection;
+    this.serverConnection = readySession.serverConnection;
+
+    this.avatarContext = readySession.avatarContext;
+    this.avatarObj = readySession.avatarObj;
+    this.avatarName = readySession.avatarName;
+    this.serverConnection = readySession.serverConnection;
+    this.region = readySession.region;
+    this.regionContents = readySession.regionContents;
+
+    this.clientConnectionAttached = false;
+    this.serverConnectionAttached = false;
+    this.connected = true;
+    this.ready = true;
+
+    this.updatedAt = Math.round((new Date()).getTime() / 1000);
+
+    this.ensureServerConnected();
+    this.attachClient();
+    this.attachServer();
+    this.fireEnteredRegion();
+
+    return this;
+  }
+
   fireEnteredRegion() {
-    for (var i in this.callbacks.enteredRegion) {
+    for (var i in this.serverCallbacks.enteredRegion) {
       log.debug('Running callbacks for enteredRegion %s on: %s',
         this.avatarRegion, this.id());
-      this.callbacks.enteredRegion[i](this, this.avatarRegion);
+      this.serverCallbacks.enteredRegion[i](this, this.avatarRegion);
     }
   }
 
-  // Proxies any data from the client to this session's Elko connection.
+  // Proxies any data from the client to this session's Server connection.
   handleClientData(buffer) {
-    log.debug('%s -> %s', this.id(), buffer);
+    // Sends the Client message to this session's Elko server.
+    log.silly('%s -> %s', this.id(), buffer);
     try {
-      this.elkoConnection.write(buffer);
+      this.serverConnection.write(buffer);
     } catch (err) {
-      log.error('Unable to write to Elko connection: %s', err)
+      log.error('Unable to write to Server connection: %s', err)
     }
-  }
-
-  // Proxies data between the session's Elko connection to the client, then processes
-  // the JSON message sent from Elko to both set session state and trigger any assigned
-  // callbacks.
-  handleElkoData(buffer) {
-    // Sends the Elko message to this session's client.
-    log.debug('%s -> %s', buffer, this.id());
-    try {
-      this.client.write(buffer);
-    } catch (err) {
-      log.error('Unable to write to client: %s', err)
-    }
-
-    // Parses Elko message; if we receive bad data from Elko, terminates this session.
+    // Parses client message; if we receive bad data from the client, ignores it.
     var messages = buffer.toString('utf8').split('\n');
     for (var i in messages) {
       var message = messages[i];
@@ -247,72 +260,105 @@ class HabitatSession {
       try {
         var parsedMessage = JSON.parse(message);
       } catch (err) {
-        log.error('JSON failed to parse, ignoring: "%s" %s', message, err);
+        log.error('Client JSON failed to parse, ignoring: "%s" %s', message, err);
         continue;
       }
-      this.processMessage(parsedMessage);
+      this.processClientMessage(parsedMessage);
     }
   }
 
-  handleProxyDisconnect() {
-    log.debug('Disconnecting Habiproxy connection on: %s', this.id());
-
-    this.detachClient();
-    this.detachElko();
-
-    var shouldFireDisconnected = false;
-    if (this.connected) {
-      shouldFireDisconnected = true;
-    }
-    
-    if (this.client !== null) {
-      this.client.end();
-      this.client = null;
-    }
-
-    if (this.elkoConnection !== null) {
-      this.elkoConnection.destroy();
-      this.elkoConnection = null;
-    }
-
-    this.connected = false;
-    this.ready = false;
-
-    if (shouldFireDisconnected) {
-      for (var i in this.callbacks.disconnected) {
-        log.debug('Running callback for session disconnected on: %s', this.id());
-        this.callbacks.disconnected[i](this);
-      }
-    }
+  handleClientDisconnect() {
+    log.debug('Client disconnected for Client %s, moving session to ASLEEP', this.id());
+    this.disconnectProxy();
   }
 
-  handleElkoConnect() {
-    log.debug('Elko connection established on: %s', this.id());
+  handleServerConnect() {
+    log.debug('Server connection established on: %s', this.id());
     this.connected = true;
-    for (var i in this.callbacks.connected) {
-      log.debug('Running callback for session connected on: %s', this.id());
-      this.callbacks.connected[i](this);
+    for (var i in this.serverCallbacks.connected) {
+      log.debug('Running Server callback for session connected on: %s', this.id());
+      this.serverCallbacks.connected[i](this);
     }
+  }
+
+  // Proxies data between the session's Server connection to the client, then processes
+  // the JSON message sent from Server to both set session state and trigger any assigned
+  // callbacks.
+  handleServerData(buffer) {
+    // Sends the Server message to this session's client.
+    log.silly('%s -> %s', buffer, this.id());
+    try {
+      this.clientConnection.write(buffer);
+    } catch (err) {
+      log.error('Unable to write to client: %s', err)
+    }
+    // Parses Server message; if we receive bad data from the server, ignores it.
+    var messages = buffer.toString('utf8').split('\n');
+    for (var i in messages) {
+      var message = messages[i];
+      if (message.length == 0) {
+        continue;
+      }
+      try {
+        var parsedMessage = JSON.parse(message);
+      } catch (err) {
+        log.error('Server JSON failed to parse, ignoring: "%s" %s', message, err);
+        continue;
+      }
+      this.processServerMessage(parsedMessage);
+    }
+  }
+
+  handleServerDisconnect() {
+    log.debug('Server disconnected for Client %s, moving session to ASLEEP', this.id());
+    this.disconnectProxy();
   }
 
   id() {
-    if (this.client !== null) {
-      return stringifyID(this.client) + ' (' + this.avatarName + ')';
+    if (this.clientConnection !== null) {
+      return stringifyID(this.clientConnection) + ' (' + this.avatarName + ')';
     } else {
       return 'DISCONNECTED (' + this.avatarName + ')';
     }
   }
 
-  on(eventType, callback) {
-    if (eventType in this.callbacks) {
-      this.callbacks[eventType].push(callback);
+  onClient(eventType, callback) {
+    if (eventType in this.clientCallbacks) {
+      this.clientCallbacks[eventType].push(callback);
     } else {
-      this.callbacks[eventType] = [callback];
+      this.clientCallbacks[eventType] = [callback];
     }
   }
 
-  processMessage(message) {
-    log.debug('Processing Elko message for client %s: %s',
+  onServer(eventType, callback) {
+    if (eventType in this.serverCallbacks) {
+      this.serverCallbacks[eventType].push(callback);
+    } else {
+      this.serverCallbacks[eventType] = [callback];
+    }
+  }
+
+  processClientMessage(message) {
+    log.debug('Processing Client message for Client %s: %s',
+      this.id(), JSON.stringify(message));
+
+    // Fires any message-specific callbacks.
+    if (message.op in this.clientCallbacks) {
+      log.debug('Running Client callbacks for %s on: %s', message.op, this.id());
+      for (var i in this.clientCallbacks[message.op]) {
+        this.clientCallbacks[message.op][i](this, message);
+      }
+    }
+
+    // Fires any generic message callbacks.
+    for (var i in this.clientCallbacks.msg) {
+      log.debug('Running Client callbacks for msg on: %s', message.op, this.id());
+      this.clientCallbacks.msg[i](this, message)
+    }
+  }
+
+  processServerMessage(message) {
+    log.debug('Processing Server message for Client %s: %s',
       this.id(), JSON.stringify(message));
 
     // Populates the region's contents for the current Habitat session.
@@ -324,7 +370,7 @@ class HabitatSession {
       this.regionContents[message.obj.ref] = message.obj;
     }
 
-    // If the Elko message indicates that it is directed to the client of this proxy
+    // If the Server message indicates that it is directed to the client of this proxy
     // session, it will BOTH contain the Avatar's object and indicate that the Avatar has
     // entered a new Habitat region.
     if (message.you) {
@@ -332,44 +378,59 @@ class HabitatSession {
       if (!this.ready) {
         this.ready = true;
         this.avatarName = this.avatarObj.name;
-        for (var i in this.callbacks.sessionReady) {
-          log.debug('Running callbacks for sessionReady on: %s', this.id());
-          this.callbacks.sessionReady[i](this, message);
+        for (var i in this.serverCallbacks.sessionReady) {
+          log.debug('Running server callbacks for sessionReady on: %s', this.id());
+          this.serverCallbacks.sessionReady[i](this, message);
         }
       }
-      log.debug('YOU for client %s: %s', this.id(), JSON.stringify(message));
+      log.debug('YOU for Client %s: %s', this.id(), JSON.stringify(message));
       this.fireEnteredRegion();
     }
 
     // Fires any message-specific callbacks.
-    if (message.op in this.callbacks) {
-      log.debug('Running callbacks for %s on: %s', message.op, this.id());
-      for (var i in this.callbacks[message.op]) {
-        this.callbacks[message.op][i](this, message);
+    if (message.op in this.serverCallbacks) {
+      log.debug('Running server callbacks for %s on: %s', message.op, this.id());
+      for (var i in this.serverCallbacks[message.op]) {
+        this.serverCallbacks[message.op][i](this, message);
       }
     }
 
     // Fires any generic message callbacks.
-    for (var i in this.callbacks.msg) {
-      this.callbacks.msg[i](this, message)
+    for (var i in this.serverCallbacks.msg) {
+      this.serverCallbacks.msg[i](this, message)
     }
 
+    // If this is an immediate changeContext, the client will not automatically disconnect
+    // during the context change; thus, we forcibly disconnect here.
     if (message.type === 'changeContext' && message.immediate) {
       log.debug('Client %s received changeContext with immediate=true, disconnecting...');
-      this.handleProxyDisconnect();
+      this.disconnectProxy();
     }
   }
 
-  sendMessage(message) {
+  sendClientMessage(message) {
     if (!this.ready) {
-      console.info('Tried to send message %s on unready session: %s',
+      log.error('Tried to send Client message %s on unready session: %s',
         JSON.stringify(message), this.id());
       return false;
     }
     var jsonMessage = JSON.stringify(message);
-    log.debug('Sending Habiproxy-injected Elko message for client %s: %s',
+    log.debug('Sending Habiproxy-injected Client message for Client %s: %s',
       this.id(), jsonMessage);
-    this.elkoConnection.write(jsonMessage + '\n\n');
+    this.clientConnection.write(jsonMessage+'\n\n');
+    return true;
+  }
+
+  sendServerMessage(message) {
+    if (!this.ready) {
+      log.error('Tried to send Server message %s on unready session: %s',
+        JSON.stringify(message), this.id());
+      return false;
+    }
+    var jsonMessage = JSON.stringify(message);
+    log.debug('Sending Habiproxy-injected Server message for Client %s: %s',
+      this.id(), jsonMessage);
+    this.serverConnection.write(jsonMessage+'\n\n');
     return true;
   }
 }

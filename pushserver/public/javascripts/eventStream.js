@@ -1,5 +1,6 @@
 var CONNECTED = 'CONNECTED';
 var REGION_CHANGE = 'REGION_CHANGE';
+var SHOW_HELP = 'SHOW_HELP';
 
 var HabiventsES = null;
 var CurrentAvatars = {};
@@ -30,6 +31,9 @@ function processEvent(event) {
       $("#compass").rotate({
         animateTo: orientationToRotation(event.msg.orientation),
       });
+      return;
+    case SHOW_HELP:
+      $('#docsFrame').attr('src', event.msg.docsURL);
       return;
     default:
       console.log('Unknown event type: ', event.type)
