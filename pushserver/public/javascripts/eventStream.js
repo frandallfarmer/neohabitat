@@ -33,7 +33,7 @@ function processEvent(event) {
       });
       return;
     case SHOW_HELP:
-      return;
+      $('#docsFrame').attr('src', event.msg.docsURL);
     default:
       console.log('Unknown event type: ', event.type)
       return;

@@ -1,6 +1,8 @@
 const express = require('express');
 const log = require('winston');
 
+const ClassTable = require('../constants/ClassTable');
+
 
 function sendEvent(res, avatarName, type, msg) {
   var event = {
@@ -29,6 +31,17 @@ class EventRoutes {
       return this.config.externalPages[regionName];
     }
     return '/docs/region/' + regionName;
+  }
+
+  getHelpDocsURL(session, objectRef) {
+    var object = session.regionContents[objectRef];
+    if (object === undefined) {
+      log.error('No reference found for objectRef "%s" on session %s, returning Help #0',
+        objectRef, session.id());
+      return '/docs/help/0';
+    }
+    var classNum = ClassTable[object.mods[0].type];
+    return '/docs/help/'+classNum;
   }
 
   setRoutes() {
@@ -102,8 +115,10 @@ class EventRoutes {
       });
 
       // Sends a SHOW_HELP event when the user requests help on an object.
-      session.onClient('HELP', function(habiproxy, message) {
-        sendEvent(res, avatarName, 'SHOW_HELP');
+      session.onClient('HELP', function(session, message) {
+        sendEvent(res, avatarName, 'SHOW_HELP', {
+          docsURL: self.getHelpDocsURL(session, message.to),
+        });
       });
     });
   }

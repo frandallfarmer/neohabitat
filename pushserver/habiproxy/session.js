@@ -16,10 +16,10 @@ class HabitatSession {
     this.serverPort = serverPort;
 
     this.clientConnection = client;
+    this.serverConnection = null;
     this.avatarContext = null;
     this.avatarObj = null;
     this.avatarName = 'unknown';
-    this.serverConnection = null;
     this.region = 'unknown';
     this.regionContents = {};
 
@@ -208,7 +208,8 @@ class HabitatSession {
     readySession.detachServer();
     readySession.clearCallbacks();
 
-    this.clientConnection = readySession.client;
+    this.clientConnection = readySession.clientConnection;
+    this.serverConnection = readySession.serverConnection;
 
     this.avatarContext = readySession.avatarContext;
     this.avatarObj = readySession.avatarObj;
