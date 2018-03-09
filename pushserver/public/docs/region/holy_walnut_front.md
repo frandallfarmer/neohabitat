@@ -3,7 +3,7 @@
 
 According to ancient texts, the first virtual church was founded here in 1986. Followers of this sacred order preached the act of non-violence and peace within Habitat. The Order of The Holy Walnut still exists today and continues to preach about the act of non-violence, still following the same rules and mantra as it once did in 1986.
 
-**[Creator Ancedote](https://www.crockford.com/ec/anecdotes.html)**
+**[Creator Anecdote](https://www.crockford.com/ec/anecdotes.html)**
 ~~~~~
 One of the outstanding proponents of the anti-violence-in-Habitat view was also the first Habitat Minister.
 A Greek Orthodox Minister opened the first church in Habitat. His canons forbid his disciples to carry weapons, steal,
