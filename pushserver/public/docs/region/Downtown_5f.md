@@ -4,7 +4,7 @@
 
 The fountain was a way for Avatars to talk to "The Oracle," or the modern day equivalent of an admin. The Oracle would manifest itself as a fountain, magic lamp, or even a crystal ball!
 
-**[Creator Ancedote](https://www.crockford.com/ec/anecdotes.html)**
+**[Creator Anecdote](https://www.crockford.com/ec/anecdotes.html)**
 ~~~~~
 I was the first Oracle/Operator. (I talk about that experience in Geek Gods Revisited). The operator's job is most important. It really is like being a Greek God from the ancient writings. The Oracle grants wishes and introduces new items/rules into the world. With one bold stroke of the keyboard, the operator can create/eliminate bank accounts, entire city blocks, or the family business. This is a difficult task as one must consider the repercussions of any "external" effects to the world. Think about this: Would you be mad at "God" if one day suddenly electricity didn't work anymore? Habitat IS a world. As such, someone should run it that has experience in that area. I suggest at least 10 years experience in Fantasy Role Playing and 2 years on telecommunications networks (specifically ones with CHAT programs). A Geek God must understand both consistency in fictional worlds, and the people who inhabit it.
 
@@ -32,6 +32,9 @@ The Oracle takes on many forms and appears in many places. It commonly manifests
 The Great Boredom ends as the Oracle creates Avatars.
 ###  765 A.C.
 The Oracle hands down The National Leisure Edict, providing for ‘‘life, liberty and the pursuit of quality leisure time’’ for all Avatars. Each Avatar is granted a trust fund from the Oracle, removing the need to work for a living.
+
+###  1724 A.C.
+The ‘‘War to End All Wars, I Think’’ is fought after a faction of Avatars, led by Fredrhackh the Ill-Mannered, tries to overthrow the authority of the Oracle. The attempt fails; the Oracle decrees the ‘‘five guests only’’ rule.
 
 ## Citations:
 https://www.crockford.com/ec/anecdotes.html
