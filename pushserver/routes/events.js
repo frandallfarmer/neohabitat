@@ -2,7 +2,7 @@ const express = require('express');
 const log = require('winston');
 
 
-function sendEvent(res, type, msg) {
+function sendEvent(res, avatarName, type, msg) {
   var event = {
     type: type,
     msg: {},
@@ -10,7 +10,7 @@ function sendEvent(res, type, msg) {
   if (msg !== undefined) {
     event['msg'] = msg;
   }
-  log.debug('Sending push event: %s', JSON.stringify(event));
+  log.debug('Sending push event for %s: %s', avatarName, JSON.stringify(event));
   res.write('data: ' + JSON.stringify(event) + '\n\n');
 }
 
@@ -61,14 +61,16 @@ class EventRoutes {
     });
 
     self.router.get('/:avatarName/eventStream', function(req, res, next) {
-      if (!(req.params.avatarName in self.habiproxy.sessions)) {
+      var avatarName = req.params.avatarName;
+
+      if (!(avatarName in self.habiproxy.sessions)) {
         var err = new Error('Avatar unknown.');
         err.status = 404;
         next(err);
         return;
       }
 
-      var session = self.habiproxy.sessions[req.params.avatarName];
+      var session = self.habiproxy.sessions[avatarName];
 
       req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
 
@@ -81,8 +83,8 @@ class EventRoutes {
       res.write('\n');
 
       // Sends the CONNECTED event upon first connection.
-      sendEvent(res, 'CONNECTED');
-      sendEvent(res, 'REGION_CHANGE', {
+      sendEvent(res, avatarName, 'CONNECTED');
+      sendEvent(res, avatarName, 'REGION_CHANGE', {
         description: session.avatarContext.name,
         docsURL: self.getRegionDocsURL(session.avatarRegion()),
         name: session.avatarRegion(),
@@ -90,13 +92,18 @@ class EventRoutes {
       });
 
       // Sends a REGION_CHANGE event when the Avatar changes regions.
-      session.on('enteredRegion', function() {
-        sendEvent(res, 'REGION_CHANGE', {
+      session.onServer('enteredRegion', function() {
+        sendEvent(res, avatarName, 'REGION_CHANGE', {
           description: session.avatarContext.name,
           docsURL: self.getRegionDocsURL(session.avatarRegion()),
           name: session.avatarRegion(),
           orientation: session.avatarOrientation(),
         });
+      });
+
+      // Sends a SHOW_HELP event when the user requests help on an object.
+      session.onClient('HELP', function(habiproxy, message) {
+        sendEvent(res, avatarName, 'SHOW_HELP');
       });
     });
   }

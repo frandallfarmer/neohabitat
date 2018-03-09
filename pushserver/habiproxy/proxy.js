@@ -43,7 +43,7 @@ class HabiproxyServer {
     log.debug('Habiproxy client connected at: %s', stringifyID(client))
     
     var clientSession = new Session(this.elkoHost, this.elkoPort, client);
-    clientSession.on('sessionReady', this.handleSessionReady.bind(this));
+    clientSession.onServer('sessionReady', this.handleSessionReady.bind(this));
 
     try {
       clientSession.start();
