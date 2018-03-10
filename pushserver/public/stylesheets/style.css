@@ -52,18 +52,18 @@ pre {
   margin-right: 3px;
 }
 
-tbody {
+.docent-panel tbody {
   overflow-y: scroll;      
   height: 350px;
   width: 84%;
   position: absolute;
 }
 
-tr {
+.docent-panel tr {
   width: 100%;
   display: inline-table;
 }
 
-table {
+.docent-panel table {
   height: 400px; 
 }
