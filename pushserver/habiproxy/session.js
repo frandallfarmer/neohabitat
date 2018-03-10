@@ -402,7 +402,7 @@ class HabitatSession {
 
     // If this is an immediate changeContext, the client will not automatically disconnect
     // during the context change; thus, we forcibly disconnect here.
-    if (message.type === 'changeContext' && message.immediate) {
+    if (message.type === 'changeContext') {
       log.debug('Client %s received changeContext with immediate=true, disconnecting...');
       this.disconnectProxy();
     }
