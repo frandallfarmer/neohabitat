@@ -1,5 +1,6 @@
-# Avatar help
+# Blank help
 
-*quip*
+*flavor*
 
-**commands**
+**instructions**
+
