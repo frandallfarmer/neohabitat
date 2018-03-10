@@ -5,6 +5,7 @@
 ![](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/vendo.png "Vendroid")
 
 Select **DO** to rotate the Vendroid to the next selection for sale.
+
 Select **PUT** while holding tokens to purchase the item on display.
 
 [More details in Chapter 9 of the Habitat Manual](https://frandallfarmer.github.io/neohabitat-doc/docs//Avatar%20Handbook.html#CHAP9)

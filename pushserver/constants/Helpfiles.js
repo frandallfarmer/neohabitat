@@ -1,8 +1,8 @@
 const Helpfiles = [
   "help.impossible.md",
+  "help.class.1.md",
   "help.impossible.md",
-  "help.impossible.md",
-  "help.does.not.exist.md",
+  "help.class.3.md",
   "help.class.4.md",
   "help.impossible.md",
   "help.impossible.md",

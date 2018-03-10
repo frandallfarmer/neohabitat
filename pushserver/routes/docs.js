@@ -4,8 +4,7 @@ const express = require('express');
 const log = require('winston');
 const showdown = require('showdown');
 
-const Helpfiles = require('../constants/helpfiles');
-
+const Helpfiles = require('../constants/Helpfiles.js');
 
 const RegionDocsDir = './public/docs/region/';
 const RegionNotFoundLocation = RegionDocsDir + 'NOT_FOUND.md';
