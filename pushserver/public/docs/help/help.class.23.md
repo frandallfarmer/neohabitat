@@ -1,5 +1,11 @@
-# Flashlight help
+# Door help
 
-*I hope we've got fresh batteries. I'd hate to run out in a dark cave.*
+*Beyond this portal is the rest of the world.*
 
-**DO** while holding a flashlight will turn it on/off and brighten a room.
+Selecting **DO** on a door opens or closes it.
+
+Select **GO** to either:
+* Walk *to* the door (if you point at the colored part)
+* Walk *thru* the door (if you point to the open/dark part)
+
+

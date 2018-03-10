@@ -6,7 +6,7 @@ A token object holds multiple units of currency. All machines that have prices r
 
 When you place tokens in a container they will merge with any other token object in that container (including your Avatar's pocket.)
 
-**DO** while pointing at a token displays denomination.
+**F7** while pointing at a token displays denomination.
 
 **DO** while holding a token allows you to split it to a specific denomination (for example, if you want to give some tokens to another avatar.) Be sure to enter the amount in the *TALK* line. Any remainder will be put in back into your Avatar's pocket.
 

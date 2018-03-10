@@ -1,6 +1,6 @@
 # Fountain help
 
-*Phrase your question or request *carefully*!*
+*Phrase your question or request* carefully!
 
 **TALK** (type a message) while pointing at the fountain sends message to the Oracle. 
 
