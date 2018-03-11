@@ -38,7 +38,7 @@ Release the trigger and you should see your Avatar attempt to pick up an object.
 To put down an object that's in your Avatar's hand, move your cursor to where you would like to place the object. Press the trigger, and select **PUT** (stick left). 
 
 ### Interacting with Objects ![DO](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/do.png "**DO** command") 
-To interact with an object you must place your cursor over it. This applies to objects in your Avatar's hand and those on the ground. Now, Press the trigger, and select **DO** (stick up) to activate the object. 
+To interact with an object you must place your cursor over it. This applies to objects in your Avatar's hand and those on the ground. Now, Press the trigger, and select **DO** (stick down) to activate the object. 
 
 ## No joystick? Using the number pad instead:
 
