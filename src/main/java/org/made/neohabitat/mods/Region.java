@@ -375,11 +375,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         result.addParameter("depth", depth);
         result.addParameter("lighting", lighting);
         result.addParameter("neighbors", neighbors);
+        result.addParameter("is_turf", is_turf);
         if (control.toRepository()) {
             result.addParameter("max_avatars", max_avatars);
             result.addParameter("town_dir", town_dir);
             result.addParameter("port_dir", port_dir);
-            result.addParameter("is_turf", is_turf);
             result.addParameter("resident", resident);
             result.addParameter("realm", realm);
             result.addParameter("locked", locked);

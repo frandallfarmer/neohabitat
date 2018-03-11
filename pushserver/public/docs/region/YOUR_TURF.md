@@ -2,7 +2,7 @@
 
 This is your turf in Habitat, in other words this is your home. You can decorate your turf with items, throw parties, conduct meetings, etc.
 
-Make sure to lock your doors, otherwise somebody ~~will~~ might steal everything that isn't nailed to the floor.
+The furniture built into this Turf and any contents may only be handled by you, the owner. But if you leave anything on the ground here, other visitors may walk in and carry it away.
 
 # Decorating Your Turf
 This information was taken from the official [Avatar Handbook](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html#CHAP4).
@@ -15,7 +15,7 @@ If your Avatar ever dies in Habitat then you will be promptly teleported back to
 
 Instead of walking all the way back home just use a TelePort booth instead. Insert the required amount of tokens into the booth, place your cursor over the booth, and type "home" for a quick travel.
 
-**[Creator Ancedote](https://www.crockford.com/ec/anecdotes.html)**
+**[Creator Anecdote](https://www.crockford.com/ec/anecdotes.html)**
 ~~~~
 The Party was one of my favorite activities. I liked to throw them at new Avatars' houses. I would ESP a known "Passive" Avatar, and ask him where he lived. If he told me, I would send ESP to "Actives" and "Motivators" that were on-line teleport to the address. Great fun.
 
