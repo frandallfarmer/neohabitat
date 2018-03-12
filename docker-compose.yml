@@ -33,6 +33,7 @@ services:
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
       - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - PUSH_SERVER_MONGO_URL=mongodb://mongo
     ports:
       - "1337:1337"
       - "1701:1701"

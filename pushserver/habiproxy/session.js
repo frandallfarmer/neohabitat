@@ -125,7 +125,7 @@ class HabitatSession {
 
   doAction(action) {
     if (!this.ready) {
-      console.info('Tried to do action %s on unready session: %s',
+      log.debug('Tried to do action %s on unready session: %s',
         JSON.stringify(action), this.id());
       return false;
     }

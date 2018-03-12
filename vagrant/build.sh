@@ -164,6 +164,7 @@ Wants=network.target
 WorkingDirectory=/neohabitat/pushserver
 ExecStart=npm run debug
 Environment=NODE_ENV=development
+Environment=PUSH_SERVER_MONGO_URL=mongodb://127.0.0.1
 Restart=always
 RestartSec=20
 LimitNOFILE=16384

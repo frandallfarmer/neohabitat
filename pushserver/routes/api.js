@@ -6,9 +6,13 @@ const showdown = require('showdown');
 
 
 class APIRoutes {
-  constructor(habiproxy, config) {
+  constructor(habiproxy, config, mongoDb) {
     this.habiproxy = habiproxy;
     this.config = config;
+    this.mongoDb = mongoDb;
+
+    this.contextMap = {};
+
     this.router = express.Router();
     this.setRoutes();
   }
@@ -23,6 +27,7 @@ class APIRoutes {
           avatar: session.avatarObj,
           health: session.avatarHealth(),
           context: session.avatarContext,
+          neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
         });
       } else {
         var err = new Error('Avatar unknown.');

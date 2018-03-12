@@ -14,6 +14,8 @@
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
     "express": "~4.15.5",
+    "mongo": "^0.1.0",
+    "mongodb": "^3.0.4",
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5",
     "server-send-events": "0.0.6",
