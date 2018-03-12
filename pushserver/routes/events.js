@@ -28,15 +28,15 @@ class EventRoutes {
   }
 
   getRegionDocsURL(regionName, avatar, region) {
-	if (avatar !== undefined && region !== undefined) {
-		  if (region.is_turf) {
-			  if (avatar.turf !== undefined && avatar.turf.includes(regionName)) {
-				  return '/docs/region/YOUR_TURF';
-			  } else {
-				  return '/docs/region/A_TURF';
-			  }
-		  }
-	}
+    if (avatar !== undefined && region !== undefined) {
+      if (region.is_turf) {
+        if (avatar.turf !== undefined && avatar.turf.includes(regionName)) {
+          return '/docs/region/YOUR_TURF';
+        } else {
+          return '/docs/region/A_TURF';
+        }
+      }
+    }
     if (regionName in this.config.externalPages) {
       return this.config.externalPages[regionName];
     }
@@ -74,6 +74,7 @@ class EventRoutes {
         config: self.config,
         habiproxy: self.habiproxy,
         health: session.avatarHealth(),
+        neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
         orientation: session.avatarOrientation(),
         regionDescription: session.avatarContext.name,
         regionDocsURL: self.getRegionDocsURL(session.avatarRegion(), session.avatarObj.mods[0], session.avatarContext.mods[0]),
@@ -109,26 +110,30 @@ class EventRoutes {
       sendEvent(res, avatarName, 'CONNECTED');
       sendEvent(res, avatarName, 'REGION_CHANGE', {
         description: session.avatarContext.name,
-        docsURL: self.getRegionDocsURL(session.avatarRegion(),  session.avatarObj.mods[0], session.avatarContext.mods[0]),
+        docsURL: self.getRegionDocsURL(session.avatarRegion(),
+          session.avatarObj.mods[0], session.avatarContext.mods[0]),
         name: session.avatarRegion(),
+        neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
         orientation: session.avatarOrientation(),
       });
 
       // Sends a REGION_CHANGE event when the Avatar changes regions.
       session.onServer('enteredRegion', function() {
-    	  sendEvent(res, avatarName, 'REGION_CHANGE', {
-    		  description: session.avatarContext.name,
-    	      docsURL: self.getRegionDocsURL(session.avatarRegion(),  session.avatarObj.mods[0], session.avatarContext.mods[0]),
-    		  name: session.avatarRegion(),
-    		  orientation: session.avatarOrientation(),
-    	  });
+        sendEvent(res, avatarName, 'REGION_CHANGE', {
+          description: session.avatarContext.name,
+          docsURL: self.getRegionDocsURL(session.avatarRegion(),
+            session.avatarObj.mods[0], session.avatarContext.mods[0]),
+          name: session.avatarRegion(),
+          neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
+          orientation: session.avatarOrientation(),
+        });
       });
 
       // Sends a SHOW_HELP event when the user requests help on an object.
       session.onClient('HELP', function(session, message) {
-    	  sendEvent(res, avatarName, 'SHOW_HELP', {
-    		  docsURL: self.getHelpDocsURL(session, message.to),
-    	  });
+        sendEvent(res, avatarName, 'SHOW_HELP', {
+          docsURL: self.getHelpDocsURL(session, message.to),
+        });
       });
     });
   }

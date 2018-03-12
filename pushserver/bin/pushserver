@@ -101,6 +101,7 @@ MongoClient.connect(MongoURL, (err, client) => {
   const eventsRoutes = new EventsRoutes(habiproxy, config, mongoDb);
   const indexRoutes = new IndexRoutes(habiproxy, config, mongoDb);
 
+  // Register application routes.
   app.use('/', indexRoutes.router);
   app.use('/api/v1', apiRoutes.router);
   app.use('/docs', docsRoutes.router);

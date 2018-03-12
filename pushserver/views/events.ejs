@@ -7,23 +7,23 @@
       <div class="row status-panel rounded text-center d-flex align-items-center w-100">
         <div class="col-2">
           Avatar:
-          <h4 id="avatarHeader" class="text-center"><%= avatarName %></h4>
+          <h4 id="avatarHeader" class="text-center"><%= avatarName %></h5>
         </div>
         <div class="col-2">
-          Health:
-          <h4 id="healthHeader" class="text-center"><%= health %></h4>
+          North:
+          <h5 id="northHeader" class="text-center"><%= neighbors.North %></h5>
         </div>
         <div class="col-2">
-          Stun Count:
-          <h4 id="stunCountHeader" class="text-center"><%= avatarObj.mods[0].stun_count %></h4>
+          South:
+          <h5 id="southHeader" class="text-center"><%= neighbors.South %></h5>
         </div>
         <div class="col-2">
-          Bank Balance:
-          <h4 id="bankBalanceHeader" class="text-center"><%= avatarObj.mods[0].bankBalance %>T</h4>
+          East:
+          <h5 id="eastHeader" class="text-center"><%= neighbors.East %></h5>
         </div>
         <div class="col-2">
-          Avatars In-world:
-          <h4 id="totalAvatarsHeader" class="text-center"></h4>
+          West:
+          <h5 id="westHeader" class="text-center"><%= neighbors.West %></h5>
         </div>
         <div class="col-2">
           <a href="/logout" class="btn btn-danger btn-lg active" role="button" aria-pressed="true">

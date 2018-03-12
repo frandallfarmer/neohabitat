@@ -31,6 +31,10 @@ function processEvent(event) {
       $("#compass").rotate({
         animateTo: orientationToRotation(event.msg.orientation),
       });
+      $("#northHeader").text(event.msg.neighbors.North);
+      $("#southHeader").text(event.msg.neighbors.South);
+      $("#eastHeader").text(event.msg.neighbors.East);
+      $("#westHeader").text(event.msg.neighbors.West);
       return;
     case SHOW_HELP:
       $('#docsFrame').attr('src', event.msg.docsURL);
@@ -158,16 +162,7 @@ function fillOnlineAvatarsTable(avatars) {
 
 function refreshAvatars() {
   $.get('/api/v1/worldview/avatars', function(data) {
-    $('#totalAvatarsHeader').text(data.totalAvatars);
     fillOnlineAvatarsTable(data.avatars);
-  }, 'json');
-}
-
-function refreshAvatarStatus() {
-  $.get('/api/v1/avatar/'+AvatarName, function(data) {
-    $('#healthHeader').text(data.health);
-    $('#stunCountHeader').text(data.avatar.mods[0].stun_count);
-    $('#bankBalanceHeader').text(data.avatar.mods[0].bankBalance+'T');
   }, 'json');
 }
 
@@ -176,7 +171,4 @@ $(document).ready(function() {
 
   refreshAvatars();
   setInterval(refreshAvatars, 5000 + Math.floor(Math.random() * 2000));
-  
-  refreshAvatarStatus();
-  setInterval(refreshAvatarStatus, 5000 + Math.floor(Math.random() * 2000));
 });

@@ -45,7 +45,7 @@ class HabiproxyServer {
 
   buildContextMap() {
     var self = this;
-    this.mongoDb.collection('odb').find({ type: 'context' }).forEach(function(context) {
+    self.mongoDb.collection('odb').find({ type: 'context' }).forEach(function(context) {
       self.contextMap[context.ref] = context;
     });
   }
