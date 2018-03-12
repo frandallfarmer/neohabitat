@@ -11,19 +11,23 @@ function stringifyID(socket) {
 
 
 class HabiproxyServer {
-  constructor(listenHost, listenPort, elkoHost, elkoPort) {
+  constructor(mongoDb, listenHost, listenPort, elkoHost, elkoPort) {
     this.listenHost = listenHost;
     this.listenPort = listenPort;
     this.elkoHost = elkoHost;
     this.elkoPort = elkoPort;
+    this.mongoDb = mongoDb;
 
     this.proxyServer = null;
 
+    this.contextMap = {};
     this.sessions = {};
 
     this.callbacks = {
       sessionReady: [],
     };
+
+    this.buildContextMap();
   }
 
   awakeSessions() {
@@ -37,6 +41,13 @@ class HabiproxyServer {
       }
     }
     return awakeSessions;
+  }
+
+  buildContextMap() {
+    var self = this;
+    this.mongoDb.collection('odb').find({ type: 'context' }).forEach(function(context) {
+      self.contextMap[context.ref] = context;
+    });
   }
 
   handleClientConnect(client) {
@@ -73,6 +84,29 @@ class HabiproxyServer {
       log.debug('Handling callback for sessionReady on: %s', session.id())
       this.callbacks.sessionReady[i](readySession);
     }
+  }
+
+  resolveNeighbors(context) {
+    var neighbors = context.mods[0].neighbors;
+    var neighborMap = {
+      North: 'None',
+      South: 'None',
+      East: 'None',
+      West: 'None',
+    };
+    if (neighbors[0] in this.contextMap) {
+      neighborMap.North = this.contextMap[neighbors[0]].name;
+    }
+    if (neighbors[1] in this.contextMap) {
+      neighborMap.East = this.contextMap[neighbors[1]].name;
+    }
+    if (neighbors[2] in this.contextMap) {
+      neighborMap.South = this.contextMap[neighbors[2]].name;
+    }
+    if (neighbors[3] in this.contextMap) {
+      neighborMap.West = this.contextMap[neighbors[3]].name;
+    }
+    return neighborMap;
   }
 
   start() {

@@ -9,31 +9,17 @@ var debug = require('debug')('pushserver:server');
 var http = require('http');
 var net = require('net');
 
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || '1701');
-app.set('port', port);
+var log = require('winston');
 
 /**
- * Create HTTP server.
+ * Reads the application's configuration.
  */
-
-var server = http.createServer(app);
+var YAML = require('yamljs');
+var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.yml');
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Normalizes a port into a number, string, or false.
  */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -51,9 +37,8 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Event listener for an HTTP server "error" event.
  */
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -79,13 +64,97 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Initiates a connection to Mongo then instantiates routes.
  */
+var MongoURL = process.env.PUSH_SERVER_MONGO_URL || 'mongodb://127.0.0.1';
+var MongoDatabase = process.env.PUSH_SERVER_MONGO_DB || 'elko';
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
+var mongoDb;
+
+const MongoClient = require('mongodb').MongoClient;
+MongoClient.connect(MongoURL, (err, client) => {
+  if (err) throw err;
+  mongoDb = client.db(MongoDatabase);
+
+  log.info('Connected to MongoDB %s/%s', MongoURL, MongoDatabase);
+
+  /**
+   * Starts the Habitat proxy service.
+   */
+  var HabiproxyServer = require('../habiproxy/proxy');
+  var habiproxy = new HabiproxyServer(
+    mongoDb,
+    process.env.HABIPROXY_LISTEN_HOST || '0.0.0.0',
+    process.env.HABIPROXY_LISTEN_PORT || '2018',
+    process.env.HABIPROXY_ELKO_HOST || '0.0.0.0',
+    process.env.HABIPROXY_ELKO_PORT || '9000');
+  habiproxy.start();
+
+  // Establishes the PushServer's web application.
+  var APIRoutes = require('../routes/api');
+  var DocsRoutes = require('../routes/docs');
+  var EventsRoutes = require('../routes/events');
+  var IndexRoutes = require('../routes/index');
+
+  const apiRoutes = new APIRoutes(habiproxy, config, mongoDb);
+  const docsRoutes = new DocsRoutes(habiproxy, config, mongoDb);
+  const eventsRoutes = new EventsRoutes(habiproxy, config, mongoDb);
+  const indexRoutes = new IndexRoutes(habiproxy, config, mongoDb);
+
+  app.use('/', indexRoutes.router);
+  app.use('/api/v1', apiRoutes.router);
+  app.use('/docs', docsRoutes.router);
+  app.use('/events', eventsRoutes.router);
+
+  // catch 404 and forward to error handler
+  app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
+
+  // error handler
+  app.use(function(err, req, res, next) {
+    log.error('Error caught: %s', err)
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+  });
+
+  /**
+   * Get port from environment and store in Express.
+   */
+
+  var port = normalizePort(process.env.PORT || '1701');
+  app.set('port', port);
+
+  /**
+   * Create HTTP server.
+   */
+
+  var server = http.createServer(app);
+
+  /**
+   * Event listener for HTTP server "listening" event.
+   */
+
+  function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+    log.debug('HTTP server listening on ' + bind);
+  }
+
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+});

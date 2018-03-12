@@ -14,11 +14,12 @@ const HelpNotFoundLocation = HelpDocsDir + 'help.does.not.exist.md';
 
 
 class DocsRoutes {
-  constructor(habiproxy, config) {
+  constructor(habiproxy, config, mongoDb) {
     var self = this;
 
     self.habiproxy = habiproxy;
     self.config = config;
+    self.mongoDb = mongoDb;
     self.mdConverter = new showdown.Converter();
     self.router = express.Router();
 

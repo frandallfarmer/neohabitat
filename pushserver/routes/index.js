@@ -2,9 +2,10 @@ const express = require('express');
 
 
 class IndexRoutes {
-  constructor(habiproxy, config) {
+  constructor(habiproxy, config, mongoDb) {
     this.habiproxy = habiproxy;
     this.config = config;
+    this.mongoDb = mongoDb;
     this.router = express.Router();
     this.setRoutes();
   }

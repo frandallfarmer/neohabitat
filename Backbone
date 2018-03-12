@@ -34,6 +34,7 @@ clusters:
         - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
         - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
         - NODE_ENV=production
+        - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
       synapses:
         - resource: neohabitatmongo
           port: 27017

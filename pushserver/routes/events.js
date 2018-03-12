@@ -18,10 +18,11 @@ function sendEvent(res, avatarName, type, msg) {
 
 
 class EventRoutes {
-  constructor(habiproxy, config) {
+  constructor(habiproxy, config, mongoDb) {
     var self = this;
     self.habiproxy = habiproxy;
     self.config = config;
+    self.mongoDb = mongoDb;
     self.router = express.Router();
     self.setRoutes();
   }
