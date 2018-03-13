@@ -12,7 +12,8 @@
           "", 
           "context-Downtown_7a", 
           "context-Downtown_6b"
-        ], 
+        ],
+        "realm": "Downtown",         
         "orientation": 3, 
         "nitty_bits": 3, 
         "port_dir": LEFT + SPACE + RIGHT, 

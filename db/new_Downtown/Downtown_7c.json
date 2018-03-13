@@ -11,6 +11,7 @@
         "type": "Region",
         "orientation": 2,
         "nitty_bits": 3,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_7d",
           "context-Downtown_8c",

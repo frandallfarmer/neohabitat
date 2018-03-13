@@ -10,6 +10,7 @@
         "port_dir": LEFT, 
         "type": "Region",
         "orientation": 0,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "",
@@ -54,13 +55,13 @@
     "ref": "item-doorbe2f", 
     "mods": [
       {
-	    "type": "Door",
+        "type": "Door",
         "style": 1,
-		"x": 20, 
-		"y": 32, 
+        "x": 20, 
+        "y": 32, 
         "orientation": 252, 
         "open_flags": 0,
-		"connection": "context-test"
+        "connection": "context-test"
       }
     ], 
     "type": "item", 

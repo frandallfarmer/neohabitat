@@ -12,7 +12,8 @@
           "context-dnalsi_cave2_2d", 
           "context-dnalsi_cave2_1c", 
           ""
-        ], 
+        ],
+        "realm": "Dnalsi",        
         "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 

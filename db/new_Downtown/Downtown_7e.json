@@ -10,6 +10,7 @@
         "port_dir": DOWN, 
         "type": "Region",
         "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_7f",
           "context-Downtown_8e",

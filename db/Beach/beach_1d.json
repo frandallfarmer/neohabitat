@@ -12,7 +12,8 @@
           "context-beach_2d", 
           "context-beach_1c", 
           "context-beach_0d"
-        ], 
+        ],
+        "realm": "Beach",          
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": DOWN + SPACE + RIGHT, 

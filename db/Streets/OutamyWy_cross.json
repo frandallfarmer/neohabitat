@@ -13,7 +13,8 @@
           "context-HyperDr_cross", 
           "context-OutamyWy_529_front", 
           "context-Woods_5y"
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "",

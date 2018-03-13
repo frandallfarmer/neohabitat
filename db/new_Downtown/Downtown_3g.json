@@ -10,6 +10,7 @@
         "port_dir": DOWN, 
         "type": "Region",
         "orientation": 0,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_3h",
           "context-Downtown_4g",
@@ -56,10 +57,10 @@
       {
         "y": 161, 
         "x": 64, 
-		"open_flags": 3,
-		"gr_state": 1,
-		"type": "Door",
-		"connection": "context-Downtown_2g",
+        "open_flags": 3,
+        "gr_state": 1,
+        "type": "Door",
+        "connection": "context-Downtown_2g",
         "orientation": 140
       }
     ], 

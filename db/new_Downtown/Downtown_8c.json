@@ -10,6 +10,7 @@
         "port_dir": DOWN,
         "type": "Region",
         "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "",
@@ -49,7 +50,7 @@
         "height": 112, 
         "pattern_x_size": 0, 
         "pattern_y_size": 1,
-        "pattern": [		
+        "pattern": [        
           170, 
           85, 
           85, 

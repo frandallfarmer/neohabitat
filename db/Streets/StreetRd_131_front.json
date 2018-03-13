@@ -12,7 +12,8 @@
           "", 
           "context-StreetRd_s_end", 
           "context-StreetRd_131_interior"
-        ], 
+        ],
+        "realm": "Streets",    
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": LEFT, 

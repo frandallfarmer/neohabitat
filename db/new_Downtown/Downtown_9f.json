@@ -10,6 +10,7 @@
         "port_dir": RIGHT,
         "type": "Region",
         "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "",
@@ -49,7 +50,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 0,
-        "pattern": [		
+        "pattern": [        
           153, 
           85, 
           85, 
@@ -98,7 +99,7 @@
         "y": 138, 
         "x": 20, 
         "style": 1,
-        "open_flags": 3,		
+        "open_flags": 3,        
         "type": "Chair", 
         "orientation": 112
       }
@@ -113,7 +114,7 @@
       {
         "y": 148, 
         "x": 96,
-        "open_flags": 3,		
+        "open_flags": 3,        
         "type": "Chair", 
         "orientation": 56
       }
@@ -128,7 +129,7 @@
       {
         "y": 148, 
         "x": 72,
-        "open_flags": 3,		
+        "open_flags": 3,        
         "type": "Chair", 
         "orientation": 56
       }
@@ -143,7 +144,7 @@
       {
         "y": 148, 
         "x": 48,
-        "open_flags": 3,		
+        "open_flags": 3,        
         "type": "Chair", 
         "orientation": 56
       }
@@ -158,7 +159,7 @@
       {
         "y": 148, 
         "x": 120,
-        "open_flags": 3,		
+        "open_flags": 3,        
         "type": "Chair", 
         "orientation": 56
       }

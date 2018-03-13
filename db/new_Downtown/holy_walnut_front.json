@@ -1,7 +1,7 @@
 [
   {
-	"ref": "context-holy_walnut_front",
-	"capacity": 64,
+    "ref": "context-holy_walnut_front",
+    "capacity": 64,
     "type": "context",
     "name": "The Order of the Holy Walnut",
     "mods": [
@@ -9,14 +9,15 @@
         "town_dir": "",
         "port_dir": DOWN,
         "type": "Region",
-		"orientation": 1,
+        "orientation": 1,
+        "realm": "Downtown", 
         "neighbors": [
           "context-holy_walnut_int",
           "context-Downtown_5h",
           "context-Downtown_4g",
           "context-Downtown_3h"
         ],
-		"nitty_bits": 3
+        "nitty_bits": 3
       }
     ]
   },
@@ -51,51 +52,51 @@
     ]
   },
 {
-	"type": "item",
-	"ref": "item-sign1.holy_walnut_front",
-	"name": "Holy Walnut Sign",
-	"in": "context-holy_walnut_front",
-	"mods": [
-		{
-			"type": "Sign",
-			"style": 0,
-			"x": 0,
-			"y": 19,
-			"orientation": 0,
-			"gr_state": 1,
-			"ascii": [
-			133,
+    "type": "item",
+    "ref": "item-sign1.holy_walnut_front",
+    "name": "Holy Walnut Sign",
+    "in": "context-holy_walnut_front",
+    "mods": [
+        {
+            "type": "Sign",
+            "style": 0,
+            "x": 0,
+            "y": 19,
+            "orientation": 0,
+            "gr_state": 1,
+            "ascii": [
+            133,
             79,
-			114,
-			100,
-			101,
-			114,
-			133,
-			32,
-			111,
-			102,
-			32,
-			116,
-			104,
-			101,
-			32,
-			133,
-			72,
-			111,
-			108,
-			121,
-			133,
-			32,
-			133,
-			87,
-			97,
-			108,
-			110,
-			117,
-			116
-			]
-		}
-	]
+            114,
+            100,
+            101,
+            114,
+            133,
+            32,
+            111,
+            102,
+            32,
+            116,
+            104,
+            101,
+            32,
+            133,
+            72,
+            111,
+            108,
+            121,
+            133,
+            32,
+            133,
+            87,
+            97,
+            108,
+            110,
+            117,
+            116
+            ]
+        }
+    ]
 },
 {
   "type": "item",
@@ -110,7 +111,7 @@
       "y": 39,
       "orientation": 0,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
@@ -127,7 +128,7 @@
       "y": 59,
       "orientation": 0,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
@@ -162,25 +163,25 @@
       "y": 49,
       "orientation": 0,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
 {
-	"type": "item",
-	"ref": "item-street.holy_walnut_front",
-	"name": "Street",
-	"in": "context-holy_walnut_front",
-	"mods": [
-		{
-			"type": "Street",
-			"style": 0,
-			"x": 68,
-			"y": 7,
-			"orientation": 16,
-			"gr_state": 13
-		}
-	]
+    "type": "item",
+    "ref": "item-street.holy_walnut_front",
+    "name": "Street",
+    "in": "context-holy_walnut_front",
+    "mods": [
+        {
+            "type": "Street",
+            "style": 0,
+            "x": 68,
+            "y": 7,
+            "orientation": 16,
+            "gr_state": 13
+        }
+    ]
 },
 {
   "type": "item",
@@ -195,7 +196,7 @@
       "y": 49,
       "orientation": 0,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
@@ -212,7 +213,7 @@
       "y": 59,
       "orientation": 0,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
@@ -229,29 +230,29 @@
       "y": 39,
       "orientation": 0,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
 {
-	"type": "item",
-	"ref": "item-shortsign.holy_walnut_front",
-	"name": "Holy Walnut Sign",
-	"in": "context-holy_walnut_front",
-	"mods": [
-		{
-			"type": "Short_sign",
-			"style": 0,
-			"x": 76,
-			"y": 122,
-			"gr_state": 1,
-			"orientation": 0,
-			"ascii": [
-			133,
-			131,
-			28
-			]
-		}
-	]
+    "type": "item",
+    "ref": "item-shortsign.holy_walnut_front",
+    "name": "Holy Walnut Sign",
+    "in": "context-holy_walnut_front",
+    "mods": [
+        {
+            "type": "Short_sign",
+            "style": 0,
+            "x": 76,
+            "y": 122,
+            "gr_state": 1,
+            "orientation": 0,
+            "ascii": [
+            133,
+            131,
+            28
+            ]
+        }
+    ]
 }
 ]

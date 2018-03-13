@@ -10,6 +10,7 @@
         "port_dir": RIGHT,
         "type": "Region",
         "orientation": 1,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_6k",
           "context-Downtown_7j",
@@ -57,9 +58,9 @@
         "y": 33, 
         "x": 40,
         "type": "Door",
-        "open_flags": 0,		
+        "open_flags": 0,        
         "orientation": 228,
-		"connection": "context-test"
+        "connection": "context-test"
       }
     ], 
     "type": "item", 

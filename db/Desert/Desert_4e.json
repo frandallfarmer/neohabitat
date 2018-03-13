@@ -12,7 +12,8 @@
           "context-Desert_5e", 
           "context-Desert_4d", 
           ""
-        ], 
+        ],
+        "realm": "Desert",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "", 

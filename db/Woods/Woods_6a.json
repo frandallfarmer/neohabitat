@@ -8,12 +8,13 @@
       {
         "town_dir": LEFT,
         "port_dir": LEFT,
-		"neighbors": [
+        "neighbors": [
           "context-Woods_6b", 
           "context-Woods_7a", 
           "context-Woods_5z", 
           "context-Woods_5a"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 1, 
         "type": "Region"

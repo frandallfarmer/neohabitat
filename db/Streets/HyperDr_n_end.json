@@ -13,7 +13,8 @@
           "", 
           "context-HyperDr_1030_front", 
           ""
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "", 

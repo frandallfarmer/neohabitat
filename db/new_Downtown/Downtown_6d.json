@@ -10,6 +10,7 @@
         "port_dir": DOWN,
         "type": "Region",
         "orientation": 3,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_6e",
           "context-Downtown_7d",
@@ -113,9 +114,9 @@
       {
         "style": 1, 
         "orientation": 0, 
-		"open_flags": 3,
-		"gr_state": 1,
-		"connection": "context-Downtown_6c",
+        "open_flags": 3,
+        "gr_state": 1,
+        "connection": "context-Downtown_6c",
         "y": 32, 
         "x": 116, 
         "type": "Door"
@@ -150,9 +151,9 @@
         "type": "Glue",
         "x": 36,
         "y": 67,
-		"orientation": 1,
+        "orientation": 1,
         "gr_state": 1,
-		"open_flags": 3,
+        "open_flags": 3,
         "x_offset_1": 0,
         "y_offset_1": 0,
         "x_offset_2": 249,

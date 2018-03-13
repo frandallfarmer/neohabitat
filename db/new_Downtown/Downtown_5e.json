@@ -4,7 +4,8 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Plaza South",
-    "orientation": 0,	
+    "orientation": 0,
+    "realm": "Downtown",     
     "mods": [
       {
         "town_dir": "", 

@@ -9,7 +9,8 @@
         "town_dir": "", 
         "port_dir": LEFT, 
         "type": "Region",
-        "orientation": 2,		
+        "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_8g",
           "", 
@@ -21,70 +22,70 @@
     ]
   }, 
   {
-		"ref" : "item-1r.gammon",
-		"mods" : [ {
-			"type" : "Magic_immobile",
-			"y" : 69,
-			"x" : 10,
-			"style": 0,
-			"orientation": 8,
-			"magic_type" : 14,
-			"magic_data" : 0,
-			"magic_data2": 6
-		} ],
-		"type" : "item",
-		"name" : "Backgammon Reset",
-		"in" : "context-Downtown_1r"
+        "ref" : "item-1r.gammon",
+        "mods" : [ {
+            "type" : "Magic_immobile",
+            "y" : 69,
+            "x" : 10,
+            "style": 0,
+            "orientation": 8,
+            "magic_type" : 14,
+            "magic_data" : 0,
+            "magic_data2": 6
+        } ],
+        "type" : "item",
+        "name" : "Backgammon Reset",
+        "in" : "context-Downtown_1r"
 }, 
 {
-		"type": "item",
-		"ref": "item-1r.reset",
-		"name": "Reset Game",
-		"in": "context-Downtown_1r",
-		"mods": [
-			{
-				"type": "Short_sign",
-				"style": 5,
-				"gr_state": 8,
-				"x": 2,
-				"y": 56,
-				"orientation": 16,
-				"text": "  Reset",
-				"ascii": []
-			}
-		]
+        "type": "item",
+        "ref": "item-1r.reset",
+        "name": "Reset Game",
+        "in": "context-Downtown_1r",
+        "mods": [
+            {
+                "type": "Short_sign",
+                "style": 5,
+                "gr_state": 8,
+                "x": 2,
+                "y": 56,
+                "orientation": 16,
+                "text": "  Reset",
+                "ascii": []
+            }
+        ]
 },
 {
-	"type": "item",
-	"ref": "item-1r.die1",
-	"name": "Die",
-	"in" : "context-Downtown_1r",
-	"mods": [
-		{
-			"type": "Die",
-			"y": 129,
-			"x": 84,
-			"gr_state": 6,
-			"orientation": 16,
-			"state":	6 
-		}
-		]
+    "type": "item",
+    "ref": "item-1r.die1",
+    "name": "Die",
+    "in" : "context-Downtown_1r",
+    "mods": [
+        {
+            "type": "Die",
+            "y": 129,
+            "x": 84,
+            "gr_state": 6,
+            "orientation": 16,
+            "state":    6 
+        }
+        ]
 },
 {
-	"type": "item",
-	"ref": "item-1r.die2",
-	"name": "Die",
-	"in" : "context-Downtown_1r",
-	"mods": [
-		{
-			"type": "Die",
-			"y": 141,
-			"x": 88,
-			"gr_state": 6,
-			"orientation": 16,
-			"state":	6 
-		}
-		]
+    "type": "item",
+    "ref": "item-1r.die2",
+    "name": "Die",
+    "in" : "context-Downtown_1r",
+    "mods": [
+        {
+            "type": "Die",
+            "y": 141,
+            "x": 88,
+            "gr_state": 6,
+            "orientation": 16,
+            "state":    6 
+        }
+        ]
 },
   {
     "ref": "item-trapezoid82c8", 

@@ -9,7 +9,8 @@
         "town_dir": "", 
         "port_dir": DOWN, 
         "type": "Region",
-        "orientation": 0,		
+        "orientation": 0,
+        "realm": "Downtown",         
         "neighbors": [
           "",
           "context-sheriff_front", 
@@ -41,7 +42,7 @@
       {
         "y": 144, 
         "x": 56,
-		"open_flags": 3,
+        "open_flags": 3,
         "type": "Countertop", 
         "orientation": 252
       }

@@ -3,7 +3,7 @@
     "ref": "context-HyperDr_cross", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Hyper Dr Cross",	
+    "name": "Hyper Dr Cross",   
     "aliases" : [ "pop-hyperdrive", "pop-hyperdr", "pop-hyperdrx" ],
     "mods": [
       {
@@ -13,7 +13,8 @@
           "context-StreetRd_cross", 
           "context-HyperDr_530_front", 
           "context-OutamyWy_cross"
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "", 

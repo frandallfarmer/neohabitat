@@ -12,7 +12,8 @@
           "context-Desert_1c", 
           "context-Desert_1a", 
           "context-Desert_2b"
-        ], 
+        ],
+        "realm": "Desert",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "", 

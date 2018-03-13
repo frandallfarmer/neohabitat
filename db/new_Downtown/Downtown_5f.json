@@ -9,7 +9,8 @@
         "town_dir": "", 
         "port_dir": UP + SPACE + DOWN + SPACE + LEFT + SPACE + RIGHT, 
         "type": "Region",
-        "orientation": 0,		
+        "orientation": 0,
+        "realm": "Downtown",         
         "neighbors": [
           "context-Downtown_5g",
           "context-Downtown_6f",
@@ -57,7 +58,7 @@
         "x": 20,
         "type": "Flag", 
         "orientation": 72,
-		"mass": 1
+        "mass": 1
       }
     ], 
     "type": "item", 

@@ -12,7 +12,8 @@
           "", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Downtown", 
         "orientation": 3, 
         "nitty_bits": 3, 
         "port_dir": DOWN, 
@@ -154,7 +155,7 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0,
-		"prices": [250, 305, 499, 400, 625, 400, 425],
+        "prices": [250, 305, 499, 400, 625, 400, 425],
         "item_price": 425
       }
     ], 
@@ -372,7 +373,7 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0,
-		"prices": [349, 429, 299, 500, 409, 619, 387, 249],
+        "prices": [349, 429, 299, 500, 409, 619, 387, 249],
         "item_price": 249
       }
     ], 

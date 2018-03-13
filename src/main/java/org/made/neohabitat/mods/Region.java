@@ -376,12 +376,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         result.addParameter("lighting", lighting);
         result.addParameter("neighbors", neighbors);
         result.addParameter("is_turf", is_turf);
+        result.addParameter("realm", realm);
         if (control.toRepository()) {
             result.addParameter("max_avatars", max_avatars);
             result.addParameter("town_dir", town_dir);
             result.addParameter("port_dir", port_dir);
             result.addParameter("resident", resident);
-            result.addParameter("realm", realm);
             result.addParameter("locked", locked);
             result.addParameter("shutdown_size", space_usage);		// FRF TODO Is this correct at region shutdown or should I snapshot space_usage into shutdown_size elsewhere?
         }

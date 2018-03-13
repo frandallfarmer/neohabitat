@@ -10,6 +10,7 @@
         "port_dir": DOWN,
         "type": "Region",
         "orientation": 1,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_6i",
           "context-Downtown_7h",
@@ -49,7 +50,7 @@
         "height": 127, 
         "pattern_x_size": 1, 
         "pattern_y_size": 15,
-        "pattern": [		
+        "pattern": [        
           170, 
           170, 
           149, 
@@ -100,7 +101,7 @@
         "open_flags": 2, 
         "type": "Door", 
         "orientation": 220,
-		"connection": "context-Downtown_6i"
+        "connection": "context-Downtown_6i"
       }
     ], 
     "type": "item", 
