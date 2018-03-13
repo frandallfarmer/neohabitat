@@ -8,17 +8,20 @@ var CurrentAvatars = {};
 function orientationToRotation(orientation) {
   switch (orientation) {
     case 'North':
-      return 0;
+      return 270;
     case 'West':
       return 90;
     case 'South':
       return 180;
     case 'East':
-      return 270;
+      return 0;
     default:
       return 0;
   }
 }
+
+const HTMLArrows = ['&#8593;', '&#8592;', '&#8595;', '&#8594;'];
+const orient     = ["West", "East", "North", "South"];
 
 function processEvent(event) {
   switch (event.type) {
@@ -30,11 +33,19 @@ function processEvent(event) {
       $('#orientationHeader').text(event.msg.orientation);
       $("#compass").rotate({
         animateTo: orientationToRotation(event.msg.orientation),
-      });
+      })
+      var arrow = (orient.indexOf(event.msg.orientation) + 3) % 4;
+      $("#northArrow").html(HTMLArrows[arrow]);
       $("#northHeader").text(event.msg.neighbors.North);
-      $("#southHeader").text(event.msg.neighbors.South);
-      $("#eastHeader").text(event.msg.neighbors.East);
+      arrow = ++arrow % 4;
+      $("#westArrow").html(HTMLArrows[arrow]);
       $("#westHeader").text(event.msg.neighbors.West);
+      arrow = ++arrow % 4;
+      $("#southArrow").html(HTMLArrows[arrow]);
+      $("#southHeader").text(event.msg.neighbors.South);
+      arrow = ++arrow % 4;
+      $("#eastArrow").html(HTMLArrows[arrow]);
+      $("#eastHeader").text(event.msg.neighbors.East);
       return;
     case SHOW_HELP:
       $('#docsFrame').attr('src', event.msg.docsURL);
