@@ -13,7 +13,8 @@
           "", 
           ""
         ], 
-        "orientation": 0, 
+        "orientation": 0,
+        "realm": "Downtown",         
         "nitty_bits": 3, 
         "port_dir": DOWN, 
         "type": "Region"
@@ -44,7 +45,7 @@
         "type": "Gemstone", 
         "orientation": 0, 
         "gr_state": 1,
-		"magic_type": 1
+        "magic_type": 1
       }
     ], 
     "type": "item", 
@@ -74,7 +75,7 @@
         "x": 3, 
         "type": "Ring", 
         "orientation": 0,
-		"magic_type": 1
+        "magic_type": 1
       }
     ], 
     "type": "item", 
@@ -90,7 +91,7 @@
         "type": "Gemstone", 
         "orientation": 8, 
         "gr_state": 1,
-		"magic_type": 1
+        "magic_type": 1
       }
     ], 
     "type": "item", 
@@ -106,7 +107,7 @@
         "type": "Gemstone", 
         "orientation": 252, 
         "gr_state": 1,
-		"magic_type": 1
+        "magic_type": 1
       }
     ], 
     "type": "item", 
@@ -125,7 +126,7 @@
         "y": 0, 
         "x": 184, 
         "type": "Vendo_front",
-        "prices": [5000, 1145, 4500, 3200, 8500, 1200],		
+        "prices": [5000, 1145, 4500, 3200, 8500, 1200],     
         "open_flags": 0, 
         "item_price": 1200
       }
@@ -142,7 +143,7 @@
         "x": 1, 
         "type": "Amulet", 
         "orientation": 0,
-		"magic_type": 1
+        "magic_type": 1
       }
     ], 
     "type": "item", 
@@ -189,7 +190,7 @@
         "x": 2, 
         "type": "Magic_lamp", 
         "orientation": 0,
-		"magic_type": 11
+        "magic_type": 11
       }
     ], 
     "type": "item", 
@@ -204,7 +205,7 @@
         "x": 0, 
         "type": "Magic_staff", 
         "orientation": 0,
-		"magic_type": 2
+        "magic_type": 2
       }
     ], 
     "type": "item", 
@@ -223,7 +224,7 @@
         "y": 0, 
         "x": 181, 
         "type": "Vendo_front",
-        "prices": [999, 30000, 1495, 1800],		
+        "prices": [999, 30000, 1495, 1800],     
         "open_flags": 0, 
         "item_price": 1800
       }
@@ -240,7 +241,7 @@
         "x": 1, 
         "type": "Magic_wand", 
         "orientation": 0,
-		"magic_type": 1
+        "magic_type": 1
       }
     ], 
     "type": "item", 

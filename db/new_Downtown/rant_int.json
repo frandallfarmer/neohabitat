@@ -9,7 +9,8 @@
         "town_dir": "", 
         "port_dir": DOWN, 
         "type": "Region",
-        "orientation": 1,		
+        "orientation": 1, 
+        "realm": "Downtown",         
         "neighbors": [
           "",
           "",
@@ -86,7 +87,7 @@
       {
         "y": 143, 
         "x": 10,
-		"open_flags": 3,
+        "open_flags": 3,
         "type": "Countertop", 
         "orientation": 252
       }
@@ -101,7 +102,7 @@
       {
         "y": 143, 
         "x": 108,
-		"open_flags": 3,
+        "open_flags": 3,
         "type": "Countertop", 
         "orientation": 252
       }
@@ -218,7 +219,7 @@
       {
         "y": 133, 
         "x": 0,
-		"style": 1,
+        "style": 1,
         "open_flags": 3,
         "type": "Chair", 
         "orientation": 204
@@ -234,7 +235,7 @@
       {
         "y": 133, 
         "x": 140,
-		"style": 1,
+        "style": 1,
         "open_flags": 3,
         "type": "Chair", 
         "orientation": 205
@@ -250,29 +251,29 @@
       {
         "orientation": 188, 
         "type": "Sign",
-        "style": 1,		
+        "style": 1,     
         "gr_state": 1, 
         "y": 82, 
         "x": 16, 
         "ascii": [
-		  32,
+          32,
           74,
-		  101,
-		  110,
-		  110,
-		  121,
-		  134,
-		  32,
-		  32,
-		  56,
-		  54,
-		  55,
-		  134,
-		  32,
-		  53,
-		  51,
-		  48,
-		  57
+          101,
+          110,
+          110,
+          121,
+          134,
+          32,
+          32,
+          56,
+          54,
+          55,
+          134,
+          32,
+          53,
+          51,
+          48,
+          57
         ]
       }
     ], 
@@ -286,32 +287,32 @@
       {
         "orientation": 244, 
         "type": "Sign",
-		"style": 1,
+        "style": 1,
         "gr_state": 1, 
         "y": 82, 
         "x": 116, 
         "ascii": [
           133,
-		  133,
-		  128,
-		  128,
-		  78,
-		  101,
-		  119,
-		  115,
-		  134,
-		  32,
-		  115,
-		  105,
-		  110,
-		  99,
-		  101,
-		  134,
-		  32,
-		  49,
-		  57,
-		  56,
-		  55
+          133,
+          128,
+          128,
+          78,
+          101,
+          119,
+          115,
+          134,
+          32,
+          115,
+          105,
+          110,
+          99,
+          101,
+          134,
+          32,
+          49,
+          57,
+          56,
+          55
         ]
       }
     ], 
@@ -325,7 +326,7 @@
       {
         "y": 143, 
         "x": 62,
-		"open_flags": 3,
+        "open_flags": 3,
         "type": "Countertop", 
         "orientation": 252
       }

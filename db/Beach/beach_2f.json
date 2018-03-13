@@ -12,7 +12,8 @@
           "context-Woods_5x", 
           "context-beach_2e", 
           "context-beach_1f"
-        ], 
+        ],
+        "realm": "Beach",          
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": DOWN + SPACE + RIGHT, 

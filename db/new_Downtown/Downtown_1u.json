@@ -9,7 +9,8 @@
         "town_dir": "", 
         "port_dir": RIGHT, 
         "type": "Region",
-        "orientation": 2,		
+        "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_1v",
           "",
@@ -36,37 +37,37 @@
     "in": "context-Downtown_1u"
   }, 
   {
-		"ref" : "item-1u.checkers",
-		"mods" : [ {
-			"type" : "Magic_immobile",
-			"y" : 66,
-			"x" : 2,
-			"style": 0,
-			"orientation": 8,
-			"magic_type" : 13,
-			"magic_data" : 36,
-			"magic_data2": 6
-		} ],
-		"type" : "item",
-		"name" : "Checkers Reset",
-		"in" : "context-Downtown_1u"
+        "ref" : "item-1u.checkers",
+        "mods" : [ {
+            "type" : "Magic_immobile",
+            "y" : 66,
+            "x" : 2,
+            "style": 0,
+            "orientation": 8,
+            "magic_type" : 13,
+            "magic_data" : 36,
+            "magic_data2": 6
+        } ],
+        "type" : "item",
+        "name" : "Checkers Reset",
+        "in" : "context-Downtown_1u"
 }, 
 {
-		"type": "item",
-		"ref": "item-1u.reset",
-		"name": "Reset Game",
-		"in": "context-Downtown_1u",
-		"mods": [
-			{
-				"type": "Short_sign",
-				"style": 4,
-				"x": 12,
-				"y": 64,
-				"orientation": 140,
-				"text": "Reset Game",
-				"ascii": []
-			}
-		]
+        "type": "item",
+        "ref": "item-1u.reset",
+        "name": "Reset Game",
+        "in": "context-Downtown_1u",
+        "mods": [
+            {
+                "type": "Short_sign",
+                "style": 4,
+                "x": 12,
+                "y": 64,
+                "orientation": 140,
+                "text": "Reset Game",
+                "ascii": []
+            }
+        ]
 },
 {
     "ref": "item-wall5238", 
@@ -98,7 +99,7 @@
         "pattern_x_size": 0, 
         "pattern_y_size": 31, 
         "pattern": [  
-		  85, 
+          85, 
           85, 
           85, 
           85, 
@@ -154,7 +155,7 @@
         "pattern_x_size": 0, 
         "pattern_y_size": 31, 
         "pattern": [  
-		  170, 
+          170, 
           170, 
           170, 
           170, 
@@ -209,7 +210,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 31,
-		"pattern": [
+        "pattern": [
           170, 
           170, 
           170, 
@@ -265,7 +266,7 @@
         "height": 127,
         "pattern_x_size": 0,
         "pattern_y_size": 31,
-		"pattern": [ 
+        "pattern": [ 
           170, 
           170, 
           170, 
@@ -321,7 +322,7 @@
         "height": 127,
         "pattern_x_size": 0,
         "pattern_y_size": 31,
-		"pattern": [
+        "pattern": [
           170, 
           170, 
           170, 

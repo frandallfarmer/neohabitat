@@ -12,7 +12,8 @@
           "", 
           "context-OutamyWy_229_front", 
           "context-OutamyWy_329_interior"
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": LEFT, 
@@ -173,7 +174,7 @@
         "x": 28, 
         "type": "Building", 
         "orientation": 164,
-        "connection": "context-OutamyWy_329_interior",		
+        "connection": "context-OutamyWy_329_interior",      
         "gr_state": 10
       }
     ], 
@@ -189,7 +190,7 @@
         "x": 40, 
         "type": "Building", 
         "orientation": 164,
-        "connection": "context-OutamyWy_329_interior",		
+        "connection": "context-OutamyWy_329_interior",      
         "gr_state": 5
       }
     ], 

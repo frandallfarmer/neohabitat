@@ -12,7 +12,8 @@
           "context-HyperDr_1030_front", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 
@@ -120,7 +121,7 @@
       {
         "y": 130, 
         "x": 60,
-	"on": 1,
+    "on": 1,
         "type": "Floor_lamp", 
         "orientation": 188
       }

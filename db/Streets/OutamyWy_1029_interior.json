@@ -12,7 +12,8 @@
           "context-OutamyWy_1029_front", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 
@@ -91,7 +92,7 @@
         "y": 135, 
         "x": 140, 
         "type": "Floor_lamp",
-	"on": 1,
+    "on": 1,
         "orientation": 48
       }
     ], 

@@ -12,7 +12,8 @@
           "", 
           "context-HyperDr_130_front", 
           "context-HyperDr_230_interior"
-        ], 
+        ],
+        "realm": "Streets",        
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": LEFT, 
@@ -155,7 +156,7 @@
         "x": 76, 
         "type": "Building", 
         "orientation": 32,
-        "connection": "context-HyperDr_230_interior",		
+        "connection": "context-HyperDr_230_interior",       
         "gr_state": 2
       }
     ], 

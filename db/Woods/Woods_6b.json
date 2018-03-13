@@ -7,13 +7,14 @@
     "mods": [
       {
         "town_dir": LEFT,
-		"port_dir": LEFT,
+        "port_dir": LEFT,
         "neighbors": [
           "context-Woods_6c", 
           "context-Woods_7b", 
           "context-Woods_6a", 
           "context-Woods_5b"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 1, 
         "type": "Region"

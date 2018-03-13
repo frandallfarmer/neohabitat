@@ -9,8 +9,9 @@
         "town_dir": "",
         "port_dir": LEFT,
         "type": "Region",
-		"orientation": 0,
+        "orientation": 0,
         "nitty_bits": 3,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_3d",
           "",
@@ -63,7 +64,7 @@
       "y": 85,
       "orientation": 204,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
@@ -80,7 +81,7 @@
       "y": 85,
       "orientation": 204,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
@@ -115,64 +116,64 @@
       "y": 85,
       "orientation": 204,
       "gr_state": 0,
-	  "gr_width": 20
+      "gr_width": 20
     }
   ]
 },
 {
-	"type": "item",
-	"ref": "item-street.sheriff_front",
-	"name": "Street",
-	"in": "context-sheriff_front",
-	"mods": [
-		{
-			"type": "Street",
-			"style": 0,
-			"x": 68,
-			"y": 8,
-			"orientation": 8,
-			"gr_state": 6
-		}
-	]
+    "type": "item",
+    "ref": "item-street.sheriff_front",
+    "name": "Street",
+    "in": "context-sheriff_front",
+    "mods": [
+        {
+            "type": "Street",
+            "style": 0,
+            "x": 68,
+            "y": 8,
+            "orientation": 8,
+            "gr_state": 6
+        }
+    ]
 },
 {
-	"type": "item",
-	"ref": "item-sign1.sheriff_front",
-	"name": "Populopolis Sheriff Sign",
-	"in": "context-sheriff_front",
-	"mods": [
-		{
-			"type": "Sign",
-			"style": 6,
-			"x": 48,
-			"y": 40,
-			"orientation": 164,
-			"gr_state": 2,
-			"ascii": [
-			80,
-			111,
-			112,
-			117,
-			108,
-			111,
-			112,
-			111,
-			108,
-			105,
-			115,
-			131,
-			134,
-			32,
-			32,
-			83,
-			104,
-			101,
-			114,
-			105,
-			102,
-			102
-			]
-		}
-	]
+    "type": "item",
+    "ref": "item-sign1.sheriff_front",
+    "name": "Populopolis Sheriff Sign",
+    "in": "context-sheriff_front",
+    "mods": [
+        {
+            "type": "Sign",
+            "style": 6,
+            "x": 48,
+            "y": 40,
+            "orientation": 164,
+            "gr_state": 2,
+            "ascii": [
+            80,
+            111,
+            112,
+            117,
+            108,
+            111,
+            112,
+            111,
+            108,
+            105,
+            115,
+            131,
+            134,
+            32,
+            32,
+            83,
+            104,
+            101,
+            114,
+            105,
+            102,
+            102
+            ]
+        }
+    ]
 }
 ]

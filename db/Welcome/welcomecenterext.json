@@ -10,6 +10,7 @@
         "port_dir": RIGHT,
         "type": "Region",
         "orientation": 3,
+        "realm": "Welcome",  
         "neighbors": [
           "",
           "context-Woods_5x",

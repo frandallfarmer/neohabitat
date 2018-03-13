@@ -12,7 +12,8 @@
           "context-back4t_56", 
           "context-back4t_45", 
           "context-back4t_54"
-        ], 
+        ],
+        "realm": "Back4t",         
         "orientation": 0, 
         "nitty_bits": 2, 
         "port_dir": "", 

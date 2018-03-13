@@ -12,7 +12,8 @@
           "", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Hell",        
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "", 

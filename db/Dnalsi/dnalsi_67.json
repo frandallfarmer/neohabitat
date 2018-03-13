@@ -12,7 +12,8 @@
           "", 
           "context-dnalsi_66", 
           "context-dnalsi_57"
-        ], 
+        ],
+        "realm": "Dnalsi",        
         "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 

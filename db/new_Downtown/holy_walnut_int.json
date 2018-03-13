@@ -1,7 +1,7 @@
 [
   {
-	"ref": "context-holy_walnut_int",
-	"capacity": 64,
+    "ref": "context-holy_walnut_int",
+    "capacity": 64,
     "type": "context",
     "name": "The Order of the Holy Walnut",
     "mods": [
@@ -9,14 +9,15 @@
         "town_dir": "",
         "port_dir": DOWN,
         "type": "Region",
-		"orientation": 1,
+        "orientation": 1,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "",
           "context-holy_walnut_front",
           ""
         ],
-		"nitty_bits": 3
+        "nitty_bits": 3
       }
     ]
   },
@@ -81,7 +82,7 @@
         "x": 44,
         "y": 70,
         "gr_state": 1,
-		"open_flags": 3,
+        "open_flags": 3,
         "x_offset_1": 245,
         "y_offset_1": 0,
         "x_offset_2": 20,
@@ -109,7 +110,7 @@
         "x": 132,
         "y": 128,
         "orientation": 245,
-		"open_flags": 3,
+        "open_flags": 3,
         "gr_width": 24
       }
     ]
@@ -126,7 +127,7 @@
         "x": 104,
         "y": 135,
         "orientation": 17,
-		"open_flags": 3,
+        "open_flags": 3,
         "gr_width": 24
       }
     ]
@@ -143,7 +144,7 @@
         "x": 8,
         "y": 128,
         "orientation": 244,
-		"open_flags": 3,
+        "open_flags": 3,
         "gr_width": 24
       }
     ]
@@ -160,7 +161,7 @@
         "x": 36,
         "y": 134,
         "orientation": 16,
-		"open_flags": 3,
+        "open_flags": 3,
         "gr_width": 24
       }
     ]
@@ -194,7 +195,7 @@
       {
         "type": "Knick_knack",
         "y": 0,
-		"gr_width": 3,
+        "gr_width": 3,
         "orientation": 48
       }
     ]
@@ -208,7 +209,7 @@
       {
         "type": "Knick_knack",
         "y": 1,
-		"gr_width": 3,
+        "gr_width": 3,
         "orientation": 48
       }
     ]
@@ -234,24 +235,24 @@
     ]
   },
   {
-	"type": "item",
-	"ref": "item-shortsign.holy_walnut_int",
-	"name": "Holy Walnut Sign",
-	"in": "context-holy_walnut_int",
-	"mods": [
-		{
-			"type": "Short_sign",
-			"style": 0,
-			"x": 72,
-			"y": 122,
-			"gr_state": 1,
-			"orientation": 0,
-			"ascii": [
-			133,
-			131,
-			28
-			]
-		}
-	]
+    "type": "item",
+    "ref": "item-shortsign.holy_walnut_int",
+    "name": "Holy Walnut Sign",
+    "in": "context-holy_walnut_int",
+    "mods": [
+        {
+            "type": "Short_sign",
+            "style": 0,
+            "x": 72,
+            "y": 122,
+            "gr_state": 1,
+            "orientation": 0,
+            "ascii": [
+            133,
+            131,
+            28
+            ]
+        }
+    ]
   }
 ]

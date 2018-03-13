@@ -10,7 +10,8 @@
         "town_dir": "", 
         "port_dir": "", 
         "type": "Region",
-        "orientation": 3,		
+        "orientation": 3,
+        "realm": "Downtown",         
         "neighbors": [
           "context-sheriff_front",
           "context-Downtown_4b", 
@@ -131,7 +132,7 @@
         "y": 144, 
         "x": 120, 
         "type": "Teleport",
-		"address": "Pop-Uptown",
+        "address": "Pop-Uptown",
         "orientation": 156
       }
     ], 

@@ -10,6 +10,7 @@
         "port_dir": RIGHT, 
         "type": "Region",
         "orientation": 3,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "context-Downtown_6b",
@@ -49,7 +50,7 @@
         "height": 127, 
         "pattern_x_size": 1, 
         "pattern_y_size": 15,
-        "pattern": [		
+        "pattern": [        
           85, 
           85, 
           85, 
@@ -82,7 +83,7 @@
           85, 
           85, 
           85
-         ],		  
+         ],       
         "type": "Super_trapezoid", 
         "orientation": 156
       }
@@ -113,7 +114,7 @@
         "y": 33, 
         "x": 8, 
         "open_flags": 3,
-        "gr_state": 1,		
+        "gr_state": 1,      
         "type": "Door", 
         "orientation": 236,
         "connection": "context-Downtown_5a"
@@ -212,7 +213,7 @@
         "x": 44,
         "y": 64,
         "gr_state": 1,
-		"open_flags": 3,
+        "open_flags": 3,
         "x_offset_1": 0,
         "y_offset_1": 0,
         "x_offset_2": 0,
