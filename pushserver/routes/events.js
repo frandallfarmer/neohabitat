@@ -37,6 +37,11 @@ class EventRoutes {
         }
       }
     }
+    if(region.realm === "Popustop") { //TODO: Popustop & Dnalsi are unable to show special MD's due to this, change it after GDC
+          return '/docs/region/' + region.realm;
+    } else if (region.realm === "Dnalsi") { 
+        return '/docs/region/' + region.realm;
+    }
     if (regionName in this.config.externalPages) {
       return this.config.externalPages[regionName];
     }
