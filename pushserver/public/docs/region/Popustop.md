@@ -1,6 +1,6 @@
-# Populopolis
+# Popustop Apartments
 
-Populopolis is Habitat’s first city. It is named "Populopolis" because of its immense size (it’s as small as cities in Habitat come).
+This is the main apartment building "Popustop", a lot of Avatar homes are here, probably yours! To get back to town, you need to find your way down to the lobby and then outside (there is a teleporter there, or you can walk into town.)
 
 # Are You Lost?
 If you're in an area that looks similar to the picture below then you are inside the Popustop apartment building. ![](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/apartments.JPG "Apartment")  
@@ -25,7 +25,7 @@ If you see a door within one of these ranges then keep going in the specified di
 KEEP GOING RIGHT
 
 **212-223**
-KEEP GOING RIGHT
+KEEP GOING LEFT
 
 **224-235**
 KEEP GOING LEFT
