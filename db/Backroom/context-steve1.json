@@ -9,6 +9,7 @@
         "town_dir": "",
         "port_dir": "missing",
         "type": "Region",
+        "realm": "Backroom",
         "nitty_bits": 0,
         "neighbors": [ 
           "context-library",
