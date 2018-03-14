@@ -1,8 +1,8 @@
 const express = require('express');
 const log = require('winston');
+const fs = require('fs');
 
 const ClassTable = require('../constants/ClassTable');
-
 
 function sendEvent(res, avatarName, type, msg) {
   var event = {
@@ -28,24 +28,30 @@ class EventRoutes {
   }
 
   getRegionDocsURL(regionName, avatar, region) {
-    if (avatar !== undefined && region !== undefined) {
-      if (region.is_turf) {
-        if (avatar.turf !== undefined && avatar.turf.includes(regionName)) {
-          return '/docs/region/YOUR_TURF';
-        } else {
-          return '/docs/region/A_TURF';
-        }
-      }
-    }
-    if(region.realm === "Popustop") { //TODO: Popustop & Dnalsi are unable to show special MD's due to this, change it after GDC
-          return '/docs/region/' + region.realm;
-    } else if (region.realm === "Dnalsi") { 
-        return '/docs/region/' + region.realm;
-    }
-    if (regionName in this.config.externalPages) {
-      return this.config.externalPages[regionName];
-    }
-    return '/docs/region/' + regionName;
+	  var path = '/docs/region/' + regionName;	  
+
+	  if (regionName in this.config.externalPages) {
+		  return this.config.externalPages[regionName];
+	  }
+
+	  var contextualLookup = (avatar !== undefined && region !== undefined);
+	  if (contextualLookup && region.is_turf) {
+		  if (avatar.turf !== undefined && avatar.turf.includes(regionName)) {
+			  return '/docs/region/YOUR_TURF';
+		  } else {
+			  return '/docs/region/A_TURF';
+		  }
+	  }
+	  
+	  if (fs.existsSync("./public" + path + ".md") || fs.existsSync("./public" +  path + ".html")) {
+		  return path;
+	  }
+	  
+	  if (contextualLookup) {
+		  path = '/docs/region/' + region.realm;		  
+	  }
+	  
+	  return path;
   }
   
   getHelpDocsURL(session, objectRef) {

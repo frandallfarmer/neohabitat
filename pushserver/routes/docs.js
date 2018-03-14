@@ -82,7 +82,7 @@ class DocsRoutes {
       });
     });
   }
-
+  
   setRoutes() {
     var self = this;
 
