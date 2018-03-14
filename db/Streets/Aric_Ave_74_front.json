@@ -1,0 +1,274 @@
+[
+  {
+    "ref": "context-Aric_Ave_74_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "74 Aric Ave", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Aric_Ave_64_front", 
+          "context-Aric_Ave_74_interior", 
+          "context-Aric_Ave_84_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.35cf.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Wall.8395.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Wall.b996.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Building.62fd.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Aric_Ave_74_interior", 
+        "type": "Building", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Bush.c606.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Sign.2dcb.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          55, 
+          52, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 58, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Mailbox.71db.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 154, 
+        "x": 24, 
+        "type": "Mailbox", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Fence.c569.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Fence.53ac.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Plant.1034.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 24, 
+        "mass": 1, 
+        "y": 152, 
+        "x": 80, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Fence.9bbb.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Fence.33be.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Street.d82f.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Aric_Ave_74_front"
+  }, 
+  {
+    "ref": "item-Bush.dbcc.Aric_Ave_74_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Aric_Ave_74_front"
+  }
+]

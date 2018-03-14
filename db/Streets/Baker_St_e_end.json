@@ -1,0 +1,176 @@
+[
+  {
+    "ref": "context-Baker_St_e_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Baker St east", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Baker_St_1021_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.613d.Baker_St_e_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Wall.807a.Baker_St_e_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Wall.e3ce.Baker_St_e_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Plant.8f21.Baker_St_e_end", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 48, 
+        "mass": 1, 
+        "y": 47, 
+        "x": 28, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Bush.7ce3.Baker_St_e_end", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 68, 
+        "type": "Bush", 
+        "orientation": 212
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Plant.d2ff.Baker_St_e_end", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 48, 
+        "mass": 1, 
+        "y": 43, 
+        "x": 40, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Teleport.decc.Baker_St_e_end", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "address": "Pop-Baker St East", 
+        "y": 136, 
+        "x": 104, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Plant.d4c4.Baker_St_e_end", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 48, 
+        "mass": 1, 
+        "y": 48, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Fence.f57e.Baker_St_e_end", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Baker_St_e_end"
+  }, 
+  {
+    "ref": "item-Street.671f.Baker_St_e_end", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Baker_St_e_end"
+  }
+]

@@ -1,0 +1,233 @@
+[
+  {
+    "ref": "context-EZ_St_926_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "926 EZ St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-EZ_St_1026_front", 
+          "", 
+          "context-EZ_St_826_front", 
+          "context-EZ_St_926_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.5987.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Wall.4c6a.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Wall.1d02.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Building.29f7.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 72, 
+        "connection": "context-EZ_St_926_interior", 
+        "type": "Building", 
+        "orientation": 189
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Plant.f860.EZ_St_926_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 50, 
+        "x": 76, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Bush.a3c5.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 32, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Mailbox.48b8.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 124, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Plant.c611.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 136, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Plant.d4bf.EZ_St_926_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 189, 
+        "mass": 1, 
+        "y": 56, 
+        "x": 80, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Sign.8d2b.EZ_St_926_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          57, 
+          50, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-EZ_St_926_front"
+  }, 
+  {
+    "ref": "item-Street.f773.EZ_St_926_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-EZ_St_926_front"
+  }
+]

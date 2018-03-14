@@ -1,0 +1,135 @@
+[
+  {
+    "ref": "context-Lori_Ln_613_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "613 Lori Ln", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Lori_Ln_613_front", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1c8d.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Lori_Ln_613_interior"
+  }, 
+  {
+    "ref": "item-Wall.1de6.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Lori_Ln_613_interior"
+  }, 
+  {
+    "ref": "item-Table.db1f.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "orientation": 188, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Lori_Ln_613_interior"
+  }, 
+  {
+    "ref": "item-Chest.eb6a.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Lori_Ln_613_interior"
+  }, 
+  {
+    "ref": "item-Couch.a48c.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 88, 
+        "type": "Couch", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Lori_Ln_613_interior"
+  }, 
+  {
+    "ref": "item-Door.587b.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "connection": "context-Lori_Ln_613_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Lori_Ln_613_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.0103.Lori_Ln_613_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 72, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Lori_Ln_613_interior"
+  }
+]

@@ -1,0 +1,216 @@
+[
+  {
+    "ref": "context-This_Way_25_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "25 This Way", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-This_Way_25_interior", 
+          "context-This_Way_35_front", 
+          "", 
+          "context-This_Way_15_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c3bf.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Wall.283e.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Wall.9256.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Building.6794.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 52, 
+        "connection": "context-This_Way_25_interior", 
+        "type": "Building", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Bush.dd1b.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 136, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Sign.6fc5.This_Way_25_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          53, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Mailbox.da33.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 108, 
+        "type": "Mailbox", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Street.b06a.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 0, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Plant.4d09.This_Way_25_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 159, 
+        "x": 132, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-This_Way_25_front"
+  }, 
+  {
+    "ref": "item-Bush.05db.This_Way_25_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 12, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-This_Way_25_front"
+  }
+]

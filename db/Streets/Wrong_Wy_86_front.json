@@ -1,0 +1,273 @@
+[
+  {
+    "ref": "context-Wrong_Wy_86_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "86 Wrong Way", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Wrong_Wy_86_interior", 
+          "context-Wrong_Wy_96_front", 
+          "", 
+          "context-Wrong_Wy_76_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.3c25.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Wall.02c8.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Wall.f02e.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Building.17f5.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 80, 
+        "connection": "context-Wrong_Wy_86_interior", 
+        "type": "Building", 
+        "orientation": 237
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Bush.e448.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 64, 
+        "type": "Bush", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Street.fb6f.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Mailbox.9d7b.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 151, 
+        "x": 92, 
+        "type": "Mailbox", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Fence.c9e2.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 12, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Fence.0b6c.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 56, 
+        "type": "Fence", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Plant.ba72.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 148, 
+        "x": 56, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Fence.07f8.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 40, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Fence.d498.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Sign.853c.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          56, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 55, 
+        "x": 136, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wrong_Wy_86_front"
+  }, 
+  {
+    "ref": "item-Bush.0bf2.Wrong_Wy_86_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 12, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Wrong_Wy_86_front"
+  }
+]

@@ -1,0 +1,157 @@
+[
+  {
+    "ref": "context-This_Way_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "This Way", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "", 
+          "context-This_Way_65_front", 
+          "context-Wrong_Wy_cross", 
+          "context-This_Way_55_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.3c45.This_Way_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-This_Way_cross"
+  }, 
+  {
+    "ref": "item-Sky.f43c.This_Way_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Sky", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-This_Way_cross"
+  }, 
+  {
+    "ref": "item-Street.b9ab.This_Way_cross", 
+    "mods": [
+      {
+        "y": 13, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 0, 
+        "gr_state": 13
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-This_Way_cross"
+  }, 
+  {
+    "ref": "item-Sign.875a.This_Way_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          84, 
+          104, 
+          105, 
+          115, 
+          32, 
+          87, 
+          97, 
+          121, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 76, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-This_Way_cross"
+  }, 
+  {
+    "ref": "item-Tree.12ba.This_Way_cross", 
+    "mods": [
+      {
+        "y": 156, 
+        "x": 108, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-This_Way_cross"
+  }, 
+  {
+    "ref": "item-Teleport.7da8.This_Way_cross", 
+    "mods": [
+      {
+        "orientation": 24, 
+        "address": "Pop-This Way", 
+        "y": 132, 
+        "x": 12, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-This_Way_cross"
+  }
+]

@@ -1,0 +1,258 @@
+[
+  {
+    "ref": "context-Downtown_9206", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Sewers", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_9204", 
+          "", 
+          "context-Downtown_9205", 
+          "context-Downtown_5g"
+        ], 
+        "orientation": 0,
+        "realm": "Downtown", 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Wall1.s9k2.Downtown_9206", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 1, 
+        "gr_state": 1, 
+        "y": 19, 
+        "x": 224, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Wall2.k8j1.Downtown_9206", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 1, 
+        "gr_state": 0, 
+        "y": 95, 
+        "x": 68, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Wall3.i9f7.Downtown_9206", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 1, 
+        "gr_state": 3, 
+        "y": 19, 
+        "x": 16, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Wall4.n9c8.Downtown_9206", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Trapezoid.x8k1.Downtown_9206", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 159, 
+        "orientation": 228, 
+        "upper_right_x": 159, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "height": 16, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Super_trapezoid1.d7je.Downtown_9206", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 7, 
+        "orientation": 220, 
+        "pattern": [
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          170, 
+          174, 
+          170, 
+          174, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110, 
+          85, 
+          110
+        ], 
+        "upper_right_x": 7, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "gr_state": 0, 
+        "y": 16, 
+        "x": 136, 
+        "height": 112, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Super_trapezoid2.q8h6.Downtown_9206", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 7, 
+        "orientation": 220, 
+        "pattern": [
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          186, 
+          170, 
+          186, 
+          170, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85, 
+          185, 
+          85
+        ], 
+        "upper_right_x": 7, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "gr_state": 0, 
+        "y": 16, 
+        "x": 128, 
+        "height": 112, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Wall5.t8h2.Downtown_9206", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 1, 
+        "gr_state": 14, 
+        "y": 24, 
+        "x": 12, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9206"
+  }, 
+  {
+    "ref": "item-Wall6.x9m1.Downtown_9206", 
+    "mods": [
+      {
+        "style": 12, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 94, 
+        "x": 20, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9206"
+  }
+]

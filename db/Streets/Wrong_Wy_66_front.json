@@ -1,0 +1,218 @@
+[
+  {
+    "ref": "context-Wrong_Wy_66_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "66 Wrong Way", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Wrong_Wy_66_interior", 
+          "context-Wrong_Wy_76_front", 
+          "", 
+          "context-Wrong_Wy_cross"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8bca.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Wall.20f4.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Wall.8abd.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Building.d861.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 72, 
+        "connection": "context-Wrong_Wy_66_interior", 
+        "type": "Building", 
+        "orientation": 245
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Plant.2d87.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "mass": 1, 
+        "y": 50, 
+        "x": 52, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Street.061b.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Mailbox.c5cf.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 124, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Plant.5006.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 72, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Plant.5b82.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 33, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 84, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_66_front"
+  }, 
+  {
+    "ref": "item-Sign.d5a4.Wrong_Wy_66_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          54, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 48, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wrong_Wy_66_front"
+  }
+]

@@ -1,232 +1,156 @@
 [
-    {
-        "ref": "context-Downtown_3f", 
-        "capacity": 64, 
-        "type": "context", 
-        "name": "Maine St", 
-        "mods": [
-        {
-          "town_dir": "", 
-          "port_dir": DOWN, 
-          "type": "Region",
-          "orientation": 0,
-          "realm": "Downtown",           
-          "neighbors": [
-            "context-Downtown_3g",
-            "context-Downtown_4f", 
-            "context-Downtown_3e", 
-            ""          
-          ], 
-          "nitty_bits": 3
-        }
-      ]
-    }, 
-    {
-        "ref": "item-constructiontape.downtown3f",
-        "mods": [
-            {
-                "y": 64,
-                "x": 0,
-                "trapezoid_type": 0,
-                "upper_left_x": 60,
-                "upper_right_x": 103,
-                "lower_left_x": 60,
-                "lower_right_x": 103,
-                "height": 16,
-                "pattern_x_size": 1,
-                "pattern_y_size": 7,
-                "pattern": [
-                    170,    85,
-                    106,    149,
-                    90,     165,
-                    86,     169,
-                    85,     170,
-                    149,    106,
-                    165,    90,
-                    169,    86,
-                    0,  0,  0,  0,
-                    0,  0,  0,  0,
-                    0,  0,  0,  0,
-                    0,  0,  0,  0
-                    ],
-                    "type": "Super_trapezoid",
-                    "orientation": 184
-            }
-            ],
-            "type": "item",
-            "name": "Warning Sign",
-            "in": "context-Downtown_3f"
-    },
-    {
-        "ref": "item-leftSignSupport.downtown3f", 
-        "mods": [
-            {
-                "y": 48,
-                "x": 1,
-                "trapezoid_type": 0, 
-                "upper_left_x": 64, 
-                "upper_right_x": 66, 
-                "lower_left_x": 64,
-                "lower_right_x": 66, 
-                "height": 12, 
-                "type": "Trapezoid", 
-                "orientation": 200
-            }
-            ],
-            "type": "item",
-            "name": "Warning Sign",
-            "in": "context-Downtown_3f"
-    },
-    {
-        "ref": "item-rightSignSupport.downtown3f", 
-        "mods": [
-            {
-                "y": 48,
-                "x": 1,
-                "trapezoid_type": 0, 
-                "upper_left_x": 96, 
-                "upper_right_x": 98, 
-                "lower_left_x": 96,
-                "lower_right_x": 98, 
-                "height": 12, 
-                "type": "Trapezoid", 
-                "orientation": 200
-            }
-            ],
-            "type": "item",
-            "name": "Warning Sign",
-            "in": "context-Downtown_3f"
-    },
-    {
-        "ref": "item-ground9d23", 
-        "mods": [
-            {
-                "y": 4, 
-                "x": 0, 
-                "type": "Ground", 
-                "orientation": 220
-            }
-            ], 
-            "type": "item", 
-            "name": "Ground", 
-            "in": "context-Downtown_3f"
-    }, 
-    {
-        "ref": "item-sky672f", 
-        "mods": [
-            {
-                "y": 0, 
-                "x": 0, 
-                "style": 4, 
-                "type": "Sky", 
-                "orientation": 244
-            }
-            ], 
-            "type": "item", 
-            "name": "Sky", 
-            "in": "context-Downtown_3f"
-    }, 
-    {
-        "ref": "item-streetd909", 
-        "mods": [
-            {
-                "orientation": 8, 
-                "type": "Street", 
-                "gr_state": 14, 
-                "y": 12, 
-                "x": 68
-            }
-            ], 
-            "type": "item", 
-            "name": "Street", 
-            "in": "context-Downtown_3f"
-    }, 
-    {
-        "ref": "item-signc562", 
-        "mods": [
-            {
-                "style": 5, 
-                "orientation": 16, 
-                "ascii": [
-                    77, 
-                    97, 
-                    105, 
-                    110, 
-                    101, 
-                    32, 
-                    83, 
-                    116, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32, 
-                    32
-                    ], 
-                    "gr_state": 5, 
-                    "y": 33, 
-                    "x": 52, 
-                    "type": "Sign"
-            }
-            ], 
-            "type": "item", 
-            "name": "Sign", 
-            "in": "context-Downtown_3f"
-    }, 
-    {
-        "ref": "item-tree0dee", 
-        "mods": [
-            {
-                "y": 37, 
-                "x": 132, 
-                "style": 8, 
-                "type": "Tree", 
-                "orientation": 16
-            }
-            ], 
-            "type": "item", 
-            "name": "Tree", 
-            "in": "context-Downtown_3f"
-    }, 
-    {
-        "ref": "item-flag7657", 
-        "mods": [
-            {
-                "y": 160, 
-                "x": 24, 
-                "type": "Flag",
-                "mass": 1,
-                "orientation": 48
-            }
-            ], 
-            "type": "item", 
-            "name": "Flag", 
-            "in": "context-Downtown_3f"
-    }
-    ]
+	{
+		"ref": "context-Downtown_3f", 
+		"capacity": 64, 
+		"type": "context", 
+		"name": "Maine St", 
+		"mods": [
+			{
+				"town_dir": "", 
+				"port_dir": DOWN, 
+				"type": "Region",
+				"orientation": 0,
+                "realm": "Downtown",		
+				"neighbors": [
+					"context-Downtown_3g",
+					"context-Downtown_4f", 
+					"context-Downtown_3e", 
+					"context-Over_Ave_cross"          
+					], 
+					"nitty_bits": 3
+			}
+			]
+	}, 
+	{
+		"ref": "item-ground9d23", 
+		"mods": [
+			{
+				"y": 4, 
+				"x": 0, 
+				"type": "Ground", 
+				"orientation": 220
+			}
+			], 
+			"type": "item", 
+			"name": "Ground", 
+			"in": "context-Downtown_3f"
+	}, 
+	{
+		"ref": "item-sky672f", 
+		"mods": [
+			{
+				"y": 0, 
+				"x": 0, 
+				"style": 4, 
+				"type": "Sky", 
+				"orientation": 244
+			}
+			], 
+			"type": "item", 
+			"name": "Sky", 
+			"in": "context-Downtown_3f"
+	}, 
+	{
+		"ref": "item-streetd909", 
+		"mods": [
+			{
+				"orientation": 8, 
+				"type": "Street", 
+				"gr_state": 14, 
+				"y": 12, 
+				"x": 68
+			}
+			], 
+			"type": "item", 
+			"name": "Street", 
+			"in": "context-Downtown_3f"
+	}, 
+	{
+		"ref": "item-signc562", 
+		"mods": [
+			{
+				"style": 5, 
+				"orientation": 16, 
+				"ascii": [
+					77, 
+					97, 
+					105, 
+					110, 
+					101, 
+					32, 
+					83, 
+					116, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32, 
+					32
+					], 
+					"gr_state": 5, 
+					"y": 33, 
+					"x": 52, 
+					"type": "Sign"
+			}
+			], 
+			"type": "item", 
+			"name": "Sign", 
+			"in": "context-Downtown_3f"
+	}, 
+	{
+		"ref": "item-tree0dee", 
+		"mods": [
+			{
+				"y": 37, 
+				"x": 132, 
+				"style": 8, 
+				"type": "Tree", 
+				"orientation": 16
+			}
+			], 
+			"type": "item", 
+			"name": "Tree", 
+			"in": "context-Downtown_3f"
+	}, 
+	{
+		"ref": "item-flag7657", 
+		"mods": [
+			{
+				"y": 160, 
+				"x": 24, 
+				"type": "Flag",
+				"mass": 1,
+				"orientation": 48
+			}
+			], 
+			"type": "item", 
+			"name": "Flag", 
+			"in": "context-Downtown_3f"
+	}
+	]

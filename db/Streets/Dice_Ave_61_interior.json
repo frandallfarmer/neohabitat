@@ -1,0 +1,149 @@
+[
+  {
+    "ref": "context-Dice_Ave_61_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "61 Dice Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Dice_Ave_61_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.5c53.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Wall.3c45.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Couch.fcf3.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "y": 26, 
+        "x": 28, 
+        "type": "Couch", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Chest.040b.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "orientation": 212, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 96, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Door.aa7d.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "orientation": 212, 
+        "key_lo": 0, 
+        "connection": "context-Dice_Ave_61_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 128, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.d60a.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 16, 
+        "type": "Floor_lamp", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Window.913a.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 72, 
+        "x": 64, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Dice_Ave_61_interior"
+  }, 
+  {
+    "ref": "item-Chair.9c67.Dice_Ave_61_interior", 
+    "mods": [
+      {
+        "y": 141, 
+        "x": 8, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Dice_Ave_61_interior"
+  }
+]

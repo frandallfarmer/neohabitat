@@ -9,12 +9,12 @@
         "town_dir": "", 
         "neighbors": [
           "context-Downtown_4d", 
+          "context-Downtown_4m", 
           "", 
-          "", 
-          ""
-        ],
+          "context-Downtown_4l"
+        ], 
+        "orientation": 3,
         "realm": "Downtown", 
-        "orientation": 3, 
         "nitty_bits": 3, 
         "port_dir": DOWN, 
         "type": "Region"
@@ -52,12 +52,12 @@
     "in": "context-Downtown_4c"
   }, 
   {
-    "ref": "item-head.f901.Downtown_4c", 
+    "ref": "item-head.m2s8.Downtown_4c", 
     "mods": [
       {
-        "y": 4, 
-        "x": 4, 
-        "style": 32, 
+        "y": 0, 
+        "x": 0, 
+        "style": 18, 
         "type": "Head", 
         "orientation": 56
       }
@@ -65,89 +65,102 @@
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.0065.Downtown_4c"
-  }, 
+  },
   {
-    "ref": "item-head.7012.Downtown_4c", 
+    "ref": "item-head.j3n4.Downtown_4c", 
     "mods": [
       {
         "y": 1, 
         "x": 1, 
-        "style": 65, 
+        "style": 21, 
         "type": "Head", 
-        "orientation": 8
+        "orientation": 56
       }
     ], 
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.0065.Downtown_4c"
-  }, 
+  },
   {
-    "ref": "item-head.33ac.Downtown_4c", 
-    "mods": [
-      {
-        "style": 87, 
-        "orientation": 32, 
-        "gr_state": 1, 
-        "y": 0, 
-        "x": 0, 
-        "type": "Head"
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.0065.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.6fa9.Downtown_4c", 
+    "ref": "item-head.f9j7.Downtown_4c", 
     "mods": [
       {
         "y": 2, 
         "x": 2, 
-        "style": 45, 
+        "style": 22, 
         "type": "Head", 
-        "orientation": 24
+        "orientation": 56
       }
     ], 
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.0065.Downtown_4c"
-  }, 
+  },
   {
-    "ref": "item-head.47fe.Downtown_4c", 
+    "ref": "item-head.s8j6.Downtown_4c", 
     "mods": [
       {
         "y": 3, 
         "x": 3, 
-        "style": 41, 
+        "style": 25, 
         "type": "Head", 
-        "orientation": 8
+        "orientation": 56
       }
     ], 
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.0065.Downtown_4c"
-  }, 
+  },
   {
-    "ref": "item-head.5a45.Downtown_4c", 
+    "ref": "item-head.n9v5.Downtown_4c", 
     "mods": [
       {
-        "style": 56, 
-        "orientation": 40, 
-        "gr_state": 1, 
-        "y": 5, 
-        "x": 5, 
-        "type": "Head"
+        "y": 4, 
+        "x": 4, 
+        "style": 28, 
+        "type": "Head", 
+        "orientation": 56
       }
     ], 
     "type": "item", 
     "name": "Head", 
     "in": "item-vendo_front.0065.Downtown_4c"
-  }, 
+  },
+  {
+    "ref": "item-head.a4n2.Downtown_4c", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "style": 31, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.g9b2.Downtown_4c", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 6, 
+        "style": 34, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },  
   {
     "ref": "item-vendo_front.0065.Downtown_4c", 
     "mods": [
       {
-        "display_item": 6, 
+        "display_item": 7, 
         "orientation": 236, 
         "key_lo": 0, 
         "key_hi": 0, 
@@ -155,8 +168,8 @@
         "x": 0, 
         "type": "Vendo_front", 
         "open_flags": 0,
-        "prices": [250, 305, 499, 400, 625, 400, 425],
-        "item_price": 425
+		"prices": [175, 120, 250, 150, 175, 135, 155, 125],
+        "item_price": 125
       }
     ], 
     "type": "item", 
@@ -164,15 +177,14 @@
     "in": "item-vendo_inside.55d2.Downtown_4c"
   }, 
   {
-    "ref": "item-head.eadc.Downtown_4c", 
+    "ref": "item-head.b8t2.Downtown_4c", 
     "mods": [
       {
-        "style": 80, 
-        "orientation": 1, 
-        "gr_state": 1, 
         "y": 1, 
         "x": 1, 
-        "type": "Head"
+        "style": 101, 
+        "type": "Head", 
+        "orientation": 56
       }
     ], 
     "type": "item", 
@@ -187,7 +199,7 @@
         "key_lo": 0, 
         "key_hi": 0, 
         "y": 24, 
-        "x": 52, 
+        "x": 72, 
         "type": "Vendo_inside", 
         "open_flags": 0
       }
@@ -221,31 +233,10 @@
           86, 
           111, 
           117, 
-          115, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32
+          115
         ], 
         "y": 71, 
-        "x": 20, 
+        "x": 40, 
         "type": "Sign"
       }
     ], 
@@ -254,174 +245,14 @@
     "in": "context-Downtown_4c"
   }, 
   {
-    "ref": "item-head.a5ba.Downtown_4c", 
-    "mods": [
-      {
-        "y": 4, 
-        "x": 4, 
-        "style": 41, 
-        "type": "Head", 
-        "orientation": 0
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.780f.Downtown_4c", 
-    "mods": [
-      {
-        "y": 3, 
-        "x": 3, 
-        "style": 45, 
-        "type": "Head", 
-        "orientation": 0
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.21de.Downtown_4c", 
-    "mods": [
-      {
-        "y": 6, 
-        "x": 6, 
-        "style": 56, 
-        "type": "Head", 
-        "orientation": 80
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.5b89.Downtown_4c", 
-    "mods": [
-      {
-        "y": 1, 
-        "x": 1, 
-        "style": 87, 
-        "type": "Head", 
-        "orientation": 112
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.4c74.Downtown_4c", 
-    "mods": [
-      {
-        "style": 80, 
-        "orientation": 8, 
-        "gr_state": 1, 
-        "y": 0, 
-        "x": 0, 
-        "type": "Head"
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.381f.Downtown_4c", 
-    "mods": [
-      {
-        "style": 65, 
-        "orientation": 0, 
-        "gr_state": 1, 
-        "y": 2, 
-        "x": 2, 
-        "type": "Head"
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.b1c4.Downtown_4c", 
-    "mods": [
-      {
-        "style": 32, 
-        "orientation": 0, 
-        "gr_state": 1, 
-        "y": 5, 
-        "x": 5, 
-        "type": "Head"
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_front.228a.Downtown_4c"
-  }, 
-  {
-    "ref": "item-vendo_front.228a.Downtown_4c", 
-    "mods": [
-      {
-        "display_item": 7, 
-        "orientation": 188, 
-        "key_lo": 0, 
-        "key_hi": 0, 
-        "y": 0, 
-        "x": 0, 
-        "type": "Vendo_front", 
-        "open_flags": 0,
-        "prices": [349, 429, 299, 500, 409, 619, 387, 249],
-        "item_price": 249
-      }
-    ], 
-    "type": "item", 
-    "name": "Vendo_front", 
-    "in": "item-vendo_inside.145c.Downtown_4c"
-  }, 
-  {
-    "ref": "item-head.0e56.Downtown_4c", 
-    "mods": [
-      {
-        "y": 1, 
-        "x": 1, 
-        "style": 5, 
-        "type": "Head", 
-        "orientation": 16
-      }
-    ], 
-    "type": "item", 
-    "name": "Head", 
-    "in": "item-vendo_inside.145c.Downtown_4c"
-  }, 
-  {
-    "ref": "item-vendo_inside.145c.Downtown_4c", 
-    "mods": [
-      {
-        "orientation": 188, 
-        "key_lo": 0, 
-        "key_hi": 0, 
-        "y": 24, 
-        "x": 96, 
-        "type": "Vendo_inside", 
-        "open_flags": 0
-      }
-    ], 
-    "type": "item", 
-    "name": "Vendo_inside", 
-    "in": "context-Downtown_4c"
-  }, 
-  {
-    "ref": "item-sign.74fa.Downtown_4c", 
+    "ref": "item-short_sign1.74fa.Downtown_4c", 
     "mods": [
       {
         "orientation": 0, 
-        "type": "Sign", 
+        "type": "Short_sign", 
         "gr_state": 1, 
         "y": 104, 
-        "x": 56, 
+        "x": 76, 
         "ascii": [
           83, 
           116, 
@@ -429,45 +260,56 @@
           108, 
           105, 
           115, 
-          104, 
-          32, 
-          32, 
-          32, 
-          32, 
-          128, 
-          84, 
-          114, 
-          101, 
-          110, 
-          100, 
-          121, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32, 
-          32
+          104
         ]
       }
     ], 
     "type": "item", 
-    "name": "Sign", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4c"
+  },
+  {
+    "ref": "item-short_sign2.f3h7.Downtown_4c", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Short_sign", 
+        "gr_state": 0, 
+        "y": 78, 
+        "x": 134, 
+        "ascii": [
+		  128,
+		  129,
+          133, 
+          131, 
+          127
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4c"
+  },
+  {
+    "ref": "item-short_sign3.s7n3.Downtown_4c", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Short_sign", 
+        "gr_state": 0, 
+        "y": 78, 
+        "x": 4, 
+        "ascii": [
+		  128,
+		  129,
+          133, 
+          131, 
+          126
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
     "in": "context-Downtown_4c"
   }
 ]

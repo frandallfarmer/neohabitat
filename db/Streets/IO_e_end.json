@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-IO_e_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "East I/O", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-IO_117_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c5ed.IO_e_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Wall.85a5.IO_e_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Wall.a279.IO_e_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Hot_tub.be55.IO_e_end", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 4, 
+        "type": "Hot_tub", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Hot_tub", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Bush.46ab.IO_e_end", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 56, 
+        "type": "Bush", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Street.561d.IO_e_end", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 64, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Hot_tub.779b.IO_e_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 4, 
+        "type": "Hot_tub", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Hot_tub", 
+    "in": "context-IO_e_end"
+  }, 
+  {
+    "ref": "item-Sign.8ee3.IO_e_end", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 228, 
+        "ascii": [
+          77, 
+          101, 
+          109, 
+          98, 
+          101, 
+          114, 
+          115, 
+          134, 
+          32, 
+          128, 
+          79, 
+          110, 
+          108, 
+          121, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 30, 
+        "x": 124, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-IO_e_end"
+  }
+]

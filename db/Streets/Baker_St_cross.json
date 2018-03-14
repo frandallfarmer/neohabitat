@@ -1,0 +1,156 @@
+[
+  {
+    "ref": "context-Baker_St_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Baker St", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Wrong_Wy_cross", 
+          "context-Baker_St_621_front", 
+          "context-Lori_Ln_cross", 
+          "context-Baker_St_521_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.69b2.Baker_St_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Baker_St_cross"
+  }, 
+  {
+    "ref": "item-Sky.45d6.Baker_St_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Baker_St_cross"
+  }, 
+  {
+    "ref": "item-Street.58d5.Baker_St_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Baker_St_cross"
+  }, 
+  {
+    "ref": "item-Sign.45ca.Baker_St_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          66, 
+          97, 
+          107, 
+          101, 
+          114, 
+          32, 
+          83, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Baker_St_cross"
+  }, 
+  {
+    "ref": "item-Streetlamp.6845.Baker_St_cross", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 140, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Baker_St_cross"
+  }, 
+  {
+    "ref": "item-Teleport.be22.Baker_St_cross", 
+    "mods": [
+      {
+        "orientation": 24, 
+        "address": "Pop-Baker St", 
+        "y": 132, 
+        "x": 16, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Baker_St_cross"
+  }
+]

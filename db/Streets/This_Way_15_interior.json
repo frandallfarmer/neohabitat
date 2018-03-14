@@ -1,0 +1,169 @@
+[
+  {
+    "ref": "context-This_Way_15_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "15 This Way", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-This_Way_15_front", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7b97.This_Way_15_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Wall.7ec1.This_Way_15_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Window.729f.This_Way_15_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 59, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Door.b517.This_Way_15_interior", 
+    "mods": [
+      {
+        "orientation": 212, 
+        "key_lo": 0, 
+        "connection": "context-This_Way_15_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 100, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.56e5.This_Way_15_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 56, 
+        "type": "Floor_lamp", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Table.5203.This_Way_15_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 154, 
+        "x": 36, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Picture.085a.This_Way_15_interior", 
+    "mods": [
+      {
+        "picture": 0, 
+        "style": 3, 
+        "orientation": 0, 
+        "y": 70, 
+        "x": 60, 
+        "type": "Picture"
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Chest.c311.This_Way_15_interior", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 137, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-This_Way_15_interior"
+  }, 
+  {
+    "ref": "item-Chair.4162.This_Way_15_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 68, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 41
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-This_Way_15_interior"
+  }
+]

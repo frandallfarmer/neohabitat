@@ -1,0 +1,215 @@
+[
+  {
+    "ref": "context-Mince_St_72_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "72 Mince St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Mince_St_82_front", 
+          "", 
+          "context-Mince_St_62_front", 
+          "context-Mince_St_72_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.48c3.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Wall.bfd8.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Wall.725f.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Building.2c43.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 12, 
+        "connection": "context-Mince_St_72_interior", 
+        "type": "Building", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Tree.8618.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 124, 
+        "type": "Tree", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Bush.9abd.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 50, 
+        "x": 76, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Mailbox.9b81.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 8, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Bush.3f1a.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 50, 
+        "x": 88, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Sign.af19.Mince_St_72_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          55, 
+          50, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Mince_St_72_front"
+  }, 
+  {
+    "ref": "item-Street.e521.Mince_St_72_front", 
+    "mods": [
+      {
+        "y": 9, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 48, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Mince_St_72_front"
+  }
+]

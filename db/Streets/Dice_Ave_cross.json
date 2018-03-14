@@ -1,0 +1,157 @@
+[
+  {
+    "ref": "context-Dice_Ave_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Dice Ave", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Dice_Ave_61_front", 
+          "context-Mince_St_cross", 
+          "context-Dice_Ave_51_front", 
+          ""
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d8c7.Dice_Ave_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_cross"
+  }, 
+  {
+    "ref": "item-Sky.ce72.Dice_Ave_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Dice_Ave_cross"
+  }, 
+  {
+    "ref": "item-Street.fc6e.Dice_Ave_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 13
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Dice_Ave_cross"
+  }, 
+  {
+    "ref": "item-Sign.fbcc.Dice_Ave_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          68, 
+          105, 
+          99, 
+          101, 
+          32, 
+          65, 
+          118, 
+          101, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 80, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Dice_Ave_cross"
+  }, 
+  {
+    "ref": "item-Streetlamp.9049.Dice_Ave_cross", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 140, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Dice_Ave_cross"
+  }, 
+  {
+    "ref": "item-Teleport.27aa.Dice_Ave_cross", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "address": "Pop-Dice Ave", 
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Dice_Ave_cross"
+  }
+]

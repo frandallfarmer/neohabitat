@@ -1,0 +1,216 @@
+[
+  {
+    "ref": "context-Wrong_Wy_26_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "26 Wrong Way", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Wrong_Wy_26_interior", 
+          "context-Wrong_Wy_36_front", 
+          "", 
+          "context-Wrong_Wy_16_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.af9c.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Wall.f353.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Wall.22ab.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Building.d205.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 36, 
+        "connection": "context-Wrong_Wy_26_interior", 
+        "type": "Building", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Bush.6ab6.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 96, 
+        "type": "Bush", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Bush.71c5.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 48, 
+        "x": 8, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Mailbox.34be.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Street.2aa4.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Sign.1815.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wrong_Wy_26_front"
+  }, 
+  {
+    "ref": "item-Plant.1136.Wrong_Wy_26_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 41, 
+        "x": 60, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_26_front"
+  }
+]

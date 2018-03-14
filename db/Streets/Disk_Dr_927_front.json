@@ -1,0 +1,216 @@
+[
+  {
+    "ref": "context-Disk_Dr_927_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "927 Disk Dr", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Disk_Dr_1027_front", 
+          "", 
+          "context-Disk_Dr_827_front", 
+          "context-Disk_Dr_927_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7c42.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Wall.686c.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Wall.ff1b.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Building.3e43.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 52, 
+        "connection": "context-Disk_Dr_927_interior", 
+        "type": "Building", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Bush.41e8.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 136, 
+        "type": "Bush", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Sign.313e.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          57, 
+          50, 
+          55, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Mailbox.8203.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 108, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Street.00c1.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Plant.ac09.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 159, 
+        "x": 132, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_927_front"
+  }, 
+  {
+    "ref": "item-Bush.facf.Disk_Dr_927_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 12, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Disk_Dr_927_front"
+  }
+]

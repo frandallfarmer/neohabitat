@@ -1,0 +1,143 @@
+[
+  {
+    "ref": "context-Randy_Rd_e_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Randy Rd east", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Randy_Rd_13_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.32bc.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Sky.6dbc.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Street.e552.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Pond.af8e.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 64, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Teleport.9e11.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "address": "Pop-Randy Rd East", 
+        "y": 128, 
+        "x": 120, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Pond.8ef9.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 14, 
+        "x": 24, 
+        "type": "Pond", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Pond.3e84.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 4, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-Randy_Rd_e_end"
+  }, 
+  {
+    "ref": "item-Pond.2ab0.Randy_Rd_e_end", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 100, 
+        "type": "Pond", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-Randy_Rd_e_end"
+  }
+]
