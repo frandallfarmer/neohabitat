@@ -1,0 +1,212 @@
+[
+  {
+    "ref": "context-IO_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "I/O Ave", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Sunday_Dr_cross", 
+          "context-IO_517_front", 
+          "context-Aric_Ave_cross", 
+          "context-IO_617_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d115.IO_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Sky.f387.IO_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Street.edc1.IO_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Sign.4fa2.IO_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          73, 
+          47, 
+          79, 
+          32, 
+          65, 
+          118, 
+          101, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 4, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Tree.74ae.IO_cross", 
+    "mods": [
+      {
+        "y": 157, 
+        "x": 56, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Tree.95f3.IO_cross", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 120, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Tree.fff6.IO_cross", 
+    "mods": [
+      {
+        "y": 34, 
+        "x": 136, 
+        "type": "Tree", 
+        "orientation": 205
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Tree.bbec.IO_cross", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 16, 
+        "type": "Tree", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Bush.eccc.IO_cross", 
+    "mods": [
+      {
+        "y": 35, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-IO_cross"
+  }, 
+  {
+    "ref": "item-Bush.aee0.IO_cross", 
+    "mods": [
+      {
+        "y": 128, 
+        "x": 112, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-IO_cross"
+  }
+]

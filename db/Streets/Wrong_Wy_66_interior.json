@@ -1,0 +1,165 @@
+[
+  {
+    "ref": "context-Wrong_Wy_66_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "66 Wrong Way", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Wrong_Wy_66_front", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fd7f.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Wall.8e04.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Display_case.2a61.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 112, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Table.b05c.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 133, 
+        "x": 64, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Door.1408.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "orientation": 220, 
+        "key_lo": 0, 
+        "connection": "context-Wrong_Wy_66_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Chair.b055.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 9
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Chair.8afe.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 36, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Chair.2874.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 72, 
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Wrong_Wy_66_interior"
+  }, 
+  {
+    "ref": "item-Window.2473.Wrong_Wy_66_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 72, 
+        "type": "Window", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Wrong_Wy_66_interior"
+  }
+]

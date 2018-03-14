@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-Disk_Dr_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Disk Dr south", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Disk_Dr_127_front", 
+          "", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8947.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Wall.8fc7.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Wall.f66d.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Teleport.bdbc.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "orientation": 56, 
+        "address": "Pop-Disk Dr South", 
+        "y": 138, 
+        "x": 32, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.6871.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 50, 
+        "x": 92, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Bush.ddff.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 76, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.e883.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 136, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.92ed.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 17, 
+        "mass": 1, 
+        "y": 36, 
+        "x": 72, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Street.cfba.Disk_Dr_s_end", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Disk_Dr_s_end"
+  }
+]

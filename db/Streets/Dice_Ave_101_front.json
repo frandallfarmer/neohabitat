@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Dice_Ave_101_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "101 Dice Ave", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Dice_Ave_n_end", 
+          "", 
+          "context-Dice_Ave_91_front", 
+          "context-Dice_Ave_101_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.4d8e.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Wall.5b6a.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Wall.a7a1.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Building.0625.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 16, 
+        "connection": "context-Dice_Ave_101_interior", 
+        "type": "Building", 
+        "orientation": 189
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Bush.4a3e.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 120, 
+        "type": "Bush", 
+        "orientation": 212
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Sign.1b87.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          128, 
+          49, 
+          48, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Mailbox.6d26.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 149, 
+        "x": 80, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Dice_Ave_101_front"
+  }, 
+  {
+    "ref": "item-Street.96dc.Dice_Ave_101_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Dice_Ave_101_front"
+  }
+]

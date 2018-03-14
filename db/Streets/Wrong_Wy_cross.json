@@ -1,0 +1,219 @@
+[
+  {
+    "ref": "context-Wrong_Wy_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Wrong Way", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-This_Way_cross", 
+          "context-Wrong_Wy_66_front", 
+          "context-Baker_St_cross", 
+          "context-Wrong_Wy_56_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c69f.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Sky.65b8.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Street.a227.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Sign.c228.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          87, 
+          114, 
+          111, 
+          110, 
+          103, 
+          32, 
+          87, 
+          121, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 4, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Tree.8953.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 112, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Tree.069a.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 24, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Tree.b7aa.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 31, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Tree.c048.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 49, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Tree.74fd.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 64, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_cross"
+  }, 
+  {
+    "ref": "item-Tree.c60e.Wrong_Wy_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 124, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_cross"
+  }
+]

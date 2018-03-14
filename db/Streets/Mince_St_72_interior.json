@@ -1,0 +1,118 @@
+[
+  {
+    "ref": "context-Mince_St_72_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "72 Mince St", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Mince_St_72_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2e4d.Mince_St_72_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Mince_St_72_interior"
+  }, 
+  {
+    "ref": "item-Wall.6ecb.Mince_St_72_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Mince_St_72_interior"
+  }, 
+  {
+    "ref": "item-Table.4df2.Mince_St_72_interior", 
+    "mods": [
+      {
+        "orientation": 112, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 84, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Mince_St_72_interior"
+  }, 
+  {
+    "ref": "item-Door.ac25.Mince_St_72_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "connection": "context-Mince_St_72_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Mince_St_72_interior"
+  }, 
+  {
+    "ref": "item-Bed.dc16.Mince_St_72_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 96, 
+        "type": "Bed", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Mince_St_72_interior"
+  }, 
+  {
+    "ref": "item-Chair.cde2.Mince_St_72_interior", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 56, 
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Mince_St_72_interior"
+  }
+]

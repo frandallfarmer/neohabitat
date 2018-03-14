@@ -1,0 +1,210 @@
+[
+  {
+    "ref": "context-Wrong_Wy_e_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Wrong Way east", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Wrong_Wy_106_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.48e5.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Sky.45d1.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Street.3d51.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Plant.f4ec.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "mass": 1, 
+        "y": 138, 
+        "x": 24, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Tree.02ad.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 48, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Tree.d228.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 44, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Tree.7187.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 31, 
+        "x": 116, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Tree.7634.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 73, 
+        "x": 116, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Tree.685d.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Tree.1988.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 112, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Plant.8893.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 1, 
+        "mass": 1, 
+        "y": 153, 
+        "x": 88, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_e_end"
+  }, 
+  {
+    "ref": "item-Plant.af7f.Wrong_Wy_e_end", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "mass": 1, 
+        "y": 153, 
+        "x": 88, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wrong_Wy_e_end"
+  }
+]

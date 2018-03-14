@@ -1,0 +1,216 @@
+[
+  {
+    "ref": "context-Randy_Rd_13_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "13 Randy Rd", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-Randy_Rd_e_end", 
+          "context-Randy_Rd_13_interior", 
+          "context-Randy_Rd_23_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.eeb4.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Wall.d801.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Wall.3231.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Building.51a1.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 12, 
+        "connection": "context-Randy_Rd_13_interior", 
+        "type": "Building", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Sign.4418.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          49, 
+          51, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Bush.0dff.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 56, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Mailbox.74e4.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 8, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Bush.04a9.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 84, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Bush.7f40.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Randy_Rd_13_front"
+  }, 
+  {
+    "ref": "item-Street.afe3.Randy_Rd_13_front", 
+    "mods": [
+      {
+        "y": 16, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Randy_Rd_13_front"
+  }
+]

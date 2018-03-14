@@ -1,0 +1,159 @@
+[
+  {
+    "ref": "context-Aric_Ave_w_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Aric Ave west", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Aric_Ave_104_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.31fb.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Sky.2497.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Street.d767.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Tree.4d8c.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 29, 
+        "x": 120, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Tree.4bf9.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 163, 
+        "x": 96, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Tree.123c.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 37, 
+        "x": 32, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Tree.318e.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 52, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Bush.d4ae.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 120, 
+        "style": 3, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Aric_Ave_w_end"
+  }, 
+  {
+    "ref": "item-Bush.6d66.Aric_Ave_w_end", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 1, 
+        "y": 37, 
+        "x": 72, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Aric_Ave_w_end"
+  }
+]

@@ -7,14 +7,14 @@
     "mods": [
       {
         "town_dir": LEFT,
-        "port_dir": LEFT,
+		"port_dir": LEFT,
         "neighbors": [
           "context-Woods_6c", 
           "context-Woods_7b", 
           "context-Woods_6a", 
           "context-Woods_5b"
         ],
-        "realm": "Woods",             
+        "realm": "Woods", 
         "orientation": 0, 
         "nitty_bits": 1, 
         "type": "Region"
@@ -183,6 +183,23 @@
     ], 
     "type": "item", 
     "name": "Tree", 
+    "in": "context-Woods_6b"
+  },
+  {
+    "ref": "item-magic_immobile.f0k5.Woods_6b",
+    "mods": [
+      {
+        "type": "Magic_immobile",
+        "y": 163,
+        "x": 28,
+        "style": 11,
+        "orientation": 0,
+        "magic_type": 4,
+        "magic_data": 999860
+      }
+    ],
+    "type": "item",
+    "name": "Choke Machine",
     "in": "context-Woods_6b"
   }
 ]

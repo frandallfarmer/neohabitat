@@ -1,0 +1,165 @@
+[
+  {
+    "ref": "context-Aric_Ave_14_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "14 Aric Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Aric_Ave_14_front", 
+          "", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.75da.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Wall.af32.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Display_case.c251.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 112, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Table.4e7b.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "orientation": 40, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 133, 
+        "x": 64, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Door.2c38.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "connection": "context-Aric_Ave_14_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Chair.5cea.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 41
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Chair.d505.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 36, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Chair.e197.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 72, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Aric_Ave_14_interior"
+  }, 
+  {
+    "ref": "item-Window.d8b8.Aric_Ave_14_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 72, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Aric_Ave_14_interior"
+  }
+]

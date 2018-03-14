@@ -1,0 +1,157 @@
+[
+  {
+    "ref": "context-Sunday_Dr_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Sunday Dr", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Over_Ave_cross", 
+          "context-Sunday_Dr_520_front", 
+          "context-IO_cross", 
+          "context-Sunday_Dr_620_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c2b9.Sunday_Dr_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Sunday_Dr_cross"
+  }, 
+  {
+    "ref": "item-Sky.c050.Sunday_Dr_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Sunday_Dr_cross"
+  }, 
+  {
+    "ref": "item-Street.e69a.Sunday_Dr_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Sunday_Dr_cross"
+  }, 
+  {
+    "ref": "item-Sign.bd11.Sunday_Dr_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          117, 
+          110, 
+          100, 
+          97, 
+          121, 
+          68, 
+          114, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Sunday_Dr_cross"
+  }, 
+  {
+    "ref": "item-Plant.7857.Sunday_Dr_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "mass": 1, 
+        "y": 30, 
+        "x": 124, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Sunday_Dr_cross"
+  }, 
+  {
+    "ref": "item-Teleport.c893.Sunday_Dr_cross", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "address": "Pop-Sunday Dr", 
+        "y": 128, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Sunday_Dr_cross"
+  }
+]

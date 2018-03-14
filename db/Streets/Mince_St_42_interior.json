@@ -1,0 +1,167 @@
+[
+  {
+    "ref": "context-Mince_St_42_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "42 Mince St", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Mince_St_42_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.60ae.Mince_St_42_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Display_case.79b3.Mince_St_42_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 25, 
+        "x": 52, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Display_case.4fb8.Mince_St_42_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 25, 
+        "x": 100, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Table.e8ef.Mince_St_42_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 133, 
+        "x": 20, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Wall.c2aa.Mince_St_42_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Door.5642.Mince_St_42_interior", 
+    "mods": [
+      {
+        "orientation": 140, 
+        "key_lo": 0, 
+        "connection": "context-Mince_St_42_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Window.0a90.Mince_St_42_interior", 
+    "mods": [
+      {
+        "y": 74, 
+        "x": 104, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Couch.ad98.Mince_St_42_interior", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 72, 
+        "type": "Couch", 
+        "orientation": 156, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Mince_St_42_interior"
+  }, 
+  {
+    "ref": "item-Window.7b6b.Mince_St_42_interior", 
+    "mods": [
+      {
+        "y": 74, 
+        "x": 72, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Mince_St_42_interior"
+  }
+]

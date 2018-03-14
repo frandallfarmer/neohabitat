@@ -1,0 +1,200 @@
+[
+  {
+    "ref": "context-Baker_St_721_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "721 Baker St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Baker_St_721_interior", 
+          "context-Baker_St_821_front", 
+          "", 
+          "context-Baker_St_621_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.e6ae.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Wall.b2b6.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Wall.1ed7.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Building.71f2.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 0, 
+        "connection": "context-Baker_St_721_interior", 
+        "type": "Building", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Tree.8e5d.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 60, 
+        "type": "Tree", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Bush.0f3d.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 50, 
+        "x": 132, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Mailbox.09d9.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 156, 
+        "x": 100, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Sign.ab8a.Baker_St_721_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          55, 
+          50, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 32, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Baker_St_721_front"
+  }, 
+  {
+    "ref": "item-Street.2160.Baker_St_721_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Baker_St_721_front"
+  }
+]

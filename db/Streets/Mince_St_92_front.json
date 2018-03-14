@@ -1,0 +1,243 @@
+[
+  {
+    "ref": "context-Mince_St_92_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "92 Mince St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Mince_St_102_front", 
+          "", 
+          "context-Mince_St_82_front", 
+          "context-Mince_St_92_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7379.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Wall.c1ba.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Wall.1908.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Building.50dc.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Mince_St_92_interior", 
+        "type": "Building", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Bush.5682.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 12, 
+        "type": "Bush", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Sign.abae.Mince_St_92_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          57, 
+          50, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 57, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Mailbox.b2f3.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 151, 
+        "x": 20, 
+        "type": "Mailbox", 
+        "orientation": 97
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Fence.edd0.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Fence.3fa9.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Street.bd76.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 9, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 48, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Fence.4530.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Mince_St_92_front"
+  }, 
+  {
+    "ref": "item-Fence.080b.Mince_St_92_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Mince_St_92_front"
+  }
+]

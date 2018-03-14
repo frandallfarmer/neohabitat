@@ -1,0 +1,203 @@
+[
+  {
+    "ref": "context-Randy_Rd_73_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "73 Randy Rd", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Randy_Rd_63_front", 
+          "context-Randy_Rd_73_interior", 
+          "context-Randy_Rd_83_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.4b0f.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Wall.13b5.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Wall.148b.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Building.de31.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "connection": "context-Randy_Rd_73_interior", 
+        "gr_state": 3, 
+        "y": 32, 
+        "x": 32, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Bush.1372.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "gr_state": 1, 
+        "y": 35, 
+        "x": 16, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Tree.1d88.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "y": 48, 
+        "x": 100, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Mailbox.2569.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 12, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Sign.46dc.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          55, 
+          51, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Randy_Rd_73_front"
+  }, 
+  {
+    "ref": "item-Street.df08.Randy_Rd_73_front", 
+    "mods": [
+      {
+        "y": 16, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Randy_Rd_73_front"
+  }
+]

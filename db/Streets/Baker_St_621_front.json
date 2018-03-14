@@ -1,0 +1,215 @@
+[
+  {
+    "ref": "context-Baker_St_621_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "621 Baker St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Baker_St_621_interior", 
+          "context-Baker_St_721_front", 
+          "", 
+          "context-Baker_St_cross"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6b03.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Wall.124f.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Wall.4083.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Building.65b5.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 24, 
+        "connection": "context-Baker_St_621_interior", 
+        "type": "Building", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Bush.3813.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Sign.eb42.Baker_St_621_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          54, 
+          50, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 56, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Mailbox.b87c.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 154, 
+        "x": 20, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Street.00b0.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Plant.5f2f.Baker_St_621_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 31, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Baker_St_621_front"
+  }, 
+  {
+    "ref": "item-Fence.8e62.Baker_St_621_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Baker_St_621_front"
+  }
+]

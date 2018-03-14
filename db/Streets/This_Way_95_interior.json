@@ -1,0 +1,118 @@
+[
+  {
+    "ref": "context-This_Way_95_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "95 This Way", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-This_Way_95_front", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fc02.This_Way_95_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-This_Way_95_interior"
+  }, 
+  {
+    "ref": "item-Wall.12cf.This_Way_95_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-This_Way_95_interior"
+  }, 
+  {
+    "ref": "item-Table.fad2.This_Way_95_interior", 
+    "mods": [
+      {
+        "orientation": 32, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 84, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-This_Way_95_interior"
+  }, 
+  {
+    "ref": "item-Door.6709.This_Way_95_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "connection": "context-This_Way_95_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-This_Way_95_interior"
+  }, 
+  {
+    "ref": "item-Bed.c22f.This_Way_95_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 96, 
+        "type": "Bed", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-This_Way_95_interior"
+  }, 
+  {
+    "ref": "item-Chair.46fd.This_Way_95_interior", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 56, 
+        "type": "Chair", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-This_Way_95_interior"
+  }
+]

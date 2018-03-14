@@ -1,0 +1,259 @@
+[
+  {
+    "ref": "context-Disk_Dr_627_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "627 Disk Dr", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Disk_Dr_727_front", 
+          "", 
+          "context-Disk_Dr_cross", 
+          "context-Disk_Dr_627_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1939.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Wall.acbe.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Wall.9782.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Building.b39a.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Disk_Dr_627_interior", 
+        "type": "Building", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Bush.6419.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Sign.30e7.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          54, 
+          50, 
+          55, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 57, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Mailbox.2496.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 151, 
+        "x": 20, 
+        "type": "Mailbox", 
+        "orientation": 97
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Fence.0820.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Fence.0760.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Plant.4923.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 39, 
+        "x": 76, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Fence.ad1e.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Fence.58e6.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Disk_Dr_627_front"
+  }, 
+  {
+    "ref": "item-Street.7cf7.Disk_Dr_627_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Disk_Dr_627_front"
+  }
+]
