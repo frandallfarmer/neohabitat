@@ -6,7 +6,7 @@
     "name": "Directory Assistance", 
     "mods": [
       {
-        "town_dir": UP + SPACE + DOWN + SPACE + LEFT + SPACE + RIGHT, 
+        "town_dir": LEFT, 
         "neighbors": [
           "context-Downtown_5f", 
           "context-Downtown_5f", 
@@ -41,15 +41,11 @@
     "ref": "item-Teleport.k9d0.Downtown_9194", 
     "mods": [
       {
-        "style": 0, 
         "orientation": 0, 
         "address": "Pop-Help", 
-        "take": 3860, 
-        "gr_state": 0, 
         "y": 135, 
         "x": 120, 
-        "type": "Teleport", 
-        "activeState": 0
+        "type": "Teleport"
       }
     ], 
     "type": "item", 
@@ -62,7 +58,6 @@
       {
         "style": 0, 
         "orientation": 220, 
-        "last_page": 11, 
         "gr_state": 0, 
         "y": 56, 
         "x": 24,
@@ -81,7 +76,6 @@
       {
         "style": 0, 
         "orientation": 220, 
-        "last_page": 11, 
         "gr_state": 0, 
         "y": 56, 
         "x": 64,
