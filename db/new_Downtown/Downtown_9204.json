@@ -17,6 +17,7 @@
         "realm": "Downtown", 
         "nitty_bits": 3, 
         "port_dir": UP, 
+        "lighting": -1,
         "type": "Region"
       }
     ]
