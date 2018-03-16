@@ -1,7 +1,7 @@
 Welcome to (Neo)Habitat!
 --------------------------
 
-The screen with your Avatar represents one of thousands of different *Regions* in habitat. 
+The screen with your Avatar represents one of thousands of different *Regions* in Habitat. 
 
 ## Having trouble moving around?
 

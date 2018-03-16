@@ -1,7 +1,14 @@
 Welcome to (Neo)Habitat!
 --------------------------
+You are in the Habitat Hatchery - where all new Avatars arrive for their first visit. 
 
-The screen with your Avatar represents one of thousands of different *Regions* in habitat.
+It is one of thousands of different *Regions* in Habitat, waiting for you to explore.
+
+### How to leave this room and explore the world!
+
+1. Place your cursor onto the door in the center of the wall. It doesn't have to be perfect, it just has to be on the door.
+2. Skip to step 3 if the door is open. Otherwise you need to open it: press the trigger, and pull stick downward to select **DO**. By doing this your avatar will walk to the door and open it.
+3. Now, make sure your cursor is placed on the open (dark) area of the door. Then, press the trigger, and push stick upward select **GO**.
 
 ## Having trouble moving around?
 
@@ -40,14 +47,6 @@ To put down an object that's in your Avatar's hand, move your cursor to where yo
 ### Interacting with Objects ![DO](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/do.png "**DO** command")
 To interact with an object you must place your cursor over it. This applies to objects in your Avatar's hand and those on the ground. Now, Press the trigger, and select **DO** (stick down) to activate the object.
 
-### Leaving the Starter Area
-Here are the steps required to get out of the starting area pictured here.
-![Immigration](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/780cc338c99b7426473d732ba76a7d107dd8acd9/docs/images/immigration.JPG "NeoHabitat Immigration")  
-1. Place your cursor onto the door similar to the picture above. It doesn't have to be perfect, it just has to be on the door.
-
-2. Skip to step 3 if the door is open. Otherwise, if the door is closed like it is in the picture then press the trigger, and select **DO**. By doing this your avatar will walk to the door and open it.
-
-3. Now, make sure your cursor is still placed on the door. Then, press the trigger, and select **GO**.
 
 ## No joystick? Using the number pad instead:
 
