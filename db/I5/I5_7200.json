@@ -1,0 +1,128 @@
+[
+  {
+    "ref": "context-I5_7200", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "I-5", 
+    "mods": [
+      {
+        "town_dir": "\u007f", 
+        "neighbors": [
+          "context-Woods_1164", 
+          "", 
+          "context-I5_7201", 
+          ""
+        ],
+        "realm": "I5", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "\u007f", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sign.d8k3.I5_7200", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 172, 
+        "ascii": [
+          133, 
+          136, 
+          128, 
+          87, 
+          69, 
+          76, 
+          67, 
+          79, 
+          77, 
+          69, 
+          134, 
+          32, 
+          32, 
+          84, 
+          79, 
+          134, 
+          32, 
+          128, 
+          73, 
+          45, 
+          53, 
+          134, 
+          133, 
+          136, 
+          128, 
+          68, 
+          101, 
+          112, 
+          116, 
+          32, 
+          111, 
+          102, 
+          128, 
+          84, 
+          114, 
+          97, 
+          110, 
+          115
+        ], 
+        "gr_state": 0, 
+        "y": 34, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-I5_7200"
+  }, 
+  {
+    "ref": "item-Ground1.s9l1.I5_7200", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 40, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-I5_7200"
+  }, 
+  {
+    "ref": "item-Street1.l2k1.I5_7200", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-I5_7200"
+  }, 
+  {
+    "ref": "item-Sky1.x9k2.I5_7200", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7200"
+  }
+]

@@ -6,12 +6,12 @@
         "town_dir": DOWN, 
         "neighbors": [
           "", 
-          "context-Popustop.lobby.line3", 
+          "context-Popustop.aprominade2.line1107", 
           "", 
-          "context-Popustop.aprominade2.line1107"
+          "context-Popustop.lobby.line3"
         ], 
         "realm": "Popustop", 
-        "orientation": 2, 
+        "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": DOWN, 
         "type": "Region"

@@ -6,7 +6,7 @@
     "name": "The Beach", 
     "mods": [
       {
-        "town_dir": DOWN + SPACE + RIGHT, 
+        "town_dir": LEFT, 
         "neighbors": [
           "context-beach_2d", 
           "context-beach_2d", 
@@ -16,7 +16,7 @@
         "realm": "Beach",          
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": DOWN + SPACE + RIGHT, 
+        "port_dir": LEFT, 
         "type": "Region"
       }
     ]
