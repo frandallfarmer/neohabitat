@@ -1,0 +1,228 @@
+[
+  {
+    "ref": "context-I5_7209", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "I-5", 
+    "mods": [
+      {
+        "town_dir": "\u007f", 
+        "neighbors": [
+          "context-I5_7208", 
+          "context-Desert_1a", 
+          "context-I5_1310", 
+          ""
+        ],
+        "realm": "I5", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "\u007f", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Sky.m3n8.I5_7209", 
+    "mods": [
+      {
+        "style": 10, 
+        "orientation": 188, 
+        "gr_state": 0, 
+        "y": 80, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Tree1.v7n2.I5_7209", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 172, 
+        "gr_state": 0, 
+        "y": 43, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Sky.b7h1.I5_7209", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Street.t8j2.I5_7209", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 13, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Tree2.x8n1.I5_7209", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 173, 
+        "gr_state": 2, 
+        "y": 82, 
+        "x": 80, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Ground.a9l1.I5_7209", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 40, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Rock1.v8b2.I5_7209", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 220, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 161, 
+        "x": 60, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Rock2.f9l1.I5_7209", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 220, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 38, 
+        "x": 32, 
+        "type": "Rock"
+      }
+    ], 
+    "type": "item", 
+    "name": "Rock", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Tree3.d8j2.I5_7209", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 172, 
+        "gr_state": 2, 
+        "y": 78, 
+        "x": 84, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Short_sign.h2u3.I5_7209", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          68, 
+          69, 
+          83, 
+          69, 
+          82, 
+          84, 
+          133, 
+          125
+        ], 
+        "gr_state": 7, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Tree4.t8j2.I5_7209", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 172, 
+        "gr_state": 1, 
+        "y": 33, 
+        "x": 84, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7209"
+  }, 
+  {
+    "ref": "item-Tree5.u2h3.I5_7209", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 172, 
+        "gr_state": 4, 
+        "y": 59, 
+        "x": 92, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7209"
+  }
+]

@@ -6,17 +6,17 @@
     "name": "The Back 40",  
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": DOWN, 
         "neighbors": [
           "", 
-          "context-back4t_65", 
+          "context-Woods_1164", 
           "context-back4t_65", 
           "context-back4t_74"
         ],
         "realm": "Back4t",         
         "orientation": 0, 
         "nitty_bits": 2, 
-        "port_dir": "", 
+        "port_dir": DOWN, 
         "type": "Region"
       }
     ]
@@ -173,6 +173,31 @@
     ], 
     "type": "item", 
     "name": "Tree", 
+    "in": "context-back4t_75"
+  },
+  {
+    "ref": "item-Short_sign.d8k1.back4t_75", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          72, 
+          73, 
+          87, 
+          65, 
+          89, 
+          133, 
+          125
+        ], 
+        "gr_state": 7, 
+        "y": 129, 
+        "x": 20, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
     "in": "context-back4t_75"
   }
 ]

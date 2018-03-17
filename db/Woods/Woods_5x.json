@@ -3,16 +3,16 @@
     "ref": "context-Woods_5x", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Woods Rd", 
+    "name": "Woods Rd/I-5", 
     "mods": [
       {
         "town_dir": UP,
         "port_dir": UP,
         "neighbors": [
           "context-Woods_5y", 
-          "context-Popustop.aprominade2.line1107",
-          "context-beach_2f", 
-          "context-welcomecenterext"
+          "",
+          "context-Woods_1284", 
+          "context-Downtown_7f"
         ],
         "realm": "Woods",             
         "orientation": 0, 
@@ -57,7 +57,7 @@
         "orientation": 8, 
         "height": 0, 
         "width": 0, 
-        "gr_state": 0, 
+        "gr_state": 14, 
         "y": 12, 
         "x": 68, 
         "type": "Street"
