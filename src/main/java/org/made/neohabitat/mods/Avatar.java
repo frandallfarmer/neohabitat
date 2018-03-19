@@ -971,7 +971,15 @@ public class Avatar extends Container implements UserMod {
                 } else {
                     Container cont = (Container) seat;
                     for (slot = 0; slot < cont.capacity(); slot++) {
-                        if (cont.contents(slot) == null && seat.sitters[slot] == 0) {
+                		int sitterNoid = seat.sitters[slot];
+                    	if (sitterNoid > 0) {								// Check for stale sitters data and clean up.
+                    		HabitatMod sitter = region.noids[sitterNoid];
+                    		if ( sitter == null || sitter.HabitatClass() != CLASS_AVATAR || ((Avatar) sitter).sittingIn != seat.noid ) {
+                    			sitterNoid = 0;
+                    			seat.sitters[slot] = 0;
+                    		}
+                    	}
+                        if (cont.contents(slot) == null && sitterNoid == 0) {
                             if (sittingIn != 0) {
                                 send_reply_msg(from, 0, "err", FALSE, "slot", 0);
                                 return;
