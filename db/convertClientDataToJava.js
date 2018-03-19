@@ -16,7 +16,7 @@ var		table;
 const Defaults	= {
 		input:	'../../habitat/sources/c64/beta.jlist',
 		output:	'../src/main/java/org/made/neohabitat/NeoHabitat.java',
-		build:	'Version',
+		build:	'Public Release',
 		trace:  'info'};
 
 /** Object holding command line args - parsed by yargs library: npm install yargs */	

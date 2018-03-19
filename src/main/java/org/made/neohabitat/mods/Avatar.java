@@ -1191,9 +1191,9 @@ public class Avatar extends Container implements UserMod {
             object_say(from, UPGRADE_PREFIX + "       You are connected to          ");
             object_say(from, "   The Neoclassical Habitat Server    ");
             object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
-            object_say(from, "                                      ");
+//          object_say(from, "                                      ");
 //          object_say(from, String.format("Light level: " + current_region().lighting + " Current heap: %d", current_region().space_usage));
-            object_say(from, "Open source - Join us! NeoHabitat.org ");
+            object_say(from, " Open source. Join us! NeoHabitat.org ");
             object_say(from, NeoHabitat.GetBuildVersion());
             send_reply_success(from);
             break;
