@@ -57,10 +57,10 @@
       {
         "y": 34, 
         "x": 32, 
-        "open_flags": 0, 
+        "open_flags": 2, 
         "type": "Door", 
         "orientation": 80,
-		"connection": "context-Downtown_5l"
+		"connection": "context-Downtown_3j"
       }
     ], 
     "type": "item", 

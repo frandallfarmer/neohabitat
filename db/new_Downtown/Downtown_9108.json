@@ -1,0 +1,243 @@
+[
+  {
+    "ref": "context-Downtown_9108", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_3d", 
+          "", 
+          "context-Downtown_1972", 
+          "context-Downtown_9241"
+        ],
+        "realm": "Downtown", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d8k3.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Door.y2h2.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 252, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "connection": "context-Downtown_9241", 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Wall.d8j2.Downtown_9108", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 104, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Window1.d9k2.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 45, 
+        "x": 112, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Window2.q0k2.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 83, 
+        "x": 112, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Window3.p4k2.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 83, 
+        "x": 92, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Window4.w9k2.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 83, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Plaque.l3j1.Downtown_9108", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "last_page": 1, 
+        "gr_state": 0, 
+        "y": 90, 
+        "x": 4,
+        "path": "text-missing.object",		
+        "type": "Plaque"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plaque", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Street.h3n1.Downtown_9108", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Sign.m3n1.Downtown_9108", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 244, 
+        "ascii": [
+          65, 
+          118, 
+          97, 
+          116, 
+          97, 
+          114, 
+          115, 
+          134, 
+          32, 
+          32, 
+          128, 
+          97, 
+          116, 
+          134, 
+          128, 
+          133, 
+          76, 
+          97, 
+          119
+        ], 
+        "gr_state": 0, 
+        "y": 129, 
+        "x": 84, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Window5.g2h3.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 45, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9108"
+  }, 
+  {
+    "ref": "item-Window6.y2m1.Downtown_9108", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 45, 
+        "x": 92, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9108"
+  }
+]

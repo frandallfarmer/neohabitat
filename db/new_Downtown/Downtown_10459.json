@@ -1,0 +1,255 @@
+[
+  {
+    "ref": "context-Downtown_10459", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Wizard's Study", 
+    "mods": [
+      {
+        "town_dir": "|", 
+        "port_dir": "|", 
+        "type": "Region",
+        "orientation": 1,		
+        "neighbors": [
+          "context-Downtown_10458",
+          "",
+          "",
+          ""        
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.v7n3.Downtown_10459", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_10459"
+  }, 
+  {
+    "ref": "item-ground.x8n3.Downtown_10459", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_10459"
+  },
+  {
+    "ref": "item-chair.f8j2.Downtown_10459", 
+    "mods": [
+      {
+        "y": 146, 
+        "x": 60,
+        "open_flags": 3,
+        "type": "Chair", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_10459"
+  },
+  {
+    "ref": "item-countertop.b7m3.Downtown_10459", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0,
+		"open_flags": 3,
+        "type": "Countertop", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_10459"
+  },
+  {
+    "ref": "item-display_case.x8m3.Downtown_10459", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 3, 
+        "y": 29, 
+        "x": 0, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Downtown_10459"
+  },
+  {
+    "ref": "item-glue1.v9m3.Downtown_10459", 
+    "mods": [
+      {
+        "y_offset_2": 224, 
+        "y_offset_3": 0, 
+        "y_offset_1": 0, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 0, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 0, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 144, 
+        "x": 44, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Downtown_10459"
+  },
+  {
+    "ref": "item-crystal_ball1.d8j2.Downtown_10459", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "type": "Crystal_ball", 
+        "orientation": 0, 
+        "gr_state": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Crystal_ball", 
+    "in": "item-glue1.v9m3.Downtown_10459"
+  },
+  {
+    "ref": "item-super_trapezoid1.k6g2.Downtown_10459", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 112, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 7, 
+        "lower_left_x": 0, 
+        "lower_right_x": 7, 
+        "height": 112, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 15, 
+        "pattern": [  
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  186, 
+		  170, 
+		  186, 
+		  170, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85, 
+		  185, 
+		  85
+        ],		  
+        "type": "Super_trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_10459"
+  },
+  {
+    "ref": "item-super_trapezoid2.d1m9.Downtown_10459", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 120, 
+        "trapezoid_type": 0, 
+        "upper_left_x": 0, 
+        "upper_right_x": 7, 
+        "lower_left_x": 0, 
+        "lower_right_x": 7, 
+        "height": 112, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 15, 
+        "pattern": [  
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  170, 
+		  174, 
+		  170, 
+		  174, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110, 
+		  85, 
+		  110
+        ],		  
+        "type": "Super_trapezoid", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_10459"
+  }  
+]

@@ -1,0 +1,194 @@
+[
+  {
+    "ref": "context-Downtown_10458", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The LOUD Table", 
+    "mods": [
+      {
+        "town_dir": "~", 
+        "port_dir": "~", 
+        "type": "Region",
+        "orientation": 1,		
+        "neighbors": [
+          "",
+          "",
+          "",
+          "context-Downtown_10457"        
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.f7j3.Downtown_10458", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 10
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_10458"
+  }, 
+  {
+    "ref": "item-ground.d9f9.Downtown_10458", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-chair1.p3m4.Downtown_10458", 
+    "mods": [
+      {
+        "y": 150, 
+        "x": 84,
+        "open_flags": 3,
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-chair2.a9d7.Downtown_10458", 
+    "mods": [
+      {
+        "y": 150, 
+        "x": 56,
+        "open_flags": 3,
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-sign.x8k9.Downtown_10458", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign",
+		"style": 0,
+        "gr_state": 5, 
+        "y": 122, 
+        "x": 34, 
+        "ascii": [
+          133,
+		  131,
+		  131,
+		  84,
+		  104,
+		  101,
+		  32,
+		  131,
+		  129,
+		  76,
+		  79,
+		  85,
+		  68,
+		  134,
+		  130,
+		  132,
+		  32,
+		  32,
+		  32,
+		  84,
+		  97,
+		  98,
+		  108,
+		  101
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-chair3.b8m3.Downtown_10458", 
+    "mods": [
+      {
+        "y": 150, 
+        "x": 28,
+        "open_flags": 3,
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-chair4.p0f9.Downtown_10458", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 120,
+		"style": 1,
+        "open_flags": 3,
+        "type": "Chair", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-door.f9g8.Downtown_10458", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "y": 10, 
+        "x": 108,
+		"open_flags": 2,
+		"gr_state": 0,
+		"connection": "context-Downtown_10459",
+        "type": "Door"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_10458"
+  },
+  {
+    "ref": "item-trapezoid.x8j3.Downtown_10458", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 10, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 10, 
+        "upper_right_x": 110, 
+        "lower_left_x": 0, 
+        "lower_right_x": 110, 
+        "height": 142, 
+        "type": "Trapezoid", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_10458"
+  }
+]

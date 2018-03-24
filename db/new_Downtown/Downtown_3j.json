@@ -9,14 +9,14 @@
         "town_dir": "", 
         "neighbors": [
           "", 
-          "", 
-          "", 
+          "context-Downtown_4j", 
+          "context-Downtown_3i", 
           ""
         ], 
         "realm": "Downtown", 
         "orientation": 1, 
         "nitty_bits": 3, 
-        "port_dir": LEFT, 
+        "port_dir": RIGHT, 
         "type": "Region"
       }
     ]
