@@ -1,0 +1,224 @@
+[
+  {
+    "ref": "context-Downtown_10385", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Only 1 Employee/time", 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "port_dir": "}", 
+        "type": "Region",
+        "orientation": 1,		
+        "neighbors": [
+          "",
+          "",
+          "context-Downtown_10386",
+          ""        
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.v8m3.Downtown_10385", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 82
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_10385"
+  }, 
+  {
+    "ref": "item-ground.x9d8.Downtown_10385", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_10385"
+  },
+  {
+    "ref": "item-chest1.p9d7.Downtown_10385", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 27, 
+        "x": 4, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_10385"
+  },
+  {
+    "ref": "item-chest2.g6j3.Downtown_10385", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 4, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_10385"
+  },
+  {
+    "ref": "item-chest3.s9h5.Downtown_10385", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 73, 
+        "x": 4, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_10385"
+  },
+  {
+    "ref": "item-vendo_inside1.v8k3.Downtown_10385", 
+    "mods": [
+      {
+        "orientation": 0,
+		"style": 0,
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 60, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_10385"
+  },
+  {
+    "ref": "item-vendo_front1.g8k1.Downtown_10385", 
+    "mods": [
+      {
+        "display_item": 0,
+		"style": 0,
+        "orientation": 156, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0,
+		"prices": [5000, 5000, 5000],
+        "item_price": 5000
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside1.v8k3.Downtown_10385"
+  },
+  {
+    "ref": "item-Short_sign1.x8m3.Downtown_10385", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 106, 
+        "x": 64, 
+        "ascii": [
+          82,
+		  120,
+		  68,
+		  114,
+		  111,
+		  105,
+		  100
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_10385"
+  },
+  {
+    "ref": "item-drugs1.p2n4.Downtown_10385", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 1,
+		"count": 5,
+		"effect": 1,
+        "type": "Drugs", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Drugs", 
+    "in": "item-vendo_front1.g8k1.Downtown_10385"
+  },
+  {
+    "ref": "item-drugs2.h7j1.Downtown_10385", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 1,
+		"count": 5,
+		"effect": 2,
+        "type": "Drugs", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Drugs", 
+    "in": "item-vendo_inside1.v8k3.Downtown_10385"
+  },
+  {
+    "ref": "item-drugs3.l4m6.Downtown_10385", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 0, 
+        "y": 2, 
+        "x": 2,
+		"count": 5,
+		"effect": 3,
+        "type": "Drugs", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Drugs", 
+    "in": "item-vendo_front1.g8k1.Downtown_10385"
+  }
+]

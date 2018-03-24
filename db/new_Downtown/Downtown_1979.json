@@ -1,0 +1,446 @@
+[
+  {
+    "ref": "context-Downtown_1979", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Greg P:Priest", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Downtown_1980"
+        ],
+        "realm": "Downtown", 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "}", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Book.s9k2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "last_page": 29, 
+        "gr_state": 0, 
+        "y": 137, 
+        "x": 113, 
+        "type": "Book"
+      }
+    ], 
+    "type": "item", 
+    "name": "Book", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Chair1.d8jk.Downtown_1979", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 17, 
+        "gr_state": 0, 
+        "y": 135, 
+        "x": 104, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Glue.n3m2.Downtown_1979", 
+    "mods": [
+      {
+        "y_offset_2": 0, 
+        "y_offset_3": 227, 
+        "style": 0, 
+        "y_offset_1": 0, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 239, 
+        "y_offset_5": 0, 
+        "x_offset_2": 20, 
+        "x_offset_5": 0, 
+        "x_offset_4": 4, 
+        "x_offset_6": 0, 
+        "x_offset_1": 245, 
+        "x_offset_3": 5, 
+        "gr_state": 1, 
+        "y": 70, 
+        "x": 44, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack1.d9k2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Glue.n3m2.Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack2.m8n7.Downtown_1979", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-Glue.n3m2.Downtown_1979"
+  }, 
+  {
+    "ref": "item-Flashlight1.d8j1.Downtown_1979", 
+    "mods": [
+      {
+        "on": 1, 
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 159, 
+        "x": 92, 
+        "type": "Flashlight"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flashlight", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Trapezoid1.d7h2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 19, 
+        "orientation": 48, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 30, 
+        "x": 8, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Wall.g7h2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack3.s8k2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 157, 
+        "x": 138, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Chair2.s8j2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 244, 
+        "gr_state": 0, 
+        "y": 128, 
+        "x": 8, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Trapezoid2.a9k3.Downtown_1979", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 19, 
+        "orientation": 48, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 30, 
+        "x": 132, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack4.h7j8.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 3, 
+        "y": 157, 
+        "x": 22, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Ground.d8k2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 112, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Chair3.g8j9.Downtown_1979", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "gr_state": 0, 
+        "y": 134, 
+        "x": 36, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack5.a8j2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 3, 
+        "y": 157, 
+        "x": 26, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack6.a9k2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 157, 
+        "x": 141, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Chair4.g8j2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 245, 
+        "gr_state": 0, 
+        "y": 128, 
+        "x": 132, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Short_sign.m8b6.Downtown_1979", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          28, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 1, 
+        "y": 122, 
+        "x": 72, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Trapezoid3.d8j2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 19, 
+        "orientation": 236, 
+        "upper_right_x": 19, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 144, 
+        "x": 68, 
+        "height": 168, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack7.v8m2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 156, 
+        "x": 132, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack8.x8m2.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 3, 
+        "y": 157, 
+        "x": 19, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Knick_knack9.p2k1.Downtown_1979", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 3, 
+        "y": 157, 
+        "x": 18, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Downtown_1979"
+  }, 
+  {
+    "ref": "item-Flashlight2.s9k2.Downtown_1979", 
+    "mods": [
+      {
+        "on": 1, 
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 159, 
+        "x": 63, 
+        "type": "Flashlight"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flashlight", 
+    "in": "context-Downtown_1979"
+  }
+]

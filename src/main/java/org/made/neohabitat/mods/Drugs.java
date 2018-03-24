@@ -182,7 +182,7 @@ public class Drugs extends HabitatMod implements Copyable
             send_reply_msg(from, "Illegible Latin scrawl.");
         }
         else
-            send_reply_msg(from, "DRUGS: select do to consume. This pill bottle has " + count + " pills remaining. This bottle contians:");
+            send_reply_msg(from, "DRUGS: select do to consume. This pill bottle has " + count + " pills remaining. This bottle contains:");
         object_say(from, noid, drug_help[effect]);
     }
 }
