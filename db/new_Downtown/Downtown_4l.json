@@ -16,7 +16,8 @@
         "orientation": 3,
         "realm": "Downtown", 
         "nitty_bits": 3, 
-        "port_dir": LEFT, 
+        "port_dir": LEFT,
+		"depth": 24, 
         "type": "Region"
       }
     ]

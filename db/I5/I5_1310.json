@@ -16,7 +16,8 @@
         "realm": "I5",		
         "orientation": 3, 
         "nitty_bits": 3, 
-        "port_dir": DOWN, 
+        "port_dir": DOWN,
+		"depth": 30, 
         "type": "Region"
       }
     ]

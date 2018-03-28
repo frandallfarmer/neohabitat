@@ -17,7 +17,8 @@
         "is_turf": true, 
         "orientation": 2, 
         "nitty_bits": 3, 
-        "port_dir": UP, 
+        "port_dir": UP,
+		"depth": 24, 
         "type": "Region"
       }
     ]

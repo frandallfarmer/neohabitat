@@ -9,7 +9,8 @@
         "town_dir": "\u007f", 
         "port_dir": "\u007f", 
         "type": "Region",
-        "orientation": 1,		
+        "orientation": 1,
+        "depth": 29,		
         "neighbors": [
           "",
           "context-Downtown_10457",
