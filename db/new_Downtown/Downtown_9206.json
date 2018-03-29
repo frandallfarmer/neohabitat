@@ -18,6 +18,7 @@
         "nitty_bits": 3, 
         "port_dir": UP, 
         "lighting": -1,
+		"depth": 15,
         "type": "Region"
       }
     ]

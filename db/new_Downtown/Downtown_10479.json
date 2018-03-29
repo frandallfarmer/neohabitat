@@ -10,6 +10,7 @@
         "port_dir": "}",
         "type": "Region",
 		"orientation": 3,
+        "depth": 29,
         "neighbors": [
           "context-Downtown_7b",
           "",

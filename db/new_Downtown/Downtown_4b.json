@@ -16,7 +16,8 @@
         ], 
         "orientation": 3, 
         "nitty_bits": 3, 
-        "port_dir": RIGHT, 
+        "port_dir": RIGHT,
+		"depth": 29, 
         "type": "Region"
       }
     ]

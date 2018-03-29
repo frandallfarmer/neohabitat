@@ -15,8 +15,9 @@
         ],
         "realm": "Dnalsi",        
         "orientation": 2, 
-        "nitty_bits": 3, 
-        "port_dir": "", 
+        "nitty_bits": 0, 
+        "port_dir": "",
+        "depth": 30, 
         "type": "Region"
       }
     ]

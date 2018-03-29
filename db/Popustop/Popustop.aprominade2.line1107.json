@@ -14,7 +14,8 @@
         "aliases" : [ "pop-hotel", "pop-motel", "pop-apartment", "pop-apt" ],
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": "",
+        "depth": 25,		
         "type": "Region"
       }
     ], 
