@@ -1,6 +1,6 @@
 version: '2'
 services:
-  mariadb:
+  neohabitatmariadb:
     image: mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=dev
@@ -42,12 +42,12 @@ services:
       - "9000:9000"
       - "9229:9229"
     depends_on:
-      - mongo
+      - neohabitatmongo
   qlink:
     image: philcollins/qlink
     environment:
-      - QLINK_DB_HOST=mariadb
-      - QLINK_DB_JDBC_URI=jdbc:mysql://mariadb:3306/qlink
+      - QLINK_DB_HOST=neohabitatmariadb
+      - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink
       - QLINK_DB_USERNAME=qlink
       - QLINK_DB_PASSWORD=qlink
       - QLINK_HABITAT_HOST=neohabitat
@@ -56,4 +56,4 @@ services:
       - "1986:1986"
     depends_on:
       - neohabitat
-      - mariadb
+      - neohabitatmariadb
