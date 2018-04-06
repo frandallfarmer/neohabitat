@@ -45,7 +45,7 @@ RUN npm install -g supervisor
 RUN printf '#!/bin/bash\ntail -f /neohabitat/{bridge,elko_server}.log' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
 
 # Adds a cronjob to enable the updating of the Hall of Records.
-RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && make book' >> /var/log/hallofrecords.log\n" > /etc/cron.d/hall-of-records
+RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && NEOHABITAT_MONGO_HOST=neohabitatmongo:27017 make book' >> /var/log/hallofrecords.log\n" > /etc/cron.d/hall-of-records
 
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
