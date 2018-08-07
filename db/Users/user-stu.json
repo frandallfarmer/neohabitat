@@ -9,7 +9,8 @@
 		"denom_hi" : 4,
 		"denom_lo" : 0
 	} ]
-}, {
+},
+{
 	"type" : "user",
 	"ref" : "user-stu",
 	"name" : "Stu",
@@ -23,16 +24,8 @@
 		"custom" : [ 17, 119 ],
 		"nitty_bits" : 8
 	} ]
-}, {
-	"type" : "item",
-	"ref" : "item-stu.changomatic",
-	"name" : "Paintin' yer turf",
-	"in" : "user-stu",
-	"mods" : [ {
-		"type" : "Changomatic",
-		"y" : 2
-	} ]
-},  {
+},
+{
 	"type" : "item",
 	"ref" : "item-stu.godtool",
 	"name" : "Tool to rule the universe.",
@@ -45,7 +38,8 @@
 		"magic_type" : 17,
 		"charges" : 255
 	} ]
-}, {
+},
+{
 	"type" : "item",
 	"ref" : "item-stu.paper",
 	"name" : "Pad and mailbox",
@@ -55,7 +49,8 @@
 		"orientation" : 16,
 		"y" : 4
 	} ]
-}, {
+},
+{
 	"type" : "item",
 	"ref" : "item-stu.head.json",
 	"name" : "Stu's Head",
@@ -65,5 +60,7 @@
 		"style" : 52,
 		"orientation" : 8,
 		"y" : 6
-	} ]
-} ]
+	}
+	]
+}
+]

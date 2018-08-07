@@ -117,7 +117,7 @@
         "y": 32, 
         "x": 136, 
         "type": "Door", 
-        "open_flags": 3
+        "open_flags": 2
       }
     ], 
     "type": "item", 
