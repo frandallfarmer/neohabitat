@@ -324,8 +324,7 @@
         "type": "Door", 
         "y": 33, 
         "x": 52,
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "connection": "context-Downtown_8g"
       }
     ], 

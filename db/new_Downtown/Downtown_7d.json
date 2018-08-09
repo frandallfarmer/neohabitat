@@ -115,8 +115,7 @@
         "x": 68,
         "type": "Door", 
         "orientation": 56,
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "connection": "context-Downtown_8d"
       }
     ], 

@@ -59,8 +59,7 @@
         "orientation": 0, 
         "y": 32, 
         "x": 56,
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "connection": "context-Downtown_4c",
         "type": "Door"
       }

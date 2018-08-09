@@ -192,8 +192,7 @@
         "orientation": 56, 
         "y": 32, 
         "x": 108,
-		"open_flags": 3,
-		"gr_state": 1,
+		"open_flags": 2,
 		"connection": "context-Downtown_8e",
         "type": "Door"
       }
@@ -210,8 +209,7 @@
         "orientation": 57, 
         "y": 32, 
         "x": 148,
-		"open_flags": 3,
-		"gr_state": 1,
+		"open_flags": 2,
 		"connection": "context-Downtown_8e",		
         "type": "Door"
       }

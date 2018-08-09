@@ -61,8 +61,7 @@
         "key_hi": 0, 
         "y": 33, 
         "x": 20, 
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "type": "Door"
       }
     ], 

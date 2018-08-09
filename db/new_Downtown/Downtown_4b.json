@@ -121,8 +121,7 @@
         "key_hi": 0, 
         "y": 32, 
         "x": 124,
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "type": "Door"
        }
     ], 

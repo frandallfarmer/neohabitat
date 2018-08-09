@@ -113,8 +113,7 @@
       {
         "y": 33, 
         "x": 16,
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "type": "Door", 
         "orientation": 140,
         "connection": "context-Downtown_8i"
