@@ -1,0 +1,186 @@
+[
+  {
+    "ref": "context-CTF_7014", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture The Flag Field #3", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-CTF_7015", 
+          "context-CTF_7017", 
+          "", 
+          "context-CTF_7011"
+        ],
+        "realm": "CTF", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Bush1.z6f4.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 32, 
+        "gr_state": 0, 
+        "y": 38, 
+        "x": 104, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Tree1.h4s1.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 236, 
+        "gr_state": 1, 
+        "y": 33, 
+        "x": 56, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Bush2.h3h3.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 32, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 128, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Plant1.s0f9.CTF_7014", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 41, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 148, 
+        "x": 96, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Tree2.p8f7.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 196, 
+        "gr_state": 1, 
+        "y": 35, 
+        "x": 8, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Bush3.x6j2.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 40, 
+        "gr_state": 0, 
+        "y": 146, 
+        "x": 28, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Plant2.b9s7.CTF_7014", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 41, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 138, 
+        "x": 116, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Bush4.w8s9.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 64, 
+        "gr_state": 0, 
+        "y": 143, 
+        "x": 48, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Sky.w9d8.CTF_7014", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-CTF_7014"
+  }, 
+  {
+    "ref": "item-Ground.q8s7.CTF_7014", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7014"
+  }
+]
