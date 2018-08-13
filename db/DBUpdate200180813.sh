@@ -41,7 +41,6 @@ make Popustop/Popustop.stairs.line721.o
 make Popustop/Popustop.stairs.line821.o
 make Popustop/Popustop.stairs.line921.o
 make Streets/OutamyWy_529_interior.o
-make Users/user-stu.o
 make new_Downtown/Downtown_1972.o
 make new_Downtown/Downtown_1976.o
 make new_Downtown/Downtown_1979.o
@@ -103,4 +102,27 @@ make new_Downtown/Downtown_9230.o
 make new_Downtown/Downtown_9231.o
 make new_Downtown/Downtown_9232.o
 make new_Downtown/Downtown_9233.o
-
+make Capture_flag/CTF_6405.o
+make Capture_flag/CTF_7000.o
+make Capture_flag/CTF_7001.o
+make Capture_flag/CTF_7002.o
+make Capture_flag/CTF_7003.o
+make Capture_flag/CTF_7004.o
+make Capture_flag/CTF_7010.o
+make Capture_flag/CTF_7011.o
+make Capture_flag/CTF_7012.o
+make Capture_flag/CTF_7013.o
+make Capture_flag/CTF_7014.o
+make Capture_flag/CTF_7015.o
+make Capture_flag/CTF_7016.o
+make Capture_flag/CTF_7017.o
+make Capture_flag/CTF_7018.o
+make Capture_flag/CTF_7019.o
+make Capture_flag/CTF_7020.o
+make I5/I5_1310.o
+make I5/I5_7209.o
+make I5/I5_7210.o
+make Text/text-captureflag.o
+make Text/text-captureflagunused.o
+make Woods/Woods_gr.o
+make Woods/Woods_gs.o
