@@ -29,6 +29,7 @@ import org.made.neohabitat.mods.Magic_lamp;
 import org.made.neohabitat.mods.Paper;
 import org.made.neohabitat.mods.Region;
 import org.made.neohabitat.mods.Tokens;
+import org.made.neohabitat.mods.Key;
 
 /**
  * an Elko Habitat superclass to handle magic state and specific behaviors.
@@ -209,7 +210,7 @@ public abstract class Magical extends HabitatMod {
             magic_default(from, targetMod);
             break;
         case 22:
-            magic_default(from, targetMod);
+            the_vaultkeeper(from, targetMod);
             break;
         case 23:
             magic_default(from, targetMod);
@@ -399,6 +400,35 @@ public abstract class Magical extends HabitatMod {
             avatar.gen_flags[MODIFIED] = true;
             gen_flags[MODIFIED] = true;
             object_say(from, "There you go. Enjoy!");
+            send_magic_success(from);
+        }
+    }
+	
+    /**
+     * The vaultkeeper drops a key with hi/lo values based on the objects magic_data on the ground for each user exactly one time.
+     * 
+     * @param from
+     * @param target
+     */
+    private void the_vaultkeeper(User from, HabitatMod target) {
+        Avatar avatar = avatar(from);
+        Region region = current_region();
+
+        if (avatar.nitty_bits[MISC_FLAG1]) {
+            object_say(from, "What are you looking for? Besides, the Trans-dimensional doorway doesn't even open until 7!");
+			object_say(from, "By the way, do you play backgammon?");
+			object_say(from, "No smoking here, please!");
+            send_magic_error(from);
+        } else {
+			avatar.nitty_bits[MISC_FLAG1] = true;
+            avatar.gen_flags[MODIFIED] = true;			
+            Key key = new Key(0, avatar.x, avatar.y - 1, 8, 0, false, magic_data & 0xFF, (magic_data & 0xFF00) >> 8);
+            Item item = create_object("Vaultkeeper Key", key, region, false);
+            if (item == null)
+                return;
+            announce_object(item, region);
+            gen_flags[MODIFIED] = true;
+            object_say(from, "Okay, okay, here's one! Don't lose it, it's not like these things grow on trees!");
             send_magic_success(from);
         }
     }

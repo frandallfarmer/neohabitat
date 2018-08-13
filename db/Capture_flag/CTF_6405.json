@@ -1,0 +1,427 @@
+[
+  {
+    "ref": "context-CTF_6405", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture the Flag", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "", 
+          "context-I5_7210", 
+          "", 
+          "context-CTF_7001"
+        ],
+        "realm": "CTF",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Super_trapezoid1.d2f4.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 0, 
+        "orientation": 220, 
+        "pattern": [
+          170, 
+          170, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          170, 
+          170, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149
+        ], 
+        "upper_right_x": 0, 
+        "lower_left_x": 237, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 124, 
+        "height": 192, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 237
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Super_trapezoid2.f4g2.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 0, 
+        "orientation": 220, 
+        "pattern": [
+          170, 
+          170, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          170, 
+          170, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149
+        ], 
+        "upper_right_x": 0, 
+        "lower_left_x": 237, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 48, 
+        "height": 192, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 237
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Ground.g5d2.CTF_6405", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 252, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Flat.h5f1.CTF_6405", 
+    "mods": [
+      {
+        "flat_type": 0, 
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Sign1.d0f9.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          67, 
+          97, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          97, 
+          103
+        ], 
+        "gr_state": 1, 
+        "y": 121, 
+        "x": 12, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Sign2.x8m4.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          32, 
+          32, 
+          112, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          70, 
+          108
+        ], 
+        "gr_state": 1, 
+        "y": 118, 
+        "x": 12, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Sign3.v8b7.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          32, 
+          32, 
+          32, 
+          32, 
+          117, 
+          114, 
+          32, 
+          32, 
+          32, 
+          32, 
+          101
+        ], 
+        "gr_state": 1, 
+        "y": 115, 
+        "x": 12, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Sign4.y6j2.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          101, 
+          32, 
+          116, 
+          104
+        ], 
+        "gr_state": 1, 
+        "y": 112, 
+        "x": 12, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Flag1.v7d6.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 1, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 151, 
+        "x": 12, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Flag2.x8f7.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 9, 
+        "mass": 1, 
+        "gr_state": 2, 
+        "y": 151, 
+        "x": 148, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Street.j8g7.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 13, 
+        "y": 6, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Trapezoid1.c9f8.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 0, 
+        "orientation": 188, 
+        "upper_right_x": 0, 
+        "lower_left_x": 122, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 96, 
+        "x": 144, 
+        "height": 29, 
+        "type": "Trapezoid", 
+        "upper_left_x": 122
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Flag3.v8x7.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 9, 
+        "mass": 1, 
+        "gr_state": 1, 
+        "y": 129, 
+        "x": 116, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-CTF_6405"
+  }, 
+  {
+    "ref": "item-Flag4.a8d7.CTF_6405", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 1, 
+        "mass": 1, 
+        "gr_state": 2, 
+        "y": 129, 
+        "x": 36, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-CTF_6405"
+  },
+  {
+	"ref": "item-Plaque.f9x8.CTF_6405",
+	"mods": [
+	  {
+		"type": "Plaque",
+		"style": 2,
+		"orientation": 16,
+		"x": 32,
+		"y": 40,
+		"last_page": 1,
+		"path": "text-captureflag"
+	  }
+	],
+	"type": "item",
+	"name": "CTF Plaque",
+	"in": "context-CTF_6405"
+  }
+]

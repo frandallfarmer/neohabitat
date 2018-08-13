@@ -1,0 +1,243 @@
+[
+  {
+    "ref": "context-CTF_7003", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "CTF Field #2 Lobby", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "", 
+          "context-CTF_7001", 
+          "", 
+          ""
+        ],
+        "realm": "CTF", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Trapezoid1.d9f8.CTF_7003", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 23, 
+        "orientation": 8, 
+        "upper_right_x": 23, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 68, 
+        "height": 75, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-CTF_7003"
+  }, 
+  {
+    "ref": "item-Sign1.s9f8.CTF_7003", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          126, 
+          128, 
+          66, 
+          76, 
+          85, 
+          69, 
+          134, 
+          32, 
+          128, 
+          116, 
+          101, 
+          97, 
+          109
+        ], 
+        "gr_state": 2, 
+        "y": 88, 
+        "x": 0, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7003"
+  }, 
+  {
+    "ref": "item-Sign2.u4k5.CTF_7003", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 16, 
+        "ascii": [
+          70, 
+          105, 
+          101, 
+          108, 
+          100, 
+          32, 
+          50, 
+          134, 
+          83, 
+          112, 
+          101, 
+          99, 
+          116, 
+          97, 
+          116, 
+          111, 
+          114, 
+          134, 
+          69, 
+          110, 
+          116, 
+          114, 
+          97, 
+          110, 
+          99, 
+          101, 
+          134, 
+          71, 
+          72, 
+          79, 
+          83, 
+          84, 
+          32, 
+          79, 
+          78, 
+          76, 
+          89, 
+          128, 
+          133, 
+          127
+        ], 
+        "gr_state": 2, 
+        "y": 32, 
+        "x": 12, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7003"
+  }, 
+  {
+    "ref": "item-Sign3.p3k4.CTF_7003", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 8, 
+        "ascii": [
+          133, 
+          131, 
+          66, 
+          76, 
+          65, 
+          67, 
+          75, 
+          134, 
+          116, 
+          101, 
+          97, 
+          109, 
+          128, 
+          127
+        ], 
+        "gr_state": 3, 
+        "y": 87, 
+        "x": 104, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7003"
+  }, 
+  {
+    "ref": "item-Ground.y8w9.CTF_7003", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 80, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7003"
+  }, 
+  {
+    "ref": "item-Super_trapezoid1.p3h1.CTF_7003", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 0, 
+        "orientation": 212, 
+        "pattern": [
+          170, 
+          85, 
+          116, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          111, 
+          116, 
+          112, 
+          114, 
+          105, 
+          101, 
+          89, 
+          89, 
+          101, 
+          101, 
+          86, 
+          165, 
+          101, 
+          101, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 160, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 1, 
+        "upper_left_x": 95
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-CTF_7003"
+  }
+]
