@@ -8,13 +8,13 @@ var CurrentAvatars = {};
 function orientationToRotation(orientation) {
   switch (orientation) {
     case 'North':
-      return 270;
+      return 0;
     case 'West':
       return 90;
     case 'South':
       return 180;
     case 'East':
-      return 0;
+      return 270;
     default:
       return 0;
   }
