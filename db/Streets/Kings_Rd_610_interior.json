@@ -1,0 +1,147 @@
+[
+  {
+    "ref": "context-Kings_Rd_610_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "610 Kings Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Kings_Rd_610_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.51c1.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Wall.d31e.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Window.106b.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 84, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Couch.b8e5.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Chest.2b0a.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Door.064e.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "connection": "context-Kings_Rd_610_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.57dc.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Kings_Rd_610_interior"
+  }, 
+  {
+    "ref": "item-Window.da28.Kings_Rd_610_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kings_Rd_610_interior"
+  }
+]

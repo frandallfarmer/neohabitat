@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Wacka_Rd_109_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "109 Wacka Rd", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Wacka_Rd_99_front", 
+          "context-Wacka_Rd_109_interior", 
+          "context-Wacka_Rd_w_end"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2bc5.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Wall.d647.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Wall.b43e.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Building.8e87.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 28, 
+        "connection": "context-Wacka_Rd_109_interior", 
+        "type": "Building", 
+        "orientation": 221
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Bush.0842.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 80, 
+        "type": "Bush", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Sign.6f12.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          128, 
+          49, 
+          48, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Mailbox.0155.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Wacka_Rd_109_front"
+  }, 
+  {
+    "ref": "item-Street.b0a5.Wacka_Rd_109_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 96, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wacka_Rd_109_front"
+  }
+]

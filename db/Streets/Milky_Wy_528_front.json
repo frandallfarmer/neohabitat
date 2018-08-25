@@ -1,0 +1,213 @@
+[
+  {
+    "ref": "context-Milky_Wy_528_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "528 Milky Wy", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Milky_Wy_cross", 
+          "", 
+          "context-Milky_Wy_428_front", 
+          "context-Milky_Wy_528_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.9269.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Wall.ec5e.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Wall.fd5e.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Building.4308.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 36, 
+        "connection": "context-Milky_Wy_528_interior", 
+        "type": "Building", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Bush.e155.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 96, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Bush.7432.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 16, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Mailbox.d352.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Bush.53cf.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 61, 
+        "x": 124, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Sign.a2fe.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          53, 
+          50, 
+          56, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Milky_Wy_528_front"
+  }, 
+  {
+    "ref": "item-Street.705f.Milky_Wy_528_front", 
+    "mods": [
+      {
+        "y": 16, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 0, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Milky_Wy_528_front"
+  }
+]

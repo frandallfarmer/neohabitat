@@ -6,10 +6,10 @@
     "name": "Woods Rd/I-5", 
     "mods": [
       {
-        "town_dir": "\u007f", 
+        "town_dir": RIGHT, 
         "neighbors": [
           "context-Woods_5x", 
-          "", 
+          "context-OutamyWy_cross", 
           "context-Popustop.aprominade2.line1107", 
           ""
         ],
@@ -128,7 +128,7 @@
       {
         "style": 0, 
         "orientation": 8, 
-        "gr_state": 6, 
+        "gr_state": 13, 
         "y": 12, 
         "x": 68, 
         "type": "Street"

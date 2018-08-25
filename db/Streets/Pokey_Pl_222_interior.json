@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-Pokey_Pl_222_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "222 Pokey Pl", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Pokey_Pl_222_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.caab.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Wall.cc58.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Display_case.9380.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 156, 
+        "x": 96, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Window.6b68.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Window.5ea9.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Door.49b8.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "connection": "context-Pokey_Pl_222_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.04ca.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Chair.6089.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 57
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Pokey_Pl_222_interior"
+  }, 
+  {
+    "ref": "item-Chair.db66.Pokey_Pl_222_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Pokey_Pl_222_interior"
+  }
+]

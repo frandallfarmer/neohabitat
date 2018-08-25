@@ -1,0 +1,134 @@
+[
+  {
+    "ref": "context-Pam_Pl_414_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "414 Pam Pl", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Pam_Pl_414_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.e8c1.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pam_Pl_414_interior"
+  }, 
+  {
+    "ref": "item-Wall.0100.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_414_interior"
+  }, 
+  {
+    "ref": "item-Table.738f.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "orientation": 188, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Pam_Pl_414_interior"
+  }, 
+  {
+    "ref": "item-Chest.4d1d.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Pam_Pl_414_interior"
+  }, 
+  {
+    "ref": "item-Couch.ee51.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 88, 
+        "type": "Couch", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Pam_Pl_414_interior"
+  }, 
+  {
+    "ref": "item-Door.5c2d.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "connection": "context-Pam_Pl_414_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Pam_Pl_414_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.53dc.Pam_Pl_414_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 72, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Pam_Pl_414_interior"
+  }
+]

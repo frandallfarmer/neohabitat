@@ -1,0 +1,177 @@
+[
+  {
+    "ref": "context-Kerner_616_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "616 Kerner", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Kerner_616_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.52d7.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Wall.3485.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Table.d5fc.Kerner_616_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 108, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Window.afe2.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Window.3882.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Door.c0b5.Kerner_616_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "connection": "context-Kerner_616_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Chair.be8e.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 80, 
+        "type": "Chair", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Window.950e.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 80, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.6428.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 104, 
+        "type": "Floor_lamp", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Kerner_616_interior"
+  }, 
+  {
+    "ref": "item-Chair.145d.Kerner_616_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kerner_616_interior"
+  }
+]

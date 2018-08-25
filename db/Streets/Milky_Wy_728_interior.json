@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-Milky_Wy_728_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "728 Milky Wy", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Milky_Wy_728_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.98e3.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Wall.a1c2.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Display_case.77c4.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 156, 
+        "x": 96, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Window.c7ee.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Window.719e.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Door.4515.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "connection": "context-Milky_Wy_728_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.6f67.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Chair.441e.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 57
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Milky_Wy_728_interior"
+  }, 
+  {
+    "ref": "item-Chair.20da.Milky_Wy_728_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Milky_Wy_728_interior"
+  }
+]

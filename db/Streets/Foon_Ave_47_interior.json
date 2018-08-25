@@ -1,0 +1,117 @@
+[
+  {
+    "ref": "context-Foon_Ave_47_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "47 Foon Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Foon_Ave_47_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c35a.Foon_Ave_47_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Foon_Ave_47_interior"
+  }, 
+  {
+    "ref": "item-Wall.cbe0.Foon_Ave_47_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Foon_Ave_47_interior"
+  }, 
+  {
+    "ref": "item-Couch.1468.Foon_Ave_47_interior", 
+    "mods": [
+      {
+        "y": 152, 
+        "x": 4, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Foon_Ave_47_interior"
+  }, 
+  {
+    "ref": "item-Chest.874b.Foon_Ave_47_interior", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 80, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Foon_Ave_47_interior"
+  }, 
+  {
+    "ref": "item-Door.0a51.Foon_Ave_47_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "connection": "context-Foon_Ave_47_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Foon_Ave_47_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.e931.Foon_Ave_47_interior", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 56, 
+        "type": "Floor_lamp", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Foon_Ave_47_interior"
+  }
+]

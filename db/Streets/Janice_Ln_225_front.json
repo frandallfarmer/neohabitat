@@ -1,0 +1,217 @@
+[
+  {
+    "ref": "context-Janice_Ln_225_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "225 Janice Ln", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Janice_Ln_325_front", 
+          "", 
+          "context-Janice_Ln_125_front", 
+          "context-Janice_Ln_225_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.729e.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Wall.cc57.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Wall.0c6f.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Building.a1bb.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "orientation": 104, 
+        "connection": "context-Janice_Ln_225_interior", 
+        "gr_state": 3, 
+        "y": 32, 
+        "x": 32, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Bush.6002.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "gr_state": 1, 
+        "y": 35, 
+        "x": 16, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Tree.06d0.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 48, 
+        "x": 100, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Mailbox.4c9f.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 149, 
+        "x": 88, 
+        "type": "Mailbox", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Sign.598f.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 252, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          50, 
+          53, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 157, 
+        "x": 60, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Street.6426.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 16, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Janice_Ln_225_front"
+  }, 
+  {
+    "ref": "item-Fence.40e3.Janice_Ln_225_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Janice_Ln_225_front"
+  }
+]

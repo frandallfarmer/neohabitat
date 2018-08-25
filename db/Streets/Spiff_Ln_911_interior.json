@@ -1,0 +1,166 @@
+[
+  {
+    "ref": "context-Spiff_Ln_911_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "911 Spiff Ln", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Spiff_Ln_911_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1a67.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Wall.3981.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Table.1519.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 154, 
+        "x": 120, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Window.ac0c.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Window.255f.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 72, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Door.v8c7.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 164, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "connection": "context-Spiff_Ln_911_front", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 12, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Window.b2b4.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Chair.f77b.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 149
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Spiff_Ln_911_interior"
+  }, 
+  {
+    "ref": "item-Chair.4a76.Spiff_Ln_911_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Spiff_Ln_911_interior"
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "ref": "context-Pam_Pl_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Pam Pl", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Wazoo_St_cross", 
+          "context-Pam_Pl_614_front", 
+          "context-Pokey_Pl_cross", 
+          "context-Pam_Pl_514_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.5ae2.Pam_Pl_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pam_Pl_cross"
+  }, 
+  {
+    "ref": "item-Sky.9002.Pam_Pl_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Sky", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Pam_Pl_cross"
+  }, 
+  {
+    "ref": "item-Street.268d.Pam_Pl_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pam_Pl_cross"
+  }, 
+  {
+    "ref": "item-Sign.d2b6.Pam_Pl_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          80, 
+          65, 
+          77, 
+          32, 
+          80, 
+          76
+        ], 
+        "gr_state": 1, 
+        "y": 33, 
+        "x": 68, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Pam_Pl_cross"
+  }, 
+  {
+    "ref": "item-Tree.b326.Pam_Pl_cross", 
+    "mods": [
+      {
+        "y": 100, 
+        "x": 124, 
+        "style": 9, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Pam_Pl_cross"
+  }, 
+  {
+    "ref": "item-Teleport.063b.Pam_Pl_cross", 
+    "mods": [
+      {
+        "orientation": 64, 
+        "address": "Pop-Pam Pl", 
+        "y": 132, 
+        "x": 20, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Pam_Pl_cross"
+  }
+]

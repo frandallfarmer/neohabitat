@@ -1,0 +1,258 @@
+[
+  {
+    "ref": "context-Saint_St_819_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "819 Saint St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Saint_St_719_front", 
+          "context-Saint_St_819_interior", 
+          "context-Saint_St_919_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2441.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Wall.6bac.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Wall.77a9.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Building.2101.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Saint_St_819_interior", 
+        "type": "Building", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Bush.f349.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Sign.eeb4.Saint_St_819_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          56, 
+          49, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 57, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Mailbox.be50.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 32, 
+        "type": "Mailbox", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Fence.4b46.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Fence.f994.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Street.85c4.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Fence.e5b6.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Fence.e3d9.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Saint_St_819_front"
+  }, 
+  {
+    "ref": "item-Bush.f040.Saint_St_819_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_819_front"
+  }
+]

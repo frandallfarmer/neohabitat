@@ -1,0 +1,136 @@
+[
+  {
+    "ref": "context-Rocky_Rd_915_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "915 Rocky Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Rocky_Rd_915_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.79c6.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Rocky_Rd_915_interior"
+  }, 
+  {
+    "ref": "item-Wall.84a3.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Rocky_Rd_915_interior"
+  }, 
+  {
+    "ref": "item-Table.be5f.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 80, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Rocky_Rd_915_interior"
+  }, 
+  {
+    "ref": "item-Chest.9f96.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 244, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 138, 
+        "x": 128, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Rocky_Rd_915_interior"
+  }, 
+  {
+    "ref": "item-Chair.5c80.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 32, 
+        "style": 5, 
+        "type": "Chair", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Rocky_Rd_915_interior"
+  }, 
+  {
+    "ref": "item-Door.c5df.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "key_lo": 0, 
+        "connection": "context-Rocky_Rd_915_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Rocky_Rd_915_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.14ec.Rocky_Rd_915_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Rocky_Rd_915_interior"
+  }
+]

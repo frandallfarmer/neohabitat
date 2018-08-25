@@ -1,0 +1,179 @@
+[
+  {
+    "ref": "context-Wazoo_St_112_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "112 Wazoo St", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Wazoo_St_112_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.4ddf.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Wall.a6f8.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Window.3623.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Couch.b43b.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Chest.daf4.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "orientation": 112, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Door.5a36.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "orientation": 228, 
+        "key_lo": 0, 
+        "connection": "context-Wazoo_St_112_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.681a.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Window.aa03.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 88, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Knick_knack.46c3.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 82, 
+        "x": 12, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Wazoo_St_112_interior"
+  }, 
+  {
+    "ref": "item-Chair.7347.Wazoo_St_112_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Wazoo_St_112_interior"
+  }
+]

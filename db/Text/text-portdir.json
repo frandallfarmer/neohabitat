@@ -175,16 +175,16 @@
 		"                                        " +
 		"Road St North       Sunday Dr           " +
 		"Road St South       Sunday Dr East      " +
-		"Rocky Rd West       Sunday Dr West      " +
-		"                                        " +
-		"Saint St East       This Way            " +
-		"Saint St West       This Way East       " +
-		"Spiff Ln            This Way West       " +
-		"Spiff Ln West       Wacka Rd            " +
-		"Street Rd           Wacka Rd East       " +
-		"Street Rd North     Wacka Rd West       " +
-		"Street Rd South     Warp Dr North       " +
-		"                    Warp Dr South       " +
+		"Rocky Rd            Sunday Dr West      " +
+		"Rocky Rd West                           " +
+		"                    This Way            " +
+		"Saint St East       This Way East       " +
+		"Saint St West       This Way West       " +
+		"Spiff Ln            Wacka Rd            " +
+		"Spiff Ln West       Wacka Rd East       " +
+		"Street Rd           Wacka Rd West       " +
+		"Street Rd Nor       Warp Dr North       " +
+		"Street Rd South     Warp Dr South       " +
 		"                                        " +
 		"           -- Page 11 of 11 --          "]		
 }
