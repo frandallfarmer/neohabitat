@@ -25,7 +25,7 @@ function retry() {
 }
 
 GIT_BASE_DIR=$(git rev-parse --show-toplevel)
-VERSION=$(cat ${GIT_BASE_DIR}/target/classes/version.txt)
+VERSION="0.1.0-SNAPSHOT"
 
 # Sets default config values if there are no environment-level overrides.
 DEBUG_PORT="${NEOHABITAT_DEBUG_PORT-1985}"
