@@ -1,2 +1,0 @@
-db.odb.remove({});
-db.odb.remove({});

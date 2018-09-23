@@ -114,9 +114,9 @@ ExecStart=/neohabitat/run
 Environment=NEOHABITAT_MONGO_HOST=127.0.0.1:27017
 Environment=NEOHABITAT_SHOULD_RUN_BRIDGE=false
 Environment=NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
+Environment=NEOHABITAT_SHOULD_RUN_PUSHSERVER=false
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
@@ -141,9 +141,9 @@ Environment=NEOHABITAT_BRIDGE_ELKO_HOST=127.0.0.1:2018
 Environment=NEOHABITAT_SHOULD_BACKGROUND_BRIDGE=false
 Environment=NEOHABITAT_SHOULD_RUN_BRIDGE=true
 Environment=NEOHABITAT_SHOULD_RUN_NEOHABITAT=false
+Environment=NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
@@ -162,12 +162,12 @@ Wants=network.target
 
 [Service]
 WorkingDirectory=/neohabitat/pushserver
-ExecStart=npm run debug
+ExecStart=/usr/bin/npm run debug
 Environment=NODE_ENV=development
+Environment=PUSH_SERVER_CONFIG=./config.vagrant.yml
 Environment=PUSH_SERVER_MONGO_URL=mongodb://127.0.0.1
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
@@ -195,7 +195,6 @@ Environment=QLINK_DB_PASSWORD=qlinkpass
 Environment=QLINK_HABITAT_HOST=127.0.0.1
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
