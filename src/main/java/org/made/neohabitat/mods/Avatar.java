@@ -1904,9 +1904,15 @@ public class Avatar extends Container implements UserMod {
         } else {
             try {
                 String[] splitContext = turf.split("-");
-                String[] splitTurf = splitContext[1].split("\\.|_");
+                // Sanitizes street-wise turfs, which will be postfixed with "_front".
+                String sanitizedTurf = splitContext[1].replace("_front", "");
+                String[] splitTurf = sanitizedTurf.split("\\.|_");
                 String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
-                String turfId = splitTurf[1];
+                if (splitTurf.length > 2) {
+                    realm = realm + " " + String.join(
+                        " ", Arrays.copyOfRange(splitTurf, 1, splitTurf.length - 1));
+                }
+                String turfId = splitTurf[splitTurf.length - 1];
                 return String.format("%s #%s", realm, turfId);
             } catch (ArrayIndexOutOfBoundsException e) {
                 trace_exception(e);
@@ -1914,7 +1920,7 @@ public class Avatar extends Container implements UserMod {
             }
         }
     }
-    
+
     /**
      * Checks for new Mail and sends a MAILARRIVED$ notification to the Avatar if so.
      */
