@@ -8,6 +8,7 @@
       {
         "town_dir": "%(town_dir)s",
         "port_dir": "%(port_dir)s",
+		"depth": 24,
         "type": "Region",
         "orientation": %(orientation)s,
         "neighbors": [

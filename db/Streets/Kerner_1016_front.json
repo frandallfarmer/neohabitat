@@ -1,0 +1,230 @@
+[
+  {
+    "ref": "context-Kerner_1016_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "1016 Kerner", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Kerner_n_end", 
+          "", 
+          "context-Kerner_916_front", 
+          "context-Kerner_1016_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.f21a.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Wall.e9eb.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Wall.797f.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Building.0ded.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 12, 
+        "connection": "context-Kerner_1016_interior", 
+        "type": "Building", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Tree.b875.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 48, 
+        "x": 124, 
+        "type": "Tree", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Bush.7fc9.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 56, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Mailbox.f4fd.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 8, 
+        "type": "Mailbox", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Bush.8cdf.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 68, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Bush.edce.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 80, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Sign.eb24.Kerner_1016_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          49, 
+          48, 
+          49, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Kerner_1016_front"
+  }, 
+  {
+    "ref": "item-Street.bd43.Kerner_1016_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 112, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kerner_1016_front"
+  }
+]

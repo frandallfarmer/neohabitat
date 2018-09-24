@@ -1,0 +1,173 @@
+[
+  {
+    "ref": "context-Kludge_Ct_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Kludge Ct", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Kludge_Ct_618_front", 
+          "", 
+          "context-Kludge_Ct_518_front", 
+          "context-Kerner_cross"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.821a.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Sky.909b.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Street.bc83.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street",
+        "gr_state": 14,		
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Sign.3dba.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          75, 
+          108, 
+          117, 
+          100, 
+          103, 
+          101, 
+          67, 
+          116
+        ], 
+        "gr_state": 4, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Tree.c28d.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 48, 
+        "style": 5, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Tree.78b4.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 31, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Tree.2d0e.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 49, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Tree.91b4.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 64, 
+        "x": 120, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Kludge_Ct_cross"
+  }, 
+  {
+    "ref": "item-Tree.2775.Kludge_Ct_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 1, 
+        "gr_state": 2, 
+        "y": 44, 
+        "x": 124, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Kludge_Ct_cross"
+  }
+]

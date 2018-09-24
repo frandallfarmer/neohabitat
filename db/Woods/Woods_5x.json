@@ -10,13 +10,13 @@
         "port_dir": UP,
         "neighbors": [
           "context-Woods_5y", 
-          "",
+          "context-Cross_Rd_cross",
           "context-Woods_1284", 
           "context-Downtown_7f"
         ],
         "realm": "Woods",             
         "orientation": 0, 
-        "nitty_bits": 1, 
+        "nitty_bits": 3, 
         "type": "Region"
       }
     ]
@@ -55,9 +55,7 @@
     "mods": [
       {
         "orientation": 8, 
-        "height": 0, 
-        "width": 0, 
-        "gr_state": 14, 
+        "gr_state": 0, 
         "y": 12, 
         "x": 68, 
         "type": "Street"
@@ -84,8 +82,8 @@
           100 
         ], 
         "gr_state": 4, 
-        "y": 132, 
-        "x": 53, 
+        "y": 133, 
+        "x": 52, 
         "type": "Sign"
       }
     ], 
@@ -94,11 +92,11 @@
     "in": "context-Woods_5x"
   },
   {
-    "ref": "item-sign2.Woods_5x", 
+    "ref": "item-Short_sign.Woods_5x", 
     "mods": [
       {
         "style": 5, 
-        "orientation": 208, 
+        "orientation": 16, 
         "ascii": [
           68,
           78,
@@ -112,12 +110,12 @@
         ], 
         "gr_state": 7, 
         "y": 160, 
-        "x": 113, 
-        "type": "Sign"
+        "x": 112, 
+        "type": "Short_sign"
       }
     ], 
     "type": "item", 
-    "name": "Sign", 
+    "name": "Short_sign", 
     "in": "context-Woods_5x"
   },
   {
@@ -128,7 +126,7 @@
         "x": 100, 
         "style": 1, 
         "type": "Tree", 
-        "orientation": 174
+        "orientation": 172
       }
     ], 
     "type": "item", 

@@ -12,7 +12,7 @@
         "orientation": 1,
         "realm": "Downtown",         
         "neighbors": [
-          "context-Downtown_5i",
+          "context-Downtown_9135",
           "context-Downtown_6h", 
           "context-Downtown_5g",
           "context-Downtown_4h"
@@ -59,7 +59,7 @@
         "x": 8, 
         "open_flags": 2,
         "type": "Door",
-        "connection": "context-Downtown_5i",        
+        "connection": "context-Downtown_9135",        
         "orientation": 220
       }
     ], 

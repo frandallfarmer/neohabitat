@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-Janice_Ln_425_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "425 Janice Ln", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Janice_Ln_425_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.88eb.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Wall.f142.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Display_case.d481.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 156, 
+        "x": 96, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Window.785e.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Window.59c7.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Door.0eb7.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "connection": "context-Janice_Ln_425_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.2caf.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Chair.c0e1.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 57
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Janice_Ln_425_interior"
+  }, 
+  {
+    "ref": "item-Chair.dbe2.Janice_Ln_425_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Janice_Ln_425_interior"
+  }
+]

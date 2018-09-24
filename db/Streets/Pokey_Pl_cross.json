@@ -1,0 +1,125 @@
+[
+  {
+    "ref": "context-Pokey_Pl_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Pokey Pl", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Pam_Pl_cross", 
+          "context-Pokey_Pl_622_front", 
+          "context-Cross_Rd_cross", 
+          "context-Pokey_Pl_522_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7c9e.Pokey_Pl_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pokey_Pl_cross"
+  }, 
+  {
+    "ref": "item-Sky.8ebc.Pokey_Pl_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Pokey_Pl_cross"
+  }, 
+  {
+    "ref": "item-Street.a3eb.Pokey_Pl_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pokey_Pl_cross"
+  }, 
+  {
+    "ref": "item-Sign.8331.Pokey_Pl_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          80, 
+          111, 
+          107, 
+          101, 
+          121, 
+          32, 
+          80, 
+          108
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Pokey_Pl_cross"
+  }, 
+  {
+    "ref": "item-Plant.cbd8.Pokey_Pl_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 30, 
+        "x": 92, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Pokey_Pl_cross"
+  }, 
+  {
+    "ref": "item-Teleport.b30a.Pokey_Pl_cross", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "address": "Pop-Pokey Pl", 
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Pokey_Pl_cross"
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "ref": "context-Milky_Wy_828_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "828 Milky Wy", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Milky_Wy_828_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.0c41.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Milky_Wy_828_interior"
+  }, 
+  {
+    "ref": "item-Wall.4bff.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Milky_Wy_828_interior"
+  }, 
+  {
+    "ref": "item-Table.e654.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Milky_Wy_828_interior"
+  }, 
+  {
+    "ref": "item-Chest.2a2f.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "orientation": 196, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 112, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Milky_Wy_828_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.215a.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 140, 
+        "type": "Floor_lamp", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Milky_Wy_828_interior"
+  }, 
+  {
+    "ref": "item-Door.42ca.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "orientation": 156, 
+        "key_lo": 0, 
+        "connection": "context-Milky_Wy_828_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 8, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Milky_Wy_828_interior"
+  }, 
+  {
+    "ref": "item-Bed.b812.Milky_Wy_828_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 84, 
+        "type": "Bed", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Milky_Wy_828_interior"
+  }
+]

@@ -1,0 +1,141 @@
+[
+  {
+    "ref": "context-Spiff_Ln_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Spiff Ln", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "", 
+          "context-Spiff_Ln_611_front", 
+          "context-Wazoo_St_cross", 
+          "context-Spiff_Ln_511_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8cc9.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Spiff_Ln_cross"
+  }, 
+  {
+    "ref": "item-Sky.8f37.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Spiff_Ln_cross"
+  }, 
+  {
+    "ref": "item-Street.704f.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 16, 
+        "gr_state": 13
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Spiff_Ln_cross"
+  }, 
+  {
+    "ref": "item-Sign.e609.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          112, 
+          105, 
+          102, 
+          102, 
+          32, 
+          76, 
+          110
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 80, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Spiff_Ln_cross"
+  }, 
+  {
+    "ref": "item-Bush.bfe4.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 1, 
+        "y": 130, 
+        "x": 40, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Spiff_Ln_cross"
+  }, 
+  {
+    "ref": "item-Teleport.b42d.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "address": "Pop-Spiff Ln", 
+        "y": 132, 
+        "x": 112, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Spiff_Ln_cross"
+  }, 
+  {
+    "ref": "item-Tree.fd32.Spiff_Ln_cross", 
+    "mods": [
+      {
+        "y": 35, 
+        "x": 32, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Spiff_Ln_cross"
+  }
+]

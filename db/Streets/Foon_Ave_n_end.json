@@ -1,0 +1,68 @@
+[
+  {
+    "ref": "context-Foon_Ave_n_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Foon Ave north", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Foon_Ave_17_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2f86.Foon_Ave_n_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Foon_Ave_n_end"
+  }, 
+  {
+    "ref": "item-Sky.918e.Foon_Ave_n_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Foon_Ave_n_end"
+  }, 
+  {
+    "ref": "item-Street.e318.Foon_Ave_n_end", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Foon_Ave_n_end"
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "ref": "context-Janice_Ln_625_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "625 Janice Ln", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Janice_Ln_625_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.0588.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Janice_Ln_625_interior"
+  }, 
+  {
+    "ref": "item-Wall.9453.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_625_interior"
+  }, 
+  {
+    "ref": "item-Table.5636.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Janice_Ln_625_interior"
+  }, 
+  {
+    "ref": "item-Chest.b730.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "orientation": 196, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 112, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Janice_Ln_625_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.7809.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 140, 
+        "type": "Floor_lamp", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Janice_Ln_625_interior"
+  }, 
+  {
+    "ref": "item-Door.d24a.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "orientation": 156, 
+        "key_lo": 0, 
+        "connection": "context-Janice_Ln_625_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 8, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Janice_Ln_625_interior"
+  }, 
+  {
+    "ref": "item-Bed.cd97.Janice_Ln_625_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 84, 
+        "type": "Bed", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Janice_Ln_625_interior"
+  }
+]

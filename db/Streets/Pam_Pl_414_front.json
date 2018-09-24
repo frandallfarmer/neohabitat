@@ -1,0 +1,215 @@
+[
+  {
+    "ref": "context-Pam_Pl_414_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "414 Pam Pl", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Pam_Pl_414_interior", 
+          "context-Pam_Pl_514_front", 
+          "", 
+          "context-Pam_Pl_314_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c555.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Wall.cabf.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Wall.083d.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Building.0d15.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 68, 
+        "connection": "context-Pam_Pl_414_interior", 
+        "type": "Building", 
+        "orientation": 205
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Tree.aa9c.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 40, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Bush.b0ed.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 8, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Mailbox.3bff.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 112, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Plant.2f75.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 50, 
+        "x": 124, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Sign.9c6c.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 148, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          52, 
+          49, 
+          52, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 29, 
+        "x": 52, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Pam_Pl_414_front"
+  }, 
+  {
+    "ref": "item-Street.8b8c.Pam_Pl_414_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 80, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pam_Pl_414_front"
+  }
+]

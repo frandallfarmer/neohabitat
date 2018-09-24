@@ -1,0 +1,170 @@
+[
+  {
+    "ref": "context-Pokey_Pl_w_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Pokey Pl west", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-Pokey_Pl_122_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d1f8.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Wall.7ca3.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Wall.c363.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Teleport.5f31.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "orientation": 220, 
+        "address": "Pop-Pokey Pl West", 
+        "y": 136, 
+        "x": 32, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Bush.b261.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 61, 
+        "x": 80, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Bush.e02b.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 24, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Bush.56d9.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 52, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Street.7588.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 252, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Bush.934e.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 59, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pokey_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Bush.ebb4.Pokey_Pl_w_end", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 136, 
+        "type": "Bush", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pokey_Pl_w_end"
+  }
+]
