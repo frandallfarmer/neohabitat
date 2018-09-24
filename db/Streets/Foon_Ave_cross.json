@@ -1,0 +1,126 @@
+[
+  {
+    "ref": "context-Foon_Ave_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Foon Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Foon_Ave_57_front", 
+          "", 
+          "context-Foon_Ave_67_front", 
+          "context-Bleem_St_cross"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.3d4a.Foon_Ave_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Foon_Ave_cross"
+  }, 
+  {
+    "ref": "item-Sky.155d.Foon_Ave_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Foon_Ave_cross"
+  }, 
+  {
+    "ref": "item-Street.8962.Foon_Ave_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 14
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Foon_Ave_cross"
+  }, 
+  {
+    "ref": "item-Sign.0080.Foon_Ave_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          70, 
+          111, 
+          111, 
+          110, 
+          32, 
+          65, 
+          118, 
+          101
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Foon_Ave_cross"
+  }, 
+  {
+    "ref": "item-Plant.c154.Foon_Ave_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 30, 
+        "x": 92, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Foon_Ave_cross"
+  }, 
+  {
+    "ref": "item-Teleport.c190.Foon_Ave_cross", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "address": "Pop-Foon Ave", 
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Foon_Ave_cross"
+  }
+]

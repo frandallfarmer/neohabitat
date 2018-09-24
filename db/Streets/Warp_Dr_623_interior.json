@@ -1,0 +1,148 @@
+[
+  {
+    "ref": "context-Warp_Dr_623_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "623 Warp Dr", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Warp_Dr_623_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.acc2.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Wall.c54c.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Table.13d1.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 56, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Chest.0055.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Chair.f72e.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 44, 
+        "type": "Chair", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Door.8384.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "connection": "context-Warp_Dr_623_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.1388.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 72, 
+        "type": "Floor_lamp", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Warp_Dr_623_interior"
+  }, 
+  {
+    "ref": "item-Chair.1800.Warp_Dr_623_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 88, 
+        "type": "Chair", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Warp_Dr_623_interior"
+  }
+]

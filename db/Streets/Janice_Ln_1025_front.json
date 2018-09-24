@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Janice_Ln_1025_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "1025 Janice Ln", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Janice_Ln_n_end", 
+          "", 
+          "context-Janice_Ln_925_front", 
+          "context-Janice_Ln_1025_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d312.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Wall.ea00.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Wall.6424.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Building.81b2.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Janice_Ln_1025_interior", 
+        "type": "Building", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Bush.7a0b.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 32, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Sign.212e.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          49, 
+          48, 
+          50, 
+          53, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Mailbox.b84a.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 88, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Janice_Ln_1025_front"
+  }, 
+  {
+    "ref": "item-Street.a549.Janice_Ln_1025_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 16, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Janice_Ln_1025_front"
+  }
+]

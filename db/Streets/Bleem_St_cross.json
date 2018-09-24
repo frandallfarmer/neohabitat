@@ -1,0 +1,125 @@
+[
+  {
+    "ref": "context-Bleem_St_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Bleem St", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Bleem_St_58_front", 
+          "context-Foon_Ave_cross", 
+          "context-Bleem_St_68_front", 
+          "context-Warp_Dr_cross"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.5637.Bleem_St_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Bleem_St_cross"
+  }, 
+  {
+    "ref": "item-Sky.9791.Bleem_St_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Bleem_St_cross"
+  }, 
+  {
+    "ref": "item-Street.fbfb.Bleem_St_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Bleem_St_cross"
+  }, 
+  {
+    "ref": "item-Sign.988f.Bleem_St_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          66, 
+          108, 
+          101, 
+          101, 
+          109, 
+          32, 
+          83, 
+          116
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Bleem_St_cross"
+  }, 
+  {
+    "ref": "item-Plant.b3b8.Bleem_St_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 30, 
+        "x": 124, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Bleem_St_cross"
+  }, 
+  {
+    "ref": "item-Teleport.47aa.Bleem_St_cross", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "address": "Pop-Bleem St", 
+        "y": 128, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Bleem_St_cross"
+  }
+]

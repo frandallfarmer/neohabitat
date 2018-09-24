@@ -1,0 +1,144 @@
+[
+  {
+    "ref": "context-Kerner_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Kerner south", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Kerner_116_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.383f.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Wall.4db4.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Wall.9f42.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Fortune_machine.d414.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 32, 
+        "type": "Fortune_machine", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fortune_machine", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Bush.6de1.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 52, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Bush.1df9.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 68, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Bush.4928.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 84, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_s_end"
+  }, 
+  {
+    "ref": "item-Street.a650.Kerner_s_end", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 112, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kerner_s_end"
+  }
+]

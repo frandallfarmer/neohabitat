@@ -1,0 +1,114 @@
+[
+  {
+    "ref": "context-Kludge_Ct_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Kludge Ct south", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Kludge_Ct_118_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d77d.Kludge_Ct_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kludge_Ct_s_end"
+  }, 
+  {
+    "ref": "item-Wall.22f1.Kludge_Ct_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kludge_Ct_s_end"
+  }, 
+  {
+    "ref": "item-Wall.ea3e.Kludge_Ct_s_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kludge_Ct_s_end"
+  }, 
+  {
+    "ref": "item-Pond.6377.Kludge_Ct_s_end", 
+    "mods": [
+      {
+        "y": 40, 
+        "x": 84, 
+        "type": "Pond", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-Kludge_Ct_s_end"
+  }, 
+  {
+    "ref": "item-Teleport.d15b.Kludge_Ct_s_end", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "address": "Pop-Kludge Ct South", 
+        "y": 131, 
+        "x": 16, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Kludge_Ct_s_end"
+  }, 
+  {
+    "ref": "item-Street.432e.Kludge_Ct_s_end", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 72, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kludge_Ct_s_end"
+  }
+]

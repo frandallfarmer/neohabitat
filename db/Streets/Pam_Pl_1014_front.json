@@ -1,0 +1,200 @@
+[
+  {
+    "ref": "context-Pam_Pl_1014_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "1014 Pam Pl", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Pam_Pl_1014_interior", 
+          "context-Pam_Pl_e_end", 
+          "", 
+          "context-Pam_Pl_914_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.198a.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Wall.8cf6.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Wall.eaf7.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Building.2043.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 60, 
+        "connection": "context-Pam_Pl_1014_interior", 
+        "type": "Building", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Tree.2f01.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 36, 
+        "x": 28, 
+        "type": "Tree", 
+        "orientation": 64
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Bush.aa97.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 50, 
+        "x": 116, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Mailbox.a136.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 156, 
+        "x": 92, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Sign.285a.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 148, 
+        "ascii": [
+          32, 
+          32, 
+          49, 
+          48, 
+          49, 
+          52, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 29, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Pam_Pl_1014_front"
+  }, 
+  {
+    "ref": "item-Street.f479.Pam_Pl_1014_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 80, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pam_Pl_1014_front"
+  }
+]

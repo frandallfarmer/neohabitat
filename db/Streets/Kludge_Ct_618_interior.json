@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-Kludge_Ct_618_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "618 Kludge Ct", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Kludge_Ct_618_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.a6f8.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Wall.2bd5.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Display_case.3eb5.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "orientation": 164, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 156, 
+        "x": 96, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Window.d781.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 60, 
+        "x": 52, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Window.971d.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 68, 
+        "type": "Window", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Door.4337.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "connection": "context-Kludge_Ct_618_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.f965.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Chair.9196.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 57
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kludge_Ct_618_interior"
+  }, 
+  {
+    "ref": "item-Chair.b206.Kludge_Ct_618_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kludge_Ct_618_interior"
+  }
+]

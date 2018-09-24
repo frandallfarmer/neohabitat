@@ -1,0 +1,138 @@
+[
+  {
+    "ref": "context-Warp_Dr_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Warp Dr", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Warp_Dr_623_front", 
+          "context-Bleem_St_cross", 
+          "context-Warp_Dr_523_front", 
+          "context-Milky_Wy_cross"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7ef9.Warp_Dr_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Warp_Dr_cross"
+  }, 
+  {
+    "ref": "item-Sky.801d.Warp_Dr_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Warp_Dr_cross"
+  }, 
+  {
+    "ref": "item-Street.556f.Warp_Dr_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Warp_Dr_cross"
+  }, 
+  {
+    "ref": "item-Sign.0b7e.Warp_Dr_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          87, 
+          97, 
+          114, 
+          112, 
+          32, 
+          68, 
+          114
+        ], 
+        "gr_state": 4, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Warp_Dr_cross"
+  }, 
+  {
+    "ref": "item-Tree.b2d2.Warp_Dr_cross", 
+    "mods": [
+      {
+        "y": 157, 
+        "x": 56, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Warp_Dr_cross"
+  }, 
+  {
+    "ref": "item-Tree.56d1.Warp_Dr_cross", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 28, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Warp_Dr_cross"
+  }, 
+  {
+    "ref": "item-Bush.86ea.Warp_Dr_cross", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 112, 
+        "style": 4, 
+        "type": "Bush", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Warp_Dr_cross"
+  }
+]

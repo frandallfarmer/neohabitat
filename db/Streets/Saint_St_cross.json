@@ -1,0 +1,186 @@
+[
+  {
+    "ref": "context-Saint_St_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Saint St", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Cross_Rd_cross", 
+          "context-Saint_St_519_front", 
+          "context-Rocky_Rd_cross", 
+          "context-Saint_St_619_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1c67.Saint_St_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Sky.2de3.Saint_St_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Street.879f.Saint_St_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Sign.d0e7.Saint_St_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          97, 
+          105, 
+          110, 
+          116, 
+          32, 
+          83, 
+          116, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 7, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Tree.cffe.Saint_St_cross", 
+    "mods": [
+      {
+        "y": 37, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Tree.abc5.Saint_St_cross", 
+    "mods": [
+      {
+        "y": 159, 
+        "x": 24, 
+        "style": 4, 
+        "type": "Tree", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Bush.a7af.Saint_St_cross", 
+    "mods": [
+      {
+        "y": 129, 
+        "x": 120, 
+        "style": 3, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_cross"
+  }, 
+  {
+    "ref": "item-Bush.5e5f.Saint_St_cross", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 1, 
+        "gr_state": 1, 
+        "y": 37, 
+        "x": 124, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_cross"
+  }
+]

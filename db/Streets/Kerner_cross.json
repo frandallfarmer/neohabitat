@@ -1,0 +1,125 @@
+[
+  {
+    "ref": "context-Kerner_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Kerner", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Kerner_616_front", 
+          "context-Kludge_Ct_cross", 
+          "context-Kerner_516_front", 
+          "context-Janice_Ln_cross"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fdc4.Kerner_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kerner_cross"
+  }, 
+  {
+    "ref": "item-Sky.1f26.Kerner_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Kerner_cross"
+  }, 
+  {
+    "ref": "item-Street.5c32.Kerner_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kerner_cross"
+  }, 
+  {
+    "ref": "item-Sign.44ca.Kerner_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "ascii": [
+          32, 
+          75, 
+          101, 
+          114, 
+          110, 
+          101, 
+          114
+        ], 
+        "gr_state": 5, 
+        "y": 33, 
+        "x": 92, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Kerner_cross"
+  }, 
+  {
+    "ref": "item-Garbage_can.c36f.Kerner_cross", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 131, 
+        "x": 116, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-Kerner_cross"
+  }, 
+  {
+    "ref": "item-Teleport.91f9.Kerner_cross", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "address": "Pop-Kerner", 
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Kerner_cross"
+  }
+]

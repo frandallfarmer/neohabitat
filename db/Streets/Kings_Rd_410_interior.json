@@ -1,0 +1,166 @@
+[
+  {
+    "ref": "context-Kings_Rd_410_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "410 Kings Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Kings_Rd_410_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.3535.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Wall.e160.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Display_case.73db.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 112, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Table.5e8d.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 133, 
+        "x": 64, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Window.506f.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Door.9ac9.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "orientation": 196, 
+        "key_lo": 0, 
+        "connection": "context-Kings_Rd_410_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Chair.3cd0.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 49
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Chair.f9b8.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 36, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kings_Rd_410_interior"
+  }, 
+  {
+    "ref": "item-Chair.85c4.Kings_Rd_410_interior", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 72, 
+        "type": "Chair", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kings_Rd_410_interior"
+  }
+]

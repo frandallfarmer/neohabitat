@@ -1,0 +1,213 @@
+[
+  {
+    "ref": "context-Saint_St_219_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "219 Saint St", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-Saint_St_119_front", 
+          "context-Saint_St_219_interior", 
+          "context-Saint_St_319_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7385.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Wall.b306.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Wall.373d.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Building.d3f5.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 36, 
+        "connection": "context-Saint_St_219_interior", 
+        "type": "Building", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Bush.ec72.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 96, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Bush.afe4.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 16, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Mailbox.7f6a.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Bush.ba20.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 61, 
+        "x": 124, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Sign.c453.Saint_St_219_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          49, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Saint_St_219_front"
+  }, 
+  {
+    "ref": "item-Street.0b1c.Saint_St_219_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Saint_St_219_front"
+  }
+]

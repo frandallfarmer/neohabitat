@@ -1,0 +1,218 @@
+[
+  {
+    "ref": "context-Kludge_Ct_118_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "118 Kludge Ct", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Kludge_Ct_218_front", 
+          "", 
+          "context-Kludge_Ct_s_end", 
+          "context-Kludge_Ct_118_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.3b40.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Wall.8743.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Wall.89db.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Building.dd8c.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 72, 
+        "connection": "context-Kludge_Ct_118_interior", 
+        "type": "Building", 
+        "orientation": 253
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Plant.4a68.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 34, 
+        "x": 60, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Street.22b8.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 72, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Mailbox.bb21.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 124, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Plant.8201.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "y": 48, 
+        "x": 68, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Plant.d09f.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 33, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 84, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Kludge_Ct_118_front"
+  }, 
+  {
+    "ref": "item-Sign.c8f4.Kludge_Ct_118_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          49, 
+          49, 
+          56, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 128, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Kludge_Ct_118_front"
+  }
+]

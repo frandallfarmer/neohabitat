@@ -1,0 +1,201 @@
+[
+  {
+    "ref": "context-Rocky_Rd_615_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "615 Rocky Rd", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Rocky_Rd_cross", 
+          "context-Rocky_Rd_615_interior", 
+          "context-Rocky_Rd_715_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.43f2.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Wall.45d8.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Wall.453f.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Building.b666.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 36, 
+        "connection": "context-Rocky_Rd_615_interior", 
+        "type": "Building", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Bush.8d0f.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 96, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Sign.90b1.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          54, 
+          49, 
+          53, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Mailbox.3588.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 76, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Street.43d4.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 104, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Rocky_Rd_615_front"
+  }, 
+  {
+    "ref": "item-Plant.dde6.Rocky_Rd_615_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "mass": 1, 
+        "y": 41, 
+        "x": 32, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Rocky_Rd_615_front"
+  }
+]

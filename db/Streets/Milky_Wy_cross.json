@@ -1,0 +1,123 @@
+[
+  {
+    "ref": "context-Milky_Wy_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Milky Wy", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Milky_Wy_628_front", 
+          "context-Warp_Dr_cross", 
+          "context-Milky_Wy_528_front", 
+          "context-Cross_Rd_cross"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.412e.Milky_Wy_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Milky_Wy_cross"
+  }, 
+  {
+    "ref": "item-Sky.f877.Milky_Wy_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Milky_Wy_cross"
+  }, 
+  {
+    "ref": "item-Street.3ab7.Milky_Wy_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Milky_Wy_cross"
+  }, 
+  {
+    "ref": "item-Sign.ea69.Milky_Wy_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          77, 
+          105, 
+          108, 
+          107, 
+          121, 
+          32, 
+          87, 
+          121
+        ], 
+        "gr_state": 5, 
+        "y": 38, 
+        "x": 60, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Milky_Wy_cross"
+  }, 
+  {
+    "ref": "item-Teleport.953d.Milky_Wy_cross", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "address": "Pop-Milky Wy", 
+        "y": 128, 
+        "x": 12, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Milky_Wy_cross"
+  }, 
+  {
+    "ref": "item-Pond.40e9.Milky_Wy_cross", 
+    "mods": [
+      {
+        "y": 34, 
+        "x": 104, 
+        "type": "Pond", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Pond", 
+    "in": "context-Milky_Wy_cross"
+  }
+]

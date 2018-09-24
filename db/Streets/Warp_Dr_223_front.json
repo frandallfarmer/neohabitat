@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Warp_Dr_223_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "223 Warp Dr", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Warp_Dr_323_front", 
+          "", 
+          "context-Warp_Dr_123_front", 
+          "context-Warp_Dr_223_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1ab1.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Wall.fc33.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Wall.b777.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Building.9953.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Warp_Dr_223_interior", 
+        "type": "Building", 
+        "orientation": 181
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Bush.216f.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 8, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Sign.77eb.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 0, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          50, 
+          51, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Mailbox.6b39.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 88, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Warp_Dr_223_front"
+  }, 
+  {
+    "ref": "item-Street.2c76.Warp_Dr_223_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 204, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Warp_Dr_223_front"
+  }
+]

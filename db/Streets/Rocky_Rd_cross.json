@@ -1,0 +1,124 @@
+[
+  {
+    "ref": "context-Rocky_Rd_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Rocky Rd", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Saint_St_cross", 
+          "context-Rocky_Rd_515_front", 
+          "context-Kings_Rd_cross", 
+          "context-Rocky_Rd_615_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.b10d.Rocky_Rd_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Rocky_Rd_cross"
+  }, 
+  {
+    "ref": "item-Sky.17c6.Rocky_Rd_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Rocky_Rd_cross"
+  }, 
+  {
+    "ref": "item-Street.26d2.Rocky_Rd_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Rocky_Rd_cross"
+  }, 
+  {
+    "ref": "item-Sign.7e6d.Rocky_Rd_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          82, 
+          79, 
+          67, 
+          75, 
+          89, 
+          32, 
+          82, 
+          68
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Rocky_Rd_cross"
+  }, 
+  {
+    "ref": "item-Teleport.d4e2.Rocky_Rd_cross", 
+    "mods": [
+      {
+        "orientation": 48, 
+        "address": "Pop-Rocky Rd", 
+        "y": 132, 
+        "x": 112, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Rocky_Rd_cross"
+  }, 
+  {
+    "ref": "item-Tree.2afc.Rocky_Rd_cross", 
+    "mods": [
+      {
+        "y": 35, 
+        "x": 32, 
+        "style": 6, 
+        "type": "Tree", 
+        "orientation": 9
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Rocky_Rd_cross"
+  }
+]

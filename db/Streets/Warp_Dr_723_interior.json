@@ -1,0 +1,198 @@
+[
+  {
+    "ref": "context-Warp_Dr_723_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "723 Warp Dr", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Warp_Dr_723_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.0105.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Wall.498d.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Display_case.1324.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 92, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.a3c9.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 48, 
+        "type": "Floor_lamp", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Window.0e79.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Door.f33a.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "connection": "context-Warp_Dr_723_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Aquarium.df55.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "y": 195, 
+        "x": 100, 
+        "type": "Aquarium", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Aquarium", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Garbage_can.742f.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 147, 
+        "x": 144, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Window.a468.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 1, 
+        "y": 63, 
+        "x": 68, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Chair.b5c6.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 41
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Warp_Dr_723_interior"
+  }, 
+  {
+    "ref": "item-Chair.0b51.Warp_Dr_723_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 44, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Warp_Dr_723_interior"
+  }
+]

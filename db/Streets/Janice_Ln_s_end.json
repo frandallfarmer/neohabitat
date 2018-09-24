@@ -1,0 +1,114 @@
+[
+  {
+    "ref": "context-Janice_Ln_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Janice Ln south", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Janice_Ln_125_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6ed4.Janice_Ln_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Janice_Ln_s_end"
+  }, 
+  {
+    "ref": "item-Wall.c899.Janice_Ln_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_s_end"
+  }, 
+  {
+    "ref": "item-Wall.6393.Janice_Ln_s_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_s_end"
+  }, 
+  {
+    "ref": "item-Teleport.9266.Janice_Ln_s_end", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "address": "Pop-Janice Ln South", 
+        "y": 134, 
+        "x": 36, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Janice_Ln_s_end"
+  }, 
+  {
+    "ref": "item-Coke_machine.e331.Janice_Ln_s_end", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 84, 
+        "type": "Coke_machine", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Coke_machine", 
+    "in": "context-Janice_Ln_s_end"
+  }, 
+  {
+    "ref": "item-Street.0dfe.Janice_Ln_s_end", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 16, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Janice_Ln_s_end"
+  }
+]

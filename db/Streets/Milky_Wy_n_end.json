@@ -1,0 +1,354 @@
+[
+  {
+    "ref": "context-Milky_Wy_n_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Milky Wy north", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Milky_Wy_1028_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.2a2a.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Wall.8ac7.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Wall.8e69.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.76c5.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 12, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.46c5.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 16, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.17b5.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 36, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.6d29.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 48, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.4138.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 24, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Street.714f.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 11, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 0, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.7f6c.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 56, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.42b2.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 64, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.d451.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 76, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.9bf8.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 80, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.cffd.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 92, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.61a4.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 100, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.8296.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 104, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.b1e3.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 116, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.be99.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 124, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.e5b4.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 128, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.a2cd.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 136, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.cb19.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 144, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }, 
+  {
+    "ref": "item-Plant.2085.Milky_Wy_n_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 0, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Milky_Wy_n_end"
+  }
+]

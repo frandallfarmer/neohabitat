@@ -7,7 +7,8 @@
     "mods": [
       {
         "town_dir": "%(town_dir)s", 
-        "port_dir": "%(port_dir)s", 
+        "port_dir": "%(port_dir)s",
+        "depth": 29,		
         "type": "Region",
         "orientation": %(orientation)s,
         "neighbors": [
