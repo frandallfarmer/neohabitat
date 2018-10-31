@@ -11,13 +11,15 @@ We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), 
 Play Habitat Now!
 -----------------
 
-We maintain a demo server running the latest Neohabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
+We maintain a demo server running the latest NeoHabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
 
-**Please note**: Neohabitat is currently in alpha, so there will likely be some instability. If you see anything weird, please [tell us about it in our Slack](http://slack.neohabitat.org/).
+**Please note**: NeoHabitat is still in development, so there will likely be some instability. If you see anything weird, please [tell us about it in our Slack](http://slack.neohabitat.org/).
 
 With all that out of the way, here's how to get started:
 
 - If you want to use Habitat with a real C64, please switch over to [these instructions](https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md) for making disks and using modern connection hardware.
+
+- You can also use our [web based client](http://sgeo.github.io/experimental/neohabitat/) to connect via a browser. Just skip to **Step 2** below to learn how to get ingame.
 
 ### Step 1 - Download and Install either the Windows or OSX Habitat package (which comes with VICE, the C64 emulator)
 
@@ -26,22 +28,22 @@ With all that out of the way, here's how to get started:
 - Download [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true)
 
 - Unzip onto the desktop
-	- This is not yet an installer. Want to help build one? Join us at http://slack.neohabitat.org
+	- This is not yet an installer. Want to help build one? Join us on [Slack](http://slack.neohabitat.org)
 	
-- Open the Neohabitat folder
+- Open the NeoHabitat folder
 
 - Double-click the **Launch Habitat** icon.
-	- If double clicking on the launcher does not work, try running it as administrator. If you are still encountering issues then scroll down to the "Help!" section of the readme for other alternatives.
+	- If double clicking on the launcher does not work, try running it as administrator. If you are still encountering issues then scroll down to the **"Help!"** section of the readme for other alternatives.
 
 **OS X**
 
 - Download [Neohabitat.dmg](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.dmg?raw=true) and double-click on the DMG file.
 
-- Drag the **Neohabitat** application to the **Applications** folder.
+- Drag the **NeoHabitat** application to the **Applications** folder.
 
-- **Launch the Neohabitat application** you dragged to **Applications**.
+- **Launch the NeoHabitat application** you dragged to **Applications**.
 
-**Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the Neohabitat application.
+**Please Note**: OS X may inform you that this app comes from an unknown developer upon first launch. If this happens, **open System Preferences** and click **Security & Privacy**. From the following pane, click **Open Anyway** to launch the NeoHabitat application.
 
 **Linux and \*BSD**
 
@@ -52,7 +54,7 @@ With all that out of the way, here's how to get started:
 
 ### Step 2 - Login and play!
 
-In a few moments, you'll be brought to the Neohabitat splash screen:
+In a few moments, you'll be brought to the NeoHabitat splash screen:
 
 ![Neohabitat Splash Screen](https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_splash.png)
 
@@ -74,16 +76,18 @@ If all goes well, you'll materialize in downtown Populopolis:
 
 ### Step 3 - Learn How to Play
 
-Welcome to Neohabitat! There's a whole lot you can do here and thousands of exotic places to visit.
+Welcome to NeoHabitat! There's a whole lot you can do here and thousands of exotic places to visit.
 
-To learn about all the things you can do, read the [official Habitat manual from 1988](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html).
+Before you go anywhere, **we highly recommend opening up our [Docent support software](http://v.ht/habitat)**. It's a browser based guide that'll help you navigate NeoHabitat, learn the controls and teach you about the history of the world. It's interactive and will update as you move around without you having to lift a finger.
 
-You'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for Habitat are mapped to the numpad and Right-CTRL.
+To learn about all the things you can do in more detail, read the [official Habitat manual](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html) from 1998.
 
-  Right-Ctrl + Numpad 8 initiates the "GO" command
-	Right-Ctrl + Numpad 2 initiates the "DO" comamnd
-	Right-Ctrl + Numpad 6 initiates the "GET" command
-	Right-Ctrl + Numpad 4 initiates the "PUT" command
+You'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for NeoHabitat are mapped to the numpad and Right-CTRL.
+
+* Right-Ctrl + Numpad 8 initiates the **"GO"** command
+* Right-Ctrl + Numpad 2 initiates the **"DO"** comamnd
+* Right-Ctrl + Numpad 6 initiates the **"GET"** command
+* Right-Ctrl + Numpad 4 initiates the **"PUT"** command
 
 ### Step 4 (Optional) - Controls
 
@@ -100,16 +104,16 @@ If you don't own a joystick and wish to change the controls to suit your needs t
 Help!
 -----
 
-If you're having trouble getting Neohabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
+If you're having trouble getting NeoHabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
 
 If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then drag and drop the "Habitat-Boot.d64" file onto the emulator and proceed as normally.
 
-If you encounter a glitch that's unreported in Habitat please open an issue at https://github.com/frandallfarmer/neohabitat/issues.
+If you encounter a glitch whilst playing NeoHabitat, please check to see if it's been filed as an [issue](https://github.com/frandallfarmer/neohabitat/issues). If it hasn't, we'd appreciate it if you let us know what happened so we can investigate.
 
 Developer Documentation
 -----------------------
 
-If you'd like to contribute to Habitat, there are plenty of great opportunities! Come check our our extensive developer documentation:
+If you'd like to contribute to NeoHabitat, there are plenty of great opportunities! Come check our our extensive developer documentation:
 
   - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
   - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
@@ -117,4 +121,4 @@ If you'd like to contribute to Habitat, there are plenty of great opportunities!
 Have Fun!
 ---------
 
-On behalf of the entire Neohabitat Project, we hope that you have a great time, and we'll see you in-world!
+On behalf of the entire NeoHabitat Project, we hope that you have a great time, and we'll see you in-world!
