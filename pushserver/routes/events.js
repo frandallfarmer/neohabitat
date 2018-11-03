@@ -97,29 +97,45 @@ class EventRoutes {
 
     self.router.get('/emulator', function(req, res, next) {
       var avatarName = req.query.avatar;
-      if (!(avatarName in self.habiproxy.sessions)) {
-        var err = new Error('Avatar unknown.');
-        err.status = 404;
-        next(err);
-        return;
+      var title = 'Neohabitat - New Session';
+      var session = {};
+      var health = 'Unknown';
+      var neighbors = [];
+      var orientation = 'Unknown';
+      var regionDescription = 'Unknown';
+      var regionDocsURL = '/docs/help/0';
+      var regionName = 'Unknown';
+      if (avatarName !== undefined) {
+        if (!(avatarName in self.habiproxy.sessions)) {
+          var err = new Error('Avatar unknown.');
+          err.status = 404;
+          next(err);
+          return;
+        }
+        title = 'Neohabitat - ' + avatarName;
+        req.session.avatarName = avatarName;
+        session = self.habiproxy.sessions[avatarName];
+        neighbors = self.habiproxy.resolveNeighbors(session.avatarContext);
+        orientation = session.avatarOrientation();
+        regionDescription = session.avatarContext.name;
+        regionDocsURL = self.getRegionDocsURL(
+          session.avatarRegion(), session.avatarObj.mods[0], session.avatarContext.mods[0]);
+        regionName = session.avatarRegion();
       }
-      req.session.avatarName = req.query.avatar;
 
-      var session = self.habiproxy.sessions[avatarName];
-
-      res.render('emulator', {
+      res.render('events_emulator', {
         avatarName: avatarName,
         avatarObj: session.avatarObj,
         config: self.config,
         habiproxy: self.habiproxy,
-        health: session.avatarHealth(),
-        neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
-        orientation: session.avatarOrientation(),
-        regionDescription: session.avatarContext.name,
-        regionDocsURL: self.getRegionDocsURL(session.avatarRegion(), session.avatarObj.mods[0], session.avatarContext.mods[0]),
-        regionName: session.avatarRegion(),
+        health: health,
+        neighbors: neighbors,
+        orientation: orientation,
+        regionDescription: regionDescription,
+        regionDocsURL: regionDocsURL,
+        regionName: regionName,
         session: session,
-        title: 'Neohabitat - ' + avatarName,
+        title: title,
       });
     });
 
@@ -135,7 +151,7 @@ class EventRoutes {
 
       var session = self.habiproxy.sessions[avatarName];
 
-      res.render('events', {
+      res.render('events_c64', {
         avatarName: avatarName,
         avatarObj: session.avatarObj,
         config: self.config,
