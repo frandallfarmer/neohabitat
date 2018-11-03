@@ -28,7 +28,7 @@ class EventRoutes {
   }
 
   getRegionDocsURL(regionName, avatar, region) {
-	  var path = '/docs/region/' + regionName;	  
+	  var path = '/docs/region/' + regionName;
 
 	  if (regionName in this.config.externalPages) {
 		  return this.config.externalPages[regionName];
@@ -42,18 +42,18 @@ class EventRoutes {
 			  return '/docs/region/A_TURF';
 		  }
 	  }
-	  
+
 	  if (fs.existsSync("./public" + path + ".md") || fs.existsSync("./public" +  path + ".html")) {
 		  return path;
 	  }
-	  
+
 	  if (contextualLookup) {
-		  path = '/docs/region/' + region.realm;		  
+		  path = '/docs/region/' + region.realm;
 	  }
-	  
+
 	  return path;
   }
-  
+
   getHelpDocsURL(session, objectRef) {
     var object = session.regionContents[objectRef];
     if (object === undefined) {

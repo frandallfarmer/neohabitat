@@ -145,11 +145,11 @@ function fillOnlineAvatarsTable(avatars) {
     avatarRow.attr('id', 'avatar-'+avatarObj.avatar.hashCode());
     avatarRow.attr('class', 'avatar-row');
     var avatarCell = $('<td>');
-    
+
     var avatarIdentity = $('<p>');
     avatarIdentity.attr('class', 'no-margin');
     avatarIdentity.html('<b>'+avatarObj.avatar+'</b><br/>'+avatarObj.location);
-    
+
     avatarCell.append(avatarIdentity);
 
     if (avatarObj.avatar !== AvatarName) {
