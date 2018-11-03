@@ -93,11 +93,13 @@ MongoClient.connect(MongoURL, (err, client) => {
   // Establishes the PushServer's web application.
   var APIRoutes = require('../routes/api');
   var DocsRoutes = require('../routes/docs');
+  var EmulatorRoutes = require('../routes/emulator');
   var EventsRoutes = require('../routes/events');
   var IndexRoutes = require('../routes/index');
 
   const apiRoutes = new APIRoutes(habiproxy, config, mongoDb);
   const docsRoutes = new DocsRoutes(habiproxy, config, mongoDb);
+  const emulatorRoutes = new EmulatorRoutes(habiproxy, config, mongoDb);
   const eventsRoutes = new EventsRoutes(habiproxy, config, mongoDb);
   const indexRoutes = new IndexRoutes(habiproxy, config, mongoDb);
 
@@ -105,6 +107,7 @@ MongoClient.connect(MongoURL, (err, client) => {
   app.use('/', indexRoutes.router);
   app.use('/api/v1', apiRoutes.router);
   app.use('/docs', docsRoutes.router);
+  app.use('/emulator', emulatorRoutes.router);
   app.use('/events', eventsRoutes.router);
 
   // catch 404 and forward to error handler

@@ -1,5 +1,6 @@
 ---
 websocketProxy:
+  clientAddr: 0.0.0.0:1987
   listenAddr: 0.0.0.0:1987
   remoteAddr: 127.0.0.1:1986
 
