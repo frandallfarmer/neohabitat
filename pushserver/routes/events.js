@@ -67,7 +67,63 @@ class EventRoutes {
 
   setRoutes() {
     var self = this;
-    self.router.get('/', function(req, res, next) {
+    self.router.get('/c64', function(req, res, next) {
+      var avatarName = req.query.avatar;
+      if (!(avatarName in self.habiproxy.sessions)) {
+        var err = new Error('Avatar unknown.');
+        err.status = 404;
+        next(err);
+        return;
+      }
+      req.session.avatarName = req.query.avatar;
+
+      var session = self.habiproxy.sessions[avatarName];
+
+      res.render('events', {
+        avatarName: avatarName,
+        avatarObj: session.avatarObj,
+        config: self.config,
+        habiproxy: self.habiproxy,
+        health: session.avatarHealth(),
+        neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
+        orientation: session.avatarOrientation(),
+        regionDescription: session.avatarContext.name,
+        regionDocsURL: self.getRegionDocsURL(session.avatarRegion(), session.avatarObj.mods[0], session.avatarContext.mods[0]),
+        regionName: session.avatarRegion(),
+        session: session,
+        title: 'Neohabitat - ' + avatarName,
+      });
+    });
+
+    self.router.get('/emulator', function(req, res, next) {
+      var avatarName = req.query.avatar;
+      if (!(avatarName in self.habiproxy.sessions)) {
+        var err = new Error('Avatar unknown.');
+        err.status = 404;
+        next(err);
+        return;
+      }
+      req.session.avatarName = req.query.avatar;
+
+      var session = self.habiproxy.sessions[avatarName];
+
+      res.render('emulator', {
+        avatarName: avatarName,
+        avatarObj: session.avatarObj,
+        config: self.config,
+        habiproxy: self.habiproxy,
+        health: session.avatarHealth(),
+        neighbors: self.habiproxy.resolveNeighbors(session.avatarContext),
+        orientation: session.avatarOrientation(),
+        regionDescription: session.avatarContext.name,
+        regionDocsURL: self.getRegionDocsURL(session.avatarRegion(), session.avatarObj.mods[0], session.avatarContext.mods[0]),
+        regionName: session.avatarRegion(),
+        session: session,
+        title: 'Neohabitat - ' + avatarName,
+      });
+    });
+
+    self.router.get('/c64', function(req, res, next) {
       var avatarName = req.query.avatar;
       if (!(avatarName in self.habiproxy.sessions)) {
         var err = new Error('Avatar unknown.');
