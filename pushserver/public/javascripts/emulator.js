@@ -1,5 +1,5 @@
 var emulator = new Emulator(
-    document.querySelector("#canvas"),
+    document.querySelector("#emulator_canvas"),
     null,
     new VICELoader(VICELoader.emulatorJS(EmulatorUrl),
                    VICELoader.nativeResolution(0, 0),

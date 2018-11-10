@@ -62,7 +62,7 @@ var Module = null;
                   vice: img("/images/vice.svg")
                 };
      } else {
-       images = { ia: img("other_logos/ia-logo-150x150.png"),
+       images = { ia: img("/static/images/ia-logo-150x150.png"),
                   mame: img("other_logos/mame.png"),
                   mess: img("other_logos/mame.png"),
                   dosbox: img("other_logos/dosbox.png"),
@@ -1602,7 +1602,7 @@ var Module = null;
      var drawsplash = function () {
        canvas.setAttribute('moz-opaque', '');
        if (!splash.splashimg.src) {
-         splash.splashimg.src = "logo/emularity_color_small.png";
+         splash.splashimg.src = "/images/emularity_color_small.png";
        }
      };
 
