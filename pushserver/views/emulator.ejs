@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <% include ./header.ejs %>
+
+  <body>
+    <div class="container h-100 control-panel">
+      <div class="row status-panel d-none rounded text-center d-flex align-items-center w-100">
+        <div class="col-2">
+          Avatar:
+          <h4 id="avatarHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          North <span id="northArrow"></span>
+          <h5 id="northHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          South <span id="southArrow"></span>
+          <h5 id="southHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          East <span id="eastArrow"></span>
+          <h5 id="eastHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          West <span id="westArrow"></span>
+          <h5 id="westHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          <a id="logoutBtn" href="#" class="btn btn-danger btn-lg active" role="button" aria-pressed="true">
+            Full Screen
+          </a>
+        </div>
+      </div>
+
+      <div class="row login-panel rounded text-center d-flex align-items-center w-100">
+        <div class="col-4">
+          <form class="form-inline">
+            <div class="form-group">
+              <label for="avatarName">Enter your Avatar name:</label>
+              <input id="avatarName" name="avatar" type="text" autocomplete="off" class="typeahead form-control" data-provide="typeahead" placeholder="Avatar">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row docent-panel w-100">
+        <!-- Emulator pane: -->
+        <div id="emulatorContainer" class="col-8 emulator-div">
+          <canvas id="emulatorCanvas" class="emulator-canvas" />
+        </div>
+
+        <!-- Docent docs pane: -->
+        <div class="col-4 mx-auto rounded docent-div h-100">
+          <div class="embed-responsive embed-responsive-4by3 rounded docs-div h-100">
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item rounded" src="/docs/region/hatchery"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="row users-panel rounded text-center d-flex align-items-center w-100">
+        <div class="col-2">
+          <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/Habitat-Menu-Options.svg" width="150px"/>
+        </div>
+        <div class="col-2">
+          <a href="https://github.com/frandallfarmer/neohabitat/blob/master/README.md" target="_blank">
+            <h4>Getting Started</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <a href="https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html" target="_blank">
+            <h4>Official Handbook</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <a href="https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md" target="_blank">
+            <h4>Using a C64</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <a href="http://slack.neohabitat.org" target="_blank">
+            <h4>Neohabitat Slack</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/f7.svg" />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <% include ./footer.ejs %>
+    <script type="text/javascript">
+      var AvatarName = null;
+      var EmulatorUrl = "<%= config.viceJsUrl %>";
+    </script>
+<!--     <script src="/javascripts/eventStream.js" type="text/javascript"></script> -->
+    <script type="text/javascript" src="/javascripts/es6-promise.js"></script>
+    <script type="text/javascript" src="/javascripts/browserfs.min.js"></script>
+    <script type="text/javascript" src="/javascripts/emularity.js"></script>
+    <script type="text/javascript" src="/javascripts/emulator.js"></script>
+  </body>
+</html>

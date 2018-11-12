@@ -168,7 +168,7 @@ class HabitatSession {
     if (this.connected) {
       shouldFireDisconnected = true;
     }
-    
+
     if (this.clientConnection !== null) {
       this.clientConnection.end();
       this.clientConnection = null;

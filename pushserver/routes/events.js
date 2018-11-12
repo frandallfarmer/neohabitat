@@ -95,51 +95,7 @@ class EventRoutes {
       });
     });
 
-    self.router.get('/emulator', function(req, res, next) {
-      var avatarName = req.query.avatar;
-      var title = 'Neohabitat - New Session';
-      var session = {};
-      var health = 'Unknown';
-      var neighbors = [];
-      var orientation = 'Unknown';
-      var regionDescription = 'Unknown';
-      var regionDocsURL = '/docs/help/0';
-      var regionName = 'Unknown';
-      if (avatarName !== undefined) {
-        if (!(avatarName in self.habiproxy.sessions)) {
-          var err = new Error('Avatar unknown.');
-          err.status = 404;
-          next(err);
-          return;
-        }
-        title = 'Neohabitat - ' + avatarName;
-        req.session.avatarName = avatarName;
-        session = self.habiproxy.sessions[avatarName];
-        neighbors = self.habiproxy.resolveNeighbors(session.avatarContext);
-        orientation = session.avatarOrientation();
-        regionDescription = session.avatarContext.name;
-        regionDocsURL = self.getRegionDocsURL(
-          session.avatarRegion(), session.avatarObj.mods[0], session.avatarContext.mods[0]);
-        regionName = session.avatarRegion();
-      }
-
-      res.render('events_emulator', {
-        avatarName: avatarName,
-        avatarObj: session.avatarObj,
-        config: self.config,
-        habiproxy: self.habiproxy,
-        health: health,
-        neighbors: neighbors,
-        orientation: orientation,
-        regionDescription: regionDescription,
-        regionDocsURL: regionDocsURL,
-        regionName: regionName,
-        session: session,
-        title: title,
-      });
-    });
-
-    self.router.get('/c64', function(req, res, next) {
+    self.router.get('/', function(req, res, next) {
       var avatarName = req.query.avatar;
       if (!(avatarName in self.habiproxy.sessions)) {
         var err = new Error('Avatar unknown.');
@@ -151,7 +107,7 @@ class EventRoutes {
 
       var session = self.habiproxy.sessions[avatarName];
 
-      res.render('events_c64', {
+      res.render('events', {
         avatarName: avatarName,
         avatarObj: session.avatarObj,
         config: self.config,

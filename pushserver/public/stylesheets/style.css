@@ -6,8 +6,52 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+.emulator-canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0px;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: block;
+}
+
 .docs-div {
   background-color: #FFFFFF;
+}
+
+.docent-div {
+  padding-right: 0px;
+}
+
+.docent-panel {
+  height: 480px;
+}
+
+@media (min-width: 576px) {
+  .docent-panel {
+    height: 480px;
+  }
+}
+
+@media (min-width: 768px) {
+  .docent-panel {
+    height: 480px;
+  }
+}
+
+@media (min-width: 992px) {
+  .docent-panel {
+    height: 480px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .docent-panel {
+    height: 480px;
+  }
 }
 
 .nav-div {
@@ -17,6 +61,12 @@ pre {
 .users-panel {
   background-color: #DFE2DB;
   margin-top: 15px;
+}
+
+.login-panel {
+  background-color: #DFE2DB;
+  height: 80px;
+  margin-bottom: 15px;
 }
 
 .status-panel {
@@ -53,7 +103,7 @@ pre {
 }
 
 .docent-panel tbody {
-  overflow-y: scroll;      
+  overflow-y: scroll;
   height: 350px;
   width: 84%;
   position: absolute;
@@ -65,5 +115,5 @@ pre {
 }
 
 .docent-panel table {
-  height: 400px; 
+  height: 400px;
 }
