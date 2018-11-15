@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <% include ./header.ejs %>
+
+  <body>
+    <div class="container h-100 control-panel">
+      <div class="row status-panel d-none rounded text-center align-items-center w-100">
+        <div class="col-2">
+          <img id="compass" src="/images/compass.png"></img>
+        </div>
+        <div class="col-2">
+          North <span id="northArrow"></span>
+          <h5 id="northHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          South <span id="southArrow"></span>
+          <h5 id="southHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          East <span id="eastArrow"></span>
+          <h5 id="eastHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          West <span id="westArrow"></span>
+          <h5 id="westHeader" class="text-center"></h5>
+        </div>
+        <div class="col-2">
+          <div class="btn-group-vertical">
+            <button type="submit" id="fullScreenBtn" class="btn btn-primary" href="#" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
+            <button type="submit" id="fullScreenBtn" class="btn btn-success" href="#" onclick="viewHelp(); return false;">Help</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row login-panel rounded text-center align-items-center w-100">
+        <div class="mx-auto">
+          <form class="form-inline">
+            <div class="form-group">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" disabled="disabled" type="button" id="avatarMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select Avatar Name
+                </button>
+                <div id="avatarMenu" class="dropdown-menu" aria-labelledby="avatarMenuButton"></div>
+              </div>
+            </div>
+            &nbsp;&nbsp;
+            <button type="submit" id="avatarSubmit" disabled="disabled" class="btn btn-primary" href="#" onclick="activateDocent(); return false;">Activate Docent</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="row docent-panel w-100">
+        <!-- Emulator pane: -->
+        <div id="emulatorContainer" class="col-8 emulator-div">
+          <canvas id="emulatorCanvas" class="emulator-canvas" />
+        </div>
+
+        <!-- Docent docs pane: -->
+        <div class="col-4 mx-auto rounded docent-div h-100">
+          <div class="embed-responsive embed-responsive-4by3 rounded docs-div h-100">
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item rounded" src="/docs/region/EMULATOR_HELP"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="row users-panel rounded text-center d-flex align-items-center w-100">
+        <div class="col-2">
+          <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/Habitat-Menu-Options.svg" width="150px"/>
+        </div>
+        <div class="col-2">
+          <a href="https://github.com/frandallfarmer/neohabitat/blob/master/README.md" target="_blank">
+            <h4>Getting Started</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <a href="https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html" target="_blank">
+            <h4>Official Handbook</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <a href="https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md" target="_blank">
+            <h4>Using a C64</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <a href="http://slack.neohabitat.org" target="_blank">
+            <h4>Neohabitat Slack</h4>
+          </a>
+        </div>
+        <div class="col-2">
+          <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/f7.svg" />
+        </div>
+      </div>
+    </div>
+
+    <% include ./footer.ejs %>
+    <script type="text/javascript">
+      var AvatarName = null;
+      var AvatarAttached = false;
+      var RedirectToEvents = false;
+      var EmulatorUrl = "<%= config.viceJsUrl %>";
+    </script>
+    <script type="text/javascript" src="/javascripts/avatarSelector.js"></script>
+    <script type="text/javascript" src="/javascripts/eventStream.js"></script>
+    <script type="text/javascript" src="/javascripts/es6-promise.js"></script>
+    <script type="text/javascript" src="/javascripts/browserfs.min.js"></script>
+    <script type="text/javascript" src="/javascripts/emularity.js"></script>
+    <script type="text/javascript" src="/javascripts/emulator.js"></script>
+  </body>
+</html>

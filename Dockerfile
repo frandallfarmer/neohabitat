@@ -57,4 +57,4 @@ RUN rm -rf node_modules && npm install
 WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run
 
-EXPOSE 1337 1701 2018 3000 9000
+EXPOSE 1337 1701 1986 1987 2018 3000 9000

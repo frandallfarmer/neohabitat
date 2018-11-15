@@ -8,8 +8,8 @@
         <div class="col-8 mx-auto">
           <div class="jumbotron">
 			<h1 align="center">Welcome to NeoHabitat</h1>
-			<p>This web page serves as a virtual <em>Docent</em> to guide you the living recontstruction of the world's first MMO/Virtual World, <em>Lucasfilm's Habitat</em>.			
-			<hr>			
+			<p>This web page serves as a virtual <em>Docent</em> to guide you the living recontstruction of the world's first MMO/Virtual World, <em>Lucasfilm's Habitat</em>.
+			<hr>
 			<p>If you don't see the screen below, double-click the <strong>Launch Habitat</strong> icon.</p>
 			<table>
 			<tr><td>In a few moments, you'll be brought to the Neohabitat splash screen. <strong>Press Enter</strong></td>
@@ -23,27 +23,30 @@
 			</table>
 			<div id="avatar_login">
 			<hr>
-              <p class="lead text-center">
-                <strong>Avatars in-world: <span id="total_avatars"><%= Object.keys(awakeSessions).length %></span></strong>
-              </p>
-              <div id="avatar_input">
-		  	<p>If you are already connected and in Habitat, please enter your avatar name below.</p>
-                <form method="GET" action="/events" class="form-inline justify-content-center">
-                  <div class="form-group">
-                    <label class="sr-only">Avatar</label>
-                    <input id="avatar_name" name="avatar" type="text" autocomplete="off" class="typeahead form-control" data-provide="typeahead" placeholder="Avatar">
-                  </div>
-                  <button id="avatar_submit" type="submit" class="btn btn-success">Log In!</button>
-                </form>
-              </div>
+        <p class="lead text-center">
+          <strong>Avatars in-world: <span id="total_avatars"><%= Object.keys(awakeSessions).length %></span></strong>
+        </p>
+        <div id="avatar_input">
+		  	  <p>If you are already connected and in Habitat, please enter your avatar name below.</p>
+          <form method="GET" action="/events" class="form-inline justify-content-center">
+            <div class="form-group">
+              <label class="sr-only">Avatar</label>
+              <input id="avatar_name" name="avatar" type="text" autocomplete="off" class="typeahead form-control" data-provide="typeahead" placeholder="Avatar">
             </div>
-            <hr>            
-			<p align="center"><small>This is a project sponsored by The MADE: The Museum of Art and Digital Entertainment in Oakland, CA.</small></p>           
+            <button id="avatar_submit" type="submit" class="btn btn-success">Log In!</button>
+          </form>
+        </div>
+      </div>
+      <hr>
+			<p align="center"><small>This is a project sponsored by The MADE: The Museum of Art and Digital Entertainment in Oakland, CA.</small></p>
           </div>
         </div>
       </div>
     </div>
     <% include ./footer.ejs %>
+    <script type="text/javascript">
+      var RedirectToEvents = true;
+    </script>
     <script src="/javascripts/index.js" type="text/javascript"></script>
   </body>
 </html>

@@ -27,7 +27,6 @@ const DefDefs   = {
         elko:       '127.0.0.1:9000',
         mongo:      '127.0.0.1:27017/elko',
         rate:       1200,
-        realm:      'Popustop',
         trace:      'info'};
 var  Defaults   = DefDefs;
 
@@ -115,7 +114,6 @@ function ensureTurfAssigned(db, userRef, callback) {
         // Searches for an available turf Region and assigns it to the User if found.
         db.collection('odb').findOne({
             "mods.0.type": "Region",
-            "mods.0.realm": Argv.realm,
             "mods.0.is_turf": true,
             $or: [
                 { "mods.0.resident": { $exists: false } },

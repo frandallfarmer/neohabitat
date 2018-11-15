@@ -1,4 +1,11 @@
 ---
+viceJsUrl: https://sgeo.github.io/experimental/neohabitat-joystick/x64.js
+
+websocketProxy:
+  clientAddr: 0.0.0.0:1987
+  listenAddr: 0.0.0.0:1987
+  remoteAddr: 127.0.0.1:1986
+
 backgroundImages:
   - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_splash.png
   - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/launcher_login.png

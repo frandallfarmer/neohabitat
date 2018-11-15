@@ -20,8 +20,8 @@ function orientationToRotation(orientation) {
   }
 }
 
-const HTMLArrows = ['&#8593;', '&#8592;', '&#8595;', '&#8594;'];
-const orient     = ["West", "East", "North", "South"];
+const HTMLArrows = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
+const orient     = ["West", "North", "East", "South"];
 
 function processEvent(event) {
   switch (event.type) {
@@ -145,11 +145,11 @@ function fillOnlineAvatarsTable(avatars) {
     avatarRow.attr('id', 'avatar-'+avatarObj.avatar.hashCode());
     avatarRow.attr('class', 'avatar-row');
     var avatarCell = $('<td>');
-    
+
     var avatarIdentity = $('<p>');
     avatarIdentity.attr('class', 'no-margin');
     avatarIdentity.html('<b>'+avatarObj.avatar+'</b><br/>'+avatarObj.location);
-    
+
     avatarCell.append(avatarIdentity);
 
     if (avatarObj.avatar !== AvatarName) {
@@ -177,9 +177,8 @@ function refreshAvatars() {
   }, 'json');
 }
 
-$(document).ready(function() {
+function startDocentUpdates() {
   startEventSource();
-
   refreshAvatars();
   setInterval(refreshAvatars, 5000 + Math.floor(Math.random() * 2000));
-});
+}

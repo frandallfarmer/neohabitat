@@ -10,7 +10,7 @@ import uuid
 import yaml
 
 
-DOOR_CONNECTION_REGEX = re.compile(r'\((.*)\)')  
+DOOR_CONNECTION_REGEX = re.compile(r'\((.*)\)')
 STRING_REGEX = re.compile(r'"(.*)"')
 REGION_SPECIFIER_REGEX = re.compile(r'([a-z])=(\(.*\)|\d+)')
 
@@ -54,6 +54,10 @@ def _hex_escape_to_ascii(hex_escape):
 def _octal_escape_to_ascii(octal_escape):
   octal_text = octal_escape[10:]
   return int(octal_text, 8)
+
+
+def _astroesc_text_to_ascii_string(text):
+  return ''.join(map(chr, _astroesc_text_to_ascii_int_list(text)))
 
 
 def _astroesc_text_to_ascii_int_list(text):
@@ -127,7 +131,14 @@ class AstroturfRegion(object):
     self.astroturf = astroturf
     self.line_number = line_number
     region_specifier, region_args = line.split('/')
-    self.args = map(lambda arg: _strip_quotes(arg), region_args.strip().split())
+    split_args = []
+    for arg in re.split(r"""('.*?'|".*?"|\S+)""", region_args.strip()):
+      strip_arg = arg.strip()
+      if strip_arg:
+        split_args.append(strip_arg)
+    print("SPLIT ARGS:", split_args)
+    self.args = map(lambda arg: _strip_quotes(arg), split_args)
+    print("ARGS:", self.args)
     self.door_connections = []
     self._parse_region_specifier(region_specifier)
     self.port_dir = ''
@@ -136,18 +147,19 @@ class AstroturfRegion(object):
     if not self.args:
       self.region_ref = '{}.line{}'.format(self.region_proto, self.line_number)
       self.region_name = '{} {}'.format(self.region_proto, self.line_number)
-    elif len(self.args) == 1:
-      self.region_ref = '{}.{}.line{}'.format(
-          self.args[0], self.region_proto, self.line_number)
-      self.region_name = '{} {}'.format(self.args[0], self.region_proto)
-    elif len(self.args) == 2:
-      self.region_ref = '{}.{}'.format(self.args[0], self.args[1])
-      self.region_name = '{} {}'.format(self.args[0], self.args[1])
     else:
-      self.region_ref = '{}.{}.line{}'.format(self.args[-2], self.region_proto,
-          self.line_number)
-      self.region_name = '{} {}'.format(self.args[-2], self.region_proto)
-      self.port_dir = self.args[-1]
+      if len(self.args) == 1:
+        self.region_ref = '{}.{}.line{}'.format(
+            self.args[0].replace(' ', '_'), self.region_proto, self.line_number)
+        self.region_name = '{} {}'.format(self.args[0], self.region_proto)
+      elif len(self.args) == 2:
+        self.region_ref = '{}.{}'.format(self.args[0].replace(' ', '_'), self.args[1])
+        self.region_name = '{} {}'.format(self.args[0], self.args[1])
+      else:
+        self.region_ref = '{}.{}.line{}'.format(self.args[-2].replace(' ', '_'),
+            self.region_proto, self.line_number)
+        self.region_name = '{} {}'.format(self.args[-2], self.region_proto)
+        self.port_dir = self.args[-1]
 
   def _get_region_context(self, linenum):
     return 'context-{}'.format(self.astroturf.regions[linenum - 1].region_ref)
@@ -245,7 +257,7 @@ class AstroturfRegion(object):
     print(' - Writing region {} from line {} to: {}'.format(
         self.region_ref, self.line_number, output_location))
     region_prototype = self.astroturf.region_name_to_proto[self.region_proto]
-    
+
     region_contents = (region_prototype % self.template_dict).replace('\\', '!ASTROESC!')
 
     try:
@@ -257,9 +269,12 @@ class AstroturfRegion(object):
       for elko_obj in region_json:
         ascii_converted_mods = []
         for habitat_mod in elko_obj['mods']:
-          if 'text' in habitat_mod:
-            habitat_mod['ascii'] = _astroesc_text_to_ascii_int_list(habitat_mod['text'])
-            del habitat_mod['text']
+          for key, value in habitat_mod.items():
+            if key == 'text':
+              habitat_mod['ascii'] = _astroesc_text_to_ascii_int_list(habitat_mod['text'])
+              del habitat_mod['text']
+            elif isinstance(value, str):
+              habitat_mod[key] = _astroesc_text_to_ascii_string(value)
           ascii_converted_mods.append(habitat_mod)
         elko_obj['mods'] = ascii_converted_mods
         ascii_converted_region.append(elko_obj)
@@ -272,8 +287,8 @@ class AstroturfRegion(object):
           self.region_ref, self.line_number, output_location))
       return True
     except Exception:
-      print(' ! JSON parse check for region {} from line {} failed; skipping:'.format(
-        self.region_ref, self.line_number))
+      print(' ! JSON parse check for region {} from line {} failed; skipping:\n{}'.format(
+        self.region_ref, self.line_number, region_contents))
       traceback.print_exc()
 
 

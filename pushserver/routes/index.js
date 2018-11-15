@@ -14,6 +14,13 @@ class IndexRoutes {
     var self = this;
 
     this.router.get('/', function(req, res, next) {
+      res.render('emulator', {
+        title: 'Login to Neohabitat',
+        config: self.config,
+      });
+    });
+
+    this.router.get('/c64', function(req, res, next) {
       var awakeSessions = self.habiproxy.awakeSessions();
       if ('avatarName' in req.session && req.session.avatarName in awakeSessions) {
         res.redirect('/events?avatar='+req.session.avatarName);

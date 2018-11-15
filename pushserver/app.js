@@ -5,12 +5,18 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
+var websockify = require('node-websockify');
 
 var YAML = require('yamljs');
-var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.yml');
+var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.dev.yml');
 
 var log = require('winston');
 log.level = process.env.PUSH_SERVER_LOG_LEVEL || 'debug';
+
+websockify({
+  source: config.websocketProxy.listenAddr,
+  target: config.websocketProxy.remoteAddr,
+});
 
 // Override to use real console.log etc for the Chrome/VSCode debugger.
 var logToDebugger = process.env.LOG_TO_DEBUGGER || 'true';
