@@ -270,12 +270,10 @@ class AstroturfRegion(object):
         ascii_converted_mods = []
         for habitat_mod in elko_obj['mods']:
           for key, value in habitat_mod.items():
-            print("KEY", key, "VALUE", value)
             if key == 'text':
               habitat_mod['ascii'] = _astroesc_text_to_ascii_int_list(habitat_mod['text'])
               del habitat_mod['text']
             elif isinstance(value, str):
-              print("FARTS", key, _astroesc_text_to_ascii_string(value))
               habitat_mod[key] = _astroesc_text_to_ascii_string(value)
           ascii_converted_mods.append(habitat_mod)
         elko_obj['mods'] = ascii_converted_mods
