@@ -6,6 +6,10 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+.d-none {
+  display: none;
+}
+
 .emulator-canvas {
   position: absolute;
   top: 0px;
@@ -72,6 +76,7 @@ pre {
 .status-panel {
   background-color: #DFE2DB;
   margin-bottom: 15px;
+  height: 130px;
 }
 
 .docent-region {

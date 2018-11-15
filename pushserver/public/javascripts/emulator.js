@@ -31,16 +31,7 @@ var emulator = new Emulator(
       ["Habitat-B.d64"]
     ]),
     VICELoader.autoLoad("Habitat-Boot.d64")));
+
 emulator.start({
   waitAfterDownloading: false
 });
-
-var container = document.getElementById("emulatorContainer");
-Module.canvas.width = container.clientWidth;
-Module.canvas.height = container.clientHeight;
-
-window.addEventListener("resize", function (e) {
-  console.log("BALLS");
-  Module.canvas.width = container.clientWidth;
-  Module.canvas.height = container.clientHeight;
-}, true);

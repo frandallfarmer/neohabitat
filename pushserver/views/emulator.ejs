@@ -4,10 +4,9 @@
 
   <body>
     <div class="container h-100 control-panel">
-      <div class="row status-panel d-none rounded text-center d-flex align-items-center w-100">
+      <div class="row status-panel d-none rounded text-center align-items-center w-100">
         <div class="col-2">
-          Avatar:
-          <h4 id="avatarHeader" class="text-center"></h5>
+          <img id="compass" src="/images/compass.png"></img>
         </div>
         <div class="col-2">
           North <span id="northArrow"></span>
@@ -26,19 +25,26 @@
           <h5 id="westHeader" class="text-center"></h5>
         </div>
         <div class="col-2">
-          <a id="logoutBtn" href="#" class="btn btn-danger btn-lg active" role="button" aria-pressed="true">
-            Full Screen
-          </a>
+          <div class="btn-group-vertical">
+            <button type="submit" id="fullScreenBtn" class="btn btn-primary" href="#" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
+            <button type="submit" id="fullScreenBtn" class="btn btn-success" href="#" onclick="viewHelp(); return false;">Help</button>
+          </div>
         </div>
       </div>
 
-      <div class="row login-panel rounded text-center d-flex align-items-center w-100">
-        <div class="col-4">
+      <div class="row login-panel rounded text-center align-items-center w-100">
+        <div class="mx-auto">
           <form class="form-inline">
             <div class="form-group">
-              <label for="avatarName">Enter your Avatar name:</label>
-              <input id="avatarName" name="avatar" type="text" autocomplete="off" class="typeahead form-control" data-provide="typeahead" placeholder="Avatar">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" disabled="disabled" type="button" id="avatarMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select Avatar Name
+                </button>
+                <div id="avatarMenu" class="dropdown-menu" aria-labelledby="avatarMenuButton"></div>
+              </div>
             </div>
+            &nbsp;&nbsp;
+            <button type="submit" id="avatarSubmit" disabled="disabled" class="btn btn-primary" href="#" onclick="activateDocent(); return false;">Activate Docent</button>
           </form>
         </div>
       </div>
@@ -52,7 +58,7 @@
         <!-- Docent docs pane: -->
         <div class="col-4 mx-auto rounded docent-div h-100">
           <div class="embed-responsive embed-responsive-4by3 rounded docs-div h-100">
-            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item rounded" src="/docs/region/hatchery"></iframe>
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item rounded" src="/docs/region/EMULATOR_HELP"></iframe>
           </div>
         </div>
       </div>
@@ -83,7 +89,6 @@
         </div>
         <div class="col-2">
           <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/f7.svg" />
-          </a>
         </div>
       </div>
     </div>
@@ -91,9 +96,12 @@
     <% include ./footer.ejs %>
     <script type="text/javascript">
       var AvatarName = null;
+      var AvatarAttached = false;
+      var RedirectToEvents = false;
       var EmulatorUrl = "<%= config.viceJsUrl %>";
     </script>
-<!--     <script src="/javascripts/eventStream.js" type="text/javascript"></script> -->
+    <script type="text/javascript" src="/javascripts/avatarSelector.js"></script>
+    <script type="text/javascript" src="/javascripts/eventStream.js"></script>
     <script type="text/javascript" src="/javascripts/es6-promise.js"></script>
     <script type="text/javascript" src="/javascripts/browserfs.min.js"></script>
     <script type="text/javascript" src="/javascripts/emularity.js"></script>

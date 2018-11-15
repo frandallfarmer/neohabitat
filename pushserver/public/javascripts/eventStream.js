@@ -177,9 +177,8 @@ function refreshAvatars() {
   }, 'json');
 }
 
-$(document).ready(function() {
+function startDocentUpdates() {
   startEventSource();
-
   refreshAvatars();
   setInterval(refreshAvatars, 5000 + Math.floor(Math.random() * 2000));
-});
+}
