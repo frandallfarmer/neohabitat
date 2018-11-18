@@ -13,7 +13,6 @@
 
 !CLEAR
 
-109 Speed settings&Warp mode
 300 Machine settings&Joystick settings&Swap joystick ports
 1072 Drive&Attach disk image to drive 10
 1073 Drive&Attach disk image to drive 11
@@ -32,14 +31,12 @@
 1130 Machine settings&Joystick settings&Swap joystick ports
 1131 Drive&Fliplist settings&Remove current image from fliplist
 1132 Snapshot&Load snapshot image
-1133 Speed settings&Warp mode
 1134 Drive&Fliplist settings&Attach next image in fliplist
 1136 Pause
 1137 Quit emulator
 1139 Snapshot&Save snapshot image
 1140 Tape&Attach tape image
 1141 Snapshot&Return to milestone
-1143 Speed settings&Warp mode
 1146 Cartridge&Cartridge freeze
 1314 Reset&Soft
 1315 Snapshot&Quickload snapshot.vsf

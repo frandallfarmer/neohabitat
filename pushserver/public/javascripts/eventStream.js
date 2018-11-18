@@ -20,14 +20,15 @@ function orientationToRotation(orientation) {
   }
 }
 
-const HTMLArrows = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
-const orient     = ["West", "North", "East", "South"];
+const HTMLArrows = ['&#8593;', '&#8592;', '&#8595;', '&#8594;'];
+const orient     = ["West", "East", "North", "South"];
 
 function processEvent(event) {
   switch (event.type) {
     case CONNECTED:
       return;
     case REGION_CHANGE:
+      console.log(event);
       $('#regionHeader').text(event.msg.description);
       $('#docsFrame').attr('src', event.msg.docsURL);
       $('#orientationHeader').text(event.msg.orientation);

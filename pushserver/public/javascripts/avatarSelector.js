@@ -1,3 +1,5 @@
+var RefreshInterval = null;
+
 function selectAvatar(avatarName) {
   AvatarName = avatarName;
   $('#avatarMenuButton').text(avatarName);
@@ -9,6 +11,7 @@ function activateDocent() {
   $('.login-panel').addClass('d-none');
   $('.status-panel').addClass('d-flex');
   $('.status-panel').removeClass('d-none');
+  clearInterval(RefreshInterval);
 }
 
 function viewHelp() {
@@ -39,5 +42,5 @@ function refreshAvatarDropdown() {
 $(document).ready(function() {
   refreshAvatarDropdown();
   // Checks for new Avatars every 5 seconds.
-  setInterval(refreshAvatarDropdown, 5000);
+  RefreshInterval = setInterval(refreshAvatarDropdown, 5000);
 });
