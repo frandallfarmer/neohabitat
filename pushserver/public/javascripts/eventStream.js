@@ -28,7 +28,6 @@ function processEvent(event) {
     case CONNECTED:
       return;
     case REGION_CHANGE:
-      console.log(event);
       $('#regionHeader').text(event.msg.description);
       $('#docsFrame').attr('src', event.msg.docsURL);
       $('#orientationHeader').text(event.msg.orientation);
