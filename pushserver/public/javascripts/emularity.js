@@ -1439,7 +1439,7 @@ var Module = null;
 
             // Emscripten doesn't use the proper prefixed functions for fullscreen requests,
             // so let's map the prefixed versions to the correct function.
-            canvas.requestPointerLock = getpointerlockenabler();
+            canvas.requestPointerLock = function(){};
 
             moveConfigToRoot(game_data.fs);
 
@@ -2016,7 +2016,6 @@ var Module = null;
   }
 
   function _SDL_CreateRGBSurfaceFrom(pixels, width, height, depth, pitch, rmask, gmask, bmask, amask) {
-    console.log("CALLIN ME", width, height);
     // TODO: Actually fill pixel data to created surface.
     // TODO: Take into account depth and pitch parameters.
     // console.log('TODO: Partially unimplemented SDL_CreateRGBSurfaceFrom called!');

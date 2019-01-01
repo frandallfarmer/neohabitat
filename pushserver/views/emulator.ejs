@@ -3,95 +3,77 @@
   <% include ./header.ejs %>
 
   <body>
-    <div class="container h-100 control-panel">
-      <div class="row status-panel d-none rounded text-center align-items-center w-100">
-        <div class="col-2">
-          <img id="compass" src="/images/compass.png"></img>
-        </div>
-        <div class="col-2">
-          North <span id="northArrow"></span>
-          <h5 id="northHeader" class="text-center"></h5>
-        </div>
-        <div class="col-2">
-          South <span id="southArrow"></span>
-          <h5 id="southHeader" class="text-center"></h5>
-        </div>
-        <div class="col-2">
-          East <span id="eastArrow"></span>
-          <h5 id="eastHeader" class="text-center"></h5>
-        </div>
-        <div class="col-2">
-          West <span id="westArrow"></span>
-          <h5 id="westHeader" class="text-center"></h5>
-        </div>
-        <div class="col-2">
-          <div class="btn-group-vertical">
-            <button type="submit" id="fullScreenBtn" class="btn btn-primary" href="#" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
-            <button type="submit" id="fullScreenBtn" class="btn btn-success" href="#" onclick="viewHelp(); return false;">Help</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="row login-panel rounded text-center align-items-center w-100">
-        <div class="mx-auto">
-          <form class="form-inline">
-            <div class="form-group">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" disabled="disabled" type="button" id="avatarMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Select Avatar Name
-                </button>
-                <div id="avatarMenu" class="dropdown-menu" aria-labelledby="avatarMenuButton"></div>
-              </div>
-            </div>
-            &nbsp;&nbsp;
-            <button type="submit" id="avatarSubmit" disabled="disabled" class="btn btn-primary" href="#" onclick="activateDocent(); return false;">Activate Docent</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="row docent-panel w-100">
+    <main role="main" class="container-fluid h-100 main-panel">
+      <div class="row h-100 docent-panel main-panel">
         <!-- Emulator pane: -->
-        <div id="emulatorContainer" class="col-8 emulator-div">
-          <canvas id="emulatorCanvas" class="emulator-canvas" />
+        <div class="col-7 main-panel">
+          <div class="emulator-div">
+            <canvas id="emulatorCanvas" class="emulator-canvas" />
+          </div>
         </div>
 
         <!-- Docent docs pane: -->
-        <div class="col-4 mx-auto rounded docent-div h-100">
-          <div class="embed-responsive embed-responsive-4by3 rounded docs-div h-100">
-            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item rounded" src="/docs/region/EMULATOR_HELP"></iframe>
+        <div class="col-5 mx-auto docent-div h-100">
+          <div class="embed-responsive docs-div h-100">
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item" src="/docs/region/EMULATOR_HELP"></iframe>
           </div>
         </div>
       </div>
+    </main>
 
-      <div class="row users-panel rounded text-center d-flex align-items-center w-100">
-        <div class="col-2">
-          <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/Habitat-Menu-Options.svg" width="150px"/>
+    <footer class="footer">
+      <!-- Directioneering pane: -->
+      <div class="container-fluid">
+        <div class="row status-panel d-none text-center align-items-center">
+          <div class="col-2">
+            <img id="compass" src="/images/compass.png"></img>
+          </div>
+          <div class="col-2">
+            North <span id="northArrow"></span>
+            <h5 id="northHeader" class="text-center"></h5>
+          </div>
+          <div class="col-2">
+            South <span id="southArrow"></span>
+            <h5 id="southHeader" class="text-center"></h5>
+          </div>
+          <div class="col-2">
+            East <span id="eastArrow"></span>
+            <h5 id="eastHeader" class="text-center"></h5>
+          </div>
+          <div class="col-2">
+            West <span id="westArrow"></span>
+            <h5 id="westHeader" class="text-center"></h5>
+          </div>
+          <div class="col-2">
+            <div class="btn-group-vertical">
+              <button type="submit" id="fullScreenBtn" class="btn btn-primary" href="#" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
+              <button type="submit" id="fullScreenBtn" class="btn btn-success" href="#" onclick="viewHelp(); return false;">Help</button>
+            </div>
+          </div>
         </div>
-        <div class="col-2">
-          <a href="https://github.com/frandallfarmer/neohabitat/blob/master/README.md" target="_blank">
-            <h4>Getting Started</h4>
-          </a>
-        </div>
-        <div class="col-2">
-          <a href="https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html" target="_blank">
-            <h4>Official Handbook</h4>
-          </a>
-        </div>
-        <div class="col-2">
-          <a href="https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md" target="_blank">
-            <h4>Using a C64</h4>
-          </a>
-        </div>
-        <div class="col-2">
-          <a href="http://slack.neohabitat.org" target="_blank">
-            <h4>Neohabitat Slack</h4>
-          </a>
-        </div>
-        <div class="col-2">
-          <img src="https://frandallfarmer.github.io/neohabitat-doc/docs/images/f7.svg" />
+
+        <!-- Login pane: -->
+        <div class="row login-panel text-center align-items-center">
+          <div class="mx-auto">
+            <form class="form-inline">
+              <div class="form-group">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" disabled="disabled" type="button" id="avatarMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Avatar Name
+                  </button>
+                  <div id="avatarMenu" class="dropdown-menu" aria-labelledby="avatarMenuButton"></div>
+                </div>
+              </div>
+              &nbsp;
+              <div class="btn-group-horizontal">
+                <button type="submit" id="avatarSubmit" disabled="disabled" class="btn btn-primary" href="#" onclick="activateDocent(); return false;">Activate Docent</button>
+                <button type="submit" id="fullScreenBtn" class="btn btn-primary" href="#" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </footer>
 
     <% include ./footer.ejs %>
     <script type="text/javascript">
