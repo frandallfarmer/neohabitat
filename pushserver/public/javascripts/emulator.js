@@ -1,8 +1,13 @@
+// Vice's Joystick Device 4 == Joystick, whereas Joystick Device 2 == Keyset 1
+var JoyDevice1 = supportsGamepads() ? 4 : 2;
+
+var emulatorCanvas = document.getElementById("emulatorCanvas");
 var emulator = new Emulator(
-  document.querySelector("#emulatorCanvas"),
+  emulatorCanvas,
   null,
-  new VICELoader(VICELoader.emulatorJS(EmulatorUrl),
-    VICELoader.nativeResolution(0, 0),
+  new VICELoader(
+    VICELoader.emulatorJS(EmulatorUrl),
+    VICELoader.nativeResolution(160, 200),
     VICELoader.extraArgs([
       "-ntsc",
       "-soundfragsize", "4",
@@ -20,7 +25,7 @@ var emulator = new Emulator(
         "/disks/Habitat-B.d64")),
     VICELoader.mountFile("vice.ini",
       VICELoader.fetchFile("Configuration",
-        "/emulator/vice.ini")),
+        "/emulator/vice.ini?jd1=" + JoyDevice1)),
     VICELoader.mountFile("hotkeys.txt",
       VICELoader.fetchFile("Hotkeys",
         "/vice/hotkeys.txt")),
@@ -30,7 +35,9 @@ var emulator = new Emulator(
     VICELoader.fliplist([
       ["Habitat-B.d64"]
     ]),
-    VICELoader.autoLoad("Habitat-Boot.d64")));
+    VICELoader.autoLoad("Habitat-Boot.d64")
+  )
+);
 
 emulator.start({
   waitAfterDownloading: false

@@ -12,7 +12,6 @@ const RegionNotFoundLocation = RegionDocsDir + 'NOT_FOUND.md';
 const HelpDocsDir = './public/docs/help/';
 const HelpNotFoundLocation = HelpDocsDir + 'help.does.not.exist.md';
 
-
 class DocsRoutes {
   constructor(habiproxy, config, mongoDb) {
     var self = this;
@@ -21,6 +20,7 @@ class DocsRoutes {
     self.config = config;
     self.mongoDb = mongoDb;
     self.mdConverter = new showdown.Converter();
+    self.mdConverter.setOption('simpleLineBreaks', false);
     self.router = express.Router();
 
     fs.readFile(RegionNotFoundLocation, 'utf8', function(err, contents) {

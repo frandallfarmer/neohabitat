@@ -1,4 +1,9 @@
 var RefreshInterval = null;
+var EmulatorHelpPage = '/docs/region/EMULATOR_HELP';
+
+function supportsGamepads() {
+  return false;
+}
 
 function selectAvatar(avatarName) {
   AvatarName = avatarName;
@@ -15,7 +20,7 @@ function activateDocent() {
 }
 
 function viewHelp() {
-  $('#docsFrame').attr('src', '/docs/region/EMULATOR_HELP');
+  $('#docsFrame').attr('src', EmulatorHelpPage);
 }
 
 function refreshAvatarDropdown() {
@@ -40,6 +45,10 @@ function refreshAvatarDropdown() {
 }
 
 $(document).ready(function() {
+  if (supportsGamepads()) {
+    EmulatorHelpPage = '/docs/region/EMULATOR_HELP_JOYSTICK';
+    viewHelp();
+  }
   refreshAvatarDropdown();
   // Checks for new Avatars every 5 seconds.
   RefreshInterval = setInterval(refreshAvatarDropdown, 5000);
