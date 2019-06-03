@@ -2,6 +2,7 @@
 var JoyDevice1 = supportsGamepads() ? 4 : 2;
 
 var emulatorCanvas = document.getElementById("emulatorCanvas");
+
 var emulator = new Emulator(
   emulatorCanvas,
   null,
@@ -39,6 +40,28 @@ var emulator = new Emulator(
   )
 );
 
-emulator.start({
-  waitAfterDownloading: false
-});
+function resumeAudio(e) {
+  if (typeof SDL == 'undefined'
+    || typeof SDL.audioContext == 'undefined')
+    return;
+  if (SDL.audioContext.state == 'suspended') {
+    SDL.audioContext.resume();
+  }
+  if (SDL.audioContext.state == 'running') {
+    document.getElementById('emulatorCanvas').removeEventListener('click', resumeAudio);
+    document.removeEventListener('keydown', resumeAudio);
+  }
+}
+emulatorCanvas.addEventListener('click', resumeAudio);
+document.addEventListener('keydown', resumeAudio);
+
+function startEmulator() {
+  $('#emulatorPanel').removeClass('d-none');
+  $('#emulatorStartPanel').addClass('d-none');
+  emulator.start({
+    waitAfterDownloading: false
+  });
+  resumeAudio();
+}
+
+document.getElementById("emulatorStartPanel").addEventListener('click', startEmulator);
