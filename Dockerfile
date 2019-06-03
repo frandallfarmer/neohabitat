@@ -26,7 +26,7 @@ RUN yum -y install \
 RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
 
 # Installs the Nodesource Yum repository.
-RUN curl -sL https://rpm.nodesource.com/setup_6.x | bash -
+RUN curl -sL https://rpm.nodesource.com/setup_9.x | bash -
 
 # Installs MongoDB Yum repository.
 RUN curl -sL https://goo.gl/CxNbGr > /etc/yum.repos.d/mongodb-org.3.4.repo

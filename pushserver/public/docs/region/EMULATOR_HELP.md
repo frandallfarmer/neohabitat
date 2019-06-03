@@ -8,7 +8,8 @@ visit every day.
 Logging In
 ----------
 
-To get started, **hit any key** to get past the splash screen. Next, enter a name for your
+To get started, **click on the emulator panel** to start the emulator. Once Neohabitat
+loads, **hit any key** to get past the splash screen. Next, enter a name for your
 new **Avatar**, such as **Threepwood**, **dril** or **Phil Collins**.
 
 Flipping Disks

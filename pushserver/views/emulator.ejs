@@ -6,8 +6,11 @@
     <main role="main" class="container-fluid h-100 main-panel">
       <div class="row h-100 docent-panel main-panel">
         <!-- Emulator pane: -->
-        <div class="col-7 main-panel">
-          <div class="emulator-div">
+        <div class="col-7 main-panel h-100 emulator-panel">
+          <div id="emulatorStartPanel" class="jumbotron">
+            <h1 class="display-4 text-center">Click here to start!</h1>
+          </div>
+          <div id="emulatorPanel" class="emulator-div d-none">
             <canvas id="emulatorCanvas" class="emulator-canvas" />
           </div>
         </div>
