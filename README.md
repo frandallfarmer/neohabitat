@@ -19,21 +19,20 @@ With all that out of the way, here's how to get started:
 
 - If you want to use Habitat with a real C64, please switch over to [these instructions](https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md) for making disks and using modern connection hardware.
 
-- You can also use our [web based client](http://sgeo.github.io/experimental/neohabitat/) to connect via a browser. Just skip to **Step 2** below to learn how to get ingame.
+- You can also use our [web based client](http://v.ht/habitat) to connect via a browser. Just skip to **Step 2** below to learn how to get ingame.
 
 ### Step 1 - Download and Install either the Windows or OSX Habitat package (which comes with VICE, the C64 emulator)
 
 **Windows**
 
-- Download [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true)
+- Download the [NeoHabitat installer](https://github.com/StuBlad/neohabitat-installer/releases/download/1.0/NeoHabitatInstaller.exe)
 
-- Unzip onto the desktop
-	- This is not yet an installer. Want to help build one? Join us on [Slack](http://slack.neohabitat.org)
-	
-- Open the NeoHabitat folder
+- Run the installer.
+ - Tested on Windows 10 Home x64 but it should be fine on older versions of Windows.
 
-- Double-click the **Launch Habitat** icon.
-	- If double clicking on the launcher does not work, try running it as administrator. If you are still encountering issues then scroll down to the **"Help!"** section of the readme for other alternatives.
+- Double-click the **NeoHabitat** icon on your desktop or in the Start Menu.
+
+- Go to Step 2!
 
 **OS X**
 
@@ -80,14 +79,20 @@ Welcome to NeoHabitat! There's a whole lot you can do here and thousands of exot
 
 Before you go anywhere, **we highly recommend opening up our [Docent support software](http://v.ht/habitat)**. It's a browser based guide that'll help you navigate NeoHabitat, learn the controls and teach you about the history of the world. It's interactive and will update as you move around without you having to lift a finger.
 
-To learn about all the things you can do in more detail, read the [official Habitat manual](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html) from 1998.
+If you are using the web based client mentioned earlier, the Docent support software is already active!
 
-You'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**. Your default controls for NeoHabitat are mapped to the numpad and Right-CTRL.
+To learn about all the things you can do in more detail, read the [official Habitat manual](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html) from 1988.
+
+Your default controls for NeoHabitat are mapped to the numpad and Right-CTRL.
 
 * Right-Ctrl + Numpad 8 initiates the **"GO"** command
 * Right-Ctrl + Numpad 2 initiates the **"DO"** comamnd
 * Right-Ctrl + Numpad 6 initiates the **"GET"** command
 * Right-Ctrl + Numpad 4 initiates the **"PUT"** command
+
+For the most authentic experience, you'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**.
+
+We have tested with various different gamepads that all work fine with Habitat. We have personally tested it with the Xbox 360 Wireless Controller for PC.
 
 ### Step 4 (Optional) - Controls
 
