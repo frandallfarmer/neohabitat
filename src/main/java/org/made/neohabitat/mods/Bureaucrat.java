@@ -101,19 +101,43 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
             if (commandSplit.length > 0) {
                 remainder = commandSplit[commandSplit.length - 1].trim();
             }
-            switch(gr_state) { //Use the gr_state to differentiate the bureaucrats
-            case 0:
+            switch(noid) { //Use the noid to differentiate the bureaucrats (before was gr_state)
+            case 6:
                 switch(command) {
                 case "PROPERTY:":
                     remainder = remainder.replace('{', '_');
-                    avatar.turf = remainder;
-                    object_say(from, "You now live at " + avatar.turf);
+                    
+                    if(remainder != "")
+                    {
+			if(remainder.toLowerCase().indexOf("context-")==0)
+			{
+			    //Type this format: context-Aric_Ave_44_interior
+			    String remainderPartial = remainder.substring(8);
+			    remainderPartial.replace('-', '_');
+			    object_say(from, "You lived in " + avatar.turf );
+			    avatar.turf = "context-" + remainderPartial;                    
+			    object_say(from, "You now live at " + avatar.turf );       
+
+			}
+			else
+			{
+			    String DEFAULT_TURF = "context-test";
+			    object_say(from, "You lived in " + avatar.turf );
+			    avatar.turf = DEFAULT_TURF;
+			    object_say(from, "Do you really want to live at " + remainder + "?, Let's see what I can do for you." );                    
+			}
+                    }
+                    else
+                    {
+                      object_say(from, noid, "You better say where do you want to live.");                    	
+                    }
                     break;
                 default:
-                    object_say(from, noid, "I'm the PA bureaucrat. Please proceed your message with SEND:");
+                    object_say(from, noid, "I'm the PA bureaucrat. If you want to move to another turf, please proceed your message with PROPERTY:");
+                    //object_say(from, noid, "I'm the PA bureaucrat. Please proceed your message with SEND:");
                 }
                 break;
-            case 1:
+            case 8:
                 switch(command) {
                 case "CANDIDATE1:":
                     if(remainder.toLowerCase().equals("me")) {
@@ -159,7 +183,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     bureaucrat_HELP(from, 1);
                 }
                 break;
-            case 2:
+            case 10:
                 switch(command) {
                 case "COMPLAINT:":
                     if (remainder.length() > 0) {
@@ -167,6 +191,38 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                         object_say(from, noid, "Mmm hmm. Well, we'll just see what we can do.");
                     }
                     break;
+                    
+                case "SEND:":
+                    if (remainder.length() > 0) {
+                        Region.tellEveryone("Public Announcement on behalf of " + from.name() + ":", false);
+                        Region.tellEveryone(remainder, true);
+                    } 
+                    break;
+                case "MOTD:":
+                    Region.SET_MOTD(from, remainder);
+                    break;
+                case "TIME:":
+                    if (remainder.matches("[0-9]+") && !isRunning) {
+                        minutes = Integer.parseInt(remainder);
+                        object_say(from, noid, "Annoucement set for " + minutes + " minute(s) from now.");
+                    }
+                    else
+                        object_say(from, noid, "You may only enter a number for the TIME: command.");
+                    break;
+                case "TEXT:":
+                    eventText = remainder;
+                    object_say(from, noid, "Event text has been set!");
+                    break;
+                case "START:":
+                    if(!isRunning) {
+                        isRunning = true;
+                        Region.tellEveryone("A public event by " + from.name() + " will start " + minutes + " minutes from now.", false);
+                        context().scheduleContextEvent(minutes * 1000 * 60, this); //TODO: Replace with actual timers
+                    }
+                    else
+                        object_say(from, noid, "A timer is already running!");
+                    break;                    
+                    
                 default:
                     bureaucrat_HELP(from, 2);
                 }
@@ -219,7 +275,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
     public void bureaucrat_HELP(User from, int count) {
         final String help_messages[] = { "ERROR: Must enter a message to announce an event.", /* 0 */
                 "The commands are- CANDIDATE1:, CANDIDATE2:, WHO:, VOTE:, BALLOT:, RESET:", /* 1 */
-                "Please proceed your message with COMPLAINT:", /* 2 */
+                "Please proceed your message with COMPLAINT:, SEND:, MOTD: TIME:, TEXT:, or START:", /* 2 */
                 "Please proceed your message with SEND:, MOTD: TIME:, TEXT:, or START:", /* 3 */
         };
         object_say(from, help_messages[count]);
