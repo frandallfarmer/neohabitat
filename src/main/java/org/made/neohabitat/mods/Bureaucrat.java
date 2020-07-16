@@ -101,12 +101,12 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
             if (commandSplit.length > 0) {
                 remainder = commandSplit[commandSplit.length - 1].trim();
             }
-            switch(noid) { //Use the noid to differentiate the bureaucrats (before was gr_state)
-            case 6:
+	    String BureacratID = object().ref().toLowerCase();
+            switch(BureacratID) { //Use object().ref() to differentiate the bureaucrats (before was gr_state)
+            case "item-downtown_6i.bureaucrat1":
                 switch(command) {
                 case "PROPERTY:":
                     remainder = remainder.replace('{', '_');
-                    
                     if(remainder != "")
                     {
 			if(remainder.toLowerCase().indexOf("context-")==0)
@@ -117,7 +117,6 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
 			    object_say(from, "You lived in " + avatar.turf );
 			    avatar.turf = "context-" + remainderPartial;                    
 			    object_say(from, "You now live at " + avatar.turf );       
-
 			}
 			else
 			{
@@ -137,7 +136,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     //object_say(from, noid, "I'm the PA bureaucrat. Please proceed your message with SEND:");
                 }
                 break;
-            case 8:
+            case "item-downtown_6i.bureaucrat2":
                 switch(command) {
                 case "CANDIDATE1:":
                     if(remainder.toLowerCase().equals("me")) {
@@ -183,7 +182,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     bureaucrat_HELP(from, 1);
                 }
                 break;
-            case 10:
+            case "item-downtown_6i.bureaucrat3":
                 switch(command) {
                 case "COMPLAINT:":
                     if (remainder.length() > 0) {
@@ -227,7 +226,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     bureaucrat_HELP(from, 2);
                 }
                 break;
-            case 3:
+            /*case 3:
                 switch(command) {
                 case "SEND:":
                     if (remainder.length() > 0) {
@@ -262,7 +261,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                 default:
                     bureaucrat_HELP(from, 0);
                 }
-                break;
+                break;*/
             }
         }
     }
