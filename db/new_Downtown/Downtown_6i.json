@@ -236,7 +236,7 @@
 	{
 		"type": "item",
 		"ref": "item-Downtown_6i.bureaucrat2",
-		"name": "LicesesCrabot",
+		"name": "LicensesCrabot",
 		"in": "context-Downtown_6i",
 		"mods": [ {
 			"type" : "Bureaucrat",
