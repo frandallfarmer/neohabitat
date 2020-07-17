@@ -101,9 +101,10 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
             if (commandSplit.length > 0) {
                 remainder = commandSplit[commandSplit.length - 1].trim();
             }
-	    String BureacratID = object().ref().toLowerCase();
-            switch(BureacratID) { //Use object().ref() to differentiate the bureaucrats (before was gr_state)
-            case "item-downtown_6i.bureaucrat1":
+            
+	    String BureacratID = object().name().toLowerCase();
+            switch(BureacratID) { //Use object().name() to differentiate the bureaucrats (before was gr_state)
+            case "propertycrabot":
                 switch(command) {
                 case "PROPERTY:":
                     remainder = remainder.replace('{', '_');
@@ -136,7 +137,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     //object_say(from, noid, "I'm the PA bureaucrat. Please proceed your message with SEND:");
                 }
                 break;
-            case "item-downtown_6i.bureaucrat2":
+            case "incesescrabot":
                 switch(command) {
                 case "CANDIDATE1:":
                     if(remainder.toLowerCase().equals("me")) {
@@ -182,7 +183,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     bureaucrat_HELP(from, 1);
                 }
                 break;
-            case "item-downtown_6i.bureaucrat3":
+            case "complaintscrabot":
                 switch(command) {
                 case "COMPLAINT:":
                     if (remainder.length() > 0) {
@@ -199,6 +200,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     break;
                 case "MOTD:":
                     Region.SET_MOTD(from, remainder);
+                    object_say(from, noid, "Message of the day has been set !");                    
                     break;
                 case "TIME:":
                     if (remainder.matches("[0-9]+") && !isRunning) {
@@ -210,7 +212,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     break;
                 case "TEXT:":
                     eventText = remainder;
-                    object_say(from, noid, "Event text has been set!");
+                    object_say(from, noid, "Event text has been set !");
                     break;
                 case "START:":
                     if(!isRunning) {
@@ -219,49 +221,13 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                         context().scheduleContextEvent(minutes * 1000 * 60, this); //TODO: Replace with actual timers
                     }
                     else
-                        object_say(from, noid, "A timer is already running!");
+                        object_say(from, noid, "A timer is already running !");
                     break;                    
                     
                 default:
                     bureaucrat_HELP(from, 2);
                 }
                 break;
-            /*case 3:
-                switch(command) {
-                case "SEND:":
-                    if (remainder.length() > 0) {
-                        Region.tellEveryone("Public Announcement on behalf of " + from.name() + ":", false);
-                        Region.tellEveryone(remainder, true);
-                    } 
-                    break;
-                case "MOTD:":
-                    Region.SET_MOTD(from, remainder);
-                    break;
-                case "TIME:":
-                    if (remainder.matches("[0-9]+") && !isRunning) {
-                        minutes = Integer.parseInt(remainder);
-                        object_say(from, noid, "Annoucement set for " + minutes + " minute(s) from now.");
-                    }
-                    else
-                        object_say(from, noid, "You may only enter a number for the TIME: command.");
-                    break;
-                case "TEXT:":
-                    eventText = remainder;
-                    object_say(from, noid, "Event text has been set!");
-                    break;
-                case "START:":
-                    if(!isRunning) {
-                        isRunning = true;
-                        Region.tellEveryone("A public event by " + from.name() + " will start " + minutes + " minutes from now.", false);
-                        context().scheduleContextEvent(minutes * 1000 * 60, this); //TODO: Replace with actual timers
-                    }
-                    else
-                        object_say(from, noid, "A timer is already running!");
-                    break;
-                default:
-                    bureaucrat_HELP(from, 0);
-                }
-                break;*/
             }
         }
     }
