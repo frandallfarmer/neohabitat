@@ -137,7 +137,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     //object_say(from, noid, "I'm the PA bureaucrat. Please proceed your message with SEND:");
                 }
                 break;
-            case "incesescrabot":
+            case "licesescrabot":
                 switch(command) {
                 case "CANDIDATE1:":
                     if(remainder.toLowerCase().equals("me")) {
