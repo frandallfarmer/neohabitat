@@ -209,7 +209,7 @@
 	{
 		"type": "item",
 		"ref": "item-Downtown_6i.bureaucrat1",
-		"name": "Bureaucrat",
+		"name": "PropertyCrabot",
 		"in": "context-Downtown_6i",
 		"mods": [ {
 			"type" : "Bureaucrat",
@@ -236,13 +236,13 @@
 	{
 		"type": "item",
 		"ref": "item-Downtown_6i.bureaucrat2",
-		"name": "Bureaucrat",
+		"name": "LicensesCrabot",
 		"in": "context-Downtown_6i",
 		"mods": [ {
 			"type" : "Bureaucrat",
 			"x": 64, 
 			"y": 145,
-			"gr_state" : 0,
+			"gr_state" : 1,
 			"style" : 0,
 			"orientation" : 56
     } ]
@@ -263,7 +263,7 @@
 	{
 		"type": "item",
 		"ref": "item-Downtown_6i.bureaucrat3",
-		"name": "Bureaucrat",
+		"name": "ComplaintsCrabot",
 		"in": "context-Downtown_6i",
 		"mods": [ {
 			"type" : "Bureaucrat",
