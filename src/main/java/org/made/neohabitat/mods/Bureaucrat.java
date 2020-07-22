@@ -110,20 +110,21 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     remainder = remainder.replace('{', '_');
                     if(remainder != "")
                     {
+                    	String actualTurf = avatar.turf.replace("_"," ");
 			if(remainder.toLowerCase().indexOf("context-")==0)
 			{
 			    //Type this format: context-Aric_Ave_44_interior
 			    String remainderPartial = remainder.substring(8);
 			    remainderPartial.replace('-', '_');
-			    object_say(from, "You lived in " + avatar.turf );
+			    object_say(from, "You lived in " + actualTurf.substring(8) );
 			    avatar.turf = "context-" + remainderPartial;                    
-			    object_say(from, "You now live at " + avatar.turf );       
+			    object_say(from, "You now live at " + remainderPartial.replace('_', ' ') );       
 			}
 			else
 			{
-			    String DEFAULT_TURF = "context-test";
-			    object_say(from, "You lived in " + avatar.turf );
-			    avatar.turf = DEFAULT_TURF;
+
+			    object_say(from, "You lived in " + actualTurf.substring(8) );
+			    avatar.turf = Avatar.DEFAULT_TURF;
 			    object_say(from, "Do you really want to live at " + remainder + "?, Let's see what I can do for you." );                    
 			}
                     }
@@ -137,7 +138,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     //object_say(from, noid, "I'm the PA bureaucrat. Please proceed your message with SEND:");
                 }
                 break;
-            case "licensescrabot":
+            case "vottingscrabot":
                 switch(command) {
                 case "CANDIDATE1:":
                     if(remainder.toLowerCase().equals("me")) {
@@ -183,7 +184,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
                     bureaucrat_HELP(from, 1);
                 }
                 break;
-            case "complaintscrabot":
+            case "messagescrabot":
                 switch(command) {
                 case "COMPLAINT:":
                     if (remainder.length() > 0) {
@@ -248,7 +249,19 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
     
     @JSONMethod
     public void HELP(User from) {
-        generic_HELP(from);
+	String BureacratName = object().name().toLowerCase();
+        switch(BureacratName) { 
+            case "propertycrabot":
+		send_reply_msg(from, "PROPERTY BUREAUCRAT: If you want to move to another turf, please talk to it starting with PROPERTY:");
+                break;
+            case "vottingscrabot":
+		send_reply_msg(from, "VOTING BUREAUCRAT: Say HELP to get a list of voting/registration options.");
+                break;
+            case "messagescrabot":
+		send_reply_msg(from, "MESSAGING BUREAUCRAT: Say HELP to get a list of messages you can send.");
+                break;
+	}
+		
     }
 
     @Override
@@ -257,3 +270,4 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
         isRunning = false;
     }
 }
+
