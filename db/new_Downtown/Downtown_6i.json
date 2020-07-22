@@ -236,7 +236,7 @@
 	{
 		"type": "item",
 		"ref": "item-Downtown_6i.bureaucrat2",
-		"name": "LicensesCrabot",
+		"name": "VottingsCrabot",
 		"in": "context-Downtown_6i",
 		"mods": [ {
 			"type" : "Bureaucrat",
@@ -263,7 +263,7 @@
 	{
 		"type": "item",
 		"ref": "item-Downtown_6i.bureaucrat3",
-		"name": "ComplaintsCrabot",
+		"name": "MessagesCrabot",
 		"in": "context-Downtown_6i",
 		"mods": [ {
 			"type" : "Bureaucrat",
