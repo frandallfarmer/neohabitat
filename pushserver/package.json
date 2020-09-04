@@ -20,7 +20,7 @@
     "node-websockify": "^1.0.2",
     "serve-favicon": "~2.4.5",
     "server-send-events": "0.0.6",
-    "showdown": "^1.8.6",
+    "showdown": "^1.9.1",
     "supervisor": "^0.12.0",
     "winston": "^2.4.0",
     "yamljs": "^0.3.0"
