@@ -9,8 +9,8 @@
 			"type": "Region",
 	        "realm": "Backroom",
 			"nitty_bits": 3,
-	        "town_dir": "", 
-	        "port_dir": "| } ~ ", 
+	        "town_dir": "",
+	        "port_dir": UP + DOWN + LEFT + RIGHT,
 			"neighbors": [ "context-test", "context-test", "context-test", "context-test" ]
 		}
 	]
