@@ -1,0 +1,180 @@
+[
+  {
+    "ref": "context-Dice_Ave_31_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "31 Dice Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Dice_Ave_31_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP,
+		"depth": 26, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c9ed.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Wall.a23c.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Window.32ba.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Couch.a916.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Chest.2d3b.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Door.4461.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "connection": "context-Dice_Ave_31_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.3d03.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Window.4dd2.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 88, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-House_cat.c250.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 8, 
+        "type": "House_cat", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "House_cat", 
+    "in": "context-Dice_Ave_31_interior"
+  }, 
+  {
+    "ref": "item-Knick_knack.20f2.Dice_Ave_31_interior", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 210, 
+        "x": 12, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Dice_Ave_31_interior"
+  }
+]

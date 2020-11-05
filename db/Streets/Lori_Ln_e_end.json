@@ -1,0 +1,100 @@
+[
+  {
+    "ref": "context-Lori_Ln_e_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Lori Ln east", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Lori_Ln_1013_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6824.Lori_Ln_e_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Lori_Ln_e_end"
+  }, 
+  {
+    "ref": "item-Sky.ff30.Lori_Ln_e_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Lori_Ln_e_end"
+  }, 
+  {
+    "ref": "item-Street.5672.Lori_Ln_e_end", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 56, 
+        "gr_state": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Lori_Ln_e_end"
+  }, 
+  {
+    "ref": "item-Teleport.0a8f.Lori_Ln_e_end", 
+    "mods": [
+      {
+        "orientation": 40, 
+        "address": "Pop-Lori Ln East", 
+        "y": 131, 
+        "x": 44, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Lori_Ln_e_end"
+  }, 
+  {
+    "ref": "item-Bush.e47f.Lori_Ln_e_end", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "gr_state": 2, 
+        "y": 147, 
+        "x": 92, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Lori_Ln_e_end"
+  }
+]

@@ -11,10 +11,11 @@
         "type": "Region",
         "orientation": 2,
         "nitty_bits": 3,
+        "realm": "Downtown", 
         "neighbors": [
           "context-Downtown_7d",
           "context-Downtown_8c",
-          "context-Downtown_7b",
+          "context-Downtown_1980",
           ""
         ]
       }
@@ -61,8 +62,7 @@
         "x": 8,
         "y": 33,
         "orientation": 172,
-        "open_flags": 3,
-        "gr_state": 1,
+        "open_flags": 2,
         "connection": "context-Downtown_8c"
       }
     ]

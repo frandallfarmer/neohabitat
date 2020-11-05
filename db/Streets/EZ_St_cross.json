@@ -1,0 +1,156 @@
+[
+  {
+    "ref": "context-EZ_St_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "EZ St", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-EZ_St_626_front", 
+          "context-Over_Ave_cross", 
+          "context-EZ_St_526_front", 
+          "context-Disk_Dr_cross"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7423.EZ_St_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-EZ_St_cross"
+  }, 
+  {
+    "ref": "item-Sky.9385.EZ_St_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-EZ_St_cross"
+  }, 
+  {
+    "ref": "item-Street.dd17.EZ_St_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-EZ_St_cross"
+  }, 
+  {
+    "ref": "item-Sign.31f2.EZ_St_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          128, 
+          69, 
+          90, 
+          32, 
+          83, 
+          116, 
+          46, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-EZ_St_cross"
+  }, 
+  {
+    "ref": "item-Plant.e89a.EZ_St_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 30, 
+        "x": 92, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-EZ_St_cross"
+  }, 
+  {
+    "ref": "item-Teleport.7af1.EZ_St_cross", 
+    "mods": [
+      {
+        "orientation": 64, 
+        "address": "Pop-EZ St", 
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-EZ_St_cross"
+  }
+]

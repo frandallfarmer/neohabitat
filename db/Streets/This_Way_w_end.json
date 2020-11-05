@@ -1,0 +1,129 @@
+[
+  {
+    "ref": "context-This_Way_w_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "This Way west", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-This_Way_15_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.347a.This_Way_w_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-This_Way_w_end"
+  }, 
+  {
+    "ref": "item-Sky.3c1c.This_Way_w_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Sky", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-This_Way_w_end"
+  }, 
+  {
+    "ref": "item-Street.3bcc.This_Way_w_end", 
+    "mods": [
+      {
+        "y": 13, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 0, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-This_Way_w_end"
+  }, 
+  {
+    "ref": "item-Tree.fd6c.This_Way_w_end", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 44, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-This_Way_w_end"
+  }, 
+  {
+    "ref": "item-Tree.846b.This_Way_w_end", 
+    "mods": [
+      {
+        "y": 39, 
+        "x": 120, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-This_Way_w_end"
+  }, 
+  {
+    "ref": "item-Teleport.4cd5.This_Way_w_end", 
+    "mods": [
+      {
+        "orientation": 24, 
+        "address": "Pop-This Way West", 
+        "y": 132, 
+        "x": 12, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-This_Way_w_end"
+  }, 
+  {
+    "ref": "item-Tree.15fd.This_Way_w_end", 
+    "mods": [
+      {
+        "y": 162, 
+        "x": 64, 
+        "style": 1, 
+        "type": "Tree", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-This_Way_w_end"
+  }
+]

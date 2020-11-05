@@ -3,17 +3,19 @@
     "ref": "context-Downtown_8g", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Arcade Entrance", 
+    "name": "Arcade Lobby", 
     "mods": [
       {
         "town_dir": "",
         "port_dir": DOWN,
         "type": "Region",
         "orientation": 2,
+        "realm": "Downtown",
+		"depth": 28, 
         "neighbors": [
-          "context-Downtown_1t",
-          "context-Downtown_2s",
-          "context-Downtown_1r",
+          "context-Downtown_9191",
+          "context-Downtown_9193",
+          "context-Downtown_9192",
           "context-Downtown_7g"
         ], 
         "nitty_bits": 3

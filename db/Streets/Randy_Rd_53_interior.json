@@ -1,0 +1,165 @@
+[
+  {
+    "ref": "context-Randy_Rd_53_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "53 Randy Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Randy_Rd_53_front", 
+          "", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.d8f2.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Wall.04e4.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Display_case.fd8c.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "orientation": 32, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 112, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Table.21d3.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "orientation": 40, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 133, 
+        "x": 64, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Door.4fa2.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "orientation": 188, 
+        "key_lo": 0, 
+        "connection": "context-Randy_Rd_53_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Chair.5acc.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Chair.4249.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 36, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Chair.d197.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 72, 
+        "type": "Chair", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Randy_Rd_53_interior"
+  }, 
+  {
+    "ref": "item-Window.19f8.Randy_Rd_53_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 72, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Randy_Rd_53_interior"
+  }
+]

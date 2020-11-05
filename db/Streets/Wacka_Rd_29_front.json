@@ -1,0 +1,251 @@
+[
+  {
+    "ref": "context-Wacka_Rd_29_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "29 Wacka Rd", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-Wacka_Rd_19_front", 
+          "context-Wacka_Rd_29_interior", 
+          "context-Wacka_Rd_39_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6192.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Wall.7ac0.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Wall.ba7c.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Building.9c13.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 72, 
+        "connection": "context-Wacka_Rd_29_interior", 
+        "type": "Building", 
+        "orientation": 33
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Plant.7064.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 60, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Plant.a34a.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 48, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Mailbox.f3fb.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 124, 
+        "type": "Mailbox", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Sign.7e2e.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          50, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 124, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Plant.d6f9.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 33, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 84, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Plant.9697.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 24, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Plant.a120.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 33, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wacka_Rd_29_front"
+  }, 
+  {
+    "ref": "item-Street.b7c0.Wacka_Rd_29_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 96, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wacka_Rd_29_front"
+  }
+]

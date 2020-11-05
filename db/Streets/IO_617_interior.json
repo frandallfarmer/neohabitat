@@ -1,0 +1,179 @@
+[
+  {
+    "ref": "context-IO_617_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "617 I/O Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-IO_617_front", 
+          "", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.03f5.IO_617_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Wall.423d.IO_617_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Window.e7a5.IO_617_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 48, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Couch.e706.IO_617_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Chest.777a.IO_617_interior", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Door.fde6.IO_617_interior", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "key_lo": 0, 
+        "connection": "context-IO_617_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.b73f.IO_617_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Window.a1fd.IO_617_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 88, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-House_cat.06bc.IO_617_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 8, 
+        "type": "House_cat", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "House_cat", 
+    "in": "context-IO_617_interior"
+  }, 
+  {
+    "ref": "item-Knick_knack.b76c.IO_617_interior", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 87, 
+        "x": 12, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-IO_617_interior"
+  }
+]

@@ -1,0 +1,104 @@
+[
+  {
+    "ref": "context-Downtown_10350", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "You are in Jail!", 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "port_dir": "}", 
+        "type": "Region",
+        "orientation": 0,
+        "depth": 25,		
+        "neighbors": [
+          "",
+          "context-Downtown_10351",
+          "",
+          ""        
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.d8k2.Downtown_10350", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_10350"
+  }, 
+  {
+    "ref": "item-ground.d9k3.Downtown_10350", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_10350"
+  },
+  {
+    "ref": "item-window1.f9k2.Downtown_10350", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 120, 
+        "gr_state": 0, 
+        "y": 77, 
+        "x": 40, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_10350"
+  },
+  {
+	"ref": "item-bed1.v9k2.Downtown_10350", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 113, 
+        "gr_state": 0, 
+        "y": 28, 
+        "x": 80, 
+        "type": "Bed", 
+        "open_flags": 3
+      }
+    ],
+	"type": "item", 
+    "name": "Bed", 
+    "in": "context-Downtown_10350"
+  },
+  {
+	"ref": "item-bed2.m4m6.Downtown_10350", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 113, 
+        "gr_state": 0, 
+        "y": 69, 
+        "x": 80, 
+        "type": "Bed", 
+        "open_flags": 3
+      }
+    ],
+	"type": "item", 
+    "name": "Bed", 
+    "in": "context-Downtown_10350"
+  }
+]

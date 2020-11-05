@@ -12,10 +12,12 @@
           "context-OutamyWy_229_front", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 2, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": "",
+		"depth": 26, 
         "type": "Region"
       }
     ]
@@ -120,7 +122,7 @@
       {
         "y": 133, 
         "x": 100,
-	"on": 1,
+    "on": 1,
         "type": "Floor_lamp", 
         "orientation": 8
       }

@@ -1,0 +1,179 @@
+[
+  {
+    "ref": "context-Downtown_1972", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Sheriff:Gary M", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_9108", 
+          "context-Downtown_1974", 
+          "context-Downtown_3b", 
+          "context-Downtown_10351"
+        ],
+        "realm": "Downtown", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Window1.c9m2.Downtown_1972", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 85, 
+        "x": 128, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Door.m2n3.Downtown_1972", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 252, 
+        "key_hi": 234, 
+        "key_lo": 7, 
+        "connection": "context-Downtown_10351", 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Street.m8n6.Downtown_1972", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 13, 
+        "y": 8, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Sign.s8j2.Downtown_1972", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 164, 
+        "ascii": [
+          80, 
+          111, 
+          112, 
+          117, 
+          108, 
+          111, 
+          112, 
+          111, 
+          108, 
+          105, 
+          115, 
+          131, 
+          134, 
+          32, 
+          32, 
+          83, 
+          104, 
+          101, 
+          114, 
+          105, 
+          102, 
+          102
+        ], 
+        "gr_state": 2, 
+        "y": 40, 
+        "x": 48, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Ground.s7x6.Downtown_1972", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Wall.d8j3.Downtown_1972", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Window2.v9m2.Downtown_1972", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 85, 
+        "x": 92, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1972"
+  }, 
+  {
+    "ref": "item-Window3.a9k2.Downtown_1972", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 85, 
+        "x": 56, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1972"
+  }
+]

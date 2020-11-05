@@ -9,7 +9,8 @@
         "town_dir": "", 
         "port_dir": DOWN, 
         "type": "Region",
-        "orientation": 1,		
+        "orientation": 1,
+        "realm": "Downtown",         
         "neighbors": [
           "",
           "",
@@ -246,7 +247,7 @@
         "x": 88,
         "y": 144,
         "gr_state": 1,
-		"open_flags": 3,
+        "open_flags": 3,
         "x_offset_1": 254,
         "y_offset_1": 0,
         "x_offset_2": 0,

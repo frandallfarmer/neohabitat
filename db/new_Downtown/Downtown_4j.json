@@ -11,8 +11,9 @@
           "context-Downtown_4k", 
           "context-Downtown_5j", 
           "", 
-          "context-rant_front"
-        ], 
+          "context-Downtown_3j"
+        ],
+        "realm": "Downtown",         
         "orientation": 1, 
         "nitty_bits": 3, 
         "port_dir": RIGHT, 
@@ -60,9 +61,8 @@
         "key_hi": 0, 
         "y": 33, 
         "x": 20, 
-		"open_flags": 3,
-		"gr_state": 1,
-		"type": "Door"
+        "open_flags": 2,
+        "type": "Door"
       }
     ], 
     "type": "item", 

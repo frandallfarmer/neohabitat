@@ -13,9 +13,11 @@
           "context-dnalsi_19", 
           "context-dnalsi_0a"
         ], 
+        "realm": "Dnalsi",
         "orientation": 0, 
-        "nitty_bits": 3, 
-        "port_dir": "", 
+        "nitty_bits": 0, 
+        "port_dir": "",
+        "depth": 30, 
         "type": "Region"
       }
     ]

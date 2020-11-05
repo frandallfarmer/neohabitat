@@ -1,0 +1,243 @@
+[
+  {
+    "ref": "context-Dice_Ave_51_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "51 Dice Ave", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Dice_Ave_cross", 
+          "", 
+          "context-Dice_Ave_41_front", 
+          "context-Dice_Ave_51_interior"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.bfe1.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Wall.aea8.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Wall.0089.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Building.36aa.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 16, 
+        "connection": "context-Dice_Ave_51_interior", 
+        "type": "Building", 
+        "orientation": 173
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Bush.b25e.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 112, 
+        "type": "Bush", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Sign.d98a.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          53, 
+          49, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 58, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Mailbox.f19f.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 149, 
+        "x": 24, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Fence.009e.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Fence.0b3f.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Street.19d2.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Fence.070a.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Dice_Ave_51_front"
+  }, 
+  {
+    "ref": "item-Fence.d203.Dice_Ave_51_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Dice_Ave_51_front"
+  }
+]

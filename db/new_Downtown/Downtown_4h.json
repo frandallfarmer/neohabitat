@@ -9,12 +9,13 @@
         "town_dir": "", 
         "port_dir": DOWN, 
         "type": "Region",
-        "orientation": 1,		
+        "orientation": 1,
+        "realm": "Downtown", 
         "neighbors": [
-          "",
-          "",
-          "",
-          ""
+          "context-Downtown_4i",
+          "context-Downtown_5h",
+          "context-Downtown_4g",
+          "context-Downtown_3h"
         ], 
         "nitty_bits": 3
       }
@@ -146,10 +147,10 @@
       {
         "y": 33, 
         "x": 16, 
-        "open_flags": 0, 
+        "open_flags": 2,
+        "orientation": 244,        
         "type": "Door", 
-        "orientation": 244,
-		"connection": "context-Downtown_4h"
+        "connection": "context-Downtown_4i"
       }
     ], 
     "type": "item", 

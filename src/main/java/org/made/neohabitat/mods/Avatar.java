@@ -228,7 +228,7 @@ public class Avatar extends Container implements UserMod {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "bodyType", "stun_count", "curse_type", "curse_count", "bankBalance",
         "activity", "action", "health", "restrainer", "transition_type", "from_orientation", "from_direction", "from_region", "to_region",
         "to_x", "to_y", "turf", "custom", "lastConnectedDay", "lastConnectedTime", "amAGhost", "firstConnection", "lastArrivedIn",
-        "lastInviteRequestUser", "lastInviteRequestTimestamp", "lastJoinRequestUser", "lastJoinRequestTimestamp",
+        "lastInviteRequestUser", "lastInviteRequestTimestamp", "lastJoinRequestUser", "lastJoinRequestTimestamp", "shutdown_size",
         "?stats" })
     public Avatar(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
             OptInteger nitty_bits, OptString bodyType, OptInteger stun_count, OptInteger curse_type, OptInteger curse_count, OptInteger bankBalance,
@@ -239,8 +239,8 @@ public class Avatar extends Container implements UserMod {
             OptBoolean amAGhost, OptBoolean firstConnection, OptString lastArrivedIn,
             OptString lastInviteRequestUser, OptInteger lastInviteRequestTimestamp,
             OptString lastJoinRequestUser, OptInteger lastJoinRequestTimestamp,
-            int[] stats) {
-        super(style, x, y, orientation, gr_state, new OptBoolean(false));
+            OptInteger shutdown_size, int[] stats) {
+        super(style, x, y, orientation, gr_state, new OptBoolean(false), shutdown_size);
         if (null == stats) {
             stats = new int[HS$MAX];
             stats[HS$wealth]        = bankBalance.value(0);
@@ -282,8 +282,8 @@ public class Avatar extends Container implements UserMod {
             int from_orientation, int from_direction, String from_region, String to_region, int to_x, int to_y,
             String turf, int[] custom, int lastConnectedDay, int lastConnectedTime, boolean amAGhost,
             boolean firstConnection, String lastArrivedIn, String lastInviteRequestUser, long lastInviteRequestTimestamp,
-            String lastJoinRequestUser, long lastJoinRequestTimestamp, int[] stats) {
-        super(style, x, y, orientation, gr_state, false);
+            String lastJoinRequestUser, long lastJoinRequestTimestamp, int shutdown_size, int[] stats) {
+        super(style, x, y, orientation, gr_state, false, shutdown_size);
         setAvatarState(nitty_bits, bodyType, stun_count, curse_type, curse_count, bankBalance, activity, action, health, restrainer, transition_type,
                 from_orientation, from_direction, from_region, to_region, to_x, to_y, turf, custom, lastConnectedDay, lastConnectedTime,
                 amAGhost, firstConnection, lastArrivedIn, lastInviteRequestUser, lastInviteRequestTimestamp,
@@ -345,6 +345,8 @@ public class Avatar extends Container implements UserMod {
         result.addParameter("restrainer",   restrainer);
         result.addParameter("custom",       custom);
         result.addParameter("amAGhost",     amAGhost);
+        result.addParameter("turf",         turf);
+
         if (result.control().toRepository()) {
             result.addParameter("transition_type",              transition_type);
             result.addParameter("from_orientation",             from_orientation);
@@ -353,7 +355,6 @@ public class Avatar extends Container implements UserMod {
             result.addParameter("to_region",                    to_region);
             result.addParameter("to_x",                         to_x);
             result.addParameter("to_y",                         to_y);
-            result.addParameter("turf",                         turf);
             result.addParameter("lastConnectedDay",             lastConnectedDay);
             result.addParameter("lastConnectedTime",            lastConnectedTime);
             result.addParameter("firstConnection",              firstConnection);
@@ -815,7 +816,7 @@ public class Avatar extends Container implements UserMod {
         Region region   = current_region();
         Ghost  ghost    = region.getGhost();
         int    result   = COPOREAL_FAIL;
-        if (region.isRoomForMyAvatar(from)) {
+        if (Region.isRoomForMyAvatar(this, region)) {
             for (int i = 0; i < capacity(); i++) {
                 HabitatMod obj = contents(i);
                 if (obj != null) {
@@ -839,14 +840,16 @@ public class Avatar extends Container implements UserMod {
         msg.addParameter("balance", bankBalance);
         if (result == COPOREAL_FAIL) {
             from.send(msg);
+            region.object_say(from, "This region is too full.");
         } else {
+            if (Region.NEOHABITAT_FEATURES) {
+                region.object_say(from, UPGRADE_PREFIX + "Please wait for your Avatar...");
+            }
             x = SAFE_X;
             y = SAFE_Y;
             gen_flags[MODIFIED] = true;
-            //          msg.addParameter("body", object().encode(EncodeControl.forClient));
             msg.addParameter("body", 0);
             from.send(msg);
-            //          announce_object_to_neighbors(from, object(), current_region());
             fakeMakeMessage(object(), current_region());
             current_region().lights_on(this);
             for (int i = capacity() - 1; i >= 0; i--) {         // TODO - encode the avatar and contents together instead of this HACK! FRF
@@ -859,6 +862,9 @@ public class Avatar extends Container implements UserMod {
             ready.addParameter("op", "ready");
             ready.finish();
             context().send(ready);
+            if (Region.NEOHABITAT_FEATURES) {
+                region.object_say(from, UPGRADE_PREFIX + "Ready to go!");
+            }
 
         }
     }
@@ -965,7 +971,15 @@ public class Avatar extends Container implements UserMod {
                 } else {
                     Container cont = (Container) seat;
                     for (slot = 0; slot < cont.capacity(); slot++) {
-                        if (cont.contents(slot) == null && seat.sitters[slot] == 0) {
+                		int sitterNoid = seat.sitters[slot];
+                    	if (sitterNoid > 0) {								// Check for stale sitters data and clean up.
+                    		HabitatMod sitter = region.noids[sitterNoid];
+                    		if ( sitter == null || sitter.HabitatClass() != CLASS_AVATAR || ((Avatar) sitter).sittingIn != seat.noid ) {
+                    			sitterNoid = 0;
+                    			seat.sitters[slot] = 0;
+                    		}
+                    	}
+                        if (cont.contents(slot) == null && sitterNoid == 0) {
                             if (sittingIn != 0) {
                                 send_reply_msg(from, 0, "err", FALSE, "slot", 0);
                                 return;
@@ -1185,9 +1199,9 @@ public class Avatar extends Container implements UserMod {
             object_say(from, UPGRADE_PREFIX + "       You are connected to          ");
             object_say(from, "   The Neoclassical Habitat Server    ");
             object_say(from, "    The MADE, The Museum of Arts &       Digital Entertainment, Oakland CA");
-            object_say(from, "                                      ");
+//          object_say(from, "                                      ");
 //          object_say(from, String.format("Light level: " + current_region().lighting + " Current heap: %d", current_region().space_usage));
-            object_say(from, "Open source - Join us! NeoHabitat.org ");
+            object_say(from, " Open source. Join us! NeoHabitat.org ");
             object_say(from, NeoHabitat.GetBuildVersion());
             send_reply_success(from);
             break;
@@ -1358,7 +1372,7 @@ public class Avatar extends Container implements UserMod {
             if (holding_restricted_object()) {
                 heldObject().putMeBack(from, false);
             }
-            if (Region.IsRoomForMyAvatarIn(new_region, from) == false) {
+            if (Region.IsRoomForMyAvatarIn(new_region, this) == false) {
                 object_say(from, "That region is full. Try entering as a ghost (F1).");
                 send_reply_error(from); 
                 return;
@@ -1890,9 +1904,15 @@ public class Avatar extends Container implements UserMod {
         } else {
             try {
                 String[] splitContext = turf.split("-");
-                String[] splitTurf = splitContext[1].split("\\.|_");
+                // Sanitizes street-wise turfs, which will be postfixed with "_front".
+                String sanitizedTurf = splitContext[1].replace("_front", "");
+                String[] splitTurf = sanitizedTurf.split("\\.|_");
                 String realm = splitTurf[0].substring(0, 1).toUpperCase() + splitTurf[0].substring(1);
-                String turfId = splitTurf[1];
+                if (splitTurf.length > 2) {
+                    realm = realm + " " + String.join(
+                        " ", Arrays.copyOfRange(splitTurf, 1, splitTurf.length - 1));
+                }
+                String turfId = splitTurf[splitTurf.length - 1];
                 return String.format("%s #%s", realm, turfId);
             } catch (ArrayIndexOutOfBoundsException e) {
                 trace_exception(e);
@@ -1900,7 +1920,7 @@ public class Avatar extends Container implements UserMod {
             }
         }
     }
-    
+
     /**
      * Checks for new Mail and sends a MAILARRIVED$ notification to the Avatar if so.
      */

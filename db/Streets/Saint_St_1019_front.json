@@ -1,0 +1,188 @@
+[
+  {
+    "ref": "context-Saint_St_1019_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "1019 Saint St", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "", 
+          "context-Saint_St_919_front", 
+          "context-Saint_St_1019_interior", 
+          "context-Saint_St_w_end"
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.278e.Saint_St_1019_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Wall.fb7f.Saint_St_1019_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Wall.9a7b.Saint_St_1019_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Building.7f9d.Saint_St_1019_front", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "connection": "context-Saint_St_1019_interior", 
+        "gr_state": 3, 
+        "y": 32, 
+        "x": 32, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Bush.6e93.Saint_St_1019_front", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 48, 
+        "gr_state": 1, 
+        "y": 35, 
+        "x": 16, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Sign.2963.Saint_St_1019_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          49, 
+          48, 
+          49, 
+          57, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Mailbox.a898.Saint_St_1019_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 92, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Saint_St_1019_front"
+  }, 
+  {
+    "ref": "item-Street.586c.Saint_St_1019_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Saint_St_1019_front"
+  }
+]

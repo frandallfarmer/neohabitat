@@ -52,7 +52,7 @@ public class Vendo_inside extends Openable implements Copyable {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_lo", "key_hi" })
     public Vendo_inside(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger open_flags, OptInteger key_lo, OptInteger key_hi) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, new OptInteger(0));
     }
 
     public Vendo_inside(int style, int x, int y, int orientation, int gr_state, boolean restricted, boolean[] open_flags, int key_lo, int key_hi) {

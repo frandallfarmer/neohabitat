@@ -1,0 +1,118 @@
+[
+  {
+    "ref": "context-Wrong_Wy_26_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "26 Wrong Way", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Wrong_Wy_26_front", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.eb35.Wrong_Wy_26_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wrong_Wy_26_interior"
+  }, 
+  {
+    "ref": "item-Wall.524a.Wrong_Wy_26_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wrong_Wy_26_interior"
+  }, 
+  {
+    "ref": "item-Table.5b82.Wrong_Wy_26_interior", 
+    "mods": [
+      {
+        "orientation": 56, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 84, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Wrong_Wy_26_interior"
+  }, 
+  {
+    "ref": "item-Door.57a1.Wrong_Wy_26_interior", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "connection": "context-Wrong_Wy_26_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Wrong_Wy_26_interior"
+  }, 
+  {
+    "ref": "item-Bed.8693.Wrong_Wy_26_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 96, 
+        "type": "Bed", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Wrong_Wy_26_interior"
+  }, 
+  {
+    "ref": "item-Chair.311a.Wrong_Wy_26_interior", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 56, 
+        "type": "Chair", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Wrong_Wy_26_interior"
+  }
+]

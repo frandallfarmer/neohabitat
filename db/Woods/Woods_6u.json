@@ -13,7 +13,8 @@
           "context-Woods_7u", 
           "context-Woods_6t", 
           "context-Woods_5u"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 1, 
         "type": "Region"

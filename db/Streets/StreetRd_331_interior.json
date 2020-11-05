@@ -12,7 +12,8 @@
           "context-StreetRd_331_front", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Streets",    
         "orientation": 2, 
         "nitty_bits": 3, 
         "port_dir": "", 
@@ -73,7 +74,7 @@
       {
         "y": 31, 
         "x": 48,
-	"on": 1,
+    "on": 1,
         "type": "Floor_lamp", 
         "orientation": 56
       }

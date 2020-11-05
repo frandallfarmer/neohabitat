@@ -10,6 +10,7 @@
         "port_dir": DOWN, 
         "type": "Region",
         "orientation": 1,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "",
@@ -150,7 +151,7 @@
       {
         "orientation": 16, 
         "type": "Picture",
-		"mass": 1,
+        "mass": 1,
         "gr_state": 1, 
         "y": 100, 
         "x": 92
@@ -166,7 +167,7 @@
       {
         "orientation": 17, 
         "type": "Picture",
-		"mass": 1,		
+        "mass": 1,      
         "gr_state": 1, 
         "y": 100, 
         "x": 92
@@ -182,7 +183,7 @@
       {
         "orientation": 16, 
         "type": "Picture",
-		"mass": 1,		
+        "mass": 1,      
         "gr_state": 4, 
         "y": 93, 
         "x": 92
@@ -198,7 +199,7 @@
       {
         "orientation": 17, 
         "type": "Picture",
-		"mass": 1,		
+        "mass": 1,      
         "gr_state": 4, 
         "y": 93, 
         "x": 92
@@ -209,20 +210,20 @@
     "in": "context-Downtown_5i"
   },
   {
-	"type": "item",
-	"ref": "item-bookofrecords",
-	"name": "Book of Records",
-	"in": "item-chaircb9f",
-	"mods": [
-		{
-			"type": "Book",
-			"title": "The Great Book of Records",
-			"y": 0,
-			"style": 5,
-			"last_page": 1,
-			"restricted": true,
-			"path": "text-bookofrecords"
-		}
-	]
+    "type": "item",
+    "ref": "item-bookofrecords",
+    "name": "Book of Records",
+    "in": "item-chaircb9f",
+    "mods": [
+        {
+            "type": "Book",
+            "title": "The Great Book of Records",
+            "y": 0,
+            "style": 5,
+            "last_page": 1,
+            "restricted": true,
+            "path": "text-bookofrecords"
+        }
+    ]
   }
 ]

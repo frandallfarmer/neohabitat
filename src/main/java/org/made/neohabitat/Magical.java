@@ -29,6 +29,7 @@ import org.made.neohabitat.mods.Magic_lamp;
 import org.made.neohabitat.mods.Paper;
 import org.made.neohabitat.mods.Region;
 import org.made.neohabitat.mods.Tokens;
+import org.made.neohabitat.mods.Key;
 
 /**
  * an Elko Habitat superclass to handle magic state and specific behaviors.
@@ -136,7 +137,7 @@ public abstract class Magical extends HabitatMod {
         msg.addParameter("newposture", OPERATE);
         context().sendToNeighbors(from, msg);
         if (!expendCharge(from)) {
-            send_reply_error(from);
+            send_magic_error(from);
             return;
         }        
         HabitatMod targetMod = current_region().noids[target.value(0)];        
@@ -209,7 +210,7 @@ public abstract class Magical extends HabitatMod {
             magic_default(from, targetMod);
             break;
         case 22:
-            magic_default(from, targetMod);
+            the_vaultkeeper(from, targetMod);
             break;
         case 23:
             magic_default(from, targetMod);
@@ -264,7 +265,7 @@ public abstract class Magical extends HabitatMod {
         avatar.orientation = (o & 0b11000111) | ((o + 16) & 0b00111000);
         modify_variable(from, avatar, C64_ORIENT_OFFSET, avatar.orientation);
         object_broadcast(noid, ">BAMPF<");
-        send_reply_success(from);
+        send_magic_success(from);
     }
 
     private void make_target_avatar_jump(User from, HabitatMod target) {
@@ -276,10 +277,10 @@ public abstract class Magical extends HabitatMod {
             } else {
                 send_broadcast_msg(avatar.noid, "POSTURE$", "new_posture", magic_data);
             }
-            send_reply_success(from);
+            send_magic_success(from);
         } else {
             object_say(from, "Nothing happens.");
-            send_reply_error(from);
+            send_magic_error(from);
         }
     }
     
@@ -301,10 +302,10 @@ public abstract class Magical extends HabitatMod {
         }
         if (turned > 0) {
             object_broadcast(noid, "Isn't Blue awesome?");
-            send_reply_success(from);
+            send_magic_success(from);
         } else {
             object_say(from, "Nothing happens.");
-            send_reply_error(from);
+            send_magic_error(from);
         }
     }
 
@@ -326,14 +327,14 @@ public abstract class Magical extends HabitatMod {
         Avatar avatar = (Avatar) avatar_target_check(target);
         if (avatar != null) {
             object_broadcast(noid, "Poof!");
-            send_reply_success(from);
+            send_magic_success(from);
             /* Send the target home! */
             avatar.x = 80;
             avatar.y = 132;
             avatar.change_regions(avatar.turf, AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
         } else {
             object_say(from, "Nothing happens.");
-            send_reply_error(from);
+            send_magic_error(from);
         }               
     }
     
@@ -350,18 +351,18 @@ public abstract class Magical extends HabitatMod {
             note_object_creation(target);
             if (mem_checks_ok(target)) {
                 object_broadcast(noid, "Yikes!");
-                send_reply_success(from);
+                send_magic_success(from);
                 avatar.change_regions(region.obj_id(), AUTO_TELEPORT_DIR, TELEPORT_ENTRY);
             } else {
                 note_instance_deletion(target);
                 target.style = saved_style;
                 note_object_creation(target);
                 object_say(from, "That won't work here now.");
-                send_reply_error(from);
+                send_magic_error(from);
             }
         } else {
             object_say(from, "Nothing happens.");
-            send_reply_error(from);
+            send_magic_error(from);
         }
     }
     
@@ -372,7 +373,7 @@ public abstract class Magical extends HabitatMod {
         avatar.gr_state = (g & 0b11111110) | ((g + 1) & 0x00000001);
         send_fiddle_msg(THE_REGION, avatar.noid, C64_GR_STATE_OFFSET, g);
         object_broadcast(noid, "POOF!!!");
-        send_reply_success(from);
+        send_magic_success(from);
     }
 
 
@@ -388,7 +389,7 @@ public abstract class Magical extends HabitatMod {
 
         if (avatar.nitty_bits[MISC_FLAG3]) {
             object_say(from, "Sorry! One to a customer!");
-            send_reply_error(from);
+            send_magic_error(from);
         } else {
             Tokens tokens = new Tokens(0, avatar.x, avatar.y - 1, 0, 0, false, magic_data & 0xFF, (magic_data & 0xFF00) >> 8);
             Item item = create_object("Money Tree Tokens", tokens, region, false);
@@ -399,7 +400,36 @@ public abstract class Magical extends HabitatMod {
             avatar.gen_flags[MODIFIED] = true;
             gen_flags[MODIFIED] = true;
             object_say(from, "There you go. Enjoy!");
-            send_reply_success(from);
+            send_magic_success(from);
+        }
+    }
+	
+    /**
+     * The vaultkeeper drops a key with hi/lo values based on the objects magic_data on the ground for each user exactly one time.
+     * 
+     * @param from
+     * @param target
+     */
+    private void the_vaultkeeper(User from, HabitatMod target) {
+        Avatar avatar = avatar(from);
+        Region region = current_region();
+
+        if (avatar.nitty_bits[MISC_FLAG1]) {
+            object_say(from, "What are you looking for? Besides, the Trans-dimensional doorway doesn't even open until 7!");
+			object_say(from, "By the way, do you play backgammon?");
+			object_say(from, "No smoking here, please!");
+            send_magic_error(from);
+        } else {
+			avatar.nitty_bits[MISC_FLAG1] = true;
+            avatar.gen_flags[MODIFIED] = true;			
+            Key key = new Key(0, avatar.x, avatar.y - 1, 8, 0, false, magic_data & 0xFF, (magic_data & 0xFF00) >> 8);
+            Item item = create_object("Vaultkeeper Key", key, region, false);
+            if (item == null)
+                return;
+            announce_object(item, region);
+            gen_flags[MODIFIED] = true;
+            object_say(from, "Okay, okay, here's one! Don't lose it, it's not like these things grow on trees!");
+            send_magic_success(from);
         }
     }
 
@@ -414,22 +444,22 @@ public abstract class Magical extends HabitatMod {
 
     private static int [][][] BOARDGAME_PARAMS = {
             // Chess
-            { {   32,  44,  56,  68,  80,  92, 104, 116,  32,  44,  56,  68,  80,  92, 104, 116,  32,  44,  56,  68,  80,  92, 104, 116,  32,  44,  56,  68,  80,  92, 104, 116}, 
-                { 97,  97,  97,  97,  97,  97,  97,  97, 113, 113, 113, 113, 113, 113, 113, 113,  17,  17,  17,  17,  17,  17,  17,  17,   1,   1,   1,   1,   1,   1,   1,   1},
-                {  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16}, 
-                {  0,   0,   0,   0,   0,   0,   0,   0,   3,   2,   1,   5,   4,   1,   2,   3,   0,   0,   0,   0,   0,   0,   0,   0,   3,   2,   1,   5,   4,   1,   2,   3}
+            { {   36,  48,  60,  72,  84,  96,  108,  120,  36,  120,  48,  60,  108,  36,  84,  96,  84,  48,  120,  72,  84,  72,  96,  96,  60,  120,  72,  108,  36,  48,  108,  60}, 
+                { 23,  23,  23,  23,  23,  23,  23,  23,  7,  7,  7,  103,  103,  119,  103,  103,  119,  119,  103,  119,  7,  103,  119,  7,  7,  119,  7,  119,  103,  103,  7,  119},
+                {  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  0,  0,  0,  0,  0,  0,  0,  0,  0,  16,  0,  0,  16,  16,  0,  16,  0,  0,  0,  16,  0}, 
+                {  0,  0,  0,  0,  0,  0,  0,  0,  3,  3,  2,  0,  0,  3,  0,  0,  4,  2,  0,  5,  4,  0,  1,  1,  1,  3,  5,  2,  0,  0,  2,  1}
             },
             // Checkers
-            { {   32,  56,  80, 104,  44,  68,  92, 116,  32,  56,  80, 104,  44,  68,  92, 116,  32,  56,  80, 104,  44,  68,  92, 116}, 
-                {  1,   1,   1,   1,  17,  17,  17,  17,  33,  33,  33,  33,  81,  81,  81,  81,  97,  97,  97,  97, 113, 113, 113, 113},
-                { 16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0}, 
-                {  6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6,   6}
+            { {   72,  96,  108,  48,  60,  84,  120,  36,  108,  48,  36,  60,  84,  96,  72,  72,  48,  108,  36,  120,  120,  96,  84,  60}, 
+                {  87,  87,  39,  87,  103,  103,  87,  103,  103,  119,  7,  7,  7,  119,  119,  23,  23,  7,  39,  119,  23,  23,  39,  39},
+                { 0,  0,  16,  0,  0,  0,  0,  0,  0,  0,  16,  16,  16,  0,  0,  16,  16,  16,  16,  0,  16,  16,  16,  16}, 
+                {  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6}
             },
             // Backgammon
-            { {   24,  24,  72,  72,  72,  72,  72, 112, 112, 112, 148, 148, 148, 148, 148,  24,  24,  72,  72,  72,  72,  72, 112, 112, 112, 148, 148, 148, 148, 148}, 
-                {115, 103,  49,  37,  25,  13,   1,  25,  13,   1, 115, 103,  91,  79, 195,  13,   1, 115, 103,  91,  79,  67, 115, 103,  91,  49,  37,  25,  13,   1},
-                { 16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0}, 
-                {  8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8 }
+            { {   152,  152,  80,  80,  80,  80,  80,  116,  116,  116,  116,  152,  116,  116,  152,  152,  152,  152,  152,  152,  32,  152,  80,  32,  80,  80,  80,  80,  32,  32}, 
+                {121,  109,  55,  43,  31,  19,  7,  31,  19,  7,  97,  55,  121,  109,  19,  7,  43,  31,  85,  97,  19,  201,  121,  7,  97,  73,  85,  109,  109,  121},
+                { 16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  0,  0,  0,  0,  0,  0,  0,  0,  16,  16,  0,  16,  0,  0,  0,  0,  0,  0,  16,  16}, 
+                {  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8}
             } };
 
     private void switch_reset_chess(User from) {
@@ -451,7 +481,8 @@ public abstract class Magical extends HabitatMod {
         int [] g_int = BOARDGAME_PARAMS[game][G_INIT];
         Region region = current_region();
 
-        send_reply_success(from);
+        send_magic_success(from);
+
 
         // Delete all the old pieces... This deals with the case if some pieces leave...
         for (int i = 1; i <255; i ++) {
@@ -472,7 +503,26 @@ public abstract class Magical extends HabitatMod {
                 announce_object(item, region);
         }       
     }    
-
+    
+    private void send_magic_reply(User from, int val) {
+    	if (this.HabitatClass() == CLASS_MAGIC_IMMOBILE) {    		
+    		val = gr_state;
+            // FRF: generic_adjacentDoMagic.m returns a new gr_state for the magic object. Only MAGIC_IMMOBILE does this.
+            // FRF: It is not at all clear if this was intended to be a persistent state change. For now, I'm assuming not.
+            // FRF: The other magic items don't even return a success/fail, much less assuming a state change. They handle it all with asynch messages.
+            // FRF: I think generic_adjacentDoMagic.m is actually implemented wrong, but we are locked into it's implementation as canonical.
+    	}
+        send_reply_err(from, noid, val);        
+    }
+    
+    private void send_magic_success(User from) {
+    	send_magic_reply(from, TRUE);
+    }
+    
+    private void send_magic_error(User from) {
+    	send_magic_reply(from, FALSE);
+    }
+    
     private String identifyTarget(HabitatMod target) {
         return "" + target.noid + ":" + target.obj_id();
     }
@@ -486,11 +536,11 @@ public abstract class Magical extends HabitatMod {
         if (!avatar.nitty_bits[GOD_FLAG]) {
             object_say(from, "Nothing happens.");
             message_to_god(this, avatar, "UNAUTHORIZED USE OF A GOD TOOL!");
-            send_reply_error(from);
+            send_magic_error(from);
         } else {
             object_say(from, identifyTarget(target) + " - Remember to exit GOD MODE before changing regions.");
             send_private_msg(from, THE_REGION, from, "PROMPT_USER_$", GOD_TOOL_PROMPT + " ");
-            send_reply_success(from);
+            send_magic_success(from);
         }
     }
 
@@ -521,7 +571,7 @@ public abstract class Magical extends HabitatMod {
         if (null == target || !avatar.nitty_bits[GOD_FLAG]) {
             object_say(from, "Nothing happens.");
             message_to_god(this, avatar, "UNAUTHORIZED USE OF A GOD TOOL!");
-            send_reply_error(from);
+            send_magic_error(from);
             return;
         }
         int len = request_string.length();
@@ -644,8 +694,8 @@ public abstract class Magical extends HabitatMod {
                     context = "context-" + context;
                 }
                 context = context.replace('{', '_');            // There is no underscore in VICE
-                send_reply_error(from);                         // Need to clear the GOD MODE flag on the client.
-                if (!Region.IsRoomForMyAvatarIn(context, from)) {
+                send_magic_error(from);                         // Need to clear the GOD MODE flag on the client.
+                if (!Region.IsRoomForMyAvatarIn(context, avatar)) {
                     object_say(from, context + " is full.");
                 } else {
                     avatar.savedMagical = null;
@@ -679,7 +729,7 @@ public abstract class Magical extends HabitatMod {
         Avatar avatar = (Avatar) avatar_target_check(target);
         if (avatar != null) {
             object_broadcast(noid, "Where she stops, nobody knows!");
-            send_reply_success(from);
+            send_magic_success(from);
             avatar.x = 80;
             avatar.y = 132;
             String destination = avatar.turf;           
@@ -694,7 +744,7 @@ public abstract class Magical extends HabitatMod {
 
         } else {
             object_say(from, "Nothing happens.");
-            send_reply_error(from);
+            send_magic_error(from);
         }       
     }
 

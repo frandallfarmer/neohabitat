@@ -8,6 +8,7 @@
 			"town_dir": "nowhere",
 			"port_dir": "everywhere",
 			"type": "Region",
+	        "realm": "Backroom",        
 			"nitty_bits": 3,
 			"neighbors": ["context-staging","context-staging","context-staging","context-staging" ]
 		}

@@ -3,19 +3,20 @@
     "ref": "context-Woods_5y", 
     "capacity": 64, 
     "type": "context", 
-    "name": "Woods Rd", 
+    "name": "Woods Rd/I-5", 
     "mods": [
       {
         "town_dir": LEFT,
-        "port_dir": LEFT,
+        "port_dir": DOWN,
         "neighbors": [
           "context-Woods_5z", 
-          "context-OutamyWy_cross", 
+          "context-Fast_Ln_cross", 
           "context-Woods_5x", 
           ""
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
-        "nitty_bits": 1, 
+        "nitty_bits": 3, 
         "type": "Region"
       }
     ]
@@ -53,9 +54,7 @@
     "ref": "item-street.Woods_5y", 
     "mods": [
       {
-        "orientation": 8, 
-        "height": 0, 
-        "width": 0, 
+        "orientation": 8,  
         "gr_state": 13, 
         "y": 12, 
         "x": 68, 
@@ -74,17 +73,17 @@
         "orientation": 16, 
         "ascii": [
           87,
-		  111,
-		  111,
-		  100,
-		  115,
-		  32,
-		  82,
-		  100 
+          111,
+          111,
+          100,
+          115,
+          32,
+          82,
+          100 
         ], 
         "gr_state": 4, 
         "y": 133, 
-        "x": 67, 
+        "x": 64, 
         "type": "Sign"
       }
     ], 
@@ -93,30 +92,30 @@
     "in": "context-Woods_5y"
   },
   {
-    "ref": "item-sign2.Woods_5y", 
+    "ref": "item-Short_sign1.Woods_5y", 
     "mods": [
       {
         "style": 5, 
-        "orientation": 208, 
+        "orientation": 16, 
         "ascii": [
           68,
-		  78,
-		  84,
-		  79,
-		  87,
-		  78,
-		  128,
-		  133,
-		  126
+          78,
+          84,
+          79,
+          87,
+          78,
+          128,
+          133,
+          126
         ], 
         "gr_state": 7, 
         "y": 160, 
-        "x": 113, 
-        "type": "Sign"
+        "x": 112, 
+        "type": "Short_sign"
       }
     ], 
     "type": "item", 
-    "name": "Sign", 
+    "name": "Short_sign", 
     "in": "context-Woods_5y"
   },
   {
@@ -124,7 +123,7 @@
     "mods": [
       {
         "y": 42, 
-        "x": 103, 
+        "x": 100, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 173
@@ -139,7 +138,7 @@
     "mods": [
       {
         "y": 42, 
-        "x": 122, 
+        "x": 120, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 172
@@ -154,7 +153,7 @@
     "mods": [
       {
         "y": 38, 
-        "x": 6, 
+        "x": 4, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 172
@@ -169,7 +168,7 @@
     "mods": [
       {
         "y": 38, 
-        "x": 26, 
+        "x": 24, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 172
@@ -184,7 +183,7 @@
     "mods": [
       {
         "y": 40, 
-        "x": 54, 
+        "x": 52, 
         "style": 1, 
         "type": "Tree", 
         "orientation": 172

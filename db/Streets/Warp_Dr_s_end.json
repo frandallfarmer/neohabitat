@@ -1,0 +1,220 @@
+[
+  {
+    "ref": "context-Warp_Dr_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Warp Dr south", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Warp_Dr_123_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7299.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Wall.9b55.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Wall.9b37.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Teleport.7d76.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "address": "Pop-Warp Dr South", 
+        "y": 133, 
+        "x": 28, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.040b.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 100, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Bush.dc83.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 55, 
+        "x": 52, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.f2dc.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 132, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.8792.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 64, 
+        "x": 124, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Street.e601.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 204, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.c3cd.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 92, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.e3bd.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 58, 
+        "x": 112, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.19d7.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 42, 
+        "x": 76, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }, 
+  {
+    "ref": "item-Plant.ae49.Warp_Dr_s_end", 
+    "mods": [
+      {
+        "y": 39, 
+        "x": 104, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Warp_Dr_s_end"
+  }
+]

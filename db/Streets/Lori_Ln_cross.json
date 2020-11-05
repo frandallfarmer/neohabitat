@@ -1,0 +1,156 @@
+[
+  {
+    "ref": "context-Lori_Ln_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Lori Ln", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Baker_St_cross", 
+          "context-Lori_Ln_613_front", 
+          "context-Over_Ave_cross", 
+          "context-Lori_Ln_513_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6be6.Lori_Ln_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Lori_Ln_cross"
+  }, 
+  {
+    "ref": "item-Sky.64cf.Lori_Ln_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Lori_Ln_cross"
+  }, 
+  {
+    "ref": "item-Street.1f69.Lori_Ln_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Lori_Ln_cross"
+  }, 
+  {
+    "ref": "item-Sign.15da.Lori_Ln_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          76, 
+          79, 
+          82, 
+          73, 
+          32, 
+          76, 
+          78, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Lori_Ln_cross"
+  }, 
+  {
+    "ref": "item-Tree.e4a5.Lori_Ln_cross", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 112, 
+        "style": 8, 
+        "type": "Tree", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-Lori_Ln_cross"
+  }, 
+  {
+    "ref": "item-Bush.4d0d.Lori_Ln_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "gr_state": 2, 
+        "y": 135, 
+        "x": 32, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Lori_Ln_cross"
+  }
+]

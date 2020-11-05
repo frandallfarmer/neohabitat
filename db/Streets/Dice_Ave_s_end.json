@@ -1,0 +1,113 @@
+[
+  {
+    "ref": "context-Dice_Ave_s_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Dice Ave south", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Dice_Ave_11_front", 
+          "", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.cb4c.Dice_Ave_s_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_s_end"
+  }, 
+  {
+    "ref": "item-Sky.a20e.Dice_Ave_s_end", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Dice_Ave_s_end"
+  }, 
+  {
+    "ref": "item-Street.df6e.Dice_Ave_s_end", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Dice_Ave_s_end"
+  }, 
+  {
+    "ref": "item-Bush.7835.Dice_Ave_s_end", 
+    "mods": [
+      {
+        "y": 37, 
+        "x": 128, 
+        "type": "Bush", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Dice_Ave_s_end"
+  }, 
+  {
+    "ref": "item-Streetlamp.7f5b.Dice_Ave_s_end", 
+    "mods": [
+      {
+        "y": 134, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Dice_Ave_s_end"
+  }, 
+  {
+    "ref": "item-Teleport.422d.Dice_Ave_s_end", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "address": "Pop-Dice Ave South", 
+        "y": 132, 
+        "x": 24, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Dice_Ave_s_end"
+  }
+]

@@ -1,0 +1,266 @@
+[
+  {
+    "ref": "context-hatchery", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "NeoHabitat Immigration", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "port_dir": UP, 
+        "type": "Region",
+        "orientation": 0,
+        "neighbors": [
+          "",
+          "context-Downtown_4d",
+          "",
+          ""
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.f9k5.hatchery", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 58, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-hatchery"
+  }, 
+  {
+    "ref": "item-ground.f8k4.hatchery", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 80, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-hatchery"
+  },   
+  {
+    "ref": "item-chair1.h9k1.hatchery", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 140, 
+        "gr_state": 0, 
+        "y": 146, 
+        "x": 120, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-hatchery"
+  },
+  {
+    "ref": "item-door.h9k1.hatchery", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "connection": "context-Downtown_4d", 
+        "y": 32, 
+        "x": 68,
+        "style": 4,		
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": ".", 
+    "in": "context-hatchery"
+  },
+  {
+    "ref": "item-countertop1.a9k5.hatchery", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 116,  
+        "gr_state": 0, 
+        "y": 143, 
+        "x": 108, 
+        "type": "Countertop", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-hatchery"
+  },
+  {
+    "ref": "item-glue1.x9m2.hatchery", 
+    "mods": [
+      {
+		"x_offset_1": 0,
+        "y_offset_1": 223,
+		"x_offset_2": 0,
+        "y_offset_2": 0,
+		"x_offset_3": 0,
+        "y_offset_3": 0,
+		"x_offset_4": 0,
+		"y_offset_4": 0,
+		"x_offset_5": 0,
+		"y_offset_5": 0,
+		"x_offset_6": 0,
+        "y_offset_6": 0, 
+        "orientation": 0,    
+        "gr_state": 1, 
+        "y": 143, 
+        "x": 102, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-hatchery"
+  },  
+  {
+    "ref": "item-knickknack1.d9k7.hatchery", 
+    "mods": [
+      {
+        "style": 9, 
+        "orientation": 1, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue1.x9m2.hatchery"
+  }, 
+  {
+    "ref": "item-countertop2.x9m2.hatchery", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 116, 
+        "gr_state": 0, 
+        "y": 143, 
+        "x": 10, 
+        "type": "Countertop", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-hatchery"
+  },
+  {
+    "ref": "item-glue2.h9o1.hatchery", 
+    "mods": [
+      {
+		"x_offset_1": 0,
+        "y_offset_1": 223,
+		"x_offset_2": 0,
+        "y_offset_2": 0,
+		"x_offset_3": 0,
+        "y_offset_3": 0,
+		"x_offset_4": 0,
+		"y_offset_4": 0,
+		"x_offset_5": 0,
+		"y_offset_5": 0,
+		"x_offset_6": 0,
+        "y_offset_6": 0, 
+        "orientation": 0,    
+        "gr_state": 1, 
+        "y": 143, 
+        "x": 2, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-hatchery"
+  },   
+  {
+    "ref": "item-knickknack2.l2k9.hatchery", 
+    "mods": [
+      {
+        "style": 9, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-glue2.h9o1.hatchery"
+  }, 
+  {
+    "ref": "item-chair2.t9k1.hatchery", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 140, 
+        "gr_state": 0, 
+        "y": 146, 
+        "x": 20, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-hatchery"
+  },
+  {
+    "ref": "item-sign.x8m0.hatchery", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 244, 
+        "ascii": [
+          78,
+		  101,
+		  111,
+		  72,
+		  97,
+		  98,
+		  105,
+		  116,
+		  97,
+		  116,
+		  32,
+		  73,
+		  109,
+		  109,
+		  105,
+		  103,
+		  114,
+		  97,
+		  116,
+		  105,
+		  111,
+		  110
+        ], 
+        "gr_state": 2, 
+        "y": 108, 
+        "x": 36, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-hatchery"
+  }
+]

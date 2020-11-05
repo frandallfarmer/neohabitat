@@ -1,0 +1,162 @@
+[
+  {
+    "ref": "context-Foon_Ave_27_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "27 Foon Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Foon_Ave_27_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.edd0.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Wall.b1d6.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Window.466d.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 60, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Couch.d5a2.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 132, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Chest.2729.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Door.a9da.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "orientation": 252, 
+        "key_lo": 0, 
+        "connection": "context-Foon_Ave_27_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.10e3.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Window.9bac.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 88, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Foon_Ave_27_interior"
+  }, 
+  {
+    "ref": "item-Chair.b9d4.Foon_Ave_27_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Foon_Ave_27_interior"
+  }
+]

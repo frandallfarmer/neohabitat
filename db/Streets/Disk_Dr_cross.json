@@ -1,0 +1,173 @@
+[
+  {
+    "ref": "context-Disk_Dr_cross", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Disk Dr", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-Disk_Dr_627_front", 
+          "context-EZ_St_cross", 
+          "context-Disk_Dr_527_front", 
+          "context-Mince_St_cross"
+        ],
+        "realm": "Streets",		
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.50ed.Disk_Dr_cross", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Disk_Dr_cross"
+  }, 
+  {
+    "ref": "item-Sky.d6bf.Disk_Dr_cross", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Disk_Dr_cross"
+  }, 
+  {
+    "ref": "item-Street.c9ec.Disk_Dr_cross", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Disk_Dr_cross"
+  }, 
+  {
+    "ref": "item-Sign.76ac.Disk_Dr_cross", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          68, 
+          105, 
+          115, 
+          107, 
+          32, 
+          68, 
+          114, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 4, 
+        "y": 30, 
+        "x": 100, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Disk_Dr_cross"
+  }, 
+  {
+    "ref": "item-Plant.e2db.Disk_Dr_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 130, 
+        "x": 124, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_cross"
+  }, 
+  {
+    "ref": "item-Teleport.5a8e.Disk_Dr_cross", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "address": "Pop-Disk Dr", 
+        "y": 128, 
+        "x": 12, 
+        "type": "Teleport", 
+        "activeState": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Disk_Dr_cross"
+  }, 
+  {
+    "ref": "item-Plant.1fc0.Disk_Dr_cross", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 49, 
+        "mass": 1, 
+        "y": 131, 
+        "x": 136, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Disk_Dr_cross"
+  }
+]

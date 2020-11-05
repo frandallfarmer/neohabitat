@@ -1,0 +1,117 @@
+[
+  {
+    "ref": "context-Kings_Rd_310_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "310 Kings Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Kings_Rd_310_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.364c.Kings_Rd_310_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 140
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kings_Rd_310_interior"
+  }, 
+  {
+    "ref": "item-Wall.6f96.Kings_Rd_310_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kings_Rd_310_interior"
+  }, 
+  {
+    "ref": "item-Table.c79c.Kings_Rd_310_interior", 
+    "mods": [
+      {
+        "orientation": 112, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 84, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Kings_Rd_310_interior"
+  }, 
+  {
+    "ref": "item-Door.cc71.Kings_Rd_310_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "connection": "context-Kings_Rd_310_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kings_Rd_310_interior"
+  }, 
+  {
+    "ref": "item-Bed.437e.Kings_Rd_310_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 96, 
+        "type": "Bed", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Kings_Rd_310_interior"
+  }, 
+  {
+    "ref": "item-Chair.70e4.Kings_Rd_310_interior", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 56, 
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kings_Rd_310_interior"
+  }
+]

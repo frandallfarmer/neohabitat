@@ -1,0 +1,234 @@
+[
+  {
+    "ref": "context-CTF_7015", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture The Flag Field #3", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-CTF_7016", 
+          "context-CTF_7018", 
+          "context-CTF_7014", 
+          "context-CTF_7012"
+        ],
+        "realm": "CTF", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Tree1.s8f9.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 197, 
+        "gr_state": 3, 
+        "y": 57, 
+        "x": 80, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Tree2.x9c8.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 172, 
+        "gr_state": 3, 
+        "y": 75, 
+        "x": 36, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Tree3.p4k2.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 236, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 124, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Ground.g8s7.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Sky.b9d8.CTF_7015", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Plant1.s8f7.CTF_7015", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 148, 
+        "x": 12, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Bush1.x9c8.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 80, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 108, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Bush2.m4n2.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 56, 
+        "gr_state": 0, 
+        "y": 138, 
+        "x": 56, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Tree4.q8d7.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 173, 
+        "gr_state": 3, 
+        "y": 71, 
+        "x": 24, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Tree5.u8s7.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 196, 
+        "gr_state": 3, 
+        "y": 57, 
+        "x": 76, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Plant2.s9f8.CTF_7015", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 145, 
+        "x": 108, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Tree6.f8s7.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 236, 
+        "gr_state": 1, 
+        "y": 33, 
+        "x": 80, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }, 
+  {
+    "ref": "item-Tree7.c9v8.CTF_7015", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 172, 
+        "gr_state": 0, 
+        "y": 35, 
+        "x": 32, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7015"
+  }
+]

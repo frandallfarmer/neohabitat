@@ -1,0 +1,13 @@
+Neohabitat is a relaunch of the first massively multiplayer online roleplaying game, Lucasfilm's Habitat. Neohabitat is an open-source project led by Randy Farmer, one of Habitat's creators, reviving the original Habitat world.
+
+We maintain a demo server running the latest NeoHabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
+
+Here's how to get inworld:
+
+When you've completed running this installer, double click on the Desktop icon and wait until you reach the blue title screen. Press Enter to continue.
+
+Type in the avatar name you wish to use and press Enter.
+
+Once you see the Habitat title screen, press Alt + N and Enter and you will load into the world. It takes a little while, so sit back and relax!
+
+If you want to use Habitat with a real C64, please visit http://www.neohabitat.org for instructions.

@@ -1,0 +1,178 @@
+[
+  {
+    "ref": "context-Foon_Ave_67_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "67 Foon Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Foon_Ave_67_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.8460.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Wall.d96e.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Display_case.ef89.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 112, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Table.05f8.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 133, 
+        "x": 64, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Door.3421.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "orientation": 140, 
+        "key_lo": 0, 
+        "connection": "context-Foon_Ave_67_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-House_cat.ad45.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 68, 
+        "type": "House_cat", 
+        "orientation": 120
+      }
+    ], 
+    "type": "item", 
+    "name": "House_cat", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Chair.82e6.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 112, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Chair.a2d0.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 36, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Chair.4c9c.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 145, 
+        "x": 72, 
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Foon_Ave_67_interior"
+  }, 
+  {
+    "ref": "item-Window.7edb.Foon_Ave_67_interior", 
+    "mods": [
+      {
+        "y": 67, 
+        "x": 72, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Foon_Ave_67_interior"
+  }
+]

@@ -12,7 +12,8 @@
           "context-Woods_gr", 
           "context-Woods_gr", 
           "context-Woods_gs"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": "", 
@@ -201,8 +202,8 @@
     "ref": "item-tree.1346.Woods_gs", 
     "mods": [
       {
-        "y": 138, 
-        "x": 96, 
+        "y": 141, 
+        "x": 104, 
         "style": 7, 
         "type": "Tree", 
         "orientation": 1
@@ -225,6 +226,24 @@
     ], 
     "type": "item", 
     "name": "Tree", 
+    "in": "context-Woods_gs"
+  },
+  {
+    "ref": "item-magic_immobile1.f8v7.Woods_gs",
+    "mods": [
+      {
+        "type": "Magic_immobile",
+        "y": 159,
+        "x": 108,
+        "style": 0,
+		"gr_state": 2,
+        "orientation": 8,
+        "magic_type": 22,
+		"magic_data": 23451
+      }
+    ],
+    "type": "item",
+    "name": "Magic_immobile",
     "in": "context-Woods_gs"
   }
 ]

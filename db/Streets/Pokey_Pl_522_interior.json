@@ -1,0 +1,134 @@
+[
+  {
+    "ref": "context-Pokey_Pl_522_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "522 Pokey Pl", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Pokey_Pl_522_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.e93a.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pokey_Pl_522_interior"
+  }, 
+  {
+    "ref": "item-Wall.e1df.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 72
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pokey_Pl_522_interior"
+  }, 
+  {
+    "ref": "item-Table.3481.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 153, 
+        "x": 48, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Pokey_Pl_522_interior"
+  }, 
+  {
+    "ref": "item-Chest.4b93.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "orientation": 196, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 112, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Pokey_Pl_522_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.1244.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "y": 135, 
+        "x": 140, 
+        "type": "Floor_lamp", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Pokey_Pl_522_interior"
+  }, 
+  {
+    "ref": "item-Door.75d9.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "orientation": 156, 
+        "key_lo": 0, 
+        "connection": "context-Pokey_Pl_522_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 8, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Pokey_Pl_522_interior"
+  }, 
+  {
+    "ref": "item-Bed.aab2.Pokey_Pl_522_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 84, 
+        "type": "Bed", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Pokey_Pl_522_interior"
+  }
+]

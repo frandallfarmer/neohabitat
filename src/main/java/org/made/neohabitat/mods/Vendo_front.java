@@ -68,7 +68,7 @@ public class Vendo_front extends Openable implements Copyable {
     public Vendo_front(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
         OptInteger open_flags, OptInteger key_lo, OptInteger key_hi,
         OptInteger item_price, OptInteger display_item, OptInteger take, int[] prices) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_lo, key_hi, new OptInteger(0));
         setVendoFrontState(item_price.value(0), display_item.value(0), take.value(0), prices); 
     }
 

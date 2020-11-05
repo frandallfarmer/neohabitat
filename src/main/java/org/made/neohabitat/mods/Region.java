@@ -38,7 +38,7 @@ import org.made.neohabitat.Toggle;
 
 public class Region extends Container implements UserWatcher, ContextMod, ContextShutdownWatcher,  Constants {
     
-    public static String    MOTD = "Welcome to Habitat! For help see http://neohabitat.org";
+    public static String    MOTD = "Welcome to Habitat! Browse to http://v.ht/habitat for 2nd screen web tour guide.";
     
     /** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
     public static boolean   NEOHABITAT_FEATURES = true; 
@@ -58,7 +58,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public static Hashtable<String, User> NameToUser = new Hashtable<String, User>();    
     
     /** All the currently instantiated regions for region transition testing  */
-    public static Hashtable<String, Region> RefToRegion = new Hashtable<String, Region>();    
+    public static Hashtable<String, Region> RefToRegion = new Hashtable<String, Region>();
+    
+    /** The last persisted C64 Heap Size for each region in this world */
+    public static Hashtable<String, Integer> RefToHeap = new Hashtable<String, Integer>();
 
     public int HabitatClass() {
         return CLASS_REGION;
@@ -114,21 +117,17 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public String  realm    = "unknown";
     public boolean locked   = false;
 
-    /** C64 Heap Emulation */
-    public  int[]   class_ref_count     = new int[256];
-    public  int[][] resource_ref_count  = new int[4][256];      // images, heads, behaviors, sounds
-    public  int     space_usage         = 0;
-    
+
     /** A handle to the mandatory singleton ghost object for this region */    
     
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
-        "town_dir", "port_dir", "max_avatars", "neighbors", "is_turf", "resident", "realm", "locked" })
+        "town_dir", "port_dir", "max_avatars", "neighbors", "is_turf", "resident", "realm", "locked", "shutdown_size" })
     public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
         OptInteger nitty_bits, OptInteger depth, OptInteger lighting,
         OptString town_dir, OptString port_dir, OptInteger max_avatars,
         String[] neighbors, OptBoolean is_turf, OptString resident, OptString realm,
-        OptBoolean locked) {
-        super(style, x, y, orientation, gr_state, new OptBoolean(false));
+        OptBoolean locked, OptInteger shutdown_size) {
+        super(style, x, y, orientation, gr_state, new OptBoolean(false), shutdown_size);
         if (nitty_bits.value(-1) != -1) {
             this.nitty_bits = unpackBits(nitty_bits.value());
         }
@@ -147,8 +146,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 
     public Region(int style, int x, int y, int orientation, int gr_state, boolean[] nitty_bits,
         int depth, int lighting, String town_dir, String port_dir, int max_avatars,
-        String[] neighbors, boolean is_turf, String resident, String realm, boolean locked) {
-        super(style, x, y, orientation, gr_state, false);
+        String[] neighbors, boolean is_turf, String resident, String realm, boolean locked, int shutdown_size) {
+        super(style, x, y, orientation, gr_state, false, shutdown_size);
         this.nitty_bits = nitty_bits;
         this.depth = depth;
         this.lighting = lighting;
@@ -171,7 +170,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         Region.RefToRegion.put(obj_id(), this);
     }
     
-    private Ghost regionGhost() {
+    public Ghost regionGhost() {
         return (Ghost) noids[GHOST_NOID];
     }
 
@@ -279,6 +278,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
         avatar.gen_flags[MODIFIED] = true;                      
         avatar.checkpoint_object(avatar);
+        gen_flags[MODIFIED] = true;
+        checkpoint_object(this);		// Since we're now tracking heap usage between sessions, we need to update the region state.
     }
     
     private int avatarsPresent() {
@@ -293,7 +294,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         Avatar avatar = (Avatar) from.getMod(Avatar.class);
         NameToUser.remove(from.name().toLowerCase());
         removeContentsFromRegion(avatar);
-        avatar.note_object_deletion(avatar);
+        if (!avatar.amAGhost)
+        	avatar.note_object_deletion(avatar);
         removeFromObjList(avatar);
     }
 
@@ -314,27 +316,52 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         }
         return null;
     }
-    
-    public static final int AVERAGE_C64_AVATAR_LOAD = 1000; // bytes. Non-scientific spitball guess of additional headroom needed for head image + 4 unique items.
-    
-    public static boolean IsRoomForMyAvatarIn(String regionRef, User from) {
-        Region region = Region.RefToRegion.get(regionRef);
         
-        if (region == null)
-            return true;                // if there is no instantiated region, there must be room!
+    public static boolean IsRoomForMyAvatarIn(String regionRef, Avatar avatar) {
+        Region target = Region.RefToRegion.get(regionRef);
+        
+        if (target != null)
+        	return isRoomForMyAvatar(avatar, target);		// Region is instantiated, so ask that region for permission...
+
+        // Region is "offline" - not instantiated - So we use the global store of region Heap sizes to consider rejecting the request.
+        
+        if (!RefToHeap.containsKey(regionRef))				// Never set, so there must be room. A region design constraint. 
+        	return true;									// TODO: RefToHeap loader at server boot to make this true across boots. FRF
+        
+        int heapAvatar = avatar.setContainerShutdownSize();
+        int heapRegion = RefToHeap.get(regionRef);
+        int heapRequired = heapAvatar + heapRegion + FIRST_AVATAR_HEAP_SIZE + FIRST_GHOST_HEAP_SIZE;
+        										
+        if (heapRequired >= C64_HEAP_SIZE)
+        	return false;          // There must be room for me, my stuff, a ghost, and whatever is already there...
+        
+        return true;
+        
+        // if there is no instantiated region, there must be room! 
+        // ERROR FALSE FALSE! GET newregion.shutdown_size add FIRST_AVATAR_HEAP_SIZE, avatar.shutdown_size, to compare to do normal memory tests.
+        
                 
-        return region.isRoomForMyAvatar(from);
+        
     }
-    
-    public boolean isRoomForMyAvatar(User from) {
-        if (avatarsPresent() == max_avatars)
+   
+    // If the region we want to travel to is instantiated, we can do an in-memory check in the target region for the anticipated storage requried by the incoming avatar.
+    public static boolean isRoomForMyAvatar(Avatar avatar, Region target) {
+    	
+    	int    instanceSize = avatar.instance_size();		// If there are other avatars, we need only account for instance + contents.
+    	int    bodies       = target.avatarsPresent();
+    	
+    	if (bodies == target.max_avatars)							// TODO: Since multiple people can be between regions at once, this is currently a race. FRF
             return false;
         
-        // TODO: Remove the silly headroom estimate below with something real someday?
-        if (space_usage + AVERAGE_C64_AVATAR_LOAD >= C64_HEAP_SIZE)
+        if (bodies == 0)
+        	instanceSize = FIRST_AVATAR_HEAP_SIZE;			// If the region has only ghosts, we need to make a LOT of room.
+
+        instanceSize += avatar.setContainerShutdownSize();        
+        
+        if (target.space_usage + instanceSize >= target.c64_capacity())
             return false;
         
-        return mem_check_container(avatar(from)); // Check the pocket contents for other overflows.
+        return target.limits_ok(avatar, target); 				// Check the pocket contents for other overflows.
 
     }
     
@@ -348,16 +375,18 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         result.addParameter("depth", depth);
         result.addParameter("lighting", lighting);
         result.addParameter("neighbors", neighbors);
+        result.addParameter("is_turf", is_turf);
+        result.addParameter("realm", realm);
         if (control.toRepository()) {
             result.addParameter("max_avatars", max_avatars);
             result.addParameter("town_dir", town_dir);
             result.addParameter("port_dir", port_dir);
-            result.addParameter("is_turf", is_turf);
             result.addParameter("resident", resident);
-            result.addParameter("realm", realm);
             result.addParameter("locked", locked);
+            result.addParameter("shutdown_size", space_usage);		// FRF TODO Is this correct at region shutdown or should I snapshot space_usage into shutdown_size elsewhere?
         }
         result.finish();
+    	RefToHeap.put(object().baseRef(), space_usage);				// Update the "global" in-memory reference for the region's heap usage, in case it shuts down.
         return result;
     }
     
@@ -425,6 +454,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
      * @param cont
      */
     public static void removeContentsFromRegion(Container cont) {
+    	cont.shutdown_size = cont.space_usage;								// Persist container/avatar client storage requirements before individual items are removed.
         for (int i = 0; i < cont.capacity(); i++) {
             HabitatMod obj = cont.contents(i);
             if (obj != null)
@@ -437,10 +467,13 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             return;
         
         Container cont = obj.container();
-        if (cont != null & cont.opaque_container())
+        
+        if (cont != null & obj.container_is_opaque(cont, obj.y)) {
             obj.note_instance_deletion(obj);
-        else
+            obj.note_image_deletion(obj);
+        } else {
             obj.note_object_deletion(obj);
+        }
         
         removeFromObjList(obj);
     }

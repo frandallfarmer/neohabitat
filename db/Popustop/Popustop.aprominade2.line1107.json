@@ -3,18 +3,19 @@
     "capacity": 64, 
     "mods": [
       {
-        "town_dir": DOWN, 
+        "town_dir": RIGHT, 
         "neighbors": [
+          "context-Woods_1284", 
           "", 
-          "context-Popustop.afront2.line1106", 
-          "", 
-          "context-Woods_5x"
+          "context-Woods_1164", 
+          "context-Popustop.afront2.line1106"
         ], 
         "realm": "Popustop", 
         "aliases" : [ "pop-hotel", "pop-motel", "pop-apartment", "pop-apt" ],
-        "orientation": 2, 
+        "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": "", 
+        "port_dir": "",
+        "depth": 25,		
         "type": "Region"
       }
     ], 
@@ -41,7 +42,7 @@
     "ref": "item-ground.Popustop.aprominade2.line1107", 
     "mods": [
       {
-        "y": 1, 
+        "y": 4, 
         "x": 0, 
         "style": 1, 
         "type": "Ground", 
@@ -65,6 +66,23 @@
     ], 
     "ref": "item-sky2.Popustop.aprominade2.line1107", 
     "name": "Sky", 
+    "in": "context-Popustop.aprominade2.line1107"
+  },
+  {
+    "ref": "item-street.d9w9.Popustop.aprominade2.line1107", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "height": 0, 
+        "width": 0, 
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
     "in": "context-Popustop.aprominade2.line1107"
   },  
   {
@@ -263,14 +281,14 @@
     "ref": "item-trap5.Popustop.aprominade2.line1107", 
     "mods": [
       {
-        "lower_right_x": 40, 
-        "upper_left_x": 16,
-        "upper_right_x": 20,
+        "lower_right_x": 20, 
+        "upper_left_x": 9,
+        "upper_right_x": 11,
         "lower_left_x": 0, 
         "trapezoid_type": 0, 
-        "y": 5, 
-        "x": 56, 
-        "height": 44, 
+        "y": 28, 
+        "x": 66, 
+        "height": 20, 
         "type": "Trapezoid", 
         "orientation": 8
       }

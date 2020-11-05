@@ -12,7 +12,8 @@
           "", 
           "context-OutamyWy_429_front", 
           "context-OutamyWy_529_interior"
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": RIGHT, 
@@ -220,7 +221,7 @@
         "x": 16, 
         "type": "Building", 
         "orientation": 196,
-        "connection": "context-OutamyWy_529_interior",		
+        "connection": "context-OutamyWy_529_interior",      
         "gr_state": 10
       }
     ], 
@@ -236,7 +237,7 @@
         "x": 20, 
         "type": "Building", 
         "orientation": 0,
-        "connection": "context-OutamyWy_529_interior",		
+        "connection": "context-OutamyWy_529_interior",      
         "gr_state": 4
       }
     ], 
@@ -252,7 +253,7 @@
         "x": 24, 
         "type": "Building", 
         "orientation": 0,
-        "connection": "context-OutamyWy_529_interior",		
+        "connection": "context-OutamyWy_529_interior",      
         "gr_state": 9
       }
     ], 

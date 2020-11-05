@@ -1,0 +1,28 @@
+{
+  "name": "pushserver",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "https://frandallfarmer.github.io/neohabitat/",
+  "scripts": {
+    "start": "./node_modules/supervisor/lib/cli-wrapper.js -i public,views -w bin,constants,habiproxy,routes -- ./bin/pushserver",
+    "debug": "./node_modules/supervisor/lib/cli-wrapper.js --inspect -i public,views -w bin,constants,habiproxy,routes -- bin/pushserver"
+  },
+  "dependencies": {
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "debug": "~2.6.9",
+    "ejs": "~2.5.7",
+    "express": "~4.15.5",
+    "mongo": "^0.1.0",
+    "mongodb": "^3.1.13",
+    "morgan": "~1.9.1",
+    "node-websockify": "^1.0.2",
+    "serve-favicon": "~2.4.5",
+    "server-send-events": "0.0.6",
+    "showdown": "^1.9.1",
+    "supervisor": "^0.12.0",
+    "winston": "^2.4.0",
+    "yamljs": "^0.3.0"
+  }
+}

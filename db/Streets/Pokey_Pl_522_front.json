@@ -1,0 +1,199 @@
+[
+  {
+    "ref": "context-Pokey_Pl_522_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "522 Pokey Pl", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Pokey_Pl_522_interior", 
+          "context-Pokey_Pl_cross", 
+          "", 
+          "context-Pokey_Pl_422_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.e77d.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Wall.48dd.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Wall.4750.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 236
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Building.7f34.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Pokey_Pl_522_interior", 
+        "type": "Building", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Bush.9672.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 28, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Sign.4558.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          53, 
+          50, 
+          50, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Mailbox.4df7.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 88, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Street.3ae3.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 252, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pokey_Pl_522_front"
+  }, 
+  {
+    "ref": "item-Fence.9b5d.Pokey_Pl_522_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pokey_Pl_522_front"
+  }
+]

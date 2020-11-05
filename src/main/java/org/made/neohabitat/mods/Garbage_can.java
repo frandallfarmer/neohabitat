@@ -51,20 +51,20 @@ public class Garbage_can extends Openable implements Copyable {
         return false;
     }
 
-    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_hi", "key_lo" })
+    @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_hi", "key_lo", "shutdown_size"  })
     public Garbage_can(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
-        OptInteger open_flags, OptInteger key_hi, OptInteger key_lo) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo);
+        OptInteger open_flags, OptInteger key_hi, OptInteger key_lo, OptInteger shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo, shutdown_size);
     }
 
     public Garbage_can(int style, int x, int y, int orientation, int gr_state, boolean restricted,
-            boolean[] open_flags, int key_hi, int key_lo) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo);
+            boolean[] open_flags, int key_hi, int key_lo, int shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo, shutdown_size);
     }
 
     @Override
     public HabitatMod copyThisMod() {
-        return new Garbage_can(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo);
+        return new Garbage_can(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo, shutdown_size);
     }
 
     @Override

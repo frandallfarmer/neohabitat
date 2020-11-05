@@ -1,6 +1,6 @@
 version: '2'
 services:
-  mariadb:
+  neohabitatmariadb:
     image: mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=dev
@@ -11,7 +11,7 @@ services:
       - ./data/mariadb:/var/lib/mysql
     ports:
       - "3306:3306"
-  mongo:
+  neohabitatmongo:
     image: mongo:3.0
     command: "--smallfiles"
     volumes:
@@ -26,22 +26,31 @@ services:
     volumes:
       - .:/neohabitat
     environment:
-      - NEOHABITAT_MONGO_HOST=mongo:27017
+      - NEOHABITAT_BRIDGE_ELKO_HOST=127.0.0.1:2018
+      - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=true
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
+      - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - NODE_ENV=development
+      - PUSH_SERVER_CONFIG=./config.dev.yml
+      - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
     ports:
       - "1337:1337"
+      - "1701:1701"
       - "1898:1898"
+      - "1987:1987"
+      - "2018:2018"
       - "9000:9000"
+      - "9229:9229"
     depends_on:
-      - mongo
+      - neohabitatmongo
   qlink:
     image: philcollins/qlink
     environment:
-      - QLINK_DB_HOST=mariadb
-      - QLINK_DB_JDBC_URI=jdbc:mysql://mariadb:3306/qlink
+      - QLINK_DB_HOST=neohabitatmariadb
+      - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink
       - QLINK_DB_USERNAME=qlink
       - QLINK_DB_PASSWORD=qlink
       - QLINK_HABITAT_HOST=neohabitat
@@ -50,4 +59,4 @@ services:
       - "1986:1986"
     depends_on:
       - neohabitat
-      - mariadb
+      - neohabitatmariadb

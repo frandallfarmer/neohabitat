@@ -12,7 +12,8 @@
           "", 
           "context-OutamyWy_s_end", 
           "context-OutamyWy_129_interior"
-        ], 
+        ],
+        "realm": "Streets",            
         "orientation": 0, 
         "nitty_bits": 3, 
         "port_dir": LEFT, 

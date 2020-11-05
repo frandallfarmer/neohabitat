@@ -1,0 +1,134 @@
+[
+  {
+    "ref": "context-Kludge_Ct_918_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "918 Kludge Ct", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Kludge_Ct_918_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.95ee.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kludge_Ct_918_interior"
+  }, 
+  {
+    "ref": "item-Wall.ee4f.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kludge_Ct_918_interior"
+  }, 
+  {
+    "ref": "item-Table.ab2d.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "orientation": 212, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 131, 
+        "x": 20, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Kludge_Ct_918_interior"
+  }, 
+  {
+    "ref": "item-Chest.f3fd.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 32, 
+        "x": 116, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Kludge_Ct_918_interior"
+  }, 
+  {
+    "ref": "item-Couch.2418.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 56, 
+        "type": "Couch", 
+        "orientation": 228
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Kludge_Ct_918_interior"
+  }, 
+  {
+    "ref": "item-Door.2dac.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "orientation": 148, 
+        "key_lo": 0, 
+        "connection": "context-Kludge_Ct_918_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 28, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kludge_Ct_918_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.7804.Kludge_Ct_918_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 8, 
+        "type": "Floor_lamp", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Kludge_Ct_918_interior"
+  }
+]

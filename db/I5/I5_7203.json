@@ -1,0 +1,120 @@
+[
+  {
+    "ref": "context-I5_7203", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "I-5", 
+    "mods": [
+      {
+        "town_dir": "\u007f", 
+        "neighbors": [
+          "context-I5_7202", 
+          "", 
+          "context-I5_7204", 
+          ""
+        ],
+        "realm": "I5", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "\u007f", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Bush.d8k1.I5_7203", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 148, 
+        "gr_state": 0, 
+        "y": 133, 
+        "x": 112, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-I5_7203"
+  }, 
+  {
+    "ref": "item-Tree1.j3m4.I5_7203", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 189, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 60, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7203"
+  }, 
+  {
+    "ref": "item-Tree2.y8j9.I5_7203", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 132, 
+        "x": 24, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-I5_7203"
+  }, 
+  {
+    "ref": "item-Street.q9k1.I5_7203", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-I5_7203"
+  }, 
+  {
+    "ref": "item-Sky.p4d1.I5_7203", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7203"
+  }, 
+  {
+    "ref": "item-Ground.w9e8.I5_7203", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 40, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-I5_7203"
+  }
+]

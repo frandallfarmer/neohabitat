@@ -10,6 +10,7 @@
         "port_dir": RIGHT,
         "type": "Region",
         "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "",

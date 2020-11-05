@@ -86,7 +86,7 @@ public class Escape_device extends HabitatMod implements Copyable {
             if (avatar.turf.equals(current_region().object().ref())) {
                 object_say(from, noid, "You're already home.");
                 send_reply_error(from);
-            } else if (!Region.IsRoomForMyAvatarIn(avatar.turf, from)) {
+            } else if (!Region.IsRoomForMyAvatarIn(avatar.turf, avatar)) {
                 object_say(from, "My turf is full.");
                 send_reply_error(from); 
             } else {

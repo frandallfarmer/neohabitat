@@ -13,9 +13,11 @@
           "context-Downtown_8i", 
           ""
         ], 
+        "realm": "Downtown", 
         "orientation": 2, 
         "nitty_bits": 3, 
-        "port_dir": RIGHT, 
+        "port_dir": RIGHT,
+		"depth": 28, 
         "type": "Region"
       }
     ]

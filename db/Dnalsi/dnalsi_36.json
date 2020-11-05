@@ -13,9 +13,11 @@
           "context-dnalsi_cave3_2c", 
           "context-dnalsi_26"
         ], 
+        "realm": "Dnalsi",
         "orientation": 1, 
-        "nitty_bits": 3, 
-        "port_dir": "", 
+        "nitty_bits": 0, 
+        "port_dir": "",
+        "depth": 30, 
         "type": "Region"
       }
     ]

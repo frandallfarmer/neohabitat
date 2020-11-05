@@ -13,7 +13,8 @@
           "context-Woods_7w", 
           "context-Woods_6v", 
           "context-Woods_5w"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 1, 
         "type": "Region"
@@ -33,7 +34,25 @@
     "type": "item", 
     "name": "Ground", 
     "in": "context-Woods_6w"
-  }, 
+  },
+  {
+    "ref": "item-Magic_immobile.f8d7.Woods_6w", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 31, 
+        "x": 12,
+        "magic_type": 4,
+        "magic_data": 999860, 
+        "type": "Magic_immobile"
+      }
+    ], 
+    "type": "item", 
+    "name": "Magic_immobile", 
+    "in": "context-Woods_6w"
+  },   
   {
     "ref": "item-sky.da0f.Woods_6w", 
     "mods": [

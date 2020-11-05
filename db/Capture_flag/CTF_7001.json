@@ -1,0 +1,415 @@
+[
+  {
+    "ref": "context-CTF_7001", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture the Flag Lobby", 
+    "mods": [
+      {
+        "town_dir": DOWN, 
+        "neighbors": [
+          "context-CTF_7004", 
+          "context-CTF_6405", 
+          "context-CTF_7002", 
+          "context-CTF_7003"
+        ],
+        "realm": "CTF", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Trapezoid1.x6g3.CTF_7001", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 23, 
+        "orientation": 8, 
+        "upper_right_x": 23, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 68, 
+        "height": 75, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Short_sign1.f4g6.CTF_7001", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "ascii": [
+          133, 
+          131, 
+          125, 
+          128, 
+          50
+        ], 
+        "gr_state": 0, 
+        "y": 107, 
+        "x": 68, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Super_trapezoid1.g5h2.CTF_7001", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 0, 
+        "orientation": 0, 
+        "pattern": [
+          170, 
+          85, 
+          85, 
+          85, 
+          86, 
+          165, 
+          101, 
+          101, 
+          89, 
+          89, 
+          101, 
+          165, 
+          89, 
+          89, 
+          102, 
+          101, 
+          89, 
+          89, 
+          105, 
+          101, 
+          89, 
+          89, 
+          101, 
+          101, 
+          86, 
+          165, 
+          101, 
+          101, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 255, 
+        "lower_left_x": 96, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 160, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 1, 
+        "upper_left_x": 95
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Ground.g4h1.CTF_7001", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 80, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Sign1.p5h4.CTF_7001", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 188, 
+        "ascii": [
+          70, 
+          105, 
+          101, 
+          108, 
+          100, 
+          32, 
+          35, 
+          51, 
+          58, 
+          134, 
+          73, 
+          110, 
+          100, 
+          111, 
+          111, 
+          114, 
+          134, 
+          77, 
+          101, 
+          100, 
+          105, 
+          117, 
+          109, 
+          32, 
+          83, 
+          105, 
+          122, 
+          101, 
+          134, 
+          84, 
+          101, 
+          97, 
+          109, 
+          58, 
+          32, 
+          55, 
+          134
+        ], 
+        "gr_state": 2, 
+        "y": 69, 
+        "x": 104, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Sign2.x3v4.CTF_7001", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 172, 
+        "ascii": [
+          70, 
+          105, 
+          101, 
+          108, 
+          100, 
+          32, 
+          35, 
+          49, 
+          58, 
+          134, 
+          80, 
+          114, 
+          97, 
+          99, 
+          116, 
+          105, 
+          99, 
+          101, 
+          32, 
+          43, 
+          134, 
+          83, 
+          104, 
+          111, 
+          114, 
+          116, 
+          32, 
+          71, 
+          97, 
+          109, 
+          101, 
+          115, 
+          134, 
+          84, 
+          101, 
+          97, 
+          109, 
+          58, 
+          32, 
+          53
+        ], 
+        "gr_state": 2, 
+        "y": 70, 
+        "x": 0, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Short_sign2.f3g2.CTF_7001", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 188, 
+        "ascii": [
+          133, 
+          131, 
+          51, 
+          128, 
+          127
+        ], 
+        "gr_state": 0, 
+        "y": 107, 
+        "x": 132, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Short_sign3.j5g3.CTF_7001", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 172, 
+        "ascii": [
+          133, 
+          131, 
+          126, 
+          128, 
+          49
+        ], 
+        "gr_state": 0, 
+        "y": 107, 
+        "x": 4, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Sign3.b4n3.CTF_7001", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 8, 
+        "ascii": [
+          78, 
+          111, 
+          32, 
+          112, 
+          101, 
+          114, 
+          115, 
+          111, 
+          110, 
+          97, 
+          108, 
+          134, 
+          98, 
+          101, 
+          108, 
+          111, 
+          110, 
+          103, 
+          105, 
+          110, 
+          103, 
+          115, 
+          134, 
+          112, 
+          97, 
+          115, 
+          116, 
+          32, 
+          116, 
+          104, 
+          105, 
+          115, 
+          134, 
+          112, 
+          111, 
+          105, 
+          110, 
+          116, 
+          33, 
+          32
+        ], 
+        "gr_state": 3, 
+        "y": 32, 
+        "x": 96, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7001"
+  }, 
+  {
+    "ref": "item-Sign4.c3v4.CTF_7001", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 16, 
+        "ascii": [
+          70, 
+          105, 
+          101, 
+          108, 
+          100, 
+          32, 
+          35, 
+          50, 
+          58, 
+          134, 
+          79, 
+          117, 
+          116, 
+          100, 
+          111, 
+          111, 
+          114, 
+          134, 
+          76, 
+          97, 
+          114, 
+          103, 
+          101, 
+          32, 
+          83, 
+          105, 
+          122, 
+          101, 
+          134, 
+          84, 
+          101, 
+          97, 
+          109, 
+          58, 
+          32, 
+          49, 
+          48
+        ], 
+        "gr_state": 2, 
+        "y": 32, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7001"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "ref": "context-CTF_7010", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture The Flag Field #3", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-CTF_7013", 
+          "context-CTF_7012", 
+          "context-CTF_7011", 
+          "context-CTF_7004"
+        ],
+        "realm": "CTF", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.v8f7.CTF_7010", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7010"
+  }, 
+  {
+    "ref": "item-Sky.s9f8.CTF_7010", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-CTF_7010"
+  }, 
+  {
+    "ref": "item-Bush1.b9k3.CTF_7010", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 44, 
+        "x": 28, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7010"
+  }, 
+  {
+    "ref": "item-Bush2.d9f8.CTF_7010", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 43, 
+        "x": 0, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7010"
+  }, 
+  {
+    "ref": "item-Flag.k3m4.CTF_7010", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "mass": 0, 
+        "gr_state": 0, 
+        "y": 144, 
+        "x": 102, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "context-CTF_7010"
+  }, 
+  {
+    "ref": "item-Bush3.f9s8.CTF_7010", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 44, 
+        "x": 112, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7010"
+  }, 
+  {
+    "ref": "item-Bush4.w9d8.CTF_7010", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 44, 
+        "x": 140, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7010"
+  }
+]

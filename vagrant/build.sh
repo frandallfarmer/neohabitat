@@ -81,6 +81,10 @@ cd /neohabitat
 npm install --no-bin-links
 mvn clean package
 
+# Brings in Pushserver dependencies.
+cd /neohabitat/pushserver
+npm install --no-bin-links
+
 # Installs Neohabitat MongoDB schema and models.
 cd /neohabitat/db
 make clean
@@ -110,9 +114,9 @@ ExecStart=/neohabitat/run
 Environment=NEOHABITAT_MONGO_HOST=127.0.0.1:27017
 Environment=NEOHABITAT_SHOULD_RUN_BRIDGE=false
 Environment=NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
+Environment=NEOHABITAT_SHOULD_RUN_PUSHSERVER=false
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
@@ -133,12 +137,13 @@ Wants=network.target
 WorkingDirectory=/neohabitat
 ExecStart=/neohabitat/run
 Environment=NEOHABITAT_MONGO_HOST=127.0.0.1:27017
+Environment=NEOHABITAT_BRIDGE_ELKO_HOST=127.0.0.1:2018
 Environment=NEOHABITAT_SHOULD_BACKGROUND_BRIDGE=false
 Environment=NEOHABITAT_SHOULD_RUN_BRIDGE=true
 Environment=NEOHABITAT_SHOULD_RUN_NEOHABITAT=false
+Environment=NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target
@@ -148,6 +153,30 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable neohabitat-bridge.service
 sudo systemctl start neohabitat-bridge.service
+
+cat <<EOF | sudo tee /etc/systemd/system/neohabitat-pushserver.service
+[Unit]
+Description=Neohabitat to Habitat protocol pushserver
+After=network.target
+Wants=network.target
+
+[Service]
+WorkingDirectory=/neohabitat/pushserver
+ExecStart=/usr/bin/npm run debug
+Environment=NODE_ENV=development
+Environment=PUSH_SERVER_CONFIG=./config.vagrant.yml
+Environment=PUSH_SERVER_MONGO_URL=mongodb://127.0.0.1
+Restart=always
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Starts Neohabitat pushserver and enables it for launch upon next boot.
+sudo systemctl daemon-reload
+sudo systemctl enable neohabitat-pushserver.service
+sudo systemctl start neohabitat-pushserver.service
 
 # Writes a Systemd service for QuantumLink Reloaded.
 cat <<EOF | sudo tee /etc/systemd/system/qlink.service
@@ -166,7 +195,6 @@ Environment=QLINK_DB_PASSWORD=qlinkpass
 Environment=QLINK_HABITAT_HOST=127.0.0.1
 Restart=always
 RestartSec=20
-LimitNOFILE=16384
 
 [Install]
 WantedBy=multi-user.target

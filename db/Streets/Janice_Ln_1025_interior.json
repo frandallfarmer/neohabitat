@@ -1,0 +1,136 @@
+[
+  {
+    "ref": "context-Janice_Ln_1025_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "1025 Janice Ln", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Janice_Ln_1025_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.6217.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Janice_Ln_1025_interior"
+  }, 
+  {
+    "ref": "item-Wall.26ea.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Janice_Ln_1025_interior"
+  }, 
+  {
+    "ref": "item-Table.707a.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 80, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Janice_Ln_1025_interior"
+  }, 
+  {
+    "ref": "item-Chest.ace5.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 244, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 138, 
+        "x": 128, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Janice_Ln_1025_interior"
+  }, 
+  {
+    "ref": "item-Chair.f908.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 32, 
+        "style": 5, 
+        "type": "Chair", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Janice_Ln_1025_interior"
+  }, 
+  {
+    "ref": "item-Door.3c31.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "key_lo": 0, 
+        "connection": "context-Janice_Ln_1025_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Janice_Ln_1025_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.6bfc.Janice_Ln_1025_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Janice_Ln_1025_interior"
+  }
+]

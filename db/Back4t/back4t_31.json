@@ -11,8 +11,9 @@
           "context-back4t_41", 
           "context-back4t_32", 
           "context-back4t_21", 
-          "context-Woods_6j"
-        ], 
+          ""
+        ],
+        "realm": "Back4t",         
         "orientation": 0, 
         "nitty_bits": 2, 
         "port_dir": "", 

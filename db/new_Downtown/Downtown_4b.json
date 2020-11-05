@@ -6,7 +6,8 @@
     "name": "Adventure Ymporium", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": "",
+        "realm": "Downtown",         
         "neighbors": [
           "", 
           "context-Downtown_5b", 
@@ -15,7 +16,8 @@
         ], 
         "orientation": 3, 
         "nitty_bits": 3, 
-        "port_dir": RIGHT, 
+        "port_dir": RIGHT,
+		"depth": 29, 
         "type": "Region"
       }
     ]
@@ -119,8 +121,7 @@
         "key_hi": 0, 
         "y": 32, 
         "x": 124,
-		"open_flags": 3,
-		"gr_state": 1,
+        "open_flags": 2,
         "type": "Door"
        }
     ], 

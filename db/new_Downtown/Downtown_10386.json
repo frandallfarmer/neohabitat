@@ -1,0 +1,242 @@
+[
+  {
+    "ref": "context-Downtown_10386", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Wall Drug", 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "port_dir": "}", 
+        "type": "Region",
+        "orientation": 1,
+        "depth": 29,		
+        "neighbors": [
+          "",
+          "",
+          "context-Downtown_1974",
+          ""        
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.f8k3.Downtown_10386", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 82
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_10386"
+  }, 
+  {
+    "ref": "item-ground.f9k3.Downtown_10386", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_10386"
+  },
+  {
+    "ref": "item-chest1.a9k2.Downtown_10386", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 27, 
+        "x": 24, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_10386"
+  },
+  {
+    "ref": "item-countertop1.s9k3.Downtown_10386", 
+    "mods": [
+      {
+        "y": 143, 
+        "x": 56,
+		"open_flags": 3,
+        "type": "Countertop", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_10386"
+  },
+  {
+    "ref": "item-chest2.x9k3.Downtown_10386", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 24, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_10386"
+  },
+  {
+    "ref": "item-chest3.w9d0.Downtown_10386", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 73, 
+        "x": 24, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_10386"
+  },
+  {
+    "ref": "item-door1.f9v9.Downtown_10386", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 0, 
+        "y": 32, 
+        "x": 124,
+		"open_flags": 2,
+		"gr_state": 0,
+		"connection": "context-Downtown_10385",
+        "type": "Door"
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_10386"
+  },
+  {
+	"ref": "item-plaque1.s9f0.Downtown_10386",
+	"mods": [
+	  {
+		"type": "Plaque",
+		"style": 2,
+		"gr_state": 1,
+		"orientation": 164,
+		"x": 4,
+		"y": 67,
+		"last_page": 1,
+		"path": "text-missing.object"
+	  }
+	],
+	"type": "item",
+	"name": "Drug Plaque",
+	"in": "context-Downtown_10386"
+  },  
+  {
+    "ref": "item-sign1.v8b7.Downtown_10386", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "type": "Sign",
+        "style": 6,		
+        "gr_state": 2, 
+        "y": 70, 
+        "x": 52, 
+        "ascii": [
+		  32,
+		  32,
+		  87,
+		  101,
+		  32,
+		  115,
+		  101,
+		  108,
+		  108,
+		  134,
+		  133,
+		  128,
+		  80,
+		  105,
+		  108,
+		  108,
+		  115,
+		  134,
+		  133,
+		  102,
+		  111,
+		  114,
+		  32,
+		  97,
+		  108,
+		  108,
+		  32,
+		  121,
+		  111,
+		  117,
+		  114,
+		  134,
+		  133,
+		  32,
+		  73,
+		  108,
+		  108,
+		  115
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_10386"
+  },
+  {
+    "ref": "item-sign2.x9c7.Downtown_10386", 
+    "mods": [
+      {
+        "orientation": 172, 
+        "type": "Sign",
+		"style": 4,
+        "gr_state": 0, 
+        "y": 105, 
+        "x": 112, 
+        "ascii": [
+          79,
+		  119,
+		  110,
+		  101,
+		  114,
+		  115,
+		  32,
+		  79,
+		  110,
+		  108,
+		  121,
+		  33
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_10386"
+  }
+]

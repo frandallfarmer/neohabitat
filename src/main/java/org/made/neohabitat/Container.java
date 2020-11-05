@@ -29,19 +29,45 @@ import org.made.neohabitat.mods.Region;
  */
 public abstract class Container extends HabitatMod {
     
+	/** The c64 Heap footprint when this object was last closed & persisted **/
+	
+	
+    /** C64 Heap Emulation (ephemeral) **/
+	/* FRF 02/16/18 - Moved from Region to Container so that we can track heap size for reagions, avatars, and openable containers for doing "peek ahead" to determine if there's space to add an object. */
+	
+    public  int[]   class_ref_count     = new int[256];
+    public  int[][] resource_ref_count  = new int[4][256];      // images, heads, behaviors, sounds
+    public  int     space_usage         = 0;
+    
+	/** The c64 Heap footprint when this object was last closed - persisted in Openable/Avatar/Region **/
+    public	int		shutdown_size = 0;
+	
     /* All objects with contents have this state */
     
     public Container(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted) {
         super(style, x, y, orientation, gr_state, restricted);
     }
 
+    public Container(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, OptInteger shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.shutdown_size = shutdown_size.value(0);
+    }
+    
     public Container(int style, int x, int y, int orientation, int gr_state, boolean restricted) {
         super(style, x, y, orientation, gr_state, restricted);
+    }
+    
+    public Container(int style, int x, int y, int orientation, int gr_state, boolean restricted, int shutdown_size) {
+        super(style, x, y, orientation, gr_state, restricted);
+        this.shutdown_size = shutdown_size;
     }
 
     public JSONLiteral encodeContainer(JSONLiteral result) {
         result = super.encodeCommon(result);
-        return result;
+        if (0 != shutdown_size) {
+        	result.addParameter("shutdown_size", shutdown_size);
+        }
+        return result;   
     }
     
     /**
@@ -95,11 +121,33 @@ public abstract class Container extends HabitatMod {
      *            User representing the connection making the request.
      */
     public void close_container(User from) {
+    	setContainerShutdownSize();        
         Region.removeContentsFromRegion(this);      // Do this Game Logic before any delete messages get sent...
         ((Item) object()).closeContainer();         // Elko will really remove the instances  TODO: FRF Can this fail?
         /* Original code was in regionproc.pl1 - ELKO handles this now */
         // TODO Client Memory Management and several messages are missing from
         // this interim implementation
+    }
+    
+    public int setContainerShutdownSize() {
+    	// Calculate the memory maximum memory footprint
+    	space_usage = 0;
+        class_ref_count     = new int[256];
+        resource_ref_count  = new int[4][256];
+        
+        for (int i = 0; i < capacity(); i++) {
+            HabitatMod obj = contents(i);
+            if (obj != null) {
+                note_instance_creation_internal(obj, this);
+                if (container_is_opaque(this, obj.y)) {
+                	note_image_creation_internal(obj, obj.style, this);
+                } else {
+                	note_resource_creation_internal(obj, obj.style, this);
+                }
+            }
+        }
+        shutdown_size = space_usage;
+        return shutdown_size;
     }
 
     /**

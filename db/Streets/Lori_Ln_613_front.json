@@ -1,0 +1,264 @@
+[
+  {
+    "ref": "context-Lori_Ln_613_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "613 Lori Ln", 
+    "mods": [
+      {
+        "town_dir": LEFT, 
+        "neighbors": [
+          "context-Lori_Ln_613_interior", 
+          "context-Lori_Ln_713_front", 
+          "", 
+          "context-Lori_Ln_cross"
+        ],
+        "realm": "Streets",		
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": LEFT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.4934.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 48
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Wall.d898.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Wall.cda5.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Building.2067.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 12, 
+        "connection": "context-Lori_Ln_613_interior", 
+        "type": "Building", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Sign.fafc.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          128, 
+          54, 
+          49, 
+          51, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Bush.89c4.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 38, 
+        "x": 136, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Mailbox.9f10.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 8, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Bush.0762.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 53, 
+        "x": 72, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Bush.3873.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 46, 
+        "x": 104, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Street.2025.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "y": 12, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 56, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Building.39fc.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "orientation": 188, 
+        "connection": "context-Lori_Ln_613_interior", 
+        "gr_state": 10, 
+        "y": 83, 
+        "x": 16, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Building.c5eb.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "connection": "context-Lori_Ln_613_interior", 
+        "gr_state": 4, 
+        "y": 90, 
+        "x": 20, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Lori_Ln_613_front"
+  }, 
+  {
+    "ref": "item-Building.490b.Lori_Ln_613_front", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "connection": "context-Lori_Ln_613_interior", 
+        "gr_state": 9, 
+        "y": 123, 
+        "x": 24, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Lori_Ln_613_front"
+  }
+]

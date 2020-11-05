@@ -6,16 +6,17 @@
     "name": "The Beach", 
     "mods": [
       {
-        "town_dir": DOWN + SPACE + RIGHT, 
+        "town_dir": DOWN, 
         "neighbors": [
           "context-beach_2b", 
-          "context-beach_2b", 
+          "context-I5_7204", 
           "context-beach_2f", 
           "context-beach_1a"
-        ], 
+        ],
+        "realm": "Beach",          
         "orientation": 0, 
         "nitty_bits": 3, 
-        "port_dir": DOWN + SPACE + RIGHT, 
+        "port_dir": DOWN, 
         "type": "Region"
       }
     ]
@@ -154,5 +155,31 @@
     "type": "item", 
     "name": "Pond", 
     "in": "context-beach_2a"
-  }
+  }, 
+  {
+    "ref": "item-Short_sign.b8m2.beach_2a", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          72, 
+          73, 
+          87, 
+          65, 
+          89, 
+          32, 
+          133, 
+          125
+        ], 
+        "gr_state": 7, 
+        "y": 35, 
+        "x": 20, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-beach_2a"
+  } 
 ]

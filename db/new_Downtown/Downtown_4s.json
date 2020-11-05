@@ -10,6 +10,7 @@
         "port_dir": DOWN, 
         "type": "Region",
         "orientation": 2,
+        "realm": "Downtown", 
         "neighbors": [
           "",
           "", 
@@ -36,37 +37,37 @@
     "in": "context-Downtown_4s"
   }, 
   {
-		"ref" : "item-4s.chess",
-		"mods" : [ {
-			"type" : "Magic_immobile",
-			"y" : 66,
-			"x" : 2,
-			"style": 0,
-			"orientation": 8,
-			"magic_type" : 12,
-			"magic_data" : 36,
-			"magic_data2": 6
-		} ],
-		"type" : "item",
-		"name" : "Chess Reset",
-		"in" : "context-Downtown_4s"
+        "ref" : "item-4s.chess",
+        "mods" : [ {
+            "type" : "Magic_immobile",
+            "y" : 66,
+            "x" : 2,
+            "style": 0,
+            "orientation": 8,
+            "magic_type" : 12,
+            "magic_data" : 36,
+            "magic_data2": 6
+        } ],
+        "type" : "item",
+        "name" : "Chess Reset",
+        "in" : "context-Downtown_4s"
 }, 
 {
-		"type": "item",
-		"ref": "item-4s.reset",
-		"name": "Reset Game",
-		"in": "context-Downtown_4s",
-		"mods": [
-			{
-				"type": "Short_sign",
-				"style": 4,
-				"x": 12,
-				"y": 64,
-				"orientation": 140,
-				"text": "Reset Game",
-				"ascii": []
-			}
-		]
+        "type": "item",
+        "ref": "item-4s.reset",
+        "name": "Reset Game",
+        "in": "context-Downtown_4s",
+        "mods": [
+            {
+                "type": "Short_sign",
+                "style": 4,
+                "x": 12,
+                "y": 64,
+                "orientation": 140,
+                "text": "Reset Game",
+                "ascii": []
+            }
+        ]
 },
   {
     "ref": "item-wall5fb9", 
@@ -97,7 +98,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 31,
-        "pattern": [		
+        "pattern": [        
           85, 
           85, 
           85, 
@@ -153,7 +154,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 31,
-        "pattern": [		
+        "pattern": [        
           170, 
           170, 
           170, 
@@ -209,7 +210,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 31,
-        "pattern": [		
+        "pattern": [        
           170, 
           170, 
           170, 
@@ -265,7 +266,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 31,
-        "pattern": [		
+        "pattern": [        
           170, 
           170, 
           170, 
@@ -321,7 +322,7 @@
         "height": 127, 
         "pattern_x_size": 0, 
         "pattern_y_size": 31,
-		"pattern": [
+        "pattern": [
           170, 
           170, 
           170, 

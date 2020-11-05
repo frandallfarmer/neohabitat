@@ -1,0 +1,228 @@
+[
+  {
+    "ref": "context-Pam_Pl_w_end", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Pam Pl west", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-Pam_Pl_114_front", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.ddaf.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Wall.4b15.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 132
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Wall.db67.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.7a36.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 68, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Sign.37cd.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 16, 
+        "ascii": [
+          133, 
+          32, 
+          75, 
+          69, 
+          69, 
+          80, 
+          134, 
+          32, 
+          128, 
+          79, 
+          70, 
+          70, 
+          134, 
+          32, 
+          128, 
+          84, 
+          72, 
+          69, 
+          134, 
+          128, 
+          71, 
+          82, 
+          65, 
+          83, 
+          83
+        ], 
+        "y": 43, 
+        "x": 104, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.296e.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 0, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.dd32.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 28, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Street.d6a4.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 80, 
+        "gr_state": 4
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.0410.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.daa1.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 120, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.43f2.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 136, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }, 
+  {
+    "ref": "item-Fence.10dd.Pam_Pl_w_end", 
+    "mods": [
+      {
+        "y": 30, 
+        "x": 52, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Pam_Pl_w_end"
+  }
+]

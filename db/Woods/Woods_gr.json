@@ -3,19 +3,20 @@
     "ref": "context-Woods_gr", 
     "capacity": 64,
     "type": "context", 
-    "name": "The Woods", 
+    "name": "", 
     "mods": [
       {
-        "town_dir": "", 
+        "town_dir": UP, 
         "neighbors": [
           "context-Woods_gs", 
           "context-Woods_gs", 
           "context-Woods_gq", 
           "context-Woods_fr"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 1, 
-        "port_dir": "", 
+        "port_dir": UP, 
         "type": "Region"
       }
     ]
@@ -279,5 +280,128 @@
     "type": "item", 
     "name": "Tree", 
     "in": "context-Woods_gr"
+  },
+  {
+    "ref": "item-magic_immobile1.f8v7.Woods_gr",
+    "mods": [
+      {
+        "type": "Magic_immobile",
+        "y": 41,
+        "x": 94,
+        "style": 0,
+		"gr_state": 2,
+        "orientation": 8,
+        "magic_type": 24,
+        "magic_data" : 100
+      }
+    ],
+    "type": "item",
+    "name": "Magic_immobile",
+    "in": "context-Woods_gr"
+  },
+  {
+    "ref": "item-magic_immobile2.f8v7.Woods_gr",
+    "mods": [
+      {
+        "type": "Magic_immobile",
+        "y": 41,
+        "x": 98,
+        "style": 0,
+		"gr_state": 2,
+        "orientation": 8,
+        "magic_type": 24,
+        "magic_data" : 100
+      }
+    ],
+    "type": "item",
+    "name": "Magic_immobile",
+    "in": "context-Woods_gr"
+  },
+  {
+	"ref": "item-glue1.f9g8.Woods_gr",
+	"mods": [
+      {
+		"type": "Glue",
+		"x": 0,
+		"y": 192,
+		"gr_state": 1,
+		"open_flags": 3,
+		"x_offset_1": 25,
+		"y_offset_1": 0,
+		"x_offset_2": 21,
+		"y_offset_2": 240,
+		"x_offset_3": 24,
+		"y_offset_3": 224,
+		"x_offset_4": 23,
+		"y_offset_4": 208,
+		"x_offset_5": 0,
+		"y_offset_5": 0,
+		"x_offset_6": 0,
+		"y_offset_6": 0
+      }
+    ],
+	"type": "item",
+	"name": ".",
+	"in": "context-Woods_gr"
+  },
+  {
+	"ref": "item-token1.f9s8.Woods_gr",
+	"mods": [
+      {
+		"type": "Tokens",
+        "x": 0,
+		"y": 0,
+		"denom_hi": 0,
+		"denom_lo": 1
+      }
+    ],
+	"type": "item",
+	"name": "Money!",
+	"in": "item-glue1.f9g8.Woods_gr"
+  },
+  {
+	"ref": "item-token2.f9s8.Woods_gr",
+	"mods": [
+      {
+		"type": "Tokens",
+        "x": 1,
+		"y": 1,
+		"denom_hi": 0,
+		"denom_lo": 1
+      }
+    ],
+	"type": "item",
+	"name": "Money!",
+	"in": "item-glue1.f9g8.Woods_gr"
+  },
+  {
+	"ref": "item-token3.f9s8.Woods_gr",
+	"mods": [
+      {
+		"type": "Tokens",
+        "x": 2,
+		"y": 2,
+		"denom_hi": 0,
+		"denom_lo": 1
+      }
+    ],
+	"type": "item",
+	"name": "Money!",
+	"in": "item-glue1.f9g8.Woods_gr"
+  },
+  {
+	"ref": "item-token4.f9s8.Woods_gr",
+	"mods": [
+      {
+		"type": "Tokens",
+        "x": 3,
+		"y": 3,
+		"denom_hi": 0,
+		"denom_lo": 1
+      }
+    ],
+	"type": "item",
+	"name": "Money!",
+	"in": "item-glue1.f9g8.Woods_gr"
   }
 ]

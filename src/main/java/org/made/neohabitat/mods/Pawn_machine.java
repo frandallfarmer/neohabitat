@@ -69,7 +69,7 @@ public class Pawn_machine extends Openable implements Copyable {
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "open_flags", "key_hi", "key_lo" })
     public Pawn_machine(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted, 
         OptInteger open_flags, OptInteger key_hi, OptInteger key_lo) {
-        super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo);
+        super(style, x, y, orientation, gr_state, restricted, open_flags, key_hi, key_lo, new OptInteger(0));
     }
 
     public Pawn_machine(int style, int x, int y, int orientation, int gr_state, boolean restricted,

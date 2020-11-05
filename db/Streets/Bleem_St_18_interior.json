@@ -1,0 +1,165 @@
+[
+  {
+    "ref": "context-Bleem_St_18_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "18 Bleem St", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Bleem_St_18_front"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.79c7.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Picture.66a7.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "picture": 0, 
+        "style": 1, 
+        "orientation": 148, 
+        "y": 107, 
+        "x": 136, 
+        "type": "Picture"
+      }
+    ], 
+    "type": "item", 
+    "name": "Picture", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Wall.82f3.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Couch.b3b1.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "y": 26, 
+        "x": 28, 
+        "type": "Couch", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Chest.7417.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "orientation": 156, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 96, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Door.9abe.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "orientation": 212, 
+        "key_lo": 0, 
+        "connection": "context-Bleem_St_18_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 128, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.7d74.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "y": 153, 
+        "x": 16, 
+        "type": "Floor_lamp", 
+        "orientation": 8, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Window.32ef.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 32, 
+        "gr_state": 1, 
+        "y": 72, 
+        "x": 64, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Bleem_St_18_interior"
+  }, 
+  {
+    "ref": "item-Chair.36e7.Bleem_St_18_interior", 
+    "mods": [
+      {
+        "y": 141, 
+        "x": 8, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 32
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Bleem_St_18_interior"
+  }
+]

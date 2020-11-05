@@ -1,0 +1,343 @@
+[
+  {
+    "ref": "context-CTF_7000", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture the Flag", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-CTF_7001"
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Glue1.f3g5.CTF_7000", 
+    "mods": [
+      {
+        "y_offset_2": 234, 
+        "y_offset_3": 0, 
+        "style": 0, 
+        "y_offset_1": 0, 
+        "y_offset_6": 0, 
+        "orientation": 0, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 1, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 231, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 144, 
+        "x": 8, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-CTF_7000"
+  }, 
+  {
+    "ref": "item-Flag1.d3g5.CTF_7000", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "mass": 0, 
+        "gr_state": 1, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "item-Glue1.d8f9.CTF_7000"
+  }, 
+  {
+    "ref": "item-Super_trapezoid1.v5d1.CTF_7000", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 119, 
+        "orientation": 228, 
+        "pattern": [
+          170, 
+          170, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          170, 
+          170, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149
+        ], 
+        "upper_right_x": 119, 
+        "lower_left_x": 96, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "height": 208, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 96
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "item-Glue.d8f9.CTF_7000"
+  }, 
+  {
+    "ref": "item-Sign1.h2f4.CTF_7000", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          129, 
+          67, 
+          97, 
+          112, 
+          116, 
+          117, 
+          114, 
+          101, 
+          134, 
+          130, 
+          32, 
+          128, 
+          84, 
+          104, 
+          101, 
+          32, 
+          32, 
+          32, 
+          32, 
+          70, 
+          108, 
+          97, 
+          103
+        ], 
+        "gr_state": 3, 
+        "y": 126, 
+        "x": 24, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-CTF_7000"
+  }, 
+  {
+    "ref": "item-Glue2.d8f9.CTF_7000", 
+    "mods": [
+      {
+        "y_offset_2": 234, 
+        "y_offset_3": 0, 
+        "style": 0, 
+        "y_offset_1": 0, 
+        "y_offset_6": 0, 
+        "orientation": 1, 
+        "y_offset_4": 0, 
+        "y_offset_5": 0, 
+        "x_offset_2": 255, 
+        "x_offset_5": 0, 
+        "x_offset_4": 0, 
+        "x_offset_6": 0, 
+        "x_offset_1": 231, 
+        "x_offset_3": 0, 
+        "gr_state": 1, 
+        "y": 144, 
+        "x": 132, 
+        "type": "Glue"
+      }
+    ], 
+    "type": "item", 
+    "name": "Glue", 
+    "in": "context-CTF_7000"
+  }, 
+  {
+    "ref": "item-Super_trapezoid2.x1m5.CTF_7000", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 119, 
+        "orientation": 229, 
+        "pattern": [
+          170, 
+          170, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          170, 
+          170, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149, 
+          85, 
+          149
+        ], 
+        "upper_right_x": 119, 
+        "lower_left_x": 96, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "height": 208, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 96
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "item-Glue.d8f9.CTF_7000"
+  }, 
+  {
+    "ref": "item-Flag2.m8m8.CTF_7000", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 1, 
+        "mass": 0, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Flag"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flag", 
+    "in": "item-Glue2.d8f9.CTF_7000"
+  }, 
+  {
+    "ref": "item-Trapezoid1.a1d3.CTF_7000", 
+    "mods": [
+      {
+        "style": 0, 
+        "lower_right_x": 27, 
+        "orientation": 8, 
+        "upper_right_x": 27, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 64, 
+        "height": 80, 
+        "type": "Trapezoid", 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-CTF_7000"
+  }, 
+  {
+    "ref": "item-Ground.d3g5.CTF_7000", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 252, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7000"
+  }, 
+  {
+    "ref": "item-Wall.j7f3.CTF_7000", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 236, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-CTF_7000"
+  },
+  {
+	"ref": "item-Plaque.g9s8.CTF_7000",
+	"mods": [
+	  {
+		"type": "Plaque",
+		"style": 2,
+		"orientation": 16,
+		"x": 44,
+		"y": 64,
+		"last_page": 1,
+		"path": "text-captureflagunused"
+	  }
+	],
+	"type": "item",
+	"name": "CTF Plaque",
+	"in": "context-CTF_7000"
+  }
+]

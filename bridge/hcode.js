@@ -232,7 +232,7 @@ this.SERVER_OPS = {
                 if (o.ascii) {
                     b.add(o.ascii);
                 } else {
-                    b.add(o.text.getBytes());
+                    b.add(o.text.substring(0, 114).getBytes());
                 }
             }
         },
@@ -354,7 +354,7 @@ this.SERVER_OPS = {
         },
         "SPEAK$":               { reqno: 14, 
             toClient: function (o,b) {
-                b.add(o.text.getBytes());
+                b.add(o.text.substring(0, 114).getBytes());
             }
         },
         "SPEAKFORTUNE$":        { reqno: 10 },
@@ -532,7 +532,7 @@ this.translate = {
                 if ("ascii" in o) {
                     b.add(o.ascii);
                 } else if (o.text) {
-                    b.add(o.text.getBytes());
+                    b.add(o.text.substring(0, 114).getBytes());
                 } 
             }
         },
@@ -802,7 +802,7 @@ this.translate = {
         },
         DIRECT: {
             toClient: function(o, b) {
-                b.add(o.text.getBytes());
+                b.add(o.text.substring(0, 114).getBytes());
             }
         },
         ATTACK: {
@@ -846,7 +846,7 @@ this.translate = {
                 b.add(o.amount_lo);
                 b.add(o.amount_hi);
                 if ('text' in o) {
-                    b.add(o.text.getBytes());
+                    b.add(o.text.substring(0, 114).getBytes());
                 }
             }
         },

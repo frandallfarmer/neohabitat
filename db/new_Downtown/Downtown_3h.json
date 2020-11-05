@@ -9,10 +9,11 @@
         "town_dir": "", 
         "port_dir": LEFT + SPACE + DOWN, 
         "type": "Region",
-        "orientation": 0,		
+        "orientation": 0,
+        "realm": "Downtown",         
         "neighbors": [
           "context-Downtown_3i",   
-          "context-holy_walnut_front",
+          "context-Downtown_4h",
           "context-Downtown_3g", 
           "context-Downtown_1h"
         ], 
@@ -56,10 +57,9 @@
       {
         "y": 161, 
         "x": 64, 
-		"open_flags": 3,
-		"gr_state": 1,
-		"type": "Door",
-        "connection": "context-Downtown_1h",		
+        "open_flags": 2,
+        "type": "Door",
+        "connection": "context-Downtown_1h",        
         "orientation": 148
       }
     ], 

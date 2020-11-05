@@ -12,7 +12,8 @@
           "context-Woods_7b", 
           "", 
           "context-Woods_6a"
-        ], 
+        ],
+        "realm": "Woods",             
         "orientation": 0, 
         "nitty_bits": 1, 
         "port_dir": "", 

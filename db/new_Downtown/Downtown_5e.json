@@ -4,7 +4,8 @@
     "capacity": 64, 
     "type": "context", 
     "name": "Plaza South",
-    "orientation": 0,	
+    "orientation": 0,
+    "realm": "Downtown",	
     "mods": [
       {
         "town_dir": "", 
@@ -92,6 +93,26 @@
     ], 
     "type": "item", 
     "name": "Streetlamp", 
+    "in": "context-Downtown_5e"
+  },
+  {
+    "ref": "item-Door.a9k5.Downtown_5e", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "connection": "context-Downtown_9204", 
+        "gr_state": 1, 
+        "y": 10, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
     "in": "context-Downtown_5e"
   }
 ]

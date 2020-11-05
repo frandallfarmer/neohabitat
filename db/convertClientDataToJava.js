@@ -16,7 +16,7 @@ var		table;
 const Defaults	= {
 		input:	'../../habitat/sources/c64/beta.jlist',
 		output:	'../src/main/java/org/made/neohabitat/NeoHabitat.java',
-		build:	'PreAlpha',
+		build:	'Public Release',
 		trace:  'info'};
 
 /** Object holding command line args - parsed by yargs library: npm install yargs */	
@@ -54,6 +54,7 @@ var imagesLengths	= getSizes(table.Images);
 var actionsLengths	= getSizes(table.Actions);
 var soundsLengths	= getSizes(table.Sounds);
 var headsLengths	= getSizes(table.Heads);
+var instanceLengths = (new Array(256)).fill(0);
 var classResources	= [];
 
 for (var i = 0; i < 256; i++)
@@ -67,8 +68,10 @@ for (key in table) {
 		r[1] = getSizes(kind.actions, "ref index");
 		r[2] = getSizes(kind.sounds,  "ref index");
 		classResources[kind.index] = r;
+		instanceLengths[kind.index] = kind.data[0];
 	}
 }
+
 
 var stream = File.createWriteStream(Argv.output);
 stream.once('open', function(fd) {
@@ -85,6 +88,8 @@ stream.once('open', function(fd) {
 	stream.write("    public static final int    RESOURCE_ACTION = 1;\n");
 	stream.write("    public static final int    RESOURCE_SOUND  = 2;\n");
 	stream.write("    public static final int    RESOURCE_HEAD   = 3;\n\n");
+	
+	stream.write("    public static final int[] InstanceSizes = " + JSON.stringify(instanceLengths).replace('[','{').replace(']','}') + ";\n\n");
 	stream.write("    public static final int[] ClassSizes = " + JSON.stringify(classLengths).replace('[','{').replace(']','}') + ";\n\n");
 	stream.write("    public static final int[][] ResourceSizes = {" + JSON.stringify(imagesLengths).replace('[','{').replace(']','}')	+ ",    // Images\n");
 	stream.write("                                                 " + JSON.stringify(actionsLengths).replace('[','{').replace(']','}')	+ ",    // Actions\n");

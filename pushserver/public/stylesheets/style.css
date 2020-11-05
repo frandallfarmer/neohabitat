@@ -1,0 +1,113 @@
+pre {
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+body {
+  margin-bottom: 130px;
+}
+
+.container.control-panel {
+  margin: 0 auto;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.d-none {
+  display: none;
+}
+
+.docs-div {
+  background-color: #FFFFFF;
+}
+
+.docent-div {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.emulator-canvas {
+  width: 100%;
+}
+
+.emulator-div {
+  width: 100%;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 130px;
+}
+
+.emulator-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.main-panel {
+  margin-bottom: 130px;
+}
+
+.nav-div {
+  background-color: #DFE2DB;
+}
+
+.users-panel {
+  background-color: #DFE2DB;
+  margin-top: 15px;
+}
+
+.login-panel {
+  background-color: #DFE2DB;
+  height: 130px;
+}
+
+.status-panel {
+  background-color: #DFE2DB;
+  height: 130px;
+}
+
+.docent-region {
+  padding-top: 10px;
+}
+
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.action-button {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.docent-panel tbody {
+  overflow-y: scroll;
+  height: 350px;
+  width: 84%;
+  position: absolute;
+}
+
+.docent-panel tr {
+  width: 100%;
+  display: inline-table;
+}
+
+.docent-panel table {
+  height: 400px;
+}

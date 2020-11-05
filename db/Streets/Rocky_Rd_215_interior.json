@@ -1,0 +1,198 @@
+[
+  {
+    "ref": "context-Rocky_Rd_215_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "215 Rocky Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Rocky_Rd_215_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.575f.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Wall.fc2b.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Display_case.6b13.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 152, 
+        "x": 92, 
+        "type": "Display_case", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Display_case", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.3012.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 48, 
+        "type": "Floor_lamp", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Window.f6cd.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 2, 
+        "y": 104, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Door.241e.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "connection": "context-Rocky_Rd_215_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Aquarium.0f91.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "y": 195, 
+        "x": 100, 
+        "type": "Aquarium", 
+        "orientation": 0, 
+        "gr_state": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Aquarium", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Garbage_can.7c25.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 147, 
+        "x": 144, 
+        "type": "Garbage_can", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Garbage_can", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Window.7384.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 1, 
+        "y": 63, 
+        "x": 68, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Chair.2d2c.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 96, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 41
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Rocky_Rd_215_interior"
+  }, 
+  {
+    "ref": "item-Chair.436b.Rocky_Rd_215_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 44, 
+        "style": 1, 
+        "type": "Chair", 
+        "orientation": 40
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Rocky_Rd_215_interior"
+  }
+]

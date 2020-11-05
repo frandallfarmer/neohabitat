@@ -8,6 +8,7 @@
 			"town_dir": LEFT,
 			"port_dir": "",
 			"type": "Region",
+	        "realm": "Backroom",
 			"nitty_bits": 3,
 			"neighbors": ["context-frontyard", "", "context-frontyard", ""]
 		}

@@ -1,0 +1,134 @@
+[
+  {
+    "ref": "context-Dice_Ave_81_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "81 Dice Ave", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Dice_Ave_81_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP,
+		"depth": 26, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.aed8.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Dice_Ave_81_interior"
+  }, 
+  {
+    "ref": "item-Wall.4489.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Dice_Ave_81_interior"
+  }, 
+  {
+    "ref": "item-Couch.b04f.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Dice_Ave_81_interior"
+  }, 
+  {
+    "ref": "item-Chest.d7fb.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Dice_Ave_81_interior"
+  }, 
+  {
+    "ref": "item-Door.a376.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "connection": "context-Dice_Ave_81_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Dice_Ave_81_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.b55f.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Dice_Ave_81_interior"
+  }, 
+  {
+    "ref": "item-Window.4089.Dice_Ave_81_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 60, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Dice_Ave_81_interior"
+  }
+]

@@ -1,0 +1,250 @@
+[
+  {
+    "ref": "context-CTF_7011", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Capture The Flag Field #3", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-CTF_7012", 
+          "context-CTF_7014", 
+          "", 
+          "context-CTF_7010"
+        ],
+        "realm": "CTF", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Plant1.d3f3.CTF_7011", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 145, 
+        "x": 80, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree1.g5h6.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 236, 
+        "gr_state": 1, 
+        "y": 33, 
+        "x": 92, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Ground.j7j8.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Sky.f2h5.CTF_7011", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Plant2.x6g2.CTF_7011", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "gr_state": 0, 
+        "y": 148, 
+        "x": 4, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Bush1.d2g4.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 80, 
+        "gr_state": 0, 
+        "y": 146, 
+        "x": 136, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Bush2.h6d2.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 32, 
+        "gr_state": 0, 
+        "y": 138, 
+        "x": 24, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree2.i5k8.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 173, 
+        "gr_state": 3, 
+        "y": 71, 
+        "x": 36, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree3.f3h6.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 32, 
+        "gr_state": 0, 
+        "y": 141, 
+        "x": 108, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree4.j6d2.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 172, 
+        "gr_state": 3, 
+        "y": 75, 
+        "x": 44, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree5.s1f4.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 128, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree6.h5j7.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 189, 
+        "gr_state": 3, 
+        "y": 57, 
+        "x": 92, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree7.d9f8.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 188, 
+        "gr_state": 3, 
+        "y": 57, 
+        "x": 88, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }, 
+  {
+    "ref": "item-Tree8.p3j4.CTF_7011", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 172, 
+        "gr_state": 0, 
+        "y": 35, 
+        "x": 40, 
+        "type": "Tree"
+      }
+    ], 
+    "type": "item", 
+    "name": "Tree", 
+    "in": "context-CTF_7011"
+  }
+]

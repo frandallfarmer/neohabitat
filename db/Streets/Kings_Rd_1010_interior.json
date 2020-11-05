@@ -1,0 +1,175 @@
+[
+  {
+    "ref": "context-Kings_Rd_1010_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "1010 Kings Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Kings_Rd_1010_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Wall.a8s7.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 148, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Table.d8j1.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 0, 
+        "y": 154, 
+        "x": 120, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Chair1.z8x7.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 40, 
+        "gr_state": 0, 
+        "y": 131, 
+        "x": 44, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Chair2.s2f1.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 41, 
+        "gr_state": 0, 
+        "y": 130, 
+        "x": 96, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Window1.i4j2.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 48, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Door.m8m8.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 164, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "connection": "context-Kings_Rd_1010_front", 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 12, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Window2.x1x8.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 72, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Window3.f8j2.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 33, 
+        "x": 96, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Kings_Rd_1010_interior"
+  }, 
+  {
+    "ref": "item-Ground.k9c8.Kings_Rd_1010_interior", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kings_Rd_1010_interior"
+  }
+]

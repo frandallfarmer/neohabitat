@@ -1,0 +1,463 @@
+[
+  {
+    "ref": "context-Downtown_9241", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Office.", 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "neighbors": [
+          "", 
+          "context-Downtown_9108", 
+          "", 
+          ""
+        ], 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "}",
+		"depth": 26, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-chair1.x9f8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 140, 
+        "gr_state": 0, 
+        "y": 133, 
+        "x": 0, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chair2.c9f8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 141, 
+        "gr_state": 0, 
+        "y": 133, 
+        "x": 140, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-sign1.c9v8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 188, 
+        "ascii": [
+          133, 
+          76, 
+          65, 
+          87, 
+          133, 
+          134, 
+          32, 
+          32, 
+          105, 
+          115, 
+          134, 
+          76, 
+          105, 
+          98, 
+          101, 
+          114, 
+          116, 
+          121
+        ], 
+        "gr_state": 1, 
+        "y": 82, 
+        "x": 16, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-sign2.z9m2.Downtown_9241", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 244, 
+        "ascii": [
+          133, 
+          128, 
+          87, 
+          101, 
+          134, 
+          83, 
+          117, 
+          101, 
+          134, 
+          133, 
+          65, 
+          110, 
+          121, 
+          98, 
+          111, 
+          100, 
+          121
+        ], 
+        "gr_state": 1, 
+        "y": 82, 
+        "x": 116, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-wall.q9d8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 58, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-ground.o4j5.Downtown_9241", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 80, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chest1.m8x8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "gr_state": 0, 
+        "y": 73, 
+        "x": 80, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chest2.p2k4.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "gr_state": 0, 
+        "y": 73, 
+        "x": 56, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_9241"
+  },  
+  {
+    "ref": "item-chest3.a9d8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 56, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chest4.v8m1.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 80, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chest5.a9d8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "gr_state": 0, 
+        "y": 27, 
+        "x": 80, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chest6.b7m1.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 220, 
+        "key_hi": 152, 
+        "key_lo": 8, 
+        "gr_state": 0, 
+        "y": 27, 
+        "x": 56, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-countertop1.g9d8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 116, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 0, 
+        "y": 143, 
+        "x": 108, 
+        "type": "Countertop", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-knick_knack1.b8m2.Downtown_9241", 
+    "mods": [
+      {
+        "style": 9, 
+        "orientation": 1, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 59, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-countertop1.g9d8.Downtown_9241"
+  }, 
+  {
+    "ref": "item-knick_knack2.d8m3.Downtown_9241", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 8, 
+        "gr_state": 3, 
+        "y": 2, 
+        "x": 121, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-countertop1.g9d8.Downtown_9241"
+  }, 
+  {
+    "ref": "item-key.d9c8.Downtown_9241", 
+    "mods": [
+      {
+        "key_number_lo": 3, 
+        "style": 0, 
+        "orientation": 9, 
+        "key_number_hi": 255, 
+        "gr_state": 0, 
+        "y": 3, 
+        "x": 75, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-countertop1.g9d8.Downtown_9241"
+  }, 
+  {
+    "ref": "item-knick_knack3.m2n3.Downtown_9241", 
+    "mods": [
+      {
+        "style": 13, 
+        "orientation": 1, 
+        "gr_state": 1, 
+        "y": 1, 
+        "x": 85, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-countertop1.g9d8.Downtown_9241"
+  }, 
+  {
+    "ref": "item-countertop2.l2m3.Downtown_9241", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 116, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 0, 
+        "y": 143, 
+        "x": 10, 
+        "type": "Countertop", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-knick_knack4.h8d9.Downtown_9241", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 72, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-countertop2.l2m3.Downtown_9241"
+  }, 
+  {
+    "ref": "item-knick_knack5.f9a8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 9, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 2, 
+        "x": 65, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-countertop2.l2m3.Downtown_9241"
+  }, 
+  {
+    "ref": "item-knick_knack6.f9z7.Downtown_9241", 
+    "mods": [
+      {
+        "style": 8, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 73, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "item-countertop2.l2m3.Downtown_9241"
+  }, 
+  {
+    "ref": "item-chair3.f8k2.Downtown_9241", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 140, 
+        "gr_state": 0, 
+        "y": 146, 
+        "x": 120, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9241"
+  }, 
+  {
+    "ref": "item-chair4.j9s8.Downtown_9241", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 140, 
+        "gr_state": 0, 
+        "y": 146, 
+        "x": 16, 
+        "type": "Chair"
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_9241"
+  }
+]

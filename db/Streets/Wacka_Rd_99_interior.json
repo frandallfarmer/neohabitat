@@ -1,0 +1,117 @@
+[
+  {
+    "ref": "context-Wacka_Rd_99_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "99 Wacka Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Wacka_Rd_99_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.09c6.Wacka_Rd_99_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wacka_Rd_99_interior"
+  }, 
+  {
+    "ref": "item-Wall.1a69.Wacka_Rd_99_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wacka_Rd_99_interior"
+  }, 
+  {
+    "ref": "item-Table.586e.Wacka_Rd_99_interior", 
+    "mods": [
+      {
+        "orientation": 112, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 27, 
+        "x": 84, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Wacka_Rd_99_interior"
+  }, 
+  {
+    "ref": "item-Door.c567.Wacka_Rd_99_interior", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "key_lo": 0, 
+        "connection": "context-Wacka_Rd_99_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Wacka_Rd_99_interior"
+  }, 
+  {
+    "ref": "item-Bed.5a8a.Wacka_Rd_99_interior", 
+    "mods": [
+      {
+        "y": 131, 
+        "x": 96, 
+        "type": "Bed", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Bed", 
+    "in": "context-Wacka_Rd_99_interior"
+  }, 
+  {
+    "ref": "item-Chair.a6f6.Wacka_Rd_99_interior", 
+    "mods": [
+      {
+        "y": 28, 
+        "x": 56, 
+        "type": "Chair", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Wacka_Rd_99_interior"
+  }
+]

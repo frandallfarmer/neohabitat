@@ -1,0 +1,149 @@
+[
+  {
+    "ref": "context-Wacka_Rd_89_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "89 Wacka Rd", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "context-Wacka_Rd_89_front", 
+          "", 
+          "", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fa11.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Wall.7a61.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Couch.0c06.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "y": 130, 
+        "x": 44, 
+        "type": "Couch", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Chest.e5a7.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 26, 
+        "x": 8, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Door.2f05.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "orientation": 244, 
+        "key_lo": 0, 
+        "connection": "context-Wacka_Rd_89_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 120, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.3741.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "type": "Floor_lamp", 
+        "orientation": 112
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Window.f0d4.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "y": 56, 
+        "x": 60, 
+        "style": 1, 
+        "type": "Window", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Wacka_Rd_89_interior"
+  }, 
+  {
+    "ref": "item-Knick_knack.767d.Wacka_Rd_89_interior", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "gr_state": 3, 
+        "y": 210, 
+        "x": 28, 
+        "type": "Knick_knack", 
+        "magic_type": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Knick_knack", 
+    "in": "context-Wacka_Rd_89_interior"
+  }
+]

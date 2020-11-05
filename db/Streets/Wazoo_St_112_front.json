@@ -1,0 +1,218 @@
+[
+  {
+    "ref": "context-Wazoo_St_112_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "112 Wazoo St", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Wazoo_St_112_interior", 
+          "context-Wazoo_St_212_front", 
+          "", 
+          "context-Wazoo_St_w_end"
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.e7c6.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Wall.7470.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Wall.bd43.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Building.daa7.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 72, 
+        "connection": "context-Wazoo_St_112_interior", 
+        "type": "Building", 
+        "orientation": 221
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Plant.cf27.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "mass": 1, 
+        "y": 50, 
+        "x": 52, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Sign.64af.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          128, 
+          49, 
+          49, 
+          50, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 44, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Mailbox.b7cb.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 155, 
+        "x": 124, 
+        "type": "Mailbox", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Plant.0f94.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 136, 
+        "mass": 1, 
+        "type": "Plant", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Plant.6a50.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 1, 
+        "mass": 1, 
+        "y": 33, 
+        "x": 80, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Wazoo_St_112_front"
+  }, 
+  {
+    "ref": "item-Street.539b.Wazoo_St_112_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Wazoo_St_112_front"
+  }
+]

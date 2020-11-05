@@ -12,10 +12,12 @@
           "context-dnalsi_48", 
           "context-dnalsi_37", 
           "context-dnalsi_28"
-        ], 
+        ],
+        "realm": "Dnalsi",        
         "orientation": 3, 
-        "nitty_bits": 3, 
-        "port_dir": "", 
+        "nitty_bits": 0, 
+        "port_dir": "",
+        "depth": 30, 
         "type": "Region"
       }
     ]

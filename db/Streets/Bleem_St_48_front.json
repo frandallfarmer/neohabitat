@@ -1,0 +1,214 @@
+[
+  {
+    "ref": "context-Bleem_St_48_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "48 Bleem St", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Bleem_St_38_front", 
+          "context-Bleem_St_48_interior", 
+          "context-Bleem_St_58_front", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.c81f.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Wall.4a52.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Wall.7633.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Building.8c08.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 32, 
+        "connection": "context-Bleem_St_48_interior", 
+        "type": "Building", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Bush.aad1.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Sign.d55d.Bleem_St_48_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          52, 
+          56, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 64, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Mailbox.9881.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 32, 
+        "type": "Mailbox", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Street.e9ea.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 7, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Fence.a8c3.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Bleem_St_48_front"
+  }, 
+  {
+    "ref": "item-Bush.40f3.Bleem_St_48_front", 
+    "mods": [
+      {
+        "y": 49, 
+        "x": 4, 
+        "style": 1, 
+        "type": "Bush", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Bleem_St_48_front"
+  }
+]

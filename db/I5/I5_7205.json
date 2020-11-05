@@ -1,0 +1,188 @@
+[
+  {
+    "ref": "context-I5_7205", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "I-5", 
+    "mods": [
+      {
+        "town_dir": "\u007f", 
+        "neighbors": [
+          "context-I5_7204", 
+          "", 
+          "context-I5_7206", 
+          ""
+        ],
+        "realm": "I5", 
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": "\u007f", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.f9l2.I5_7205", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 40, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-I5_7205"
+  }, 
+  {
+    "ref": "item-Sky1.l9d0.I5_7205", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7205"
+  }, 
+  {
+    "ref": "item-Short_sign.f8k2.I5_7205", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 252, 
+        "ascii": [
+          128, 
+          72, 
+          105, 
+          119, 
+          97, 
+          121, 
+          32, 
+          53
+        ], 
+        "gr_state": 4, 
+        "y": 131, 
+        "x": 120, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-I5_7205"
+  }, 
+  {
+    "ref": "item-Street.k1d9.I5_7205", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 12, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-I5_7205"
+  }, 
+  {
+    "ref": "item-Sky2.s9k2.I5_7205", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 221, 
+        "gr_state": 0, 
+        "y": 81, 
+        "x": 40, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7205"
+  }, 
+  {
+    "ref": "item-Sky3.s9k1.I5_7205", 
+    "mods": [
+      {
+        "style": 11, 
+        "orientation": 8, 
+        "gr_state": 0, 
+        "y": 91, 
+        "x": 24, 
+        "type": "Sky"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-I5_7205"
+  }, 
+  {
+    "ref": "item-Super_trapezoid.a8j4.I5_7205", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 1, 
+        "lower_right_x": 29, 
+        "orientation": 252, 
+        "pattern": [
+          0, 
+          64, 
+          16, 
+          0, 
+          16, 
+          16, 
+          16, 
+          16, 
+          17, 
+          16, 
+          1, 
+          0, 
+          1, 
+          0, 
+          1, 
+          0, 
+          0, 
+          4, 
+          0, 
+          4, 
+          16, 
+          0, 
+          16, 
+          0, 
+          16, 
+          0, 
+          0, 
+          1, 
+          0, 
+          65, 
+          0, 
+          64
+        ], 
+        "upper_right_x": 29, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 0, 
+        "gr_state": 0, 
+        "y": 41, 
+        "x": 24, 
+        "height": 49, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 15, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-I5_7205"
+  }
+]

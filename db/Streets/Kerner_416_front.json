@@ -1,0 +1,204 @@
+[
+  {
+    "ref": "context-Kerner_416_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "416 Kerner", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "context-Kerner_516_front", 
+          "", 
+          "context-Kerner_316_front", 
+          "context-Kerner_416_interior"
+        ], 
+        "realm": "Streets",
+        "orientation": 0, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.fe7e.Kerner_416_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Wall.e3e7.Kerner_416_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Wall.02a5.Kerner_416_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Building.898b.Kerner_416_front", 
+    "mods": [
+      {
+        "orientation": 204, 
+        "connection": "context-Kerner_416_interior", 
+        "gr_state": 3, 
+        "y": 32, 
+        "x": 32, 
+        "type": "Building"
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Bush.c895.Kerner_416_front", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 48, 
+        "gr_state": 1, 
+        "y": 35, 
+        "x": 16, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Bush.8743.Kerner_416_front", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 49, 
+        "gr_state": 1, 
+        "y": 34, 
+        "x": 60, 
+        "type": "Bush"
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Mailbox.bd4e.Kerner_416_front", 
+    "mods": [
+      {
+        "y": 158, 
+        "x": 100, 
+        "type": "Mailbox", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Sign.37aa.Kerner_416_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          52, 
+          49, 
+          54, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 32, 
+        "x": 80, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Kerner_416_front"
+  }, 
+  {
+    "ref": "item-Street.4595.Kerner_416_front", 
+    "mods": [
+      {
+        "y": 10, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 112, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Kerner_416_front"
+  }
+]

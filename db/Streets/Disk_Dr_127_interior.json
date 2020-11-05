@@ -1,0 +1,137 @@
+[
+  {
+    "ref": "context-Disk_Dr_127_interior", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "127 Disk Dr", 
+    "mods": [
+      {
+        "town_dir": UP, 
+        "neighbors": [
+          "", 
+          "context-Disk_Dr_127_front", 
+          "", 
+          ""
+        ],
+        "realm": "Streets",
+        "is_turf": true, 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": UP, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.7d6d.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Disk_Dr_127_interior"
+  }, 
+  {
+    "ref": "item-Wall.e1a9.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 88
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Disk_Dr_127_interior"
+  }, 
+  {
+    "ref": "item-Table.5302.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 129, 
+        "x": 80, 
+        "type": "Table", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Table", 
+    "in": "context-Disk_Dr_127_interior"
+  }, 
+  {
+    "ref": "item-Chest.f237.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 244, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 138, 
+        "x": 128, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Disk_Dr_127_interior"
+  }, 
+  {
+    "ref": "item-Chair.ac0b.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 32, 
+        "style": 5, 
+        "type": "Chair", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Chair", 
+    "in": "context-Disk_Dr_127_interior"
+  }, 
+  {
+    "ref": "item-Door.b529.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "key_lo": 0, 
+        "connection": "context-Disk_Dr_127_front", 
+        "key_hi": 0, 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Disk_Dr_127_interior"
+  }, 
+  {
+    "ref": "item-Floor_lamp.092a.Disk_Dr_127_interior", 
+    "mods": [
+      {
+        "y": 31, 
+        "x": 60, 
+        "type": "Floor_lamp", 
+        "orientation": 16
+      }
+    ], 
+    "type": "item", 
+    "name": "Floor_lamp", 
+    "in": "context-Disk_Dr_127_interior"
+  }
+]

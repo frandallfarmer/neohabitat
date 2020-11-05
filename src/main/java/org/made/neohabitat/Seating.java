@@ -13,7 +13,7 @@ import org.elkoserver.json.JSONLiteral;
  * NOTE: This is part of a work-around. The Original habitat allowed Avatars 
  * to be contained by objects. Elko does not. So, with the help of the 
  * Bridge, we're going to pretend it works that way by keeping track of the
- * seated avatars seperately.
+ * seated avatars separately.
  * 
  * 1988 PL1 didn't understand classes. Chip wrote the Habitat code, simulating
  * structures, classes, and a form of class inheritance by concatenating include

@@ -8,6 +8,7 @@
 			"town_dir" : "",
 			"port_dir" : "",
 			"type" : "Region",
+	        "realm": "Backroom",        
 			"nitty_bits" : 2,
 			"neighbors" : [ "context-test", "context-test", "context-test",
 				"context-test" ]

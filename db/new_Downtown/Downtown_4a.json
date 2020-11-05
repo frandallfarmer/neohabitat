@@ -12,10 +12,12 @@
           "", 
           "", 
           ""
-        ], 
+        ],
+        "realm": "Downtown",         
         "orientation": 3, 
         "nitty_bits": 3, 
-        "port_dir": DOWN, 
+        "port_dir": DOWN,
+		"depth": 24, 
         "type": "Region"
       }
     ]
@@ -118,7 +120,7 @@
         "y": 0, 
         "x": 184, 
         "type": "Vendo_front",
-        "prices": [22, 1125, 195, 4, 150, 150],		
+        "prices": [22, 1125, 195, 4, 150, 150],     
         "open_flags": 0, 
         "item_price": 150
       }
@@ -257,7 +259,7 @@
         "y": 0, 
         "x": 181, 
         "type": "Vendo_front",
-        "prices": [25, 25, 80, 88, 79, 45],		
+        "prices": [25, 25, 80, 88, 79, 45],     
         "open_flags": 0, 
         "item_price": 45
       }
@@ -371,7 +373,7 @@
         "y": 0, 
         "x": 0, 
         "type": "Vendo_front",
-        "prices": [395, 129, 800, 850, 425],		
+        "prices": [395, 129, 800, 850, 425],        
         "open_flags": 0, 
         "item_price": 395
       }
@@ -437,7 +439,7 @@
         "x": 12, 
         "ascii": [
           131,
-          83,		  
+          83,         
           117, 
           112, 
           112, 

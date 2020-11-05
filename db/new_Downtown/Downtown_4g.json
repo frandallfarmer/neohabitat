@@ -9,9 +9,10 @@
         "town_dir": "", 
         "port_dir": "", 
         "type": "Region",
-        "orientation": 0,		
+        "orientation": 0,
+        "realm": "Downtown",         
         "neighbors": [
-          "context-holy_walnut_front", 
+          "context-Downtown_4h", 
           "context-Downtown_5g", 
           "context-Downtown_4f", 
           "context-Downtown_3g"

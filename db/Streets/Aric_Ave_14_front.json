@@ -1,0 +1,259 @@
+[
+  {
+    "ref": "context-Aric_Ave_14_front", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "14 Aric Ave", 
+    "mods": [
+      {
+        "town_dir": RIGHT, 
+        "neighbors": [
+          "", 
+          "context-Aric_Ave_e_end", 
+          "context-Aric_Ave_14_interior", 
+          "context-Aric_Ave_24_front"
+        ],
+        "realm": "Streets",		
+        "orientation": 3, 
+        "nitty_bits": 3, 
+        "port_dir": RIGHT, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Ground.1ded.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Wall.ad76.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Wall.d61b.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 0, 
+        "style": 7, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Building.3904.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 32, 
+        "x": 24, 
+        "connection": "context-Aric_Ave_14_interior", 
+        "type": "Building", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Building", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Bush.4f6c.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 57, 
+        "x": 108, 
+        "type": "Bush", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Bush", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Street.8244.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 68, 
+        "type": "Street", 
+        "orientation": 8, 
+        "gr_state": 6
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Mailbox.5f54.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 151, 
+        "x": 20, 
+        "type": "Mailbox", 
+        "orientation": 17
+      }
+    ], 
+    "type": "item", 
+    "name": "Mailbox", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Fence.a5f9.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 64, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Fence.49b6.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 92, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Plant.787a.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 32, 
+        "mass": 1, 
+        "y": 31, 
+        "x": 56, 
+        "type": "Plant"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plant", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Fence.2618.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 161, 
+        "x": 108, 
+        "type": "Fence", 
+        "orientation": 0, 
+        "gr_state": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Fence.c4d4.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "y": 33, 
+        "x": 132, 
+        "type": "Fence", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Fence", 
+    "in": "context-Aric_Ave_14_front"
+  }, 
+  {
+    "ref": "item-Sign.6966.Aric_Ave_14_front", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          49, 
+          52, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32
+        ], 
+        "gr_state": 8, 
+        "y": 59, 
+        "x": 72, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Aric_Ave_14_front"
+  }
+]
