@@ -5,7 +5,7 @@
 	"name": "Popustop 4th floor hallway",
 	"mods": [
 		{
-			"town_dir": "left",
+			"town_dir": LEFT,
 			"port_dir": "",
 			"type": "Region",
 			"nitty_bits": 3,
