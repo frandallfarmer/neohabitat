@@ -3,7 +3,7 @@
     "capacity": 64, 
     "mods": [
       {
-        "town_dir": "\u007f", 
+        "town_dir": RIGHT,
         "neighbors": [
           "", 
           "context-168.elby.line456", 
@@ -13,7 +13,7 @@
         "realm": "Popustop", 
         "orientation": 1, 
         "nitty_bits": 3, 
-        "port_dir": "\u007f", 
+        "port_dir": RIGHT,
         "type": "Region"
       }
     ], 
