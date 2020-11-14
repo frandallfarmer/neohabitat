@@ -15,7 +15,7 @@
         ],
         "realm": "Woods",             
         "orientation": 0, 
-        "nitty_bits": 1, 
+        "nitty_bits": 3, 
         "port_dir": UP, 
         "type": "Region"
       }
