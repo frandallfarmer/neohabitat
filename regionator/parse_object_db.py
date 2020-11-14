@@ -168,10 +168,7 @@ def decode_text(buf):
     Decode a word-packed string (00 x 00 y ...), which is similar to a
     fatword but is a string instead of int.
     '''
-    string = ''
-    for i in range(1, len(buf), 2):
-        string += buf[i]
-    return string
+    return [buf[i] for i in range(1, len(buf), 2)]
 
 
 def parse_properties(cls, property_data):
@@ -187,16 +184,10 @@ def parse_properties(cls, property_data):
     # Special class decoders for those not fully handled above
     if cls == 56:
         # short sign
-        data['text'] = [
-            ord(c)
-            for c in decode_text(property_data[:10 * 2])
-        ]
+        data['text'] = decode_text(property_data[:10 * 2])
     elif cls == 57:
         # sign
-        data['text'] = [
-            ord(c)
-            for c in decode_text(property_data[:40 * 2])
-        ]
+        data['text'] = decode_text(property_data[:40 * 2])
     elif cls == 18:
         # countertop: whoput = 5 ints
         n = 5
@@ -243,11 +234,13 @@ def decode_row(row):
     del data['property_data']
 
     # Clear text data if it's unprintable
-    addr_str = data.get('address')
-    if addr_str and any(ord(c) >= 0x80 for c in addr_str):
-        #print ' '.join('%02x' % ord(c) for c in row)
-        #print data
-        data['address'] = ''
+    if 'address' in data:
+        if any(c >= 0x80 for c in data['address']):
+            #print ' '.join('%02x' % ord(c) for c in row)
+            #print data
+            data['address'] = ''
+        else:
+            data['address'] = data['address'].decode('ascii')
 
     return data
 
@@ -257,7 +250,7 @@ def main():
     Read each row from database and then decode it, dumping output to JSON
     '''
     items = []
-    with open(sys.argv[1]) as fp:
+    with open(sys.argv[1], "rb") as fp:
         while True:
             row = fp.read(struct.calcsize(FORMAT))
             if not row:
