@@ -85,7 +85,7 @@ def extract_flags(flags):
 
 def main():
     items = []
-    with open(sys.argv[1]) as fp:
+    with open(sys.argv[1], "rb") as fp:
         while True:
             row = fp.read(struct.calcsize(FORMAT))
             if not row:
@@ -93,6 +93,9 @@ def main():
 
             # Unpack all named fields into a dict
             data = dict(zip(STRUCT_ITEMS, struct.unpack(FORMAT, row)))
+
+            # Convert strings to ASCII
+            data['name'] = data['name'].decode('ascii')
 
             # Unpack specific flags while preserving nitty_bits itself.
             data.update(extract_flags(data['nitty_bits']))
