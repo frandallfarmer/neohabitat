@@ -1,4 +1,4 @@
-{
+[{
 	"type": "context",
 	"ref": "context-staging",
 	"capacity": 64,
@@ -13,4 +13,49 @@
 			"neighbors": ["context-staging","context-staging","context-staging","context-staging" ]
 		}
 	]
-}
+},
+{
+	"type": "item",
+	"ref": "item-staging.ground",
+	"name": "Ground",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 228
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-staging.tree",
+	"name": "Tree",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Tree",
+			"style": 9,
+			"x": 40,
+			"y": 32,
+			"orientation": 0
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-staging.wall",
+	"name": "Wall",
+	"in": "context-staging",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 196
+		}
+	]
+}]
