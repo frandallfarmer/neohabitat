@@ -12,7 +12,7 @@ services:
     ports:
       - "3306:3306"
   neohabitatmongo:
-    image: mongo:3.0
+    image: mongo:4.0
     command: "--smallfiles"
     volumes:
       - ./data/mongodb:/data/db
@@ -32,7 +32,7 @@ services:
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
       - NODE_ENV=development
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
