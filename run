@@ -92,6 +92,7 @@ function start_pushserver() {
 }
 
 function start_elko_server() {
+  mvn package
   java "${JVM_ARGS[@]}" \
     -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar \
     "${BASE_ARGS[@]}" \
