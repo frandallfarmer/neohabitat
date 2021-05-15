@@ -50,6 +50,7 @@ With all that out of the way, here's how to get started:
 - Extract the Windows release of [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true) to get the `.d64` files and `fliplist-C64.vfl`
 - Run the VICE C64 emulator with these options set:  
   `x64 -rsuser -rsuserdev 0 -rsdev1 '|nc 52.87.109.252 1986' -rsuserbaud 1200 -flipname fliplist-C64.vfl Habitat-Boot.d64`
+- There is a bug in current versions of VICE which breaks this network support (https://sourceforge.net/p/vice-emu/bugs/1356). Versions including r38928 and earlier work.
 
 ### Step 2 - Login and play!
 
