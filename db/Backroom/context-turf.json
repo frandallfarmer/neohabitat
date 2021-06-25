@@ -1,4 +1,4 @@
-{
+[{
 	"type": "context",
 	"ref": "context-turf",
 	"capacity": 64,
@@ -15,4 +15,183 @@
 			"neighbors": ["", "", "", ""]
 		}
 	]
-}
+},
+{
+  "type": "item",
+  "ref": "item-turf.chair",
+  "name": "Turf chair",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Chair",
+      "style": 1,
+      "x": 112,
+      "y": 130,
+      "orientation": 1,
+      "gr_state": 0
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.chest",
+  "name": "Turf chest",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Chest",
+      "style": 0,
+      "x": 8,
+      "y": 26,
+      "orientation": 8,
+      "gr_state": 0,
+      "open_flags": 2
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.couch",
+  "name": "Turf couch",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Couch",
+      "style": 0,
+      "x": 44,
+      "y": 132,
+      "orientation": 0,
+      "gr_state": 0
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.door.hall",
+  "name": "Door to Hall",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Door",
+      "style": 0,
+      "x": 120,
+      "y": 33,
+      "orientation": 244,
+      "gr_state": 1,
+      "open_flags": 3,
+      "connection": "context-hall"
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.floorlamp",
+  "name": "Turf lamp",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Floor_lamp",
+      "style": 0,
+      "x": 100,
+      "y": 133,
+      "orientation": 8,
+      "gr_state": 0,
+      "on": 1
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.ground",
+  "name": "Turf ground",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Ground",
+      "style": 1,
+      "x": 0,
+      "y": 4,
+      "orientation": 220,
+      "gr_state": 0
+    }
+  ]
+},
+{
+	"type": "item",
+	"ref": "item-turf.housecat",
+	"name": "Housecat",
+	"in": "context-turf",
+	"mods": [
+		{
+			"type": "House_cat",
+			"x": 12,
+			"y": 131,
+			"orientation": 96
+		}
+	]
+},
+{
+  "type": "item",
+  "ref": "item-turf.wall",
+  "name": "Turf wall",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Wall",
+      "style": 4,
+      "x": 0,
+      "y": 0,
+      "orientation": 244,
+      "gr_state": 0
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.window1",
+  "name": "Turf window 1",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Window",
+      "style": 1,
+      "x": 48,
+      "y": 56,
+      "orientation": 56,
+      "gr_state": 20
+    }
+  ]
+},
+{
+  "type": "item",
+  "ref": "item-turf.window2",
+  "name": "Turf window 2",
+  "in": "context-turf",
+  "mods": [
+    {
+      "type": "Window",
+      "style": 1,
+      "x": 88,
+      "y": 56,
+      "orientation": 56,
+      "gr_state": 20
+    }
+  ]
+},
+{
+	"type": "item",
+	"ref": "item-chest.chainsaw",
+	"name": "A Chainsaw knick knack.",
+	"in": "item-turf.chest",
+	"mods": [
+		{
+			"type": "Knick_knack",
+			"style": 5,
+			"y": 1,
+			"orientation": 8,
+			"magic_type": 1,
+			"gr_state": 1,
+			"charges": 100
+		}
+	]
+}]

@@ -15,15 +15,156 @@
 	]
 },
 {
-		"type": "item",
-		"ref": "item-frontyard.mailbox",
-		"name": "Ancient Artifact",
-		"in": "context-frontyard",
-		"mods": [
-			{
-				"type": "Mailbox",
-				"x": 28,
-				"y": 158
-			}
-		]
+	"type": "item",
+	"ref": "item-frontyard.mailbox",
+	"name": "Ancient Artifact",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Mailbox",
+			"x": 28,
+			"y": 158
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.building",
+	"name": "Front of Our House, in the middle of the street...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Building",
+			"style": 0,
+			"x": 32,
+			"y": 32,
+			"orientation": 196,
+			"gr_state": 0,
+			"connection": "context-table"
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.bush",
+	"name": "Landscaping...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Bush",
+			"style": 1,
+			"x": 4,
+			"y": 49,
+			"orientation": 188
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.bush2",
+	"name": "Landscaping...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Bush",
+			"x": 108,
+			"y": 57,
+			"orientation": 188
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.fence",
+	"name": "Keep off the lawn!",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Fence",
+			"style": 0,
+			"x": 132,
+			"y": 33,
+			"orientation": 0,
+			"gr_state": 0
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.grass",
+	"name": "Green Grass in the front of my house...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 7,
+			"x": 0,
+			"y": 2,
+			"orientation": 168
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.ground",
+	"name": "Street in front of where I live...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 8
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.sign",
+	"name": "431 Front Ln.",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Sign",
+			"style": 5,
+			"x": 64,
+			"y": 29,
+			"orientation": 252,
+			"gr_state": 8,
+			"text": "   431                                  ",
+			"ascii": []
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.sky",
+	"name": "Sky behind my house...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 0
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-frontyard.street",
+	"name": "Street that our house is in the middle of...",
+	"in": "context-frontyard",
+	"mods": [
+		{
+			"type": "Street",
+			"style": 0,
+			"x": 68,
+			"y": 7,
+			"orientation": 252,
+			"gr_state": 6
+		}
+	]
 }]
