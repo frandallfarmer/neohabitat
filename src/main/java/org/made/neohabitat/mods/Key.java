@@ -155,6 +155,6 @@ public class Key extends HabitatMod implements Copyable {
      *            Key mod containing the key number.
      */
     public String key_vendo_info(Key key) {
-        return ("Key #" + key.key_number_hi * 256 + key.key_number_lo + ".");
+        return ("Key #" + ( key.key_number_hi * 256 + key.key_number_lo ) + ".");
     }
 }
