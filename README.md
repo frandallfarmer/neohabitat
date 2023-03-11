@@ -19,7 +19,7 @@ With all that out of the way, here's how to get started:
 
 - If you want to use Habitat with a real C64, please switch over to [these instructions](https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md) for making disks and using modern connection hardware.
 
-- You can also use our [web based client](http://v.ht/habitat) to connect via a browser. Just skip to **Step 2** below to learn how to get ingame.
+- You can also use our [web based client](http://app.neohabitat.org) to connect via a browser. Just skip to **Step 2** below to learn how to get ingame.
 
 ### Step 1 - Download and Install either the Windows or OSX Habitat package (which comes with VICE, the C64 emulator)
 
@@ -78,7 +78,7 @@ If all goes well, you'll materialize in downtown Populopolis:
 
 Welcome to NeoHabitat! There's a whole lot you can do here and thousands of exotic places to visit.
 
-Before you go anywhere, **we highly recommend opening up our [Docent support software](http://v.ht/habitat)**. It's a browser based guide that'll help you navigate NeoHabitat, learn the controls and teach you about the history of the world. It's interactive and will update as you move around without you having to lift a finger.
+Before you go anywhere, **we highly recommend opening up our [Docent support software](http://app.neohabitat.org)**. It's a browser based guide that'll help you navigate NeoHabitat, learn the controls and teach you about the history of the world. It's interactive and will update as you move around without you having to lift a finger.
 
 If you are using the web based client mentioned earlier, the Docent support software is already active!
 
