@@ -1,4 +1,4 @@
-Welcome!
+﻿Welcome!
 ========
 
 You're about to connect to the world's first MMO, Lucasfilm's Habitat! There are thousands
@@ -19,7 +19,7 @@ Press **Enter**, then wait for the Habitat client to load; this will run at the 
 Commodore 64 speed, so be sure to give it a minute.
 
 Next, Habitat will ask you to flip to the next disk. To do so on **PC**, press **Alt-N**.
-To do so on **Mac**, press **Option-N**.
+To do so on **Mac**, press **Option-N**. Then, **press any key**, such as spacebar.
 
 Once you've logged in, be sure to select your avatar name from the selector at the top of
 the screen and select **Activate Docent**. This will activate Neohabitat's interactive web
