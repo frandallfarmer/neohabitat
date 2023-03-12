@@ -38,7 +38,7 @@ import org.made.neohabitat.Toggle;
 
 public class Region extends Container implements UserWatcher, ContextMod, ContextShutdownWatcher,  Constants {
     
-    public static String    MOTD = "Welcome to Habitat! Browse to http://v.ht/habitat for 2nd screen web tour guide.";
+    public static String    MOTD = "Welcome to Habitat, the first Metaverse! Recreated by The MADE.";
     
     /** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
     public static boolean   NEOHABITAT_FEATURES = true; 
