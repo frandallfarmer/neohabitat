@@ -4,9 +4,6 @@
 
 FROM philcollins/aurora-centos7
 
-# Ensures that the codebase is homed at /neohabitat.
-ADD . /neohabitat
-
 # Installs base build dependencies.
 RUN yum -y install \
   cronie \
@@ -22,14 +19,17 @@ RUN yum -y install \
   which && \
   yum clean all
 
+# Add Let's Encrypt root certificate
+RUN wget --no-check-certificate --directory-prefix=/etc/pki/ca-trust/source/anchors/ https://letsencrypt.org/certs/lets-encrypt-r3.pem && update-ca-trust
+
 # Installs the Apache Maven Yum repository.
-RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+RUN wget --no-check-certificate http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
 
 # Installs the Nodesource Yum repository.
-RUN curl -sL https://rpm.nodesource.com/setup_9.x | bash -
+RUN curl -L https://rpm.nodesource.com/setup_9.x | bash -
 
 # Installs MongoDB Yum repository.
-RUN curl -sL https://goo.gl/CxNbGr > /etc/yum.repos.d/mongodb-org.3.4.repo
+RUN curl -L https://goo.gl/CxNbGr > /etc/yum.repos.d/mongodb-org.3.4.repo
 
 # Installs Node and MongoDB.
 RUN yum -y install \
@@ -40,6 +40,9 @@ RUN yum -y install \
 
 # Installs Node dependencies.
 RUN npm install -g supervisor
+
+# Ensures that the codebase is homed at /neohabitat.
+ADD . /neohabitat
 
 # Adds a container log tailing utility.
 RUN printf '#!/bin/bash\ntail -f /neohabitat/{bridge,elko_server}.log' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
