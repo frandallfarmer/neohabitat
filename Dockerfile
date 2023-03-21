@@ -2,38 +2,23 @@
 #
 # VERSION              0.1.0
 
-FROM philcollins/aurora-centos7
+FROM quay.io/centos/centos:stream8
+
+# Installs MongoDB Yum repository.
+ADD https://goo.gl/CxNbGr /etc/yum.repos.d/mongodb-org.3.4.repo
 
 # Installs base build dependencies.
 RUN yum -y install \
   cronie \
-  curl \
   git \
-  htop \
+  # htop \
   java-1.8.0-openjdk \
   make \
   mariadb \
-  tar \
   vim \
   wget \
-  which && \
-  yum clean all
-
-# Add Let's Encrypt root certificate
-RUN wget --no-check-certificate --directory-prefix=/etc/pki/ca-trust/source/anchors/ https://letsencrypt.org/certs/lets-encrypt-r3.pem && update-ca-trust
-
-# Installs the Apache Maven Yum repository.
-RUN wget --no-check-certificate http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-
-# Installs the Nodesource Yum repository.
-RUN curl -L https://rpm.nodesource.com/setup_9.x | bash -
-
-# Installs MongoDB Yum repository.
-RUN curl -L https://goo.gl/CxNbGr > /etc/yum.repos.d/mongodb-org.3.4.repo
-
-# Installs Node and MongoDB.
-RUN yum -y install \
-  apache-maven \
+  which \
+  maven \
   mongodb-org \
   nodejs && \
   yum clean all
