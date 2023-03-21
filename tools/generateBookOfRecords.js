@@ -205,18 +205,21 @@ function processUserStats(users)  {
 			ref: "text-bookofrecords",
 			pages: generateRecords(userRecords)
 	}
-	File.writeFile(Argv.book, JSON.stringify(bookofrecords, null, 4));
+	File.writeFile(Argv.book, JSON.stringify(bookofrecords, null, 4), function(err) { } );
 
 }
 
-MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+const dbName = 'elko';
+
+MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
 	Assert.equal(null, err);
+	let db = client.db(dbName);
 	var collection = db.collection('odb');
 	collection.find({"ref": {$regex: "user-*"}}).toArray(function(err, users) {
 		if (undefined !== users) {
 			processUserStats(users);
 		}
-		db.close();
+		client.close();
 	});
 });
 

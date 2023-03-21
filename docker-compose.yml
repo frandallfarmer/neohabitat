@@ -1,4 +1,4 @@
-version: '2'
+#version: '2'
 networks:
   neohabitat:
     name: neohabitat
@@ -61,7 +61,8 @@ services:
     networks:
       - neohabitat
   qlink:
-    image: philcollins/qlink
+#    image: philcollins/qlink
+    build: ../qlink/
     environment:
       - QLINK_DB_HOST=neohabitatmariadb
       - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink

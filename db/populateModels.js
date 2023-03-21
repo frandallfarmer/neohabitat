@@ -301,11 +301,11 @@ function populateModels() {
             teleportDirectory.map[' End of Directory'] = 'eod';
             console.log('Writing teleport directory:', JSON.stringify(teleportDirectory));
             db.collection('odb').save(teleportDirectory, function(err, o) {
-              db.close();
+              client.close();
               exit(fileRootName);
             });         
           } else {
-            db.close();
+            client.close();
             exit(fileRootName);
           }
         }
