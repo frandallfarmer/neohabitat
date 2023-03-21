@@ -226,13 +226,16 @@ function populateModels() {
     process.exit(-1);
   }
 
-  MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), {
+  const dbName = 'elko';
+
+  MongoClient.connect('mongodb://{0}/'.format(mongoHost), {
     connectTimeoutMS: 15000
-  }, function(err, db) {
+  }, function(err, client) {
     if (err) {
       console.error('Could not open Mongo connection:', mongoHost);
       return console.error(err);
     }
+   let db = client.db(dbName);
 
     var walker = walk.walk(fileRoots[fileRootName]);
 
@@ -265,7 +268,7 @@ function populateModels() {
             // Sets retry parameters.
             updateWithRetries.retryIf(function(err) { return err != null; });
             updateWithRetries.setStrategy(new backoff.ExponentialStrategy());
-            updateWithRetries.failAfter(10);
+            updateWithRetries.failAfter(100);
 
             // Starts the Habitat object update process.
             updatesInFlight++;

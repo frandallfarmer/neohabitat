@@ -23,9 +23,9 @@ const ObjectId      = require('mongodb').ObjectID;
 
 const DefDefs   = { 
         context:    'context-Downtown_5f',
-        listen:     '127.0.0.1:1337',
-        elko:       '127.0.0.1:9000',
-        mongo:      '127.0.0.1:27017/elko',
+        listen:     'neohabitat:1337',
+        elko:       'neohabitat:9000',
+        mongo:      'neohabitatmongo:27017/elko',
         rate:       1200,
         trace:      'info'};
 var  Defaults   = DefDefs;

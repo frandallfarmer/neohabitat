@@ -23,7 +23,10 @@ RUN yum -y install \
   yum clean all
 
 # Installs the Apache Maven Yum repository.
-RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+RUN wget --no-check-certificate https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+RUN sed -i 's/http:/https:/g' /etc/yum.repos.d/epel-apache-maven.repo
+RUN sed -i 's/\$releasever/7/g' /etc/yum.repos.d/epel-apache-maven.repo
+RUN sed -i 's/^enabled/sslverify=0\nenabled/g'  /etc/yum.repos.d/epel-apache-maven.repo
 
 # Installs the Nodesource Yum repository.
 RUN curl -sL https://rpm.nodesource.com/setup_9.x | bash -
@@ -35,7 +38,8 @@ RUN curl -sL https://goo.gl/CxNbGr > /etc/yum.repos.d/mongodb-org.3.4.repo
 RUN yum -y install \
   apache-maven \
   mongodb-org \
-  nodejs && \
+  nodejs \
+  npm  && \
   yum clean all
 
 # Installs Node dependencies.

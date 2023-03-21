@@ -14,7 +14,7 @@ const	Trace 		= require('winston');
 const	MongoClient	= require('mongodb').MongoClient;
 const	Assert 		= require('assert');
 
-const	DefDefs		= { mongo: '127.0.0.1:27017/elko', trace: 'error', book: '../db/Text/text-bookofrecords.json'};
+const	DefDefs		= { mongo: 'neohabitatmongo:27017/elko', trace: 'error', book: '../db/Text/text-bookofrecords.json'};
 var		Defaults 	= DefDefs;
 
 try {
