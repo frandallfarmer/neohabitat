@@ -39,7 +39,7 @@ RUN yum -y install \
   yum clean all
 
 # Installs Node dependencies.
-RUN npm install -g supervisor
+RUN npm install -g supervisor serve-favicon
 
 # Adds a container log tailing utility.
 RUN printf '#!/bin/bash\ntail -f /neohabitat/{bridge,elko_server}.log' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
