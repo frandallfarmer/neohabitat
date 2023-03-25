@@ -315,8 +315,8 @@ function enterContextAfterRegionChecks(client, server, context) {			// Deal with
     var modified= false;
 
     const dbName = 'elko';
-    MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
- 	const db = client.db(dbName);
+    MongoClient.connect("mongodb://" + Argv.mongo, function(err, dbclient) {
+ 	const db = dbclient.db(dbName);
     	Assert.equal(null, err);
     	db.collection('odb').findOne({
     		"ref": userRef
