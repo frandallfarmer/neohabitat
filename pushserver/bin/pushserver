@@ -86,7 +86,7 @@ MongoClient.connect(MongoURL, (err, client) => {
     mongoDb,
     process.env.HABIPROXY_LISTEN_HOST || '0.0.0.0',
     process.env.HABIPROXY_LISTEN_PORT || '2018',
-    process.env.HABIPROXY_ELKO_HOST || '0.0.0.0',
+    process.env.HABIPROXY_ELKO_HOST || 'neohabitat',
     process.env.HABIPROXY_ELKO_PORT || '9000');
   habiproxy.start();
 

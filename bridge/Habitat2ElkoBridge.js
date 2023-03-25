@@ -75,6 +75,8 @@ var ListenPort   = listenaddr.length > 1 ? parseInt(listenaddr[1]) : 1337;
 var ElkoHost     = elkoaddr[0];
 var ElkoPort     = elkoaddr.length > 1   ? parseInt(elkoaddr[1])   : 9000;
 
+var replySeq = 0;
+
 var SessionCount = 0;
 var MongoDB = {};
 
@@ -135,13 +137,13 @@ function ensureTurfAssigned(db, userRef, callback) {
             // Updates the User's Elko document with the turf assignment.
             db.collection('odb').updateOne(
                 {ref: region.ref},
-                region,
+                { $set: region },
                 {upsert: true},
                 function(err, result) {
                     Assert.equal(err, null);
                     db.collection('odb').updateOne(
                         {ref: user.ref},
-                        user,
+                        { $set: user },
                         {upsert: true},
                         function(err, result) {
                             Assert.equal(err, null);
@@ -160,7 +162,7 @@ function setFirstConnection(db, userRef) {
 //      user.mods[0].amAGhost = true;               // TODO Once ghosts are working well, return the ARRIVE AS GHOST feature! FRF
         db.collection('odb').updateOne(
                 {ref: user.ref},
-                user,
+                { $set: user },
                 {upsert: true},
                 function(err, result) {
                     Assert.equal(err, null);
@@ -173,7 +175,7 @@ function setFirstConnection(db, userRef) {
 function insertUser(db, user, callback) {
     db.collection('odb').updateOne(
             {ref: user.ref},
-            user,
+            { $set: user },
             {upsert: true},
             function(err, result) {
                 Assert.equal(err, null);
@@ -256,7 +258,7 @@ function addDefaultTokens(db, userRef, fullName) {
 function readUserAndClose(db, userRef, client) {
     findOne(db, {ref: userRef}, function(err, user) {
             client.user = user;
-            db.close();
+            client.close();
     });
 }
 
@@ -264,7 +266,9 @@ function confirmOrCreateUser(fullName, client) {
     var userRef = client.userRef;
     if (client.firstConnection) {
         userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
-        MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+        const dbName = 'elko';
+	MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
+  	    const db = client.db(dbName);
             Assert.equal(null, err);
             findOne(db, {ref: userRef}, function(err, result) {
                 if (result === null || Argv.force) {
@@ -310,7 +314,9 @@ function enterContextAfterRegionChecks(client, server, context) {			// Deal with
     var userRef = client.userRef;
     var modified= false;
 
-    MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+    const dbName = 'elko';
+    MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
+ 	const db = client.db(dbName);
     	Assert.equal(null, err);
     	db.collection('odb').findOne({
     		"ref": userRef
@@ -344,7 +350,7 @@ function enterContextAfterRegionChecks(client, server, context) {			// Deal with
     			if (modified) {
     				db.collection('odb').updateOne(
     						{ref: user.ref},
-    						user,
+    						{ $set: user },
     						{upsert: true},
     						function(err, result) {
     							Assert.equal(err, null);

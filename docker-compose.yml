@@ -2,7 +2,7 @@
 networks:
   neohabitat:
     name: neohabitat
-    external: true
+    external: false
 
 
 
@@ -44,7 +44,10 @@ services:
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
       - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - NEOHABITAT_SERVER_HOST=neohabitat
       - NEOHABITAT_SERVER_PORT=1337
+      - HABIPROXY_ELKO_HOST=neohabitat
+      - HABIPROXY_ELKO_PORT=9000
       - NODE_ENV=development
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
@@ -70,6 +73,7 @@ services:
       - QLINK_DB_PASSWORD=qlink
       - QLINK_HABITAT_HOST=neohabitat
       - QLINK_HABITAT_PORT=1337
+      - QLINK_HABITAT_USE_FRAMING=true
     ports:
       - "5190:5190"
       - "1986:1986"
