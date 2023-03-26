@@ -255,10 +255,10 @@ function addDefaultTokens(db, userRef, fullName) {
 }
 
 
-function readUserAndClose(db, userRef, client) {
+function readUserAndClose(db, userRef, client, dbclient) {
     findOne(db, {ref: userRef}, function(err, user) {
             client.user = user;
-            client.close();
+            dbclient.close();
     });
 }
 
@@ -267,8 +267,8 @@ function confirmOrCreateUser(fullName, client) {
     if (client.firstConnection) {
         userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
         const dbName = 'elko';
-	MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
-  	    const db = client.db(dbName);
+	MongoClient.connect("mongodb://" + Argv.mongo, function(err, dbclient) {
+  	    const db = dbclient.db(dbName);
             Assert.equal(null, err);
             findOne(db, {ref: userRef}, function(err, result) {
                 if (result === null || Argv.force) {
@@ -295,13 +295,13 @@ function confirmOrCreateUser(fullName, client) {
                         addPaperPrime(db, userRef, fullName);
                         addDefaultTokens(db, userRef, fullName);
                         ensureTurfAssigned(db, userRef, function() {
-                            readUserAndClose(db, userRef, client);
+                            readUserAndClose(db, userRef, client, dbclient);
                         });
                     });
                 } else {
                     setFirstConnection(db, userRef);
                     ensureTurfAssigned(db, userRef, function() {
-                        readUserAndClose(db, userRef, client);
+                        readUserAndClose(db, userRef, client, dbclient);
                     });
                 }
             });
@@ -1298,7 +1298,7 @@ function checkpointUsers() {
     for (key in Users) {
         save[key] = ({regionRef:Users[key].regionRef, userRef:Users[key].userRef});
     }
-    File.writeFile(UFILENAME, JSON.stringify(save, null, 2));
+    File.writeFile(UFILENAME, JSON.stringify(save, null, 2), function(err) {} );
 }
 
 function findUser(name) {

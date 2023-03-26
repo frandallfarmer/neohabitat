@@ -16,8 +16,8 @@ services:
       - MYSQL_PASSWORD=qlink
     volumes:
       - ./data/mariadb:/var/lib/mysql
-    ports:
-      - "3307:3306"
+#    ports:
+#      - "3306:3306"
     networks:
       - neohabitat
   neohabitatmongo:
@@ -25,9 +25,9 @@ services:
     command: "--smallfiles"
     volumes:
       - ./data/mongodb:/data/db
-    ports:
-      - "27017"
-      - "27017:27017"
+#    ports:
+#      - "27017"
+#      - "27017:27017"
     networks:
       - neohabitat
   neohabitat:
@@ -51,14 +51,14 @@ services:
       - NODE_ENV=development
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
-    ports:
-      - "1337:1337"
-      - "1701:1701"
-      - "1898:1898"
-      - "1987:1987"
-      - "2018:2018"
-      - "9000:9000"
-      - "9229:9229"
+#    ports:
+#      - "1337:1337"
+#      - "1701:1701"
+#      - "1898:1898"
+#      - "1987:1987"
+#      - "2018:2018"
+#      - "9000:9000"
+#      - "9229:9229"
     depends_on:
       - neohabitatmongo
     networks:
@@ -75,7 +75,7 @@ services:
       - QLINK_HABITAT_PORT=1337
       - QLINK_HABITAT_USE_FRAMING=true
     ports:
-      - "5190:5190"
+#      - "5190:5190"
       - "1986:1986"
     depends_on:
       - neohabitat

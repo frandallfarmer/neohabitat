@@ -137,7 +137,6 @@ fi
 
 # Starts the Exhibit's HTML push server if requested.
 if [ "${SHOULD_RUN_PUSHSERVER}" == true ]; then
-  env
   start_pushserver &
 fi
 

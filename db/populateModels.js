@@ -268,7 +268,7 @@ function populateModels() {
             // Sets retry parameters.
             updateWithRetries.retryIf(function(err) { return err != null; });
             updateWithRetries.setStrategy(new backoff.ExponentialStrategy());
-            updateWithRetries.failAfter(100);
+            updateWithRetries.failAfter(10);
 
             // Starts the Habitat object update process.
             updatesInFlight++;
