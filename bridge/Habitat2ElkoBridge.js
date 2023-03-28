@@ -75,8 +75,6 @@ var ListenPort   = listenaddr.length > 1 ? parseInt(listenaddr[1]) : 1337;
 var ElkoHost     = elkoaddr[0];
 var ElkoPort     = elkoaddr.length > 1   ? parseInt(elkoaddr[1])   : 9000;
 
-var replySeq = 0;
-
 var SessionCount = 0;
 var MongoDB = {};
 
