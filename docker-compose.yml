@@ -43,7 +43,7 @@ services:
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
       - NEOHABITAT_SERVER_HOST=neohabitat
       - NEOHABITAT_SERVER_PORT=1337
       - HABIPROXY_ELKO_HOST=neohabitat
@@ -64,8 +64,8 @@ services:
     networks:
       - neohabitat
   qlink:
-#    image: philcollins/qlink
-    build: ../qlink/
+    image: philcollins/qlink
+#    build: ../qlink/
     environment:
       - QLINK_DB_HOST=neohabitatmariadb
       - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink
@@ -82,4 +82,8 @@ services:
       - neohabitatmariadb
     networks:
       - neohabitat
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
 

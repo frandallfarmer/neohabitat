@@ -41,7 +41,7 @@ WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
 
 WORKDIR /neohabitat/pushserver
-RUN rm -rf node_modules && npm install
+RUN cd /neohabitat/pushserver && rm -rf node_modules && npm install
 
 WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run
