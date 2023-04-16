@@ -24,7 +24,7 @@ RUN yum -y install \
   yum clean all
 
 # Installs Node dependencies.
-RUN npm install -g supervisor
+RUN npm install -g supervisor serve-favicon
 
 # Ensures that the codebase is homed at /neohabitat.
 ADD . /neohabitat
