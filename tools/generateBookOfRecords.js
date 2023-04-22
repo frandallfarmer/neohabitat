@@ -14,7 +14,7 @@ const	Trace 		= require('winston');
 const	MongoClient	= require('mongodb').MongoClient;
 const	Assert 		= require('assert');
 
-const	DefDefs		= { mongo: '127.0.0.1:27017/elko', trace: 'error', book: '../db/Text/text-bookofrecords.json'};
+const	DefDefs		= { mongo: 'neohabitatmongo:27017/elko', trace: 'error', book: '../db/Text/text-bookofrecords.json'};
 var		Defaults 	= DefDefs;
 
 try {
@@ -205,18 +205,21 @@ function processUserStats(users)  {
 			ref: "text-bookofrecords",
 			pages: generateRecords(userRecords)
 	}
-	File.writeFile(Argv.book, JSON.stringify(bookofrecords, null, 4));
+	File.writeFile(Argv.book, JSON.stringify(bookofrecords, null, 4), function(err) { } );
 
 }
 
-MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+const dbName = 'elko';
+
+MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
 	Assert.equal(null, err);
+	let db = client.db(dbName);
 	var collection = db.collection('odb');
 	collection.find({"ref": {$regex: "user-*"}}).toArray(function(err, users) {
 		if (undefined !== users) {
 			processUserStats(users);
 		}
-		db.close();
+		client.close();
 	});
 });
 

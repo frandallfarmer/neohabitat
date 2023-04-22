@@ -66,7 +66,7 @@ function onError(error) {
 /**
  * Initiates a connection to Mongo then instantiates routes.
  */
-var MongoURL = process.env.PUSH_SERVER_MONGO_URL || 'mongodb://127.0.0.1';
+var MongoURL = process.env.PUSH_SERVER_MONGO_URL || 'mongodb://neohabitatmongo';
 var MongoDatabase = process.env.PUSH_SERVER_MONGO_DB || 'elko';
 
 var mongoDb;
@@ -86,7 +86,7 @@ MongoClient.connect(MongoURL, (err, client) => {
     mongoDb,
     process.env.HABIPROXY_LISTEN_HOST || '0.0.0.0',
     process.env.HABIPROXY_LISTEN_PORT || '2018',
-    process.env.HABIPROXY_ELKO_HOST || '0.0.0.0',
+    process.env.HABIPROXY_ELKO_HOST || 'neohabitat',
     process.env.HABIPROXY_ELKO_PORT || '9000');
   habiproxy.start();
 

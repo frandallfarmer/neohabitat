@@ -226,13 +226,16 @@ function populateModels() {
     process.exit(-1);
   }
 
-  MongoClient.connect('mongodb://{0}/elko'.format(mongoHost), {
+  const dbName = 'elko';
+
+  MongoClient.connect('mongodb://{0}/'.format(mongoHost), {
     connectTimeoutMS: 15000
-  }, function(err, db) {
+  }, function(err, client) {
     if (err) {
       console.error('Could not open Mongo connection:', mongoHost);
       return console.error(err);
     }
+   let db = client.db(dbName);
 
     var walker = walk.walk(fileRoots[fileRootName]);
 
@@ -298,11 +301,11 @@ function populateModels() {
             teleportDirectory.map[' End of Directory'] = 'eod';
             console.log('Writing teleport directory:', JSON.stringify(teleportDirectory));
             db.collection('odb').save(teleportDirectory, function(err, o) {
-              db.close();
+              client.close();
               exit(fileRootName);
             });         
           } else {
-            db.close();
+            client.close();
             exit(fileRootName);
           }
         }

@@ -15,7 +15,7 @@ const Argv 		 = require('yargs')
 	.option('force',	 { alias: 'f', default:false,				describe: 'force overwrite of any existing user-avatar'})
 	.option('god',		 { alias: 'g', default:false,				describe: 'set GOD_BIT'})
 	.option('body',		 { alise: 'b', default:"male",				describe: 'avatar body type'})
-	.option('url',		 { alias: 'u', default:'//localhost/elko',	describe: 'mongodb server url.'})
+	.option('url',		 { alias: 'u', default:'//neohabitatmongo/elko',	describe: 'mongodb server url.'})
 	.option('savedir',	 { alias: 's',								describe: 'directory for user-NAME.json. Unspecified == no file'})
 	.demandOption('name')
 	.option('help',		 { alias: 'h', 						     	describe: 'Get this usage/help information'})
@@ -57,7 +57,7 @@ function testUser(db, callback) {
 function insertUser(db, callback) {
 	db.collection('odb').updateOne(
 			{ref: NewUser.ref},
-			NewUser,
+			{ $set: NewUser},
 			{upsert: true},
 			function(err, result) {
 				Assert.equal(err, null);
@@ -67,15 +67,19 @@ function insertUser(db, callback) {
 
 var url = 'mongodb:' + Argv.url;
 
-MongoClient.connect(url, function(err, db) {
+const dbName = 'elko';
+
+
+MongoClient.connect(url, function(err, client) {
 	Assert.equal(null, err);
+	let db = client.db(dbName);
 	testUser(db, function(err, result) {
 		if (result === null || Argv.force) {
 			insertUser(db, function() {
-				db.close();
+				client.close();
 			});
 		} else {
-			db.close();
+			client.close();
 		}
 	});
 });

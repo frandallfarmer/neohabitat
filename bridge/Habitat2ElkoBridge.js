@@ -23,9 +23,9 @@ const ObjectId      = require('mongodb').ObjectID;
 
 const DefDefs   = { 
         context:    'context-Downtown_5f',
-        listen:     '127.0.0.1:1337',
-        elko:       '127.0.0.1:9000',
-        mongo:      '127.0.0.1:27017/elko',
+        listen:     'neohabitat:1337',
+        elko:       'neohabitat:9000',
+        mongo:      'neohabitatmongo:27017/elko',
         rate:       1200,
         trace:      'info'};
 var  Defaults   = DefDefs;
@@ -135,13 +135,13 @@ function ensureTurfAssigned(db, userRef, callback) {
             // Updates the User's Elko document with the turf assignment.
             db.collection('odb').updateOne(
                 {ref: region.ref},
-                region,
+                { $set: region },
                 {upsert: true},
                 function(err, result) {
                     Assert.equal(err, null);
                     db.collection('odb').updateOne(
                         {ref: user.ref},
-                        user,
+                        { $set: user },
                         {upsert: true},
                         function(err, result) {
                             Assert.equal(err, null);
@@ -160,7 +160,7 @@ function setFirstConnection(db, userRef) {
 //      user.mods[0].amAGhost = true;               // TODO Once ghosts are working well, return the ARRIVE AS GHOST feature! FRF
         db.collection('odb').updateOne(
                 {ref: user.ref},
-                user,
+                { $set: user },
                 {upsert: true},
                 function(err, result) {
                     Assert.equal(err, null);
@@ -173,7 +173,7 @@ function setFirstConnection(db, userRef) {
 function insertUser(db, user, callback) {
     db.collection('odb').updateOne(
             {ref: user.ref},
-            user,
+            { $set: user },
             {upsert: true},
             function(err, result) {
                 Assert.equal(err, null);
@@ -253,10 +253,10 @@ function addDefaultTokens(db, userRef, fullName) {
 }
 
 
-function readUserAndClose(db, userRef, client) {
+function readUserAndClose(db, userRef, client, dbclient) {
     findOne(db, {ref: userRef}, function(err, user) {
             client.user = user;
-            db.close();
+            dbclient.close();
     });
 }
 
@@ -264,7 +264,9 @@ function confirmOrCreateUser(fullName, client) {
     var userRef = client.userRef;
     if (client.firstConnection) {
         userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
-        MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+        const dbName = 'elko';
+	MongoClient.connect("mongodb://" + Argv.mongo, function(err, dbclient) {
+  	    const db = dbclient.db(dbName);
             Assert.equal(null, err);
             findOne(db, {ref: userRef}, function(err, result) {
                 if (result === null || Argv.force) {
@@ -291,13 +293,13 @@ function confirmOrCreateUser(fullName, client) {
                         addPaperPrime(db, userRef, fullName);
                         addDefaultTokens(db, userRef, fullName);
                         ensureTurfAssigned(db, userRef, function() {
-                            readUserAndClose(db, userRef, client);
+                            readUserAndClose(db, userRef, client, dbclient);
                         });
                     });
                 } else {
                     setFirstConnection(db, userRef);
                     ensureTurfAssigned(db, userRef, function() {
-                        readUserAndClose(db, userRef, client);
+                        readUserAndClose(db, userRef, client, dbclient);
                     });
                 }
             });
@@ -310,7 +312,9 @@ function enterContextAfterRegionChecks(client, server, context) {			// Deal with
     var userRef = client.userRef;
     var modified= false;
 
-    MongoClient.connect("mongodb://" + Argv.mongo, function(err, db) {
+    const dbName = 'elko';
+    MongoClient.connect("mongodb://" + Argv.mongo, function(err, dbclient) {
+ 	const db = dbclient.db(dbName);
     	Assert.equal(null, err);
     	db.collection('odb').findOne({
     		"ref": userRef
@@ -344,7 +348,7 @@ function enterContextAfterRegionChecks(client, server, context) {			// Deal with
     			if (modified) {
     				db.collection('odb').updateOne(
     						{ref: user.ref},
-    						user,
+    						{ $set: user },
     						{upsert: true},
     						function(err, result) {
     							Assert.equal(err, null);
@@ -1292,7 +1296,7 @@ function checkpointUsers() {
     for (key in Users) {
         save[key] = ({regionRef:Users[key].regionRef, userRef:Users[key].userRef});
     }
-    File.writeFile(UFILENAME, JSON.stringify(save, null, 2));
+    File.writeFile(UFILENAME, JSON.stringify(save, null, 2), function(err) {} );
 }
 
 function findUser(name) {

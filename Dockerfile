@@ -11,7 +11,7 @@ ADD https://goo.gl/CxNbGr /etc/yum.repos.d/mongodb-org.3.4.repo
 RUN yum -y install \
   cronie \
   git \
-  # htop \
+# htop \
   java-1.8.0-openjdk \
   make \
   mariadb \
@@ -20,7 +20,8 @@ RUN yum -y install \
   which \
   maven \
   mongodb-org \
-  nodejs && \
+  nodejs \
+  npm  && \
   yum clean all
 
 # Installs Node dependencies.
@@ -40,7 +41,7 @@ WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
 
 WORKDIR /neohabitat/pushserver
-RUN rm -rf node_modules && npm install
+RUN cd /neohabitat/pushserver && rm -rf node_modules && npm install
 
 WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run

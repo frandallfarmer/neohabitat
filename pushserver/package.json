@@ -18,7 +18,7 @@
     "mongodb": "^3.1.13",
     "morgan": "~1.9.1",
     "node-websockify": "^1.0.2",
-    "serve-favicon": "~2.4.5",
+    "serve-favicon": "^2.5.0",
     "server-send-events": "0.0.6",
     "showdown": "^1.9.1",
     "supervisor": "^0.12.0",

@@ -1,4 +1,11 @@
-version: '2'
+#version: '2'
+networks:
+  neohabitat:
+    name: neohabitat
+    external: false
+
+
+
 services:
   neohabitatmariadb:
     image: mariadb
@@ -9,16 +16,20 @@ services:
       - MYSQL_PASSWORD=qlink
     volumes:
       - ./data/mariadb:/var/lib/mysql
-    ports:
-      - "3306:3306"
+#    ports:
+#      - "3306:3306"
+    networks:
+      - neohabitat
   neohabitatmongo:
     image: mongo:4.0
     command: "--smallfiles"
     volumes:
       - ./data/mongodb:/data/db
-    ports:
-      - "27017"
-      - "27017:27017"
+#    ports:
+#      - "27017"
+#      - "27017:27017"
+    networks:
+      - neohabitat
   neohabitat:
     build: .
     image: philcollins/neohabitat
@@ -26,37 +37,53 @@ services:
     volumes:
       - .:/neohabitat
     environment:
-      - NEOHABITAT_BRIDGE_ELKO_HOST=127.0.0.1:2018
+      - NEOHABITAT_BRIDGE_ELKO_HOST=neohabitat:2018
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=true
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - NEOHABITAT_SERVER_HOST=neohabitat
+      - NEOHABITAT_SERVER_PORT=1337
+      - HABIPROXY_ELKO_HOST=neohabitat
+      - HABIPROXY_ELKO_PORT=9000
       - NODE_ENV=development
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
-    ports:
-      - "1337:1337"
-      - "1701:1701"
-      - "1898:1898"
-      - "1987:1987"
-      - "2018:2018"
-      - "9000:9000"
-      - "9229:9229"
+#    ports:
+#      - "1337:1337"
+#      - "1701:1701"
+#      - "1898:1898"
+#      - "1987:1987"
+#      - "2018:2018"
+#      - "9000:9000"
+#      - "9229:9229"
     depends_on:
       - neohabitatmongo
+    networks:
+      - neohabitat
   qlink:
     image: philcollins/qlink
+#    build: ../qlink/
     environment:
       - QLINK_DB_HOST=neohabitatmariadb
       - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink
       - QLINK_DB_USERNAME=qlink
       - QLINK_DB_PASSWORD=qlink
       - QLINK_HABITAT_HOST=neohabitat
+      - QLINK_HABITAT_PORT=1337
+      - QLINK_HABITAT_USE_FRAMING=true
     ports:
-      - "5190:5190"
+#      - "5190:5190"
       - "1986:1986"
     depends_on:
       - neohabitat
       - neohabitatmariadb
+    networks:
+      - neohabitat
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
+
