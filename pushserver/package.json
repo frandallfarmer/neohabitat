@@ -12,7 +12,7 @@
     "cookie-parser": "~1.4.3",
     "cookie-session": "^2.0.0-beta.3",
     "debug": "~2.6.9",
-    "ejs": "~2.5.7",
+    "ejs": "~3.1.7",
     "express": "~4.15.5",
     "mongo": "^0.1.0",
     "mongodb": "^3.1.13",
