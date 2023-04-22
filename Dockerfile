@@ -11,7 +11,7 @@ ADD https://goo.gl/CxNbGr /etc/yum.repos.d/mongodb-org.3.4.repo
 RUN yum -y install \
   cronie \
   git \
-#  htop \
+# htop \
   java-1.8.0-openjdk \
   make \
   mariadb \
