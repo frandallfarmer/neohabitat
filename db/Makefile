@@ -28,7 +28,7 @@ TEXT_OBJECTS = $(shell find ./Text -name '*.json') $(BOOKOFRECORDS)
 # The file that actually gets produced by "make db"
 DBINIT_SCRIPT = ./dbinit.sh
 
-NEOHABITAT_MONGO_HOST ?= "//neohabitatmongo:27017/"
+NEOHABITAT_MONGO_HOST ?= "127.0.0.1:27017"
 
 define NL
 
