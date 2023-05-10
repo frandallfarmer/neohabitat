@@ -10,7 +10,7 @@
     "server-send-events": "0.0.6",
     "walk": "^2.3.9",
     "winston": "^2.3.0",
-    "yargs": "^6.6.0"
+    "yargs": "^17.7.2"
   },
   "license": "MIT",
   "homepage": "https://frandallfarmer.github.io/neohabitat/"
