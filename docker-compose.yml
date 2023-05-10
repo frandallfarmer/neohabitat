@@ -31,8 +31,8 @@ services:
     build: .
     image: philcollins/neohabitat
     privileged: true
-    volumes:
-      - .:/neohabitat
+    # volumes:
+    #   - .:/neohabitat
     environment:
       - NEOHABITAT_BRIDGE_ELKO_HOST=neohabitat:2018
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
