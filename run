@@ -24,7 +24,7 @@ function retry() {
   done
 }
 
-GIT_BASE_DIR=$(git rev-parse --show-toplevel)
+# GIT_BASE_DIR=$(git rev-parse --show-toplevel)
 GIT_BASE_DIR="/neohabitat"
 echo "GIT_BASE_DIR == $GIT_BASE_DIR"
 VERSION="0.1.0-SNAPSHOT"
@@ -48,7 +48,7 @@ SHOULD_ENABLE_CRON="${NEOHABITAT_SHOULD_ENABLE_CRON:=false}"
 SHOULD_RUN_BRIDGE="${NEOHABITAT_SHOULD_RUN_BRIDGE:=true}"
 SHOULD_RUN_NEOHABITAT="${NEOHABITAT_SHOULD_RUN_NEOHABITAT:=true}"
 SHOULD_RUN_PUSHSERVER="${NEOHABITAT_SHOULD_RUN_PUSHSERVER:=true}"
-SHOULD_UPDATE_SCHEMA="${NEOHABITAT_SHOULD_UPDATE_SCHEMA:=false}"
+SHOULD_UPDATE_SCHEMA="${NEOHABITAT_SHOULD_UPDATE_SCHEMA:=true}"
 PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP:=9000}"
 #HABIPROXY_ELKO_HOST="${NEOHABITAT_HABIPROXY_ELKO_HOST:=neohabitat}"
 #HABIPROXY_ELKO_PORT="${NEOHABITAT_HABIPROXY_ELKO_PORT:=9000}"
@@ -104,6 +104,9 @@ function start_elko_server() {
     "${@}" 2>&1 | tee elko_server.log
 }
 
+# NOTICE
+# this is
+npm install
 
 if [ "${SHOULD_ENABLE_CRON}" == true ]; then
   echo " - Starting cron daemon..."
