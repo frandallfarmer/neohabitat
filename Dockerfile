@@ -40,8 +40,11 @@ RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && NEOHABITAT_MONGO
 WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
 
+WORKDIR /neohabitat/bridge
+RUN npm ci
+
 WORKDIR /neohabitat/pushserver
-RUN cd /neohabitat/pushserver && rm -rf node_modules && npm install
+RUN npm ci
 
 WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run
