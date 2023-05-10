@@ -1,10 +1,7 @@
-#version: '2'
+version: '2'
 networks:
   neohabitat:
-    name: neohabitat
     external: false
-
-
 
 services:
   neohabitatmariadb:
@@ -42,8 +39,8 @@ services:
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=true
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
-      - NEOHABITAT_SHOULD_RUN_PUSHSERVER=false
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=true
       - NEOHABITAT_SERVER_HOST=neohabitat
       - NEOHABITAT_SERVER_PORT=1337
       - HABIPROXY_ELKO_HOST=neohabitat
@@ -86,4 +83,3 @@ services:
       nofile:
         soft: 10000
         hard: 10000
-

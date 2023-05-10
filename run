@@ -25,6 +25,8 @@ function retry() {
 }
 
 GIT_BASE_DIR=$(git rev-parse --show-toplevel)
+GIT_BASE_DIR="/neohabitat"
+echo "GIT_BASE_DIR == $GIT_BASE_DIR"
 VERSION="0.1.0-SNAPSHOT"
 
 # Sets default config values if there are no environment-level overrides.
@@ -103,13 +105,11 @@ function start_elko_server() {
 }
 
 
-npm install
-
 if [ "${SHOULD_ENABLE_CRON}" == true ]; then
   echo " - Starting cron daemon..."
   crond -i
 else
-  echo "${SHOULD_ENABLE_CRON}" 
+  echo "${SHOULD_ENABLE_CRON}"
   echo " - Skipping cron.."
 fi
 
