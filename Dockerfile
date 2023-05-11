@@ -39,8 +39,6 @@ RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && NEOHABITAT_MONGO
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
-
-WORKDIR /neohabitat/bridge
 RUN npm ci
 
 WORKDIR /neohabitat/pushserver
