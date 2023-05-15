@@ -24,11 +24,11 @@ services:
       - neohabitat
   neohabitat:
     build: .
-    # make sure to build this with `docker compose build` for the latest version
-    image: philcollins/neohabitat
+    # make sure to build this with `docker compose build` when developing /neohabitat
+    image: frandallfarmer/neohabitat
     privileged: true
     environment:
-      - NEOHABITAT_BRIDGE_ELKO_HOST=neohabitat:2018
+      - NEOHABITAT_BRIDGE_ELKO_HOST=neohabitat:9000
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=true
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
