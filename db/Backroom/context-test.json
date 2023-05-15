@@ -1,4 +1,4 @@
-{
+[{
 	"type": "context",
 	"ref": "context-test",
 	"capacity": 64,
@@ -14,4 +14,260 @@
 			"neighbors": ["context-library", "context-table", "context-vendo", ""]
 		}
 	]
-}
+},
+{
+	"type": "item",
+	"ref": "item-test.down.sign",
+	"name": "Indicate Down Exit",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 0,
+			"x": 14,
+			"y": 5,
+			"gr_state": 1,
+			"orientation": 0,
+			"ascii": [
+			  32,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  32
+			]
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.exit_sign",
+	"name": "Exit the region sign...",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 4,
+			"x": 116,
+			"y": 32,
+			"orientation": 168,
+			"text": "Library >>",
+			"ascii": []
+
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.ground",
+	"name": "Ground for Region 2",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 228
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.angel",
+	"name": "One Winged Angel Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 124,
+			"x": 56,
+			"y": 80,
+			"orientation": 16,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.boy",
+	"name": "Default Male Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 1,
+			"x": 150,
+			"y": 80,
+			"orientation": 1,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.cat",
+	"name": "Cool Cat Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 28,
+			"x": 87,
+			"y": 80,
+			"orientation": 16,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.chipmonk",
+	"name": "Chipmonk Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 108,
+			"x": 70,
+			"y": 80,
+			"orientation": 0,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-gengirl.head",
+	"name": "Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 2,
+			"x": 132,
+			"y": 80,
+			"orientation": 8,
+			"gr_state": 1
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.melvin",
+	"name": "Melvin Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 142,
+			"x": 10,
+			"y": 80,
+			"orientation": 0,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.sheriff",
+	"name": "Sherif Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 160,
+			"x": 29,
+			"y": 80,
+			"orientation": 112,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.head.woman",
+	"name": "Woman Head",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Head",
+			"style": 21,
+			"x": 110,
+			"y": 80,
+			"orientation": 32,
+			"gr_state": 1
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.short_sign",
+	"name": "The MADE sign",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 4,
+			"x": 60,
+			"y": 112,
+			"orientation": 140,
+			"text": " The MADE ",
+			"ascii": []
+
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.sign",
+	"name": "A Large Sign",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Sign",
+			"style": 0,
+			"x": 0,
+			"y": 76,
+			"orientation": 0,
+			"gr_state": 1,
+			"text": "The Neoclassical Habitat Server Project.",
+			"ascii": []
+
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-test.teleport",
+	"name": "Pop-Heads Port",
+	"in": "context-test",
+	"mods": [
+		{
+			"y": 143, 
+			"x": 24,
+			"type": "Teleport",
+			"orientation": 0,
+			"address": "Pop-Heads"
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-test.wall",
+	"name": "Wall",
+	"in": "context-test",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 196
+		}
+	]
+}]

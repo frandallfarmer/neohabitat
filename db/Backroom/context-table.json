@@ -1,4 +1,4 @@
-{
+[{
 	"type": "context",
 	"ref": "context-table",
 	"capacity": 64,
@@ -13,4 +13,269 @@
 			"neighbors": ["", "context-frontyard", "", ""]
 		}
 	]
-}
+},
+{
+	"type": "item",
+	"ref": "item-table.compass",
+	"name": "Compass",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Compass",
+			"y": 0,
+			"orientation": 16
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.die",
+	"name": "Die",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Die",
+			"y": 1,
+			"gr_state": 1,
+			"orientation": 16,
+			"state":	6 
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-table.door.heads",
+	"name": "Door to Heads",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Door",
+			"style": 0,
+			"x": 20,
+			"y": 32,
+			"orientation": 192,
+			"gr_state": 0,
+			"open_flags": 2,
+			"connection": "context-test"
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-table.door.library",
+	"name": "Door to Library",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Door",
+			"style": 0,
+			"x": 112,
+			"y": 32,
+			"orientation": 144,
+			"gr_state": 0,
+			"open_flags": 2,
+			"connection": "context-library"
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-table.down.sign",
+	"name": "Indicate Down Exit",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Short_sign",
+			"style": 0,
+			"x": 64,
+			"y": 5,
+			"gr_state": 1,
+			"orientation": 0,
+			"ascii": [
+			  32,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  228,
+			  32
+			]
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-table.flashlight",
+	"name": "Blue Flashlight",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Flashlight",
+			"y": 2
+		}
+		]
+},
+
+{
+	"type": "item",
+	"ref": "item-table.ground",
+	"name": "Ground for Contents Testing",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Ground",
+			"style": 1,
+			"x": 0,
+			"y": 4,
+			"orientation": 104
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-library.gun",
+	"name": "Gun",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Gun",
+			"y": 3,
+			"orientation": 8
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-table.key",
+	"name": "Key",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Key",
+			"x": 20,
+			"y": 132,
+			"key_number_lo": 5,
+			"key_number_hi": 5
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_canblue",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 10,
+			"y": 130,
+			"orientation": 0
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_canblack",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 40,
+			"y": 130,
+			"orientation": 8
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_canskin",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 70,
+			"y": 130,
+			"orientation": 16
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_can24",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 100,
+			"y": 130,
+			"orientation": 24
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_can32",
+	"name": "Spray Can",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"x": 130,
+			"y": 130,
+			"orientation": 32
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-library.spray_can",
+	"name": "Spray Can",
+	"in": "item-table.table",
+	"mods": [
+		{
+			"type": "Spray_can",
+			"y": 4,
+			"orientation": 64
+		}
+		]
+},
+{
+	"type": "item",
+	"ref": "item-table.table",
+	"name": "Test Table",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Table",
+			"style": 0,
+			"x": 60,
+			"y": 140,
+			"orientation": 0,
+			"gr_state": 0,
+			"open_flags": 3,
+			"key_lo": 5,
+			"key_hi": 5
+		}
+	]
+},
+{
+	"type": "item",
+	"ref": "item-table.wall",
+	"name": "Wall for Contents Testing",
+	"in": "context-table",
+	"mods": [
+		{
+			"type": "Wall",
+			"style": 4,
+			"x": 0,
+			"y": 0,
+			"orientation": 152
+		}
+	]
+}]
