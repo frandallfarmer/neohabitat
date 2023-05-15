@@ -28,7 +28,7 @@ RUN yum -y install \
 RUN npm install -g supervisor
 
 # Ensures that the codebase is homed at /neohabitat.
-ADD . /neohabitat
+COPY . /neohabitat
 
 # Adds a container log tailing utility.
 RUN printf '#!/bin/bash\ntail -f /neohabitat/{bridge,elko_server}.log' > /usr/bin/habitail && chmod a+x /usr/bin/habitail
