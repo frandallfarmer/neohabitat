@@ -24,6 +24,7 @@ services:
       - neohabitat
   neohabitat:
     build: .
+    # make sure to build this with `docker compose build` for the latest version
     image: philcollins/neohabitat
     privileged: true
     environment:
