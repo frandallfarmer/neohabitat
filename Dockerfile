@@ -7,6 +7,9 @@ FROM quay.io/centos/centos:stream8
 # Installs MongoDB Yum repository.
 ADD https://goo.gl/CxNbGr /etc/yum.repos.d/mongodb-org.3.4.repo
 
+# Get a recent version of nodejs
+RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+
 # Installs base build dependencies.
 RUN yum -y install \
   cronie \
@@ -20,7 +23,7 @@ RUN yum -y install \
   which \
   maven \
   mongodb-org \
-  nodejs \
+#  nodejs \
   npm  && \
   yum clean all
 
