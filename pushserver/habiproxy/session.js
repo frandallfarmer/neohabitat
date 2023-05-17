@@ -44,6 +44,9 @@ class HabitatSession {
       // Begins listening for Client events.
       this.clientConnection.on('data', this.handleClientData.bind(this));
       this.clientConnection.on('end', this.handleClientDisconnect.bind(this));
+      this.clientConnection.on('error', (err) => {
+        log.error("**** Session client connection error!!!! %s", err);
+      });
       this.clientConnectionAttached = true;
     }
   }
@@ -53,6 +56,10 @@ class HabitatSession {
       // Begins listening for Server events.
       this.serverConnection.on('data', this.handleServerData.bind(this));
       this.serverConnection.on('end', this.handleServerDisconnect.bind(this));
+      this.serverConnection.on('error', (err) => {
+        log.error("***** HabitatSession: serverconnection error!!! %s", err);
+        log.error("***** HabitatSession: %s %s", this.serverHost, this.serverPort);
+      });
       this.serverConnectionAttached = true;
     }
   }
@@ -195,8 +202,9 @@ class HabitatSession {
       // Opens a connection to Server and begins listening for events.
       this.serverConnectionAttached = false;
       this.serverConnection = new net.Socket();
+      this.serverConnection.setKeepAlive(true, 60000);
       this.serverConnection.connect(this.serverPort, this.serverHost,
-        this.handleServerConnect.bind(this));
+                                    this.handleServerConnect.bind(this));
       this.attachServer();
       this.connected = true;
     }
@@ -268,12 +276,12 @@ class HabitatSession {
   }
 
   handleClientDisconnect() {
-    log.debug('Client disconnected for Client %s, moving session to ASLEEP', this.id());
+    log.debug('********Client disconnected for Client %s, moving session to ASLEEP', this.id());
     this.disconnectProxy();
   }
 
   handleServerConnect() {
-    log.debug('Server connection established on: %s', this.id());
+    log.debug('********Server connection established on: %s', this.id());
     this.connected = true;
     for (var i in this.serverCallbacks.connected) {
       log.debug('Running Server callback for session connected on: %s', this.id());
