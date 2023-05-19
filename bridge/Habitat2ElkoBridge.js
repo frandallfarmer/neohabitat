@@ -1,14 +1,14 @@
 /**
  * 1986 Habitat and 2016 Elko don't speak the same protocol.
- * 
+ *
  * Until we can extend Elko appropriately, we'll use this proxy to translate between
  * the protocols.
- * 
+ *
  * This bridge does two different things:
  * 1) Translates Binary Habitat Protocol to Elko JSON packets
  * 2) Deals with various differences in client-server handshaking models,
  *    such as Habitat server managed region changes vs. client requested context changes.
- * 
+ *
  */
 
 /* jslint bitwise: true */
@@ -21,7 +21,7 @@ const MongoClient   = require('mongodb').MongoClient;
 const Assert        = require('assert');
 const ObjectId      = require('mongodb').ObjectID;
 
-const DefDefs   = { 
+const DefDefs   = {
         context:    'context-Downtown_5f',
         listen:     'neohabitat:1337',
         elko:       'neohabitat:9000',
@@ -90,7 +90,7 @@ function findOne(db, query, callback) {
 
 function userHasTurf(user) {
     return (
-        user.mods[0].turf !== undefined && 
+        user.mods[0].turf !== undefined &&
         user.mods[0].turf != "" &&
         user.mods[0].turf != "context-test"
     );
@@ -323,7 +323,7 @@ function enterContextAfterRegionChecks(client, server, context) {			// Deal with
     		Assert.notEqual(user, null);
 
     		if (user.mods[0].amAGhost) {								// All ghosts always allowed (there is a limit, not tracked.)
-    			return enterContext(client, server, context);        
+    			return enterContext(client, server, context);
     		}
 
     		//Check the region to see how full it is.
@@ -373,10 +373,10 @@ String.prototype.getBytes = function () {
 
 /**
  * These are byte packets, and you needed to make sure to escape your terminator/unsendables.
- *  
+ *
  * @param b {buffer} The characters in the message to be escaped
  * @returns encoded char array
- * 
+ *
  */
 function escape(b, zero) {
     zero = zero || false;
@@ -394,7 +394,7 @@ function escape(b, zero) {
 
 /**
  * These were byte packets, and you needed to make sure to escape your terminator/unsendables.
- *  
+ *
  * @param b {buffer} The characters in the message to be escaped
  * @returns decoded char array
  */
@@ -424,7 +424,7 @@ function timeToXmit(bytes) {
  */
 function createServerConnection(port, host, client, immediate, context) {
     var server = Net.connect({port: port, host:host}, function() {
-        Trace.debug( "Connecting: " + 
+        Trace.debug( "Connecting: " +
                 client.address().address +':'+ client.address().port +
                 " <-> " +
                 server.address().address + ':'+ server.address().port);
@@ -435,7 +435,7 @@ function createServerConnection(port, host, client, immediate, context) {
         server.on('data', function(data) {
             var reset = false;
             try {
-                reset = processIncomingElkoBlob(client, server, data);              
+                reset = processIncomingElkoBlob(client, server, data);
             } catch(err) {
                 Trace.error("\n\n\nServer input processing error captured:\n" +
                         err.message + "\n" +
@@ -453,7 +453,7 @@ function createServerConnection(port, host, client, immediate, context) {
                 } else {
                     var delay = Math.ceil(Math.max(0, (when - now)));
                     setTimeout(function () { server.destroy(); }, delay);
-                }       
+                }
             }
         });
 
@@ -464,29 +464,35 @@ function createServerConnection(port, host, client, immediate, context) {
                 if (client.userName) {
                     Users[client.userName].online = false;
                 }
-                client.end(); 
-            }
-        });
-
-        // What if the Elko server breaks the connection? For now we tear the bridge down also.
-        // If we ever bring up a "director" based service, this will need to change on context changes.
-
-        server.on('end', function() {
-            Trace.debug('Elko port disconnected...');
-            if (client) {
-                Trace.debug("{Bridge being shutdown...}");
-                if (client.userName) {
-                    Users[client.userName].online = false;
-                }
                 client.end();
             }
         });
 
+// TODO! 5/19/2023 The 'end' handler below was removed because, when used with the PushServer/HabiProxy
+// it would get called inappropriately [region transition!]. NOTE: This does NOT happen when connected
+// directly to the elko/game server.
+// This should be debugged by someone who knows how to use the appropriate tools...
+
+        // What if the Elko server breaks the connection? For now we tear the bridge down also.
+        // If we ever bring up a "director" based service, this will need to change on context changes.
+
+//        server.on('end', function() {
+//            Trace.debug('Elko port disconnected...');
+//            if (client) {
+//                Trace.debug("{Bridge being shutdown...}");
+//                if (client.userName) {
+//                    Users[client.userName].online = false;
+//                }
+//                client.end();
+//            }
+//        });
+
+
         client.removeAllListeners('data').on('data', function(data) {
             try {
-                frameClientStream(client, server, data);                
+                frameClientStream(client, server, data);
             } catch(err) {
-                Trace.error("\n\n\nClient input processing error captured:\n" + 
+                Trace.error("\n\n\nClient input processing error captured:\n" +
                         JSON.stringify(err,null,2) + "\n" +
                         err.stack + "\n...resuming...\n");
             }
@@ -494,8 +500,8 @@ function createServerConnection(port, host, client, immediate, context) {
 
         client.removeAllListeners('close').on('close', function(data) {
             Trace.debug("Habitat client disconnected.");
-            if (server) { 
-                server.end(); 
+            if (server) {
+                server.end();
             }
         });
     });
@@ -518,7 +524,7 @@ function futureSend(connection, data) {
     var when = Math.ceil(connection.timeLastSent + timeToXmit(connection.lastSentLen));
 
     connection.lastSentLen = data.length;
-    
+
     if (when <= now) {
         connection.write(data);
         connection.timeLastSent = now;
@@ -607,7 +613,7 @@ var unpackHabitatObject = function (client, o, containerRef) {
     o.mod               = mod;
     o.ref               = o.obj.ref;
     o.className         = mod.type;
-    o.classNumber       = HCode.CLASSES[mod.type] || 0; 
+    o.classNumber       = HCode.CLASSES[mod.type] || 0;
 
     if (o.noid == UNASSIGNED_NOID) {
         return true;                    // Ghost Hack: Items/Avatars ghosted have an UNASSIGNED_NOID
@@ -627,8 +633,8 @@ var unpackHabitatObject = function (client, o, containerRef) {
 }
 
 var vectorize = function (client, newObj , containerRef) {
-    var o = {obj: newObj};      
-    if (undefined == newObj || !unpackHabitatObject(client, o , containerRef)) return null; 
+    var o = {obj: newObj};
+    if (undefined == newObj || !unpackHabitatObject(client, o , containerRef)) return null;
 
     var buf = new HabBuf();
     buf.add(o.noid);
@@ -649,7 +655,7 @@ var ContentsVector = function (replySeq, noid, ref, type) {
     this.type           = (undefined === type)      ? HCode.MESSAGE_DESCRIBE : type;
     if (undefined !== noid) {
         this.containers[noid] = this;
-    }   
+    }
     this.add = function (o) {
         var mod = o.obj.mods[0];
         if (undefined === this.containerRef) {
@@ -668,7 +674,7 @@ var ContentsVector = function (replySeq, noid, ref, type) {
             habitatEncodeElkoModState(mod, o.container, this.containers[this.containerNoid].container);
         }
     };
-    this.send = function (client) { 
+    this.send = function (client) {
         client.NoidContents = {};
         client.NoidClassList = [];
         client.ObjectStateBundles = new HabBuf();
@@ -678,10 +684,10 @@ var ContentsVector = function (replySeq, noid, ref, type) {
                 this.replySeq,
                 HCode.REGION_NOID,
                 this.type);
-        if (this.type == HCode.MESSAGE_DESCRIBE) { 
+        if (this.type == HCode.MESSAGE_DESCRIBE) {
             if (this.container.data[4] == UNASSIGNED_NOID) {
                 av = client.state.avatar; // Since the region arrives before the avatar, we need to fix some state...
-                this.container.data[4] = av.amAGhost ? 255 : av.noid; 
+                this.container.data[4] = av.amAGhost ? 255 : av.noid;
                 this.container.data[8] = ((av.bankBalance & 0xFF000000) >> 24);
                 this.container.data[7] = ((av.bankBalance & 0x00FF0000) >> 16);
                 this.container.data[6] = ((av.bankBalance & 0x0000FF00) >> 8);
@@ -699,7 +705,7 @@ var ContentsVector = function (replySeq, noid, ref, type) {
 //      Trace.debug("\n\n\n" + JSON.stringify(this.contents) + "\n"
 //               + JSON.stringify(client.NoidContents) + "\n"
 //               + JSON.stringify(client.NoidClassList) + "\n"
-//               + JSON.stringify(client.ObjectStateBundles.data) + "\n\n\n" );     
+//               + JSON.stringify(client.ObjectStateBundles.data) + "\n\n\n" );
         buf.add(client.NoidClassList)
         buf.add(0);
         buf.add(client.ObjectStateBundles.data);
@@ -714,8 +720,8 @@ function addContentsToCV(client, contnoid) {
         var o    = client.state.objects[noid];
         var mod  = o.obj.mods[0];
         if (undefined !== client.NoidContents[noid]) {
-            // item IS a container with contents, so write those contents first. Recurse!                   
-            addContentsToCV(client, noid);          
+            // item IS a container with contents, so write those contents first. Recurse!
+            addContentsToCV(client, noid);
         }
         client.NoidClassList.push(noid, HCode.CLASSES[mod.type]);
         client.ObjectStateBundles.add(o.clientStateBundle.data);
@@ -755,7 +761,7 @@ function initializeClientState(client, who, replySeq) {
 function frameClientStream(client, server, data) {
     var framed   = false;
     var saveC    = "";
-        
+
     // First try do discover a QLR frame:  NAME:QLINKPACKET
     if (client.framingMode == UNKNOWN_FRAME) {
         var s       = data.toString().trim();
@@ -801,7 +807,7 @@ function frameClientStream(client, server, data) {
 
 
 /**
- * 
+ *
  * @param client
  * @param server
  * @param data
@@ -817,13 +823,13 @@ function parseIncomingHabitatClientMessage(client, server, data) {
         if (curly !== -1 && curly < colon) {
             client.json         = true;
             client.binary       = false;
-            client.frame        = "\n\n";       
+            client.frame        = "\n\n";
         } else if (colon !== -1) {          // Hacked Qlink bridge doesn't send QLink header, but a user-string instead.
             client.packetPrefix = send.substring(0, colon + 1);
             client.json         = false;
             client.binary       = true;
             client.frame        = String.fromCharCode(HCode.END_OF_MESSAGE);
-            // overload write function to do handle escape!             
+            // overload write function to do handle escape!
             client.rawWrite = client.write;
             client.write = function(msg) {
                 if (isString(msg)) {
@@ -848,7 +854,7 @@ function parseIncomingHabitatClientMessage(client, server, data) {
             o = JSON.parse(send);
             if (o && o.op) {
                 if (o.op === "entercontext") {
-                    Trace.debug(o.user + " is trying to enter region-context " + o.context);    
+                    Trace.debug(o.user + " is trying to enter region-context " + o.context);
                     confirmOrCreateUser(o.user.substring("user-".length), client);
                 }
             }
@@ -863,7 +869,7 @@ function parseIncomingHabitatClientMessage(client, server, data) {
     } else {
         Trace.debug("client (" + client.sessionName + ") -> Garbage message arrived before protocol resolution. Ignoring: " + JSON.stringify(data));
         return;
-    }   
+    }
 }
 
 function parseHabitatClientMessage(client, server, data) {
@@ -888,7 +894,7 @@ function parseHabitatClientMessage(client, server, data) {
         aliveReply.add(48 /* "0" */);
         aliveReply.add("BAD DISK".getBytes());
         aliveReply.send(client);
-        return; 
+        return;
     } else {
         if (seq !== HCode.PHANTOM_REQUEST) {
             client.state.replySeq = seq;    // Save sequence number sent by the client for use with any reply.
@@ -953,7 +959,7 @@ function parseHabitatClientMessage(client, server, data) {
 function enterContext(client, server, context) {
     var replySeq = (undefined === context) ? HCode.PHANTOM_REQUEST : client.state.replySeq;
     var enterContextMessage =   {
-            to:         "session",  
+            to:         "session",
             op:         "entercontext",
             context:    context,
             user:       client.userRef
@@ -1029,7 +1035,7 @@ var encodeState = {
             buf = this.common(state, container, buf);
 //          buf.add(state.flat_type || 0);           TODO Check to see if this is a server only property.
             return buf;
-        }, 
+        },
         polygonal: function (state, container, buf) {
             buf = this.common(state, container, buf);
             buf.add(state.trapezoid_type    || 0);
@@ -1054,7 +1060,7 @@ var encodeState = {
             }
             buf.add(state.depth         || 32);
             buf.add(state.region_class  ||  0);
-            buf.add(state.Who_am_I      || UNASSIGNED_NOID);        
+            buf.add(state.Who_am_I      || UNASSIGNED_NOID);
             buf.add(0); // Bank account balance is managed once we get the avatar object for this connection.
             buf.add(0);
             buf.add(0);
@@ -1064,7 +1070,7 @@ var encodeState = {
         Avatar: function (state, container, buf) {
             buf = this.common(state, container, buf);
             buf.add(state.activity  ||   0);
-            buf.add(state.action    ||   0);            
+            buf.add(state.action    ||   0);
             buf.add(state.health    || 255);
             buf.add(state.restrainer||   0);
             buf.add(state.custom    ||  [0, 0]);
@@ -1114,26 +1120,26 @@ var encodeState = {
             buf.add(state.x_offset_6 || 0 );
             buf.add(state.y_offset_6 || 0 );
             return buf;
-        }, 
+        },
         Die:  function(state, container, buf) {
             buf = this.common(state, container, buf);
             buf.add(state.state || 0);
-            return buf; 
+            return buf;
         },
         Drugs:  function(state, container, buf) {
             buf = this.common(state, container, buf);
             buf.add(state.count || 0);
-            return buf; 
+            return buf;
         },
         Fake_gun: function(state, container, buf) {
             buf = this.common(state, container, buf);
             buf.add(state.state || 0);
-            return buf; 
+            return buf;
         },
         Hand_of_god: function(state, container, buf) {
             buf = this.common(state, container, buf);
             buf.add(state.state || 0);
-            return buf; 
+            return buf;
         },
         Flat: function(state, container, buf) {
             buf = this.common(state, container, buf);
@@ -1238,7 +1244,7 @@ var encodeState = {
         Ground:         function (state, container, buf) { return (this.walkable(state, container, buf)); },
         Gun:            function (state, container, buf) { return (this.common  (state, container, buf)); },
         Head:           function (state, container, buf) { return (this.common  (state, container, buf)); },
-        Hole:           function (state, container, buf) { return (this.openable(state, container, buf)); },        
+        Hole:           function (state, container, buf) { return (this.openable(state, container, buf)); },
         Hot_tub:        function (state, container, buf) { return (this.common  (state, container, buf)); },
         House_cat:      function (state, container, buf) { return (this.common  (state, container, buf)); },
         Knick_knack:    function (state, container, buf) { return (this.magical (state, container, buf)); },
@@ -1352,7 +1358,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
     if (o.type === "changeContext") {
         client.state.nextRegion = o.context;        // Save for MESSAGE_DESCRIBE to deal with later.
         var immediate = o.immediate || false;       // Force enterContext after reconnect? aka Client has prematurely sent MESSAGE_DESCRIBE and we ignored it.
-        createServerConnection(client.port, client.host, client, immediate, o.context); 
+        createServerConnection(client.port, client.host, client, immediate, o.context);
         // create a new connection for the new context
         return true;                                // Signal this connection to die now that it's obsolete.
     }
@@ -1373,15 +1379,15 @@ function parseIncomingElkoServerMessage(client, server, data) {
                     client.state.contentsVector.add(itm);
             }
             Trace.debug(client.state.user +
-                        " known as object ref " + 
-                        client.state.ref + 
-                        " in region/context " + 
-                        client.state.region + 
+                        " known as object ref " +
+                        client.state.ref +
+                        " in region/context " +
+                        client.state.region +
                         (client.state.avatar.amAGhost ? " (GHOSTED)." : "."));
             client.state.contentsVector.send(client);
-            
+
             client.state.contentsVector =  new ContentsVector();        // May be used by HEREIS/makes after region arrival
-            
+
 //          if (client.state.numAvatars === 1) {
 //              var caughtUpMessage = new HabBuf(true, true, HCode.PHANTOM_REQUEST, HCode.REGION_NOID, HCode.MESSAGE_CAUGHT_UP);
 //              caughtUpMessage.add(1);         // TRUE
@@ -1389,7 +1395,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
 //          }
             return;
         }
-        if (client.state.otherNoid) {       // Other avatar needs to go out as one package. 
+        if (client.state.otherNoid) {       // Other avatar needs to go out as one package.
             if (client.state.otherNoid != UNASSIGNED_NOID) {
                 for (var i = 0; i < client.state.otherContents.length; i++) {
                     if (undefined !== client.state.otherContents[i]) {
@@ -1426,7 +1432,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
        credentials."
 
        I simply am having the bridge do the extra round trip on behalf of the
-       Habitat Client.  
+       Habitat Client.
      */
 
     if (undefined === data || (undefined === o.op && undefined === o.type)) {
@@ -1437,14 +1443,14 @@ function parseIncomingElkoServerMessage(client, server, data) {
     Trace.debug("server (" + client.sessionName + ") -> " + JSON.stringify(o));
 
     /*  changeContext means that Elko wants the user to request a new context.
-            The bridge will handle this, as this round-trip doesn't involve the 
+            The bridge will handle this, as this round-trip doesn't involve the
             Habitat client. See the MESSAGE_DESCRIBE to see the followup... */
 
 
 
     if (o.op === "delete") {
         var target = client.state.refToNoid[o.to];
-        if (target) 
+        if (target)
             removeNoidFromClient(client, target );
         return;
     }
@@ -1470,7 +1476,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
                 client.state.otherNoid      = o.noid;
                 client.state.otherRef       = o.ref;
                 client.state.otherContents.push(o);
-                client.state.contentsVector = 
+                client.state.contentsVector =
                     new ContentsVector(HCode.PHANTOM_REQUEST, HCode.REGION_NOID, o.to, HCode.MESSAGE_HEREIS);
                 return;
             }
@@ -1480,7 +1486,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
                 client.state.ref                        = o.ref;
                 client.state.region                     = o.to;
                 client.state.avatar                     = mod;
-                client.state.waitingForAvatarContents   = true;             
+                client.state.waitingForAvatarContents   = true;
                 // The next "ready" will build the full contents vector and send it to the client.
             }
             return;
@@ -1508,7 +1514,7 @@ function parseIncomingElkoServerMessage(client, server, data) {
     }
 
 //  End of Special Cases - parse the reply/broadcast/neighbor/private message as a object-command.
-    encodeAndSendClientMessage(client, o); 
+    encodeAndSendClientMessage(client, o);
 }
 
 function encodeAndSendClientMessage(client, o) {

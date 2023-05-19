@@ -44,6 +44,7 @@ class HabitatSession {
       // Begins listening for Client events.
       this.clientConnection.on('data', this.handleClientData.bind(this));
       this.clientConnection.on('end', this.handleClientDisconnect.bind(this));
+      this.clientConnection.on('error', this.handleClientDisconnect.bind(this));
       this.clientConnectionAttached = true;
     }
   }
@@ -53,6 +54,7 @@ class HabitatSession {
       // Begins listening for Server events.
       this.serverConnection.on('data', this.handleServerData.bind(this));
       this.serverConnection.on('end', this.handleServerDisconnect.bind(this));
+      this.serverConnection.on('error', this.handleServerDisconnect.bind(this));
       this.serverConnectionAttached = true;
     }
   }
