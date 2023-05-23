@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <% include ./header.ejs %>
+  <%- include ("./header.ejs") %>
 
   <body>
     <div class="container h-100 control-panel">
@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <% include ./footer.ejs %>
+    <%- include ("./footer.ejs") %>
     <script type="text/javascript">
       var AvatarName = "<%= avatarName %>";
     </script>

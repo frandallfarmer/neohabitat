@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <% include ./header.ejs %>
+  <%- include ("./header.ejs") %>
 
   <body>
     <main role="main" class="container-fluid h-100 main-panel">
@@ -78,7 +78,7 @@
       </div>
     </footer>
 
-    <% include ./footer.ejs %>
+    <%- include ("./footer.ejs") %>
     <script type="text/javascript">
       var AvatarName = null;
       var AvatarAttached = false;
