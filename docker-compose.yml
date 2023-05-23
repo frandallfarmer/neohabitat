@@ -42,6 +42,8 @@ services:
       - NODE_ENV=development
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
+    ports:
+          - "1701:1701"
     depends_on:
       - neohabitatmongo
     networks:
