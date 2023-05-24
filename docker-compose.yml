@@ -44,6 +44,7 @@ services:
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
     ports:
           - "1701:1701"
+          - "1987:1987"
     depends_on:
       - neohabitatmongo
     networks:

@@ -2,7 +2,7 @@
 viceJsUrl: https://sgeo.github.io/experimental/neohabitat-joystick/x64.js
 
 websocketProxy:
-  clientAddr: 0.0.0.0:1987
+  clientAddr: 127.0.0.1:1987
   listenAddr: 0.0.0.0:1987
   remoteAddr: qlink:1986
 
