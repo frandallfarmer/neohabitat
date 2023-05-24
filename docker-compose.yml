@@ -43,6 +43,7 @@ services:
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
     ports:
+          - "1337:1337"
           - "1701:1701"
           - "1987:1987"
     depends_on:
