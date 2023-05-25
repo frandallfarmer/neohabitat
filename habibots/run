@@ -22,6 +22,8 @@ while ! netcat -z ${HABITAT_HOST} ${HABITAT_PORT}; do
   sleep 10
 done
 
+sleep 10
+
 cd ${DIR}
 
 if [[ "${@}" = *"greeter1"* ]]; then

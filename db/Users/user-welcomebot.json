@@ -1,0 +1,35 @@
+[ {
+	"type" : "user",
+	"ref" : "user-welcomebot",
+	"name" : "WelcomeBot",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 0,
+		"y" : 130,
+		"bodyType" : "male",
+		"bankBalance" : 0,
+		"custom" : [ 170, 119 ],
+		"nitty_bits" : 8
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-welcomebot.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-welcomebot",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-welcomebot.head.json",
+	"name" : "WelcomBot's Head",
+	"in" : "user-welcomebot",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 57,
+		"orientation" : 48,
+		"y" : 6
+	} ]
+} ]

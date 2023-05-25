@@ -1,0 +1,34 @@
+[ {
+	"type" : "user",
+	"ref" : "user-elizabot",
+	"name" : "ElizaBot",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 50,
+		"y" : 130,
+		"bodyType" : "female",
+		"bankBalance" : 0,
+		"custom" : [ 102, 136 ]
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-elizabot.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-elizabot",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-elizabot.head",
+	"name" : "Elizabot's Head",
+	"in" : "user-elizabot",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 2,
+		"y" : 6,
+		"orientation" : 8
+	} ]
+} ]
