@@ -72,3 +72,12 @@ services:
       nofile:
         soft: 10000
         hard: 10000
+  bots:
+    build:
+      context: ./habibots
+    depends_on:
+      - qlink
+    networks:
+      - neohabitat
+    entrypoint: ['/habibots/run']
+    command: ['greeter1', 'eliza']

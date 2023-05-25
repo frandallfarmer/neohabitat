@@ -1,0 +1,101 @@
+#!/bin/bash
+# Launches all Habitat bots.
+
+set -eo pipefail
+
+trap 'kill %1; kill %2' SIGINT
+
+HABITAT_HOST="${HABIBOTS_HOST-app.neohabitat.org}"
+HABITAT_PORT="${HABIBOTS_PORT-1337}"
+CONVERSATIONALIST_REGION="${HABIBOTS_CONVERSATIONALIST_REGION-context-welcomecenterinthatch}"
+CONNECTOR_REGION="${HABIBOTS_CONNECTOR_REGION-context-Downtown_5f}"
+ELIZA_REGION="${HABIBOTS_ELIZA_REGION-context-Downtown_5f}"
+GREETER1_REGION="${HABIBOTS_GREETER1_REGION-context-welcomecenterinthatch}"
+HATCHERY_REGION="${HABIBOTS_HATCHERY_REGION-context-hatchery}"
+SLACK_TOKEN="${HABIBOTS_SLACK_TOKEN-XXXXXXXXXXXXXXXXXXXXXXXXXXXX}"
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd ${DIR}
+
+if [[ "${@}" = *"greeter1"* ]]; then
+  echo 'Launching greeter1...'
+  supervisor -w "${DIR}" -- bots/greeter.js \
+    -g "${DIR}/assets/greeting.txt" \
+    -s "${HABIBOTS_SLACK_TOKEN}" \
+    -c "${GREETER1_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -l "newavatars" \
+    -u phil &
+fi
+
+if [[ "${@}" = *"connector"* ]]; then
+  echo 'Launching connector...'
+  supervisor -w "${DIR}" -- bots/connector.js \
+    -c "${CONNECTOR_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -u connectorbot &
+fi
+
+if [[ "${@}" = *"conversationalist"* ]]; then
+  echo 'Launching conversationalist...'
+  supervisor -w "${DIR}" -- bots/conversationalist.js \
+    -w "${HABIBOTS_WIT_TOKEN}" \
+    -c "${CONVERSATIONALIST_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -u tonybanks &
+fi
+
+if [[ "${@}" = *"eliza"* ]]; then
+  echo 'Launching eliza...'
+  supervisor -w "${DIR}" -- bots/eliza.js \
+    -c "${ELIZA_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -u elizabot &
+fi
+
+if [[ "${@}" = *"walker"* ]]; then
+  echo 'Launching walker...'
+  supervisor --inspect -w "${DIR}" -- bots/walker.js \
+    -c "${GREETER1_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -u tonybanks
+fi
+
+if [[ "${@}" = *"protester"* ]]; then
+  echo 'Launching protester...'
+  supervisor -w "${DIR}" -- bots/protester.js \
+    -c "${GREETER1_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -u tonybanks &
+fi
+
+if [[ "${@}" = *"oracle"* ]]; then
+  echo 'Launching oracle...'
+  supervisor -w "${DIR}" -- bots/oracle.js \
+    -c "${GREETER1_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -s "${SLACK_TOKEN}" \
+    -u devil &
+fi
+
+if [[ "${@}" = *"hatchery"* ]]; then
+  echo 'Launching hatchery...'
+  supervisor -w "${DIR}" -- bots/hatchery.js \
+    -g "${DIR}/assets/hatchery.txt" \
+    -c "${HATCHERY_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -s "${SLACK_TOKEN}" \
+    -l "general" \
+    -u welcomebot &
+fi
+
+sleep 999999999999999
