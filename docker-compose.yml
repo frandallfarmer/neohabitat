@@ -75,8 +75,11 @@ services:
   bots:
     build:
       context: ./habibots
+    environment:
+      - HABIBOTS_HOST=neohabitat
+      - HABIBOTS_PORT=1337
     depends_on:
-      - qlink
+      - neohabitat
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']

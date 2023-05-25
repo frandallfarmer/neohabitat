@@ -16,6 +16,10 @@ SLACK_TOKEN="${HABIBOTS_SLACK_TOKEN-XXXXXXXXXXXXXXXXXXXXXXXXXXXX}"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+while ! netcat -z ${HABITAT_HOST} ${HABITAT_PORT}; do
+  sleep 10
+done
+
 cd ${DIR}
 
 if [[ "${@}" = *"greeter1"* ]]; then
