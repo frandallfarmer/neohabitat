@@ -8,6 +8,7 @@ const Defaults = {
   loglevel:     'debug',
   port:         1337,
   reconnect:    true,
+  slackToken: '',  
   slackChannel: 'general',
 }
 

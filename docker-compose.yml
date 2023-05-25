@@ -83,4 +83,4 @@ services:
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']
-    command: ['greeter1', 'eliza']
+    command: ['hatchery', 'eliza']
