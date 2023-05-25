@@ -147,6 +147,7 @@ function ensureTurfAssigned(db, userRef, callback) {
                             Assert.equal(err, null);
                             callback();
                         });
+                    db.flush();
                 });
         });
     });
