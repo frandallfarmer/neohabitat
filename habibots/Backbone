@@ -1,0 +1,8 @@
+---
+clusters:
+  - habibots:
+      image: philcollins/habibots
+      command: "/habibots/run hatchery eliza"
+      environment:
+        - "HABIBOTS_SLACK_TOKEN={{ vault.habibots_slack_token }}"
+        - "HABIBOTS_HOST=app.neohabitat.org"

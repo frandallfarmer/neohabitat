@@ -1,0 +1,8 @@
+You've made it this far, keep it up!
+These are vendos, which sell useful Habitat items.
+To buy things, GET on yourself, which will open your pocket,
+and select the blue coins inside.
+If you PUT them into a vendo, it will sell you one of these
+items, which you can use to customize your Avatar.
+If you'd like to see what's for sale, DO on the vendo,
+which will show the next available item.

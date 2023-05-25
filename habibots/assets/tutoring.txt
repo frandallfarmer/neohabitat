@@ -1,0 +1,4 @@
+Welcome to Habitat! As your personal tutor, I will be assisting you for today. 
+Type in any of these commands to learn how to play. 
+GO, GET, PUT, DO, and HELP
+

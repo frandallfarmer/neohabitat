@@ -1,0 +1,3 @@
+Hey there, welcome to Habitat!
+I'm Phil, the friendly Habitat welcome bot.
+Visit tiny.cc/newtohabitat to get started.
