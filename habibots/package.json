@@ -11,7 +11,7 @@
     "promise-queue": "^2.2.3",
     "winston": "^2.3.0",
     "wundergroundnode": "^0.11.0",
-    "yargs": "^6.6.0"
+    "yargs": "^17.7.2"
   },
   "license": "MIT",
   "repository": "https://github.com/ssalevan/habibots",
