@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "In-world bots for Neohabitat",
   "dependencies": {
-    "@slack/client": "^5.0.2",
+    "@slack/client": "^3.16.0",
     "elizabot": "^0.0.2",
     "googlemaps": "^1.12.0",
     "node-weatherunderground": "^1.2.0",
