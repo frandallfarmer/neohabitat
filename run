@@ -120,10 +120,17 @@ if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
   )
 fi
 
+#Build/Rebuild the database if EITHER environment forces it OR the db doesn't exist yet.
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
   cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
   retry 60 "make clean"
   cd ..
+else
+  if [ $(mongo neohabitatmongo:27017 --eval 'db.getMongo().getDBNames().indexOf("elko")' --quiet) -ne "-1" ]; then
+    cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
+    retry 60 "make clean"
+    cd ..
+  fi
 fi
 
 # Starts the Habitat-to-Elko bridge process if requested.
