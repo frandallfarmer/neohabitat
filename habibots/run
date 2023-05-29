@@ -5,7 +5,7 @@ set -eo pipefail
 
 trap 'kill %1; kill %2' SIGINT
 
-HABITAT_HOST="${HABIBOTS_HOST-app.neohabitat.org}"
+HABITAT_HOST="${HABIBOTS_HOST-habitat.themade.org}"
 HABITAT_PORT="${HABIBOTS_PORT-1337}"
 CONVERSATIONALIST_REGION="${HABIBOTS_CONVERSATIONALIST_REGION-context-welcomecenterinthatch}"
 CONNECTOR_REGION="${HABIBOTS_CONNECTOR_REGION-context-Downtown_5f}"
