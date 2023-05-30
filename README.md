@@ -1,10 +1,9 @@
 NeoHabitat.org: The Neoclassical Habitat Server Project
 =======================================================
 
-[![Build Status](https://travis-ci.org/frandallfarmer/neohabitat.svg?branch=master)](https://travis-ci.org/frandallfarmer/neohabitat)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/frandallfarmer/neohabitat/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
-[![Slack](http://slack.neohabitat.org/badge.svg)](http://slack.neohabitat.org/)
+[![Slack](https://img.shields.io/badge/slack-http%3A%2F%2Fslack.neohabitat.org-brightgreen)](http://slack.neohabitat.org/)
 
 We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
@@ -25,10 +24,10 @@ With all that out of the way, here's how to get started:
 
 **Windows**
 
-- Download the [NeoHabitat installer](https://github.com/StuBlad/neohabitat-installer/releases/download/1.0/NeoHabitatInstaller.exe)
+- Download the [NeoHabitat installer](https://github.com/StuBlad/neohabitat-installer/releases/download/latest/NeoHabitatInstaller.exe)
 
 - Run the installer.
- - Tested on Windows 10 Home x64 but it should be fine on older versions of Windows.
+ - Tested on Windows 11 Home v22H2 but it should be fine on older versions of Windows.
 
 - Double-click the **NeoHabitat** icon on your desktop or in the Start Menu.
 
@@ -49,7 +48,7 @@ With all that out of the way, here's how to get started:
 - Install VICE and `nc` (netcat) via your package manager
 - Extract the Windows release of [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true) to get the `.d64` files and `fliplist-C64.vfl`
 - Run the VICE C64 emulator with these options set:  
-  `x64 -rsuser -rsuserdev 0 -rsdev1 '|nc 52.87.109.252 1986' -rsuserbaud 1200 -flipname fliplist-C64.vfl Habitat-Boot.d64`
+  `x64 -rsuser -rsuserdev 0 -rsdev1 '|nc 20.3.249.92 1986' -rsuserbaud 1200 -flipname fliplist-C64.vfl Habitat-Boot.d64`
 - There is a bug in current versions of VICE which breaks this network support (https://sourceforge.net/p/vice-emu/bugs/1356). Versions including r38928 and earlier work.
 
 ### Step 2 - Login and play!
