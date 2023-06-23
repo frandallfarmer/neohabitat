@@ -15,7 +15,7 @@
     "ejs": "~3.1.7",
     "express": "~4.18.2",
     "mongo": "^0.1.0",
-    "mongodb": "^3.1.13",
+    "mongodb": "^3.7.4",
     "morgan": "~1.9.1",
     "node-websockify": "^1.0.2",
     "serve-favicon": "^2.5.0",
