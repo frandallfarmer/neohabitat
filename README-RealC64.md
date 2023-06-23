@@ -2,6 +2,8 @@
 Guide written June 7th-29th 2017 by Goethe ([GitHub](https://github.com/napi-goethe) / [Website](http://www.carpeludum.com) / [Twitter](https://twitter.com/Goe_The)) and Flexman
 with many thanks to the [NeoHabitat Slack](http://slack.neohabitat.org/) #troubleshooting and #c64 channel team: @stu, @glake1 and of course @randy
 
+Last updated: 6/21/2023 by StuBlad to add the new NeoHabitat server address
+
 ## What hardware do you need
 
 * A C64 (any model) or C128
@@ -100,7 +102,7 @@ e.g. using Striketerm to issue modem commands.
 2. For use with NeoHabitat, the modem needs to be set to 1200 baud
   * `at$sb=1200`
 3. If you are lazy, you can set the NeoHabitat Q-Link server to a speed dial slot, e.g. 0:
-  * `at&z0=neohabitat.demo.spi.ne:1986`
+  * `at&z0=habitat.themade.org:1986`
 4. Don't forget to save the defaults
   * `at&w`
 
@@ -111,7 +113,7 @@ e.g. using Striketerm to issue modem commands.
 2. Change the baud rate to 1200 by typing "at$sb=1200". Press F7 and also change the baud rate there.
 3. Type at&k0 for turning off hardware flow control
 4. You could now dial the URL from the terminal, or use your phone book (press F7 and "A" for Autodialer/Phone Book)
-5. Add neohabitat.demo.spi.ne with port 1986 to your phone book and call it from there by pressing "C". (You might want
+5. Add habitat.themade.org with port 1986 to your phone book and call it from there by pressing "C". (You might want
    to exit the phone book and save it with "S" when doing this the 1st time).
 6. After you modem is connected, the blue light will turn off. You can press reset and proceed with the next step.
 
