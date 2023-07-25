@@ -468,27 +468,24 @@ function createServerConnection(port, host, client, immediate, context) {
             }
         });
 
-// TODO! 5/19/2023 The 'end' handler below was removed because, when used with the PushServer/HabiProxy
-// it would get called inappropriately [region transition!]. NOTE: This does NOT happen when connected
-// directly to the elko/game server.
-// This should be debugged by someone who knows how to use the appropriate tools...
+      // What if the Elko server breaks the connection? For now we tear the bridge down also.
+      // If we ever bring up a "director" based service, this will need to change on context changes.
 
-        // What if the Elko server breaks the connection? For now we tear the bridge down also.
-        // If we ever bring up a "director" based service, this will need to change on context changes.
-
-//        server.on('end', function() {
-//            Trace.debug('Elko port disconnected...');
-//            if (client) {
-//                Trace.debug("{Bridge being shutdown...}");
-//                if (client.userName) {
-//                    Users[client.userName].online = false;
-//                }
-//                client.end();
-//            }
-//        });
+      server.on('end', function() {
+        process.nextTick(() => {
+          Trace.debug('Elko port disconnected...');
+          if (client) {
+            Trace.debug("{Bridge being shutdown...}");
+            if (client.userName) {
+              Users[client.userName].online = false;
+            }
+            client.end();
+        }
+        });
+      });
 
 
-        client.removeAllListeners('data').on('data', function(data) {
+      client.removeAllListeners('data').on('data', function(data) {
             try {
                 frameClientStream(client, server, data);
             } catch(err) {
