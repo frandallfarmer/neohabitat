@@ -24,12 +24,12 @@ With all that out of the way, here's how to get started:
 
 **Windows**
 
-- Download the [NeoHabitat installer](https://github.com/StuBlad/neohabitat-installer/releases/download/latest/NeoHabitatInstaller.exe)
+- Download the [NeoHabitat installer](https://github.com/StuBlad/neohabitat-installer/releases/download/1.1/NeoHabitatInstaller1.1.exe)
 
 - Run the installer.
  - Tested on Windows 11 Home v22H2 but it should be fine on older versions of Windows.
 
-- Double-click the **NeoHabitat** icon on your desktop or in the Start Menu.
+- Check the **Launch NeoHabitat** box at the end of the installation, or Double-click the **NeoHabitat** icon on your desktop or in the Start Menu.
 
 - Go to Step 2!
 
@@ -90,6 +90,8 @@ Your default controls for NeoHabitat are mapped to the numpad and Right-CTRL.
 * Right-Ctrl + Numpad 6 initiates the **"GET"** command
 * Right-Ctrl + Numpad 4 initiates the **"PUT"** command
 
+There is also a [NeoHabitat Controls cheat sheet](https://github.com/StuBlad/neohabitat-installer/blob/master/Neohabitat/NeoHabitatControls.pdf) which tells you all of the keys you need to know. 
+
 For the most authentic experience, you'll also need to **hook up a joystick**, whether it's physical or virtual. To set one up, **open the Settings menu** then select **Joystick**. Habitat expects a joystick in **port #1**.
 
 We have tested with various different gamepads that all work fine with Habitat. We have personally tested it with the Xbox 360 Wireless Controller for PC.
@@ -110,8 +112,6 @@ Help!
 -----
 
 If you're having trouble getting NeoHabitat working, don't worry, we're here to help! Come [join our Slack](http://slack.neohabitat.org) and join our **#troubleshooting** room.
-
-If running the file as administrator does not work then double click on the file named "x64" to start the VICE emulator. Then drag and drop the "Habitat-Boot.d64" file onto the emulator and proceed as normally.
 
 If you encounter a glitch whilst playing NeoHabitat, please check to see if it's been filed as an [issue](https://github.com/frandallfarmer/neohabitat/issues). If it hasn't, we'd appreciate it if you let us know what happened so we can investigate.
 
