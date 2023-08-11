@@ -1167,9 +1167,9 @@ public class Avatar extends Container implements UserMod {
             "To use an elevator:GO, then type the floor number while pointing at it. Use 'Lobby' for the bottom floor.",
             "People sometimes congregate on the roof of the Popustop apartment complex.",
             "Habitat has it's own mail system, GET paper from your pocket. DO to start writing on it. Start with TO:NAME",
-            "Did you know the originaly Habitat Beta Test was more than 30 years ago?",
+            "Did you know the original Habitat Beta Test took place throughout 1987 to 1988?",
             "The NeoHabitat Project is 100% Open Source: all work is provided by 100% volunteers. http://neohabitat.org",
-            "Always read the plaque.",
+            "Always read plaques. Just issue a DO command on them to read them.",
             "Need tokens? Stop by an ATM and GET some more."
     };
 

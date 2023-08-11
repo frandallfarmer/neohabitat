@@ -1,26 +1,22 @@
 # neohabitat-installer
-This is an installer for NeoHabitat created using [Inno Setup](https://jrsoftware.org/isinfo.php) v6.0.3 - [Source code](https://github.com/jrsoftware/issrc/releases/tag/is-6_0_3).
+This is an installer for [NeoHabitat](http://neohabitat.org) created using [Inno Setup](https://jrsoftware.org/isinfo.php) v6.2.1 - [Source code](https://github.com/jrsoftware/issrc/releases/tag/is-6_2_1).
 
-The files used to create this installer were taken directly from the [NeoHabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip)  file currently available on the [neohabitat-doc](https://github.com/frandallfarmer/neohabitat-doc) repository.
+Only the base files for the installer are stored here in the neohabitat repository, the actual binaries for everything are stored at the [neohabitat-installer](https://github.com/StuBlad/neohabitat-installer) repository. The reason for this is to avoid clogging up the main NeoHabitat repository.
+
+The installer bundles togther VICE 3.7, preconfigured settings to connect to the Habitat server hosted by [The MADE](https://themade.org) and the Habitat disk images modified for the NeoHabitat project that bypass the original Quantum Link procedure.
 
 To build the distribution package:
 
-* Ensure you've grabbed the latest version of Inno Setup as mentioned previously.
+* Ensure you've grabbed either the version of Inno Setup mentioned previously or a more recent build.
 
-* Download the NeoHabitat zip file mentioned previously.
+* Visit the [GitHub repository](https://github.com/StuBlad/neohabitat-installer/tree/master/Neohabitat) that hosts all of the binary data that makes up the distribution package and download it. 
 
-* Place the files from the zip wherever you want but take note of their location.
+* Place the content of the Neohabitat folder files from the GitHub repo into the same folder this README file is in.
 
 * Open the NeoHabitatInstaller.iss script file in Inno Setup.
 
-* Edit the file paths of the NeoHabitat source files to match the location you saved them to.
-
-* Edit the file paths to make sure you locate the following files that are in the same folder as this readme.
-
- - **LICENSE**
- - **COPYING.txt**
- - **intro.txt**
-
-* Edit the file paths to choose a place to output the compiled executable.
+* Edit the file paths of the NeoHabitat source files to match the location you saved them to if necessary (you shouldn't need to if you placed them in the same directory as this README).
 
 * Click Build > Compile.
+
+* The compiled binary should be located in the Compiled folder in the directory this README is in.
