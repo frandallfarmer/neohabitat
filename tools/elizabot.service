@@ -1,0 +1,15 @@
+[Unit]
+Description=NeoHabitat Eliza AI Bot
+
+[Service]
+ExecStart=node /home/themade/neohabitat/habibots/bots/eliza.js -c context-Downtown_5f -h neohabitat -p 1337 -u elizabot
+Restart=always
+User=nobody
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin:/home/themade/.nvm/versions/node/v18.16.0/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/themade/neohabitat
+
+[Install]
+WantedBy=multi-user.target
