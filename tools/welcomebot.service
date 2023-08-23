@@ -1,0 +1,15 @@
+[Unit]
+Description=NeoHabitat Hatchery Welcome Bot
+
+[Service]
+ExecStart=node /home/themade/neohabitat/habibots/bots/hatchery.js -g /home/themade/neohabitat/habibots/assets/hatchery.txt -c context-hatchery -h neohabitat -p 1337 -u welcomebot
+Restart=always
+User=nobody
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin:/home/themade/.nvm/versions/node/v18.16.0/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/themade/neohabitat
+
+[Install]
+WantedBy=multi-user.target
