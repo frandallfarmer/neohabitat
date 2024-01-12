@@ -30,7 +30,9 @@
         "last_page": 29, 
         "gr_state": 0, 
         "y": 137, 
-        "x": 113, 
+        "x": 113,
+        "title": "A blank book",
+        "path" : "text-blank",		
         "type": "Book"
       }
     ], 
