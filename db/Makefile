@@ -66,9 +66,11 @@ text: book
 	@echo "Building Text documents"
 	@node populateModels.js $(NEOHABITAT_MONGO_HOST) text >>.errs 2>&1
 
+SRC=all
+
 regions:
-	@echo "Building Regions, Avatars, Objects, and Text"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) all >>.errs 2>&1
+	@echo "Building Regions, Avatars, Objects, and Text for" ${SRC}
+	@node populateModels.js $(NEOHABITAT_MONGO_HOST) ${SRC} >>.errs 2>&1
 
 downtown:
 	@echo "Building Downtown Only"

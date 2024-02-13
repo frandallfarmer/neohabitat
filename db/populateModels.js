@@ -222,8 +222,10 @@ function populateModels() {
   var fileRootName = process.argv[3];
 
   if (!(fileRootName in fileRoots)) {
-    console.error('Invalid root: ', fileRootName);
-    process.exit(-1);
+//    console.error('Invalid root: ', fileRootName);
+//    process.exit(-1);
+      fileRoots["custom"] = fileRootName;
+      fileRootName = "custom";
   }
 
   const dbName = 'elko';
