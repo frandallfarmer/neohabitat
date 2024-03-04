@@ -93,22 +93,26 @@ class HabiproxyServer {
       South: 'None',
       East: 'None',
       West: 'None',
+      NorthImagePath: "/images/Empty.png",
+      SouthImagePath: "/images/Empty.png",
+      EastImagePath:  "/images/Empty.png",
+      WestImagePath:  "/images/Empty.png",                  
     };
     if (neighbors[0] in this.contextMap) {
       neighborMap.North          = this.contextMap[neighbors[0]].name;
-      neighborMap.NorthImagePath = "/renders/context-" + this.contextMap[neighbors[0]].ref + ".jpg"
+      neighborMap.NorthImagePath = "/renders/" + this.contextMap[neighbors[0]].ref + ".png"
     }
     if (neighbors[1] in this.contextMap) {
       neighborMap.East           = this.contextMap[neighbors[1]].name;
-      neighborMap.EastImagePath  = "/renders/context-" + this.contextMap[neighbors[1]].ref + ".jpg"
+      neighborMap.EastImagePath  = "/renders/" + this.contextMap[neighbors[1]].ref + ".png"
     }
     if (neighbors[2] in this.contextMap) {
       neighborMap.South          = this.contextMap[neighbors[2]].name;
-      neighborMap.SouthImagePath = "/renders/context-" + this.contextMap[neighbors[2]].ref + ".jpg"
+      neighborMap.SouthImagePath = "/renders/" + this.contextMap[neighbors[2]].ref + ".png"
     }
     if (neighbors[3] in this.contextMap) {
       neighborMap.West           = this.contextMap[neighbors[3]].name;
-      neighborMap.WestImagePath  = "/renders/context-" + this.contextMap[neighbors[3]].ref + ".jpg"
+      neighborMap.WestImagePath  = "/renders/" + this.contextMap[neighbors[3]].ref + ".png"
     }
     return neighborMap;
   }
