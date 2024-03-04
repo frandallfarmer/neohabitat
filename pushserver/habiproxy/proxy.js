@@ -52,7 +52,7 @@ class HabiproxyServer {
 
   handleClientConnect(client) {
     log.debug('Habiproxy client connected at: %s', stringifyID(client))
-    
+
     var clientSession = new Session(this.elkoHost, this.elkoPort, client);
     clientSession.onServer('sessionReady', this.handleSessionReady.bind(this));
 
@@ -93,18 +93,26 @@ class HabiproxyServer {
       South: 'None',
       East: 'None',
       West: 'None',
+      NorthImagePath: "/images/Empty.png",
+      SouthImagePath: "/images/Empty.png",
+      EastImagePath:  "/images/Empty.png",
+      WestImagePath:  "/images/Empty.png",                  
     };
     if (neighbors[0] in this.contextMap) {
-      neighborMap.North = this.contextMap[neighbors[0]].name;
+      neighborMap.North          = this.contextMap[neighbors[0]].name;
+      neighborMap.NorthImagePath = "/renders/" + this.contextMap[neighbors[0]].ref + ".png"
     }
     if (neighbors[1] in this.contextMap) {
-      neighborMap.East = this.contextMap[neighbors[1]].name;
+      neighborMap.East           = this.contextMap[neighbors[1]].name;
+      neighborMap.EastImagePath  = "/renders/" + this.contextMap[neighbors[1]].ref + ".png"
     }
     if (neighbors[2] in this.contextMap) {
-      neighborMap.South = this.contextMap[neighbors[2]].name;
+      neighborMap.South          = this.contextMap[neighbors[2]].name;
+      neighborMap.SouthImagePath = "/renders/" + this.contextMap[neighbors[2]].ref + ".png"
     }
     if (neighbors[3] in this.contextMap) {
-      neighborMap.West = this.contextMap[neighbors[3]].name;
+      neighborMap.West           = this.contextMap[neighbors[3]].name;
+      neighborMap.WestImagePath  = "/renders/" + this.contextMap[neighbors[3]].ref + ".png"
     }
     return neighborMap;
   }

@@ -37,15 +37,19 @@ function processEvent(event) {
       var arrow = (orient.indexOf(event.msg.orientation) + 3) % 4;
       $("#northArrow").html(HTMLArrows[arrow]);
       $("#northHeader").text(event.msg.neighbors.North);
+      $("#northImage").attr("src",event.msg.neighbors.NorthImagePath);
       arrow = ++arrow % 4;
       $("#westArrow").html(HTMLArrows[arrow]);
       $("#westHeader").text(event.msg.neighbors.West);
+      $("#westImage").attr("src",event.msg.neighbors.WestImagePath);
       arrow = ++arrow % 4;
       $("#southArrow").html(HTMLArrows[arrow]);
       $("#southHeader").text(event.msg.neighbors.South);
+      $("#southImage").attr("src",event.msg.neighbors.SouthImagePath);
       arrow = ++arrow % 4;
       $("#eastArrow").html(HTMLArrows[arrow]);
       $("#eastHeader").text(event.msg.neighbors.East);
+      $("#eastImage").attr("src",event.msg.neighbors.EastImagePath);      
       return;
     case SHOW_HELP:
       $('#docsFrame').attr('src', event.msg.docsURL);
