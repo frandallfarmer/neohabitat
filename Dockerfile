@@ -23,7 +23,7 @@ RUN yum -y install \
   which \
   maven \
   mongodb-org \
-  npm && \
+  nsolid  && \
   yum clean all
 
 # Installs Node dependencies.
