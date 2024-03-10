@@ -26,75 +26,77 @@ import org.made.neohabitat.Toggle;
 
 /**
  * Habitat Region Mod (attached to a Elko Context)
- * 
+ *
  * The Region has all the state and behaviors for the main object of Habitat. It
  * is the "room" logic, controlling how things interact with each other - not on
  * a Item to Item or User to User basis, but when interacting between multiple
  * objects in the region.
- * 
+ *
  * @author randy
  *
  */
 
 public class Region extends Container implements UserWatcher, ContextMod, ContextShutdownWatcher,  Constants {
-    
+
     public static String    MOTD = "Welcome to Habitat, the first Metaverse! Recreated by The MADE.";
-    
+
     /** Static flag on if new features should be activated. Anyone can toggle with //neohabitat */
-    public static boolean   NEOHABITAT_FEATURES = true; 
-    
+    public static boolean   NEOHABITAT_FEATURES = true;
+
     /** The number of tokens to give to an avatar each new day that the user loggs in */
     public static final int STIPEND = 100;
-    
+
     /** The default depth for a region. */
     public static final int DEFAULT_REGION_DEPTH = 32;
 
     /** The default maximum number of avatars for a Region. */
     public static final int DEFAULT_MAX_AVATARS = 6;
-    
+
     /** Statics are shared amongst all regions */
 
     /** All the currently logged in user names for ESP lookup */
-    public static Hashtable<String, User> NameToUser = new Hashtable<String, User>();    
-    
+    public static Hashtable<String, User> NameToUser = new Hashtable<String, User>();
+
     /** All the currently instantiated regions for region transition testing  */
     public static Hashtable<String, Region> RefToRegion = new Hashtable<String, Region>();
-    
+
     /** The last persisted C64 Heap Size for each region in this world */
     public static Hashtable<String, Integer> RefToHeap = new Hashtable<String, Integer>();
 
     public int HabitatClass() {
         return CLASS_REGION;
     }
-    
+
     public String HabitatModName() {
         return "Region";
     }
-    
+
     public int capacity() {
         return 255;
     }
-    
+
     public int pc_state_bytes() {
         return 1;
     };
-    
+
     public boolean known() {
         return true;
     }
-    
+
     public boolean opaque_container() {
         return false;
     }
-    
+
     public boolean filler() {
         return false;
     }
-    
+
     /** A collection of server-side region status flags */
     public boolean    nitty_bits[] = new boolean[32];
-    /** The lighting level in the room. 0 is Dark. */
+    /** The current lighting level in the room. -1 is Dark. */
     public int        lighting     = 0;
+    /** The natural lighting level in the region. -1 is Dark */
+    public int        natural_light_level = 0;
     /** The horizon line for the region to clip avatar motion */
     public int        depth        = DEFAULT_REGION_DEPTH;
     /** The maximum number of Avatars that can be in this Region */
@@ -110,7 +112,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     /** Direction to nearest Town */
     public String     town_dir     = "";
     /** Direction to nearest Teleport Booth */
-    public String     port_dir     = "";    
+    public String     port_dir     = "";
 
     public boolean is_turf  = false;
     public String  resident = "";
@@ -118,8 +120,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public boolean locked   = false;
 
 
-    /** A handle to the mandatory singleton ghost object for this region */    
-    
+    /** A handle to the mandatory singleton ghost object for this region */
+
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "nitty_bits", "depth", "lighting",
         "town_dir", "port_dir", "max_avatars", "neighbors", "is_turf", "resident", "realm", "locked", "shutdown_size" })
     public Region(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state,
@@ -133,6 +135,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         }
         this.depth = depth.value(DEFAULT_REGION_DEPTH);
         this.lighting = lighting.value(0);
+        this.natural_light_level = this.lighting;
         this.max_avatars = max_avatars.value(DEFAULT_MAX_AVATARS);
         this.neighbors = neighbors;
         this.town_dir = town_dir.value("");
@@ -151,6 +154,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         this.nitty_bits = nitty_bits;
         this.depth = depth;
         this.lighting = lighting;
+        this.natural_light_level = lighting;
         this.max_avatars = max_avatars;
         this.neighbors = neighbors;
         this.town_dir = town_dir;
@@ -169,7 +173,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         note_object_creation(this);
         Region.RefToRegion.put(obj_id(), this);
     }
-    
+
     public Ghost regionGhost() {
         return (Ghost) noids[GHOST_NOID];
     }
@@ -180,7 +184,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             ghost       = new Ghost(0, 4, 240, 0, 0, false);
             ghost.noid  = GHOST_NOID;
             create_object("Ghost", ghost, this, true);
-            new Thread(announceGhostLater).start();          
+            new Thread(announceGhostLater).start();
         }
         return ghost;
     }
@@ -199,7 +203,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             }
         }
     };
-    
+
     public void destroyGhost(User from) {
         Ghost ghost = regionGhost();
         if (ghost != null) {
@@ -208,14 +212,14 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             destroy_object(ghost);
         }
     }
-    
-    
+
+
     @Override
     public void noteContextShutdown() {
         destroyGhost(null);
         Region.RefToRegion.remove(obj_id());
     }
-    
+
     public void noteUserArrival(User who) {
         Avatar avatar = (Avatar) who.getMod(Avatar.class);
         avatar.inc_record(HS$travel);
@@ -226,17 +230,17 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             avatar.set_record(HS$wealth, avatar.bankBalance);
             avatar.inc_record(HS$lifetime);
         }
-        avatar.lastArrivedIn        = context().baseRef(); 
+        avatar.lastArrivedIn        = context().baseRef();
         avatar.lastConnectedDay     = today;
         avatar.lastConnectedTime    = time;
-        
+
         if(today > avatar.lastConnectedDay && avatar.health < MAX_HEALTH) {
             avatar.health += 25;
             if(avatar.health > MAX_HEALTH) {
                 avatar.health = MAX_HEALTH;
             }
         }
-        
+
         if (avatar.amAGhost) {
             getGhost().total_ghosts++; // Make sure the user has a ghost object..
         }
@@ -258,7 +262,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         avatar.check_mail();
         Region.addUser(who);
     }
-    
+
     public void noteUserDeparture(User who) {
         Region.removeUser(who);
         Avatar avatar = avatar(who);
@@ -276,20 +280,20 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         }
         avatar.lastConnectedDay  = (int) (System.currentTimeMillis() / ONE_DAY);
         avatar.lastConnectedTime = (int) (System.currentTimeMillis() % ONE_DAY);
-        avatar.gen_flags[MODIFIED] = true;                      
+        avatar.gen_flags[MODIFIED] = true;
         avatar.checkpoint_object(avatar);
         gen_flags[MODIFIED] = true;
         checkpoint_object(this);		// Since we're now tracking heap usage between sessions, we need to update the region state.
     }
-    
+
     private int avatarsPresent() {
         return class_ref_count[CLASS_AVATAR];
     }
-    
+
     public synchronized static void addUser(User from) {
         NameToUser.put(from.name().toLowerCase(), from);
     }
-    
+
     public synchronized static void removeUser(User from) {
         Avatar avatar = (Avatar) from.getMod(Avatar.class);
         NameToUser.remove(from.name().toLowerCase());
@@ -311,60 +315,60 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public static User getUserByName(String name) {
-        if (name != null) {         
+        if (name != null) {
             return (User) NameToUser.get(name.toLowerCase());
         }
         return null;
     }
-        
+
     public static boolean IsRoomForMyAvatarIn(String regionRef, Avatar avatar) {
         Region target = Region.RefToRegion.get(regionRef);
-        
+
         if (target != null)
         	return isRoomForMyAvatar(avatar, target);		// Region is instantiated, so ask that region for permission...
 
         // Region is "offline" - not instantiated - So we use the global store of region Heap sizes to consider rejecting the request.
-        
-        if (!RefToHeap.containsKey(regionRef))				// Never set, so there must be room. A region design constraint. 
+
+        if (!RefToHeap.containsKey(regionRef))				// Never set, so there must be room. A region design constraint.
         	return true;									// TODO: RefToHeap loader at server boot to make this true across boots. FRF
-        
+
         int heapAvatar = avatar.setContainerShutdownSize();
         int heapRegion = RefToHeap.get(regionRef);
         int heapRequired = heapAvatar + heapRegion + FIRST_AVATAR_HEAP_SIZE + FIRST_GHOST_HEAP_SIZE;
-        										
+
         if (heapRequired >= C64_HEAP_SIZE)
         	return false;          // There must be room for me, my stuff, a ghost, and whatever is already there...
-        
+
         return true;
-        
-        // if there is no instantiated region, there must be room! 
+
+        // if there is no instantiated region, there must be room!
         // ERROR FALSE FALSE! GET newregion.shutdown_size add FIRST_AVATAR_HEAP_SIZE, avatar.shutdown_size, to compare to do normal memory tests.
-        
-                
-        
+
+
+
     }
-   
+
     // If the region we want to travel to is instantiated, we can do an in-memory check in the target region for the anticipated storage requried by the incoming avatar.
     public static boolean isRoomForMyAvatar(Avatar avatar, Region target) {
-    	
+
     	int    instanceSize = avatar.instance_size();		// If there are other avatars, we need only account for instance + contents.
     	int    bodies       = target.avatarsPresent();
-    	
+
     	if (bodies == target.max_avatars)							// TODO: Since multiple people can be between regions at once, this is currently a race. FRF
             return false;
-        
+
         if (bodies == 0)
         	instanceSize = FIRST_AVATAR_HEAP_SIZE;			// If the region has only ghosts, we need to make a LOT of room.
 
-        instanceSize += avatar.setContainerShutdownSize();        
-        
+        instanceSize += avatar.setContainerShutdownSize();
+
         if (target.space_usage + instanceSize >= target.c64_capacity())
             return false;
-        
+
         return target.limits_ok(avatar, target); 				// Check the pocket contents for other overflows.
 
     }
-    
+
     @Override
     public JSONLiteral encode(EncodeControl control) {
         JSONLiteral result = new JSONLiteral(HabitatModName(), control); // Normally I would call encodeCommon() but don't want to bother with the extraneous fields.
@@ -373,7 +377,6 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             result.addParameter("nitty_bits", packBits(nitty_bits));
         }
         result.addParameter("depth", depth);
-        result.addParameter("lighting", lighting);
         result.addParameter("neighbors", neighbors);
         result.addParameter("is_turf", is_turf);
         result.addParameter("realm", realm);
@@ -383,13 +386,16 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             result.addParameter("port_dir", port_dir);
             result.addParameter("resident", resident);
             result.addParameter("locked", locked);
+            result.addParameter("lighting", natural_light_level);   // Persist the light level without real-time side-effects.
             result.addParameter("shutdown_size", space_usage);		// FRF TODO Is this correct at region shutdown or should I snapshot space_usage into shutdown_size elsewhere?
+        } else {
+            result.addParameter("lighting", lighting);				// Tell clients natural_light_level including the effects of object-based light sources.
         }
         result.finish();
     	RefToHeap.put(object().baseRef(), space_usage);				// Update the "global" in-memory reference for the region's heap usage, in case it shuts down.
         return result;
     }
-    
+
     private static int incNoid(int noid) {
         noid++;
         switch (noid) {
@@ -400,30 +406,30 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         }
         return noid;
     }
-    
+
     /**
      * Add a HabitatMod to the object list for easy lookup by noid.
      * This method uses a monotonically increasing index, remembering
      * the previous noid assignment. Deleted objects will leave holes
      * that we are in no hurry to fill in. Note the reserved NOID ids
      * of THE_REGION (0) and GHOST_NOID (255).
-     * 
+     *
      * @param mod
      */
     public static boolean addToNoids(HabitatMod mod) {
         Region          region  = mod.current_region();
         int             noid    = region.nextNoid;
         HabitatMod[]    noids   = region.noids;
-        
+
         if (region.nextNoid == -1) {
             return false; /* Too many things in this region!*/
         }
 
         noids[noid]     = mod;
         mod.noid        = noid;
-        
+
         noid = incNoid(noid);
-        
+
         while (null != noids[noid]) {
             noid = incNoid(noid);
             if (noid == region.nextNoid) {
@@ -434,10 +440,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         region.nextNoid = noid;
         return true; // noid added, even if no
     }
-    
+
     /**
      * Remove the noid from the object list.
-     * 
+     *
      * @param mod
      *            The object to remove from the noid list.
      */
@@ -447,10 +453,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             mod.noid = UNASSIGNED_NOID;
         }
     }
-        
+
     /**
-     * When items go away because their container left or closed, we must reclaim scarce resources: noids and 
-     * 
+     * When items go away because their container left or closed, we must reclaim scarce resources: noids and
+     *
      * @param cont
      */
     public static void removeContentsFromRegion(Container cont) {
@@ -461,20 +467,20 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
                 removeObjectFromRegion(obj);
         }
     }
-    
+
     public static void removeObjectFromRegion(HabitatMod obj) {
         if (obj == null)
             return;
-        
+
         Container cont = obj.container();
-        
+
         if (cont != null & obj.container_is_opaque(cont, obj.y)) {
             obj.note_instance_deletion(obj);
             obj.note_image_deletion(obj);
         } else {
             obj.note_object_deletion(obj);
         }
-        
+
         removeFromObjList(obj);
     }
 
@@ -518,11 +524,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             user.send(msg);
         }
     }
-    
+
     /**
      * The client is leaving the Habitat Application and wants to politely
      * disconnect.
-     * 
+     *
      * @param from
      *            The client disconnecting
      */
@@ -537,12 +543,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             trace_msg("Invalid attempt to leave by " + from.ref() + " failed: " + ignored.toString());
         }
     }
-    
+
     /**
      * The client is slow and this might provide an advantage to others seeing a
      * new avatar before it can react. The server is told by this message that
      * it deal with messages before this as being before the user has appeared.
-     * 
+     *
      * @param from
      *            The client connection that needs to catch up...
      */
@@ -550,15 +556,15 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public void FINGER_IN_QUE(User from) {
         this.send_private_msg(from, 0, from, "CAUGHT_UP_$", "err", TRUE);
     }
-    
+
     /**
      * Handle the client request to "appear" after the client is done loading
      * the region.
-     * 
+     *
      * @param from
      *            The client connection that has "caught up" loading the
      *            contents vector it just received.
-     */ 
+     */
     @JSONMethod
     public void I_AM_HERE(User from) {
         Avatar who = avatar(from);
@@ -588,10 +594,10 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
                     lighting -= 1;
                     send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", -1);
                 }
-            }           
+            }
         }
     }
-    
+
     public void lights_on(Avatar avatar) {
         if (!empty_handed(avatar)) {
             HabitatMod held = avatar.contents(HANDS);
@@ -601,7 +607,7 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
                     lighting += 1;
                     send_broadcast_msg(THE_REGION, "CHANGELIGHT_$", "adjustment", +1);
                 }
-            }           
+            }
             /* If holding a compass, set the arrow pointer */
             if (held.HabitatClass() ==  CLASS_COMPASS) {
                 held.gr_state = orientation;
@@ -609,11 +615,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             }
         }
     }
-        
+
     /**
      * Handle request to change the Message of the Day.
      * Presently, this is a non-persistent change.
-     * 
+     *
      * @param from
      * @param MOTD
      */
@@ -622,11 +628,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         // TODO FRF Security is missing from this feature. Should this be a message on Admin/Session?
         Region.MOTD = MOTD;
     }
-    
+
     /**
      * Handle request to send a word balloon message
      * to every user currently online.
-     * 
+     *
      * @param from
      * @param MOTD
      */
@@ -639,12 +645,12 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
         } else {
             tellEveryone(text.value("... nevermind ..."));
         }
-    }    
-    
+    }
+
     /**
      * Handle a prompted message, overloading the text-entry field. This
      * requires some callback related storage in Avatar.
-     * 
+     *
      * @param from
      *            The user-connection that sent the prompt reply
      * @param text
@@ -670,17 +676,17 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     public void describeRegion(User from, int noid) {
          String name_str = object().name();
          String help_str = "";
-         if (name_str.isEmpty()) 
+         if (name_str.isEmpty())
               help_str = "This region has no name";
          else
               help_str = "This region is " + name_str;
-         
-         if (!town_dir.isEmpty()) 
+
+         if (!town_dir.isEmpty())
               help_str += ".  The nearest town is " + town_dir;
-                   
-         if (!port_dir.isEmpty()) 
+
+         if (!port_dir.isEmpty())
               help_str += ".  The nearest teleport booth is " + port_dir;
-         
+
          help_str += ".";
             send_reply_msg(from, noid, "text", help_str);
     }
