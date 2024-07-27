@@ -12,42 +12,42 @@ import org.made.neohabitat.Toggle;
 
 /**
  * Habitat Flashlight Mod (attached to an Elko Item.)
- * 
+ *
  * A Flashlight may be switched on/off, and it effects room lighting.
- * 
+ *
  * @author randy
  *
  */
 public class Flashlight extends Toggle implements Copyable {
-    
+
     public int HabitatClass() {
         return CLASS_FLASHLIGHT;
     }
-    
+
     public String HabitatModName() {
         return "Flashlight";
     }
-    
+
     public int capacity() {
         return 0;
     }
-    
+
     public int pc_state_bytes() {
         return 1;
     };
-    
+
     public boolean known() {
         return true;
     }
-    
+
     public boolean opaque_container() {
         return false;
     }
-    
+
     public boolean filler() {
         return false;
     }
-    
+
     @JSONMethod({ "style", "x", "y", "orientation", "gr_state", "restricted", "on" })
     public Flashlight(OptInteger style, OptInteger x, OptInteger y, OptInteger orientation, OptInteger gr_state, OptBoolean restricted,
             OptInteger on) {
@@ -69,10 +69,20 @@ public class Flashlight extends Toggle implements Copyable {
         result.finish();
         return result;
     }
-    
+
+    /* Adjust region light levels for lights that are on in the room */
+    public void objectIsComplete() {
+        super.objectIsComplete();
+        if (on == TRUE &&
+            this.container().opaque_container() == false &&
+            this.container().HabitatClass()     != CLASS_AVATAR ) {
+            current_region().lighting += 1;
+        }
+    }
+
     /**
      * Verb (Specific): Get HELP for this.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -80,10 +90,10 @@ public class Flashlight extends Toggle implements Copyable {
     public void HELP(User from) {
         flashlight_HELP(from);
     }
-    
+
     /**
      * Verb (Generic): Pick this item up.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -91,10 +101,10 @@ public class Flashlight extends Toggle implements Copyable {
     public void GET(User from) {
         generic_GET(from);
     }
-    
+
     /**
      * Verb (Generic): Put this item into some container or on the ground.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param containerNoid
@@ -114,10 +124,10 @@ public class Flashlight extends Toggle implements Copyable {
         generic_PUT(from, containerNoid.value(THE_REGION), x.value(avatar(from).x), y.value(avatar(from).y),
                 orientation.value(avatar(from).orientation));
     }
-    
+
     /**
      * Verb (Generic): Throw this across the Region
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param x
@@ -129,10 +139,10 @@ public class Flashlight extends Toggle implements Copyable {
     public void THROW(User from, int target, int x, int y) {
         generic_THROW(from, target, x, y);
     }
-    
+
     /**
      * Verb (Toggle): Turn this OFF
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -140,10 +150,10 @@ public class Flashlight extends Toggle implements Copyable {
     public void OFF(User from) {
         generic_OFF(from);
     }
-    
+
     /**
      * Verb (Toggle): Turn this ON
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -151,10 +161,10 @@ public class Flashlight extends Toggle implements Copyable {
     public void ON(User from) {
         generic_ON(from);
     }
-    
+
     /**
      * Reply with HELP for Flashlights
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -164,5 +174,5 @@ public class Flashlight extends Toggle implements Copyable {
         else
             send_reply_msg(from, "LIGHT: DO while holding turns light on or off.  This light is now on.");
     }
-    
+
 }

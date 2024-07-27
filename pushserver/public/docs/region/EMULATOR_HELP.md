@@ -43,7 +43,7 @@ with the keyboard you're using:
 Have Fun!
 ---------
 
-If you run into any issues during your travels throughout the world of Habitat, be sure to visit us on our [Slack](http://slack.neohabitat.org) and we'll be glad to lend a hand.
+If you run into any issues during your travels throughout the world of Habitat, be sure to visit us on our [Discord](https://discord.gg/nk7HwAGF) and we'll be glad to lend a hand.
 
 If you'd like to read this help document at any time, simply click the **Help** button in
 the top bar of the user interface.

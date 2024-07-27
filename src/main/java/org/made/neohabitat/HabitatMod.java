@@ -31,41 +31,41 @@ import java.util.Formatter;
 
 /**
  * This is the master superclass of the Habitat Elko project.
- * 
+ *
  * All of the game-specific behavior is either in this class or in one of it's
  * descendants. It implements defaults for all the required verbs, the common
  * state that every habitat object has, and lots of generic behavior.
- * 
+ *
  * The Elko Open Source project provides a replacement for all of the critical
  * services provided by Q-Link/AOL. It also provides all of the connection
  * management, object database, and message dispatching services that were part
  * of Habitat's server core (non-game logic).
- * 
+ *
  * ALL of the original source that is ported here was written in a 1980's flavor
  * of Stratus PL1. PL1 was all about globals, pass by reference, and no support
  * for classes. 30 years ago, Chip Morningstar wrote the bulk of the Habitat
  * game-logic code, simulating structures, classes, and a form of class
  * inheritance by concatenating include files and careful management of
  * procedure references.
- * 
+ *
  * The game-logic port of PL1 Habitat to Elko Habitat [Java] focuses on clarity
  * of checking that the translated code is correct and visibly similar to the
  * original code.
- * 
+ *
  * This means that some of the coding practices evolved over the last three
  * decades have been set aside. For example - naming conventions about
  * mixed-caps and underscores have been "rolled back" to 1988 - at least in
  * terms of the behavior code. Any 100% new Java code may use modern naming
  * conventions are used (For example, the Habitat mod names are all start with a
  * capital letter.)
- * 
+ *
  * The non-static constant globals present a different problem and have been
  * replaced with public state that is accessed by getter functions. So the PL1
  * contents array has been replaced with contents(). Likewise bit-flags are now
  * boolean arrays in memory and they are [un]packed for storage/transmission as
  * needed. And simple dereference functions such as avatar(), container(),
  * current_region(), and position() are provided where globals once were.
- * 
+ *
  * @author randy
  *
  */
@@ -103,10 +103,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public int     gr_width    = 0;
     /** Persistent store if the object is restricted (can't leave region or enter a non-restricted container) or is itself a restricted container */
     public boolean restricted  = false;
-    
+
     /** local storage of the last container that had a restricted bit, only used this object is restricted itself - used to put the object back in place.*/
     public Container lastRestrictedContainer = null;
-    
+
     public boolean gen_flags[] = new boolean[33];
 
     /* Provides an initialized random number generator for any derived classes. */
@@ -114,10 +114,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /* This item fits on the heap in the C64 clients memory. */
     public  boolean fits = false;
-    
+
     /**
      * Replaces original global 'position'
-     * 
+     *
      * @return this.y which is a synonym for position within a container.
      */
     public int position() {
@@ -126,9 +126,9 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Replaces original global 'obj_id'
-     * 
+     *
      * NOTE: Changes it's type from originally numeric to string.
-     * 
+     *
      * @return The unique object database identity for the object
      */
     public String obj_id() {
@@ -137,7 +137,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Replaces globals avatar/avatarptr
-     * 
+     *
      * @param user
      *            Who you want to get the Avatar Mod for.
      * @return Gets the avatar mod for a user
@@ -148,7 +148,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Replaces global current_region
-     * 
+     *
      * @return The Region mod attached to the current Elko context.
      */
     public Region current_region() {
@@ -157,7 +157,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Replaces global container
-     * 
+     *
      * @param obj
      *            The habitat mod that wants to find it's container.
      * @return The container mod for the item containing the obj.
@@ -174,7 +174,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Replaces global container (altenate interface)
-     * 
+     *
      * @return The container mod for the item containing 'this'.
      */
     public Container container() {
@@ -182,20 +182,20 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     }
 
     /**
-     * Can this be painted with a Changomatic?    
+     * Can this be painted with a Changomatic?
      * @return
      */
     public boolean changeable() {
         return false;
     }
 
-    
+
     /**
      * Constructor.
-     * 
+     *
      * This is an abstract class, and the constructor is only ever called by the
      * actual habitat objects
-     * 
+     *
      * @param style
      *            style offset to choose the presentation image default:0
      * @param x
@@ -226,7 +226,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         if (!(container.HabitatClass() == CLASS_AVATAR && ((Avatar) container).amAGhost)) {
             Region.addToNoids(this);
             if (container_is_opaque(container, this.y)) {
-                note_instance_creation(this);
+            	note_instance_creation(this);
             	note_image_creation(this);
             } else {
                 note_object_creation(this);
@@ -255,7 +255,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Dump a trace message that an illegal request was received into the log.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -265,7 +265,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Dump a trace message that an illegal request was received into the log.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param request
@@ -280,7 +280,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Verb (Debug): Test rigging for Elko Habitat developers to write trace
      * messages into the log without actually doing anything
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -291,10 +291,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Generic): Get HELP for this.
-     * 
+     *
      * Unlike most verbs, HELP has a useful default implementation that applies
      * to all classes that don't choose to override it.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -305,7 +305,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Illegal): This shouldn't get here. Log it.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -316,7 +316,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Illegal): This shouldn't get here. Log it.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -327,7 +327,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Illegal): This shouldn't get here. Log it.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -338,7 +338,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Generic): Pick this item up.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -349,7 +349,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Generic): Put this item into some container or on the ground.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param containerNoid
@@ -371,7 +371,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Verb (Generic): Throw this across the Region
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param x
@@ -387,7 +387,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Almost all efforts to GET a Habitat object go through this code. It has
      * lots of special cases.
-     * 
+     *
      * Various ways GET can fail: the Avatar is already holding something OR the
      * object is not getable OR the object is not accessible OR the object is an
      * open container OR the object is in glue or some other permanent container
@@ -395,7 +395,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * Avatar's hands and can't be grabbed OR the Avatar holding the object is
      * offline OR the object is in a display case and belongs to the case's
      * owner OR there's just not enough room here to hold the object!
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -428,7 +428,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
          * OBSOLETE CODE: An Elko User == Connection, so there is no Turned to
          * Stone state. And since a Elko Habitat Avatar is attached 1:1 to a
          * Elko User, this code can never be true in this server.
-         * 
+         *
          * if (contClass == CLASS_AVATAR &&
          * ^UserList(cont.avatarslot)->u.online) { send_reply_error(from);
          * return; }
@@ -436,8 +436,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
 //      FRF: The old model of limited access to containers was display-case only.
 //      Limiting access is now changed to be for all containers in a turf or residence.
-//      
-//      This is the old code that was display-case only:        
+//
+//      This is the old code that was display-case only:
 //      String avatar_userid = from.ref();
 //      if (contClass == CLASS_DISPLAY_CASE) {
 //          if (/* TODO DisplayCase dcont.locked(self.position+1)&dcont.owner */ "" != avatar_userid) {
@@ -446,14 +446,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 //              return;
 //          }
 //      }
-        
+
         // NEW FRF: Don't let visitors to turfs manipulate immobile containers/contents.
         if (contClass != CLASS_AVATAR && contClass != CLASS_REGION && !cont.meetsOwnershipRestrictions(from)) {
             object_say(from, cont.noid, "This is somone else's property.  You cannot pick this item up.");
             send_reply_error(from);
             return;
         }
-        
+
 
         /*
          * All the preemptive tests have passed, we can really try to pick this
@@ -478,11 +478,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             send_reply_error(from);
             return;
         }
-        
+
         if (this.gen_flags[RESTRICTED] && cont.gen_flags[RESTRICTED]) {
             lastRestrictedContainer = (Container) cont;     // Save so we can put it back where it was.
         }
-        
+
         /*
          * If getting a switched on flashlight from an opaque container, turn up
          * the lights.
@@ -503,7 +503,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         /* If getting a compass, match its orientation to the current region */
         if (selfClass == CLASS_COMPASS) {
             gr_state = current_region().orientation;
-            send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);            
+            send_fiddle_msg(THE_REGION, noid, C64_GR_STATE_OFFSET, current_region().orientation);
         }
         send_reply_success(from); // Yes, your GET request succeeded.
         send_neighbor_msg(from, avatar(from).noid, "GET$", "target", noid, "how", how); // Animate the picking up for other folks here.
@@ -519,7 +519,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Simple 0-parameter PUT version provided to allow for JSON interface
      * testing. Drops the item at the avatar's feet.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @returns whether the PUT succeded
@@ -530,7 +530,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Put this into a new container specified by noid.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param containerNoid
@@ -559,7 +559,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         return generic_PUT(from, target, x, y, orientation);
     }
-    
+
     public void putMeBack(User from, boolean copyMe) {
         Container cont = this.lastRestrictedContainer;
         if (cont != null) {
@@ -588,11 +588,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             }
         }
     }
-    
+
     /**
      * Most attempt to PUT an item go through this code. There are lots of
      * special cases.
-     * 
+     *
      * Various ways PUT can fail: the container noid specified by the C64 is
      * invalid OR it's trying to put down a magic lamp in the genie state OR the
      * Avatar is not holding the object OR the target location is not available
@@ -601,7 +601,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * (not allowed) OR the call to change_containers fails because there is not
      * enough room (this should never happen, since the object is already out,
      * but we check just in case)
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param cont
@@ -616,8 +616,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      *            The new orientation for this once transfered.
      */
     public boolean generic_PUT(User from, Container cont, int pos_x, int pos_y, int obj_orient) {
-        
-        
+
+
         final int TO_AVATAR = 1;
         final int TO_GROUND = 0;
 
@@ -626,16 +626,16 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         int contClass           = cont.HabitatClass();
         HabitatMod oldContainer = this.container();
         int oldY                = y;
-        
+
         if (gen_flags[RESTRICTED] && lastRestrictedContainer != null && lastRestrictedContainer != cont) {
             send_reply_error(from);         // Nope. Let's put it back instead.
             putMeBack(from, true);
             return false;
         }
-        
+
         // NEW FRF: Don't let visitors to turfs manipulate immobile containers/contents.
         if (contClass != CLASS_AVATAR && contClass != CLASS_REGION && !cont.meetsOwnershipRestrictions(from)) {
-            object_say(from, cont.noid, "This is somone else's property.  You cannot put that there.");         
+            object_say(from, cont.noid, "This is somone else's property.  You cannot put that there.");
             send_reply_error(from);  // No leaving presents in turf furniture.
             return false;
 
@@ -688,7 +688,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             }
             if (selfClass == CLASS_TOKENS && token_at != -1) {
                 Tokens inHand      = (Tokens) this;
-                Tokens inContainer = (Tokens) cont.contents(token_at); 
+                Tokens inContainer = (Tokens) cont.contents(token_at);
                 int    newDenom  = inHand.tget() + inContainer.tget();
                 if (newDenom > 65535)  {
                     send_reply_error(from);
@@ -700,7 +700,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
                 send_fiddle_msg(THE_REGION, inContainer.noid, C64_TOKEN_DENOM_OFFSET, new int []{newDenom % 256, newDenom/256});
                 send_goaway_msg(inHand.noid);
                 inHand.destroy_object(inHand);
-                send_reply_error(from);         // Well, a merge isn't really a failure, but the client doesn't understand otherwise;               
+                send_reply_error(from);         // Well, a merge isn't really a failure, but the client doesn't understand otherwise;
                 return false;
             }
             if (pos_y == -1) {
@@ -778,10 +778,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             else
                 this.orientation &= ~FACING_BIT;
         }
-        
+
 //      FRF: The CLASS_DISPLAY_CASE original implementation has been obsoleted with a turf/resident based security model.
 //      The commented code below is here for reference..
-//      
+//
 //      /* If putting into a display case, adjust the locked bit */
 //      if (contClass == CLASS_DISPLAY_CASE && !going_away_flag) {
 //          /*
@@ -834,13 +834,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         msg.finish();
         context().sendToNeighbors(from, msg);
 
-/* TODO Opaque container handling        
+/* TODO Opaque container handling
         if (Avatar.getConnectionType() == CONNECTION_JSON) {
                 if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(cont, y)) {
                         context().sendToNeighbors(from, Msg.msgDelete(this.object()));
                 }
         }
- */       
+ */
         send_reply_msg(from, noid, "err", TRUE, "pos", this.y);
 
         /* If putting into a pawn machine, announce the value of the object */
@@ -852,7 +852,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Throw this across the room, onto some kind of surface, by noid.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param target
@@ -877,7 +877,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * is not allowed OR the call to change_containers fails because there is
      * not enough room (this should never happen, since the object is already
      * out, but we check just in case)
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      * @param target
@@ -986,7 +986,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
         send_neighbor_msg(from, avatar.noid, "THROW$", "obj", noid, "x", new_x, "y", new_y, "hit", TRUE);
 
-/* TODO Opaque container handling        
+/* TODO Opaque container handling
 
         if (Avatar.getConnectionType() == CONNECTION_JSON) {
                 if (!container_is_opaque(oldContainer, oldY) && container_is_opaque(target, y)) {
@@ -1000,7 +1000,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         /* Notes that this throw has been successful. */
         return true;
     }
-    
+
     /**
      * Verb (Specific): TODO Ask of the Oracle!
      *
@@ -1030,7 +1030,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             }
         }
     }
-    
+
 
     private void send_throw_reply(User from, int noid, int target, int x, int y, int err) {
         send_reply_msg(from, noid, "target", target, "x", x, "y", y, "err", err);
@@ -1040,7 +1040,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * Most of the Habitat classes only need simple strings for their HELP
      * messages, so this generic implementation provides that. If no override is
      * specified, this is is the HELP message handler.
-     * 
+     *
      * @param from
      *            User representing the connection making the request.
      */
@@ -1319,7 +1319,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * NOTE: PL1 arrays uses 1-based arrays, so historically all the bit offset
      * constants are as well. We lose the high bit, but we never use it.
-     * 
+     *
      * @param bits
      *            The boolean array to pack into an int.
      * @return an int made of the the bits
@@ -1337,7 +1337,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * This is a special-case visibility check. You see, the avatar is both
      * transparent AND opaque.
-     * 
+     *
      * @param cont
      *            The container being tested
      * @param pos
@@ -1345,22 +1345,22 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @return Is this slot, of this container, visible to the region?
      */
     public boolean container_is_opaque(HabitatMod cont, int pos) {
-    	    	
-    	/* TODO FRF Opaque Avatars are still a problem
+
+  //  	/* TODO FRF Opaque Avatars are still a problem
 
         if (cont.HabitatClass() == CLASS_AVATAR)
             if (pos == HANDS || pos == HEAD)
                 return (false);
             else
                 return (true);
-       	 */
-    	
+  //    */
+
         return cont.opaque_container();
     }
 
     /**
      * empty_handed -- Return true iff 'who' is not holding anything.
-     * 
+     *
      * @param who
      *            The avatar being tested.
      * @return Is the avatar empty handed?
@@ -1371,7 +1371,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * holding -- Return true iff the avatar is holding a given object.
-     * 
+     *
      * @param avatar
      *            The avatar being tested.
      * @param object
@@ -1387,7 +1387,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Returns the HabitatMod of the item held in the avatar's hand.
-     * 
+     *
      * @param avatar
      * @return
      */
@@ -1398,7 +1398,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Returns the HabitatMod of the item held in the user's avatar's hand.
-     * 
+     *
      * @param from
      * @return
      */
@@ -1408,7 +1408,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Returns the HabitatMod of the item held in *this* avatar object.
-     * 
+     *
      * @return
      */
     public HabitatMod heldObject() {
@@ -1418,7 +1418,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * wearing -- Return true iff the avatar is wearing (head slot) a given
      * object.
-     * 
+     *
      * @param avatar
      *            The avatar being tested.
      * @param object
@@ -1438,8 +1438,8 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * @return Is the object portable?
      */
     public boolean getable(HabitatMod object) {
-        if (object.HabitatClass() == CLASS_ROCK 
-                || object.HabitatClass() == CLASS_FLAG 
+        if (object.HabitatClass() == CLASS_ROCK
+                || object.HabitatClass() == CLASS_FLAG
                 || object.HabitatClass() == CLASS_PLANT) {
             return (((Massive) object).mass == 0);
         }
@@ -1448,7 +1448,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     public boolean immobile(HabitatMod object) {
         switch (object.HabitatClass()) {
-            case CLASS_ATM: 
+            case CLASS_ATM:
             case CLASS_BED:
             case CLASS_BUILDING:
             case CLASS_BUSH:
@@ -1497,18 +1497,18 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             case CLASS_VENDO_INSIDE:
             case CLASS_WALL:
             case CLASS_WINDOW:
-                return true;            
+                return true;
             default:
                 break;
         }
         return !getable(object);
     }
-    
+
 
     /**
      * grabable -- Return true iff a given object can be grabbed from an
      * avatar's hand.
-     * 
+     *
      * NOTE: Tests the region to see if it is STEAL_FREE.
      *
      * @param object
@@ -1527,7 +1527,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Is the specified position available to be filled?
-     * 
+     *
      * @param container
      *            The target container;
      * @param x
@@ -1549,7 +1549,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * accessable -- Return true iff a given object can be reached by the
      * avatar.
-     * 
+     *
      * @param object
      *            The object being tested.
      * @return Can we access this object given container nesting??
@@ -1568,7 +1568,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * elsewhere -- Return true iff the object is not near the Avatar (i.e., not
      * adjacent and not in hand).
-     * 
+     *
      * @param object
      *            The object being tested.
      * @param user
@@ -1582,7 +1582,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * here -- Return true iff the given object is exactly where the Avatar is.
-     * 
+     *
      * @param object
      *            The object being tested.
      * @param user
@@ -1593,12 +1593,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         return (container(object).noid == THE_REGION && object.x == avatar(user).x && object.y == avatar(user).y);
     }
 
-    
+
     /**
      * goto_new_region -- Transfer the avatar to someplace else.
-     * 
+     *
      * Provided as syntactic sugar for easy class migration.
-     * 
+     *
      * @param avatar The avatar mod of the user that is being sent someplace else
      * @param contextRef The elko ref for the new region
      * @param direction WEST, EAST, NORTH, SOUTH, AUTO_TELEPORT_DIR
@@ -1613,12 +1613,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         avatar.change_regions(contextRef, direction, transition_type, x, y);
     }
 
-    
+
     /**
      * goto_new_region -- Transfer the avatar to someplace else.
-     * 
+     *
      * Provided as syntactic sugar for easy class migration.
-     * 
+     *
      * @param avatar The avatar mod of the user that is being sent someplace else
      * @param contextRef The elko ref for the new region
      * @param direction WEST, EAST, NORTH, SOUTH, AUTO_TELEPORT_DIR
@@ -1633,7 +1633,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
     * Are we standing next to the object so we can manipulate it properly?
-    * 
+    *
     * @param object
     *            The object being tested.
     * @return Is our avatar standing next to the object?
@@ -1646,12 +1646,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         if(object.noid == curAvatar.noid) {
             return true;
         }
-    
+
         //JSN: Is this PL/1 hack really necessary?
         if(object.HabitatClass() == CLASS_HEAD) {
             return true;
         }
-    
+
         if(test_bit(object.orientation, ORIENTATION_BIT)){
             x_right = object.x - image_x_right[obase] - image_celWidth[obase];
             x_left = object.x - image_x_left[obase] - image_celWidth[obase];
@@ -1659,11 +1659,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         else
             x_right = object.x + image_x_right[obase];
             x_left = object.x + image_x_left[obase];
-    
+
         y = object.y;
         y = clear_bit(y, 8);
         y = y + image_y[obase];
-    
+
         if(y < 0) {
             y = 0;
         }
@@ -1680,7 +1680,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         x_right = clear_bit(x_right, 1);
         x_right = clear_bit(x_right, 2);
-    
+
         if(x_left < 0) {
             x_left = 0;
         }
@@ -1689,11 +1689,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         x_left = clear_bit(x_left, 1);
         x_left = clear_bit(x_left, 2);
-    
+
         int av_x = curAvatar.x;
         av_x = clear_bit(av_x, 1);
         av_x = clear_bit(av_x, 2);
-    
+
         int av_y = curAvatar.y;
         av_y = clear_bit(av_y, 1);
         av_y = clear_bit(av_y, 8);
@@ -1705,7 +1705,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * change_containers -- Move an object from one container to another.
-     * 
+     *
      * @param obj
      *            The object being moved
      * @param new_container
@@ -1744,12 +1744,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         return true;
 
     }
-    
+
     /**
      * A full object (all resources) is about to be loaded in every C64
      * client that can see this region. Account for the memory use of
      * every resource (class def, images, head hack, actions, sounds)
-     * 
+     *
      * @param obj
      */
     public void note_object_creation(HabitatMod obj) {
@@ -1765,15 +1765,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         note_resource_creation_internal(obj, style);
 
     }
-    
+
     /**
      * Account for ONLY the instance data and class overhead loaded for an object
      * to the C64 memory heap. Do not yet account for the image, sound, of behavior
      * resources. (This is what we mean by an 'opaque' container.)
-     * 
+     *
      * @param obj
      */
-    
+
     public void note_instance_creation(HabitatMod obj) {
         int class_number= obj.HabitatClass();
 
@@ -1783,57 +1783,57 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         note_instance_creation_internal(obj);
     }
-    
+
     private void note_instance_creation_internal(HabitatMod obj) {
     	note_instance_creation_internal(obj, current_region());
     }
-    
+
     public static final boolean DUMP_HEAP = false;
 	String s;
-    
+
     protected void note_instance_creation_internal(HabitatMod obj, Container cont) {
         int class_number= obj.HabitatClass();
 
         cont.space_usage += obj.instance_size();
         cont.class_ref_count[class_number]++;
         if (Region.DUMP_HEAP) s = " Instance creation: " + obj.HabitatModName() + "(" + class_number + ") change: +" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];
-        
+
         if (cont.class_ref_count[class_number] == 1) {
             cont.space_usage += obj.class_size();
             if (Region.DUMP_HEAP) s += " change +" + obj.class_size() + "(class)";
         }
         if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
     }
-    
-    
-    
+
+
+
     public static final String[] RESOURCES = {"IMAGE", "ACTION", "SOUND", "HEAD"};
-    
+
     private void note_resource_creation_internal(HabitatMod obj, int style) {
     	note_resource_creation_internal(obj, style, current_region());
     }
-    
+
     public void note_image_creation(HabitatMod obj) {
-    	
+
 //  	note_image_creation_internal(obj, obj.style, current_region());   TODO FRF This Doesn't Work.
-    	
+
     }
-    
+
     protected void note_image_creation_internal(HabitatMod obj, int style, Container cont) {
         int class_number = obj.HabitatClass();
         int type         = NeoHabitat.RESOURCE_IMAGE;
-        
+
         if (class_number == CLASS_HEAD)
             note_resource_usage(NeoHabitat.RESOURCE_HEAD, style, cont);
         else if (NeoHabitat.ClassResources[class_number][type].length > 0)
             note_resource_usage(type, NeoHabitat.ClassResources[class_number][type][style], cont);		// TODO: style bounds checking?
-        
+
     }
 
     protected void note_resource_creation_internal(HabitatMod obj, int style, Container cont) {
-        int class_number = obj.HabitatClass(); 
+        int class_number = obj.HabitatClass();
         int type = NeoHabitat.RESOURCE_ACTION;
-        
+
     	note_image_creation_internal(obj, style, cont);
 
     	while (type <= NeoHabitat.RESOURCE_SOUND) {
@@ -1843,12 +1843,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             type++;
         }
     }
-    
-    protected void note_resource_usage(int type, int resource, Container cont) {        
-    	
+
+    protected void note_resource_usage(int type, int resource, Container cont) {
+
         cont.resource_ref_count[type][resource] += 1;
         if (Region.DUMP_HEAP) s = " Resource creation: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
-        
+
         if (cont.resource_ref_count[type][resource] == 1) {
         	  int size = NeoHabitat.ResourceSizes[type][resource] + 5; /* Check the Client source for details on the 5 byte usage. FRF */
               cont.space_usage += size;
@@ -1856,11 +1856,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
     }
-    
-    
+
+
     /**
      * Recover and object and it's class resources from the C64 heap.
-     * 
+     *
      * @param obj
      */
 
@@ -1879,7 +1879,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Recover only the instance space from the C64 heap model for this region.
-     * 
+     *
      * @param obj
      */
     public void note_instance_deletion(HabitatMod obj) {
@@ -1893,25 +1893,25 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
         note_instance_deletion_internal(obj);
     }
-    
-    private void note_instance_deletion_internal(HabitatMod obj) {        
+
+    private void note_instance_deletion_internal(HabitatMod obj) {
         note_instance_deletion_internal(obj, current_region());
     }
 
     private void note_instance_deletion_internal(HabitatMod obj, Container cont) {
         int class_number= obj.HabitatClass();
         cont.space_usage -= obj.instance_size();
-        
+
         cont.class_ref_count[class_number]--;
-        if (Region.DUMP_HEAP) s = " Instance deletion from " + obj.HabitatModName() + "(" + class_number + ") change: -" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];        
-        
+        if (Region.DUMP_HEAP) s = " Instance deletion from " + obj.HabitatModName() + "(" + class_number + ") change: -" + obj.instance_size() + "(inst) ref_count: " + cont.class_ref_count[class_number];
+
         if (cont.class_ref_count[class_number] == 0) {
             cont.space_usage -= obj.class_size();
             if (Region.DUMP_HEAP) s += " change -" + obj.class_size() + "(class)";
         }
         if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s +  ", heap: " + cont.space_usage);
     }
-    
+
     public void note_image_deletion(HabitatMod obj) {
 //  	note_image_deletion_internal(obj, obj.style);  TODO FRF This doesn't work.
     }
@@ -1922,17 +1922,17 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
         if (class_number == CLASS_HEAD)
             note_resource_removal(obj, NeoHabitat.RESOURCE_HEAD, style);
-        else if (NeoHabitat.ClassResources[class_number][type].length > 0) 
+        else if (NeoHabitat.ClassResources[class_number][type].length > 0)
             note_resource_removal(obj, type, NeoHabitat.ClassResources[class_number][type][style]);
- 
+
     }
-    
+
     private void note_resource_deletion_internal(HabitatMod obj, int style) {
         int       class_number = obj.HabitatClass();
         int         type = NeoHabitat.RESOURCE_ACTION;
 
         note_image_deletion_internal(obj, style);
-        
+
         while (type <= NeoHabitat.RESOURCE_SOUND) {
             for (int i = 0; i < NeoHabitat.ClassResources[class_number][type].length; i++) {
                 note_resource_removal(obj, type, NeoHabitat.ClassResources[class_number][type][i]);
@@ -1941,15 +1941,15 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
     }
 
-    private void note_resource_removal(HabitatMod obj, int type, int resource) {        
+    private void note_resource_removal(HabitatMod obj, int type, int resource) {
     	note_resource_removal(type, resource, current_region());
     }
-    
-    private void note_resource_removal(int type, int resource, Container cont) { 
-    	
+
+    private void note_resource_removal(int type, int resource, Container cont) {
+
         cont.resource_ref_count[type][resource] -= 1;
         if (Region.DUMP_HEAP) s = " Resource removal: " + RESOURCES[type] + " #" + resource + " ref_count: " + cont.resource_ref_count[type][resource];
-        
+
          if (cont.resource_ref_count[type][resource] == 0) {
         	 int size = NeoHabitat.ResourceSizes[type][resource] + 5; /* Check the Client source for details on the 5 byte usage. FRF */
              cont.space_usage -= size;
@@ -1957,38 +1957,38 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
          }
          if (Region.DUMP_HEAP) trace_msg("HEAP: (" + cont.obj_id() + ") -> " + s);
     }
-    
+
     /**
      * Check to make sure various limits related to the C64 heap manager
      * are still within limits.
-     * 
+     *
      * The "head hack" limits 32 heads in a region (mapping 255 head types to 32 fixed image slots)
      * Apparently the client can only allow 64 instances of any class in a region (bit packing, I'm sure.)
      * Of course, total memory usage is limited as well.
-     * 
-     * NOTE! C64_HEAP_SIZE changes with client builds, so the server needs to know the SMALLEST of these 
+     *
+     * NOTE! C64_HEAP_SIZE changes with client builds, so the server needs to know the SMALLEST of these
      * if there are ever multiple clients.
-     * 
+     *
      * @param obj
      * @return
      */
     public boolean mem_checks_ok(HabitatMod obj) {
-        
+
         Region region = current_region();
-        
+
         if (region.space_usage > c64_capacity(region))
-            return false;        
+            return false;
 
         return limits_ok(obj, region);
     }
-    
-    public boolean limits_ok(HabitatMod obj, Region region) {   	
+
+    public boolean limits_ok(HabitatMod obj, Region region) {
         int the_class = obj.HabitatClass();
-        
+
         if (the_class == CLASS_HEAD)
             if (region.class_ref_count[the_class] > 31)
                 return false;
-        
+
         if (region.class_ref_count[the_class] > 63)
             return false;
 
@@ -1998,16 +1998,16 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public int c64_capacity() {
     	return(C64_HEAP_SIZE - HEAP_SAFETY_MARGIN - FIRST_GHOST_HEAP_SIZE);		// When in doubt, reserve space for the Ghost
     }
-    
+
     public int c64_capacity(Region region) {
-    	
+
     	if (region.regionGhost() == null)
     		return c64_capacity();
-    	
+
     	return C64_HEAP_SIZE - HEAP_SAFETY_MARGIN;							// If the ghost is instantiated, we can use all the of the heap.
     }
-    
-    
+
+
     public boolean mem_check_container(Container cont) {
         for (int i = 0; i < cont.capacity(); i++) {
             HabitatMod obj = cont.contents(i);
@@ -2017,23 +2017,23 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         }
         return true;
     }
-    
+
     public int class_size() {
         return NeoHabitat.ClassSizes[HabitatClass()];
     }
-    
+
     public int instance_size() {
         return NeoHabitat.InstanceSizes[HabitatClass()];
     }
-    
-    
+
+
     // END HACK STUBS
 
     /**
      * Test to see if the client will have room for the resources changed by an
      * upcoming container change. This can be a problem when an object comes out
      * of an opaque container.
-     * 
+     *
      * @param obj
      *            Object being moved
      * @param new_container
@@ -2045,7 +2045,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public boolean heap_space_available(HabitatMod obj, Container new_container, int new_position) {
 
         HabitatMod old_container = obj.container();
-        
+
         if (container_is_opaque(old_container, obj.y)) {
             note_instance_deletion(obj);
             note_image_deletion(obj);
@@ -2058,7 +2058,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         } else {
             note_object_creation(obj);
         }
-        
+
         if (mem_checks_ok(obj)) {
             return true;
         }
@@ -2076,13 +2076,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         } else {
             note_object_creation(obj);
         }
-        
+
         return false;
     }
 
     /**
      * Dump a string to the debugging server log.
-     * 
+     *
      * @param msg
      *            The message to log, with optional java.util.Formatter options (%s, %d, etc.)
      * @param args
@@ -2105,7 +2105,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * Message from a Habitat user that is meant to be logged in a special
      * Oracle/Moderator log file. Often a message about a special (hard coded)
      * event or speaking with the Oracle Fountain.
-     * 
+     *
      * @param obj
      *            The object that is logging the message (e.g. Oracle Fountain.)
      * @param avatar
@@ -2123,7 +2123,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * An object sends a string message to a specific user
-     * 
+     *
      * @param to
      *            User the message is going to.
      * @param noid
@@ -2141,7 +2141,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * An object sends a string message to a specific user
-     * 
+     *
      * @param to
      *            User the message is going to.
      * @param text
@@ -2153,7 +2153,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * An object sends a string message to everyone
-     * 
+     *
      * @param noid
      *            The object speaking to the region.
      * @param text
@@ -2184,17 +2184,17 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * An object sends a string message to everyone
-     * 
+     *
      * @param text
      *            What the object wants to say.
      */
     public void object_broadcast(String text) {
         object_broadcast(this.noid, text);
     }
-    
+
     /**
      * All fiddle message share the same arguments. This adds those no matter what the message routing type.
-     * 
+     *
      * @param msg
      * @param target
      * @param offset
@@ -2215,7 +2215,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send a point to point (aka private) fiddle message.
-     * 
+     *
      * @param from
      * @param to
      * @param noid
@@ -2231,7 +2231,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send private fiddle message with only one arg
-     * 
+     *
      * @param from
      * @param to
      * @param noid
@@ -2245,7 +2245,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send neighbors a fiddle message.
-     * 
+     *
      * @param from
      * @param noid
      * @param target
@@ -2256,11 +2256,11 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         JSONLiteral msg = new_neighbor_msg(noid, "FIDDLE_$");
         compose_fiddle_msg(msg, target, offset, args);
         context().sendToNeighbors(from, msg);
-    }       
-    
+    }
+
     /**
      * Send the neighbors a fiddle messgae with only one arg.
-     * 
+     *
      * @param from
      * @param noid
      * @param target
@@ -2286,7 +2286,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Fiddle message with only a single arg...
-     * 
+     *
      * @param noid
      * @param target
      * @param offset
@@ -2323,7 +2323,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * Temporary scaffolding for incremental development of the server. Call
      * this to say "not ready yet!" and reply with an error code. Hopefully the
      * client will accept the result and proceed.
-     * 
+     *
      * @param from
      *            The connection for this user.
      * @param noid
@@ -2342,19 +2342,19 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Unexpected client message in an illegal state. Does not attempt to rescue the client.
-     * 
+     *
      * @param from
      * @param text
      */
     public void illegal_request(User from, String text) {
-        object_say(from, text); 
+        object_say(from, text);
         trace_msg(text);
     }
-    
+
     /**
      * Create a JSONLiteral initialized with the minimum arguments for broadcast
      * from the Habitat/Elko server.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2374,7 +2374,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Create a JSONLiteral initialized with the minimum arguments needed for
      * the Habitat/Elko server. Assumes this.noid is the object of interest.
-     * 
+     *
      * @param op
      *            The STRING name of the ASYNCRONOUS request. In the PL/1 source
      *            this was a numeric constant, not a string. i.e PL/1: SPEAK$
@@ -2389,7 +2389,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2405,7 +2405,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2424,7 +2424,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2445,7 +2445,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2466,7 +2466,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2492,7 +2492,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2523,7 +2523,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS broadcast message to all the
      * connections/users/avatars in a region.
-     * 
+     *
      * @param noid
      *            The object that is broadcasting.
      * @param op
@@ -2560,7 +2560,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Creates a SYNCHRONOUS (client is waiting) reply message using the minimum
      * arguments.
-     * 
+     *
      * @param noid
      *            The object waiting for this reply.
      * @return message ready to add more parameters, finish(), and send.
@@ -2575,7 +2575,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Generates a reply message assuming that the noid is inferred by this
      * object.
-     * 
+     *
      * @return message ready to add more parameters, finish(), and send.
      */
     public JSONLiteral new_reply_msg() {
@@ -2585,7 +2585,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) reply message using the minimum
      * arguments.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2600,7 +2600,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) string-only reply message
      * inferring this.noid.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param text
@@ -2616,7 +2616,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) reply message, with addition
      * attributes/values.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2636,7 +2636,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) reply message, with addition
      * attributes/values.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2661,7 +2661,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) reply message, with addition
      * attributes/values.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2691,7 +2691,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) reply message, with addition
      * attributes/values.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2765,7 +2765,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a SYNCHRONOUS (client is waiting) reply message, with additional
      * String value.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2784,7 +2784,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send simple SYNCHRONOUS reply indicating success or failure.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2804,7 +2804,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send simple SYNCHRONOUS reply indicating failure.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2816,7 +2816,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send simple SYNCHRONOUS reply indicating failure. Uses this.noid.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      */
@@ -2826,7 +2826,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send simple SYNCHRONOUS reply indicating success.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      * @param noid
@@ -2838,7 +2838,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send simple SYNCHRONOUS reply indicating success. Uses this.noid.
-     * 
+     *
      * @param from
      *            The User/connection that gets the reply.
      */
@@ -2849,7 +2849,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Create a JSONLiteral initialized with the minimum arguments to send to a
      * user/connections "neighbors/other users" via the Habitat/Elko server.
-     * 
+     *
      * @param noid
      *            The object that is acting.
      * @param op
@@ -2870,7 +2870,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * Create a JSONLiteral initialized with the minimum arguments to send to a
      * user/connections "neighbors/other users" via the Habitat/Elko server.
      * this.noid is used for the acting object.
-     * 
+     *
      * @param op
      *            The STRING name of the ASYNCRONOUS request. In the PL/1 source
      *            this was a numeric constant, not a string. i.e PL/1: SPEAK$
@@ -2885,7 +2885,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -2904,7 +2904,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region. this.noid is the acting object.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -2921,7 +2921,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region with an additional parameters.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -2945,7 +2945,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region with additional parameters.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -3005,7 +3005,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region with additional parameters.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -3040,7 +3040,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region with additional parameters.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -3080,7 +3080,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Sends a ASYNCHRONOUS message to all the neighbors (other
      * user/connections) in a region with an additional string.
-     * 
+     *
      * @param from
      *            The user/connection that is acting, and the only one that will
      *            NOT get the message.
@@ -3104,7 +3104,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Create a JSONLiteral initialized with the minimum arguments to send a
      * private message to a single targeted user/connection.
-     * 
+     *
      * @param noid
      *            The object that is acting.
      * @param op
@@ -3126,7 +3126,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
      * Create a JSONLiteral initialized with the minimum arguments to send a
      * private message to a single targeted user/connection. this.noid is used
      * as the acting object.
-     * 
+     *
      * @param op
      *            The STRING name of the ASYNCRONOUS request. In the PL/1 source
      *            this was a numeric constant, not a string. i.e PL/1: SPEAK$
@@ -3140,7 +3140,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send a private message to a specified user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3161,7 +3161,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send a single-string private message to a specified user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3186,7 +3186,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send a single-string private message to a specified user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3212,7 +3212,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Send a single-byte private message to a specified user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3239,7 +3239,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Send a private message with additional parameters to a specified
      * user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3282,7 +3282,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Send a private message with additional parameters to a specified
      * user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3320,7 +3320,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     /**
      * Send a private message with additional parameters to a specified
      * user-connection.
-     * 
+     *
      * @param from
      *            The user/connection that instigated this action. Will NOT get
      *            a copy of the message.
@@ -3383,7 +3383,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Clear a bit in an integer.
-     * 
+     *
      * @param val
      *            starting value
      * @param bitpos
@@ -3396,7 +3396,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Set a bit in an integer.
-     * 
+     *
      * @param val
      *            starting value
      * @param bitpos
@@ -3409,7 +3409,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Test to see if a specific bit is set.
-     * 
+     *
      * @param val
      *            value to search
      * @param bitpos
@@ -3424,7 +3424,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Write the object to the Elko Habitat Database.
-     * 
+     *
      * @param mod
      *            The Habitat Mod to checkpoint.
      */
@@ -3446,14 +3446,14 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
     public void destroy_object(HabitatMod mod) {
         if (mod.noid != UNASSIGNED_NOID)
             Region.removeObjectFromRegion(mod);
-        
+
         ((Item) mod.object()).delete();
     }
 
     /**
      * Is the the mod a Seating Class, requiring special handling?
      * See org.neohabitat.Seating
-     * 
+     *
      * @param mod The mod being tested
      * @return true if seating.
      */
@@ -3461,18 +3461,18 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         return (mod.HabitatClass() == CLASS_COUCH ||
                 mod.HabitatClass() == CLASS_CHAIR ||
                 mod.HabitatClass() == CLASS_BED);
-    }  
+    }
 
     /**
      * Is this mod a Seating Class, requiring special handling?
      * See org.neohabitat.Seating
-     * 
+     *
      * @return true if seating.
-     */    
+     */
     public boolean isSeating() {
         return isSeating(this);
     }
-    
+
     public int damage_avatar(Avatar who) {
         trace_msg("Damaging Avatar %s...", who.obj_id());
         who.health -= DAMAGE_DECREMENT;
@@ -3486,7 +3486,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             return HIT;
         }
     }
-    
+
     public int damage_avatar(Avatar who, int damage) {
         trace_msg("Damaging Avatar %s...", who.obj_id());
         who.health -= damage;
@@ -3500,7 +3500,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             return HIT;
         }
     }
-    
+
     public int damage_object(HabitatMod object) {
         if (damageable(object)) {
             destroy_object(object);
@@ -3509,18 +3509,18 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
             return FALSE;
         }
     }
-    
+
     public boolean damageable(HabitatMod object) {
         return object.HabitatClass() == CLASS_MAILBOX;
     }
-    
+
     public boolean is_ranged_weapon() {
         return HabitatClass() == CLASS_GUN;
     }
 
     /**
      * Terminates an avatar with extreme prejudice.
-     * 
+     *
      * @param victim
      *               The Avatar to terminate.
      */
@@ -3585,7 +3585,7 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
 
     /**
      * Spawn a Habitat Object out of thin air.
-     * 
+     *
      * @param name      The name to give the object.
      * @param mod       The Habitat Type/Elko Mod, well formed and ready to attach.
      * @param container The container that will hold the object when it arrives. null == region/context.
@@ -3602,10 +3602,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         if (item != null) {
             if (ephemeral)
                 item.markAsEphemeral();
-            
+
             mod.attachTo(item);
             mod.objectIsComplete();
-            
+
             if (!ephemeral)
                 item.checkpoint();
         }
@@ -3635,10 +3635,10 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         announceBroadcast.finish();
         context().send(announceBroadcast);
     }
-    
+
     /**
      * Tell the neighbors about this object (it was sent as a reply argment to the originator)
-     * 
+     *
      * @param obj
      * @param container
      */
@@ -3649,12 +3649,12 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         announceNeighbors.finish();
         context().sendToNeighbors(from, announceNeighbors);
     }
-    
+
     /**
      * Simulate a "make" message (instead of HEREIS_$) - used when deghosting an avatar so it
      * will appear as in a single set of objects.
      */
-    
+
     public void fakeMakeMessage(BasicObject obj, HabitatMod container) {
         JSONLiteral itemLiteral = obj.encode(EncodeControl.forClient);
         JSONLiteral msg = new JSONLiteral(null, EncodeControl.forClient);
@@ -3664,13 +3664,13 @@ public abstract class HabitatMod extends Mod implements HabitatVerbs, ObjectComp
         msg.finish();
         context().send(msg);
     }
-    
+
     public void modify_variable(User from, HabitatMod target, int offset, int new_value) {
         target.gen_flags[MODIFIED] = true;
         send_fiddle_msg(THE_REGION, target.noid, offset, new_value);
     }
-    
-    
+
+
     /**
      * Pays the provided amount of Tokens to the specified Avatar.
      *

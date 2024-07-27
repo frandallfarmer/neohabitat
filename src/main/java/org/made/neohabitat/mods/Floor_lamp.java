@@ -42,9 +42,9 @@ public class Floor_lamp extends Toggle implements Copyable {
     public boolean opaque_container() {
         return false;
     }
-    
-    public boolean changeable() { 
-        return true; 
+
+    public boolean changeable() {
+        return true;
     }
 
     public boolean filler() {
@@ -71,6 +71,14 @@ public class Floor_lamp extends Toggle implements Copyable {
         JSONLiteral result = super.encodeLighting(new JSONLiteral(HabitatModName(), control));
         result.finish();
         return result;
+    }
+
+    /* Adjust region light levels for lights that are on in the room */
+	public void objectIsComplete() {
+	    super.objectIsComplete();
+	    if (on == TRUE && !this.container().opaque_container()) {
+	        current_region().lighting += 1;
+	    }
     }
 
     /**
