@@ -14,8 +14,7 @@
   },
   "scripts": {
     "bridge": "node Habitat2ElkoBridge.js",
-    "bridge-docker": "node Habitat2ElkoBridge.js -l ${BRIDGE_HOST}:${BRIDGE_PORT} -e ${BRIDGE_ELKO_HOST} -m ${MONGO_HOST}/elko -c ${DEFAULT_CONTEXT} -t debug 2>&1 | tee bridge.log",
-    "supervisor-bridge-docker": "supervisor -w bridge -- npm run bridge-docker"
+    "supervisor-bridge-docker": "supervisor -w . -- Habitat2ElkoBridge.js"
   },
   "license": "MIT",
   "homepage": "https://frandallfarmer.github.io/neohabitat/"

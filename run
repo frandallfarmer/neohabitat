@@ -79,7 +79,12 @@ JVM_ARGS=(
 )
 
 function start_bridge() {
-  cd ${GIT_BASE_DIR} && npm run supervisor-bridge-docker
+  cd ${GIT_BASE_DIR}/bridge && npm run supervisor-bridge-docker -- \
+    -l ${BRIDGE_HOST}:${BRIDGE_PORT} \
+    -e ${BRIDGE_ELKO_HOST} \
+    -m ${MONGO_HOST}/elko \
+    -c ${DEFAULT_CONTEXT} \
+    -t debug 2>&1 | tee bridge.log
 }
 
 function start_pushserver() {
