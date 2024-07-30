@@ -5,12 +5,13 @@ networks:
 
 services:
   neohabitatmariadb:
-    image: mariadb
+    image: mysql
     environment:
-      - MARIADB_ROOT_PASSWORD=dev
-      - MARIADB_DATABASE=qlink
-      - MARIADB_USER=qlink
-      - MARIADB_PASSWORD=qlink
+      - MYSQL_ROOT_PASSWORD=dev
+      - MYSQL_DATABASE=qlink
+      - MYSQL_USER=qlink
+      - MYSQL_PASSWORD=qlink
+      - MYSQL_ROOT_HOST=%
     volumes:
       - ./data/mariadb:/var/lib/mysql
     networks:
