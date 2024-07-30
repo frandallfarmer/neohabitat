@@ -5,7 +5,7 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 [![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
 [Devloper Discord](https://discord.gg/nk7HwAGF)
 
-We're recreating [Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
+We're recreating [Lucasfilm's Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
 Play Habitat Now!
 -----------------
