@@ -7,10 +7,10 @@ services:
   neohabitatmariadb:
     image: mariadb
     environment:
-      - MYSQL_ROOT_PASSWORD=dev
-      - MYSQL_DATABASE=qlink
-      - MYSQL_USER=qlink
-      - MYSQL_PASSWORD=qlink
+      - MARIADB_ROOT_PASSWORD=dev
+      - MARIADB_DATABASE=qlink
+      - MARIADB_USER=qlink
+      - MARIADB_PASSWORD=qlink
     volumes:
       - ./data/mariadb:/var/lib/mysql
     networks:
@@ -18,12 +18,16 @@ services:
   neohabitatmongo:
     image: mongo:4.0
     command: "--smallfiles"
+    ports:
+      - "27017:27017"
     volumes:
       - ./data/mongodb:/data/db
     networks:
       - neohabitat
   neohabitat:
     build: .
+    volumes:
+      - .:/neohabitat
     # make sure to build this with `docker compose build` when doing development to compile your local changes.
     image: frandallfarmer/neohabitat
     privileged: true
@@ -43,16 +47,15 @@ services:
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
     ports:
-          - "1337:1337"
-          - "1701:1701"
-          - "1987:1987"
+      - "1337:1337"
+      - "1701:1701"
+      - "1987:1987"
     depends_on:
       - neohabitatmongo
     networks:
       - neohabitat
   qlink:
     image: philcollins/qlink
-#    build: ../qlink/
     environment:
       - QLINK_DB_HOST=neohabitatmariadb
       - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink

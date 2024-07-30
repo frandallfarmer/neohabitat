@@ -54,7 +54,6 @@ PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP:=9000}"
 #HABIPROXY_ELKO_PORT="${NEOHABITAT_HABIPROXY_ELKO_PORT:=9000}"
 
 BASE_ARGS=(
-
   org.elkoserver.server.context.ContextServerBoot
   trace_cont=DEBUG
   trace_comm=EVENT
@@ -80,12 +79,7 @@ JVM_ARGS=(
 )
 
 function start_bridge() {
-  supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js \
-    -l "${BRIDGE_HOST}:${BRIDGE_PORT}" \
-    -e "${BRIDGE_ELKO_HOST}" \
-    -m "${MONGO_HOST}/elko" \
-    -c "${DEFAULT_CONTEXT}" \
-    -t debug 2>&1 | tee bridge.log
+  cd ${GIT_BASE_DIR} && npm run supervisor-bridge-docker
 }
 
 function start_pushserver() {
