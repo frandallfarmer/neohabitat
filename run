@@ -125,7 +125,7 @@ if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
   retry 60 "make clean"
   cd ..
 else
-  if [ $(mongo neohabitatmongo:27017 --eval 'db.getMongo().getDBNames().indexOf("elko")' --quiet) -ne "-1" ]; then
+  if [ $(mongosh neohabitatmongo:27017 --eval 'db.getMongo().getDBNames().indexOf("elko")' --quiet) -ne "-1" ]; then
     cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
     retry 60 "make clean"
     cd ..
