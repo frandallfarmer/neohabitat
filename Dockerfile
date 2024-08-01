@@ -44,10 +44,13 @@ WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
 
 WORKDIR /neohabitat/bridge
-RUN npm ci
+RUN npm install
+
+WORKDIR /neohabitat/habibots
+RUN npm install
 
 WORKDIR /neohabitat/pushserver
-RUN npm ci
+RUN npm install
 
 WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run
