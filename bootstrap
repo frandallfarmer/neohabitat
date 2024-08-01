@@ -46,6 +46,10 @@ function ensure_linux_deps_debian() {
     echo " - Installing Node.js..."
     sudo apt install nodejs -y
   }
+  type npm || {
+    echo " - Installing NPM..."
+    sudo apt install npm -y
+  }
 }
 
 function ensure_linux_deps_redhat() {
