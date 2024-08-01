@@ -36,6 +36,7 @@ function ensure_linux_deps_debian() {
     sudo apt install docker-ce -y
     sudo systemctl start docker
     sudo systemctl enable docker
+    sudo usermod -aG docker "${USER}"
   }
   type mvn || {
     echo " - Installing Maven..."
@@ -71,6 +72,7 @@ function ensure_linux_deps_redhat() {
     sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
     sudo systemctl start docker
     sudo systemctl enable docker
+    sudo usermod -aG docker "${USER}"
   }
   type mvn || {
     echo " - Installing Maven..."
@@ -78,7 +80,7 @@ function ensure_linux_deps_redhat() {
   }
   type node || {
     echo " - Installing Node.js..."
-    sudo dnf install nodejs
+    sudo dnf install nodejs -y
   }
 }
 
@@ -117,4 +119,5 @@ npm install
 cd "${GIT_BASE_DIR}/habibots"
 npm install
 
-echo " * Bootstrapping complete! Run docker-compose up to bring up all Neohabitat services..."
+echo " * Bootstrapping complete! Run the following command to bring up all Neohabitat services for the first time..."
+echo " $ NEOHABITAT_SHOULD_UPDATE_SCHEMA=true docker compose up"
