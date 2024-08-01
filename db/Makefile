@@ -59,7 +59,7 @@ crawl:
 	
 book:
 	@echo "Regenerating Book of Records"
-	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
+	@npm run generateBookOfRecords -- --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
 	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) book_of_records >>.errs 2>&1
 
 text: book
@@ -118,7 +118,7 @@ teleports:
 		
 version:
 	@echo "Building Class Source for NeoHabitat.java"	
-	@node convertClientDataToJava.js
+	@npm convertClientDataToJava
 
 %.o: %.json
 	@echo "Updating" $*.json "in the database"

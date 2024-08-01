@@ -13,7 +13,8 @@
     "yargs": "^17.7.2"
   },
   "scripts": {
-    "populateModels": "node populateModels.js"
+    "populateModels": "node populateModels.js",
+    "generateBookOfRecords": "node ../tools/generateBookOfRecords.js"
   },
   "license": "MIT",
   "homepage": "https://frandallfarmer.github.io/neohabitat/"
