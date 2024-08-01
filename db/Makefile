@@ -60,49 +60,49 @@ crawl:
 book:
 	@echo "Regenerating Book of Records"
 	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) book_of_records >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) book_of_records >>.errs 2>&1
 
 text: book
 	@echo "Building Text documents"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) text >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) text >>.errs 2>&1
 
 SRC=all
 
 regions:
 	@echo "Building Regions, Avatars, Objects, and Text for" ${SRC}
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) ${SRC} >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) ${SRC} >>.errs 2>&1
 
 downtown:
 	@echo "Building Downtown Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) downtown_regions >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) downtown_regions >>.errs 2>&1
 	
 woods:
 	@echo "Building Woods Rd Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) woods >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) woods >>.errs 2>&1	
 
 streets:
 	@echo "Building the Suburb Streets Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) streets >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) streets >>.errs 2>&1	
 
 beach:
 	@echo "Building the Beach Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) beach >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) beach >>.errs 2>&1	
 
 back4t:
 	@echo "Building the Back Forty Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) back4t >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) back4t >>.errs 2>&1	
 
 hell:
 	@echo "Building Hell Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) hell >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) hell >>.errs 2>&1	
 
 dnalsi:
 	@echo "Building Dnalsi Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) dnalsi >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) dnalsi >>.errs 2>&1
 
 users:
 	@echo "Building Users Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) users >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) users >>.errs 2>&1
 
 teleports:
 	@echo "Building Teleport Directory"

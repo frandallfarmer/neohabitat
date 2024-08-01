@@ -113,6 +113,9 @@ echo " - Ensuring that all Node.js dependencies are installed..."
 cd "${GIT_BASE_DIR}/bridge"
 npm install
 
+cd "${GIT_BASE_DIR}/db"
+npm install
+
 cd "${GIT_BASE_DIR}/pushserver"
 npm install
 
