@@ -117,4 +117,4 @@ npm install
 cd "${GIT_BASE_DIR}/habibots"
 npm install
 
-echo " * Boostrapping complete! Run docker-compose up to bring up all Neohabitat services..."
+echo " * Bootstrapping complete! Run docker-compose up to bring up all Neohabitat services..."
