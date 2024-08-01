@@ -84,9 +84,9 @@ function ensure_linux_deps_redhat() {
 
 function ensure_linux_deps() {
   source /etc/os-release
-  if [[ "${ID}" =~ "debian|ubuntu" ]]; then
+  if [[ "${ID}" =~ (debian|ubuntu) ]]; then
     ensure_linux_deps_debian
-  elif [[ "${ID}" =~ "rhel|fedora" ]]; then
+  elif [[ "${ID}" =~ (rhel|fedora) ]]; then
     ensure_linux_deps_redhat
   else
     echo " ! Unknown Linux distribution (${ID}); unable to preload dependencies."
