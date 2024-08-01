@@ -50,7 +50,7 @@ function ensure_linux_deps_debian() {
 function ensure_linux_deps_redhat() {
   echo " - Ensuring that Red Hat-style dependencies are installed (may ask for your sudo password)..."
   docker_repo="fedora"
-  if [[ "${ID}" =~ "centos|rhel" ]]; then
+  if [[ "${ID}" =~ (centos|rhel) ]]; then
     echo " - Ensuring that EPEL is installed..."
     docker_repo="rhel"
     el_version=$(cat /etc/system-release-cpe | awk -F: '{ print $5 }' | grep -o ^[0-9]*)
