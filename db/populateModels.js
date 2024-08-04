@@ -246,6 +246,13 @@ function populateModels() {
       // templating. If successful, updates its corresponding Document in MongoDB.
       if (fileStats.type == 'file' && fileStats.name.endsWith('.json')) {
         var objectPath = path.join(root, fileStats.name);
+        if (objectPath.includes("node-modules") ||
+            objectPath.startsWith("package.json") ||
+            objectPath.startsWith("package-lock.json")) {
+           console.info('Skipping non-Habitat JSON:', objectPath);
+           return;
+        }
+
         fs.readFile(objectPath, 'utf8', function (err, data) {
           if (err) {
             console.error('Could not read file:', objectPath);
