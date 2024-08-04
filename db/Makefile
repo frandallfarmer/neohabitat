@@ -9,24 +9,27 @@
 # Instructions:
 # make db            - Make MongoDB setup scripts
 
+GIT_BASE_DIR = $(shell git rev-parse --show-toplevel)
+
 # JSON static files to load 
-TELEPORTDB = ./db-teleports.json
+TELEPORTDB = $(GIT_BASE_DIR)/db/db-teleports.json
 
 # Dynamic in-world objects/data
-BOOKOFRECORDS = ./Text/text-bookofrecords.json
+BOOKOFRECORDS = $(GIT_BASE_DIR)/db/Text/text-bookofrecords.json
 
 DATABASE_OBJECTS = $(TELEPORTDB)
 
-# JSON object definitions supplied by the various components
-MONGODB_OBJECTS = $(shell find . -name '*.json') $(DATABASE_OBJECTS)
 
-DOWNTOWN_REGIONS = $(shell find new_Downtown/ -name '*.json')
+# JSON object definitions supplied by the various components
+MONGODB_OBJECTS = $(shell find $(GIT_BASE_DIR)/db -name '*.json' -not -name 'package.json' -not -name 'package-lock.json') $(DATABASE_OBJECTS)
+
+DOWNTOWN_REGIONS = $(shell find $(GIT_BASE_DIR)/db/new_Downtown/ -name '*.json' -not -name 'package.json' -not -name 'package-lock.json')
 
 # JSON objects for just the text documents
-TEXT_OBJECTS = $(shell find ./Text -name '*.json') $(BOOKOFRECORDS)
+TEXT_OBJECTS = $(shell find $(GIT_BASE_DIR)/Text -name '*.json') $(BOOKOFRECORDS)
 
 # The file that actually gets produced by "make db"
-DBINIT_SCRIPT = ./dbinit.sh
+DBINIT_SCRIPT = $(GIT_BASE_DIR)/db/dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1:27017"
 

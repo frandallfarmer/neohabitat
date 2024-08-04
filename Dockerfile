@@ -11,7 +11,7 @@ ADD ./tools/mongodb.repo /etc/yum.repos.d/mongodb.repo
 RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
 
 # Installs base build dependencies.
-RUN yum -y install \
+RUN dnf -y install \
   cronie \
   git \
   java-1.8.0-openjdk \
@@ -25,7 +25,9 @@ RUN yum -y install \
   vim \
   wget \
   which && \
-  yum clean all
+  dnf erase -qy mongodb-mongosh && \
+  dnf install -qy mongodb-mongosh-shared-openssl3 && \
+  dnf clean all
 
 # Installs Node dependencies.
 RUN npm install -g supervisor
