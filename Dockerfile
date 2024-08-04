@@ -11,8 +11,7 @@ ADD ./tools/mongodb.repo /etc/yum.repos.d/mongodb.repo
 RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
 
 # Installs base build dependencies.
-RUN sudo dnf install mongodb-mongosh-shared-openssl3 \
-  dnf -y install \
+RUN dnf -y install \
     cronie \
     git \
     java-1.8.0-openjdk \
@@ -20,7 +19,6 @@ RUN sudo dnf install mongodb-mongosh-shared-openssl3 \
     mariadb \
     maven \
     mongodb-org \
-    mongodb-mongosh-shared-openssl3 \
     net-tools \
     nsolid \
     procps \
