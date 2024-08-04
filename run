@@ -54,7 +54,6 @@ PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP:=9000}"
 #HABIPROXY_ELKO_PORT="${NEOHABITAT_HABIPROXY_ELKO_PORT:=9000}"
 
 BASE_ARGS=(
-
   org.elkoserver.server.context.ContextServerBoot
   trace_cont=DEBUG
   trace_comm=EVENT
@@ -80,11 +79,11 @@ JVM_ARGS=(
 )
 
 function start_bridge() {
-  supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js \
-    -l "${BRIDGE_HOST}:${BRIDGE_PORT}" \
-    -e "${BRIDGE_ELKO_HOST}" \
-    -m "${MONGO_HOST}/elko" \
-    -c "${DEFAULT_CONTEXT}" \
+  cd ${GIT_BASE_DIR}/bridge && npm run supervisor-bridge-docker -- \
+    -l ${BRIDGE_HOST}:${BRIDGE_PORT} \
+    -e ${BRIDGE_ELKO_HOST} \
+    -m ${MONGO_HOST}/elko \
+    -c ${DEFAULT_CONTEXT} \
     -t debug 2>&1 | tee bridge.log
 }
 
@@ -123,12 +122,12 @@ fi
 #Build/Rebuild the database if EITHER environment forces it OR the db doesn't exist yet.
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
   cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
-  retry 60 "make clean"
+  retry 60 "make fast"
   cd ..
 else
-  if [ $(mongo neohabitatmongo:27017 --eval 'db.getMongo().getDBNames().indexOf("elko")' --quiet) -ne "-1" ]; then
+  if [ $(mongosh neohabitatmongo:27017 --eval 'db.getMongo().getDBNames().indexOf("elko")' --quiet) -ne "-1" ]; then
     cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
-    retry 60 "make clean"
+    retry 60 "make fast"
     cd ..
   fi
 fi

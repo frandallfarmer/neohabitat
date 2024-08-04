@@ -1,1 +1,1 @@
-node Habitat2ElkoBridge.js
+npm run bridge

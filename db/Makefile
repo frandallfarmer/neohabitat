@@ -9,24 +9,27 @@
 # Instructions:
 # make db            - Make MongoDB setup scripts
 
+GIT_BASE_DIR = $(shell git rev-parse --show-toplevel)
+
 # JSON static files to load 
-TELEPORTDB = ./db-teleports.json
+TELEPORTDB = $(GIT_BASE_DIR)/db/db-teleports.json
 
 # Dynamic in-world objects/data
-BOOKOFRECORDS = ./Text/text-bookofrecords.json
+BOOKOFRECORDS = $(GIT_BASE_DIR)/db/Text/text-bookofrecords.json
 
 DATABASE_OBJECTS = $(TELEPORTDB)
 
-# JSON object definitions supplied by the various components
-MONGODB_OBJECTS = $(shell find . -name '*.json') $(DATABASE_OBJECTS)
 
-DOWNTOWN_REGIONS = $(shell find new_Downtown/ -name '*.json')
+# JSON object definitions supplied by the various components
+MONGODB_OBJECTS = $(shell find $(GIT_BASE_DIR)/db -name '*.json' -not -name 'package.json' -not -name 'package-lock.json') $(DATABASE_OBJECTS)
+
+DOWNTOWN_REGIONS = $(shell find $(GIT_BASE_DIR)/db/new_Downtown/ -name '*.json' -not -name 'package.json' -not -name 'package-lock.json')
 
 # JSON objects for just the text documents
-TEXT_OBJECTS = $(shell find ./Text -name '*.json') $(BOOKOFRECORDS)
+TEXT_OBJECTS = $(shell find $(GIT_BASE_DIR)/Text -name '*.json') $(BOOKOFRECORDS)
 
 # The file that actually gets produced by "make db"
-DBINIT_SCRIPT = ./dbinit.sh
+DBINIT_SCRIPT = $(GIT_BASE_DIR)/db/dbinit.sh
 
 NEOHABITAT_MONGO_HOST ?= "127.0.0.1:27017"
 
@@ -59,50 +62,50 @@ crawl:
 	
 book:
 	@echo "Regenerating Book of Records"
-	@node ../tools/generateBookOfRecords.js --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) book_of_records >>.errs 2>&1
+	@npm run generateBookOfRecords -- --book=$(BOOKOFRECORDS) --mongo=$(NEOHABITAT_MONGO_HOST)/elko
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) book_of_records >>.errs 2>&1
 
 text: book
 	@echo "Building Text documents"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) text >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) text >>.errs 2>&1
 
 SRC=all
 
 regions:
 	@echo "Building Regions, Avatars, Objects, and Text for" ${SRC}
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) ${SRC} >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) ${SRC} >>.errs 2>&1
 
 downtown:
 	@echo "Building Downtown Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) downtown_regions >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) downtown_regions >>.errs 2>&1
 	
 woods:
 	@echo "Building Woods Rd Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) woods >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) woods >>.errs 2>&1	
 
 streets:
 	@echo "Building the Suburb Streets Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) streets >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) streets >>.errs 2>&1	
 
 beach:
 	@echo "Building the Beach Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) beach >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) beach >>.errs 2>&1	
 
 back4t:
 	@echo "Building the Back Forty Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) back4t >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) back4t >>.errs 2>&1	
 
 hell:
 	@echo "Building Hell Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) hell >>.errs 2>&1	
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) hell >>.errs 2>&1	
 
 dnalsi:
 	@echo "Building Dnalsi Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) dnalsi >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) dnalsi >>.errs 2>&1
 
 users:
 	@echo "Building Users Only"
-	@node populateModels.js $(NEOHABITAT_MONGO_HOST) users >>.errs 2>&1
+	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) users >>.errs 2>&1
 
 teleports:
 	@echo "Building Teleport Directory"
@@ -113,24 +116,24 @@ teleports:
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $(TELEPORTDB) >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
+	@cat $(DBINIT_SCRIPT) | mongosh --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
 	@rm -f $(TELEPORTDB)
 		
 version:
 	@echo "Building Class Source for NeoHabitat.java"	
-	@node convertClientDataToJava.js
+	@npm convertClientDataToJava
 
 %.o: %.json
 	@echo "Updating" $*.json "in the database"
 	@cp dbinitpre.js $(DBINIT_SCRIPT)
 	@echo "eupdate(" >> $(DBINIT_SCRIPT); cat $*.json >> $(DBINIT_SCRIPT); echo ")" >>$(DBINIT_SCRIPT)
 	@cat dbinitpost.js >> $(DBINIT_SCRIPT)
-	@cat $(DBINIT_SCRIPT) | mongo --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
+	@cat $(DBINIT_SCRIPT) | mongosh --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
 
 nuke:
 	@echo "Nuking database"
 	@rm -f  $(DATABASE_OBJECTS) .errs	
-	@echo 'db.odb.remove({});' | mongo --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
+	@echo 'db.odb.remove({});' | mongosh --host $(NEOHABITAT_MONGO_HOST) elko --verbose --shell mongohelper.js >> .errs 2>&1
 
 deletables:
 	$(foreach F,$(MONGODB_OBJECTS), if grep -q "deletable" $(F); then grep -v "deletable" <$(F) > tmp; mv tmp $(F); fi;)
