@@ -24,6 +24,8 @@ RUN dnf -y install \
     procps \
     vim \
     wget && \
+  rpm -e --nodeps mongodb-mongosh && \
+  dnf install -y mongodb-mongosh-shared-openssl3 && \
   dnf clean all
 
 # Installs Node dependencies.

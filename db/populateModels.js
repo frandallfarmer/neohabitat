@@ -246,10 +246,11 @@ function populateModels() {
       // templating. If successful, updates its corresponding Document in MongoDB.
       if (fileStats.type == 'file' && fileStats.name.endsWith('.json')) {
         var objectPath = path.join(root, fileStats.name);
-        if (objectPath.includes("node-modules") ||
+        if (objectPath.includes("node_modules") ||
             objectPath.startsWith("package.json") ||
             objectPath.startsWith("package-lock.json")) {
            console.info('Skipping non-Habitat JSON:', objectPath);
+           next();
            return;
         }
 
