@@ -14,7 +14,7 @@
   },
   "scripts": {
     "populateModels": "node populateModels.js",
-    "generateBookOfRecords": "node ../tools/generateBookOfRecords.js"
+    "generateBookOfRecords": "node generateBookOfRecords.js"
   },
   "license": "MIT",
   "homepage": "https://frandallfarmer.github.io/neohabitat/"
