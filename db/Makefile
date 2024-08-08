@@ -9,7 +9,7 @@
 # Instructions:
 # make db            - Make MongoDB setup scripts
 
-GIT_BASE_DIR = $(shell git rev-parse --show-toplevel)
+GIT_BASE_DIR = ..
 
 # JSON static files to load 
 TELEPORTDB = $(GIT_BASE_DIR)/db/db-teleports.json
