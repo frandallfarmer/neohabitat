@@ -33,6 +33,8 @@ const 	Argv		= require('yargs')
 .option('book',	 { alias: 'b', default: Defaults.book,  describe: 'JSON output file for The Book of Records.'})
 .argv;
 
+Trace.level = Argv.trace;
+
 const HS$lifetime          		=   1;
 const HS$max_lifetime      		=   2;
 const HS$deaths            		=   3;
