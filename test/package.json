@@ -1,0 +1,12 @@
+{
+  "name": "Telko",
+  "version": "0.1.0",
+  "description": "Node connection test scripts for NeoHabitat",
+  "dependencies": {
+    "winston": "^2.3.0",
+    "yargs": "^17.7.2"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/frandallfarmer/neohabitat/tree/master/test",
+  "homepage": "https://frandallfarmer.github.io/neohabitat/"
+}
