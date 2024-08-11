@@ -11,7 +11,7 @@ RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
 RUN dnf -y install \
     cronie \
     git \
-    java-1.8.0-openjdk \
+    java-21-openjdk \
     make \
     maven \
     nc \
