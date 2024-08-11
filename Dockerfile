@@ -14,6 +14,7 @@ RUN dnf -y install \
     java-1.8.0-openjdk \
     make \
     maven \
+    nc \
     net-tools \
     nsolid \
     procps \
