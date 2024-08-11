@@ -8,5 +8,8 @@
   },
   "license": "MIT",
   "repository": "https://github.com/frandallfarmer/neohabitat/tree/master/test",
-  "homepage": "https://frandallfarmer.github.io/neohabitat/"
+  "homepage": "https://frandallfarmer.github.io/neohabitat/",
+  "scripts": {
+    "telko": "node Telko.js"
+  }
 }

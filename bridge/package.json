@@ -5,7 +5,7 @@
   "dependencies": {
     "backoff": "^2.5.0",
     "express": "^4.16.2",
-    "mongodb": "^3.1.13",
+    "mongodb": "^6.8",
     "serve-favicon": "latest",
     "server-send-events": "0.0.6",
     "walk": "^2.3.9",

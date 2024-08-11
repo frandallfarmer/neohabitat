@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Recreates a Neohabitat developer environment.
+
+set -euo pipefail
+
+function usage() {
+  echo "Usage: ./$(basename $0) [-b] [-f]"
+  echo "Description: Recreates a Neohabitat developer environment."
+  echo "Options:"
+  echo "  -b: Rebuilds all Docker containers upon recreation"
+  echo "  -f: Forces rebuild (does not ask for permission)"
+  exit 1
+}
+
+function yes_or_no {
+  while true; do
+    read -p "$* [y/n]: " yn
+    case $yn in
+      [Yy]*)
+        return 0
+        ;;  
+      [Nn]*)
+        echo "OK, bailing out."
+        return 1
+        ;;
+    esac
+  done
+}
+
+should_build=false
+should_force=false
+
+while getopts ':bfh' opt; do
+  case "$opt" in
+    b)
+      should_build=true
+      ;;
+    f)
+      should_force=true
+      ;;
+    ?|h)
+      usage
+      ;;
+  esac
+done
+
+if [ "${should_force}" == false ]; then
+  echo "! WARNING: this script will blow away your docker-compose environment and all databases."
+  yes_or_no "Is this OK?"
+fi
+
+echo " - Deleting all database data..."
+
+rm -rf data/mariadb
+rm -rf data/mongodb
+mkdir -p data/mariadb
+mkdir -p data/mongodb
+
+echo " - Deleting all Docker Compose-created containers..."
+
+docker compose down
+docker compose rm -f
+
+if [ "${should_build}" == true ]; then
+  echo " - Delegating control to docker-compose up --build..."
+  exec docker compose up --build
+else
+  echo " - Delegating control to docker-compose up..."
+  exec docker compose up
+fi
+
+

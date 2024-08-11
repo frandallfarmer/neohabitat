@@ -72,8 +72,9 @@ var MongoDatabase = process.env.PUSH_SERVER_MONGO_DB || 'elko';
 var mongoDb;
 
 const MongoClient = require('mongodb').MongoClient;
-MongoClient.connect(MongoURL, (err, client) => {
-  if (err) throw err;
+
+const startPushserver = async () => {
+  const client = await MongoClient.connect(MongoURL);
   mongoDb = client.db(MongoDatabase);
 
   log.info('Connected to MongoDB %s/%s', MongoURL, MongoDatabase);
@@ -83,11 +84,11 @@ MongoClient.connect(MongoURL, (err, client) => {
    */
   var HabiproxyServer = require('../habiproxy/proxy');
   var habiproxy = new HabiproxyServer(
-    mongoDb,
-    process.env.HABIPROXY_LISTEN_HOST || '0.0.0.0',
-    process.env.HABIPROXY_LISTEN_PORT || '2018',
-    process.env.HABIPROXY_ELKO_HOST || 'neohabitat',
-    process.env.HABIPROXY_ELKO_PORT || '9000');
+      mongoDb,
+      process.env.HABIPROXY_LISTEN_HOST || '0.0.0.0',
+      process.env.HABIPROXY_LISTEN_PORT || '2018',
+      process.env.HABIPROXY_ELKO_HOST || 'neohabitat',
+      process.env.HABIPROXY_ELKO_PORT || '9000');
   habiproxy.start();
 
   // Establishes the PushServer's web application.
@@ -149,8 +150,8 @@ MongoClient.connect(MongoURL, (err, client) => {
   function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
     log.debug('HTTP server listening on ' + bind);
   }
 
@@ -161,4 +162,9 @@ MongoClient.connect(MongoURL, (err, client) => {
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
-});
+};
+
+
+(async function main() {
+  await startPushserver();
+}());

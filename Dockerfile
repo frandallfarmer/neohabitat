@@ -4,11 +4,8 @@
 
 FROM quay.io/centos/centos:stream9
 
-# Installs MongoDB Yum repository.
-ADD ./tools/mongodb.repo /etc/yum.repos.d/mongodb.repo
-
 # Get a recent version of nodejs
-RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
 
 # Installs base build dependencies.
 RUN dnf -y install \
@@ -16,16 +13,12 @@ RUN dnf -y install \
     git \
     java-1.8.0-openjdk \
     make \
-    mariadb \
     maven \
-    mongodb-org \
     net-tools \
     nsolid \
     procps \
     vim \
     wget && \
-  rpm -e --nodeps mongodb-mongosh && \
-  dnf install -y mongodb-mongosh-shared-openssl3 && \
   dnf clean all
 
 # Installs Node dependencies.
@@ -51,6 +44,9 @@ WORKDIR /neohabitat/habibots
 RUN npm install
 
 WORKDIR /neohabitat/pushserver
+RUN npm install
+
+WORKDIR /neohabitat/test
 RUN npm install
 
 WORKDIR /neohabitat

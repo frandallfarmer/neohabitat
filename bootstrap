@@ -126,5 +126,8 @@ npm install
 cd "${GIT_BASE_DIR}/habibots"
 npm install
 
+cd "${GIT_BASE_DIR}/test"
+npm install
+
 echo " * Bootstrapping complete! Run the following command to bring up all Neohabitat services for the first time..."
 echo " $ NEOHABITAT_SHOULD_UPDATE_SCHEMA=true docker compose up"
