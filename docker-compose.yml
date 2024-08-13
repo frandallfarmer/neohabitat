@@ -27,8 +27,6 @@ services:
     image: mongodb/mongodb-community-server:latest
     ports:
       - "27017:27017"
-    volumes:
-      - ./data/mongodb:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.stats()"]
       interval: 30s
