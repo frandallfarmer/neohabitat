@@ -113,7 +113,7 @@ fi
 if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
   echo " - Enabling JMX debugging for Neohabitat..."
   JVM_ARGS+=(
-    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005"
+    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
   )
 fi
 

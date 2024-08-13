@@ -215,6 +215,7 @@ const addDefaultTokens = async (db, userRef, fullName) => {
 
 const readUserAndClose = async (db, userRef, client, dbclient) => {
     const user = await findOne(db, {ref: userRef});
+    client.user = user;
     dbclient.close();
 }
 

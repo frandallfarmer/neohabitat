@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.github.ssalevan</groupId>
             <artifactId>Elko</artifactId>
-            <version>6e9afd8</version>
+            <version>7ff0284</version>
         </dependency>
     </dependencies>
 
