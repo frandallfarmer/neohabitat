@@ -1,4 +1,3 @@
-version: '2'
 networks:
   neohabitat:
     external: false
@@ -11,30 +10,45 @@ services:
       - MYSQL_DATABASE=qlink
       - MYSQL_USER=qlink
       - MYSQL_PASSWORD=qlink
+      - MYSQL_ROOT_HOST=%
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'SELECT version();'| MYSQL_PWD='qlink' mariadb -u qlink"]
+      interval: 30s
+      timeout: 30s
+      retries: 30
     volumes:
       - ./data/mariadb:/var/lib/mysql
     networks:
       - neohabitat
+
   neohabitatmongo:
-    image: mongo:4.0
-    command: "--smallfiles"
-    volumes:
-      - ./data/mongodb:/data/db
+    image: mongodb/mongodb-community-server:latest
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.stats()"]
+      interval: 30s
+      timeout: 30s
+      retries: 30
     networks:
       - neohabitat
+
   neohabitat:
     build: .
+    volumes:
+      - .:/neohabitat
     # make sure to build this with `docker compose build` when doing development to compile your local changes.
     image: frandallfarmer/neohabitat
-    privileged: true
     environment:
       - NEOHABITAT_BRIDGE_ELKO_HOST=neohabitat:2018
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
-      - NEOHABITAT_SHOULD_ENABLE_DEBUGGER=true
+      - NEOHABITAT_SHOULD_ENABLE_DEBUGGER
       - NEOHABITAT_SHOULD_RUN_BRIDGE=true
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
-      - NEOHABITAT_SHOULD_UPDATE_SCHEMA=false
+      - NEOHABITAT_SHOULD_UPDATE_SCHEMA
       - NEOHABITAT_SERVER_HOST=neohabitat
       - NEOHABITAT_SERVER_PORT=1337
       - HABIPROXY_ELKO_HOST=neohabitat
@@ -42,17 +56,24 @@ services:
       - NODE_ENV=development
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z neohabitat 1337"]
+      interval: 30s
+      timeout: 30s
+      retries: 30
     ports:
-          - "1337:1337"
-          - "1701:1701"
-          - "1987:1987"
+      - "1337:1337"
+      - "1701:1701"
+      - "1987:1987"
+      - "5005:5005"
     depends_on:
-      - neohabitatmongo
+      neohabitatmongo:
+        condition: service_healthy
     networks:
       - neohabitat
+
   qlink:
     image: philcollins/qlink
-#    build: ../qlink/
     environment:
       - QLINK_DB_HOST=neohabitatmariadb
       - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink
@@ -64,14 +85,15 @@ services:
     ports:
       - "1986:1986"
     depends_on:
-      - neohabitat
-      - neohabitatmariadb
+      neohabitatmariadb:
+        condition: service_healthy
     networks:
       - neohabitat
     ulimits:
       nofile:
         soft: 10000
         hard: 10000
+
   bots:
     build:
       context: ./habibots
@@ -79,7 +101,8 @@ services:
       - HABIBOTS_HOST=neohabitat
       - HABIBOTS_PORT=1337
     depends_on:
-      - neohabitat
+      neohabitat:
+        condition: service_healthy
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']

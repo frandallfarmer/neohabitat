@@ -9,7 +9,7 @@
  * By: Randy Farmer April 2017
  */
 
-const	File		= require('fs');
+const	File		= require('fs').promises;
 const	Trace 		= require('winston');
 const	MongoClient	= require('mongodb').MongoClient;
 const	Assert 		= require('assert');
@@ -32,6 +32,8 @@ const 	Argv		= require('yargs')
 .option('mongo', { alias: 'm', default: Defaults.mongo, describe: 'Mongodb server URL'})
 .option('book',	 { alias: 'b', default: Defaults.book,  describe: 'JSON output file for The Book of Records.'})
 .argv;
+
+Trace.level = Argv.trace;
 
 const HS$lifetime          		=   1;
 const HS$max_lifetime      		=   2;
@@ -191,39 +193,39 @@ function generateRecords(userRecords) {
 
 
 
-function processUserStats(users)  {
+const processUserStats = async (users) => {
 	var userRecords = {};
-	for (i in users) {
+	users.forEach((user) => {
 		var user = users[i];
 		var name = user.name;
-		var stats= user.mods[0].stats;
+		if (user.mods.length === 0) {
+			return;
+		}
+		var stats = user.mods[0].stats;
 		if (undefined !== stats) {
 			userRecords[name] = stats;
 		}
-	}
+	});
 	var bookofrecords = {
-			ref: "text-bookofrecords",
-			pages: generateRecords(userRecords)
+		ref: "text-bookofrecords",
+		pages: generateRecords(userRecords),
 	}
-	File.writeFile(Argv.book, JSON.stringify(bookofrecords, null, 4), function(err) { } );
-
+	await File.writeFile(Argv.book, JSON.stringify(bookofrecords, null, 4));
 }
 
 const dbName = 'elko';
 
-MongoClient.connect("mongodb://" + Argv.mongo, function(err, client) {
-	Assert.equal(null, err);
+const generateBookOfRecords = async () => {
+	const client = await MongoClient.connect("mongodb://" + Argv.mongo);
 	let db = client.db(dbName);
-	var collection = db.collection('odb');
-	collection.find({"ref": {$regex: "user-*"}}).toArray(function(err, users) {
-		if (undefined !== users) {
-			processUserStats(users);
-		}
-		client.close();
-	});
-});
+	const users = await db.collection('odb').find({"ref": {$regex: "user-*"}});
+	const usersArray = await users.toArray();
+	if (undefined !== users) {
+		await processUserStats(users);
+	}
+	await client.close();
+}
 
-
-
-
-
+(async function main() {
+  await generateBookOfRecords();
+}());

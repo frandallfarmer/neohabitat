@@ -2,29 +2,25 @@
 #
 # VERSION              0.1.0
 
-FROM quay.io/centos/centos:stream8
-
-# Installs MongoDB Yum repository.
-ADD https://goo.gl/CxNbGr /etc/yum.repos.d/mongodb-org.3.4.repo
+FROM quay.io/centos/centos:stream9
 
 # Get a recent version of nodejs
-RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
 
 # Installs base build dependencies.
-RUN yum -y install \
-  cronie \
-  git \
-# htop \
-  java-1.8.0-openjdk \
-  make \
-  mariadb \
-  vim \
-  wget \
-  which \
-  maven \
-  mongodb-org \
-  nsolid  && \
-  yum clean all
+RUN dnf -y install \
+    cronie \
+    git \
+    java-21-openjdk \
+    make \
+    maven \
+    nc \
+    net-tools \
+    nsolid \
+    procps \
+    vim \
+    wget && \
+  dnf clean all
 
 # Installs Node dependencies.
 RUN npm install -g supervisor
@@ -41,10 +37,18 @@ RUN printf "*/5 * * * * root /bin/bash -c 'cd /neohabitat/db && NEOHABITAT_MONGO
 # Builds the Neohabitat project.
 WORKDIR /neohabitat
 RUN rm -rf lib && mvn clean package
-RUN npm ci
+
+WORKDIR /neohabitat/bridge
+RUN npm install
+
+WORKDIR /neohabitat/habibots
+RUN npm install
 
 WORKDIR /neohabitat/pushserver
-RUN npm ci
+RUN npm install
+
+WORKDIR /neohabitat/test
+RUN npm install
 
 WORKDIR /neohabitat
 ENTRYPOINT /neohabitat/run

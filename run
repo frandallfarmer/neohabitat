@@ -1,7 +1,7 @@
 #!/bin/bash
 # Starts a Neoclassical Habitat server and Habitat protocol bridge.
 
-set -o pipefail
+set -exo pipefail
 
 trap 'kill %1; kill %2' SIGINT
 
@@ -24,9 +24,7 @@ function retry() {
   done
 }
 
-# GIT_BASE_DIR=$(git rev-parse --show-toplevel)
 GIT_BASE_DIR="/neohabitat"
-echo "GIT_BASE_DIR == $GIT_BASE_DIR"
 VERSION="0.1.0-SNAPSHOT"
 
 # Sets default config values if there are no environment-level overrides.
@@ -40,7 +38,7 @@ SCHEMA_DIR="${NEOHABITAT_SCHEMA_DIR:=db}"
 SERVER_HOST="${NEOHABITAT_SERVER_HOST:=0.0.0.0}"
 SERVER_NAME="${NEOHABITAT_SERVER_NAME:=neohabitat}"
 SERVER_BIND="${NEOHABITAT_SERVER_HOST:=0.0.0.0}"
-DEBUGGER_PORT="${NEOHABITAT_DEBUGGER_PORT:=1898}"
+DEBUGGER_PORT="${NEOHABITAT_DEBUGGER_PORT:=5005}"
 SHUTDOWN_PASSWORD="${NEOHABITAT_SHUTDOWN_PASSWORD:=figleaf}"
 SHOULD_BACKGROUND_BRIDGE="${NEOHABITAT_SHOULD_BACKGROUND_BRIDGE:=true}"
 SHOULD_ENABLE_DEBUGGER="${NEOHABITAT_SHOULD_ENABLE_DEBUGGER:=false}"
@@ -54,7 +52,6 @@ PORT_RESV_TCP="${NEOHABITAT_PORT_RESV_TCP:=9000}"
 #HABIPROXY_ELKO_PORT="${NEOHABITAT_HABIPROXY_ELKO_PORT:=9000}"
 
 BASE_ARGS=(
-
   org.elkoserver.server.context.ContextServerBoot
   trace_cont=DEBUG
   trace_comm=EVENT
@@ -80,11 +77,11 @@ JVM_ARGS=(
 )
 
 function start_bridge() {
-  supervisor -w bridge -- ${GIT_BASE_DIR}/bridge/Habitat2ElkoBridge.js \
-    -l "${BRIDGE_HOST}:${BRIDGE_PORT}" \
-    -e "${BRIDGE_ELKO_HOST}" \
-    -m "${MONGO_HOST}/elko" \
-    -c "${DEFAULT_CONTEXT}" \
+  cd ${GIT_BASE_DIR}/bridge && npm run supervisor-bridge-docker -- \
+    -l ${BRIDGE_HOST}:${BRIDGE_PORT} \
+    -e ${BRIDGE_ELKO_HOST} \
+    -m ${MONGO_HOST}/elko \
+    -c ${DEFAULT_CONTEXT} \
     -t debug 2>&1 | tee bridge.log
 }
 
@@ -116,22 +113,21 @@ fi
 if [ "${SHOULD_ENABLE_DEBUGGER}" == true ]; then
   echo " - Enabling JMX debugging for Neohabitat..."
   JVM_ARGS+=(
-    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUGGER_PORT}"
+    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
   )
 fi
 
 #Build/Rebuild the database if EITHER environment forces it OR the db doesn't exist yet.
+cd "${GIT_BASE_DIR}/${SCHEMA_DIR}"
 if [ "${SHOULD_UPDATE_SCHEMA}" == true ]; then
-  cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
-  retry 60 "make clean"
-  cd ..
+  retry 60 "make fast"
 else
-  if [ $(mongo neohabitatmongo:27017 --eval 'db.getMongo().getDBNames().indexOf("elko")' --quiet) -ne "-1" ]; then
-    cd ${GIT_BASE_DIR}/${SCHEMA_DIR}
-    retry 60 "make clean"
-    cd ..
-  fi
+  npm run dbUtils -- "${NEOHABITAT_MONGO_HOST}" testElko || {
+    echo " - No 'elko' database found, so applying all Neohabitat schema..."
+    retry 60 "make fast"
+  }
 fi
+cd "${GIT_BASE_DIR}"
 
 # Starts the Habitat-to-Elko bridge process if requested.
 if [ "${SHOULD_RUN_BRIDGE}" == true ]; then

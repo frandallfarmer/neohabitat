@@ -84,8 +84,9 @@ function rnd(max) {
     return Math.floor(Math.random() * max)
 }
 
-function findOne(db, query, callback) {
-    db.collection('odb').findOne(query, callback);
+const findOne = async (db, query) => {
+    const result = await db.collection('odb').findOne(query);
+    return result;
 }
 
 function userHasTurf(user) {
@@ -96,94 +97,71 @@ function userHasTurf(user) {
     );
 }
 
-function ensureTurfAssigned(db, userRef, callback) {
-    db.collection('odb').findOne({
+const ensureTurfAssigned = async (db, userRef) => {
+    const user = await db.collection('odb').findOne({
         "ref": userRef
-    }, function(err, user) {
-        Assert.equal(err, null);
-        Assert.notEqual(user, null);
-
-        // Don't assign a turf Region -to a User if one is already assigned.
-        if (userHasTurf(user)) {
-            Trace.debug("User %s already has a turf Region assigned: %s",
-                userRef, user.mods[0].turf);
-            callback();
-            return;
-        }
-
-        // Searches for an available turf Region and assigns it to the User if found.
-        db.collection('odb').findOne({
-            "mods.0.type": "Region",
-            "mods.0.is_turf": true,
-            $or: [
-                { "mods.0.resident": { $exists: false } },
-                { "mods.0.resident": "" }
-            ]
-        }, function(err, region) {
-            Assert.equal(err, null);
-            if (region === null) {
-                Trace.error("Unable to find an available turf Region for User: %j", user);
-                callback();
-                return;
-            }
-            Trace.debug("Assigning turf Region %s to Avatar %s", region.ref, user.ref);
-
-            // Assigns the available region as the given user's turf.
-            user.mods[0]['turf'] = region.ref;
-            region.mods[0]['resident'] = user.ref;
-
-            // Updates the User's Elko document with the turf assignment.
-            db.collection('odb').updateOne(
-                {ref: region.ref},
-                { $set: region },
-                {upsert: true},
-                function(err, result) {
-                    Assert.equal(err, null);
-                    db.collection('odb').updateOne(
-                        {ref: user.ref},
-                        { $set: user },
-                        {upsert: true},
-                        function(err, result) {
-                            Assert.equal(err, null);
-                            callback();
-                        });
-                });
-        });
     });
+
+    // Don't assign a turf Region -to a User if one is already assigned.
+    if (userHasTurf(user)) {
+        Trace.debug("User %s already has a turf Region assigned: %s",
+            userRef, user.mods[0].turf);
+        return;
+    }
+
+    // Searches for an available turf Region and assigns it to the User if found.
+    const region = await db.collection('odb').findOne({
+        "mods.0.type": "Region",
+        "mods.0.is_turf": true,
+        $or: [
+            { "mods.0.resident": { $exists: false } },
+            { "mods.0.resident": "" }
+        ]
+    })
+    if (region === null) {
+        Trace.error("Unable to find an available turf Region for User: %j", user);
+        return;
+    }
+    Trace.debug("Assigning turf Region %s to Avatar %s", region.ref, user.ref);
+
+    // Assigns the available region as the given user's turf.
+    user.mods[0]['turf'] = region.ref;
+    region.mods[0]['resident'] = user.ref;
+
+    // Updates the User's Elko document with the turf assignment.
+    await db.collection('odb').updateOne(
+        {ref: region.ref},
+        { $set: region },
+        {upsert: true}
+    );
+    await db.collection('odb').updateOne(
+        {ref: user.ref},
+        { $set: user },
+        {upsert: true}
+    );
 }
 
-function setFirstConnection(db, userRef) {
-    db.collection('odb').findOne({
+const setFirstConnection = async (db, userRef) => {
+    const user = await db.collection('odb').findOne({
         "ref": userRef
-    }, function(err, user) {
-        user.mods[0].firstConnection = true;
-//      user.mods[0].amAGhost = true;               // TODO Once ghosts are working well, return the ARRIVE AS GHOST feature! FRF
-        db.collection('odb').updateOne(
-                {ref: user.ref},
-                { $set: user },
-                {upsert: true},
-                function(err, result) {
-                    Assert.equal(err, null);
-                    if (result === null)
-                        Trace.debug("Unable to setFirstConnection  for " + userRef);
-                });
     });
+    user.mods[0].firstConnection = true;
+    await db.collection('odb').updateOne(
+        {ref: user.ref},
+        { $set: user },
+        {upsert: true});
 }
 
-function insertUser(db, user, callback) {
-    db.collection('odb').updateOne(
-            {ref: user.ref},
-            { $set: user },
-            {upsert: true},
-            function(err, result) {
-                Assert.equal(err, null);
-                callback();
-            });
+const insertUser = async (db, user, callback) => {
+    await db.collection('odb').updateOne(
+        {ref: user.ref},
+        { $set: user },
+        {upsert: true});
 }
 
-function addDefaultHead(db, userRef, fullName) {
+const addDefaultHead = async (db, userRef, fullName) => {
     headRef = "item-head" + Math.random();
-    db.collection('odb').insertOne({
+    await db.collection('odb').insertOne({
         "ref": headRef,
         "type": "item",
         "name": "Default head for " + fullName,
@@ -196,18 +174,12 @@ function addDefaultHead(db, userRef, fullName) {
                 "orientation": rnd(3) * 8
             }
             ]
-    }, function(err, result) {
-        Assert.equal(err, null);
-        if (result === null) {
-            Trace.debug("Unable to add " + headRef + " for " + userRef);
-        }
-    }
-    )
+    });
 }
 
-function addPaperPrime(db, userRef, fullName) {
+const addPaperPrime = async (db, userRef, fullName) => {
     paperRef = "item-paper" + Math.random();
-    db.collection('odb').insertOne({
+    await db.collection('odb').insertOne({
         "ref": paperRef,
         "type": "item",
         "name": "Paper for " + fullName,
@@ -219,18 +191,12 @@ function addPaperPrime(db, userRef, fullName) {
                 "orientation": 16
             }
             ]
-    }, function(err, result) {
-        Assert.equal(err, null);
-        if (result === null) {
-            Trace.debug("Unable to add " + paperRef + " for " + userRef);
-        }
-    }
-    )
+    });
 }
 
-function addDefaultTokens(db, userRef, fullName) {
+const addDefaultTokens = async (db, userRef, fullName) => {
     tokenRef = "item-tokens" + Math.random();
-    db.collection('odb').insertOne({
+    await db.collection('odb').insertOne({
         "ref": tokenRef,
         "type": "item",
         "name": "Money for " + fullName,
@@ -243,123 +209,98 @@ function addDefaultTokens(db, userRef, fullName) {
                 "denom_hi": 4
             }
             ]
-    }, function(err, result) {
-        Assert.equal(err, null);
-        if (result === null) {
-            Trace.debug("Unable to add " + tokenRef + " for " + userRef);
-        }
-    }
-    )
-}
-
-
-function readUserAndClose(db, userRef, client, dbclient) {
-    findOne(db, {ref: userRef}, function(err, user) {
-            client.user = user;
-            dbclient.close();
     });
 }
 
-function confirmOrCreateUser(fullName, client) {
+
+const readUserAndClose = async (db, userRef, client, dbclient) => {
+    const user = await findOne(db, {ref: userRef});
+    client.user = user;
+    dbclient.close();
+}
+
+const confirmOrCreateUser = async (fullName, client) => {
     var userRef = client.userRef;
     if (client.firstConnection) {
         userRef = "user-" + fullName.toLowerCase().replace(/ /g,"_");
         const dbName = 'elko';
-	MongoClient.connect("mongodb://" + Argv.mongo, function(err, dbclient) {
-  	    const db = dbclient.db(dbName);
-            Assert.equal(null, err);
-            findOne(db, {ref: userRef}, function(err, result) {
-                if (result === null || Argv.force) {
-                    var newUser = {
-                            "type": "user",
-                            "ref": userRef,
-                            "name": fullName,
-                            "mods": [
-                                {
-                                    "type": "Avatar",
-                                    "firstConnection": true,
-                                    "amAGhost": false, // TODO return to true after bugs with ghosts are fixed. FRF
-                                    "x": 10,
-                                    "y": 128 + rnd(32),
-                                    "bodyType": "male",
-                                    "bankBalance": 50000,
-                                    "custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
-                                    "nitty_bits": 0
-                                }
-                                ]
-                    };
-                    insertUser(db, newUser, function() {
-                        addDefaultHead(db, userRef, fullName);
-                        addPaperPrime(db, userRef, fullName);
-                        addDefaultTokens(db, userRef, fullName);
-                        ensureTurfAssigned(db, userRef, function() {
-                            readUserAndClose(db, userRef, client, dbclient);
-                        });
-                    });
-                } else {
-                    setFirstConnection(db, userRef);
-                    ensureTurfAssigned(db, userRef, function() {
-                        readUserAndClose(db, userRef, client, dbclient);
-                    });
-                }
-            });
-        });
+        const dbclient = await MongoClient.connect("mongodb://" + Argv.mongo);
+        const db = dbclient.db(dbName);
+        const result = await findOne(db, {ref: userRef})
+        if (result === null || Argv.force) {
+            var newUser = {
+                    "type": "user",
+                    "ref": userRef,
+                    "name": fullName,
+                    "mods": [
+                        {
+                            "type": "Avatar",
+                            "firstConnection": true,
+                            "amAGhost": false, // TODO return to true after bugs with ghosts are fixed. FRF
+                            "x": 10,
+                            "y": 128 + rnd(32),
+                            "bodyType": "male",
+                            "bankBalance": 50000,
+                            "custom": [rnd(15) + rnd(15)*16, rnd(15) + rnd(15)*16],
+                            "nitty_bits": 0,
+                        },
+                    ]
+            };
+            await insertUser(db, newUser);
+            await addDefaultHead(db, userRef, fullName);
+            await addPaperPrime(db, userRef, fullName);
+            await addDefaultTokens(db, userRef, fullName);
+            await ensureTurfAssigned(db, userRef)
+            await readUserAndClose(db, userRef, client, dbclient);
+        } else {
+            await setFirstConnection(db, userRef);
+            await ensureTurfAssigned(db, userRef);
+            await readUserAndClose(db, userRef, client, dbclient);
+        }
     }
     return userRef;
 }
 
-function enterContextAfterRegionChecks(client, server, context) {			// Deal with first connection into a nearly full region.
+const enterContextAfterRegionChecks = async (client, server, context) => {			// Deal with first connection into a nearly full region.
     var userRef = client.userRef;
-    var modified= false;
+    var modified = false;
 
     const dbName = 'elko';
-    MongoClient.connect("mongodb://" + Argv.mongo, function(err, dbclient) {
+    const dbclient = await MongoClient.connect("mongodb://" + Argv.mongo);
  	const db = dbclient.db(dbName);
-    	Assert.equal(null, err);
-    	db.collection('odb').findOne({
-    		"ref": userRef
-    	}, function(err, user) {
-    		Assert.equal(err, null);
-    		Assert.notEqual(user, null);
-
-    		if (user.mods[0].amAGhost) {								// All ghosts always allowed (there is a limit, not tracked.)
-    			return enterContext(client, server, context);
-    		}
-
-    		//Check the region to see how full it is.
-    		db.collection('odb').findOne({
-    			"ref": context
-    		}, function(err, region) {
-    			Assert.equal(err, null);
-    			if (region === null) {
-    				Trace.error("Unable to find last Region %s for User: %s. Setting to Turf %s.", context, userRef, user.mods[0].turf);
-    				user.mods[0].amAGhost = true;
-    				context = user.mods[0].turf;
-    				modified = true;
-    			} else {
-    				if (region.mods[0].shutdown_size > 8000) {			// TODO Other tests go here, such as avatars, heads, and instances.
-    					Trace.error("Forcing %s to ghost. Region heap at %d.", userRef, region.mods[0].shutdown_size)
-    					user.mods[0].amAGhost = true;
-    					modified = true;
-    				}
-    			}
-
-    			// Updates the User's Elko document with ghost status.
-    			if (modified) {
-    				db.collection('odb').updateOne(
-    						{ref: user.ref},
-    						{ $set: user },
-    						{upsert: true},
-    						function(err, result) {
-    							Assert.equal(err, null);
-    							enterContext(client, server, context);
-    						});
-    			} else {
-    				enterContext(client, server, context);
-    			}
-    		});
-        });
+    const user = await db.collection('odb').findOne({
+        "ref": userRef
     });
+
+    if (user.mods[0].amAGhost) {								// All ghosts always allowed (there is a limit, not tracked.)
+        return enterContext(client, server, context);
+    }
+
+    //Check the region to see how full it is.
+    const region = await db.collection('odb').findOne({
+        "ref": context
+    });
+    if (region === null) {
+        Trace.error("Unable to find last Region %s for User: %s. Setting to Turf %s.", context, userRef, user.mods[0].turf);
+        user.mods[0].amAGhost = true;
+        context = user.mods[0].turf;
+        modified = true;
+    } else {
+        if (region.mods[0].shutdown_size > 8000) {			// TODO Other tests go here, such as avatars, heads, and instances.
+            Trace.error("Forcing %s to ghost. Region heap at %d.", userRef, region.mods[0].shutdown_size)
+            user.mods[0].amAGhost = true;
+            modified = true;
+        }
+    }
+
+    // Updates the User's Elko document with ghost status.
+    if (modified) {
+        await db.collection('odb').updateOne(
+            {ref: user.ref},
+            { $set: user },
+            {upsert: true});
+    }
+    enterContext(client, server, context);
 }
 
 
@@ -422,7 +363,7 @@ function timeToXmit(bytes) {
 /*
  * Elko uses a fresh connection for every context/region change.
  */
-function createServerConnection(port, host, client, immediate, context) {
+const createServerConnection = async (port, host, client, immediate, context) => {
     var server = Net.connect({port: port, host:host}, function() {
         Trace.debug( "Connecting: " +
                 client.address().address +':'+ client.address().port +
@@ -812,7 +753,7 @@ function frameClientStream(client, server, data) {
  * @param server
  * @param data
  */
-function parseIncomingHabitatClientMessage(client, server, data) {
+const parseIncomingHabitatClientMessage = async (client, server, data) => {
     var send = data.toString().trim();
 
     // Handle new connections - determine the protocol/device type and setup environment
@@ -838,7 +779,7 @@ function parseIncomingHabitatClientMessage(client, server, data) {
                     client.rawWrite(Buffer.from(escape(msg)));
                 }
             };
-            client.userRef = confirmOrCreateUser(send.substring(0, colon), client);     // Make sure there's one in the NeoHabitat/Elko database.
+            client.userRef = await confirmOrCreateUser(send.substring(0, colon), client);     // Make sure there's one in the NeoHabitat/Elko database.
             Trace.debug(client.sessionName + " (Habitat Client) connected.");
         }
     }
@@ -855,7 +796,7 @@ function parseIncomingHabitatClientMessage(client, server, data) {
             if (o && o.op) {
                 if (o.op === "entercontext") {
                     Trace.debug(o.user + " is trying to enter region-context " + o.context);
-                    confirmOrCreateUser(o.user.substring("user-".length), client);
+                    await confirmOrCreateUser(o.user.substring("user-".length), client);
                 }
             }
         } catch (e) {

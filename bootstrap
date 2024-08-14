@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# Installs all development dependencies.
+
+GIT_BASE_DIR="$(git rev-parse --show-toplevel)"
+
+function ensure_mac_deps() {
+  echo " - Ensuring that Mac OS-style dependencies are installed (may ask for your root password)..."
+  type brew || {
+    echo " - Installing Brew (may ask for your sudo password)..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  }
+  type docker || {
+    echo " - Installing Docker via Brew..."
+    brew install docker docker-compose
+  }
+  type node || {
+    echo " - Installing node.js via Brew..."
+    brew install node
+  }
+  type mvn || {
+    echo " - Installing maven via Brew..."
+    brew install maven
+  }
+}
+
+function ensure_linux_deps_debian() {
+  echo " - Ensuring that Debian-style dependencies are installed (may ask for your sudo password)..."
+  sudo apt update -y
+  type docker || {
+    echo " - Installing Docker from official Docker repo..."
+    sudo apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common -y
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    sudo apt update -y
+    sudo apt-cache policy docker-ce
+    sudo apt install docker-ce -y
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -aG docker "${USER}"
+  }
+  type mvn || {
+    echo " - Installing Maven..."
+    sudo apt install maven -y
+  }
+  type node || {
+    echo " - Installing Node.js..."
+    sudo apt install nodejs -y
+  }
+  type npm || {
+    echo " - Installing NPM..."
+    sudo apt install npm -y
+  }
+}
+
+function ensure_linux_deps_redhat() {
+  echo " - Ensuring that Red Hat-style dependencies are installed (may ask for your sudo password)..."
+  docker_repo="fedora"
+  if [[ "${ID}" =~ (centos|rhel) ]]; then
+    echo " - Ensuring that EPEL is installed..."
+    docker_repo="rhel"
+    el_version=$(cat /etc/system-release-cpe | awk -F: '{ print $5 }' | grep -o ^[0-9]*)
+    if [ "${ID}" == "rhel" ]; then
+      sudo subscription-manager repos --enable "codeready-builder-for-rhel-${el_version}-$(arch)-rpms"
+      sudo dnf install -y "https://dl.fedoraproject.org/pub/epel/epel-release-latest-${el_version}.noarch.rpm"
+    else
+      sudo dnf config-manager --set-enabled crb
+      sudo dnf install -y \
+          "https://dl.fedoraproject.org/pub/epel/epel-release-latest-${el_version}.noarch.rpm" \
+          "https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-${el_version}.noarch.rpm"
+    fi
+  fi
+  type docker-compose || {
+    echo " - Installing Docker from official Docker repo..."
+    sudo dnf install dnf-plugins-core -y
+    sudo dnf config-manager --add-repo "https://download.docker.com/linux/${docker_repo}/docker-ce.repo"
+    sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -aG docker "${USER}"
+  }
+  type mvn || {
+    echo " - Installing Maven..."
+    sudo dnf install maven -y
+  }
+  type node || {
+    echo " - Installing Node.js..."
+    sudo dnf install nodejs -y
+  }
+}
+
+function ensure_linux_deps() {
+  source /etc/os-release
+  if [[ "${ID}" =~ (debian|ubuntu) ]]; then
+    ensure_linux_deps_debian
+  elif [[ "${ID}" =~ (rhel|fedora) ]]; then
+    ensure_linux_deps_redhat
+  else
+    echo " ! Unknown Linux distribution (${ID}); unable to preload dependencies."
+  fi
+}
+
+case "$(uname -sr)" in
+  Darwin*)
+    ensure_mac_deps
+    ;;
+  Linux*)
+    ensure_linux_deps
+    ;;
+  *)
+    echo " ! ERROR: You must run this script on either a Linux, WSL or Mac OS environment"
+    exit 1
+    ;;
+esac
+
+echo " - Ensuring that all Node.js dependencies are installed..."
+
+cd "${GIT_BASE_DIR}/bridge"
+npm install
+
+cd "${GIT_BASE_DIR}/db"
+npm install
+
+cd "${GIT_BASE_DIR}/pushserver"
+npm install
+
+cd "${GIT_BASE_DIR}/habibots"
+npm install
+
+cd "${GIT_BASE_DIR}/test"
+npm install
+
+echo " * Bootstrapping complete!"
+echo " * Run the following command to bring up all Neohabitat services for the first time..."
+echo " $ ./recreate -b"
+echo " * Subsequent runs of the Neohabitat services should be brought up with:"
+echo " $ docker compose up"

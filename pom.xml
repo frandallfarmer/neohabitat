@@ -41,12 +41,12 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver</artifactId>
-            <version>3.4.1</version>
+            <version>3.12.14</version>
         </dependency>
         <dependency>
-            <groupId>com.github.FUDCo</groupId>
+            <groupId>com.github.ssalevan</groupId>
             <artifactId>Elko</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>7ff0284</version>
         </dependency>
     </dependencies>
 
@@ -94,8 +94,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
             <plugin>
