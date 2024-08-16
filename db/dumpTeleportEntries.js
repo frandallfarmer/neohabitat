@@ -58,14 +58,20 @@ function templateConstantJoins(data) {
 }
 
 function templateHabitatObject(data) {
-  var templated = templateConstantJoins(data);
-  for (var replacementId in replacements) {
-    var replacement = replacements[replacementId];
-    var regex = replacement[0];
-    var replacementText = replacement[1];
-    templated = templated.replace(regex, replacementText);
+  try {
+    // try parsing the string - if it's already valid JSON, there's no need to run the preprocessing logic
+    JSON.parse(data)
+    return data
+  } catch (e) {
+    var templated = templateConstantJoins(data);
+    for (var replacementId in replacements) {
+      var replacement = replacements[replacementId];
+      var regex = replacement[0];
+      var replacementText = replacement[1];
+      templated = templated.replace(regex, replacementText);
+    }
+    return templateStringJoins(templated);
   }
-  return templateStringJoins(templated);
 }
 
 /** dump teleport entries found in a json object from STDIN */

@@ -146,14 +146,20 @@ function templateConstantJoins(data) {
 }
 
 function templateHabitatObject(data) {
-  let templated = templateConstantJoins(data);
-  for (let replacementId in replacements) {
-    let replacement = replacements[replacementId];
-    let regex = replacement[0];
-    let replacementText = replacement[1];
-    templated = templated.replace(regex, replacementText);
+  try {
+    // try parsing the string - if it's already valid JSON, there's no need to run the preprocessing logic
+    JSON.parse(data)
+    return data
+  } catch (e) {
+    let templated = templateConstantJoins(data);
+    for (let replacementId in replacements) {
+      let replacement = replacements[replacementId];
+      let regex = replacement[0];
+      let replacementText = replacement[1];
+      templated = templated.replace(regex, replacementText);
+    }
+    return templateStringJoins(templated);
   }
-  return templateStringJoins(templated);
 }
 
 const runAllUpdates = async (promisesArray) => {
