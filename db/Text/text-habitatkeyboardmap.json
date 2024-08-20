@@ -1,0 +1,6 @@
+{
+	"ref": "text-habitatkeyboardmap",
+	"pages": [ 
+		"          Habitat Keyboard Map                                                   ~ 1 2 3 4 5 6 7 8 9 0 + - \u001c    normal      q w e r t y u i o p \u001b * |   keys         a s d f g h j k l : ; =                  z x c v b n m , . /   }                                                   ~ ! \" # $ % & ' ( ) 0 + - \u001d    shifted     Q W E R T Y U I O P @ * |   keys         A S D F G H J K L [ ] =                  Z X C V B N M < > ?   | ~                                                  ~ . . . . . . . . . . \u0019 \u001b \u001e    control     \u0015 \u0016 \u0017 \u0018 \t \u001f \u0011 \u0012 . . . . ^   keys         \r \u000e . . \f \u000b \u0014 \u0013 . . . .                  \u0010 \u000f \u001b . \u001a . . . . .   | ~         "
+		]	
+}
