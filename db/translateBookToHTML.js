@@ -5,10 +5,11 @@ const Trace      = require('winston');
 
 const Argv       = require('yargs')
         .usage('Usage: node $0 --files=json,file,list [options]')
-        .example('node $0 --files=Text/text-popmap.json', "Translate Habitat Text Documents to HTML documents at the same path.\n")                   
+        .example('node $0 --files=Text/text-popmap.json',
+           "Translate Habitat Text Documents to HTML documents at the same path.\n\nNOTE: HTML output will be the SAME PATH with .html appended.\n")                   
         .help('help')
         .option('help',      { alias: '?',                   describe: 'Get this usage/help information.'})
-        .option('name',      { alias: 'n',                   describe: 'Set the name (aka title) of the web page, defaults to first line of document.'})
+        .option('name',      { alias: 'n',                   describe: 'Set the name (aka <title>) of the web page, defaults to first line of document.'})
         .option('trace',     { alias: 't', default: "debug", describe: 'Trace level name. (see: npm winston)'})
         .option('files',     { alias: 'f',                   describe: 'List of .json-ish Habitat Text files, comma delimited.'})
         .argv;
@@ -46,9 +47,12 @@ function templateStringJoins(data) {
   return data;
 }
 
+var Output = ""
+
 function writeHtmlBlock(block) {
-  console.log(block);
+  Output += block + "\n";
 }
+
 
 function htmlHeader(title) {
   writeHtmlBlock('<html>');
@@ -63,11 +67,17 @@ function writeHabidocPage(html) {
   writeHtmlBlock("</pre>");
 }
 
-function htmlFooter() {
+function htmlFooter(outfile) {
   writeHtmlBlock('</body></html>');
+  File.writeFile(outfile, Output, err => {
+    if (err) {
+      console.error(err);
+    }
+  });
 }
 
 const Habitat2HTML = async (infile) => {
+  const outfile = infile + ".html";
   const jsonish = await File.readFile(infile, 'utf8');
   var document = JSON.parse(templateStringJoins(jsonish));
   var html = "";
@@ -92,7 +102,7 @@ const Habitat2HTML = async (infile) => {
     htmlHeader(html.substring(0,40));
     writeHabidocPage(html);
   }
-  htmlFooter();
+  htmlFooter(outfile);
 }
 
 (async function main() {
