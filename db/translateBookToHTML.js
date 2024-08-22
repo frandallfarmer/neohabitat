@@ -61,15 +61,15 @@ const Habitat2HTML = async () => {
   const jsonish = await File.readFile(infile, 'utf8');
   var document = JSON.parse(templateStringJoins(jsonish));
   var html = "";
+  var writeHeader = true;
   if (document.pages) {
     for (const page of document.pages) {
       let html = "";
-      let writeHeader = true;
       for (let pos = 0, len = page.length; pos < len ; pos++) {
         html += Translate[page.charCodeAt(pos)];
         if (pos > 0 && ((pos + 1) % 40) == 0) { html += "\n" }
       }
-      if (writeHeader) { htmlHeader(html.substring(0,40)); writeHeader == 0;}
+      if (writeHeader) { htmlHeader(html.substring(0,40)); writeHeader = false;}
       writeHabidocPage(html);
     }
   } else {
