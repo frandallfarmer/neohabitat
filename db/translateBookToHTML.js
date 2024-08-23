@@ -1,3 +1,5 @@
+/** Directory Handler */
+const DirectoryTree = require('directory-tree');
 /** Object for file system */
 const File       = require('fs').promises;
 /** Object for trace library - npm install winston */
@@ -12,6 +14,7 @@ const Argv       = require('yargs')
         .option('name',      { alias: 'n',                   describe: 'Set the name (aka <title>) of the web page, defaults to first line of document.'})
         .option('trace',     { alias: 't', default: "debug", describe: 'Trace level name. (see: npm winston)'})
         .option('files',     { alias: 'f',                   describe: 'List of .json-ish Habitat Text files, comma delimited.'})
+        .option('directory', { alias: 'd',                   describe: 'Path to a directory containing .json files to convert to html. Also creates HabitatDocuments.html index in the current directory.'})
         .argv;
 
 Trace.level      = Argv.trace;
@@ -55,7 +58,7 @@ function writeHtmlBlock(block) {
 
 
 function htmlHeader(title) {
-  writeHtmlBlock('<html>');
+  writeHtmlBlock('<html>\n<!-- This file was auto-generated. "make pages" from /db to regenerate everything -->');
   writeHtmlBlock('<title>' + (Argv.name || title) + '</title>');
   writeHtmlBlock('<link rel="stylesheet" href="https://frandallfarmer.github.io/neohabitat-doc/docs/charset/charset.css" type="text/css" charset="utf-8"/>');
   writeHtmlBlock('<body>');
@@ -103,7 +106,21 @@ const Habitat2HTML = async (infile) => {
     writeHabidocPage(html);
   }
   htmlFooter(outfile);
+  Output = "";
 }
+
+function convertFiles(files) {
+  files.forEach((element) => Habitat2HTML(element.path));
+  Output = "<html><body><h1>Habitat In-World Documents</h1>\n";
+  files.forEach((element) => Output += "<a href='" + element.path + ".html'>"+ element.name +"</a>\n");
+  Output += "</body></html>\n";
+  File.writeFile("HabitatDocuments.html", Output, err => {
+    if (err) {
+      console.error(err);
+    }
+  });
+  Output = "";
+};
 
 (async function main() {
 
@@ -112,6 +129,8 @@ const Habitat2HTML = async (infile) => {
     for (var i = 0; i < files.length; i++) {
         await Habitat2HTML(files[i]);
     }
+  } else if (Argv.directory) {
+      convertFiles(DirectoryTree(Argv.directory, { extensions: /\.json/ }).children);
   } else {
     console.log("No files specified, nothing done. See --help");
   }
