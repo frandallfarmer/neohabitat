@@ -57,12 +57,12 @@ function writeHtmlBlock(block) {
 function htmlHeader(title) {
   writeHtmlBlock('<html>');
   writeHtmlBlock('<title>' + (Argv.name || title) + '</title>');
-  writeHtmlBlock('<body style="font-family:charset;font-size:24;">');
   writeHtmlBlock('<link rel="stylesheet" href="https://frandallfarmer.github.io/neohabitat-doc/docs/charset/charset.css" type="text/css" charset="utf-8"/>');
+  writeHtmlBlock('<body>');
 }
 
 function writeHabidocPage(html) {
-  writeHtmlBlock('<pre style="font-family:charset;font-size:24;word-wrap:break-word;width:40ch;line-height:71%;color:black;background-color:coral;border-style:solid;padding:10px;">');
+  writeHtmlBlock('<pre>');
   writeHtmlBlock(html);
   writeHtmlBlock("</pre>");
 }
@@ -89,7 +89,7 @@ const Habitat2HTML = async (infile) => {
         html += Translate[page.charCodeAt(pos)];
         if (((pos + 1) % 40) == 0) { html += "\n" }
       }
-      if (writeHeader) { htmlHeader(html.substring(0,40)); writeHeader = false;}
+      if (writeHeader) { htmlHeader(document.title || document.ref); writeHeader = false;}
       writeHabidocPage(html);
     }
   } else {
@@ -99,7 +99,7 @@ const Habitat2HTML = async (infile) => {
       html += Translate[page[pos]];
       if (((pos + 1) % 40) == 0) { html += "\n" }
     }
-    htmlHeader(html.substring(0,40));
+    htmlHeader(document.title || document.ref);
     writeHabidocPage(html);
   }
   htmlFooter(outfile);
