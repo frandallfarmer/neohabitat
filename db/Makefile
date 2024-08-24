@@ -8,6 +8,7 @@
 #
 # Instructions:
 # make db            - Make MongoDB setup scripts
+# make pages         - Generate html pages and index from source .json Habitat documents
 
 GIT_BASE_DIR = ..
 
@@ -53,6 +54,10 @@ text: book
 	@echo "Building Text documents"
 	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) text
 
+pages:
+	@echo "Building Web Pages from Text documents"
+	@npm run translateBookToHTML -- --directory=Text
+	
 regions:
 	@echo "Building Regions, Avatars, Objects, and Text for all"
 	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) all
