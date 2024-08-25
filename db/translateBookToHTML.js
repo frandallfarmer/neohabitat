@@ -51,6 +51,7 @@ function templateStringJoins(data) {
 }
 
 var Output = ""
+var Titles = ""     
 
 function writeHtmlBlock(block) {
   Output += block + "\n";
@@ -84,6 +85,7 @@ const Habitat2HTML = async (infile) => {
   const jsonish = await File.readFile(infile, 'utf8');
   var document = JSON.parse(templateStringJoins(jsonish));
   var html = "";
+  var title = Argv.name || document.title || document.ref;
   var writeHeader = true;
   if (document.pages) {
     for (const page of document.pages) {
@@ -92,7 +94,7 @@ const Habitat2HTML = async (infile) => {
         html += Translate[page.charCodeAt(pos)];
         if (((pos + 1) % 40) == 0) { html += "\n" }
       }
-      if (writeHeader) { htmlHeader(document.title || document.ref); writeHeader = false;}
+      if (writeHeader) { htmlHeader(title); writeHeader = false; }
       writeHabidocPage(html);
     }
   } else {
@@ -102,17 +104,19 @@ const Habitat2HTML = async (infile) => {
       html += Translate[page[pos]];
       if (((pos + 1) % 40) == 0) { html += "\n" }
     }
-    htmlHeader(document.title || document.ref);
+    htmlHeader(title);
     writeHabidocPage(html);
   }
   htmlFooter(outfile);
+  Titles += "<tr><td><a href='" + outfile + "'>"+ title +"</a><td><tr>\n";
+  writeIndex(Titles);
   Output = "";
 }
 
-function convertFiles(files) {
-  files.forEach((element) => Habitat2HTML(element.path));
-  Output = "<html><body><h1>Habitat In-World Documents</h1>\n";
-  files.forEach((element) => Output += "<a href='" + element.path + ".html'>"+ element.name +"</a>\n");
+
+function writeIndex(titles) {
+  Output = "<html><body><h1>Habitat In-World Documents</h1>\n<table>";
+  Output += titles;
   Output += "</body></html>\n";
   File.writeFile("HabitatDocuments.html", Output, err => {
     if (err) {
@@ -120,6 +124,10 @@ function convertFiles(files) {
     }
   });
   Output = "";
+}
+
+function convertFiles (files) {
+  for (const element of files) { Habitat2HTML(element.path); };
 };
 
 (async function main() {
