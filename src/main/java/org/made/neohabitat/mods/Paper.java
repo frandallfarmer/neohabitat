@@ -186,14 +186,10 @@ public class Paper extends HabitatMod implements Copyable {
 
     @JSONMethod
     public void HELP(User from) {
-        JSONLiteral msg = new_reply_msg(noid);
+        send_reply_msg(from, "PAPER: DO while holding to examine or edit text on sheet of paper.");
         if (!is_blank()) {
-            msg.addParameter("text", get_title_page(getFirstLine(), PAPER$HELP));
-        } else {
-            msg.addParameter("text", "");
+            object_say(from, get_title_page(getFirstLine(), PAPER$HELP));
         }
-        msg.finish();
-        from.send(msg);
     }
 
     /**
