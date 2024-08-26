@@ -55,8 +55,11 @@ text: book
 	@npm run populateModels -- $(NEOHABITAT_MONGO_HOST) text
 
 pages:
-	@echo "Building Web Pages from Text documents"
+	@echo "Building Web Pages from Text documents. NOTE: Assumes that the neohabitat-doc repo is checked out at ../../neohabitat-doc"
 	@npm run translateBookToHTML -- --directory=Text
+	@cp HabitatDocuments.html ../../neohabitat-doc/docs/historical
+	@cp Text/*.html ../../neohabitat-doc/docs/historical/Text
+	@echo "Be sure to push the changes in the neohabitat-doc repo."
 	
 regions:
 	@echo "Building Regions, Avatars, Objects, and Text for all"

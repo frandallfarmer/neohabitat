@@ -22,7 +22,7 @@
     "dumpTeleportEntries": "node dumpTeleportEntries.js",
     "generateBookOfRecords": "node generateBookOfRecords.js",
     "populateModels": "node populateModels.js",
-    "translateBookToHTML":"node translateBookToHTML.js"
+    "translateBookToHTML": "node translateBookToHTML.js"
   },
   "license": "MIT",
   "homepage": "https://frandallfarmer.github.io/neohabitat/"
