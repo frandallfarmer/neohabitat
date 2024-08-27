@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'charset Normal';
+    src: url('fonts/charset.eot');
+    src: url('fonts/charset.eot?#iefix') format('embedded-opentype'),
+         url('fonts/charset.woff2') format('woff2'),
+         url('fonts/charset.woff') format('woff'),
+         url('fonts/charset.ttf')  format('truetype'),
+         url('fonts/charset.svg#charset') format('svg');
+}
+
+body {
+    font-family: 'charset Normal';
+    font-size: 24px;
+}
+
+pre {
+    font-family: 'charset Normal';
+    font-size: 24px;
+    word-wrap: break-word;
+    width: 40ch;
+    line-height: 71%;
+    color: black;
+    background-color: coral;
+    border-style: solid;
+    padding: 10px;
+}

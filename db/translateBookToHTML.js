@@ -22,13 +22,13 @@ Trace.level      = Argv.trace;
 var Translate = []
 
 for (let character = 0; character < 128; character++) {
-  if (character < 32) { Translate[character] = "&#" + character + ";"; }
+  if (character < 32) { Translate[character] = "&#" + (character+192) + ";"; }
   else { Translate[character]= String.fromCharCode(character)};  
 }
 
-Translate[9]  = "&#17;";
-Translate[10] = "&#18;";
-Translate[13] = "&#17;";
+//Translate[9]  = "&#17;";
+//Translate[10] = "&#18;";
+//Translate[13] = "&#17;";
 
 const stringJoinRegex = /(("([^"]|\\")*"\s*\+\s*)+"([^"]|\\")*")/g;
 
@@ -61,7 +61,7 @@ function writeHtmlBlock(block) {
 function htmlHeader(title) {
   writeHtmlBlock('<html>\n<!-- This file was auto-generated. "make pages" from /db to regenerate everything -->');
   writeHtmlBlock('<title>' + (Argv.name || title) + '</title>');
-  writeHtmlBlock('<link rel="stylesheet" href="https://frandallfarmer.github.io/neohabitat-doc/docs/charset/charset.css" type="text/css" charset="utf-8"/>');
+  writeHtmlBlock('<link rel="stylesheet" href="charset/charset.css" type="text/css" charset="utf-8"/>');
   writeHtmlBlock('<body>');
 }
 
