@@ -47,7 +47,7 @@ function templateStringJoins(data) {
 }
 
 var Output = ""
-var Titles = ""
+var Titles = []
 
 function writeHtmlBlock(block) {
   Output += block + "\n";
@@ -104,16 +104,30 @@ const Habitat2HTML = async (infile) => {
     writeHabidocPage(html);
   }
   htmlFooter(outfile);
-  Titles += "<tr><td><a href='" + outfile + "'>"+ title +"</a><td><tr>\n";
+  Titles.push({title: title, path: outfile});
   writeIndex(Titles);
   Output = "";
 }
 
+function dynamicSort(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+}
 
 function writeIndex(titles) {
+  sorted = titles.sort(dynamicSort("title"));
   Output  = '<html>\n<link rel="stylesheet" href="Text/charset/charset.css" type="text/css" charset="utf-8"/>\n';
   Output += "<body><h1>Habitat In-World Documents</h1>\n<table>\n";
-  Output += titles;
+  for (const element of sorted) {
+    Output += "<tr><td><a href='" + element.path + "'>"+ element.title +"</a><td><tr>\n";
+  }
   Output += "</body></html>\n";
   File.writeFile("HabitatDocuments.html", Output, err => {
     if (err) {
