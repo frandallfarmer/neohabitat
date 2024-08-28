@@ -24,3 +24,22 @@ pre {
     border-style: solid;
     padding: 10px;
 }
+
+a {
+    background-color: coral;
+    border-style: solid;
+    text-decoration: none;
+}
+ 
+a:before {
+   content: "¼ ";
+}
+       
+a:link {
+    color: black;
+}
+
+a:visited {
+
+   color: black;
+}

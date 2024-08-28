@@ -26,10 +26,6 @@ for (let character = 0; character < 128; character++) {
   else { Translate[character]= String.fromCharCode(character)};  
 }
 
-//Translate[9]  = "&#17;";
-//Translate[10] = "&#18;";
-//Translate[13] = "&#17;";
-
 const stringJoinRegex = /(("([^"]|\\")*"\s*\+\s*)+"([^"]|\\")*")/g;
 
 function templateStringJoins(data) {
@@ -51,7 +47,7 @@ function templateStringJoins(data) {
 }
 
 var Output = ""
-var Titles = ""     
+var Titles = ""
 
 function writeHtmlBlock(block) {
   Output += block + "\n";
@@ -115,7 +111,8 @@ const Habitat2HTML = async (infile) => {
 
 
 function writeIndex(titles) {
-  Output = "<html><body><h1>Habitat In-World Documents</h1>\n<table>";
+  Output  = '<html>\n<link rel="stylesheet" href="Text/charset/charset.css" type="text/css" charset="utf-8"/>\n';
+  Output += "<body><h1>Habitat In-World Documents</h1>\n<table>\n";
   Output += titles;
   Output += "</body></html>\n";
   File.writeFile("HabitatDocuments.html", Output, err => {
