@@ -1,5 +1,5 @@
 {
-	"ref": "text-stockmachiuta",
+	"ref": "text-stockmachuta",
 	"pages": [
 		 "           STOCK CERTIFICATE            " +
 		 "        This Is To Certify That         " + 
@@ -9,12 +9,13 @@
 		 "                                        " +
 		 " Is The Owner Of 5 Shares Of Stock      " +
 		 "                 @                      " +
-		 " Of Machiuta's On This 3rd Day Of March " +
+		 " Of Machuta's On This 3rd Day Of March " +
 		 "    @@@@@@@@@@         @@@        @@@@@ " +
 		 " In The Year 1986.                      " +
 		 "             @@@@@                      " +
 		 "                                        " +
 		 "      Oracle                 Fountain   " +
 		 " @@@@@@@@@@@@@@@@@         @@@@@@@@@@@@ " +
-		 "     President              Secretary   "]
+		 "     President              Secretary   "],
+  "title": "Stock Market Certificate - Machuta's"
 }
