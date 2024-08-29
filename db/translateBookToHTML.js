@@ -61,8 +61,8 @@ function htmlHeader(title) {
   writeHtmlBlock('<body>');
 }
 
-function writeHabidocPage(html) {
-  writeHtmlBlock('<pre>');
+function writeHabidocPage(pageno, html) {
+  writeHtmlBlock('<pre id="page-' + pageno + '">');
   writeHtmlBlock(html);
   writeHtmlBlock("</pre>");
 }
@@ -83,6 +83,7 @@ const Habitat2HTML = async (infile) => {
   var html = "";
   var title = Argv.name || document.title || document.ref;
   var writeHeader = true;
+  var pageno = 1;
   if (document.pages) {
     for (const page of document.pages) {
       let html = "";
@@ -91,7 +92,8 @@ const Habitat2HTML = async (infile) => {
         if (((pos + 1) % 40) == 0) { html += "\n" }
       }
       if (writeHeader) { htmlHeader(title); writeHeader = false; }
-      writeHabidocPage(html);
+      writeHabidocPage(pageno, html);
+      pageno += 1;
     }
   } else {
     var page = new Array();
@@ -101,7 +103,7 @@ const Habitat2HTML = async (infile) => {
       if (((pos + 1) % 40) == 0) { html += "\n" }
     }
     htmlHeader(title);
-    writeHabidocPage(html);
+    writeHabidocPage(1, html);
   }
   htmlFooter(outfile);
   Titles.push({title: title, path: outfile});
@@ -146,7 +148,7 @@ function convertFiles (files) {
   if (Argv.files) {
     var files = Argv.files.split(',');
     for (var i = 0; i < files.length; i++) {
-        await Habitat2HTML(files[i]);
+      await Habitat2HTML(files[i]);
     }
   } else if (Argv.directory) {
       convertFiles(DirectoryTree(Argv.directory, { extensions: /\.json/ }).children);
