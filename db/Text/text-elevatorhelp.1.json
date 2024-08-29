@@ -16,5 +16,6 @@
 		 "number '4' and press RETURN. To go back " +
 		 "to the lobby with the elevator, just    " +
 		 "type in 'lobby' and you'll be sent back " +
-		 "."]
+		 "."],
+  "title": "Elevator Help plaque text"
 }

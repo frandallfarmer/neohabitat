@@ -32,5 +32,6 @@
 		"Road St South End: pop-roadstreetsouth  " +
 		"Street Rd Cross: pop-streetroad         " +
 		"Street Rd North End: pop-streetroadnorth" +
-		"Street Rd South End: pop-streetroadsouth"]
+		"Street Rd South End: pop-streetroadsouth"],
+  "title": "How to use the Teleporter"
 }

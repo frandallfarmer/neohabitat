@@ -1,6 +1,5 @@
 {
 	"ref": "text-portdir",
-	"title": "Populopolis Teleport Directory",
 	"pages": [ 
         "     Populopolis Teleport Directory     " +
         "         November 15, 1987 A.C.         " +
@@ -187,5 +186,6 @@
 		"Street Rd Nor       Warp Dr North       " +
 		"Street Rd South     Warp Dr South       " +
 		"                                        " +
-		"           -- Page 11 of 11 --          "]		
+		"           -- Page 11 of 11 --          "],
+  "title": "Populopolis Teleport Directory - 11/15/1987"	
 }
