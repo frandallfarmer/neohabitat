@@ -65,6 +65,7 @@ function writeHabidocPage(pageno, html) {
   writeHtmlBlock('<pre id="page-' + pageno + '">');
   writeHtmlBlock(html);
   writeHtmlBlock("</pre>");
+  writeHtmlBlock("<div><a href=''>top</a>   <a href='../HabitatDocuments.html'>index</a></div>");
 }
 
 function htmlFooter(outfile) {
