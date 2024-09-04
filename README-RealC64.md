@@ -1,6 +1,6 @@
 # Setting up a real C64 to play NeoHabitat
 Guide written June 7th-29th 2017 by Goethe ([GitHub](https://github.com/napi-goethe) / [Website](http://www.carpeludum.com) / [Twitter](https://twitter.com/Goe_The)) and Flexman
-with many thanks to the [NeoHabitat Discord](https://discord.gg/nk7HwAGF) #troubleshooting and #c64 channel team: @stu, @glake1 and of course @randy
+with many thanks to the [NeoHabitat Discord](https://discord.gg/rspcX27Vt4) #troubleshooting and #c64 channel team: @stu, @glake1 and of course @randy
 
 Last updated: 6/21/2023 by StuBlad to add the new NeoHabitat server address
 
@@ -172,7 +172,7 @@ there will not be any error message, the game just will stop loading at this poi
 
 ![Goethe's real C64 connecting to Neohabitat on Launch Day](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/images/GoetheRealC64Launchday.JPG)
 
-And join the [Discord](https://discord.gg/nk7HwAGF) for further discussions.
+And join the [Discord](https://discord.gg/rspcX27Vt4) for further discussions.
 Please extend this guide for other connection methods (photo proof needed :) ).
 
 ## Open questions

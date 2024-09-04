@@ -3,7 +3,7 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/frandallfarmer/neohabitat/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
-[Devloper Discord](https://discord.gg/nk7HwAGF)
+[Devloper Discord](https://discord.gg/rspcX27Vt4)
 
 We're recreating [Lucasfilm's Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
@@ -12,7 +12,7 @@ Play Habitat Now!
 
 We maintain a demo server running the latest NeoHabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
 
-**Please note**: NeoHabitat is still in development, so there will likely be some instability. If you see anything weird, please [tell us about it in our Discord]((https://discord.gg/nk7HwAGF).
+**Please note**: NeoHabitat is still in development, so there will likely be some instability. If you see anything weird, please [tell us about it in our Discord]((https://discord.gg/rspcX27Vt4).
 
 With all that out of the way, here's how to get started:
 
@@ -105,13 +105,13 @@ If you don't own a joystick and wish to change the controls to suit your needs t
 - A window should now popup saying "Joystick settings"
 - For "Joystick #1", select "Keyset A"
 - Click "Configure Keyset A" (Windows) or "Keyset" (OS X) and map the controls to whatever you like
-- If you are running into issues, head on over to the #troubleshooting channel [on our Discord](https://discord.gg/nk7HwAGF)
+- If you are running into issues, head on over to the #troubleshooting channel [on our Discord](https://discord.gg/rspcX27Vt4)
 - If you have a **localized keyboard** (e.g. German QWERTZ) you might not be able to find some essential keys, like ":". It might help if you change "Settings - Keyboard Settings - Active Keymap" from Symbolic to Positional, the keyboard will behave like a C64 keyboard. 
 
 Help!
 -----
 
-If you're having trouble getting NeoHabitat working, don't worry, we're here to help! Come [join our Discord](https://discord.gg/nk7HwAGF) and join our **#troubleshooting** room.
+If you're having trouble getting NeoHabitat working, don't worry, we're here to help! Come [join our Discord](https://discord.gg/rspcX27Vt4) and join our **#troubleshooting** room.
 
 If you encounter a glitch whilst playing NeoHabitat, please check to see if it's been filed as an [issue](https://github.com/frandallfarmer/neohabitat/issues). If it hasn't, we'd appreciate it if you let us know what happened so we can investigate.
 
