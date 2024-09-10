@@ -25,6 +25,7 @@ for (let character = 0; character < 128; character++) {
   if (character < 32) { Translate[character] = "&#" + (character+192) + ";"; }
   else { Translate[character]= String.fromCharCode(character)};  
 }
+Translate[60] = '&lt;';
 
 const stringJoinRegex = /(("([^"]|\\")*"\s*\+\s*)+"([^"]|\\")*")/g;
 
