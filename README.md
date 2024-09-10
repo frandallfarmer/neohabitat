@@ -3,7 +3,7 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/frandallfarmer/neohabitat/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
-[Devloper Discord](https://discord.gg/rspcX27Vt4)
+[Developer Discord](https://discord.gg/rspcX27Vt4)
 
 We're recreating [Lucasfilm's Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
 
@@ -12,7 +12,7 @@ Play Habitat Now!
 
 We maintain a demo server running the latest NeoHabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
 
-**Please note**: NeoHabitat is still in development, so there will likely be some instability. If you see anything weird, please [tell us about it in our Discord]((https://discord.gg/rspcX27Vt4).
+**Please note**: NeoHabitat is still in development, so there will likely be some instability. If you see anything weird, please [tell us about it in our Discord](https://discord.gg/rspcX27Vt4).
 
 With all that out of the way, here's how to get started:
 
