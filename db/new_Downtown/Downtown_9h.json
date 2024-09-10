@@ -46,8 +46,8 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "A Note from Dada Salesh",
+        "path" : "text-dadasalesh",
         "type": "Book"
       }
     ], 
@@ -64,8 +64,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "D'nalsi Island - LOG OF Davy Jonesy, explorer",
+        "path" : "text-dnalsiislandmap",
         "type": "Book"
       }
     ], 
@@ -82,8 +82,8 @@
         "gr_state": 1, 
         "y": 2, 
         "x": 2,
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "Habitat Stock Exchange News! Fall '87",
+        "path" : "text-habistockexchangenewsfall87",
         "type": "Book"
       }
     ], 
@@ -98,8 +98,8 @@
         "y": 3, 
         "x": 3, 
         "last_page": 0,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "Habitat Keyboard Map",
+        "path" : "text-habitatkeyboardmap",
         "type": "Book", 
         "orientation": 8
       }
@@ -134,7 +134,7 @@
         "last_page": 0, 
         "y": 3, 
         "x": 3,
-        "title": "History of TelePort",
+        "title": "The History of Teleport",
         "path" : "text-telehistory",
         "type": "Book"
       }
@@ -152,8 +152,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1,
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "The History of Tournaments in Habitat",
+        "path" : "text-historyoftournaments",
         "type": "Book"
       }
     ], 
@@ -171,8 +171,8 @@
         "gr_state": 1, 
         "y": 0, 
         "x": 0,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "Map of Downtown Populopolis, New Marin",
+        "path" : "text-mapofdowntownpop",
         "type": "Book"
       }
     ], 
@@ -190,8 +190,8 @@
         "gr_state": 1, 
         "y": 2, 
         "x": 2,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "THE HABITAT FLYER",
+        "path" : "text-thehabitatflyer",
         "type": "Book"
       }
     ], 
