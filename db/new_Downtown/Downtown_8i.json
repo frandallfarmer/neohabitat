@@ -46,8 +46,8 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0,
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "Saving the Past - Text Restoration",
+        "path" : "text-savingthepasttextrestoration",
         "type": "Book"
       }
     ], 
@@ -64,8 +64,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "The Rant - Volume 1 - Number 1 - 08/17/1987",
+        "path" : "text-08171987-rant-vol1-no1",
         "type": "Book"
       }
     ], 
@@ -80,8 +80,8 @@
         "y": 2, 
         "x": 2, 
         "last_page": 0,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "The Rant - Volume 1 - Number 2 - 09/21/1987",
+        "path" : "text-09211987-rant-vol1-no2",
         "orientation": 8,
         "type": "Book"
       }
@@ -97,8 +97,8 @@
         "y": 3, 
         "x": 3, 
         "last_page": 0,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "The Rant - Volume 1 - Number 4 - 10/08/1987",
+        "path" : "text-10081987-rant-vol1-no4",
         "type": "Book", 
         "orientation": 24
       }
@@ -133,8 +133,8 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0,
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "The Rant - Volume 0 - Number 1 - 1988 - Special Edition",
+        "path" : "text-1988-rant-vol0-no1-specialedition",
         "type": "Book"
       }
     ], 
@@ -151,8 +151,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "The Rant - Volume 2 - Number 4 - 02/03/1988",
+        "path" : "text-02031988-rant-vol2-no4",
         "type": "Book"
       }
     ], 
@@ -169,8 +169,8 @@
         "last_page": 0, 
         "y": 2, 
         "x": 2,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "The Rant - Volume 2 - Number 5 - 02/10/1988",
+        "path" : "text-02101988-rant-vol2-no5",
         "type": "Book"
       }
     ], 
@@ -185,8 +185,8 @@
         "y": 3, 
         "x": 3, 
         "last_page": 0,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "Weekend Events - 02/12/1988",
+        "path" : "text-02121988-weekendevents",
         "type": "Book", 
         "orientation": 9
       }

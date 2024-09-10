@@ -46,8 +46,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",        
+        "title": "The Rant - Volume 2 - Number 7 - 02/24/1988",
+        "path" : "text-02241988-rant-vol2-no7",        
         "type": "Book"
       }
     ], 
@@ -64,8 +64,8 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "The Rant - Volume 2 - Number 8 - 03/02/1988",
+        "path" : "text-03021988-rant-vol2-no8",
         "type": "Book"
       }
     ], 
@@ -82,8 +82,8 @@
         "last_page": 0, 
         "y": 4, 
         "x": 4,
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "The Rant - Volume 2 - Number 9 - 03/09/1988 - Incomplete",
+        "path" : "text-03091988-rant-vol2-no9",
         "type": "Book"
       }
     ], 
@@ -100,8 +100,8 @@
         "last_page": 0, 
         "y": 2, 
         "x": 2,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "The Rant - Volume 2 - Number 9 - 03/16/1988 - Incomplete",
+        "path" : "text-03161988-rant-vol2-no9",
         "type": "Book"
       }
     ], 
@@ -118,8 +118,8 @@
         "last_page": 0, 
         "y": 3, 
         "x": 3,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "The Rant - Volume 2 - Number 10 - 03/23/1988",
+        "path" : "text-03231988-rant-vol2-no10",
         "type": "Book"
       }
     ], 
@@ -153,8 +153,8 @@
         "last_page": 0, 
         "y": 1, 
         "x": 1, 
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "The Rant - Volume 2 - Number 8 - 03/30/1988",
+        "path" : "text-03301988-rant-vol2-no8",
         "type": "Book"
       }
     ], 
@@ -171,8 +171,8 @@
         "last_page": 0, 
         "y": 4, 
         "x": 4,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "The Rant - Volume 2 - Number 8 - 04/07/1988",
+        "path" : "text-04071988-rant-vol2-no8",
         "type": "Book"
       }
     ], 
@@ -189,8 +189,8 @@
         "last_page": 0, 
         "y": 3, 
         "x": 3,
-        "title": "History of TelePort",
-        "path" : "text-telehistory",
+        "title": "The Rant Flier - 04/09/1988",
+        "path" : "text-04091988-rantflier",
         "type": "Book"
       }
     ], 
@@ -207,8 +207,8 @@
         "last_page": 0, 
         "y": 0, 
         "x": 0,
-        "title": "History of Organized Crime",
-        "path" : "text-crimehistory",
+        "title": "The Rant - Volume 2 - Number 8 - 04/26/1988",
+        "path" : "text-04261988-rant-vol2-no8",
         "type": "Book"
       }
     ], 
@@ -225,8 +225,8 @@
         "last_page": 0, 
         "y": 2, 
         "x": 2, 
-        "title": "A Note from Dada Salesh",
-        "path" : "text-dadasalesh",
+        "title": "The Rant Flier - 04/29/1988",
+        "path" : "text-04291988-rantflier",
         "type": "Book"
       }
     ], 
