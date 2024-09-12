@@ -1,0 +1,226 @@
+[
+  {
+    "ref": "context-rent_front1",
+    "capacity": 64,
+    "type": "context",
+    "name": "Apply: City Hall",
+    "mods": [
+      {
+        "town_dir": "",
+        "port_dir": "",
+        "type": "Region",
+        "orientation": 1,
+        "neighbors": [
+          "context-region_10382",
+          "context-court_front",
+          "",
+          "context-rent_front2"
+        ],
+        "nitty_bits": 3,
+        "x": 0,
+        "y": 0,
+        "style": 0,
+        "gr_state": 0,
+        "realm": "Downtown"
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.d8j1.rent_front1",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 220,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-rent_front1"
+  },
+  {
+    "ref": "item-wall.a9t4.rent_front1",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 104,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-rent_front1"
+  },
+  {
+    "type": "item",
+    "ref": "Door.4je0.context-rent_front1",
+    "name": "Door",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 20,
+        "y": 32,
+        "style": 1,
+        "gr_state": 0,
+        "orientation": 252,
+        "key_hi": 0,
+        "key_lo": 0,
+        "connection": "",
+        "open_flags": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.xqax.context-rent_front1",
+    "name": "Window",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 112,
+        "y": 83,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.svj1.context-rent_front1",
+    "name": "Window",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 112,
+        "y": 45,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.2ymb.context-rent_front1",
+    "name": "Window",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 132,
+        "y": 83,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.b85f.context-rent_front1",
+    "name": "Window",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 92,
+        "y": 83,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.d96l.context-rent_front1",
+    "name": "Window",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 92,
+        "y": 45,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.t2i0.context-rent_front1",
+    "name": "Window",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 132,
+        "y": 45,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Sign.hdty.context-rent_front1",
+    "name": "Sign",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 52,
+        "y": 73,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 244,
+        "ascii": [
+          70,
+          79,
+          82,
+          134,
+          82,
+          69,
+          78,
+          84
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Street.l1ty.context-rent_front1",
+    "name": "Street",
+    "in": "context-rent_front1",
+    "mods": [
+      {
+        "type": "Street",
+        "x": 68,
+        "y": 10,
+        "style": 0,
+        "gr_state": 6,
+        "orientation": 8,
+        "height": 0,
+        "width": 0
+      }
+    ]
+  }
+]

@@ -15,7 +15,7 @@
           "context-Downtown_7j",
           "context-Downtown_8i",
           "context-Downtown_7h",
-          ""
+          "context-court_front"
         ], 
         "nitty_bits": 3
       }
@@ -98,7 +98,7 @@
       {
         "orientation": 8, 
         "type": "Street", 
-        "gr_state": 6, 
+        "gr_state": 13, 
         "y": 10, 
         "x": 68
       }

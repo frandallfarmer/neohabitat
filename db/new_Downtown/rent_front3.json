@@ -1,0 +1,175 @@
+[
+  {
+    "ref": "context-rent_front3",
+    "capacity": 64,
+    "type": "context",
+    "name": "Apply: City Hall",
+    "mods": [
+      {
+        "town_dir": "",
+        "port_dir": "",
+        "type": "Region",
+        "orientation": 1,
+        "neighbors": [
+          "",
+          "context-rent_front2",
+          "",
+          "context-Downtown_3i"
+        ],
+        "nitty_bits": 3,
+        "x": 0,
+        "y": 0,
+        "style": 0,
+        "gr_state": 0,
+        "realm": "Downtown"
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.d8j1.rent_front3",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 220,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-rent_front3"
+  },
+  {
+    "ref": "item-wall.a9t4.rent_front3",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 56,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-rent_front3"
+  },
+  {
+    "type": "item",
+    "ref": "Door.4je0.rent_front3",
+    "name": "Door",
+    "in": "context-rent_front3",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 136,
+        "y": 32,
+        "style": 1,
+        "gr_state": 0,
+        "orientation": 245,
+        "key_hi": 0,
+        "key_lo": 0,
+        "connection": "",
+        "open_flags": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.xqax.rent_front3",
+    "name": "Window",
+    "in": "context-rent_front3",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 8,
+        "y": 45,
+        "style": 1,
+        "gr_state": 0,
+        "orientation": 8,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.svj1.rent_front3",
+    "name": "Window",
+    "in": "context-rent_front3",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 28,
+        "y": 45,
+        "style": 1,
+        "gr_state": 0,
+        "orientation": 8,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.2ymb.rent_front3",
+    "name": "Window",
+    "in": "context-rent_front3",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 48,
+        "y": 45,
+        "style": 1,
+        "gr_state": 0,
+        "orientation": 8,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Sign.hdty.rent_front3",
+    "name": "Sign",
+    "in": "context-rent_front3",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 84,
+        "y": 73,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 236,
+        "ascii": [
+          70,
+          79,
+          82,
+          134,
+          82,
+          69,
+          78,
+          84
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Street.l1ty.rent_front3",
+    "name": "Street",
+    "in": "context-rent_front3",
+    "mods": [
+      {
+        "type": "Street",
+        "x": 68,
+        "y": 10,
+        "style": 0,
+        "gr_state": 6,
+        "orientation": 8,
+        "height": 0,
+        "width": 0
+      }
+    ]
+  }
+]
