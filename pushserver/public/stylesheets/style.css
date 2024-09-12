@@ -10,6 +10,15 @@ body {
   margin-bottom: 130px;
 }
 
+blockquote {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  padding-left: 15px;
+  border-left: 3px solid #ccc;
+}
+
+
 .container.control-panel {
   margin: 0 auto;
   width: 100%;
