@@ -1,0 +1,334 @@
+[
+  {
+    "ref": "context-avatars_court",
+    "capacity": 64,
+    "type": "context",
+    "name": "The Avatar's Court",
+    "mods": [
+      {
+        "town_dir": "",
+        "port_dir": "",
+        "type": "Region",
+        "orientation": 0,
+        "neighbors": [
+          "",
+          "context-court_front",
+          "",
+          ""
+        ],
+        "nitty_bits": 3,
+        "x": 0,
+        "y": 0,
+        "style": 0,
+        "gr_state": 0,
+        "realm": "Downtown"
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.d8j1.avatars_court",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 56,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-avatars_court"
+  },
+  {
+    "ref": "item-wall.a9t4.avatars_court",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 114,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-avatars_court"
+  },
+  {
+    "type": "item",
+    "ref": "Trapezoid.pejt.context-avatars_court",
+    "name": "Trapezoid",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 4,
+        "y": 137,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 204,
+        "height": 30,
+        "upper_left_x": 0,
+        "upper_right_x": 50,
+        "lower_left_x": 0,
+        "lower_right_x": 50,
+        "trapezoid_type": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Trapezoid.9dcq.context-avatars_court",
+    "name": "Trapezoid",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 100,
+        "y": 136,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 204,
+        "height": 30,
+        "upper_left_x": 0,
+        "upper_right_x": 50,
+        "lower_left_x": 0,
+        "lower_right_x": 50,
+        "trapezoid_type": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Crystal_ball.4fas.context-avatars_court",
+    "name": "Crystal_ball",
+    "in": "Glue.ytij.context-avatars_court",
+    "mods": [
+      {
+        "type": "Crystal_ball",
+        "x": 1,
+        "y": 1,
+        "style": 0,
+        "gr_state": 1,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Sign.94vh.context-avatars_court",
+    "name": "Sign",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 0,
+        "y": 7,
+        "style": 0,
+        "gr_state": 5,
+        "orientation": 0,
+        "ascii": [
+          133,
+          80,
+          108,
+          97,
+          110,
+          116,
+          105,
+          102,
+          102,
+          32,
+          32,
+          128,
+          68,
+          101,
+          102,
+          101,
+          110,
+          100,
+          97,
+          110,
+          116,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Chair.accg.context-avatars_court",
+    "name": "Chair",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Chair",
+        "x": 68,
+        "y": 20,
+        "style": 2,
+        "gr_state": 0,
+        "orientation": 8,
+        "open_flags": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Trapezoid.k9a8.context-avatars_court",
+    "name": "Trapezoid",
+    "in": "Glue.ytij.context-avatars_court",
+    "mods": [
+      {
+        "type": "Trapezoid",
+        "x": 0,
+        "y": 0,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 196,
+        "height": 50,
+        "upper_left_x": 0,
+        "upper_right_x": 32,
+        "lower_left_x": 0,
+        "lower_right_x": 32,
+        "trapezoid_type": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Crystal_ball.9j1s.context-avatars_court",
+    "name": "Crystal_ball",
+    "in": "Glue.ytij.context-avatars_court",
+    "mods": [
+      {
+        "type": "Crystal_ball",
+        "x": 2,
+        "y": 2,
+        "style": 0,
+        "gr_state": 1,
+        "orientation": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Door.jkcd.context-avatars_court",
+    "name": "Door",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 8,
+        "y": 31,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 88,
+        "key_hi": 0,
+        "key_lo": 0,
+        "connection": "",
+        "open_flags": 2
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Glue.ytij.context-avatars_court",
+    "name": "Glue",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Glue",
+        "x": 52,
+        "y": 140,
+        "style": 0,
+        "gr_state": 1,
+        "orientation": 0,
+        "x_offset_1": 0,
+        "x_offset_2": 0,
+        "x_offset_3": 6,
+        "x_offset_4": 0,
+        "x_offset_5": 0,
+        "x_offset_6": 0,
+        "y_offset_1": 0,
+        "y_offset_2": 206,
+        "y_offset_3": 206,
+        "y_offset_4": 0,
+        "y_offset_5": 0,
+        "y_offset_6": 0,
+        "open_flags": 3,
+        "key_hi": 0,
+        "key_lo": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Short_sign.opei.context-avatars_court",
+    "name": "Short_sign",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Short_sign",
+        "x": 8,
+        "y": 104,
+        "style": 5,
+        "gr_state": 8,
+        "orientation": 244,
+        "ascii": [
+          128,
+          80,
+          114,
+          105,
+          118,
+          97,
+          116,
+          101
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Short_sign.t81o.context-avatars_court",
+    "name": "Short_sign",
+    "in": "context-avatars_court",
+    "mods": [
+      {
+        "type": "Short_sign",
+        "x": 48,
+        "y": 104,
+        "style": 0,
+        "gr_state": 5,
+        "orientation": 244,
+        "ascii": [
+          133,
+          74,
+          85,
+          68,
+          71,
+          69
+        ]
+      }
+    ]
+  }
+]

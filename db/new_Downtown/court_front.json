@@ -1,0 +1,223 @@
+[
+  {
+    "ref": "context-court_front",
+    "capacity": 64,
+    "type": "context",
+    "name": "Take'm to Court!",
+    "mods": [
+      {
+        "town_dir": "",
+        "port_dir": "",
+        "type": "Region",
+        "orientation": 1,
+        "neighbors": [
+          "",
+          "context-Downtown_7i",
+          "",
+          "context-rent_front1"
+        ],
+        "nitty_bits": 3,
+        "x": 0,
+        "y": 0,
+        "style": 0,
+        "gr_state": 0,
+        "realm": "Downtown"
+      }
+    ]
+  },
+  {
+    "ref": "item-ground.d8j1.court_front",
+    "mods": [
+      {
+        "y": 4,
+        "x": 0,
+        "style": 1,
+        "type": "Ground",
+        "orientation": 220,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Ground",
+    "in": "context-court_front"
+  },
+  {
+    "ref": "item-wall.a9t4.court_front",
+    "mods": [
+      {
+        "y": 0,
+        "x": 0,
+        "style": 4,
+        "type": "Wall",
+        "orientation": 204,
+        "gr_state": 0
+      }
+    ],
+    "type": "item",
+    "name": "Wall",
+    "in": "context-court_front"
+  },
+  {
+    "type": "item",
+    "ref": "Sign.2tsd.context-court_front",
+    "name": "Sign",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Sign",
+        "x": 48,
+        "y": 104,
+        "style": 4,
+        "gr_state": 2,
+        "orientation": 148,
+        "ascii": [
+          32,
+          32,
+          84,
+          104,
+          101,
+          32,
+          65,
+          118,
+          97,
+          116,
+          97,
+          114,
+          39,
+          115,
+          32,
+          67,
+          111,
+          117,
+          114,
+          116
+        ]
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.f7pw.context-court_front",
+    "name": "Window",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 92,
+        "y": 59,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.22mt.context-court_front",
+    "name": "Window",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 16,
+        "y": 104,
+        "style": 1,
+        "gr_state": 2,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Door.xdv1.context-court_front",
+    "name": "Door",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Door",
+        "x": 12,
+        "y": 33,
+        "style": 0,
+        "gr_state": 0,
+        "orientation": 236,
+        "key_hi": 0,
+        "key_lo": 0,
+        "connection": "context-avatars_court",
+        "open_flags": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.zpjf.context-court_front",
+    "name": "Window",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 124,
+        "y": 59,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Street.sewz.context-court_front",
+    "name": "Street",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Street",
+        "x": 68,
+        "y": 7,
+        "style": 0,
+        "gr_state": 6,
+        "orientation": 16,
+        "height": 0,
+        "width": 0
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Window.e4br.context-court_front",
+    "name": "Window",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Window",
+        "x": 60,
+        "y": 59,
+        "style": 1,
+        "gr_state": 1,
+        "orientation": 0,
+        "gr_width": 20
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "Plaque.512i.context-court_front",
+    "name": "Plaque",
+    "in": "context-court_front",
+    "mods": [
+      {
+        "type": "Plaque",
+        "x": 40,
+        "y": 64,
+        "style": 2,
+        "gr_state": 0,
+        "orientation": 16,
+        "last_page": 1,
+        "pages": [],
+        "path": "text-missing.object"
+      }
+    ]
+  }
+]
