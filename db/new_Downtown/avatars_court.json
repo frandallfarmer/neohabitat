@@ -246,7 +246,7 @@
         "key_hi": 0,
         "key_lo": 0,
         "connection": "",
-        "open_flags": 2
+        "open_flags": 0
       }
     ]
   },
