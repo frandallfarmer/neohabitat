@@ -170,7 +170,7 @@
     "name": "Vendo_inside", 
     "in": "context-Downtown_4b"
   },  
-  { "ref": "item-book.ymap_0",  "mods": [ { "style": 3,  "orientation": 16, "last_page": 0, "y": 1,  "x": 1, "path": "text-popmap", "title": "Map of Populopolis", "type": "Book" }  ], "type": "item", "name": "Map", "in": "item-vendo_inside.85ae.Downtown_4b" }, 
+  { "ref": "item-book.ymap_0",  "mods": [ { "style": 3,  "orientation": 16, "last_page": 0, "y": 1,  "x": 1, "path": "text-popmap1988", "title": "A MAP OF POPULOPOLIS, NEW MARIN, HABITAT", "type": "Book" }  ], "type": "item", "name": "Map", "in": "item-vendo_inside.85ae.Downtown_4b" }, 
   { "ref": "item-book.ycompass_1",  "mods": [ { "style": 0,  "orientation": 16, "y": 1,  "x": 1, "type": "Compass" }  ], "type": "item", "name": "Compass", "in": "item-vendo_front.4689.Downtown_4b" },
   {
     "ref": "item-short_sign.18d6.Downtown_4b", 
