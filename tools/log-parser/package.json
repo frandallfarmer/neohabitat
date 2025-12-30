@@ -1,0 +1,25 @@
+{
+  "name": "habitat-log-parser",
+  "version": "1.0.0",
+  "description": "Debugging tools for parsing and analyzing Habitat server logs",
+  "main": "habitat-log-analyzer.js",
+  "bin": {
+    "habitat-log": "./habitat-log-analyzer.js",
+    "habitat-decode": "./protocol-decoder.js"
+  },
+  "scripts": {
+    "test": "node habitat-log-analyzer.js stats bridge-sample.log"
+  },
+  "keywords": [
+    "habitat",
+    "neohabitat",
+    "protocol",
+    "debugging",
+    "log-parser"
+  ],
+  "author": "NeoHabitat Project",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  }
+}

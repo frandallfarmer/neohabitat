@@ -1,0 +1,100 @@
+SESSION ANALYZER - Example Output
+=================================
+
+Command:
+  ./session-analyzer.js chalcedony --qlink qlink.log --bridge bridge.log
+
+Output Format:
+  [HH:MM:SS.mmm] [SOURCE] Message Details
+     └─ Additional context
+        Payload data
+
+Sources:
+  [QLINK]  - Q-Link container logs (framing + Habitat protocol)
+  [BRIDGE] - Bridge logs (Habitat protocol + Elko JSON)
+
+Example Session Trace:
+════════════════════════════════════════════════════════════════════════════════
+SESSION: chalcedony
+Started: 2025-12-24T04:18:03.301Z
+Ended:   ongoing
+Q-Link entries: 215
+Bridge entries: 2378
+════════════════════════════════════════════════════════════════════════════════
+
+[04:18:03.301] [QLINK] LOGIN: chalcedony
+
+[~0010] [BRIDGE] ← Binary Response: ENSEMBLE NOID=0 seq=8
+     └─ Payload: 00 00 20 00 0E 86 C7 00 ... (185 bytes)
+
+[~0011] [BRIDGE] → Client Request: I_AM_HERE NOID=0 seq=9
+
+[~0015] [BRIDGE] → Client Request: WALK NOID=14 seq=10
+     └─ Payload: 18 A0 01
+
+[~0016] [BRIDGE] → Client JSON: WALK
+     └─ To: user-chalcedony-1439273013384358723
+
+[~0018] [BRIDGE] ← Binary Response: TOUCH NOID=14 seq=10
+     └─ Payload: 18 A0 01
+
+[04:19:22.949] [QLINK] ← RECV Habitat: DELETE NOID=0 req=3
+     └─ User: Chalcedony
+
+[04:19:24.518] [QLINK] ← RECV Habitat: UNKNOWN_REGION_OP_15 NOID=0 req=15
+     └─ User: Chalcedony
+
+[04:19:26.659] [QLINK] ← RECV Habitat: ENSEMBLE NOID=0 req=1
+     └─ User: Chalcedony
+
+[04:20:20.624] [QLINK] ← RECV Habitat: TOUCH NOID=16 req=?
+     └─ User: Chalcedony
+
+[04:20:21.395] [QLINK] ← RECV Habitat: CHANGE_CONTAINERS NOID=16 req=1
+     └─ User: Chalcedony
+
+Interpretation:
+===============
+
+Timeline of events:
+1. User 'chalcedony' logs into Q-Link server at 04:18:03
+2. Bridge sends ENSEMBLE (region contents) to client
+3. Client confirms with I_AM_HERE
+4. User initiates WALK movement (NOID 14, avatar)
+5. Server processes walk via Elko JSON
+6. Response sent back as binary TOUCH message
+
+Q-Link layer shows:
+- Messages received from Habitat client (← RECV)
+- Decoded protocol operations (DELETE, ENSEMBLE, TOUCH, etc.)
+- NOID assignments (which object is being addressed)
+- Username from packet header
+
+Bridge layer shows:
+- Binary Habitat protocol (← Binary Response, → Client Request)
+- Elko JSON protocol (← Server JSON, → Client JSON)
+- Payload data in hex
+- Message destinations (context, user refs)
+- Sequence numbers for request/response matching
+
+Debugging Use Cases:
+====================
+
+1. Track specific operation flow:
+   grep "WALK" to see all walk commands
+
+2. Match request/response pairs:
+   Look for matching NOIDs and sequence numbers
+
+3. Identify protocol issues:
+   Watch for UNKNOWN operations or missing responses
+
+4. Monitor state changes:
+   Follow ENSEMBLE, APPEARING_$, CHANGE_CONTAINERS
+
+5. Debug user interactions:
+   Filter by username to see complete session
+
+6. Analyze timing:
+   Q-Link timestamps show exact message timing
+   Bridge entries estimate based on order
