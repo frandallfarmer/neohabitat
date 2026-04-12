@@ -29,6 +29,7 @@ var (
 	MessagesOut    metric.Int64Counter
 	ElkoRoundTrip  metric.Float64Histogram
 	MongoQueryTime metric.Float64Histogram
+	ClientCrashes  metric.Int64Counter
 )
 
 // Attribute key constants used as both span attributes and zerolog
@@ -108,6 +109,14 @@ func InitInstruments() error {
 		return fmt.Errorf("mongo.query: %w", err)
 	}
 
+	ClientCrashes, err = meter.Int64Counter(
+		"bridge_v2.client.crashes",
+		metric.WithDescription("Client crash reports received (MESSAGE_I_QUIT)"),
+	)
+	if err != nil {
+		return fmt.Errorf("client.crashes: %w", err)
+	}
+
 	return nil
 }
 
@@ -154,4 +163,11 @@ func RecordMongoQuery(ctx context.Context, seconds float64, attrs ...attribute.K
 		return
 	}
 	MongoQueryTime.Record(ctx, seconds, metric.WithAttributes(attrs...))
+}
+
+func IncClientCrashes(ctx context.Context, attrs ...attribute.KeyValue) {
+	if ClientCrashes == nil {
+		return
+	}
+	ClientCrashes.Add(ctx, 1, metric.WithAttributes(attrs...))
 }

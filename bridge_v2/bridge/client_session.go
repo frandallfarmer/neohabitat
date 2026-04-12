@@ -21,6 +21,7 @@ import (
 	"github.com/frandallfarmer/neohabitat/bridge_v2/observability"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -1081,6 +1082,10 @@ func (c *ClientSession) handleClientMessage(data []byte) {
 			c.replySeq = uint8(seq)
 		}
 		if noid == REGION_NOID {
+			if ServerMessage(reqNum) == I_QUIT {
+				c.handleClientCrashReport(args)
+				return
+			}
 			if ServerMessage(reqNum) == DESCRIBE {
 				// After a (re)connection, only the first request for a contents vector is valid.
 				var context string
@@ -1340,6 +1345,55 @@ func (c *ClientSession) Close() {
 		c.span.End()
 	}
 	go c.bridge.RemoveSession(c)
+}
+
+// handleClientCrashReport processes a MESSAGE_I_QUIT from the C64 client.
+// The classic client sends 1 byte (error_number only). The extended U64
+// client sends 12 bytes of diagnostic state. The bridge distinguishes
+// them by arg count — no protocol negotiation needed.
+func (c *ClientSession) handleClientCrashReport(args []byte) {
+	if len(args) == 0 {
+		c.log.Error().Msg("Client crash report with empty payload")
+		observability.IncClientCrashes(c.ctx)
+		go c.Close()
+		return
+	}
+	ev := c.log.Error().Uint8("error_number", args[0])
+	isExtended := len(args) >= 6
+
+	if isExtended {
+		ev = ev.
+			Uint8("reg_a", args[1]).
+			Uint8("me_noid", args[2]).
+			Uint8("heartbeat", args[3]).
+			Uint8("seqout", args[4]).
+			Uint8("initst", args[5])
+	}
+	ev.Bool("extended", isExtended).Msg("Client crash report")
+
+	observability.IncClientCrashes(c.ctx)
+	if c.span != nil {
+		attrs := []trace.EventOption{
+			trace.WithAttributes(
+				observability.AvatarAttr(c.UserName),
+				attribute.Int("error_number", int(args[0])),
+			),
+		}
+		c.span.AddEvent("client.crash", attrs...)
+	}
+
+	if !isExtended {
+		// Classic client exits to QLink swap screen — session is over.
+		go c.Close()
+		return
+	}
+	// Extended client: keep the session alive. The C64 will attempt
+	// reconnection by sending a fresh MESSAGE_describe, which triggers
+	// the normal enterContext flow. Reset session state so the next
+	// DESCRIBE is treated as a fresh login.
+	c.log.Info().Msg("Extended client crash — keeping session alive for reconnection")
+	c.connected = false
+	c.initializeState(c.replySeq)
 }
 
 func (c *ClientSession) Vectorize(

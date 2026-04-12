@@ -219,10 +219,47 @@
       }]
     },
     {
+      "title": "Client Crashes",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 42 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "green", "value": null },
+            { "color": "red", "value": 1 }
+          ]}
+        },
+        "overrides": []
+      },
+      "targets": [{ "expr": "bridge_v2_client_crashes_total", "legendFormat": "crashes", "refId": "A" }]
+    },
+    {
+      "title": "Crash Reports",
+      "description": "Detailed crash logs with C64 diagnostic state",
+      "type": "logs",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 20, "x": 4, "y": 42 },
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [{
+        "expr": "{container=~\".*bridge_v2.*\"} |= \"Client crash report\" | json",
+        "legendFormat": "",
+        "refId": "A"
+      }]
+    },
+    {
       "title": "Recent Traces",
       "type": "table",
       "datasource": { "type": "tempo", "uid": "tempo" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 42 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 50 },
       "targets": [{
         "queryType": "nativeSearch",
         "serviceName": "bridge_v2",
