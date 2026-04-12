@@ -15,7 +15,7 @@ services:
       - "3306:3306"
     healthcheck:
       test: ["CMD-SHELL", "echo 'SELECT version();'| MYSQL_PWD='qlink' mariadb -u qlink"]
-      interval: 300s
+      interval: 30s
       timeout: 30s
       retries: 30
     volumes:
@@ -29,7 +29,7 @@ services:
       - "27017:27017"
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.stats()"]
-      interval: 300s
+      interval: 30s
       timeout: 30s
       retries: 30
     networks:
@@ -37,6 +37,7 @@ services:
 
   neohabitat:
     build: .
+    restart: unless-stopped
     volumes:
       - .:/neohabitat
     # make sure to build this with `docker compose build` when doing development to compile your local changes.
@@ -58,7 +59,7 @@ services:
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
     healthcheck:
       test: ["CMD-SHELL", "nc -z neohabitat 1337"]
-      interval: 300s
+      interval: 30s
       timeout: 30s
       retries: 30
     ports:
@@ -72,8 +73,37 @@ services:
     networks:
       - neohabitat
 
+  bridge_v2:
+    build: ./bridge_v2
+    restart: unless-stopped
+    # Runs in Habilink/QLink mode (see bridge_v2/bridge/qlink_session.go).
+    # Speaks the JSON-name preamble + QLink wire protocol that real C64
+    # clients (and the qlink service in this stack) emit. Drop the --qlink
+    # flag to fall back to the legacy colon-prefix protocol.
+    command:
+      - "--qlink"
+      - "--listen=0.0.0.0:2026"
+      - "--elko.host=neohabitat:9000"
+      - "--mongo.host=mongodb://neohabitatmongo:27017"
+      - "--mongo.db=elko"
+      - "--mongo.collection=odb"
+      - "--context=context-Downtown_5f"
+      - "--rate=1200"
+      - "--log.level=DEBUG"
+    ports:
+      - "2026:2026"
+    depends_on:
+      neohabitatmongo:
+        condition: service_healthy
+      neohabitat:
+        condition: service_healthy
+    networks:
+      - neohabitat
+
   qlink:
     image: philcollins/qlink
+    volumes:
+      - /Users/steve/workspace/qlink/target/qlink-0.1.0.jar:/usr/local/qlink/target/qlink-0.1.0.jar
     environment:
       - QLINK_DB_HOST=neohabitatmariadb
       - QLINK_DB_JDBC_URI=jdbc:mysql://neohabitatmariadb:3306/qlink

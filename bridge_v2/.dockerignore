@@ -1,0 +1,17 @@
+# Keep the docker build context small. The Dockerfile only needs go.mod,
+# go.sum, and *.go sources; everything else is noise.
+.git
+.gitignore
+.idea
+*.iml
+README.md
+
+# The locally-built dev binary — we always rebuild inside the container.
+bridge_v2
+debug
+build
+run
+
+# Anything else accidentally left around.
+*.log
+.DS_Store

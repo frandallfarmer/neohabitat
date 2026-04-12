@@ -1,0 +1,27 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -gcflags 'all=-N -l' -o ./tmp/bridge_v2 ."
+bin = "./tmp/bridge_v2"
+args_bin = [
+  "--qlink",
+  "--listen", "0.0.0.0:2026",
+  "--elko.host", "neohabitat:9000",
+  "--mongo.host", "mongodb://neohabitatmongo:27017",
+  "--mongo.db", "elko",
+  "--mongo.collection", "odb",
+  "--context", "context-Downtown_5f",
+  "--rate", "1200",
+  "--log.level", "trace",
+  "--otel.enabled",
+]
+include_ext = ["go", "toml"]
+exclude_dir = ["tmp", "vendor"]
+delay = 1000
+# Auto-restart the binary if it exits (e.g. log.Fatal on Elko unreachable),
+# so air doesn't sit idle holding the container up while the inner process
+# is dead. Keeps the dev loop self-healing across cold-start races and
+# transient panics.
+rerun = true
+rerun_delay = 500

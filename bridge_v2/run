@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./build && ./bridge_v2 \
+  -listen 0.0.0.0:1337 \
+  -log.level=trace \
+  -mongo.host=mongodb://neohabitatmongo:27017
