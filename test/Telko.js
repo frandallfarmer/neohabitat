@@ -229,7 +229,7 @@ function substituteState(m) {
 							}
 							if (undefined !== value.obj) {
 								obj = value.obj;
-								if (undefined !== obj.mods & obj.mods.length === 1) {
+								if (undefined !== obj.mods && obj.mods.length === 1) {
 									mod = obj.mods[0];
 								}
 							}
