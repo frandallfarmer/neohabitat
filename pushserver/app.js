@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
-var websockify = require('node-websockify');
+var websockify = require('@maximegris/node-websockify');
 
 var YAML = require('yamljs');
 var config = YAML.load(process.env.PUSH_SERVER_CONFIG || './config.dev.yml');
