@@ -11,8 +11,15 @@ services:
       - ./bridge_v2:/app
     ports:
       - "2026:2026"
+    networks:
+      - neohabitat
     depends_on:
-      - otel-collector
+      neohabitatmongo:
+        condition: service_healthy
+      neohabitat:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
