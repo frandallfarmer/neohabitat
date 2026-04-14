@@ -86,6 +86,7 @@ type ClientSession struct {
 	sessionID                string             // monotonic session handle, also a log + span attribute
 	ctx                      context.Context    // context carrying the session root span
 	span                     trace.Span         // root span for this session, ended in Close()
+	jsonPassthrough          bool               // true => client speaks JSON directly to Elko; bridge relays
 	objects                  map[uint8]*ElkoMessage
 	objectNoidOrder          []uint8
 	otherContents            []*ElkoMessage
@@ -181,6 +182,10 @@ func (c *ClientSession) elkoReader() {
 			continue
 		}
 		observability.IncMessagesIn(c.ctx, observability.PeerAttr("elko"))
+		if c.jsonPassthrough {
+			c.handleElkoMessageJson(nextLine, elkoMsg)
+			continue
+		}
 		c.handleElkoMessage(elkoMsg)
 	}
 }
@@ -969,9 +974,33 @@ func (c *ClientSession) reconnectToElko(immediate bool, context string) {
 }
 
 func (c *ClientSession) Run() {
+	// Peek the first packet to detect protocol. Three paths:
+	//
+	//  1. First byte '{' and first line contains "LOGIN"  → Habilink
+	//     (JSON preamble then QLink wire frames).
+	//  2. First byte '{' but no LOGIN                      → pure JSON
+	//     passthrough (thin/web client speaking Elko JSON directly).
+	//  3. Anything else                                    → legacy
+	//     colon-prefix binary (`<name>:<bytes>`). Only valid when the
+	//     bridge is not in QLink mode.
+	//
+	// Matches Habitat2ElkoBridge.js's per-connection framing detection.
+	peek, _ := c.clientReader.Peek(256)
+	if len(peek) > 0 && peek[0] == '{' {
+		if isHabilinkLoginPreamble(peek) {
+			c.runHabilink()
+			return
+		}
+		defer c.wg.Done()
+		c.jsonPassthrough = true
+		c.log.Info().Msg("JSON passthrough session connected.")
+		c.runJsonPassthrough()
+		return
+	}
 	if c.qlinkMode {
-		// Habilink/QLink mode runs an entirely separate frame loop. Hand off
-		// to runHabilink, which calls c.wg.Done() itself.
+		// Bridge configured for QLink but client didn't send a `{` —
+		// fall through to runHabilink anyway; its preamble read will
+		// surface whatever the actual framing is.
 		c.runHabilink()
 		return
 	}
@@ -979,8 +1008,7 @@ func (c *ClientSession) Run() {
 
 	c.log.Info().Msg("ClientSession connected.")
 
-	err := c.connectToElko()
-	if err != nil {
+	if err := c.connectToElko(); err != nil {
 		// Elko reachability is a hard invariant — see Bridge.Run.
 		c.log.Fatal().Err(err).Str("elko_host", c.bridge.elkoHost).Msg("Unable to connect to Elko")
 	}
@@ -998,6 +1026,214 @@ func (c *ClientSession) Run() {
 			c.handleClientMessage(data)
 		}
 	}
+}
+
+// isHabilinkLoginPreamble distinguishes Habilink's JSON login line
+// (`{"to":"bridge","op":"LOGIN","name":"..."}` followed by QLink wire
+// frames) from a pure JSON-passthrough client (which speaks Elko JSON
+// continuously). Both start with '{'. We look at a peek window of the
+// first packet for the `"LOGIN"` op marker; Habilink's preamble always
+// contains it and no Elko op does.
+func isHabilinkLoginPreamble(peek []byte) bool {
+	nl := len(peek)
+	if idx := indexByte(peek, '\n'); idx >= 0 {
+		nl = idx
+	}
+	firstLine := peek[:nl]
+	return containsSubslice(firstLine, []byte(`"LOGIN"`)) ||
+		containsSubslice(firstLine, []byte(`"op":"LOGIN"`))
+}
+
+func indexByte(b []byte, c byte) int {
+	for i := 0; i < len(b); i++ {
+		if b[i] == c {
+			return i
+		}
+	}
+	return -1
+}
+
+func containsSubslice(hay, needle []byte) bool {
+	if len(needle) == 0 || len(hay) < len(needle) {
+		return len(needle) == 0
+	}
+	for i := 0; i <= len(hay)-len(needle); i++ {
+		match := true
+		for j := 0; j < len(needle); j++ {
+			if hay[i+j] != needle[j] {
+				match = false
+				break
+			}
+		}
+		if match {
+			return true
+		}
+	}
+	return false
+}
+
+// runJsonPassthrough is the entry point for JSON-mode clients (thin/web
+// clients that speak Elko JSON directly rather than the binary Habitat
+// protocol). The bridge mostly relays bytes, but must still:
+//
+//  - Ensure the Elko user object exists in mongo on "entercontext"
+//    (the binary path does this via the <name>: prefix; JSON clients
+//    never send that, so we extract from the "user" field).
+//  - Reconnect to Elko on "changeContext" messages from the server
+//    (handled in elkoReader's handleElkoMessageJson path).
+//  - Synthesize FINGER_IN_QUE + I_AM_HERE when Elko sends "ready"
+//    after the user's avatar arrives — the C64 client would emit
+//    these naturally on region unpack completion, and Elko waits
+//    for them before activating the avatar.
+func (c *ClientSession) runJsonPassthrough() {
+	if err := c.connectToElko(); err != nil {
+		c.log.Fatal().Err(err).Str("elko_host", c.bridge.elkoHost).Msg("Unable to connect to Elko")
+	}
+	tp := textproto.NewReader(c.clientReader)
+	for {
+		line, err := tp.ReadLineBytes()
+		if err != nil {
+			c.log.Error().Err(err).Msg("Error reading from JSON client")
+			go c.Close()
+			return
+		}
+		if len(line) == 0 {
+			continue
+		}
+		observability.IncMessagesIn(c.ctx, observability.PeerAttr("client"))
+		if c.log.Trace().Enabled() {
+			c.log.Trace().Bytes("msg", line).Msg("<-CLIENT JSON")
+		}
+		// Peek at the op/user fields to intercept entercontext — need
+		// to ensure the user exists in mongo before Elko processes the
+		// request. Unmarshal errors are non-fatal; the Elko side will
+		// reject malformed messages.
+		var msg ElkoMessage
+		if jerr := json.Unmarshal(line, &msg); jerr == nil {
+			if msg.Op != nil && *msg.Op == "entercontext" && msg.User != nil {
+				userName := strings.TrimPrefix(*msg.User, "user-")
+				c.stateMu.Lock()
+				if uerr := c.ensureUserCreated(userName); uerr != nil {
+					c.log.Error().Err(uerr).Str("user", userName).
+						Msg("Could not ensure User created, relaying entercontext anyway")
+				}
+				c.bindAvatar(userName)
+				c.UserName = userName
+				c.stateMu.Unlock()
+			}
+		}
+		// Relay the raw JSON to Elko verbatim so we don't lose any
+		// fields that our Go structs don't model.
+		if err := c.sendRawToElko(line); err != nil {
+			c.log.Error().Err(err).Msg("Could not forward JSON to Elko")
+			go c.Close()
+			return
+		}
+	}
+}
+
+// sendRawToElko writes a raw JSON line to the Elko connection followed
+// by the \n\n message terminator. Safe in JSON passthrough mode because
+// nothing else writes to elkoConn — we skip the elkoWriter goroutine's
+// channel path entirely.
+func (c *ClientSession) sendRawToElko(line []byte) error {
+	packet := make([]byte, 0, len(line)+2)
+	packet = append(packet, line...)
+	packet = append(packet, ElkoMsgTerminator...)
+	observability.IncMessagesOut(c.ctx, observability.PeerAttr("elko"))
+	_, err := c.elkoConn.Write(packet)
+	return err
+}
+
+// sendOpToElko marshals a minimal ElkoMessage (to/op) to JSON and forwards
+// it to Elko with the framing terminator. Used for the synthesized
+// FINGER_IN_QUE / I_AM_HERE handshake messages in JSON passthrough mode.
+func (c *ClientSession) sendOpToElko(to, op string) error {
+	msg := &ElkoMessage{To: &to, Op: &op}
+	bytes, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	return c.sendRawToElko(bytes)
+}
+
+// handleElkoMessageJson relays an Elko message to a JSON-passthrough
+// client with the minimum set of state transitions required to keep
+// Elko's session machinery happy:
+//
+//  - On `make` with `you:true`, mark the session as waiting for avatar
+//    contents so the next `ready` triggers the handshake.
+//  - On `changeContext`, remember the target region and reconnect the
+//    Elko TCP socket (mirrors binary-mode behavior).
+//  - On `ready` while waiting, synthesize FINGER_IN_QUE + I_AM_HERE
+//    toward Elko and swallow the `ready` (the client didn't need it).
+//  - Everything else: relay the raw bytes to the client verbatim.
+func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+
+	// "you:true" on an avatar make → track so we can synthesize the
+	// arrival handshake on the next "ready".
+	if msg.Op != nil && *msg.Op == "make" && msg.You != nil && *msg.You {
+		c.waitingForAvatarContents = true
+		c.regionRef = ""
+		if msg.To != nil {
+			c.regionRef = *msg.To
+		}
+	}
+
+	if msg.Type == "changeContext" {
+		if msg.Context != nil {
+			c.nextRegion = *msg.Context
+		}
+		immediate := false
+		if msg.Immediate != nil {
+			immediate = *msg.Immediate
+		}
+		go c.reconnectToElko(immediate, c.nextRegion)
+		// Relay the changeContext to the client as well — some JSON
+		// clients act on it directly.
+		c.writeJsonToClient(raw)
+		return
+	}
+
+	if msg.Op != nil && *msg.Op == "ready" && c.waitingForAvatarContents {
+		c.waitingForAvatarContents = false
+		to := ""
+		if msg.To != nil {
+			to = *msg.To
+		}
+		// Synthesize the two messages the C64 would send after a
+		// successful region unpack. These go back to Elko, not to
+		// the client.
+		if err := c.sendOpToElko(to, "FINGER_IN_QUE"); err != nil {
+			c.log.Error().Err(err).Msg("Could not send synthesized FINGER_IN_QUE")
+		}
+		if err := c.sendOpToElko(to, "I_AM_HERE"); err != nil {
+			c.log.Error().Err(err).Msg("Could not send synthesized I_AM_HERE")
+		}
+		// Don't relay the `ready` itself — the JS bridge swallows it
+		// in this path too.
+		return
+	}
+
+	c.writeJsonToClient(raw)
+}
+
+// writeJsonToClient writes a raw JSON line to the client connection
+// followed by \n\n. Bypasses the Habitat-level escape that clientConn.Write
+// applies (JSON clients don't use it).
+func (c *ClientSession) writeJsonToClient(raw []byte) {
+	if c.log.Trace().Enabled() {
+		c.log.Trace().Bytes("msg", raw).Msg("->CLIENT JSON")
+	}
+	packet := make([]byte, 0, len(raw)+2)
+	packet = append(packet, raw...)
+	packet = append(packet, '\n', '\n')
+	if _, err := c.clientConn.WriteRaw(packet); err != nil {
+		c.log.Error().Err(err).Msg("Error writing JSON to client")
+	}
+	observability.IncMessagesOut(c.ctx, observability.PeerAttr("client"))
 }
 
 func (c *ClientSession) handleInitialClientMessage(data []byte) {
