@@ -46,7 +46,7 @@ services:
       - NEOHABITAT_BRIDGE_ELKO_HOST=neohabitat:2018
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER
-      - NEOHABITAT_SHOULD_RUN_BRIDGE=true
+      - NEOHABITAT_SHOULD_RUN_BRIDGE=false
       - NEOHABITAT_SHOULD_RUN_NEOHABITAT=true
       - NEOHABITAT_SHOULD_RUN_PUSHSERVER=true
       - NEOHABITAT_SHOULD_UPDATE_SCHEMA
@@ -58,12 +58,11 @@ services:
       - PUSH_SERVER_CONFIG=./config.dev.yml
       - PUSH_SERVER_MONGO_URL=mongodb://neohabitatmongo
     healthcheck:
-      test: ["CMD-SHELL", "nc -z neohabitat 1337"]
+      test: ["CMD-SHELL", "nc -z bridge_v2 2026"]
       interval: 30s
       timeout: 30s
       retries: 30
     ports:
-      - "1337:1337"
       - "1701:1701"
       - "1987:1987"
       - "5005:5005"
@@ -91,7 +90,7 @@ services:
       - "--rate=1200"
       - "--log.level=DEBUG"
     ports:
-      - "2026:2026"
+      - "1337:2026"
     depends_on:
       neohabitatmongo:
         condition: service_healthy
