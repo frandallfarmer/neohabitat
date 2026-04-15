@@ -1206,6 +1206,19 @@ func (c *ClientSession) runJsonPassthrough() {
 			go c.Close()
 			return
 		}
+		// `disconnect` is the client telling us "I'm done." Elko closes
+		// its session immediately and will RST any further client traffic
+		// — so stop reading. We let elkoReader finish draining whatever
+		// Elko sends in the disconnect window (leave events, late
+		// broadcasts) before Close() tears the rest down. Quietly
+		// schedule the close; some clients (e.g. telko's quit.elko run
+		// twice via -f and -e) follow disconnect with extra messages,
+		// and we'd rather drop those silently than RST and log errors.
+		if msg.Op != nil && *msg.Op == "disconnect" {
+			c.log.Debug().Msg("Client requested disconnect")
+			go c.Close()
+			return
+		}
 	}
 }
 
