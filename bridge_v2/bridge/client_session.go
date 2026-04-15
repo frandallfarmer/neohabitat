@@ -166,11 +166,30 @@ func (c *ClientSession) elkoReader() {
 	c.elkoConnInitWg.Done()
 	for {
 		nextLine, err := tp.ReadLineBytes()
+		// Cheap one-shot teardown probe shared by the read-error
+		// branch, the parse-error branch, and the dispatch branch
+		// below. Using c.doneClosed (set under closeMutex by Close())
+		// lets us distinguish a real error from one that's just kernel-
+		// buffered Elko data draining after the client has gone away.
+		c.closeMutex.Lock()
+		closing := c.doneClosed
+		c.closeMutex.Unlock()
 		if err != nil {
-			c.log.Error().Err(err).Msg("Error reading message from Elko")
+			if closing {
+				c.log.Debug().Err(err).Msg("Elko reader exiting (teardown)")
+			} else {
+				c.log.Error().Err(err).Msg("Error reading message from Elko")
+			}
 			return
 		}
 		if len(nextLine) == 0 {
+			continue
+		}
+		// Drain quietly during teardown — these are messages that were
+		// in-flight from Elko before we closed our end of the pipe and
+		// would otherwise produce noisy parse / dispatch / synthesized-
+		// op write errors against a dead client and dead Elko socket.
+		if closing {
 			continue
 		}
 		if c.log.Trace().Enabled() {
@@ -1147,6 +1166,10 @@ func (c *ClientSession) runJsonPassthrough() {
 		line, err := tp.ReadLineBytes()
 		if err != nil {
 			c.log.Error().Err(err).Msg("Error reading from JSON client")
+			// Close elkoConn synchronously so elkoReader unblocks from its
+			// ReadLineBytes immediately rather than continuing to drain
+			// late server-side broadcasts onto the now-dead client socket.
+			_ = c.elkoConn.Close()
 			go c.Close()
 			return
 		}
@@ -1179,6 +1202,7 @@ func (c *ClientSession) runJsonPassthrough() {
 		// fields that our Go structs don't model.
 		if err := c.sendRawToElko(line); err != nil {
 			c.log.Error().Err(err).Msg("Could not forward JSON to Elko")
+			_ = c.elkoConn.Close()
 			go c.Close()
 			return
 		}
@@ -1284,7 +1308,23 @@ func (c *ClientSession) writeJsonToClient(raw []byte) {
 	packet = append(packet, raw...)
 	packet = append(packet, '\n', '\n')
 	if _, err := c.clientConn.WriteRaw(packet); err != nil {
-		c.log.Error().Err(err).Msg("Error writing JSON to client")
+		// A write failure here means one of two things:
+		//   1. Teardown is already in progress — Close() has flipped
+		//      doneClosed and shut clientConn. The error is just a late
+		//      Elko broadcast hitting a dead socket; demote to debug so
+		//      it doesn't drown legitimate signal during shutdown.
+		//   2. The client TCP died mid-session. Surface the error and
+		//      kick off Close() so the Elko side gets torn down too.
+		c.closeMutex.Lock()
+		closing := c.doneClosed
+		c.closeMutex.Unlock()
+		if closing {
+			c.log.Debug().Err(err).Msg("Skipping JSON write to closed client")
+		} else {
+			c.log.Error().Err(err).Msg("Error writing JSON to client")
+			go c.Close()
+		}
+		return
 	}
 	observability.IncMessagesOut(c.ctx, observability.PeerAttr("client"))
 }
@@ -1621,13 +1661,17 @@ func (c *ClientSession) Start() {
 }
 
 func (c *ClientSession) Close() {
+	// Flip the done flags first so other goroutines (notably
+	// writeJsonToClient) can distinguish a teardown-time write failure
+	// from a mid-session one. closeChannels also signals elkoWriter via
+	// its select, which lets it exit without depending on conn close.
+	c.closeChannels()
 	if c.elkoConn != nil {
 		_ = c.elkoConn.Close()
 	}
 	if c.clientConn != nil {
 		_ = c.clientConn.Close()
 	}
-	c.closeChannels()
 	c.wg.Wait()
 	c.log.Info().Msg("ClientSession closed.")
 	if c.span != nil {
