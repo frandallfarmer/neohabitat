@@ -86,7 +86,7 @@ services:
       - "--mongo.host=mongodb://neohabitatmongo:27017"
       - "--mongo.db=elko"
       - "--mongo.collection=odb"
-      - "--context=context-Downtown_5f"
+      - "--context=context-hatchery"
       - "--rate=1200"
       - "--log.level=DEBUG"
     ports:
@@ -127,11 +127,13 @@ services:
     build:
       context: ./habibots
     environment:
-      - HABIBOTS_HOST=neohabitat
-      - HABIBOTS_PORT=1337
+      - HABIBOTS_HOST=bridge_v2
+      - HABIBOTS_PORT=2026
     depends_on:
       neohabitat:
         condition: service_healthy
+      bridge_v2:
+        condition: service_started
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']
