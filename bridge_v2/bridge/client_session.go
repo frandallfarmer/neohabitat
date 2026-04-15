@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -974,20 +975,42 @@ func (c *ClientSession) reconnectToElko(immediate bool, context string) {
 }
 
 func (c *ClientSession) Run() {
-	// Peek the first packet to detect protocol. Three paths:
-	//
-	//  1. First byte '{' and first line contains "LOGIN"  → Habilink
-	//     (JSON preamble then QLink wire frames).
-	//  2. First byte '{' but no LOGIN                      → pure JSON
-	//     passthrough (thin/web client speaking Elko JSON directly).
-	//  3. Anything else                                    → legacy
-	//     colon-prefix binary (`<name>:<bytes>`). Only valid when the
-	//     bridge is not in QLink mode.
-	//
-	// Matches Habitat2ElkoBridge.js's per-connection framing detection.
-	peek, _ := c.clientReader.Peek(256)
-	if len(peek) > 0 && peek[0] == '{' {
-		if isHabilinkLoginPreamble(peek) {
+	// Peek ONE byte to decide broad protocol class. Any client sends
+	// at least one byte promptly after the TCP handshake (QLink Reset
+	// frame starts with 0x5A, JSON clients with '{', legacy
+	// colon-prefix with an ASCII user-name letter). We intentionally
+	// avoid peeking further because bufio.Reader.Peek(N) blocks until
+	// N bytes are in the buffer OR the stream closes — a QLink C64
+	// client sends ~11 bytes of Reset frame and then waits for a
+	// reply, so Peek(256) would hang forever on that setup.
+	peek, err := c.clientReader.Peek(1)
+	if err != nil || len(peek) == 0 {
+		c.log.Error().Err(err).Msg("client closed before sending any data")
+		go c.Close()
+		return
+	}
+	if peek[0] == '{' {
+		// JSON-based client (Habilink preamble or pure passthrough).
+		// Consume the first line to distinguish, then restore it onto
+		// the reader so the downstream handler can re-process it
+		// naturally.
+		//
+		// Accept either '\n' (modern clients, KERNAL RS-232 on PC) or
+		// '\r' (C64 launcher convention — see Launcher/launcher.c's
+		// login_json which terminates JSON with 0x0D 0x0D). ReadBytes
+		// on a single delimiter would hang forever for C64 clients.
+		firstLine, lerr := readFirstLineEitherTerminator(c.clientReader, 512)
+		if lerr != nil && lerr != io.EOF {
+			c.log.Error().Err(lerr).Msg("failed reading first JSON line")
+			go c.Close()
+			return
+		}
+		// Prepend the consumed line back onto the reader. Anything
+		// buffered after it in the original reader is preserved via
+		// MultiReader.
+		c.clientReader = bufio.NewReader(io.MultiReader(
+			bytes.NewReader(firstLine), c.clientReader))
+		if isHabilinkLoginPreamble(firstLine) {
 			c.runHabilink()
 			return
 		}
@@ -998,9 +1021,10 @@ func (c *ClientSession) Run() {
 		return
 	}
 	if c.qlinkMode {
-		// Bridge configured for QLink but client didn't send a `{` —
-		// fall through to runHabilink anyway; its preamble read will
-		// surface whatever the actual framing is.
+		// First byte isn't '{' — must be a raw QLink frame
+		// (0x5A CMD_START). Hand off to the Habilink handler which
+		// now skips its JSON preamble reader and goes straight to
+		// the QLink frame loop.
 		c.runHabilink()
 		return
 	}
@@ -1026,6 +1050,35 @@ func (c *ClientSession) Run() {
 			c.handleClientMessage(data)
 		}
 	}
+}
+
+// readFirstLineEitherTerminator reads bytes from r up to and including
+// the first '\n' or '\r', whichever comes first, capped at max bytes.
+// Unlike bufio.Reader.ReadBytes which takes a single delimiter, this
+// handles both conventions:
+//
+//   - Modern clients (the legacy JS bridge's thin clients, pure Elko
+//     JSON consumers) terminate with '\n'.
+//   - The C64 launcher (Launcher/launcher.c's login_json) terminates
+//     with 0x0D (CR) because KERNAL RS-232 uses Commodore line
+//     convention. ReadBytes('\n') would block forever waiting for a
+//     byte the C64 never transmits.
+//
+// Returns the line INCLUDING the terminator byte so the caller can
+// re-inject it verbatim into a MultiReader for downstream handlers.
+func readFirstLineEitherTerminator(r *bufio.Reader, max int) ([]byte, error) {
+	buf := make([]byte, 0, 128)
+	for i := 0; i < max; i++ {
+		b, err := r.ReadByte()
+		if err != nil {
+			return buf, err
+		}
+		buf = append(buf, b)
+		if b == '\n' || b == '\r' {
+			return buf, nil
+		}
+	}
+	return buf, fmt.Errorf("first line exceeded %d bytes without terminator", max)
 }
 
 // isHabilinkLoginPreamble distinguishes Habilink's JSON login line
