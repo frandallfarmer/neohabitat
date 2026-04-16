@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"strings"
@@ -29,6 +30,7 @@ var rate = flag.Int("rate", 1200, "Data rate in bits-per-second for transmitting
 var logLevel = flag.String("log.level", "INFO", "Log level for logger")
 var qlinkMode = flag.Bool("qlink", false, "Listen for Habilink/QLink clients (JSON name preamble + QLink wire protocol) instead of the legacy colon-prefix protocol")
 var otelEnabled = flag.Bool("otel.enabled", false, "Enable OpenTelemetry export. Reads OTEL_EXPORTER_OTLP_ENDPOINT and OTEL_EXPORTER_OTLP_HEADERS from the environment.")
+var graceful = flag.Bool("graceful", false, "Enable graceful restart via SIGHUP (tableflip). Incompatible with Air — use in production only.")
 
 func setLogLevel(level string) {
 	switch lowerLevel := strings.ToLower(level); lowerLevel {
@@ -71,6 +73,29 @@ func main() {
 		log.Info().Str("version", buildVersion).Msg("OpenTelemetry initialized")
 	}
 
+	if *graceful {
+		runWithTableflip(otelShutdown)
+	} else {
+		runSimple(otelShutdown)
+	}
+}
+
+func runSimple(otelShutdown func(context.Context) error) {
+	habitatBridge := bridge.NewBridge(
+		*initialContext, *listen, *elko, *mongo,
+		*mongoDatabase, *mongoCollection, *rate, *qlinkMode,
+	)
+	habitatBridge.Start()
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+	<-sigCh
+	log.Info().Msg("Received SIGINT, shutting down...")
+	habitatBridge.Close()
+	shutdownOtel(otelShutdown)
+}
+
+func runWithTableflip(otelShutdown func(context.Context) error) {
 	upg, err := tableflip.New(tableflip.Options{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not initialize tableflip upgrader")
@@ -94,14 +119,8 @@ func main() {
 	}
 
 	habitatBridge := bridge.NewBridge(
-		*initialContext,
-		*listen,
-		*elko,
-		*mongo,
-		*mongoDatabase,
-		*mongoCollection,
-		*rate,
-		*qlinkMode,
+		*initialContext, *listen, *elko, *mongo,
+		*mongoDatabase, *mongoCollection, *rate, *qlinkMode,
 	)
 	habitatBridge.SetListener(ln)
 	habitatBridge.Start()
@@ -117,19 +136,26 @@ func main() {
 	case <-sigCh:
 		log.Info().Msg("Received SIGINT, shutting down...")
 		habitatBridge.Close()
-		if otelShutdown != nil {
-			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-			if err := otelShutdown(shutdownCtx); err != nil {
-				log.Error().Err(err).Msg("OpenTelemetry shutdown error")
-			}
-		}
+		shutdownOtel(otelShutdown)
 	case <-upg.Exit():
 		log.Info().Msg("Child process ready; draining existing sessions")
-		// Old sessions stay on this process until they naturally close.
-		// New connections go to the child via the inherited listener.
-		// Wait for all sessions to finish, then exit.
 		habitatBridge.WaitForSessions()
 		log.Info().Msg("All sessions drained; exiting")
 	}
+}
+
+func shutdownOtel(shutdown func(context.Context) error) {
+	if shutdown != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := shutdown(ctx); err != nil {
+			log.Error().Err(err).Msg("OpenTelemetry shutdown error")
+		}
+	}
+}
+
+// SetListener is on Bridge — ensure it also works without tableflip.
+// When --graceful is not set, Bridge.Run creates the listener itself.
+func init() {
+	_ = net.IPv4zero // ensure net is imported
 }
