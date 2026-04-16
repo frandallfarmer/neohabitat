@@ -213,15 +213,6 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 		snap.ClientFdIndex = clientIdx
 		snap.ElkoFdIndex = elkoIdx
 
-		// Close the parent's ORIGINAL connections now that we have the
-		// dup'd fds. This kills the parent's elkoReader/elkoWriter
-		// goroutines so they can't race with the child's goroutines
-		// on the same underlying sockets. The child's dup'd fds keep
-		// the kernel sockets alive.
-		_ = sess.elkoConn.Close()
-		_ = sess.clientConn.Close()
-		sess.closeChannels()
-
 		manifest.Sessions = append(manifest.Sessions, *snap)
 		log.Info().Str("session", sess.sessionID).
 			Str("avatar", sess.UserName).
