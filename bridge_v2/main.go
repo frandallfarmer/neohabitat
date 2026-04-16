@@ -212,7 +212,13 @@ func main() {
 	case <-sigCh:
 		log.Info().Msg("Received SIGINT, shutting down...")
 	case <-upg.Exit():
-		log.Info().Msg("Child process ready; parent exiting...")
+		// The child process has the listener and all session fds.
+		// (*net.TCPConn).File() switched our original connections to
+		// blocking mode, so Close() can't unblock goroutines stuck in
+		// Read(). Rather than fighting that, just exit — the kernel
+		// reclaims all fds and the child is fully operational.
+		log.Info().Msg("Child process ready; parent exiting")
+		os.Exit(0)
 	}
 
 	habitatBridge.Close()
