@@ -116,26 +116,26 @@ func main() {
 	habitatBridge.SetListener(ln)
 
 	// If the parent left a snapshot file, restore sessions from it
-	// before accepting new connections. The inherited fds are available
-	// via tableflip's ExtraFiles mechanism (os.NewFile on fd 3+N).
+	// before accepting new connections. The inherited fds are retrieved
+	// by name via tableflip's Fds API — no raw fd arithmetic.
 	if snapPath := os.Getenv(snapshotEnvVar); snapPath != "" {
 		manifest, merr := bridge.ReadManifest(snapPath)
 		if merr != nil {
 			log.Error().Err(merr).Msg("Could not read handoff manifest; starting fresh")
 		} else {
-			// ExtraFiles start at fd 3 after stdin/stdout/stderr, but
-			// tableflip also uses one fd for its own control pipe. The
-			// session fds follow the listener fd. We retrieve them via
-			// os.NewFile since tableflip stores them sequentially.
 			var extraFiles []*os.File
 			for i := range manifest.Sessions {
-				// Each session contributes 2 fds (client + elko).
-				clientFd := uintptr(3 + 1 + 1 + i*2) // 3 std + 1 tableflip pipe + 1 listener fd
-				elkoFd := clientFd + 1
-				extraFiles = append(extraFiles,
-					os.NewFile(clientFd, fmt.Sprintf("client-%d", i)),
-					os.NewFile(elkoFd, fmt.Sprintf("elko-%d", i)),
-				)
+				cname := fmt.Sprintf("session-%d-client", i)
+				ename := fmt.Sprintf("session-%d-elko", i)
+				cf, cerr := upg.Fds.File(cname)
+				ef, eerr := upg.Fds.File(ename)
+				if cerr != nil || eerr != nil {
+					log.Error().Int("index", i).
+						AnErr("client_err", cerr).AnErr("elko_err", eerr).
+						Msg("Cannot retrieve inherited fds for session; skipping")
+					continue
+				}
+				extraFiles = append(extraFiles, cf, ef)
 			}
 			if rerr := habitatBridge.RestoreAll(manifest, extraFiles); rerr != nil {
 				log.Error().Err(rerr).Msg("Session restore failed")
@@ -170,8 +170,11 @@ func main() {
 			os.Setenv(snapshotEnvVar, snapPath)
 
 			// Pass session fds to the child via tableflip's Fds mechanism.
-			for _, f := range files {
-				upg.Fds.AddFile(f.Name(), f)
+			// Each session contributes two fds (client, elko) in order.
+			for i := 0; i < len(files); i += 2 {
+				sessIdx := i / 2
+				upg.Fds.AddFile(fmt.Sprintf("session-%d-client", sessIdx), files[i])
+				upg.Fds.AddFile(fmt.Sprintf("session-%d-elko", sessIdx), files[i+1])
 			}
 
 			if uerr := upg.Upgrade(); uerr != nil {

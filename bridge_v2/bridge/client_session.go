@@ -1944,7 +1944,15 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 
 	// Rebuild derived fields
 	sess.contentsVector = NewContentsVector(sess, nil, &REGION_NOID, nil, nil)
-	sess.bindAvatar(snap.UserName)
+	// Set up the session logger directly instead of calling bindAvatar,
+	// which would go through TableKey() → RemoteAddr(). The inherited
+	// conn's RemoteAddr is valid but we can build the logger from the
+	// snapshot's known values.
+	sess.log = log.With().
+		Str("ip", clientConn.RemoteAddr().String()).
+		Str("session_id", snap.SessionID).
+		Str("avatar", snap.UserName).
+		Logger()
 
 	return sess
 }
