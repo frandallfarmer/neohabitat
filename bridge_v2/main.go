@@ -197,29 +197,25 @@ func main() {
 		log.Fatal().Err(err).Msg("Could not signal readiness to parent")
 	}
 
-	// Wait for either SIGINT (hard shutdown) or tableflip telling us the
-	// child is ready and we should exit.
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)
 	select {
 	case <-sigCh:
 		log.Info().Msg("Received SIGINT, shutting down...")
-	case <-upg.Exit():
-		// The child process has the listener and all session fds.
-		// (*net.TCPConn).File() switched our original connections to
-		// blocking mode, so Close() can't unblock goroutines stuck in
-		// Read(). Rather than fighting that, just exit — the kernel
-		// reclaims all fds and the child is fully operational.
-		log.Info().Msg("Child process ready; parent exiting")
-		os.Exit(0)
-	}
-
-	habitatBridge.Close()
-	if otelShutdown != nil {
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		if err := otelShutdown(shutdownCtx); err != nil {
-			log.Error().Err(err).Msg("OpenTelemetry shutdown error")
+		habitatBridge.Close()
+		if otelShutdown != nil {
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			if err := otelShutdown(shutdownCtx); err != nil {
+				log.Error().Err(err).Msg("OpenTelemetry shutdown error")
+			}
 		}
+	case <-upg.Exit():
+		// Child has taken over. Return from main so defer upg.Stop()
+		// runs tableflip's cleanup protocol. Don't call
+		// habitatBridge.Close() — File() put connections in blocking
+		// mode and Close can't unblock those goroutines. The process
+		// exit reclaims everything; the child's inherited fds survive.
+		log.Info().Msg("Child process ready; parent exiting")
 	}
 }
