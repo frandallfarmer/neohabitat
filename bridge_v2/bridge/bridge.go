@@ -157,9 +157,16 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 	var files []*os.File
 
 	for _, sess := range b.Sessions {
-		// Ask the session's reader goroutine to produce a snapshot at
-		// its next clean frame boundary. The goroutine blocks after
-		// responding so it won't consume any more bytes from the socket.
+		// Skip sessions whose goroutine has already exited.
+		sess.closeMutex.Lock()
+		dead := sess.doneClosed
+		sess.closeMutex.Unlock()
+		if dead {
+			log.Debug().Str("session", sess.sessionID).
+				Msg("Session already closed; skipping snapshot")
+			continue
+		}
+
 		replyCh := make(chan *SessionSnapshot, 1)
 		select {
 		case sess.snapshotReq <- replyCh:
@@ -205,6 +212,15 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 		files = append(files, elkoFile)
 		snap.ClientFdIndex = clientIdx
 		snap.ElkoFdIndex = elkoIdx
+
+		// Close the parent's ORIGINAL connections now that we have the
+		// dup'd fds. This kills the parent's elkoReader/elkoWriter
+		// goroutines so they can't race with the child's goroutines
+		// on the same underlying sockets. The child's dup'd fds keep
+		// the kernel sockets alive.
+		_ = sess.elkoConn.Close()
+		_ = sess.clientConn.Close()
+		sess.closeChannels()
 
 		manifest.Sessions = append(manifest.Sessions, *snap)
 		log.Info().Str("session", sess.sessionID).
