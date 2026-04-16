@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+
 type Bridge struct {
 	Context         string
 	DataRate        int
@@ -140,82 +141,20 @@ func (b *Bridge) SetListener(ln net.Listener) {
 	b.listener = ln
 }
 
-// SnapshotConns pairs a session's live connections with its snapshot,
-// keyed by session ID, for the caller to register with tableflip.
-type SnapshotConns struct {
-	ClientConn net.Conn
-	ElkoConn   net.Conn
-}
-
-// SnapshotAll quiesces every active session's reader goroutine at a
-// clean frame boundary and captures a snapshot. Returns the manifest
-// and a map of session ID → live connections so the caller can register
-// them with tableflip's Fds.AddConn (which uses SyscallConn internally
-// and avoids putting connections in blocking mode).
-func (b *Bridge) SnapshotAll() (*HandoffManifest, map[string]SnapshotConns, error) {
-	b.sessionsMutex.Lock()
-	defer b.sessionsMutex.Unlock()
-
-	manifest := &HandoffManifest{
-		QLinkMode: b.QLinkMode,
-		ElkoHost:  b.elkoHost,
-		Context:   b.Context,
+// WaitForSessions blocks until all active sessions have closed
+// naturally. Used during graceful upgrade — old sessions drain on
+// the old process while the child handles new connections.
+func (b *Bridge) WaitForSessions() {
+	for {
+		b.sessionsMutex.Lock()
+		n := len(b.Sessions)
+		b.sessionsMutex.Unlock()
+		if n == 0 {
+			return
+		}
+		log.Info().Int("remaining", n).Msg("Waiting for sessions to drain")
+		time.Sleep(2 * time.Second)
 	}
-	conns := make(map[string]SnapshotConns)
-
-	for _, sess := range b.Sessions {
-		sess.closeMutex.Lock()
-		dead := sess.doneClosed
-		sess.closeMutex.Unlock()
-		if dead {
-			log.Debug().Str("session", sess.sessionID).
-				Msg("Session already closed; skipping snapshot")
-			continue
-		}
-
-		replyCh := make(chan *SessionSnapshot, 1)
-		select {
-		case sess.snapshotReq <- replyCh:
-		default:
-			log.Warn().Str("session", sess.sessionID).
-				Msg("Cannot request snapshot (channel full or nil); skipping")
-			continue
-		}
-
-		var snap *SessionSnapshot
-		select {
-		case snap = <-replyCh:
-		case <-time.After(10 * time.Second):
-			log.Warn().Str("session", sess.sessionID).
-				Msg("Snapshot request timed out (goroutine likely dead); skipping")
-			continue
-		}
-		if snap == nil {
-			continue
-		}
-
-		conns[sess.sessionID] = SnapshotConns{
-			ClientConn: sess.clientConn.conn,
-			ElkoConn:   sess.elkoConn,
-		}
-
-		manifest.Sessions = append(manifest.Sessions, *snap)
-		log.Info().Str("session", sess.sessionID).
-			Str("avatar", sess.UserName).
-			Msg("Session snapshotted for handoff")
-	}
-
-	return manifest, conns, nil
-}
-
-// RegisterRestoredSession adds a restored session to the bridge's
-// session map and increments the active-session counters.
-func (b *Bridge) RegisterRestoredSession(sess *ClientSession) {
-	b.sessionsMutex.Lock()
-	defer b.sessionsMutex.Unlock()
-	b.Sessions[sess.TableKey()] = sess
-	observability.IncSessionsTotal(context.Background())
-	observability.AddSessionActive(context.Background(), 1)
 }
 
 func (b *Bridge) Start() {
