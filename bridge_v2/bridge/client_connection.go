@@ -55,6 +55,16 @@ func (c *ClientConnection) RemoteAddr() net.Addr {
 	return c.conn.RemoteAddr()
 }
 
+func NewClientConnectionWithRate(conn net.Conn, dataRate int) *ClientConnection {
+	byteRate := float64(dataRate) / 10.0
+	rateBucket := ratelimit.NewBucketWithRate(byteRate, 1)
+	return &ClientConnection{
+		conn:            conn,
+		rateBucket:      rateBucket,
+		rateLimitedConn: ratelimit.Writer(conn, rateBucket),
+	}
+}
+
 func NewClientConnection(b *Bridge, conn net.Conn) *ClientConnection {
 	// Asynchronous 1200 baud serial uses 10 bits per byte (1 start, 8
 	// data, 1 stop, no parity), so the real on-the-wire byte rate is

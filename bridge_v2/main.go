@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
+	"github.com/cloudflare/tableflip"
 	"github.com/frandallfarmer/neohabitat/bridge_v2/bridge"
 	"github.com/frandallfarmer/neohabitat/bridge_v2/observability"
 	"github.com/rs/zerolog"
@@ -58,12 +61,11 @@ func setLogLevel(level string) {
 	}
 }
 
+const snapshotEnvVar = "BRIDGE_SNAPSHOT_PATH"
+
 func main() {
 	flag.Parse()
 	setLogLevel(*logLevel)
-	// When OTel is enabled, emit native zerolog JSON so Promtail/Loki can
-	// extract structured fields (avatar, session_id, ip, level) as labels.
-	// Otherwise use the pretty ConsoleWriter for local terminal readability.
 	if !*otelEnabled {
 		log.Logger = log.Output(zerolog.ConsoleWriter{
 			Out:        os.Stderr,
@@ -74,11 +76,6 @@ func main() {
 		})
 	}
 
-	// OpenTelemetry init is opt-in via -otel.enabled. When disabled the
-	// bridge runs against the SDK's noop tracer/meter providers, so all
-	// the span/metric call sites in the bridge package are cheap branch-
-	// predictable no-ops. Endpoint and credentials come from the standard
-	// OTEL_EXPORTER_OTLP_ENDPOINT and OTEL_EXPORTER_OTLP_HEADERS env vars.
 	var otelShutdown func(context.Context) error
 	if *otelEnabled {
 		ctx := context.Background()
@@ -88,6 +85,22 @@ func main() {
 			log.Fatal().Err(err).Msg("Could not initialize OpenTelemetry")
 		}
 		log.Info().Str("version", buildVersion).Msg("OpenTelemetry initialized")
+	}
+
+	// tableflip manages the HAProxy-style graceful restart dance:
+	//   - On first launch it creates a fresh listener.
+	//   - On SIGHUP it forks a child, passes the listener fd (and any
+	//     extra session fds), and waits for the child to signal Ready.
+	//   - The parent then drains existing work and exits.
+	upg, err := tableflip.New(tableflip.Options{})
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not initialize tableflip upgrader")
+	}
+	defer upg.Stop()
+
+	ln, err := upg.Listen("tcp", *listen)
+	if err != nil {
+		log.Fatal().Err(err).Str("addr", *listen).Msg("Could not obtain listener")
 	}
 
 	habitatBridge := bridge.NewBridge(
@@ -100,15 +113,97 @@ func main() {
 		*rate,
 		*qlinkMode,
 	)
+	habitatBridge.SetListener(ln)
+
+	// If the parent left a snapshot file, restore sessions from it
+	// before accepting new connections. The inherited fds are available
+	// via tableflip's ExtraFiles mechanism (os.NewFile on fd 3+N).
+	if snapPath := os.Getenv(snapshotEnvVar); snapPath != "" {
+		manifest, merr := bridge.ReadManifest(snapPath)
+		if merr != nil {
+			log.Error().Err(merr).Msg("Could not read handoff manifest; starting fresh")
+		} else {
+			// ExtraFiles start at fd 3 after stdin/stdout/stderr, but
+			// tableflip also uses one fd for its own control pipe. The
+			// session fds follow the listener fd. We retrieve them via
+			// os.NewFile since tableflip stores them sequentially.
+			var extraFiles []*os.File
+			for i := range manifest.Sessions {
+				// Each session contributes 2 fds (client + elko).
+				clientFd := uintptr(3 + 1 + 1 + i*2) // 3 std + 1 tableflip pipe + 1 listener fd
+				elkoFd := clientFd + 1
+				extraFiles = append(extraFiles,
+					os.NewFile(clientFd, fmt.Sprintf("client-%d", i)),
+					os.NewFile(elkoFd, fmt.Sprintf("elko-%d", i)),
+				)
+			}
+			if rerr := habitatBridge.RestoreAll(manifest, extraFiles); rerr != nil {
+				log.Error().Err(rerr).Msg("Session restore failed")
+			}
+			os.Remove(snapPath)
+		}
+	}
+
+	// SIGHUP triggers a graceful upgrade: snapshot sessions, fork child
+	// with inherited fds, let child take over.
+	go func() {
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, syscall.SIGHUP)
+		for range sig {
+			log.Info().Msg("SIGHUP received, starting graceful upgrade...")
+
+			manifest, files, serr := habitatBridge.SnapshotAll()
+			if serr != nil {
+				log.Error().Err(serr).Msg("Snapshot failed; aborting upgrade")
+				continue
+			}
+
+			snapPath := filepath.Join(os.TempDir(), fmt.Sprintf("bridge_v2_handoff_%d.json", os.Getpid()))
+			if werr := bridge.WriteManifest(snapPath, manifest); werr != nil {
+				log.Error().Err(werr).Msg("Could not write manifest; aborting upgrade")
+				for _, f := range files {
+					f.Close()
+				}
+				continue
+			}
+
+			os.Setenv(snapshotEnvVar, snapPath)
+
+			// Pass session fds to the child via tableflip's Fds mechanism.
+			for _, f := range files {
+				upg.Fds.AddFile(f.Name(), f)
+			}
+
+			if uerr := upg.Upgrade(); uerr != nil {
+				log.Error().Err(uerr).Msg("Upgrade failed")
+				os.Remove(snapPath)
+				continue
+			}
+
+			log.Info().Int("sessions", len(manifest.Sessions)).
+				Msg("Upgrade triggered; waiting for child to take over")
+		}
+	}()
+
 	habitatBridge.Start()
-	intSignal := make(chan os.Signal, 1)
-	signal.Notify(intSignal, os.Interrupt)
-	<-intSignal
-	log.Info().Msg("Received SIGINT, shutting down...")
+
+	if err := upg.Ready(); err != nil {
+		log.Fatal().Err(err).Msg("Could not signal readiness to parent")
+	}
+
+	// Wait for either SIGINT (hard shutdown) or tableflip telling us the
+	// child is ready and we should exit.
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+	select {
+	case <-sigCh:
+		log.Info().Msg("Received SIGINT, shutting down...")
+	case <-upg.Exit():
+		log.Info().Msg("Child process ready; parent exiting...")
+	}
+
 	habitatBridge.Close()
 	if otelShutdown != nil {
-		// Bound the flush so a stuck collector can't keep the process
-		// alive forever after SIGINT.
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		if err := otelShutdown(shutdownCtx); err != nil {

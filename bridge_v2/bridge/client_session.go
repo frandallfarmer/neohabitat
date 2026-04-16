@@ -1808,3 +1808,177 @@ func NewClientSession(b *Bridge, c *ClientConnection) *ClientSession {
 	session.contentsVector = NewContentsVector(session, nil, &REGION_NOID, nil, nil)
 	return session
 }
+
+// Snapshot captures the session's serializable state for a graceful
+// restart handoff. Must be called while the session is quiesced (no
+// goroutines actively processing messages). The caller is responsible
+// for extracting fd indices from the returned snapshot and matching
+// them to the ExtraFiles slice.
+func (c *ClientSession) Snapshot(clientFdIdx, elkoFdIdx int) *SessionSnapshot {
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+	c.qlinkMu.Lock()
+	defer c.qlinkMu.Unlock()
+
+	snap := &SessionSnapshot{
+		SessionID:       c.sessionID,
+		UserName:        c.UserName,
+		UserRef:         c.userRef,
+		RegionRef:       c.regionRef,
+		Ref:             c.ref,
+		Who:             c.who,
+		PacketPrefix:    c.packetPrefix,
+		Connected:       c.connected,
+		FirstConnection: c.firstConnection,
+		JsonPassthrough: c.jsonPassthrough,
+		QLinkMode:       c.qlinkMode,
+		Online:          c.Online,
+		QLinkInSeq:      c.qlinkInSeq,
+		QLinkOutSeq:     c.qlinkOutSeq,
+		ReplySeq:        c.replySeq,
+		Avatar:          c.Avatar,
+		AvatarNoid:      c.avatarNoid,
+		ObjectNoidOrder: c.objectNoidOrder,
+		NoidClassList:   c.NoidClassList,
+		NoidContents:    noidContentsToStringKeys(c.NoidContents),
+		NextRegion:      c.nextRegion,
+		NextRegionSet:   c.nextRegionSet,
+
+		WaitingForAvatar:         c.waitingForAvatar,
+		WaitingForAvatarContents: c.waitingForAvatarContents,
+		User:                     c.user,
+		LargeRequestCache:        c.largeRequestCache,
+
+		ClientFdIndex: clientFdIdx,
+		ElkoFdIndex:   elkoFdIdx,
+		DataRate:      c.bridge.DataRate,
+	}
+
+	// Copy RefToNoid
+	snap.RefToNoid = make(map[string]uint8, len(c.RefToNoid))
+	for k, v := range c.RefToNoid {
+		snap.RefToNoid[k] = v
+	}
+
+	// Copy objects
+	for noid, msg := range c.objects {
+		snap.Objects = append(snap.Objects, ObjectSnapshot{
+			Noid:      noid,
+			Message:   msg,
+			Container: msg.container,
+		})
+	}
+
+	// Drain any buffered data from the clientReader so the child
+	// process doesn't lose mid-frame bytes.
+	if c.clientReader != nil {
+		n := c.clientReader.Buffered()
+		if n > 0 {
+			buf, _ := c.clientReader.Peek(n)
+			snap.BufferedClientData = make([]byte, len(buf))
+			copy(snap.BufferedClientData, buf)
+		}
+	}
+
+	return snap
+}
+
+// RestoreSession reconstructs a ClientSession from a snapshot and
+// inherited file descriptors. The returned session has its goroutines
+// started and is ready to process messages.
+func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoConn net.Conn) *ClientSession {
+	cc := NewClientConnectionWithRate(clientConn, snap.DataRate)
+	sess := &ClientSession{
+		Avatar:          snap.Avatar,
+		Online:          snap.Online,
+		NoidClassList:   snap.NoidClassList,
+		NoidContents:    stringKeysToNoidContents(snap.NoidContents),
+		RefToNoid:       snap.RefToNoid,
+		UserName:        snap.UserName,
+
+		avatarNoid:      snap.AvatarNoid,
+		bridge:          b,
+		qlinkMode:       snap.QLinkMode,
+		qlinkInSeq:      snap.QLinkInSeq,
+		qlinkOutSeq:     snap.QLinkOutSeq,
+		clientConn:      cc,
+		connected:       snap.Connected,
+		done:            make(chan struct{}),
+		elkoConn:        elkoConn,
+		elkoDone:        make(chan struct{}),
+		elkoSendChan:    make(chan *ElkoMessage, MaxClientMessages),
+		firstConnection: snap.FirstConnection,
+		jsonPassthrough: snap.JsonPassthrough,
+		largeRequestCache: snap.LargeRequestCache,
+		nextRegion:      snap.NextRegion,
+		nextRegionSet:   snap.NextRegionSet,
+		sessionID:       snap.SessionID,
+		objects:         make(map[uint8]*ElkoMessage),
+		objectNoidOrder: snap.ObjectNoidOrder,
+		packetPrefix:    snap.PacketPrefix,
+		ref:             snap.Ref,
+		regionRef:       snap.RegionRef,
+		replySeq:        snap.ReplySeq,
+		user:            snap.User,
+		userRef:         snap.UserRef,
+		waitingForAvatar:         snap.WaitingForAvatar,
+		waitingForAvatarContents: snap.WaitingForAvatarContents,
+		who:             snap.Who,
+	}
+
+	// Rebuild the clientReader, prepending any buffered data that was
+	// in-flight at snapshot time.
+	if len(snap.BufferedClientData) > 0 {
+		sess.clientReader = bufio.NewReader(io.MultiReader(
+			bytes.NewReader(snap.BufferedClientData), cc))
+	} else {
+		sess.clientReader = bufio.NewReader(cc)
+	}
+
+	// Rebuild objects map from snapshots
+	for _, os := range snap.Objects {
+		msg := os.Message
+		msg.container = os.Container
+		sess.objects[os.Noid] = msg
+	}
+
+	// Rebuild derived fields
+	sess.contentsVector = NewContentsVector(sess, nil, &REGION_NOID, nil, nil)
+	sess.bindAvatar(snap.UserName)
+
+	return sess
+}
+
+// StartRestored launches the session's goroutines for a restored session
+// that already has established client and elko connections. Unlike Start()
+// + Run(), this skips protocol detection and Elko connect — both sockets
+// are already live from the parent process.
+func (c *ClientSession) StartRestored() {
+	c.wg.Add(1)
+	go func() {
+		defer c.wg.Done()
+
+		// Start Elko reader/writer goroutines on the inherited connection.
+		c.wg.Add(2)
+		c.elkoWg.Add(2)
+		c.elkoConnInitWg.Add(2)
+		go c.elkoReader()
+		go c.elkoWriter()
+		c.elkoConnInitWg.Wait()
+
+		// Enter the appropriate read loop based on session type.
+		if c.jsonPassthrough {
+			c.runJsonPassthrough()
+			return
+		}
+		// Binary (QLink/Habilink or legacy) — go straight to the message
+		// loop, skipping protocol detection and preamble reading.
+		for {
+			data, err := c.nextClientMsg()
+			if err != nil || data == nil {
+				return
+			}
+			c.handleClientMessage(data)
+		}
+	}()
+}

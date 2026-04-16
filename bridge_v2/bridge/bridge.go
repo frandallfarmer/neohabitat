@@ -2,13 +2,15 @@ package bridge
 
 import (
 	"context"
+	"net"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/frandallfarmer/neohabitat/bridge_v2/observability"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net"
-	"sync"
-	"time"
 )
 
 type Bridge struct {
@@ -104,11 +106,15 @@ func (b *Bridge) Run() {
 			delay = elkoProbeMax
 		}
 	}
-	log.Info().Msgf("Starting bridge listener at: %s", b.listenHost)
-	b.listener, err = net.Listen("tcp", b.listenHost)
-	if err != nil {
-		log.Fatal().Msgf("Could not initialize TCP listener on %s: %v", b.listenHost, err)
-		return
+	if b.listener == nil {
+		log.Info().Msgf("Starting bridge listener at: %s", b.listenHost)
+		b.listener, err = net.Listen("tcp", b.listenHost)
+		if err != nil {
+			log.Fatal().Msgf("Could not initialize TCP listener on %s: %v", b.listenHost, err)
+			return
+		}
+	} else {
+		log.Info().Msgf("Using inherited listener at: %s", b.listener.Addr())
 	}
 	for {
 		conn, err := b.listener.Accept()
@@ -126,6 +132,98 @@ func (b *Bridge) Run() {
 			newSession.Start()
 		}
 	}
+}
+
+// SetListener injects a listener managed by tableflip instead of
+// having Run() create one via net.Listen. When set, Run() skips
+// the listen call and uses this listener directly.
+func (b *Bridge) SetListener(ln net.Listener) {
+	b.listener = ln
+}
+
+// SnapshotAll serializes every active session's state and collects the
+// underlying TCP file descriptors for both client and Elko connections.
+// Returns the manifest (for JSON serialization to disk) and the fd
+// slice (for passing via tableflip ExtraFiles / os.StartProcess).
+func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
+	b.sessionsMutex.Lock()
+	defer b.sessionsMutex.Unlock()
+
+	manifest := &HandoffManifest{
+		QLinkMode: b.QLinkMode,
+		ElkoHost:  b.elkoHost,
+		Context:   b.Context,
+	}
+	var files []*os.File
+
+	for _, sess := range b.Sessions {
+		clientFile, err := connFile(sess.clientConn.conn)
+		if err != nil {
+			log.Warn().Err(err).Str("session", sess.sessionID).
+				Msg("Cannot snapshot session (client fd); skipping")
+			continue
+		}
+		elkoFile, err := connFile(sess.elkoConn)
+		if err != nil {
+			clientFile.Close()
+			log.Warn().Err(err).Str("session", sess.sessionID).
+				Msg("Cannot snapshot session (elko fd); skipping")
+			continue
+		}
+		clientIdx := len(files)
+		files = append(files, clientFile)
+		elkoIdx := len(files)
+		files = append(files, elkoFile)
+
+		snap := sess.Snapshot(clientIdx, elkoIdx)
+		manifest.Sessions = append(manifest.Sessions, *snap)
+
+		log.Info().Str("session", sess.sessionID).
+			Str("avatar", sess.UserName).
+			Msg("Session snapshotted for handoff")
+	}
+
+	return manifest, files, nil
+}
+
+// RestoreAll reconstructs sessions from a handoff manifest and the
+// inherited extra file descriptors, registers them in b.Sessions, and
+// starts their goroutines.
+func (b *Bridge) RestoreAll(manifest *HandoffManifest, extraFiles []*os.File) error {
+	for _, snap := range manifest.Sessions {
+		if snap.ClientFdIndex >= len(extraFiles) || snap.ElkoFdIndex >= len(extraFiles) {
+			log.Error().Str("session", snap.SessionID).
+				Msg("fd index out of range; dropping session")
+			continue
+		}
+		clientConn, err := net.FileConn(extraFiles[snap.ClientFdIndex])
+		if err != nil {
+			log.Error().Err(err).Str("session", snap.SessionID).
+				Msg("Cannot reconstruct client conn; dropping session")
+			continue
+		}
+		extraFiles[snap.ClientFdIndex].Close()
+
+		elkoConn, err := net.FileConn(extraFiles[snap.ElkoFdIndex])
+		if err != nil {
+			clientConn.Close()
+			log.Error().Err(err).Str("session", snap.SessionID).
+				Msg("Cannot reconstruct elko conn; dropping session")
+			continue
+		}
+		extraFiles[snap.ElkoFdIndex].Close()
+
+		sess := RestoreSession(b, &snap, clientConn, elkoConn)
+		b.Sessions[clientConn.RemoteAddr().String()] = sess
+		observability.IncSessionsTotal(context.Background())
+		observability.AddSessionActive(context.Background(), 1)
+		sess.StartRestored()
+
+		log.Info().Str("session", snap.SessionID).
+			Str("avatar", snap.UserName).
+			Msg("Session restored from handoff")
+	}
+	return nil
 }
 
 func (b *Bridge) Start() {
