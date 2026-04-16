@@ -3,7 +3,6 @@ package bridge
 import (
 	"context"
 	"net"
-	"os"
 	"sync"
 	"time"
 
@@ -141,11 +140,19 @@ func (b *Bridge) SetListener(ln net.Listener) {
 	b.listener = ln
 }
 
+// SnapshotConns pairs a session's live connections with its snapshot,
+// keyed by session ID, for the caller to register with tableflip.
+type SnapshotConns struct {
+	ClientConn net.Conn
+	ElkoConn   net.Conn
+}
+
 // SnapshotAll quiesces every active session's reader goroutine at a
-// clean frame boundary, captures a snapshot, and extracts the TCP
-// file descriptors. The reader goroutine blocks after producing the
-// snapshot so it doesn't race with the child process on the socket.
-func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
+// clean frame boundary and captures a snapshot. Returns the manifest
+// and a map of session ID → live connections so the caller can register
+// them with tableflip's Fds.AddConn (which uses SyscallConn internally
+// and avoids putting connections in blocking mode).
+func (b *Bridge) SnapshotAll() (*HandoffManifest, map[string]SnapshotConns, error) {
 	b.sessionsMutex.Lock()
 	defer b.sessionsMutex.Unlock()
 
@@ -154,10 +161,9 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 		ElkoHost:  b.elkoHost,
 		Context:   b.Context,
 	}
-	var files []*os.File
+	conns := make(map[string]SnapshotConns)
 
 	for _, sess := range b.Sessions {
-		// Skip sessions whose goroutine has already exited.
 		sess.closeMutex.Lock()
 		dead := sess.doneClosed
 		sess.closeMutex.Unlock()
@@ -176,10 +182,6 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 			continue
 		}
 
-		// Wait for the goroutine to produce the snapshot. Timeout
-		// handles dead sessions whose goroutine exited but the channel
-		// still exists — the send above succeeds on the buffered
-		// channel but nobody reads the request.
 		var snap *SessionSnapshot
 		select {
 		case snap = <-replyCh:
@@ -192,26 +194,10 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 			continue
 		}
 
-		// Now that the reader goroutine is paused, extract the fds.
-		clientFile, err := connFile(sess.clientConn.conn)
-		if err != nil {
-			log.Warn().Err(err).Str("session", sess.sessionID).
-				Msg("Cannot snapshot session (client fd); skipping")
-			continue
+		conns[sess.sessionID] = SnapshotConns{
+			ClientConn: sess.clientConn.conn,
+			ElkoConn:   sess.elkoConn,
 		}
-		elkoFile, err := connFile(sess.elkoConn)
-		if err != nil {
-			clientFile.Close()
-			log.Warn().Err(err).Str("session", sess.sessionID).
-				Msg("Cannot snapshot session (elko fd); skipping")
-			continue
-		}
-		clientIdx := len(files)
-		files = append(files, clientFile)
-		elkoIdx := len(files)
-		files = append(files, elkoFile)
-		snap.ClientFdIndex = clientIdx
-		snap.ElkoFdIndex = elkoIdx
 
 		manifest.Sessions = append(manifest.Sessions, *snap)
 		log.Info().Str("session", sess.sessionID).
@@ -219,47 +205,17 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 			Msg("Session snapshotted for handoff")
 	}
 
-	return manifest, files, nil
+	return manifest, conns, nil
 }
 
-// RestoreAll reconstructs sessions from a handoff manifest and the
-// inherited extra file descriptors, registers them in b.Sessions, and
-// starts their goroutines.
-func (b *Bridge) RestoreAll(manifest *HandoffManifest, extraFiles []*os.File) error {
-	for _, snap := range manifest.Sessions {
-		if snap.ClientFdIndex >= len(extraFiles) || snap.ElkoFdIndex >= len(extraFiles) {
-			log.Error().Str("session", snap.SessionID).
-				Msg("fd index out of range; dropping session")
-			continue
-		}
-		clientConn, err := net.FileConn(extraFiles[snap.ClientFdIndex])
-		if err != nil {
-			log.Error().Err(err).Str("session", snap.SessionID).
-				Msg("Cannot reconstruct client conn; dropping session")
-			continue
-		}
-		extraFiles[snap.ClientFdIndex].Close()
-
-		elkoConn, err := net.FileConn(extraFiles[snap.ElkoFdIndex])
-		if err != nil {
-			clientConn.Close()
-			log.Error().Err(err).Str("session", snap.SessionID).
-				Msg("Cannot reconstruct elko conn; dropping session")
-			continue
-		}
-		extraFiles[snap.ElkoFdIndex].Close()
-
-		sess := RestoreSession(b, &snap, clientConn, elkoConn)
-		b.Sessions[clientConn.RemoteAddr().String()] = sess
-		observability.IncSessionsTotal(context.Background())
-		observability.AddSessionActive(context.Background(), 1)
-		sess.StartRestored()
-
-		log.Info().Str("session", snap.SessionID).
-			Str("avatar", snap.UserName).
-			Msg("Session restored from handoff")
-	}
-	return nil
+// RegisterRestoredSession adds a restored session to the bridge's
+// session map and increments the active-session counters.
+func (b *Bridge) RegisterRestoredSession(sess *ClientSession) {
+	b.sessionsMutex.Lock()
+	defer b.sessionsMutex.Unlock()
+	b.Sessions[sess.TableKey()] = sess
+	observability.IncSessionsTotal(context.Background())
+	observability.AddSessionActive(context.Background(), 1)
 }
 
 func (b *Bridge) Start() {

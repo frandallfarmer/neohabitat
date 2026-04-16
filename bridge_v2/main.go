@@ -115,30 +115,29 @@ func main() {
 	)
 	habitatBridge.SetListener(ln)
 
-	// If the parent left a snapshot file, restore sessions from it
-	// before accepting new connections. The inherited fds are retrieved
-	// by name via tableflip's Fds API — no raw fd arithmetic.
+	// If the parent left a snapshot file, restore sessions from it.
+	// Inherited connections are retrieved by name via tableflip's
+	// Fds.Conn API — SyscallConn-based, no blocking mode issues.
 	if snapPath := os.Getenv(snapshotEnvVar); snapPath != "" {
 		manifest, merr := bridge.ReadManifest(snapPath)
 		if merr != nil {
 			log.Error().Err(merr).Msg("Could not read handoff manifest; starting fresh")
 		} else {
-			var extraFiles []*os.File
-			for i := range manifest.Sessions {
-				cname := fmt.Sprintf("session-%d-client", i)
-				ename := fmt.Sprintf("session-%d-elko", i)
-				cf, cerr := upg.Fds.File(cname)
-				ef, eerr := upg.Fds.File(ename)
-				if cerr != nil || eerr != nil {
-					log.Error().Int("index", i).
+			for _, snap := range manifest.Sessions {
+				cc, cerr := upg.Fds.Conn("tcp", "client-"+snap.SessionID)
+				ec, eerr := upg.Fds.Conn("tcp", "elko-"+snap.SessionID)
+				if cerr != nil || eerr != nil || cc == nil || ec == nil {
+					log.Error().Str("session", snap.SessionID).
 						AnErr("client_err", cerr).AnErr("elko_err", eerr).
-						Msg("Cannot retrieve inherited fds for session; skipping")
+						Msg("Cannot retrieve inherited conns; skipping")
 					continue
 				}
-				extraFiles = append(extraFiles, cf, ef)
-			}
-			if rerr := habitatBridge.RestoreAll(manifest, extraFiles); rerr != nil {
-				log.Error().Err(rerr).Msg("Session restore failed")
+				sess := bridge.RestoreSession(habitatBridge, &snap, cc, ec)
+				habitatBridge.RegisterRestoredSession(sess)
+				sess.StartRestored()
+				log.Info().Str("session", snap.SessionID).
+					Str("avatar", snap.UserName).
+					Msg("Session restored from handoff")
 			}
 			os.Remove(snapPath)
 		}
@@ -152,7 +151,7 @@ func main() {
 		for range sig {
 			log.Info().Msg("SIGHUP received, starting graceful upgrade...")
 
-			manifest, files, serr := habitatBridge.SnapshotAll()
+			manifest, sessConns, serr := habitatBridge.SnapshotAll()
 			if serr != nil {
 				log.Error().Err(serr).Msg("Snapshot failed; aborting upgrade")
 				continue
@@ -161,20 +160,20 @@ func main() {
 			snapPath := filepath.Join(os.TempDir(), fmt.Sprintf("bridge_v2_handoff_%d.json", os.Getpid()))
 			if werr := bridge.WriteManifest(snapPath, manifest); werr != nil {
 				log.Error().Err(werr).Msg("Could not write manifest; aborting upgrade")
-				for _, f := range files {
-					f.Close()
-				}
 				continue
 			}
 
 			os.Setenv(snapshotEnvVar, snapPath)
 
-			// Pass session fds to the child via tableflip's Fds mechanism.
-			// Each session contributes two fds (client, elko) in order.
-			for i := 0; i < len(files); i += 2 {
-				sessIdx := i / 2
-				upg.Fds.AddFile(fmt.Sprintf("session-%d-client", sessIdx), files[i])
-				upg.Fds.AddFile(fmt.Sprintf("session-%d-elko", sessIdx), files[i+1])
+			// Register session connections via AddConn which uses
+			// SyscallConn internally — no File(), no blocking mode.
+			for sessID, sc := range sessConns {
+				if tc, ok := sc.ClientConn.(tableflip.Conn); ok {
+					upg.Fds.AddConn("tcp", "client-"+sessID, tc)
+				}
+				if tc, ok := sc.ElkoConn.(tableflip.Conn); ok {
+					upg.Fds.AddConn("tcp", "elko-"+sessID, tc)
+				}
 			}
 
 			if uerr := upg.Upgrade(); uerr != nil {
@@ -183,9 +182,6 @@ func main() {
 				continue
 			}
 
-			// Don't close any fds here — os.Exit(0) in the Exit path
-			// will reclaim everything. Closing them prematurely can
-			// tear down the TCP socket before the child is ready.
 			log.Info().Int("sessions", len(manifest.Sessions)).
 				Msg("Upgrade triggered; waiting for child to take over")
 		}
