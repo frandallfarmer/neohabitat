@@ -219,10 +219,11 @@ func main() {
 	}
 }
 
-// connToFile wraps a net.Conn's fd in an *os.File via SyscallConn so
-// AddFile can dup it without calling File() (which switches the conn
-// to blocking mode). The returned *os.File shares the fd with the
-// conn — don't close it while the conn is in use.
+// connToFile dups a net.Conn's fd into a fresh *os.File via
+// SyscallConn + syscall.Dup. The dup is independent of the original
+// conn — GC'ing or closing the returned *os.File won't affect the
+// conn. Avoids (*net.TCPConn).File() which puts the conn in blocking
+// mode.
 func connToFile(c net.Conn) *os.File {
 	sc, ok := c.(syscall.Conn)
 	if !ok {
@@ -232,9 +233,18 @@ func connToFile(c net.Conn) *os.File {
 	if err != nil {
 		return nil
 	}
-	var fd uintptr
-	raw.Control(func(f uintptr) { fd = f })
-	return os.NewFile(fd, "conn")
+	var dupfd int = -1
+	raw.Control(func(fd uintptr) {
+		var e error
+		dupfd, e = syscall.Dup(int(fd))
+		if e != nil {
+			dupfd = -1
+		}
+	})
+	if dupfd < 0 {
+		return nil
+	}
+	return os.NewFile(uintptr(dupfd), "conn")
 }
 
 // fileToConn retrieves an inherited file by name from the tableflip
