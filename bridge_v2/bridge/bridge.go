@@ -141,10 +141,10 @@ func (b *Bridge) SetListener(ln net.Listener) {
 	b.listener = ln
 }
 
-// SnapshotAll serializes every active session's state and collects the
-// underlying TCP file descriptors for both client and Elko connections.
-// Returns the manifest (for JSON serialization to disk) and the fd
-// slice (for passing via tableflip ExtraFiles / os.StartProcess).
+// SnapshotAll quiesces every active session's reader goroutine at a
+// clean frame boundary, captures a snapshot, and extracts the TCP
+// file descriptors. The reader goroutine blocks after producing the
+// snapshot so it doesn't race with the child process on the socket.
 func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 	b.sessionsMutex.Lock()
 	defer b.sessionsMutex.Unlock()
@@ -157,6 +157,24 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 	var files []*os.File
 
 	for _, sess := range b.Sessions {
+		// Ask the session's reader goroutine to produce a snapshot at
+		// its next clean frame boundary. The goroutine blocks after
+		// responding so it won't consume any more bytes from the socket.
+		replyCh := make(chan *SessionSnapshot, 1)
+		select {
+		case sess.snapshotReq <- replyCh:
+		default:
+			log.Warn().Str("session", sess.sessionID).
+				Msg("Cannot request snapshot (channel full or nil); skipping")
+			continue
+		}
+
+		// Wait for the goroutine to produce the snapshot (bounded by
+		// the time it takes to finish the current frame — typically
+		// under a second).
+		snap := <-replyCh
+
+		// Now that the reader goroutine is paused, extract the fds.
 		clientFile, err := connFile(sess.clientConn.conn)
 		if err != nil {
 			log.Warn().Err(err).Str("session", sess.sessionID).
@@ -174,10 +192,10 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 		files = append(files, clientFile)
 		elkoIdx := len(files)
 		files = append(files, elkoFile)
+		snap.ClientFdIndex = clientIdx
+		snap.ElkoFdIndex = elkoIdx
 
-		snap := sess.Snapshot(clientIdx, elkoIdx)
 		manifest.Sessions = append(manifest.Sessions, *snap)
-
 		log.Info().Str("session", sess.sessionID).
 			Str("avatar", sess.UserName).
 			Msg("Session snapshotted for handoff")

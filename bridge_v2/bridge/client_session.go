@@ -104,6 +104,13 @@ type ClientSession struct {
 	waitingForAvatarContents bool
 	wg                       sync.WaitGroup
 	who                      string
+
+	// snapshotReq is used by SnapshotAll to request a snapshot at a
+	// clean frame boundary. The SIGHUP handler sends a response channel;
+	// the reader goroutine creates the snapshot and sends it back, then
+	// pauses until the process exits. This avoids the data race of
+	// peeking into bufio.Reader while the reader goroutine is active.
+	snapshotReq              chan chan *SessionSnapshot
 }
 
 func (c *ClientSession) initializeState(replySeq uint8) {
@@ -1802,6 +1809,7 @@ func NewClientSession(b *Bridge, c *ClientConnection) *ClientSession {
 		qlinkMode:                b.QLinkMode,
 		qlinkInSeq:               QLinkSeqLow,
 		qlinkOutSeq:              QLinkSeqLow,
+		snapshotReq:              make(chan chan *SessionSnapshot, 1),
 		waitingForAvatar:         true,
 		waitingForAvatarContents: false,
 	}
@@ -1907,6 +1915,7 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 		elkoConn:        elkoConn,
 		elkoDone:        make(chan struct{}),
 		elkoSendChan:    make(chan *ElkoMessage, MaxClientMessages),
+		snapshotReq:     make(chan chan *SessionSnapshot, 1),
 		firstConnection: snap.FirstConnection,
 		jsonPassthrough: snap.JsonPassthrough,
 		largeRequestCache: snap.LargeRequestCache,
@@ -1996,25 +2005,8 @@ func (c *ClientSession) StartRestored() {
 			return
 		}
 		if c.qlinkMode {
-			// QLink/Habilink — enter the frame loop directly, skipping
-			// preamble reading (already completed before snapshot).
-			for {
-				body, err := readQLinkFrame(c.clientReader)
-				if err != nil {
-					if err != io.EOF {
-						c.log.Error().Err(err).Msg("Error reading QLink frame")
-					}
-					go c.Close()
-					return
-				}
-				if len(body) == 0 {
-					continue
-				}
-				if err := c.handleQLinkFrame(body); err != nil {
-					c.log.Error().Err(err).Hex("body", body).Msg("Error handling QLink frame")
-					continue
-				}
-			}
+			c.qlinkFrameLoop()
+			return
 		}
 		// Legacy colon-prefix binary
 		for {

@@ -156,7 +156,26 @@ func (c *ClientSession) runHabilink() {
 	c.qlinkMu.Unlock()
 
 	// Phase 2: QLink frame loop.
+	c.qlinkFrameLoop()
+}
+
+// qlinkFrameLoop is the core read loop for QLink/Habilink sessions.
+// Extracted so both runHabilink and StartRestored can call it.
+func (c *ClientSession) qlinkFrameLoop() {
 	for {
+		// Check for a snapshot request at the frame boundary — before
+		// reading the next frame, the bufio.Reader is in a clean state
+		// (all bytes up to the last 0x0D consumed). Safe to capture.
+		select {
+		case replyCh := <-c.snapshotReq:
+			snap := c.Snapshot(-1, -1)
+			replyCh <- snap
+			// Block until the process exits — we must not read any more
+			// bytes from the socket because the child will take over.
+			select {}
+		default:
+		}
+
 		body, err := readQLinkFrame(c.clientReader)
 		if err != nil {
 			if err != io.EOF {
@@ -166,12 +185,10 @@ func (c *ClientSession) runHabilink() {
 			return
 		}
 		if len(body) == 0 {
-			// Stray FrameEnd between frames; ignore.
 			continue
 		}
 		if err := c.handleQLinkFrame(body); err != nil {
 			c.log.Error().Err(err).Hex("body", body).Msg("Error handling QLink frame")
-			// CRC errors and similar are non-fatal — keep reading.
 			continue
 		}
 	}
