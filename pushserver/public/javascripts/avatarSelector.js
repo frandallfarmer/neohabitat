@@ -5,9 +5,9 @@ function supportsGamepads() {
   return false;
 }
 
-function selectAvatar(avatarName) {
+function trackAvatar(avatarName) {
   AvatarName = avatarName;
-  $('#avatarMenuButton').text(avatarName);
+  activateDocent();
 }
 
 function activateDocent() {
@@ -23,23 +23,24 @@ function viewHelp() {
   $('#docsFrame').attr('src', EmulatorHelpPage);
 }
 
-function refreshAvatarDropdown() {
+function refreshAvatarButtons() {
   $.get('/api/v1/worldview/avatars', function(data) {
-    $('#avatarMenu').empty();
-    data.avatars.forEach(function(avatarObj) {
-      $('#avatarMenu').append(
-        $('<a class="dropdown-item" href="#" onclick="{0}">{1}</a>'.format(
-          "selectAvatar('{0}'); return false;".format(avatarObj.avatar),
-          avatarObj.avatar,
-        ))
-      );
+    var users = data.avatars.filter(function(a) {
+      return a.avatar.toLowerCase().indexOf('bot') === -1;
     });
-    if (data.avatars.length === 0) {
-      $('#avatarSubmit').attr('disabled', 'disabled');
-      $('#avatarMenuButton').attr('disabled', 'disabled');
+    var $controls = $('#docentControls').css('gap', '0.5rem');
+    $controls.empty();
+    if (users.length === 0) {
+      $controls.append('<button type="button" disabled="disabled" class="btn btn-primary">Activate Docent</button>');
     } else {
-      $('#avatarSubmit').removeAttr('disabled');
-      $('#avatarMenuButton').removeAttr('disabled');
+      users.forEach(function(avatarObj) {
+        var name = avatarObj.avatar;
+        $controls.append(
+          $('<button type="button" class="btn btn-success"></button>')
+            .text('Track ' + name)
+            .on('click', function() { trackAvatar(name); return false; })
+        );
+      });
     }
   }, 'json');
 }
@@ -49,7 +50,7 @@ $(document).ready(function() {
     EmulatorHelpPage = '/docs/region/EMULATOR_HELP_JOYSTICK';
     viewHelp();
   }
-  refreshAvatarDropdown();
-  // Checks for new Avatars every 5 seconds.
-  RefreshInterval = setInterval(refreshAvatarDropdown, 5000);
+  refreshAvatarButtons();
+  // Checks for new avatars every 5 seconds.
+  RefreshInterval = setInterval(refreshAvatarButtons, 5000);
 });
