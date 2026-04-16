@@ -1935,11 +1935,27 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 		sess.clientReader = bufio.NewReader(cc)
 	}
 
-	// Rebuild objects map from snapshots
-	for _, os := range snap.Objects {
-		msg := os.Message
-		msg.container = os.Container
-		sess.objects[os.Noid] = msg
+	// Rebuild objects map from snapshots, including the derived fields
+	// (className, classNumber, clientMessages, mod, ref) that live in
+	// unexported ElkoMessage fields and aren't captured by JSON.
+	for _, objSnap := range snap.Objects {
+		msg := objSnap.Message
+		msg.container = objSnap.Container
+		if msg.Obj != nil && len(msg.Obj.Mods) > 0 {
+			mod := msg.Obj.Mods[0]
+			msg.mod = mod
+			msg.ref = msg.Obj.Ref
+			if mod.Type != nil {
+				msg.className = *mod.Type
+				if cn, ok := ClassNameToId[*mod.Type]; ok {
+					msg.classNumber = cn
+				}
+				if cm, ok := ObjectClientMessages[*mod.Type]; ok {
+					msg.clientMessages = cm
+				}
+			}
+		}
+		sess.objects[objSnap.Noid] = msg
 	}
 
 	// Rebuild derived fields
@@ -1979,8 +1995,28 @@ func (c *ClientSession) StartRestored() {
 			c.runJsonPassthrough()
 			return
 		}
-		// Binary (QLink/Habilink or legacy) — go straight to the message
-		// loop, skipping protocol detection and preamble reading.
+		if c.qlinkMode {
+			// QLink/Habilink — enter the frame loop directly, skipping
+			// preamble reading (already completed before snapshot).
+			for {
+				body, err := readQLinkFrame(c.clientReader)
+				if err != nil {
+					if err != io.EOF {
+						c.log.Error().Err(err).Msg("Error reading QLink frame")
+					}
+					go c.Close()
+					return
+				}
+				if len(body) == 0 {
+					continue
+				}
+				if err := c.handleQLinkFrame(body); err != nil {
+					c.log.Error().Err(err).Hex("body", body).Msg("Error handling QLink frame")
+					continue
+				}
+			}
+		}
+		// Legacy colon-prefix binary
 		for {
 			data, err := c.nextClientMsg()
 			if err != nil || data == nil {
