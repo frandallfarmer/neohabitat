@@ -183,6 +183,16 @@ func main() {
 				continue
 			}
 
+			// Close the parent's copies of the dup'd session fds so the
+			// parent's goroutines (elkoReader, main loop) unblock from
+			// their Read calls and exit. Without this, Close() hangs on
+			// wg.Wait() because the goroutines keep reading from valid
+			// dup'd fds, the parent process never exits, and the child's
+			// next SIGHUP fails with "parent hasn't exited".
+			for _, f := range files {
+				f.Close()
+			}
+
 			log.Info().Int("sessions", len(manifest.Sessions)).
 				Msg("Upgrade triggered; waiting for child to take over")
 		}
