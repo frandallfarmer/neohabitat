@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strings"
+	"net"
 	"syscall"
 	"time"
 
@@ -124,8 +125,8 @@ func main() {
 			log.Error().Err(merr).Msg("Could not read handoff manifest; starting fresh")
 		} else {
 			for _, snap := range manifest.Sessions {
-				cc, cerr := upg.Fds.Conn("tcp", "client-"+snap.SessionID)
-				ec, eerr := upg.Fds.Conn("tcp", "elko-"+snap.SessionID)
+				cc, cerr := fileToConn(upg, "client-"+snap.SessionID)
+				ec, eerr := fileToConn(upg, "elko-"+snap.SessionID)
 				if cerr != nil || eerr != nil || cc == nil || ec == nil {
 					log.Error().Str("session", snap.SessionID).
 						AnErr("client_err", cerr).AnErr("elko_err", eerr).
@@ -165,14 +166,16 @@ func main() {
 
 			os.Setenv(snapshotEnvVar, snapPath)
 
-			// Register session connections via AddConn which uses
-			// SyscallConn internally — no File(), no blocking mode.
+			// Use AddFile (not AddConn) so we can close the inherited
+			// *os.File in the child after net.FileConn dups it. AddConn
+			// keeps the file alive in Fds.used which competes with the
+			// net.Conn for Go's poller notifications on the same socket.
 			for sessID, sc := range sessConns {
-				if tc, ok := sc.ClientConn.(tableflip.Conn); ok {
-					upg.Fds.AddConn("tcp", "client-"+sessID, tc)
+				if err := upg.Fds.AddFile("client-"+sessID, connToFile(sc.ClientConn)); err != nil {
+					log.Error().Err(err).Str("session", sessID).Msg("AddFile failed for client")
 				}
-				if tc, ok := sc.ElkoConn.(tableflip.Conn); ok {
-					upg.Fds.AddConn("tcp", "elko-"+sessID, tc)
+				if err := upg.Fds.AddFile("elko-"+sessID, connToFile(sc.ElkoConn)); err != nil {
+					log.Error().Err(err).Str("session", sessID).Msg("AddFile failed for elko")
 				}
 			}
 
@@ -214,4 +217,43 @@ func main() {
 		// exit reclaims everything; the child's inherited fds survive.
 		log.Info().Msg("Child process ready; parent exiting")
 	}
+}
+
+// connToFile wraps a net.Conn's fd in an *os.File via SyscallConn so
+// AddFile can dup it without calling File() (which switches the conn
+// to blocking mode). The returned *os.File shares the fd with the
+// conn — don't close it while the conn is in use.
+func connToFile(c net.Conn) *os.File {
+	sc, ok := c.(syscall.Conn)
+	if !ok {
+		return nil
+	}
+	raw, err := sc.SyscallConn()
+	if err != nil {
+		return nil
+	}
+	var fd uintptr
+	raw.Control(func(f uintptr) { fd = f })
+	return os.NewFile(fd, "conn")
+}
+
+// fileToConn retrieves an inherited file by name from the tableflip
+// upgrader, converts it to a net.Conn via net.FileConn, then closes
+// the *os.File so its fd is deregistered from Go's poller. The
+// net.Conn has its own dup'd fd and is the sole poller registrant for
+// the socket — no competition for read notifications.
+func fileToConn(upg *tableflip.Upgrader, name string) (net.Conn, error) {
+	f, err := upg.Fds.File(name)
+	if err != nil {
+		return nil, err
+	}
+	if f == nil {
+		return nil, fmt.Errorf("inherited file %q not found", name)
+	}
+	conn, err := net.FileConn(f)
+	f.Close()
+	if err != nil {
+		return nil, fmt.Errorf("FileConn(%s): %w", name, err)
+	}
+	return conn, nil
 }

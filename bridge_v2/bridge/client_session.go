@@ -1991,6 +1991,13 @@ func (c *ClientSession) StartRestored() {
 	go func() {
 		defer c.wg.Done()
 
+		c.log.Info().
+			Bool("qlink", c.qlinkMode).
+			Bool("json", c.jsonPassthrough).
+			Str("client_addr", c.clientConn.RemoteAddr().String()).
+			Str("elko_type", fmt.Sprintf("%T", c.elkoConn)).
+			Msg("StartRestored: launching goroutines")
+
 		// Start Elko reader/writer goroutines on the inherited connection.
 		c.wg.Add(2)
 		c.elkoWg.Add(2)
@@ -1998,6 +2005,8 @@ func (c *ClientSession) StartRestored() {
 		go c.elkoReader()
 		go c.elkoWriter()
 		c.elkoConnInitWg.Wait()
+
+		c.log.Info().Msg("StartRestored: elko goroutines ready, entering read loop")
 
 		// Enter the appropriate read loop based on session type.
 		if c.jsonPassthrough {
