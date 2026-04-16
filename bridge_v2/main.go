@@ -88,11 +88,22 @@ func main() {
 		log.Info().Str("version", buildVersion).Msg("OpenTelemetry initialized")
 	}
 
-	// tableflip manages the HAProxy-style graceful restart dance:
-	//   - On first launch it creates a fresh listener.
-	//   - On SIGHUP it forks a child, passes the listener fd (and any
-	//     extra session fds), and waits for the child to signal Ready.
-	//   - The parent then drains existing work and exits.
+	// Before tableflip.New, set all possible inherited fds (5+) to
+	// blocking mode. tableflip's newParent wraps each inherited fd in
+	// os.NewFile, and Go registers non-blocking fds with epoll. If the
+	// session fds are non-blocking (which TCP sockets always are in Go),
+	// they get registered with the poller here, AND later net.FileConn
+	// creates a dup that ALSO registers — two epoll entries for the
+	// same socket, competing for read notifications. Making them
+	// blocking before newParent runs prevents the first registration.
+	// net.FileConn will dup and set non-blocking itself, giving us
+	// exactly one clean poller entry.
+	if os.Getenv("TABLEFLIP_HAS_PARENT_7DIU3") != "" {
+		for fd := 5; fd < 100; fd++ {
+			syscall.SetNonblock(fd, false)
+		}
+	}
+
 	upg, err := tableflip.New(tableflip.Options{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not initialize tableflip upgrader")
