@@ -25,7 +25,14 @@ var buildVersion = "dev"
 
 var initialContext = flag.String("context", "context-Downtown_5f", "Parameter for entercontext for unknown users")
 var listen = flag.String("listen", "127.0.0.1:1337", "Host:Port to listen for client connections")
-var elko = flag.String("elko.host", "127.0.0.1:9000", "Host:Port of the Habitat Elko Server")
+// Default target is Habiproxy (pushserver's TCP session-tracking proxy on
+// port 2018), not Elko directly on 9000. Habiproxy parses messages in-
+// flight to extract avatar location and region state, then fires callbacks
+// to pushserver's HTTP tier so the web Docent UI can render region help,
+// avatar lists, and compass state alongside a live C64 session. Pointing
+// at 9000 bypasses the Docent entirely. See pushserver/habiproxy/proxy.js
+// and pushserver/routes/events.js for the proxy → Docent event plumbing.
+var elko = flag.String("elko.host", "127.0.0.1:2018", "Host:Port of Habiproxy (or Elko directly — but Habiproxy is required for Docent integration)")
 var mongo = flag.String("mongo.host", "mongodb://127.0.0.1:27017", "MongoDB server host")
 var mongoDatabase = flag.String("mongo.db", "elko", "Database within MongoDB to use")
 var mongoCollection = flag.String("mongo.collection", "odb", "Collection within MongoDB to use")

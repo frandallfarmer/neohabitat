@@ -7,7 +7,7 @@ bin = "./tmp/bridge_v2"
 args_bin = [
   "--qlink",
   "--listen", "0.0.0.0:2026",
-  "--elko.host", "neohabitat:9000",
+  "--elko.host", "neohabitat:2018",
   "--mongo.host", "mongodb://neohabitatmongo:27017",
   "--mongo.db", "elko",
   "--mongo.collection", "odb",
