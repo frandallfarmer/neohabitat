@@ -169,10 +169,21 @@ func (b *Bridge) SnapshotAll() (*HandoffManifest, []*os.File, error) {
 			continue
 		}
 
-		// Wait for the goroutine to produce the snapshot (bounded by
-		// the time it takes to finish the current frame — typically
-		// under a second).
-		snap := <-replyCh
+		// Wait for the goroutine to produce the snapshot. Timeout
+		// handles dead sessions whose goroutine exited but the channel
+		// still exists — the send above succeeds on the buffered
+		// channel but nobody reads the request.
+		var snap *SessionSnapshot
+		select {
+		case snap = <-replyCh:
+		case <-time.After(10 * time.Second):
+			log.Warn().Str("session", sess.sessionID).
+				Msg("Snapshot request timed out (goroutine likely dead); skipping")
+			continue
+		}
+		if snap == nil {
+			continue
+		}
 
 		// Now that the reader goroutine is paused, extract the fds.
 		clientFile, err := connFile(sess.clientConn.conn)
