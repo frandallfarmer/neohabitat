@@ -83,11 +83,9 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 		return nil, fmt.Errorf("SyscallConn: %w", err)
 	}
 
-	var rawFd int
 	var opErr error
 	err = raw.Control(func(fd uintptr) {
-		rawFd = int(fd)
-		opErr = saveTCPStateFd(rawFd, state)
+		opErr = saveTCPStateFd(int(fd), state)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Control: %w", err)
@@ -95,15 +93,12 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 	if opErr != nil {
 		return nil, opErr
 	}
-	// Close the raw fd directly. Go's tc.Close() defers the actual
-	// close(fd) until all internal references are released, which
-	// leaves the bind hash entry alive. unix.Close bypasses that.
-	// Then tc.Close() to clean up Go's internal state (gets EBADF
-	// on the already-closed fd, which is harmless).
-	unix.Close(rawFd)
+	// TCP_REPAIR is still active on the fd. Close via Go's normal
+	// path — the kernel won't send FIN/RST because repair mode is
+	// on. No unix.Close() — that causes a double-close race when
+	// Go's runtime or GC finalizer closes the fd number again after
+	// the kernel has reassigned it to a new socket.
 	tc.Close()
-	fmt.Fprintf(os.Stderr, "TCP_REPAIR: fd=%d closed local=%s:%d remote=%s:%d\n",
-		rawFd, state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort)
 	return state, nil
 }
 
@@ -379,7 +374,6 @@ func restoreTCPFd(state *TCPState) (int, error) {
 
 	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEADDR, 1)
 	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEPORT, 1)
-	unix.SetsockoptInt(fd, unix.IPPROTO_IP, unix.IP_FREEBIND, 1)
 
 	if state.SndBuf > 0 {
 		unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_SNDBUF, state.SndBuf/2)
@@ -392,10 +386,8 @@ func restoreTCPFd(state *TCPState) (int, error) {
 		sa := &unix.SockaddrInet4{Port: state.LocalPort}
 		copy(sa.Addr[:], localIP.To4())
 		if err := unix.Bind(fd, sa); err != nil {
-			fmt.Fprintf(os.Stderr, "TCP_REPAIR bind FAIL: fd=%d addr=%s:%d err=%v\n",
-				fd, state.LocalAddr, state.LocalPort, err)
 			unix.Close(fd)
-			return -1, fmt.Errorf("bind: %w", err)
+			return -1, fmt.Errorf("bind %s:%d: %w", state.LocalAddr, state.LocalPort, err)
 		}
 	} else {
 		sa := &unix.SockaddrInet6{Port: state.LocalPort}
