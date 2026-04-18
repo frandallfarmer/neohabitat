@@ -83,9 +83,11 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 		return nil, fmt.Errorf("SyscallConn: %w", err)
 	}
 
+	var rawFd int
 	var opErr error
 	err = raw.Control(func(fd uintptr) {
-		opErr = saveTCPStateFd(int(fd), state)
+		rawFd = int(fd)
+		opErr = saveTCPStateFd(rawFd, state)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Control: %w", err)
@@ -93,14 +95,15 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 	if opErr != nil {
 		return nil, opErr
 	}
-	// Close via Go's runtime. TCP_REPAIR is still active on the fd,
-	// so the kernel won't send FIN/RST. Go's Close properly removes
-	// the fd from epoll and releases all internal state.
-	var closeFd uintptr
-	raw.Control(func(fd uintptr) { closeFd = fd })
-	cerr := tc.Close()
-	fmt.Fprintf(os.Stderr, "TCP_REPAIR: fd=%d close_err=%v local=%s:%d remote=%s:%d\n",
-		closeFd, cerr, state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort)
+	// Close the raw fd directly. Go's tc.Close() defers the actual
+	// close(fd) until all internal references are released, which
+	// leaves the bind hash entry alive. unix.Close bypasses that.
+	// Then tc.Close() to clean up Go's internal state (gets EBADF
+	// on the already-closed fd, which is harmless).
+	unix.Close(rawFd)
+	tc.Close()
+	fmt.Fprintf(os.Stderr, "TCP_REPAIR: fd=%d closed local=%s:%d remote=%s:%d\n",
+		rawFd, state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort)
 	return state, nil
 }
 
