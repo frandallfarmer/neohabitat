@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -124,9 +125,9 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 			log.Error().Err(merr).Msg("Could not read manifest; starting fresh")
 		} else {
 			for _, snap := range manifest.Sessions {
-				if snap.ClientTCP == nil || snap.ElkoTCP == nil {
+				if snap.ClientTCP == nil {
 					log.Error().Str("session", snap.SessionID).
-						Msg("Missing TCP state; skipping")
+						Msg("Missing client TCP state; skipping")
 					continue
 				}
 				cc, cerr := bridge.RestoreTCPConn(snap.ClientTCP)
@@ -135,11 +136,13 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 						Msg("Cannot restore client TCP; skipping")
 					continue
 				}
-				ec, eerr := bridge.RestoreTCPConn(snap.ElkoTCP)
+				// Elko reconnects fresh — the child opens a new TCP
+				// connection to Habiproxy and re-enters the context.
+				ec, eerr := net.DialTimeout("tcp", *elko, 5*time.Second)
 				if eerr != nil {
 					cc.Close()
 					log.Error().Err(eerr).Str("session", snap.SessionID).
-						Msg("Cannot restore elko TCP; skipping")
+						Msg("Cannot connect to Elko; skipping")
 					continue
 				}
 				sess := bridge.RestoreSession(habitatBridge, &snap, cc, ec)

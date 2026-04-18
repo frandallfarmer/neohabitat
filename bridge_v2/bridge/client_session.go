@@ -2004,7 +2004,18 @@ func (c *ClientSession) StartRestored() {
 		go c.elkoWriter()
 		c.elkoConnInitWg.Wait()
 
-		c.log.Info().Msg("StartRestored: elko goroutines ready, entering read loop")
+		c.log.Info().Msg("StartRestored: elko goroutines ready")
+
+		// The Elko connection is fresh (not TCP_REPAIR'd). Re-enter the
+		// same context so Elko knows we're here. The C64 client won't
+		// see a region transition because we don't send the contents
+		// vector — just the server-side session setup.
+		if c.regionRef != "" {
+			c.log.Info().Str("context", c.regionRef).Msg("StartRestored: re-entering context on fresh Elko conn")
+			c.enterContext(c.regionRef)
+		}
+
+		c.log.Info().Msg("StartRestored: entering read loop")
 
 		// Enter the appropriate read loop based on session type.
 		if c.jsonPassthrough {
