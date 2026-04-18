@@ -85,19 +85,18 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 	var opErr error
 	err = raw.Control(func(fd uintptr) {
 		opErr = saveTCPStateFd(int(fd), state)
-		if opErr != nil {
-			return
-		}
-		// Close the raw fd directly while TCP_REPAIR is still active.
-		// This prevents the kernel from sending FIN/RST and frees the
-		// local address immediately. We bypass Go's net.Conn.Close()
-		// because the runtime may defer the actual close.
-		syscall.Close(int(fd))
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Control: %w", err)
 	}
-	return state, opErr
+	if opErr != nil {
+		return nil, opErr
+	}
+	// Close via Go's runtime. TCP_REPAIR is still active on the fd,
+	// so the kernel won't send FIN/RST. Go's Close properly removes
+	// the fd from epoll and releases all internal state.
+	tc.Close()
+	return state, nil
 }
 
 func saveTCPStateFd(fd int, state *TCPState) error {
