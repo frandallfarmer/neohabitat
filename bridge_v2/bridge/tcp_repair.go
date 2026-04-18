@@ -96,7 +96,11 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 	// Close via Go's runtime. TCP_REPAIR is still active on the fd,
 	// so the kernel won't send FIN/RST. Go's Close properly removes
 	// the fd from epoll and releases all internal state.
-	tc.Close()
+	var closeFd uintptr
+	raw.Control(func(fd uintptr) { closeFd = fd })
+	cerr := tc.Close()
+	fmt.Fprintf(os.Stderr, "TCP_REPAIR: fd=%d close_err=%v local=%s:%d remote=%s:%d\n",
+		closeFd, cerr, state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort)
 	return state, nil
 }
 
@@ -384,6 +388,8 @@ func restoreTCPFd(state *TCPState) (int, error) {
 		sa := &unix.SockaddrInet4{Port: state.LocalPort}
 		copy(sa.Addr[:], localIP.To4())
 		if err := unix.Bind(fd, sa); err != nil {
+			fmt.Fprintf(os.Stderr, "TCP_REPAIR bind FAIL: fd=%d addr=%s:%d err=%v\n",
+				fd, state.LocalAddr, state.LocalPort, err)
 			unix.Close(fd)
 			return -1, fmt.Errorf("bind: %w", err)
 		}
