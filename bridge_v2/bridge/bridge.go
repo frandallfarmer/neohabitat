@@ -202,6 +202,8 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 		snap.ClientTCP = clientTCP
 		snap.ElkoTCP = elkoTCP
 
+		// SaveTCPState closed the raw fds while TCP_REPAIR was active
+		// (no FIN/RST sent). The local address is now free for the child.
 		manifest.Sessions = append(manifest.Sessions, *snap)
 		log.Info().Str("session", sess.sessionID).
 			Str("avatar", sess.UserName).

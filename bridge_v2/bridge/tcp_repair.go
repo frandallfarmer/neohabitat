@@ -58,7 +58,8 @@ type tcpRepairWindowStruct struct {
 }
 
 // SaveTCPState captures the full TCP connection state from a live
-// socket. The socket must be in ESTABLISHED state. Requires
+// socket and closes the socket while TCP_REPAIR is active (preventing
+// FIN/RST). The net.Conn is unusable after this call. Requires
 // CAP_NET_ADMIN.
 func SaveTCPState(conn net.Conn) (*TCPState, error) {
 	tc, ok := conn.(*net.TCPConn)
@@ -84,6 +85,14 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 	var opErr error
 	err = raw.Control(func(fd uintptr) {
 		opErr = saveTCPStateFd(int(fd), state)
+		if opErr != nil {
+			return
+		}
+		// Close the raw fd directly while TCP_REPAIR is still active.
+		// This prevents the kernel from sending FIN/RST and frees the
+		// local address immediately. We bypass Go's net.Conn.Close()
+		// because the runtime may defer the actual close.
+		syscall.Close(int(fd))
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Control: %w", err)
@@ -92,12 +101,15 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 }
 
 func saveTCPStateFd(fd int, state *TCPState) error {
-	// Enable TCP_REPAIR mode
+	// Enable TCP_REPAIR mode. We intentionally do NOT disable it on
+	// return — the caller must close the socket while repair mode is
+	// still active. Closing a socket in repair mode does NOT send
+	// FIN/RST to the peer, which is essential: the peer must not know
+	// the connection was torn down, because the child process is about
+	// to recreate it with the saved state.
 	if err := syscall.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpRepair, 1); err != nil {
 		return fmt.Errorf("enable TCP_REPAIR: %w", err)
 	}
-	// Always disable repair mode when done, even on error
-	defer syscall.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpRepair, 0)
 
 	// Get TCP_INFO for sequence numbers
 	info, err := unix.GetsockoptTCPInfo(fd, unix.IPPROTO_TCP, unix.TCP_INFO)
