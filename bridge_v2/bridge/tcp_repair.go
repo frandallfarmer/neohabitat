@@ -304,17 +304,152 @@ func RestoreTCPConn(state *TCPState) (net.Conn, error) {
 		return nil, fmt.Errorf("disable TCP_REPAIR: %w", err)
 	}
 
-	// Wrap in net.Conn via os.File → net.FileConn. Set non-blocking
-	// first so Go's poller picks it up.
+	// Return the raw fd. The caller decides how to wrap it —
+	// the parent keeps it blocking for fd passing, the child
+	// sets non-blocking for net.FileConn.
+	return fdToConn(fd, state)
+}
+
+// fdToConn wraps a raw TCP fd in a net.Conn. Sets non-blocking and
+// uses net.FileConn which registers with Go's poller.
+func fdToConn(fd int, state *TCPState) (net.Conn, error) {
 	unix.SetNonblock(fd, true)
 	f := os.NewFile(uintptr(fd), fmt.Sprintf("tcp-repair-%s:%d", state.RemoteAddr, state.RemotePort))
 	conn, err := net.FileConn(f)
-	f.Close() // FileConn dup'd the fd; close our copy
+	f.Close()
 	if err != nil {
 		return nil, fmt.Errorf("FileConn: %w", err)
 	}
-
 	return conn, nil
+}
+
+// SaveAndRestoreTCPConn performs the full CRIU-style TCP takeover in a
+// single process: saves state, closes the old socket (in repair mode,
+// no FIN/RST), then immediately creates a new socket with the saved
+// state. Returns a raw fd in BLOCKING mode suitable for passing to a
+// child process. The caller must NOT wrap it in net.FileConn in the
+// parent — that would register it with Go's poller.
+func SaveAndRestoreTCPConn(conn net.Conn) (*TCPState, int, error) {
+	state, err := SaveTCPState(conn)
+	if err != nil {
+		return nil, -1, err
+	}
+
+	// Old socket is closed (by SaveTCPState inside Control).
+	// Create new socket with saved state — same process, no race.
+	fd, err := restoreTCPFd(state)
+	if err != nil {
+		return state, -1, fmt.Errorf("restore after save: %w", err)
+	}
+
+	// Leave the fd in BLOCKING mode so it doesn't get registered
+	// with the parent's epoll when wrapped in os.NewFile for passing.
+	return state, fd, nil
+}
+
+// restoreTCPFd is the inner restore that returns a raw fd instead of
+// a net.Conn. Used by SaveAndRestoreTCPConn.
+func restoreTCPFd(state *TCPState) (int, error) {
+	localIP := net.ParseIP(state.LocalAddr)
+	remoteIP := net.ParseIP(state.RemoteAddr)
+	family := unix.AF_INET
+	if localIP.To4() == nil {
+		family = unix.AF_INET6
+	}
+
+	fd, err := unix.Socket(family, unix.SOCK_STREAM, unix.IPPROTO_TCP)
+	if err != nil {
+		return -1, fmt.Errorf("socket: %w", err)
+	}
+
+	if err := unix.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpRepair, 1); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("enable TCP_REPAIR: %w", err)
+	}
+
+	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEADDR, 1)
+
+	if state.SndBuf > 0 {
+		unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_SNDBUF, state.SndBuf/2)
+	}
+	if state.RcvBuf > 0 {
+		unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_RCVBUF, state.RcvBuf/2)
+	}
+
+	if family == unix.AF_INET {
+		sa := &unix.SockaddrInet4{Port: state.LocalPort}
+		copy(sa.Addr[:], localIP.To4())
+		if err := unix.Bind(fd, sa); err != nil {
+			unix.Close(fd)
+			return -1, fmt.Errorf("bind: %w", err)
+		}
+	} else {
+		sa := &unix.SockaddrInet6{Port: state.LocalPort}
+		copy(sa.Addr[:], localIP.To16())
+		if err := unix.Bind(fd, sa); err != nil {
+			unix.Close(fd)
+			return -1, fmt.Errorf("bind6: %w", err)
+		}
+	}
+
+	if err := unix.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpRepairQueue, tcpSendQueue); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("set send queue: %w", err)
+	}
+	if err := unix.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpQueueSeq, int(state.SndSeq)); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("set send seq: %w", err)
+	}
+
+	if err := unix.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpRepairQueue, tcpRecvQueue); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("set recv queue: %w", err)
+	}
+	if err := unix.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpQueueSeq, int(state.RcvSeq)); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("set recv seq: %w", err)
+	}
+
+	win := tcpRepairWindowStruct{
+		SndWl1: state.SndWl1, SndWnd: state.SndWnd,
+		MaxWindow: state.MaxWindow, RcvWnd: state.RcvWnd, RcvWup: state.RcvWup,
+	}
+	_, _, errno := syscall.Syscall6(syscall.SYS_SETSOCKOPT,
+		uintptr(fd), unix.IPPROTO_TCP, tcpRepairWindow,
+		uintptr(unsafe.Pointer(&win)), unsafe.Sizeof(win), 0)
+	if errno != 0 {
+		unix.Close(fd)
+		return -1, fmt.Errorf("TCP_REPAIR_WINDOW: %w", errno)
+	}
+
+	opt := unix.TCPRepairOpt{Code: unix.TCPOPT_MAXSEG, Val: state.MSSClamp}
+	if err := unix.SetsockoptTCPRepairOpt(fd, unix.IPPROTO_TCP, unix.TCP_REPAIR_OPTIONS, []unix.TCPRepairOpt{opt}); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("TCP_REPAIR_OPTIONS MSS: %w", err)
+	}
+
+	if family == unix.AF_INET {
+		sa := &unix.SockaddrInet4{Port: state.RemotePort}
+		copy(sa.Addr[:], remoteIP.To4())
+		if err := unix.Connect(fd, sa); err != nil {
+			unix.Close(fd)
+			return -1, fmt.Errorf("connect: %w", err)
+		}
+	} else {
+		sa := &unix.SockaddrInet6{Port: state.RemotePort}
+		copy(sa.Addr[:], remoteIP.To16())
+		if err := unix.Connect(fd, sa); err != nil {
+			unix.Close(fd)
+			return -1, fmt.Errorf("connect6: %w", err)
+		}
+	}
+
+	if err := unix.SetsockoptInt(fd, unix.IPPROTO_TCP, tcpRepair, 0); err != nil {
+		unix.Close(fd)
+		return -1, fmt.Errorf("disable TCP_REPAIR: %w", err)
+	}
+
+	return fd, nil
 }
 
 // MarshalTCPState serializes TCP state to JSON for the handoff manifest.

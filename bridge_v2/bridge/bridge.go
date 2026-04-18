@@ -186,20 +186,21 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 			continue
 		}
 
-		// TCP_REPAIR the client connection only. The C64 can't reconnect
-		// (physical serial line over TCP). The Elko/Habiproxy connection
-		// reconnects fresh in the child — closing the Elko socket via
-		// TCP_REPAIR would RST Habiproxy when it tries to send to our
-		// now-dead socket.
-		clientTCP, err := SaveTCPState(sess.clientConn.conn)
+		// Save + restore the client TCP connection in the SAME process.
+		// SaveAndRestoreTCPConn closes the old socket (in repair mode,
+		// no FIN/RST) then immediately creates a new one with the saved
+		// state. Returns a raw fd in blocking mode for passing to child.
+		clientTCP, clientFd, err := SaveAndRestoreTCPConn(sess.clientConn.conn)
 		if err != nil {
 			log.Error().Err(err).Str("session", sess.sessionID).
-				Msg("Cannot save client TCP state; skipping")
+				Msg("Cannot save+restore client TCP; skipping")
 			continue
 		}
 		snap.ClientTCP = clientTCP
-		// Elko connection: just close normally. The child will open
-		// a fresh one and re-enter the same context.
+		// Store the restored fd so the caller (main.go) can pass it
+		// to the child via tableflip.
+		snap.restoredClientFd = clientFd
+		// Elko: close normally, child reconnects fresh.
 		_ = sess.elkoConn.Close()
 		manifest.Sessions = append(manifest.Sessions, *snap)
 		log.Info().Str("session", sess.sessionID).

@@ -66,6 +66,16 @@ type SessionSnapshot struct {
 	ElkoTCP   *TCPState `json:"elko_tcp,omitempty"`
 
 	DataRate int `json:"data_rate"`
+
+	// restoredClientFd holds the raw fd of a TCP_REPAIR'd client socket
+	// created by the parent. Not serialized — only used in-memory
+	// between SnapshotAllWithTCP and the fd passing in main.go.
+	restoredClientFd int `json:"-"`
+}
+
+// RestoredClientFd returns the raw fd for the restored client socket.
+func (s *SessionSnapshot) RestoredClientFd() int {
+	return s.restoredClientFd
 }
 
 // ObjectSnapshot captures one entry from the objects map. The unexported

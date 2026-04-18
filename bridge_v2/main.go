@@ -125,19 +125,25 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 			log.Error().Err(merr).Msg("Could not read manifest; starting fresh")
 		} else {
 			for _, snap := range manifest.Sessions {
-				if snap.ClientTCP == nil {
-					log.Error().Str("session", snap.SessionID).
-						Msg("Missing client TCP state; skipping")
+				// Client connection: retrieve the fd passed by the parent
+				// via AddFile. The parent did SaveAndRestore in its own
+				// process (no bind race), then passed the blocking-mode fd.
+				// We wrap it in net.Conn here (sets non-blocking, registers
+				// with epoll — single registration, no conflicts).
+				f, ferr := upg.Fds.File("client-" + snap.SessionID)
+				if ferr != nil || f == nil {
+					log.Error().AnErr("err", ferr).Str("session", snap.SessionID).
+						Msg("Cannot retrieve client fd; skipping")
 					continue
 				}
-				cc, cerr := bridge.RestoreTCPConn(snap.ClientTCP)
+				cc, cerr := net.FileConn(f)
+				f.Close()
 				if cerr != nil {
 					log.Error().Err(cerr).Str("session", snap.SessionID).
-						Msg("Cannot restore client TCP; skipping")
+						Msg("Cannot wrap client fd; skipping")
 					continue
 				}
-				// Elko reconnects fresh — the child opens a new TCP
-				// connection to Habiproxy and re-enters the context.
+				// Elko: fresh connection + re-enter context.
 				ec, eerr := net.DialTimeout("tcp", *elko, 5*time.Second)
 				if eerr != nil {
 					cc.Close()
@@ -176,6 +182,23 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 				continue
 			}
 			os.Setenv(snapshotEnvVar, snapPath)
+
+			// Pass the restored client fds (blocking mode) via AddFile.
+			// The parent did save+restore in its own process so the
+			// sockets are already in ESTABLISHED state with correct
+			// TCP sequence numbers. The child just wraps them.
+			for _, snap := range manifest.Sessions {
+				fd := snap.RestoredClientFd()
+				if fd < 0 {
+					continue
+				}
+				f := os.NewFile(uintptr(fd), "client-"+snap.SessionID)
+				if err := upg.Fds.AddFile("client-"+snap.SessionID, f); err != nil {
+					log.Error().Err(err).Str("session", snap.SessionID).
+						Msg("AddFile failed for restored client fd")
+				}
+				f.Close()
+			}
 
 			if uerr := upg.Upgrade(); uerr != nil {
 				log.Error().Err(uerr).Msg("Upgrade failed")
