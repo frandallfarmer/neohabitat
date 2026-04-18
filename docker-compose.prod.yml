@@ -39,6 +39,7 @@ services:
       - "--rate=1200"
       - "--log.level=INFO"
     # CRIU needs these capabilities to checkpoint/restore processes.
+    user: "0"
     cap_add:
       - SYS_PTRACE
       - NET_ADMIN
