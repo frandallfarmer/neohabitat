@@ -145,7 +145,7 @@ func (b *Bridge) SetListener(ln net.Listener) {
 // state and TCP connection state (via TCP_REPAIR getsockopt). The
 // child process uses the TCP state to create brand new sockets —
 // no fd inheritance, no epoll conflicts.
-func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
+func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
 	b.sessionsMutex.Lock()
 	defer b.sessionsMutex.Unlock()
 
@@ -155,23 +155,25 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 		Context:   b.Context,
 	}
 
+	// Phase 1: quiesce all live sessions at frame boundaries.
+	type quiescedSession struct {
+		sess *ClientSession
+		snap *SessionSnapshot
+	}
+	var quiesced []quiescedSession
+
 	for _, sess := range b.Sessions {
 		sess.closeMutex.Lock()
 		dead := sess.doneClosed
 		sess.closeMutex.Unlock()
 		if dead {
 			log.Debug().Str("session", sess.sessionID).
-				Msg("Session already closed; skipping snapshot")
+				Msg("Session already closed; skipping")
 			continue
 		}
-
-		// Set a short read deadline to wake up readQLinkFrame if
-		// the C64 is idle. Without this, ReadBytes blocks forever
-		// and the goroutine never checks snapshotReq.
 		if tc, ok := sess.clientConn.conn.(*net.TCPConn); ok {
 			tc.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
 		}
-
 		replyCh := make(chan *SessionSnapshot, 1)
 		select {
 		case sess.snapshotReq <- replyCh:
@@ -180,7 +182,6 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 				Msg("Cannot request snapshot; skipping")
 			continue
 		}
-
 		var snap *SessionSnapshot
 		select {
 		case snap = <-replyCh:
@@ -189,29 +190,35 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 				Msg("Snapshot timed out; skipping")
 			continue
 		}
-		if snap == nil {
-			continue
+		if snap != nil {
+			quiesced = append(quiesced, quiescedSession{sess, snap})
 		}
+	}
 
-		// Save + restore the client TCP connection in the SAME process.
-		// SaveAndRestoreTCPConn closes the old socket (in repair mode,
-		// no FIN/RST) then immediately creates a new one with the saved
-		// state. Returns a raw fd in blocking mode for passing to child.
-		clientTCP, clientFd, err := SaveAndRestoreTCPConn(sess.clientConn.conn)
+	if len(quiesced) == 0 {
+		return manifest, nil
+	}
+
+	// Phase 2: close the listener. This frees the port for bind()
+	// in TCP_REPAIR restore. The child will reopen it with
+	// SO_REUSEPORT after restoring connections.
+	log.Info().Msg("Closing listener for TCP_REPAIR bind")
+	ln.Close()
+
+	// Phase 3: save + restore each session's client TCP connection.
+	for _, qs := range quiesced {
+		clientTCP, clientFd, err := SaveAndRestoreTCPConn(qs.sess.clientConn.conn)
 		if err != nil {
-			log.Error().Err(err).Str("session", sess.sessionID).
+			log.Error().Err(err).Str("session", qs.sess.sessionID).
 				Msg("Cannot save+restore client TCP; skipping")
 			continue
 		}
-		snap.ClientTCP = clientTCP
-		// Store the restored fd so the caller (main.go) can pass it
-		// to the child via tableflip.
-		snap.restoredClientFd = clientFd
-		// Elko: close normally, child reconnects fresh.
-		_ = sess.elkoConn.Close()
-		manifest.Sessions = append(manifest.Sessions, *snap)
-		log.Info().Str("session", sess.sessionID).
-			Str("avatar", sess.UserName).
+		qs.snap.ClientTCP = clientTCP
+		qs.snap.restoredClientFd = clientFd
+		_ = qs.sess.elkoConn.Close()
+		manifest.Sessions = append(manifest.Sessions, *qs.snap)
+		log.Info().Str("session", qs.sess.sessionID).
+			Str("avatar", qs.sess.UserName).
 			Uint32("snd_seq", clientTCP.SndSeq).
 			Uint32("rcv_seq", clientTCP.RcvSeq).
 			Msg("Session snapshotted with TCP state")
