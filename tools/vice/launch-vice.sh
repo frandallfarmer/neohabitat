@@ -216,11 +216,13 @@ else
     echo "launch-vice.sh: keeping temp config at $TMP_HOME"
 fi
 
-# Forward Ctrl-C / SIGTERM to the child so the user can shut x64sc down with
-# the usual signals and still get the temp dir cleaned up.
+# Forward Ctrl-C / SIGTERM to the child so the user can shut x64sc down
+# with the usual signals and still get the temp dir cleaned up. After
+# forwarding, re-wait for the child (wait gets interrupted by the trap).
 forward_signal() {
     if [[ -n "${VICE_PID:-}" ]]; then
         kill -"$1" "$VICE_PID" 2>/dev/null || true
+        wait "$VICE_PID" 2>/dev/null || true
     fi
 }
 trap 'forward_signal INT'  INT
