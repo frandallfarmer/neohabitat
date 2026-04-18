@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"golang.org/x/sys/unix"
@@ -334,7 +335,10 @@ func SaveAndRestoreTCPConn(conn net.Conn) (*TCPState, int, error) {
 		return nil, -1, err
 	}
 
-	// Old socket is closed (by SaveTCPState inside Control).
+	// Brief pause for the kernel to fully release the socket from
+	// its hash tables after the close-in-repair-mode.
+	time.Sleep(100 * time.Millisecond)
+
 	// Create new socket with saved state — same process, no race.
 	fd, err := restoreTCPFd(state)
 	if err != nil {
@@ -367,6 +371,7 @@ func restoreTCPFd(state *TCPState) (int, error) {
 	}
 
 	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEADDR, 1)
+	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEPORT, 1)
 
 	if state.SndBuf > 0 {
 		unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_SNDBUF, state.SndBuf/2)
