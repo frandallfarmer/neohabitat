@@ -376,6 +376,7 @@ func restoreTCPFd(state *TCPState) (int, error) {
 
 	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEADDR, 1)
 	unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEPORT, 1)
+	unix.SetsockoptInt(fd, unix.IPPROTO_IP, unix.IP_FREEBIND, 1)
 
 	if state.SndBuf > 0 {
 		unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_SNDBUF, state.SndBuf/2)
