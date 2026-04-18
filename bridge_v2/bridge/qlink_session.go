@@ -166,7 +166,7 @@ func (c *ClientSession) qlinkFrameLoop() {
 	for {
 		select {
 		case replyCh := <-c.snapshotReq:
-			snap := c.Snapshot(-1, -1)
+			snap := c.Snapshot()
 			replyCh <- snap
 			select {}
 		default:

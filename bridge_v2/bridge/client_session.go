@@ -1822,7 +1822,7 @@ func NewClientSession(b *Bridge, c *ClientConnection) *ClientSession {
 // goroutines actively processing messages). The caller is responsible
 // for extracting fd indices from the returned snapshot and matching
 // them to the ExtraFiles slice.
-func (c *ClientSession) Snapshot(clientFdIdx, elkoFdIdx int) *SessionSnapshot {
+func (c *ClientSession) Snapshot() *SessionSnapshot {
 	c.stateMu.Lock()
 	defer c.stateMu.Unlock()
 	c.qlinkMu.Lock()
@@ -1857,8 +1857,6 @@ func (c *ClientSession) Snapshot(clientFdIdx, elkoFdIdx int) *SessionSnapshot {
 		User:                     c.user,
 		LargeRequestCache:        c.largeRequestCache,
 
-		ClientFdIndex: clientFdIdx,
-		ElkoFdIndex:   elkoFdIdx,
 		DataRate:      c.bridge.DataRate,
 	}
 

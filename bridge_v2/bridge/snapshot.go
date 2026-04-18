@@ -3,7 +3,6 @@ package bridge
 import (
 	"encoding/json"
 	"fmt"
-	"net"
 	"os"
 )
 
@@ -60,9 +59,11 @@ type SessionSnapshot struct {
 	BufferedClientData []byte `json:"buffered_client_data,omitempty"`
 	BufferedElkoData   []byte `json:"buffered_elko_data,omitempty"`
 
-	// Indices into the ExtraFiles slice passed via tableflip.
-	ClientFdIndex int `json:"client_fd_index"`
-	ElkoFdIndex   int `json:"elko_fd_index"`
+	// TCP connection state for TCP_REPAIR restore. When present, the
+	// child creates brand new sockets and injects this state instead
+	// of inheriting fds. No epoll conflicts, no blocking-mode issues.
+	ClientTCP *TCPState `json:"client_tcp,omitempty"`
+	ElkoTCP   *TCPState `json:"elko_tcp,omitempty"`
 
 	DataRate int `json:"data_rate"`
 }
@@ -103,17 +104,6 @@ func ReadManifest(path string) (*HandoffManifest, error) {
 		return nil, fmt.Errorf("unmarshal manifest: %w", err)
 	}
 	return &m, nil
-}
-
-// connFile extracts a dup'd *os.File from a net.Conn. The original conn
-// remains usable; the returned file is for passing via ExtraFiles.
-func connFile(c net.Conn) (*os.File, error) {
-	type filer interface{ File() (*os.File, error) }
-	fc, ok := c.(filer)
-	if !ok {
-		return nil, fmt.Errorf("conn %T does not support File()", c)
-	}
-	return fc.File()
 }
 
 func noidContentsToStringKeys(m map[uint8][]uint8) map[string][]uint8 {

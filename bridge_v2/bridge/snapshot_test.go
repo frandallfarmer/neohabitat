@@ -36,8 +36,6 @@ func TestSessionSnapshot_RoundTrip(t *testing.T) {
 				Type: "user",
 			}},
 		},
-		ClientFdIndex:      0,
-		ElkoFdIndex:        1,
 		DataRate:           1200,
 		BufferedClientData: []byte{0x5A, 0x81},
 	}

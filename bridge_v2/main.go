@@ -4,9 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"net"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -31,6 +31,8 @@ var logLevel = flag.String("log.level", "INFO", "Log level for logger")
 var qlinkMode = flag.Bool("qlink", false, "Listen for Habilink/QLink clients (JSON name preamble + QLink wire protocol) instead of the legacy colon-prefix protocol")
 var otelEnabled = flag.Bool("otel.enabled", false, "Enable OpenTelemetry export. Reads OTEL_EXPORTER_OTLP_ENDPOINT and OTEL_EXPORTER_OTLP_HEADERS from the environment.")
 var graceful = flag.Bool("graceful", false, "Enable graceful restart via SIGHUP (tableflip). Incompatible with Air — use in production only.")
+
+const snapshotEnvVar = "BRIDGE_SNAPSHOT_PATH"
 
 func setLogLevel(level string) {
 	switch lowerLevel := strings.ToLower(level); lowerLevel {
@@ -102,17 +104,6 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 	}
 	defer upg.Stop()
 
-	go func() {
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGHUP)
-		for range sig {
-			log.Info().Msg("SIGHUP received, starting graceful upgrade...")
-			if err := upg.Upgrade(); err != nil {
-				log.Error().Err(err).Msg("Upgrade failed")
-			}
-		}
-	}()
-
 	ln, err := upg.Fds.Listen("tcp", *listen)
 	if err != nil {
 		log.Fatal().Err(err).Str("addr", *listen).Msg("Could not obtain listener")
@@ -123,6 +114,77 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 		*mongoDatabase, *mongoCollection, *rate, *qlinkMode,
 	)
 	habitatBridge.SetListener(ln)
+
+	// If the parent left a snapshot, restore sessions via TCP_REPAIR.
+	// Brand new sockets with injected TCP state — no fd inheritance,
+	// no epoll conflicts.
+	if snapPath := os.Getenv(snapshotEnvVar); snapPath != "" {
+		manifest, merr := bridge.ReadManifest(snapPath)
+		if merr != nil {
+			log.Error().Err(merr).Msg("Could not read manifest; starting fresh")
+		} else {
+			for _, snap := range manifest.Sessions {
+				if snap.ClientTCP == nil || snap.ElkoTCP == nil {
+					log.Error().Str("session", snap.SessionID).
+						Msg("Missing TCP state; skipping")
+					continue
+				}
+				cc, cerr := bridge.RestoreTCPConn(snap.ClientTCP)
+				if cerr != nil {
+					log.Error().Err(cerr).Str("session", snap.SessionID).
+						Msg("Cannot restore client TCP; skipping")
+					continue
+				}
+				ec, eerr := bridge.RestoreTCPConn(snap.ElkoTCP)
+				if eerr != nil {
+					cc.Close()
+					log.Error().Err(eerr).Str("session", snap.SessionID).
+						Msg("Cannot restore elko TCP; skipping")
+					continue
+				}
+				sess := bridge.RestoreSession(habitatBridge, &snap, cc, ec)
+				habitatBridge.RegisterRestoredSession(sess)
+				sess.StartRestored()
+				log.Info().Str("session", snap.SessionID).
+					Str("avatar", snap.UserName).
+					Msg("Session restored via TCP_REPAIR")
+			}
+			os.Remove(snapPath)
+		}
+	}
+
+	// SIGHUP: snapshot sessions with TCP state, then upgrade
+	go func() {
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, syscall.SIGHUP)
+		for range sig {
+			log.Info().Msg("SIGHUP received, starting graceful upgrade...")
+
+			manifest, serr := habitatBridge.SnapshotAllWithTCP()
+			if serr != nil {
+				log.Error().Err(serr).Msg("Snapshot failed; aborting upgrade")
+				continue
+			}
+
+			snapPath := filepath.Join(os.TempDir(),
+				fmt.Sprintf("bridge_v2_handoff_%d.json", os.Getpid()))
+			if werr := bridge.WriteManifest(snapPath, manifest); werr != nil {
+				log.Error().Err(werr).Msg("Could not write manifest")
+				continue
+			}
+			os.Setenv(snapshotEnvVar, snapPath)
+
+			if uerr := upg.Upgrade(); uerr != nil {
+				log.Error().Err(uerr).Msg("Upgrade failed")
+				os.Remove(snapPath)
+				continue
+			}
+
+			log.Info().Int("sessions", len(manifest.Sessions)).
+				Msg("Upgrade triggered; child will restore via TCP_REPAIR")
+		}
+	}()
+
 	habitatBridge.Start()
 
 	log.Info().Msg("Ready")
@@ -138,9 +200,10 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 		habitatBridge.Close()
 		shutdownOtel(otelShutdown)
 	case <-upg.Exit():
-		log.Info().Msg("Child process ready; draining existing sessions")
-		habitatBridge.WaitForSessions()
-		log.Info().Msg("All sessions drained; exiting")
+		// Parent exits immediately — the child has already restored
+		// all sessions via TCP_REPAIR on brand new sockets. No drain
+		// needed.
+		log.Info().Msg("Child restored sessions; parent exiting")
 	}
 }
 
@@ -154,8 +217,3 @@ func shutdownOtel(shutdown func(context.Context) error) {
 	}
 }
 
-// SetListener is on Bridge — ensure it also works without tableflip.
-// When --graceful is not set, Bridge.Run creates the listener itself.
-func init() {
-	_ = net.IPv4zero // ensure net is imported
-}

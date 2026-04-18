@@ -141,6 +141,88 @@ func (b *Bridge) SetListener(ln net.Listener) {
 	b.listener = ln
 }
 
+// SnapshotAllWithTCP quiesces sessions and captures both application
+// state and TCP connection state (via TCP_REPAIR getsockopt). The
+// child process uses the TCP state to create brand new sockets —
+// no fd inheritance, no epoll conflicts.
+func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
+	b.sessionsMutex.Lock()
+	defer b.sessionsMutex.Unlock()
+
+	manifest := &HandoffManifest{
+		QLinkMode: b.QLinkMode,
+		ElkoHost:  b.elkoHost,
+		Context:   b.Context,
+	}
+
+	for _, sess := range b.Sessions {
+		sess.closeMutex.Lock()
+		dead := sess.doneClosed
+		sess.closeMutex.Unlock()
+		if dead {
+			log.Debug().Str("session", sess.sessionID).
+				Msg("Session already closed; skipping snapshot")
+			continue
+		}
+
+		replyCh := make(chan *SessionSnapshot, 1)
+		select {
+		case sess.snapshotReq <- replyCh:
+		default:
+			log.Warn().Str("session", sess.sessionID).
+				Msg("Cannot request snapshot; skipping")
+			continue
+		}
+
+		var snap *SessionSnapshot
+		select {
+		case snap = <-replyCh:
+		case <-time.After(10 * time.Second):
+			log.Warn().Str("session", sess.sessionID).
+				Msg("Snapshot timed out; skipping")
+			continue
+		}
+		if snap == nil {
+			continue
+		}
+
+		// Capture TCP state from both connections
+		clientTCP, err := SaveTCPState(sess.clientConn.conn)
+		if err != nil {
+			log.Error().Err(err).Str("session", sess.sessionID).
+				Msg("Cannot save client TCP state; skipping")
+			continue
+		}
+		elkoTCP, err := SaveTCPState(sess.elkoConn)
+		if err != nil {
+			log.Error().Err(err).Str("session", sess.sessionID).
+				Msg("Cannot save elko TCP state; skipping")
+			continue
+		}
+		snap.ClientTCP = clientTCP
+		snap.ElkoTCP = elkoTCP
+
+		manifest.Sessions = append(manifest.Sessions, *snap)
+		log.Info().Str("session", sess.sessionID).
+			Str("avatar", sess.UserName).
+			Uint32("snd_seq", clientTCP.SndSeq).
+			Uint32("rcv_seq", clientTCP.RcvSeq).
+			Msg("Session snapshotted with TCP state")
+	}
+
+	return manifest, nil
+}
+
+// RegisterRestoredSession adds a restored session to the bridge's
+// session map and increments counters.
+func (b *Bridge) RegisterRestoredSession(sess *ClientSession) {
+	b.sessionsMutex.Lock()
+	defer b.sessionsMutex.Unlock()
+	b.Sessions[sess.TableKey()] = sess
+	observability.IncSessionsTotal(context.Background())
+	observability.AddSessionActive(context.Background(), 1)
+}
+
 // WaitForSessions blocks until all active sessions have closed
 // naturally. Used during graceful upgrade — old sessions drain on
 // the old process while the child handles new connections.
