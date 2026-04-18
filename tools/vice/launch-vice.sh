@@ -8,7 +8,7 @@
 # Usage:
 #   tools/vice/launch-vice.sh                       # qlink-mode bridge_v2 on :2026
 #   tools/vice/launch-vice.sh 1986                  # qlink container on :1986
-#                                                   # (which proxies to JS bridge)
+#   tools/vice/launch-vice.sh beefheart:1337        # remote host
 #   tools/vice/launch-vice.sh --legacy              # legacy Node bridge on :1337
 #   tools/vice/launch-vice.sh --bridge HOST:PORT    # arbitrary host:port
 #   tools/vice/launch-vice.sh --disks /path/to/dir  # different disks dir
@@ -44,7 +44,7 @@ on 127.0.0.1:2026 and autostarts pushserver/public/disks/Habitat-Boot.d64.
 Usage:
   tools/vice/launch-vice.sh                       # qlink-mode bridge_v2 on :2026
   tools/vice/launch-vice.sh 1986                  # qlink container on :1986
-                                                  # (which proxies to JS bridge)
+  tools/vice/launch-vice.sh beefheart:1337        # remote host
   tools/vice/launch-vice.sh --legacy              # legacy Node bridge on :1337
   tools/vice/launch-vice.sh --bridge HOST:PORT    # arbitrary host:port
   tools/vice/launch-vice.sh --disks /path/to/dir  # different disks dir
@@ -113,12 +113,13 @@ while [[ $# -gt 0 ]]; do
             break
             ;;
         *)
-            # Bare numeric argument is shorthand for "127.0.0.1:<port>" —
-            # the common case is just picking which local listener to
-            # talk to (2026 = bridge_v2, 1337 = legacy JS bridge, 1986 =
-            # qlink container, etc.) without typing the host every time.
+            # Bare argument: either a port number (→ 127.0.0.1:PORT) or
+            # a host:port tuple (used as-is).
             if [[ "$1" =~ ^[0-9]+$ ]]; then
                 BRIDGE_ADDR="127.0.0.1:$1"
+                shift
+            elif [[ "$1" =~ ^.+:[0-9]+$ ]]; then
+                BRIDGE_ADDR="$1"
                 shift
             else
                 die "unknown argument: $1 (try --help)"
