@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"regexp"
+	"time"
 
 	"github.com/rs/zerolog/log"
 )
@@ -166,6 +168,10 @@ func (c *ClientSession) qlinkFrameLoop() {
 	for {
 		select {
 		case replyCh := <-c.snapshotReq:
+			// Clear any read deadline set by SnapshotAllWithTCP.
+			if tc, ok := c.clientConn.conn.(*net.TCPConn); ok {
+				tc.SetReadDeadline(time.Time{})
+			}
 			snap := c.Snapshot()
 			replyCh <- snap
 			select {}
@@ -174,6 +180,11 @@ func (c *ClientSession) qlinkFrameLoop() {
 
 		body, err := readQLinkFrame(c.clientReader)
 		if err != nil {
+			// A read deadline timeout from SnapshotAllWithTCP wakes us
+			// up so we can check snapshotReq. Loop back to the select.
+			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
+				continue
+			}
 			if err != io.EOF {
 				c.log.Error().Err(err).Msg("Error reading QLink frame")
 			}

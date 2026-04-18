@@ -165,6 +165,13 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 			continue
 		}
 
+		// Set a short read deadline to wake up readQLinkFrame if
+		// the C64 is idle. Without this, ReadBytes blocks forever
+		// and the goroutine never checks snapshotReq.
+		if tc, ok := sess.clientConn.conn.(*net.TCPConn); ok {
+			tc.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
+		}
+
 		replyCh := make(chan *SessionSnapshot, 1)
 		select {
 		case sess.snapshotReq <- replyCh:
