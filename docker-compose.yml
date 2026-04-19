@@ -52,24 +52,21 @@ services:
       - neohabitat
 
   bridge_v2:
-    build: ./bridge_v2
-    restart: unless-stopped
-    # Runs in Habilink/QLink mode (see bridge_v2/bridge/qlink_session.go).
-    # Speaks the JSON-name preamble + QLink wire protocol that real C64
-    # clients (and the qlink service in this stack) emit. Drop the --qlink
-    # flag to fall back to the legacy colon-prefix protocol.
-    command:
-      - "--qlink"
-      - "--listen=0.0.0.0:2026"
-      - "--elko.host=neohabitat:2018"
-      - "--mongo.host=mongodb://neohabitatmongo:27017"
-      - "--mongo.db=elko"
-      - "--mongo.collection=odb"
-      - "--context=context-hatchery"
-      - "--rate=1200"
-      - "--log.level=DEBUG"
+    build:
+      context: ./bridge_v2
+      dockerfile: Dockerfile.dev
+    command: ["air"]
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+      OTEL_SERVICE_NAME: "bridge_v2"
+    volumes:
+      - ./bridge_v2:/app
     ports:
-      - "1337:2026"
+      - "2026:2026"
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
     depends_on:
       neohabitatmongo:
         condition: service_healthy
