@@ -288,13 +288,9 @@ func (c *ClientSession) sendDiagnosticMessage(text string, noid *uint8) error {
 }
 
 func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
-	// Hold stateMu for the entire handler so it cannot interleave with
-	// handleClientMessage on the Run goroutine. SendBuf calls under the lock
-	// may block on the rate-limited client conn, which serializes the two
-	// goroutines on the slow path; that's acceptable since they're already
-	// de-facto serialized through the elkoSendChan handoff.
 	c.stateMu.Lock()
 	defer c.stateMu.Unlock()
+
 	if *msg.To == "session" {
 		if *msg.Op == "exit" {
 			whyCode := ""
@@ -2017,6 +2013,12 @@ func (c *ClientSession) StartRestored() {
 		// vector — just the server-side session setup.
 		if c.regionRef != "" {
 			c.log.Info().Str("context", c.regionRef).Msg("StartRestored: re-entering context on fresh Elko conn")
+			// Re-enter the region via the bridge's normal enterContext
+			// path. This wipes and rebuilds the bridge's object maps
+			// from Elko's fresh state, and sends a full contents
+			// vector to the C64. The client sees a brief region reload
+			// (~1-2s) but gets fully consistent state — no ref
+			// mismatches between bridge/Elko/client.
 			c.enterContext(c.regionRef)
 		}
 
