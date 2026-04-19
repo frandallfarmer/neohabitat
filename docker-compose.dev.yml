@@ -3,7 +3,7 @@ services:
     build:
       context: ./bridge_v2
       dockerfile: Dockerfile.dev
-    command: ["air"]
+    command: ["sh", "-c", "cd /app && go build -o /tmp/bridge_v2 . && exec /tmp/bridge_v2 --graceful --qlink --listen 0.0.0.0:2026 --elko.host neohabitat:2018 --mongo.host mongodb://neohabitatmongo:27017 --mongo.db elko --mongo.collection odb --context context-Downtown_5f --rate 1200 --log.level trace --otel.enabled"]
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
       OTEL_SERVICE_NAME: "bridge_v2"
@@ -11,6 +11,10 @@ services:
       - ./bridge_v2:/app
     ports:
       - "2026:2026"
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
     networks:
       - neohabitat
     depends_on:
