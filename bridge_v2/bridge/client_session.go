@@ -1909,6 +1909,7 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 		qlinkOutSeq:     snap.QLinkOutSeq,
 		clientConn:      cc,
 		connected:       snap.Connected,
+		ctx:             context.Background(),
 		done:            make(chan struct{}),
 		elkoConn:        elkoConn,
 		elkoDone:        make(chan struct{}),

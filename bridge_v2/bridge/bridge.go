@@ -2,14 +2,20 @@ package bridge
 
 import (
 	"context"
+	"fmt"
 	"net"
+	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
+
 
 	"github.com/frandallfarmer/neohabitat/bridge_v2/observability"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/sys/unix"
 )
 
 
@@ -30,6 +36,7 @@ type Bridge struct {
 	mongoDatabase   string
 	mongoCollection string
 	mongoCtx        context.Context
+	acceptDone      chan struct{}
 	sessionsMutex   sync.Mutex
 	wg              sync.WaitGroup
 }
@@ -120,6 +127,10 @@ func (b *Bridge) Run() {
 		conn, err := b.listener.Accept()
 		if err != nil {
 			log.Error().Msgf("Failed to accept TCP connection: %v", err)
+			// Signal that the accept loop has exited and the listener
+			// fd is fully released. SnapshotAllWithTCP waits for this
+			// before TCP_REPAIR bind.
+			close(b.acceptDone)
 			return
 		} else {
 			newSession := NewClientSession(b, NewClientConnection(b, conn))
@@ -132,6 +143,12 @@ func (b *Bridge) Run() {
 			newSession.Start()
 		}
 	}
+}
+
+func (b *Bridge) listenPort() int {
+	_, portStr, _ := net.SplitHostPort(b.listenHost)
+	p, _ := strconv.Atoi(portStr)
+	return p
 }
 
 // SetListener injects a listener managed by tableflip instead of
@@ -199,11 +216,53 @@ func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
 		return manifest, nil
 	}
 
-	// Phase 2: close the listener. This frees the port for bind()
-	// in TCP_REPAIR restore. The child will reopen it with
-	// SO_REUSEPORT after restoring connections.
+	// Phase 2: close the listener and wait for the Accept loop to
+	// exit. The Accept goroutine holds an incref on the listener fd;
+	// until it returns, the kernel keeps the bind hash entry and
+	// TCP_REPAIR bind fails with EADDRINUSE.
 	log.Info().Msg("Closing listener for TCP_REPAIR bind")
 	ln.Close()
+	<-b.acceptDone
+	// Go's Close and tableflip's Fds leave multiple dup'd fds for
+	// the listener (one in Fds.used, one in the net.TCPListener).
+	// Closing one doesn't release the bind because the other still
+	// references the same kernel socket. Brute-force: find and close
+	// ALL fds on our listen port via /proc/self/fd.
+	_ = ln.Addr()
+	fdDir := fmt.Sprintf("/proc/%d/fd", os.Getpid())
+	entries, _ := os.ReadDir(fdDir)
+	for _, e := range entries {
+		link, err := os.Readlink(fmt.Sprintf("%s/%s", fdDir, e.Name()))
+		if err != nil || !strings.Contains(link, "socket:") {
+			continue
+		}
+		var fdNum int
+		fmt.Sscanf(e.Name(), "%d", &fdNum)
+		// Check if this fd is a LISTEN socket on our port
+		sa, gerr := unix.Getsockname(fdNum)
+		if gerr != nil {
+			continue
+		}
+		// Only close LISTEN sockets, not ESTABLISHED connections.
+		// SO_ACCEPTCONN is 1 for listening sockets, 0 for connected.
+		isListen, _ := unix.GetsockoptInt(fdNum, unix.SOL_SOCKET, unix.SO_ACCEPTCONN)
+		if isListen != 1 {
+			continue
+		}
+		if sa4, ok := sa.(*unix.SockaddrInet4); ok {
+			if sa4.Port == b.listenPort() {
+				log.Info().Int("fd", fdNum).Msg("Force-closing listener fd")
+				unix.Close(fdNum)
+			}
+		}
+		if sa6, ok := sa.(*unix.SockaddrInet6); ok {
+			if sa6.Port == b.listenPort() {
+				log.Info().Int("fd", fdNum).Msg("Force-closing listener fd (v6)")
+				unix.Close(fdNum)
+			}
+		}
+	}
+	log.Info().Msg("All listener fds closed")
 
 	// Phase 3: save + restore each session's client TCP connection.
 	for _, qs := range quiesced {
@@ -272,6 +331,7 @@ func NewBridge(
 		DataRate:        dataRate,
 		QLinkMode:       qlinkMode,
 		Sessions:        make(map[string]*ClientSession),
+		acceptDone:      make(chan struct{}),
 		listenHost:      listenHost,
 		elkoHost:        elkoHost,
 		mongoURL:        mongoURL,

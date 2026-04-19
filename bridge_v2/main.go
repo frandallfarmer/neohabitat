@@ -116,9 +116,15 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 	restoring := os.Getenv(snapshotEnvVar) != ""
 
 	if restoring {
-		// Child after SIGHUP: parent closed its listener before the
-		// TCP_REPAIR save. Create a fresh listener with SO_REUSEPORT
-		// so it coexists with the restored connections.
+		// The child inherited the parent's listener via tableflip.
+		// Retrieve and close it — it's bound to *:2026 and blocks
+		// the TCP_REPAIR bind.
+		if inheritedLn, _ := upg.Fds.Listen("tcp", *listen); inheritedLn != nil {
+			inheritedLn.Close()
+		}
+
+		// Now create a fresh listener with SO_REUSEPORT so it
+		// coexists with the restored connections.
 		lc := net.ListenConfig{
 			Control: func(network, address string, c syscall.RawConn) error {
 				return c.Control(func(fd uintptr) {
