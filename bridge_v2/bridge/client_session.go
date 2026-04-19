@@ -1994,7 +1994,6 @@ func (c *ClientSession) StartRestored() {
 			Bool("qlink", c.qlinkMode).
 			Bool("json", c.jsonPassthrough).
 			Str("client_addr", c.clientConn.RemoteAddr().String()).
-			Str("elko_type", fmt.Sprintf("%T", c.elkoConn)).
 			Msg("StartRestored: launching goroutines")
 
 		// Start Elko reader/writer goroutines on the inherited connection.

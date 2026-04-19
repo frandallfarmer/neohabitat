@@ -99,10 +99,6 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 		return nil, opErr
 	}
 
-	fmt.Fprintf(os.Stderr, "TCP_REPAIR SAVE: local=%s:%d remote=%s:%d snd=%d rcv=%d\n",
-		state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort,
-		state.SndSeq, state.RcvSeq)
-
 	// Get the fd number of the conn we're about to close. We need to
 	// find and close any OTHER fds pointing to the same socket (from
 	// tableflip's Fds.used dup) that would keep the socket alive.
@@ -129,7 +125,6 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 			}
 			link, _ := os.Readlink(fmt.Sprintf("%s/%s", fdDir, e.Name()))
 			if link == ourLink {
-				fmt.Fprintf(os.Stderr, "TCP_REPAIR: closing dup fd %d (same socket as %d)\n", fdNum, ourFd)
 				unix.Close(fdNum)
 			}
 		}
@@ -383,7 +378,7 @@ func SaveAndRestoreTCPConn(conn net.Conn) (*TCPState, int, error) {
 		if err == nil {
 			break
 		}
-		fmt.Fprintf(os.Stderr, "TCP_REPAIR restore attempt %d: %v\n", attempt+1, err)
+		// retry with increasing backoff
 	}
 	if err != nil {
 		return state, -1, fmt.Errorf("restore after save: %w", err)
@@ -476,9 +471,6 @@ func restoreTCPFd(state *TCPState) (int, error) {
 		opt := unix.TCPRepairOpt{Code: unix.TCPOPT_MAXSEG, Val: state.MSSClamp}
 		unix.SetsockoptTCPRepairOpt(fd, unix.IPPROTO_TCP, unix.TCP_REPAIR_OPTIONS, []unix.TCPRepairOpt{opt})
 	}
-
-	fmt.Fprintf(os.Stderr, "TCP_REPAIR RESTORE: bind=%s:%d connect=%s:%d\n",
-		state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort)
 
 	if family == unix.AF_INET {
 		sa := &unix.SockaddrInet4{Port: state.RemotePort}
