@@ -150,6 +150,9 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 						Msg("Cannot retrieve client fd; skipping")
 					continue
 				}
+				log.Info().Str("session", snap.SessionID).
+					Str("file", f.Name()).
+					Msg("Retrieved inherited client fd")
 				cc, cerr := net.FileConn(f)
 				f.Close()
 				if cerr != nil {
@@ -157,6 +160,17 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 						Msg("Cannot wrap client fd; skipping")
 					continue
 				}
+				if cc == nil || cc.RemoteAddr() == nil {
+					log.Error().Str("session", snap.SessionID).
+						Bool("cc_nil", cc == nil).
+						Msg("FileConn returned conn with nil RemoteAddr; skipping")
+					if cc != nil { cc.Close() }
+					continue
+				}
+				log.Info().Str("session", snap.SessionID).
+					Str("remote", cc.RemoteAddr().String()).
+					Str("local", cc.LocalAddr().String()).
+					Msg("Client conn restored")
 				ec, eerr := net.DialTimeout("tcp", *elko, 5*time.Second)
 				if eerr != nil {
 					cc.Close()

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"os/exec"
 	"syscall"
 	"time"
 	"unsafe"
@@ -100,51 +99,41 @@ func SaveTCPState(conn net.Conn) (*TCPState, error) {
 		return nil, opErr
 	}
 
-	// Verify TCP_REPAIR is still active before closing
-	raw.Control(func(fd uintptr) {
-		val, gerr := unix.GetsockoptInt(int(fd), unix.IPPROTO_TCP, tcpRepair)
-		fmt.Fprintf(os.Stderr, "TCP_REPAIR before Close: val=%d err=%v fd=%d\n", val, gerr, fd)
-	})
+	fmt.Fprintf(os.Stderr, "TCP_REPAIR SAVE: local=%s:%d remote=%s:%d snd=%d rcv=%d\n",
+		state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort,
+		state.SndSeq, state.RcvSeq)
+
+	// Get the fd number of the conn we're about to close. We need to
+	// find and close any OTHER fds pointing to the same socket (from
+	// tableflip's Fds.used dup) that would keep the socket alive.
+	var ourFd uintptr
+	raw.Control(func(fd uintptr) { ourFd = fd })
+
+	// Find the socket inode
+	ourLink, _ := os.Readlink(fmt.Sprintf("/proc/%d/fd/%d", os.Getpid(), ourFd))
 
 	// Close with TCP_REPAIR active on the original fd.
 	tc.Close()
 
-	// Check if the fd is actually closed
-	fdPath := fmt.Sprintf("/proc/%d/fd", os.Getpid())
-	entries, _ := os.ReadDir(fdPath)
-	for _, e := range entries {
-		link, _ := os.Readlink(fmt.Sprintf("%s/%s", fdPath, e.Name()))
-		if fmt.Sprintf(":%d", state.LocalPort) != "" && len(link) > 0 &&
-			(link == fmt.Sprintf("socket:[%s]", e.Name()) || true) {
-			// just list all fds to find socket ones
+	// Close any other fds pointing to the same socket inode.
+	// tableflip's Fds.used may hold a dup that keeps the kernel
+	// socket alive even after tc.Close().
+	if ourLink != "" {
+		fdDir := fmt.Sprintf("/proc/%d/fd", os.Getpid())
+		entries, _ := os.ReadDir(fdDir)
+		for _, e := range entries {
+			var fdNum int
+			fmt.Sscanf(e.Name(), "%d", &fdNum)
+			if uintptr(fdNum) == ourFd {
+				continue
+			}
+			link, _ := os.Readlink(fmt.Sprintf("%s/%s", fdDir, e.Name()))
+			if link == ourLink {
+				fmt.Fprintf(os.Stderr, "TCP_REPAIR: closing dup fd %d (same socket as %d)\n", fdNum, ourFd)
+				unix.Close(fdNum)
+			}
 		}
 	}
-	// Simpler: check our specific fd
-	fdLink, fdErr := os.Readlink(fmt.Sprintf("/proc/%d/fd/%d", os.Getpid(), 8))
-	fmt.Fprintf(os.Stderr, "FD 8 after Close: link=%q err=%v\n", fdLink, fdErr)
-	// Also list ALL socket fds
-	allFds, _ := exec.Command("ls", "-la", fdPath).Output()
-	for _, line := range fmt.Sprint(string(allFds)) {
-		if false { _ = line }
-	}
-	sockFds, _ := exec.Command("sh", "-c", fmt.Sprintf("ls -la /proc/%d/fd/ | grep socket", os.Getpid())).Output()
-	fmt.Fprintf(os.Stderr, "SOCKET FDS:\n%s\n", string(sockFds))
-
-	// Dump ALL sockets on our port after Close
-	ssOut, _ := exec.Command("ss", "-tan", "sport", fmt.Sprintf("= :%d", state.LocalPort)).Output()
-	fmt.Fprintf(os.Stderr, "SOCKETS AFTER CLOSE on port %d:\n%s\n", state.LocalPort, string(ssOut))
-
-	// Check if address is actually free
-	testFd, _ := unix.Socket(unix.AF_INET, unix.SOCK_STREAM, 0)
-	unix.SetsockoptInt(testFd, unix.IPPROTO_TCP, tcpRepair, 1)
-	unix.SetsockoptInt(testFd, unix.SOL_SOCKET, unix.SO_REUSEADDR, 1)
-	localIP := net.ParseIP(state.LocalAddr)
-	tsa := &unix.SockaddrInet4{Port: state.LocalPort}
-	copy(tsa.Addr[:], localIP.To4())
-	terr := unix.Bind(testFd, tsa)
-	fmt.Fprintf(os.Stderr, "TEST BIND after Close: addr=%s:%d err=%v\n",
-		state.LocalAddr, state.LocalPort, terr)
-	unix.Close(testFd)
 
 	return state, nil
 }
@@ -384,12 +373,18 @@ func SaveAndRestoreTCPConn(conn net.Conn) (*TCPState, int, error) {
 		return nil, -1, err
 	}
 
-	// Brief pause for the kernel to fully release the socket from
-	// its hash tables after the close-in-repair-mode.
-	time.Sleep(100 * time.Millisecond)
-
-	// Create new socket with saved state — same process, no race.
-	fd, err := restoreTCPFd(state)
+	// Retry the restore with increasing delays. A socket that was
+	// itself established via TCP_REPAIR may take longer for the
+	// kernel to fully remove from the ehash after close.
+	var fd int
+	for attempt := 0; attempt < 5; attempt++ {
+		time.Sleep(time.Duration(50*(1+attempt)) * time.Millisecond)
+		fd, err = restoreTCPFd(state)
+		if err == nil {
+			break
+		}
+		fmt.Fprintf(os.Stderr, "TCP_REPAIR restore attempt %d: %v\n", attempt+1, err)
+	}
 	if err != nil {
 		return state, -1, fmt.Errorf("restore after save: %w", err)
 	}
@@ -481,6 +476,9 @@ func restoreTCPFd(state *TCPState) (int, error) {
 		opt := unix.TCPRepairOpt{Code: unix.TCPOPT_MAXSEG, Val: state.MSSClamp}
 		unix.SetsockoptTCPRepairOpt(fd, unix.IPPROTO_TCP, unix.TCP_REPAIR_OPTIONS, []unix.TCPRepairOpt{opt})
 	}
+
+	fmt.Fprintf(os.Stderr, "TCP_REPAIR RESTORE: bind=%s:%d connect=%s:%d\n",
+		state.LocalAddr, state.LocalPort, state.RemoteAddr, state.RemotePort)
 
 	if family == unix.AF_INET {
 		sa := &unix.SockaddrInet4{Port: state.RemotePort}

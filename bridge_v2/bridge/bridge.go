@@ -274,6 +274,17 @@ func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
 		}
 		qs.snap.ClientTCP = clientTCP
 		qs.snap.restoredClientFd = clientFd
+		// Verify the restored socket is actually connected
+		if psa, perr := unix.Getpeername(clientFd); perr != nil {
+			log.Error().Err(perr).Int("fd", clientFd).
+				Msg("Restored fd has no peer — socket not ESTABLISHED")
+		} else {
+			if p4, ok := psa.(*unix.SockaddrInet4); ok {
+				log.Info().Int("fd", clientFd).
+					Int("port", p4.Port).
+					Msg("Restored fd peer verified")
+			}
+		}
 		_ = qs.sess.elkoConn.Close()
 		manifest.Sessions = append(manifest.Sessions, *qs.snap)
 		log.Info().Str("session", qs.sess.sessionID).

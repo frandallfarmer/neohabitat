@@ -1972,8 +1972,12 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 	// which would go through TableKey() → RemoteAddr(). The inherited
 	// conn's RemoteAddr is valid but we can build the logger from the
 	// snapshot's known values.
+	remoteAddr := "unknown"
+	if clientConn != nil && clientConn.RemoteAddr() != nil {
+		remoteAddr = clientConn.RemoteAddr().String()
+	}
 	sess.log = log.With().
-		Str("ip", clientConn.RemoteAddr().String()).
+		Str("ip", remoteAddr).
 		Str("session_id", snap.SessionID).
 		Str("avatar", snap.UserName).
 		Logger()
