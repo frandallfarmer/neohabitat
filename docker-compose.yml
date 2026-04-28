@@ -62,6 +62,7 @@ services:
     volumes:
       - ./bridge_v2:/app
     ports:
+      - "1337:2026"
       - "2026:2026"
     cap_add:
       - NET_ADMIN

@@ -11,7 +11,7 @@ args_bin = [
   "--mongo.host", "mongodb://neohabitatmongo:27017",
   "--mongo.db", "elko",
   "--mongo.collection", "odb",
-  "--context", "context-Downtown_5f",
+  "--context", "context-hatchery",
   "--rate", "1200",
   "--log.level", "trace",
   "--otel.enabled",
