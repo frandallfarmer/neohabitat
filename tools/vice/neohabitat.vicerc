@@ -1,0 +1,111 @@
+[Version]
+ConfigVersion=3.10
+
+# neohabitat.vicerc — reference VICE configuration for connecting a C64 to
+# the local NeoHabitat stack via bridge_v2.
+#
+# This file documents the exact settings the launcher script applies. You
+# can use it two ways:
+#
+#   1. Run tools/vice/launch-vice.sh — it generates a temporary vicerc with
+#      the right placeholders substituted and starts x64sc with it. This is
+#      the path you almost certainly want.
+#
+#   2. Hand-merge these settings into your own ~/.config/vice/vicerc if you
+#      want to launch x64sc manually. You'll need to substitute the paths
+#      and the bridge address yourself.
+#
+# Wire model:
+#
+#   C64 user-port modem (1200 baud, half-duplex shift register)
+#       │
+#       ▼
+#   VICE rsuser driver  ──RsUserDev=0──▶  RsDevice1
+#       │                                 │
+#       │                                 ▼
+#       │                          tcp://127.0.0.1:2026
+#       │                                 │
+#       │                                 ▼
+#       │                          bridge_v2 (--qlink mode)
+#       │                                 │
+#       │                                 ▼
+#       │                          Elko (neohabitat:9000) + Mongo
+#       ▼
+#   Habitat-Boot.d64 → Habitat client connects, speaks QLink/Habilink
+#                       protocol, lands inside the simulation.
+#
+# To target the legacy Node bridge instead, change RsDevice1 to
+# "127.0.0.1:1337" (the bridge_v2 launcher script accepts --legacy as a
+# shortcut for that).
+
+# Section header must be [C64SC]: x64sc writes its resources under this
+# name when you run save_resources (ressave) from the monitor, and it
+# only reliably picks up joystick/keyset entries from [C64SC]. The plain
+# [C64] section works for common settings like UserportDevice but silently
+# drops Joystick1/KeySet1* — we only noticed because tests showed
+# KeySet1North=0 after VICE relaunch.
+[C64SC]
+
+# --- Userport RS-232 modem (this is what Q-Link / Habitat actually used) ---
+# UserportDevice=2 selects "Userport RS232/Modem" — the shift-register modem
+# emulation that the Habitat client driver was written against.
+UserportDevice=2
+RsUserEnable=1
+RsUserBaud=1200
+# RsUserDev=0 routes the userport modem traffic to RsDevice1 (below).
+RsUserDev=0
+
+# --- RsDevice1 → TCP socket to bridge_v2 via nc pipe ---
+# VICE pipes userport RS232 bytes through nc to bridge_v2's TCP listener.
+# The launcher rewrites __BRIDGE_ADDR__ on the fly.
+RsDevice1="|nc __BRIDGE_ADDR__"
+RsDevice1Baud=1200
+RsDevice1ip232=0
+
+# --- SwiftLink/Turbo232 ACIA disabled (Q-Link doesn't use it) ---
+Acia1Enable=0
+Acia1Base=56832
+
+# --- Sound disabled (automation mode) ---
+Sound=0
+
+# --- Drive setup ---
+Drive8Type=1541
+
+# --- Autostart the Habitat boot disk ---
+# The launcher substitutes the absolute path of pushserver/public/disks
+# into __DISKS_DIR__ at run time. If you're hand-editing, replace it with
+# the absolute path to that directory on your machine.
+AutostartPrgDiskImage="__DISKS_DIR__/Habitat-Boot.d64"
+AutostartPrgMode=0
+
+# --- Video / model ---
+# Habitat is an NTSC product — Q-Link was North America only — so the
+# launcher passes `-ntsc` on the x64sc command line, which is the
+# unambiguous way to set the sync factor regardless of what
+# MachineVideoStandard's enum values happen to be in this VICE build.
+# We deliberately do NOT set MachineVideoStandard here; the CLI flag wins.
+VICIIDoubleSize=1
+VICIIDoubleScan=1
+
+# --- Audio: keep ReSID on so the Q-Link login jingle plays ---
+SidEngine=1
+SidModel=0
+SidResidSampling=0
+
+# --- Joystick in port 1: Keyset A, so testers can drive the client from
+#     the host keyboard without plugging in a physical stick.
+#     JoyDevice1 = 2 selects "Keyset A"; KeySetEnable = 1 turns keyset
+#     emulation on. The KeySet1* values are GDK keysym constants:
+#       GDK_KEY_Up    = 0xFF52 = 65362
+#       GDK_KEY_Down  = 0xFF54 = 65364
+#       GDK_KEY_Left  = 0xFF51 = 65361
+#       GDK_KEY_Right = 0xFF53 = 65363
+#       GDK_KEY_grave = 0x0060 = 96    (the ` / ~ key, fire button)
+JoyDevice1=2
+KeySetEnable=1
+KeySet1North=65362
+KeySet1South=65364
+KeySet1East=65363
+KeySet1West=65361
+KeySet1Fire=96

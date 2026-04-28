@@ -62,21 +62,11 @@
         <!-- Login pane: -->
         <div class="row login-panel text-center align-items-center">
           <div class="mx-auto">
-            <form class="form-inline">
-              <div class="form-group">
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" disabled="disabled" type="button" id="avatarMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select Avatar Name
-                  </button>
-                  <div id="avatarMenu" class="dropdown-menu" aria-labelledby="avatarMenuButton"></div>
-                </div>
-              </div>
-              &nbsp;
-              <div class="btn-group-horizontal">
-                <button type="submit" id="avatarSubmit" disabled="disabled" class="btn btn-primary" href="#" onclick="activateDocent(); return false;">Activate Docent</button>
-                <button type="submit" id="fullScreenBtn" class="btn btn-primary" href="#" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
-              </div>
-            </form>
+            <div id="docentControls" class="d-inline-flex" style="gap: 0.5rem">
+              <button type="button" disabled="disabled" class="btn btn-primary">Activate Docent</button>
+            </div>
+            &nbsp;
+            <button type="button" class="btn btn-primary" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
           </div>
         </div>
       </div>

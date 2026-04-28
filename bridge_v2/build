@@ -1,0 +1,3 @@
+#!/bin/bash
+
+env GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -gcflags "all=-N -l" .

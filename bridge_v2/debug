@@ -1,0 +1,8 @@
+#!/bin/bash
+
+./build && \
+  /usr/bin/dlv --listen=:40000 --headless=true --api-version=2 exec \
+    ./bridge_v2 -- \
+      -listen 0.0.0.0:1337 \
+      -log.level=trace \
+      -mongo.host=mongodb://neohabitatmongo:27017

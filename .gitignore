@@ -16,3 +16,4 @@ context.*
 dependency-reduced-pom.xml
 neohabitat.iml
 usersDB.json
+volumes/bridge_v2_bin/
