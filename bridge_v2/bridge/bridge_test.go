@@ -119,8 +119,8 @@ func TestThrowTranslator_AllArgs(t *testing.T) {
 func TestThrowTranslator_PartialArgs(t *testing.T) {
 	tr := Translators["THROW"]
 	cases := []struct {
-		name           string
-		args           []byte
+		name                string
+		args                []byte
 		wantT, wantX, wantY uint8
 	}{
 		{"empty", []byte{}, 0, 8, 130},
@@ -185,6 +185,64 @@ func TestEncoder_Roof_Registered(t *testing.T) {
 	if len(buf.Data()) != 6 {
 		t.Errorf("Roof encoded length = %d, want 6", len(buf.Data()))
 	}
+}
+
+func TestOriginalHatcheryEnabled(t *testing.T) {
+	t.Setenv("NEOHABITAT_ORIGINAL_HATCHERY", "true")
+	if !originalHatcheryEnabled() {
+		t.Fatal("NEOHABITAT_ORIGINAL_HATCHERY=true should enable original hatchery")
+	}
+	t.Setenv("NEOHABITAT_ORIGINAL_HATCHERY", "0")
+	if originalHatcheryEnabled() {
+		t.Fatal("NEOHABITAT_ORIGINAL_HATCHERY=0 should disable original hatchery")
+	}
+}
+
+func TestParseHatcheryAppearance(t *testing.T) {
+	appearance, ok := parseHatcheryAppearance([]byte{7, 16, 24, 0x12, 0x34})
+	if !ok {
+		t.Fatal("expected valid hatchery appearance")
+	}
+	if appearance.headStyle != 7 ||
+		appearance.hairPattern != 16 ||
+		appearance.avatarOrientation != 24 ||
+		appearance.custom0 != 0x12 ||
+		appearance.custom1 != 0x34 {
+		t.Fatalf("appearance = %+v", appearance)
+	}
+	if _, ok := parseHatcheryAppearance([]byte{1, 2, 3, 4}); ok {
+		t.Fatal("short hatchery payload should be rejected")
+	}
+}
+
+func TestNewHatcheryCustomizationVectorRandomizesAllowedHeads(t *testing.T) {
+	vector := NewHatcheryCustomizationVector()
+	if len(vector) != len(HatcheryCustomizationVector) {
+		t.Fatalf("vector length = %d, want %d", len(vector), len(HatcheryCustomizationVector))
+	}
+	if &vector[0] == &HatcheryCustomizationVector[0] {
+		t.Fatal("customization vector should be copied, not modified in place")
+	}
+	assertAllowedUnique := func(name string, start int, allowed []uint8) {
+		t.Helper()
+		allowedSet := make(map[uint8]bool, len(allowed))
+		for _, head := range allowed {
+			allowedSet[head] = true
+		}
+		seen := make(map[uint8]bool, 4)
+		for i := 0; i < 4; i++ {
+			style := vector[hatcheryHeadStyleOffset+(start+i)*hatcheryHeadRecordSize]
+			if !allowedSet[style] {
+				t.Fatalf("%s head style %d is not in allowed list", name, style)
+			}
+			if seen[style] {
+				t.Fatalf("%s head style %d was repeated", name, style)
+			}
+			seen[style] = true
+		}
+	}
+	assertAllowedUnique("male", 0, hatcheryAllowedMaleHeads)
+	assertAllowedUnique("female", 4, hatcheryAllowedFemaleHeads)
 }
 
 // ----- Group B -----

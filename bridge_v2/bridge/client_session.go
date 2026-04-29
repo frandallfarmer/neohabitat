@@ -53,10 +53,10 @@ type ClientSession struct {
 	// firstConnection, waitingForAvatar, waitingForAvatarContents, otherNoid,
 	// otherContents, otherRef, avatarNoid, UserName, Online, regionRef,
 	// userRef, Avatar, ref, user.
-	stateMu                  sync.Mutex
-	avatarNoid               *uint8
-	bridge                   *Bridge
-	qlinkMode                bool  // true => Habilink/QLink wire protocol, false => legacy colon-prefix
+	stateMu    sync.Mutex
+	avatarNoid *uint8
+	bridge     *Bridge
+	qlinkMode  bool // true => Habilink/QLink wire protocol, false => legacy colon-prefix
 	// qlinkMu guards qlinkInSeq/qlinkOutSeq. Intentionally separate from
 	// stateMu so the QLink TX path (sendQLinkHabitatAction) can update the
 	// output sequence under handleClientMessage, which is already holding
@@ -64,8 +64,8 @@ type ClientSession struct {
 	// stateMu produced a deadlock right after logging "->CLIENT" on the
 	// IM_ALIVE short-circuit path.
 	qlinkMu                  sync.Mutex
-	qlinkInSeq               byte  // sequence number of last received QLink Action (peer's send seq)
-	qlinkOutSeq              byte  // sequence number of next QLink Action we will send
+	qlinkInSeq               byte // sequence number of last received QLink Action (peer's send seq)
+	qlinkOutSeq              byte // sequence number of next QLink Action we will send
 	clientConn               *ClientConnection
 	clientReader             *bufio.Reader
 	closeMutex               sync.Mutex
@@ -81,6 +81,7 @@ type ClientSession struct {
 	elkoWg                   sync.WaitGroup
 	firstConnection          bool
 	hatcheryPending          bool
+	hatcheryCompleted        bool
 	largeRequestCache        []byte
 	nextRegion               string
 	nextRegionSet            bool
@@ -120,7 +121,7 @@ type ClientSession struct {
 	// the reader goroutine creates the snapshot and sends it back, then
 	// pauses until the process exits. This avoids the data race of
 	// peeking into bufio.Reader while the reader goroutine is active.
-	snapshotReq              chan chan *SessionSnapshot
+	snapshotReq chan chan *SessionSnapshot
 }
 
 func (c *ClientSession) initializeState(replySeq uint8) {
@@ -757,7 +758,7 @@ func (c *ClientSession) patchHabitatMod(ref string, updates bson.M) error {
 	return err
 }
 
-func (c *ClientSession) addDefaultHead(userRef string, fullName string) (err error) {
+func (c *ClientSession) addHead(userRef string, fullName string, style uint8, orientation uint8) (err error) {
 	headRef := fmt.Sprintf("item-head.%d", rand.Int63())
 	_, err = c.bridge.MongoCollection.InsertOne(
 		c.bridge.mongoCtx,
@@ -770,13 +771,17 @@ func (c *ClientSession) addDefaultHead(userRef string, fullName string) (err err
 				{
 					Type:        StringP("Head"),
 					Y:           Uint8P(6),
-					Style:       Uint8P(uint8(rand.Intn(220))),
-					Orientation: Uint8P(uint8(rand.Intn(3) * 8)),
+					Style:       Uint8P(style),
+					Orientation: Uint8P(orientation),
 				},
 			},
 		},
 	)
 	return
+}
+
+func (c *ClientSession) addDefaultHead(userRef string, fullName string) (err error) {
+	return c.addHead(userRef, fullName, uint8(rand.Intn(220)), uint8(rand.Intn(3)*8))
 }
 
 func (c *ClientSession) addPaperPrime(userRef string, fullName string) (err error) {
@@ -885,9 +890,92 @@ func (c *ClientSession) ensureTurfAssigned(userRef string) (err error) {
 	})
 }
 
+type hatcheryAppearance struct {
+	headStyle         uint8
+	hairPattern       uint8
+	avatarOrientation uint8
+	custom0           uint8
+	custom1           uint8
+}
+
+func parseHatcheryAppearance(args []byte) (hatcheryAppearance, bool) {
+	if len(args) < 5 {
+		return hatcheryAppearance{}, false
+	}
+	return hatcheryAppearance{
+		headStyle:         args[0],
+		hairPattern:       args[1],
+		avatarOrientation: args[2],
+		custom0:           args[3],
+		custom1:           args[4],
+	}, true
+}
+
+func (c *ClientSession) createUserWithAppearance(fullName string, appearance *hatcheryAppearance) (err error) {
+	var custom []int32
+	var avatarOrientation uint8
+	if appearance == nil {
+		custom = []int32{
+			int32(rand.Intn(15) + rand.Intn(15)*16),
+			int32(rand.Intn(15) + rand.Intn(15)*16),
+		}
+		avatarOrientation = 0
+	} else {
+		custom = []int32{int32(appearance.custom0), int32(appearance.custom1)}
+		avatarOrientation = appearance.avatarOrientation
+	}
+	user := &HabitatObject{
+		Type: "user",
+		Ref:  c.userRef,
+		Name: fullName,
+		Mods: []*HabitatMod{
+			{
+				Type:            StringP("Avatar"),
+				FirstConnection: BoolP(true),
+				AmAGhost:        BoolP(true),
+				X:               Uint8P(10),
+				Y:               Uint8P(128 + uint8(rand.Intn(32))),
+				BodyType:        StringP("male"),
+				BankBalance:     Uint32P(50000),
+				Custom:          Int32SP(custom),
+				NittyBits:       Int32P(0),
+				Orientation:     Uint8P(avatarOrientation),
+			},
+		},
+	}
+	c.log.Info().Interface("user", user).Bool("original_hatchery", appearance != nil).Msg("Creating new User")
+	if err = c.upsertHabitatObj(user); err != nil {
+		return
+	}
+	if appearance == nil {
+		err = c.addDefaultHead(c.userRef, fullName)
+	} else {
+		err = c.addHead(c.userRef, fullName, appearance.headStyle, appearance.hairPattern)
+	}
+	if err != nil {
+		return
+	}
+	if err = c.addPaperPrime(c.userRef, fullName); err != nil {
+		return
+	}
+	if err = c.addDefaultTokens(c.userRef, fullName); err != nil {
+		return
+	}
+	if err = c.ensureTurfAssigned(c.userRef); err != nil {
+		return
+	}
+	user, err = c.findHabitatObj(c.userRef)
+	if err != nil {
+		return
+	}
+	c.user = user
+	return
+}
+
 func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 	c.userRef = fmt.Sprintf("user-%s", strings.Replace(
 		strings.ToLower(fullName), " ", "_", -1))
+	c.UserName = fullName
 	c.log.Debug().Str("user_ref", c.userRef).Str("full_name", fullName).Msg("Resolved user ref")
 	if c.firstConnection {
 		var user *HabitatObject
@@ -911,55 +999,12 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			c.user = user
 			return
 		}
-		c.hatcheryPending = true
-		c.log.Info().Str("user_ref", c.userRef).Msg("User has no avatar; starting hatchery flow")
-		user = &HabitatObject{
-			Type: "user",
-			Ref:  c.userRef,
-			Name: fullName,
-			Mods: []*HabitatMod{
-				{
-					Type:            StringP("Avatar"),
-					FirstConnection: BoolP(true),
-					AmAGhost:        BoolP(true),
-					X:               Uint8P(10),
-					Y:               Uint8P(128 + uint8(rand.Intn(32))),
-					BodyType:        StringP("male"),
-					BankBalance:     Uint32P(50000),
-					Custom: Int32SP([]int32{
-						int32(rand.Intn(15) + rand.Intn(15)*16),
-						int32(rand.Intn(15) + rand.Intn(15)*16),
-					}),
-					NittyBits: Int32P(0),
-				},
-			},
-		}
-		c.log.Info().Interface("user", user).Msg("Creating new User")
-		err = c.upsertHabitatObj(user)
-		if err != nil {
+		if c.bridge.OriginalHatchery && !c.jsonPassthrough {
+			c.hatcheryPending = true
+			c.log.Info().Str("user_ref", c.userRef).Msg("User has no avatar; starting original hatchery flow")
 			return
 		}
-		err = c.addDefaultHead(c.userRef, fullName)
-		if err != nil {
-			return
-		}
-		err = c.addPaperPrime(c.userRef, fullName)
-		if err != nil {
-			return
-		}
-		err = c.addDefaultTokens(c.userRef, fullName)
-		if err != nil {
-			return
-		}
-		err = c.ensureTurfAssigned(c.userRef)
-		if err != nil {
-			return
-		}
-		user, err = c.findHabitatObj(c.userRef)
-		if err != nil {
-			return
-		}
-		c.user = user
+		err = c.createUserWithAppearance(fullName, nil)
 	}
 	return
 }
@@ -1190,15 +1235,15 @@ func containsSubslice(hay, needle []byte) bool {
 // clients that speak Elko JSON directly rather than the binary Habitat
 // protocol). The bridge mostly relays bytes, but must still:
 //
-//  - Ensure the Elko user object exists in mongo on "entercontext"
-//    (the binary path does this via the <name>: prefix; JSON clients
-//    never send that, so we extract from the "user" field).
-//  - Reconnect to Elko on "changeContext" messages from the server
-//    (handled in elkoReader's handleElkoMessageJson path).
-//  - Synthesize FINGER_IN_QUE + I_AM_HERE when Elko sends "ready"
-//    after the user's avatar arrives — the C64 client would emit
-//    these naturally on region unpack completion, and Elko waits
-//    for them before activating the avatar.
+//   - Ensure the Elko user object exists in mongo on "entercontext"
+//     (the binary path does this via the <name>: prefix; JSON clients
+//     never send that, so we extract from the "user" field).
+//   - Reconnect to Elko on "changeContext" messages from the server
+//     (handled in elkoReader's handleElkoMessageJson path).
+//   - Synthesize FINGER_IN_QUE + I_AM_HERE when Elko sends "ready"
+//     after the user's avatar arrives — the C64 client would emit
+//     these naturally on region unpack completion, and Elko waits
+//     for them before activating the avatar.
 func (c *ClientSession) runJsonPassthrough() {
 	if err := c.connectToElko(); err != nil {
 		c.log.Fatal().Err(err).Str("elko_host", c.bridge.elkoHost).Msg("Unable to connect to Elko")
@@ -1333,13 +1378,13 @@ func (c *ClientSession) sendOpToElko(to, op string) error {
 // client with the minimum set of state transitions required to keep
 // Elko's session machinery happy:
 //
-//  - On `make` with `you:true`, mark the session as waiting for avatar
-//    contents so the next `ready` triggers the handshake.
-//  - On `changeContext`, remember the target region and reconnect the
-//    Elko TCP socket (mirrors binary-mode behavior).
-//  - On `ready` while waiting, synthesize FINGER_IN_QUE + I_AM_HERE
-//    toward Elko and swallow the `ready` (the client didn't need it).
-//  - Everything else: relay the raw bytes to the client verbatim.
+//   - On `make` with `you:true`, mark the session as waiting for avatar
+//     contents so the next `ready` triggers the handshake.
+//   - On `changeContext`, remember the target region and reconnect the
+//     Elko TCP socket (mirrors binary-mode behavior).
+//   - On `ready` while waiting, synthesize FINGER_IN_QUE + I_AM_HERE
+//     toward Elko and swallow the `ready` (the client didn't need it).
+//   - Everything else: relay the raw bytes to the client verbatim.
 func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 	c.stateMu.Lock()
 	defer c.stateMu.Unlock()
@@ -1468,6 +1513,58 @@ func (c *ClientSession) handleInitialClientMessage(data []byte) {
 	c.handleClientMessage(data)
 }
 
+func (c *ClientSession) sendImAliveReply() error {
+	aliveReply := NewHabBuf(true, true, PHANTOM_REQUEST, REGION_NOID, uint8(IM_ALIVE))
+	if c.hatcheryPending {
+		aliveReply.AddInt(2)
+		aliveReply.AddIntSlice(NewHatcheryCustomizationVector())
+		return c.SendBuf(aliveReply, true)
+	}
+	aliveReply.AddInt(1)  // SUCCESS
+	aliveReply.AddInt(48) // 0
+	aliveReply.AddString("BAD DISK")
+	return c.SendBuf(aliveReply, false)
+}
+
+func (c *ClientSession) sendCustomizeReply(success bool) error {
+	reply := NewHabBuf(true, true, c.replySeq, REGION_NOID, uint8(CUSTOMIZE))
+	if success {
+		reply.AddInt(1)
+	} else {
+		reply.AddInt(0)
+	}
+	return c.SendBuf(reply, false)
+}
+
+func (c *ClientSession) handleHatcheryCustomize(args []byte) {
+	appearance, ok := parseHatcheryAppearance(args)
+	if !ok {
+		c.log.Error().Int("arg_count", len(args)).Msg("Hatchery CUSTOMIZE payload too short")
+		if err := c.sendCustomizeReply(false); err != nil {
+			c.log.Error().Err(err).Msg("Could not send hatchery failure reply")
+		}
+		return
+	}
+	if err := c.createUserWithAppearance(c.UserName, &appearance); err != nil {
+		c.log.Error().Err(err).Str("user_ref", c.userRef).Msg("Could not create hatchery user")
+		if replyErr := c.sendCustomizeReply(false); replyErr != nil {
+			c.log.Error().Err(replyErr).Msg("Could not send hatchery failure reply")
+		}
+		return
+	}
+	c.hatcheryPending = false
+	c.hatcheryCompleted = true
+	c.log.Info().
+		Str("user_ref", c.userRef).
+		Uint8("head_style", appearance.headStyle).
+		Uint8("hair_pattern", appearance.hairPattern).
+		Uint8("avatar_orientation", appearance.avatarOrientation).
+		Msg("Created avatar from original hatchery customization")
+	if err := c.sendCustomizeReply(true); err != nil {
+		c.log.Error().Err(err).Msg("Could not send hatchery success reply")
+	}
+}
+
 func (c *ClientSession) handleClientMessage(data []byte) {
 	c.stateMu.Lock()
 	defer c.stateMu.Unlock()
@@ -1507,18 +1604,9 @@ func (c *ClientSession) handleClientMessage(data []byte) {
 		// SHORT CIRCUIT: Direct reply to client without server... It's too early to use this bridge at the object level.
 		c.who = c.packetPrefix
 		c.connected = true
-		aliveReply := NewHabBuf(true, true, PHANTOM_REQUEST, REGION_NOID, uint8(IM_ALIVE))
-		if c.hatcheryPending {
-			aliveReply.AddInt(2)
-			aliveReply.AddIntSlice(HatcheryCustomizationVector)
-		} else {
-			aliveReply.AddInt(1)  // SUCCESS
-			aliveReply.AddInt(48) // 0
-			aliveReply.AddString("BAD DISK")
-		}
-		err := c.SendBuf(aliveReply, c.hatcheryPending)
+		err := c.sendImAliveReply()
 		if err != nil {
-			c.log.Error().Err(err).Interface("buf", aliveReply).Msg("Could not send buf")
+			c.log.Error().Err(err).Msg("Could not send IM_ALIVE reply")
 		}
 		return
 	} else {
@@ -1528,6 +1616,16 @@ func (c *ClientSession) handleClientMessage(data []byte) {
 		if noid == REGION_NOID {
 			if ServerMessage(reqNum) == I_QUIT {
 				c.handleClientCrashReport(args)
+				return
+			}
+			if ServerMessage(reqNum) == CUSTOMIZE && c.hatcheryPending {
+				c.handleHatcheryCustomize(args)
+				return
+			}
+			if ServerMessage(reqNum) == IM_ALIVE && c.hatcheryCompleted {
+				if err := c.sendImAliveReply(); err != nil {
+					c.log.Error().Err(err).Msg("Could not send post-hatchery IM_ALIVE reply")
+				}
 				return
 			}
 			if ServerMessage(reqNum) == DESCRIBE {
@@ -1924,35 +2022,37 @@ func (c *ClientSession) Snapshot() *SessionSnapshot {
 	defer c.qlinkMu.Unlock()
 
 	snap := &SessionSnapshot{
-		SessionID:       c.sessionID,
-		UserName:        c.UserName,
-		UserRef:         c.userRef,
-		RegionRef:       c.regionRef,
-		Ref:             c.ref,
-		Who:             c.who,
-		PacketPrefix:    c.packetPrefix,
-		Connected:       c.connected,
-		FirstConnection: c.firstConnection,
-		JsonPassthrough: c.jsonPassthrough,
-		QLinkMode:       c.qlinkMode,
-		Online:          c.Online,
-		QLinkInSeq:      c.qlinkInSeq,
-		QLinkOutSeq:     c.qlinkOutSeq,
-		ReplySeq:        c.replySeq,
-		Avatar:          c.Avatar,
-		AvatarNoid:      c.avatarNoid,
-		ObjectNoidOrder: c.objectNoidOrder,
-		NoidClassList:   c.NoidClassList,
-		NoidContents:    noidContentsToStringKeys(c.NoidContents),
-		NextRegion:      c.nextRegion,
-		NextRegionSet:   c.nextRegionSet,
+		SessionID:         c.sessionID,
+		UserName:          c.UserName,
+		UserRef:           c.userRef,
+		RegionRef:         c.regionRef,
+		Ref:               c.ref,
+		Who:               c.who,
+		PacketPrefix:      c.packetPrefix,
+		Connected:         c.connected,
+		FirstConnection:   c.firstConnection,
+		HatcheryPending:   c.hatcheryPending,
+		HatcheryCompleted: c.hatcheryCompleted,
+		JsonPassthrough:   c.jsonPassthrough,
+		QLinkMode:         c.qlinkMode,
+		Online:            c.Online,
+		QLinkInSeq:        c.qlinkInSeq,
+		QLinkOutSeq:       c.qlinkOutSeq,
+		ReplySeq:          c.replySeq,
+		Avatar:            c.Avatar,
+		AvatarNoid:        c.avatarNoid,
+		ObjectNoidOrder:   c.objectNoidOrder,
+		NoidClassList:     c.NoidClassList,
+		NoidContents:      noidContentsToStringKeys(c.NoidContents),
+		NextRegion:        c.nextRegion,
+		NextRegionSet:     c.nextRegionSet,
 
 		WaitingForAvatar:         c.waitingForAvatar,
 		WaitingForAvatarContents: c.waitingForAvatarContents,
 		User:                     c.user,
 		LargeRequestCache:        c.largeRequestCache,
 
-		DataRate:      c.bridge.DataRate,
+		DataRate: c.bridge.DataRate,
 	}
 
 	// Copy RefToNoid
@@ -1990,43 +2090,45 @@ func (c *ClientSession) Snapshot() *SessionSnapshot {
 func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoConn net.Conn) *ClientSession {
 	cc := NewClientConnectionWithRate(clientConn, snap.DataRate)
 	sess := &ClientSession{
-		Avatar:          snap.Avatar,
-		Online:          snap.Online,
-		NoidClassList:   snap.NoidClassList,
-		NoidContents:    stringKeysToNoidContents(snap.NoidContents),
-		RefToNoid:       snap.RefToNoid,
-		UserName:        snap.UserName,
+		Avatar:        snap.Avatar,
+		Online:        snap.Online,
+		NoidClassList: snap.NoidClassList,
+		NoidContents:  stringKeysToNoidContents(snap.NoidContents),
+		RefToNoid:     snap.RefToNoid,
+		UserName:      snap.UserName,
 
-		avatarNoid:      snap.AvatarNoid,
-		bridge:          b,
-		qlinkMode:       snap.QLinkMode,
-		qlinkInSeq:      snap.QLinkInSeq,
-		qlinkOutSeq:     snap.QLinkOutSeq,
-		clientConn:      cc,
-		connected:       snap.Connected,
-		ctx:             context.Background(),
-		done:            make(chan struct{}),
-		elkoConn:        elkoConn,
-		elkoDone:        make(chan struct{}),
-		elkoSendChan:    make(chan *ElkoMessage, MaxClientMessages),
-		snapshotReq:     make(chan chan *SessionSnapshot, 1),
-		firstConnection: snap.FirstConnection,
-		jsonPassthrough: snap.JsonPassthrough,
-		largeRequestCache: snap.LargeRequestCache,
-		nextRegion:      snap.NextRegion,
-		nextRegionSet:   snap.NextRegionSet,
-		sessionID:       snap.SessionID,
-		objects:         make(map[uint8]*ElkoMessage),
-		objectNoidOrder: snap.ObjectNoidOrder,
-		packetPrefix:    snap.PacketPrefix,
-		ref:             snap.Ref,
-		regionRef:       snap.RegionRef,
-		replySeq:        snap.ReplySeq,
-		user:            snap.User,
-		userRef:         snap.UserRef,
+		avatarNoid:               snap.AvatarNoid,
+		bridge:                   b,
+		qlinkMode:                snap.QLinkMode,
+		qlinkInSeq:               snap.QLinkInSeq,
+		qlinkOutSeq:              snap.QLinkOutSeq,
+		clientConn:               cc,
+		connected:                snap.Connected,
+		ctx:                      context.Background(),
+		done:                     make(chan struct{}),
+		elkoConn:                 elkoConn,
+		elkoDone:                 make(chan struct{}),
+		elkoSendChan:             make(chan *ElkoMessage, MaxClientMessages),
+		snapshotReq:              make(chan chan *SessionSnapshot, 1),
+		firstConnection:          snap.FirstConnection,
+		hatcheryPending:          snap.HatcheryPending,
+		hatcheryCompleted:        snap.HatcheryCompleted,
+		jsonPassthrough:          snap.JsonPassthrough,
+		largeRequestCache:        snap.LargeRequestCache,
+		nextRegion:               snap.NextRegion,
+		nextRegionSet:            snap.NextRegionSet,
+		sessionID:                snap.SessionID,
+		objects:                  make(map[uint8]*ElkoMessage),
+		objectNoidOrder:          snap.ObjectNoidOrder,
+		packetPrefix:             snap.PacketPrefix,
+		ref:                      snap.Ref,
+		regionRef:                snap.RegionRef,
+		replySeq:                 snap.ReplySeq,
+		user:                     snap.User,
+		userRef:                  snap.UserRef,
 		waitingForAvatar:         snap.WaitingForAvatar,
 		waitingForAvatarContents: snap.WaitingForAvatarContents,
-		who:             snap.Who,
+		who:                      snap.Who,
 	}
 
 	// Rebuild the clientReader, prepending any buffered data that was

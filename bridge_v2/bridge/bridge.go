@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-
 	"github.com/frandallfarmer/neohabitat/bridge_v2/observability"
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,15 +17,15 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-
 type Bridge struct {
-	Context         string
-	DataRate        int
-	MongoClient     *mongo.Client
-	MongoCollection *mongo.Collection
-	MongoDatabase   *mongo.Database
-	QLinkMode       bool
-	Sessions        map[string]*ClientSession
+	Context          string
+	DataRate         int
+	MongoClient      *mongo.Client
+	MongoCollection  *mongo.Collection
+	MongoDatabase    *mongo.Database
+	OriginalHatchery bool
+	QLinkMode        bool
+	Sessions         map[string]*ClientSession
 
 	// listeners and listenAddrs are 1:1 by index. Multiple listeners
 	// let one stateful bridge process serve multiple host ports
@@ -421,15 +420,25 @@ func NewBridge(
 	// Defensive copy so the caller's slice can't mutate ours later.
 	addrs := append([]string(nil), listenAddrs...)
 	return &Bridge{
-		Context:         context,
-		DataRate:        dataRate,
-		QLinkMode:       qlinkMode,
-		Sessions:        make(map[string]*ClientSession),
-		acceptDone:      make(chan struct{}),
-		listenAddrs:     addrs,
-		elkoHost:        elkoHost,
-		mongoURL:        mongoURL,
-		mongoDatabase:   mongoDatabase,
-		mongoCollection: mongoCollection,
+		Context:          context,
+		DataRate:         dataRate,
+		OriginalHatchery: originalHatcheryEnabled(),
+		QLinkMode:        qlinkMode,
+		Sessions:         make(map[string]*ClientSession),
+		acceptDone:       make(chan struct{}),
+		listenAddrs:      addrs,
+		elkoHost:         elkoHost,
+		mongoURL:         mongoURL,
+		mongoDatabase:    mongoDatabase,
+		mongoCollection:  mongoCollection,
+	}
+}
+
+func originalHatcheryEnabled() bool {
+	switch strings.ToLower(strings.TrimSpace(os.Getenv("NEOHABITAT_ORIGINAL_HATCHERY"))) {
+	case "1", "true", "yes", "on":
+		return true
+	default:
+		return false
 	}
 }
