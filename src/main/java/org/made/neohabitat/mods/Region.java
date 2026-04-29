@@ -245,7 +245,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             getGhost().total_ghosts++; // Make sure the user has a ghost object..
         }
         if (avatar.firstConnection) {
-            object_say(who, MOTD);
+            int motdSpeakerNoid = avatar.noid == UNASSIGNED_NOID ? GHOST_NOID : avatar.noid;
+            object_say(who, avatar.amAGhost ? GHOST_NOID : motdSpeakerNoid, MOTD);
             if (NEOHABITAT_FEATURES) {
                 if (NameToUser.size() < 2) {
                     object_say(who, UPGRADE_PREFIX + "You are the only one here right now.");
