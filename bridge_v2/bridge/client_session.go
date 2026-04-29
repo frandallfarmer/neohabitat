@@ -80,6 +80,7 @@ type ClientSession struct {
 	elkoSendChan             chan *ElkoMessage
 	elkoWg                   sync.WaitGroup
 	firstConnection          bool
+	hatcheryPending          bool
 	largeRequestCache        []byte
 	nextRegion               string
 	nextRegionSet            bool
@@ -910,6 +911,8 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			c.user = user
 			return
 		}
+		c.hatcheryPending = true
+		c.log.Info().Str("user_ref", c.userRef).Msg("User has no avatar; starting hatchery flow")
 		user = &HabitatObject{
 			Type: "user",
 			Ref:  c.userRef,
@@ -1505,10 +1508,15 @@ func (c *ClientSession) handleClientMessage(data []byte) {
 		c.who = c.packetPrefix
 		c.connected = true
 		aliveReply := NewHabBuf(true, true, PHANTOM_REQUEST, REGION_NOID, uint8(IM_ALIVE))
-		aliveReply.AddInt(1)  // SUCCESS
-		aliveReply.AddInt(48) // 0
-		aliveReply.AddString("BAD DISK")
-		err := c.SendBuf(aliveReply, false)
+		if c.hatcheryPending {
+			aliveReply.AddInt(2)
+			aliveReply.AddIntSlice(HatcheryCustomizationVector)
+		} else {
+			aliveReply.AddInt(1)  // SUCCESS
+			aliveReply.AddInt(48) // 0
+			aliveReply.AddString("BAD DISK")
+		}
+		err := c.SendBuf(aliveReply, c.hatcheryPending)
 		if err != nil {
 			c.log.Error().Err(err).Interface("buf", aliveReply).Msg("Could not send buf")
 		}
