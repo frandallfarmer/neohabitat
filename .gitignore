@@ -17,3 +17,14 @@ dependency-reduced-pom.xml
 neohabitat.iml
 usersDB.json
 volumes/bridge_v2_bin/
+
+# Claude Code — per-user / transient state.
+# Project-shared bits (settings.json, agents/, commands/, skills/, hooks/)
+# remain trackable; only personal overrides and runtime files are ignored.
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/projects/
+.claude/todos/
+.claude/statsig/
+.claude/shell-snapshots/
+.claude/ide/
