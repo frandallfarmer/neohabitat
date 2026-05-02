@@ -4,12 +4,16 @@
 // Examples:
 //   node populateModels.js 127.0.0.1:27017 all
 
-const backoff = require('exponential-backoff').backOff;
 const cliProgress = require('cli-progress');
 const dree = require('dree');
 const fs = require('fs').promises;
 const MongoClient = require('mongodb').MongoClient;
 const process = require('process');
+
+// Number of upsert operations per bulkWrite request. The mongo driver
+// will internally split larger batches, but capping here keeps memory
+// pressure predictable on large schema loads.
+const BULK_BATCH_SIZE = 1000;
 
 const fileRoots = {
   all: '.',
@@ -89,28 +93,18 @@ function lookForTeleportEntries(o) {
   }
 }
 
-async function eupdateOne(db, obj) {
-  lookForTeleportEntries(obj);
-  await db.collection('odb').findOneAndUpdate(
-    { ref: obj.ref },
-    { $set: obj },
-    { upsert: true },
-  );
-}
-
-async function eupdateArray(db, array) {
-  if (array.length == 0) {
-    return;
-  }
-  const localArray = array.slice();
-  const curObj = localArray.shift();
-  lookForTeleportEntries(curObj);
-  await db.collection('odb').findOneAndUpdate(
-    { ref: curObj.ref },
-    { $set: curObj },
-    { upsert: true },
-  );
-  await eupdateArray(db, localArray);
+// Per-batch bulk upsert. `ordered: false` lets the driver parallelize
+// within the batch and continue on per-op errors instead of aborting
+// the whole batch on the first failure.
+async function bulkUpsert(db, batch) {
+  const ops = batch.map((obj) => ({
+    replaceOne: {
+      filter: { ref: obj.ref },
+      replacement: obj,
+      upsert: true,
+    },
+  }));
+  await db.collection('odb').bulkWrite(ops, { ordered: false });
 }
 
 function templateStringJoins(data) {
@@ -162,28 +156,30 @@ function templateHabitatObject(data) {
   }
 }
 
-const runAllUpdates = async (promisesArray) => {
-  console.log('Waiting for in-flight Habitat object updates:', promisesArray.length);
-  const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  let doneCount = 0;
-  const overallCount = promisesArray.length;
- 
-  const handleProgress = (result) => {
-    doneCount++;
-    progressBar.update(Math.round(doneCount / overallCount * 100));
-    return result;
-  };
- 
-  const handleComplete = (results) => {
-    console.info('Updated', results.length, 'Habitat objects');
-    progressBar.stop();
+// Bulk-write `objects` to db.odb. Index on `ref` is created up front so
+// the per-op upsert lookup is O(log n) instead of O(n) — without it, the
+// later batches scan an ever-growing collection.
+const runAllUpdates = async (db, objects) => {
+  if (objects.length === 0) {
+    console.log('No Habitat objects to write.');
+    return;
   }
-  
+  console.log('Writing', objects.length, 'Habitat objects in batches of', BULK_BATCH_SIZE);
+
+  await db.collection('odb').createIndex({ ref: 1 });
+
+  const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   progressBar.start(100, 0);
-  await Promise.all(promisesArray.map(p => p.then(handleProgress)))
-    .then((results) => {
-      handleComplete(results);
-    });
+
+  let done = 0;
+  for (let i = 0; i < objects.length; i += BULK_BATCH_SIZE) {
+    const batch = objects.slice(i, i + BULK_BATCH_SIZE);
+    await bulkUpsert(db, batch);
+    done += batch.length;
+    progressBar.update(Math.round(done / objects.length * 100));
+  }
+  progressBar.stop();
+  console.info('Updated', objects.length, 'Habitat objects');
 }
 
 const populateModels = async () => {
@@ -206,7 +202,10 @@ const populateModels = async () => {
   });
   let db = client.db('elko');
 
-  let updates = [];
+  // Two-phase: collect every habitat object into memory first, then
+  // bulk-write. Decouples the file-scan from mongo I/O so we can index
+  // and batch optimally.
+  const objects = [];
 
   const updateFn = async ({name, path}) => {
     if (path.includes("node_modules") ||
@@ -218,13 +217,12 @@ const populateModels = async () => {
     let templatedJSON = '';
     try {
       const data = await fs.readFile(path, 'utf8');
-      // Templates and attempts to parse the object's JSON.
       templatedJSON = templateHabitatObject(data);
-      let habitatObject = JSON.parse(templatedJSON);
-      if (habitatObject instanceof Array) {
-        updates.push(backoff(() => eupdateArray(db, habitatObject)));
-      } else {
-        updates.push(backoff(() => eupdateOne(db, habitatObject)));
+      const parsed = JSON.parse(templatedJSON);
+      const items = parsed instanceof Array ? parsed : [parsed];
+      for (const obj of items) {
+        lookForTeleportEntries(obj);
+        objects.push(obj);
       }
     } catch (e) {
       console.error('Failed to parse file:', path);
@@ -234,10 +232,14 @@ const populateModels = async () => {
   };
 
   await dree.scanAsync(fileRoots[fileRootName], {
-    extensions: [ 'json' ]
+    extensions: [ 'json' ],
+    // Don't descend into node_modules — every nested package.json and
+    // locale file would be visited just to be skipped, which scales
+    // linearly with installed deps and adds minutes to schema build.
+    exclude: /node_modules/,
   }, updateFn);
-  
-  await runAllUpdates(updates);
+
+  await runAllUpdates(db, objects);
 
   if (Object.keys(teleportDirectory.map).length > 0) {
     teleportDirectory.map[' End of Directory'] = 'eod';

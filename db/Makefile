@@ -22,9 +22,9 @@ DATABASE_OBJECTS = $(TELEPORTDB)
 
 
 # JSON object definitions supplied by the various components
-MONGODB_OBJECTS = $(shell find $(GIT_BASE_DIR)/db -name '*.json' -not -name 'package.json' -not -name 'package-lock.json') $(DATABASE_OBJECTS)
+MONGODB_OBJECTS = $(shell find $(GIT_BASE_DIR)/db -name '*.json' -not -path '*/node_modules/*' -not -name 'package.json' -not -name 'package-lock.json') $(DATABASE_OBJECTS)
 
-DOWNTOWN_REGIONS = $(shell find $(GIT_BASE_DIR)/db/new_Downtown/ -name '*.json' -not -name 'package.json' -not -name 'package-lock.json')
+DOWNTOWN_REGIONS = $(shell find $(GIT_BASE_DIR)/db/new_Downtown/ -name '*.json' -not -path '*/node_modules/*' -not -name 'package.json' -not -name 'package-lock.json')
 
 # JSON objects for just the text documents
 TEXT_OBJECTS = $(shell find $(GIT_BASE_DIR)/Text -name '*.json') $(BOOKOFRECORDS)
