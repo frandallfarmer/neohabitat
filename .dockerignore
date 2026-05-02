@@ -1,6 +1,53 @@
+# Keep the build context small and predictable.
+
+# VCS
+.git
+.gitignore
+.gitattributes
+.github
+
+# Editor / OS noise
+.idea
+*.iml
+*.DS_Store
+*.swp
+
+# Node — every nested module dir
 node_modules
 **/node_modules
-Dockerfile
-docker-compose.yml
-*.DS_store
-.git
+
+# Maven build artifacts
+target
+**/*.class
+dependency-reduced-pom.xml
+
+# Runtime data + state (must NOT end up in the image)
+data
+volumes
+db/Text/text-bookofrecords.json
+
+# Build/runtime logs
+*.log
+
+# bridge_v2 dev artifacts
+bridge_v2/tmp
+bridge_v2/debug
+bridge_v2/build
+
+# CI / IaC config — image doesn't need it
+.dockerignore
+docker-compose*.yml
+.travis.yml
+ansible
+monitoring
+vagrant
+installer
+recreate
+incomplete
+astroturf
+
+# Ansible cache
+.ansible_cache
+
+# Test data not needed at runtime
+test/node_modules
