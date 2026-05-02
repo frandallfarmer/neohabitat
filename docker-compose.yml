@@ -18,18 +18,11 @@ services:
   neohabitat:
     build: .
     restart: unless-stopped
-    volumes:
-      # Bind-mount the repo for live source editing in dev. The anonymous
-      # volumes below shadow paths the image OWNS — without them, a fresh
-      # checkout (CI especially) would hide the baked-in node_modules and
-      # the built jar, breaking startup with `Cannot find module 'mongodb'`
-      # and similar.
-      - .:/neohabitat
-      - /neohabitat/bridge/node_modules
-      - /neohabitat/pushserver/node_modules
-      - /neohabitat/db/node_modules
-      - /neohabitat/target
-    # make sure to build this with `docker compose build` when doing development to compile your local changes.
+    # The dev bind-mount (`.:/neohabitat`) lives in docker-compose.override.yml
+    # so that `docker compose -f docker-compose.yml ...` (CI) gets the image
+    # exactly as built, with its baked-in node_modules and jar intact.
+    # Local `docker compose up` (no -f) auto-loads the override and gets
+    # live source editing.
     image: frandallfarmer/neohabitat
     environment:
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
