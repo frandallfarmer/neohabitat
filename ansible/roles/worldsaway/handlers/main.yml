@@ -1,0 +1,5 @@
+---
+- name: Restart walinuxagent
+  systemd:
+    name: walinuxagent
+    state: restarted

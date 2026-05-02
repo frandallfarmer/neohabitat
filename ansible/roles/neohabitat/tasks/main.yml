@@ -1,0 +1,20 @@
+---
+- name: Install host packages (docker, criu, node)
+  import_tasks: packages.yml
+  tags: [neohabitat, packages]
+
+- name: Reconcile repo + state directories
+  import_tasks: repo.yml
+  tags: [neohabitat, repo]
+
+- name: Consolidate bots onto compose service
+  import_tasks: bots.yml
+  tags: [neohabitat, bots]
+
+- name: Bring up compose stack
+  import_tasks: compose.yml
+  tags: [neohabitat, compose]
+
+- name: Deploy bridge_v2
+  import_tasks: bridge.yml
+  tags: [neohabitat, bridge]

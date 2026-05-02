@@ -1,0 +1,19 @@
+# Local-development overrides. Auto-loaded by `docker compose up` (no -f),
+# explicitly NOT loaded by `docker compose -f docker-compose.yml ...` which
+# is what CI runs.
+#
+# What this adds:
+#   - Bind-mount the repo into /neohabitat so edits on the host take effect
+#     in the container without a rebuild.
+#   - Anonymous volumes on the four paths the image owns (node_modules
+#     for each Node subdir, plus the Maven target/), so the bind mount
+#     doesn't shadow them.
+
+services:
+  neohabitat:
+    volumes:
+      - .:/neohabitat
+      - /neohabitat/bridge/node_modules
+      - /neohabitat/pushserver/node_modules
+      - /neohabitat/db/node_modules
+      - /neohabitat/target

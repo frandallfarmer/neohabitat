@@ -1,0 +1,23 @@
+---
+# Zero-downtime bridge_v2 push. Runs only the bridge tasks from the
+# neohabitat role.
+#
+# Default mode is `upgrade`: builds the binary on the controller, ships it
+# to the target's volumes/bridge_v2_bin/, and SIGHUPs the running container.
+# Active TCP sessions survive via tableflip + TCP_REPAIR.
+#
+# Override mode at the command line:
+#   ansible-playbook playbooks/deploy-bridge.yml \
+#     -e bridge_deploy_mode=adopt-cutover
+
+- name: Deploy bridge_v2
+  hosts: neohabitat_servers
+  gather_facts: true
+  any_errors_fatal: true
+  vars:
+    bridge_deploy_mode: "{{ bridge_deploy_mode | default('upgrade') }}"
+  tasks:
+    - name: Run bridge deploy tasks
+      include_role:
+        name: neohabitat
+        tasks_from: bridge.yml

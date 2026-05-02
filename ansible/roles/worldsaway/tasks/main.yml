@@ -1,0 +1,53 @@
+---
+- name: Skip worldsaway role on non-Azure hosts
+  meta: end_play
+  when: not (host_is_azure | bool)
+  tags: [worldsaway, azure, always]
+
+- name: Install Azure / Hyper-V packages
+  apt:
+    name: "{{ worldsaway_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags: [worldsaway, azure, apt]
+
+- name: Render /etc/waagent.conf
+  template:
+    src: waagent.conf.j2
+    dest: /etc/waagent.conf
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+  notify: Restart walinuxagent
+  tags: [worldsaway, azure, waagent]
+
+- name: Ensure Azure / Hyper-V daemons are enabled and running
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ worldsaway_services }}"
+  loop_control:
+    label: "{{ item }}"
+  tags: [worldsaway, azure, systemd]
+
+- name: Confirm Azure datasource is reachable from cloud-init
+  command: cloud-init query --list-keys ds
+  register: cloud_init_ds
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags: [worldsaway, azure, cloudinit]
+
+- name: Warn if cloud-init does not see the Azure datasource
+  debug:
+    msg: >-
+      cloud-init query reported no Azure datasource keys. This is fine on a
+      first boot before metadata is fetched, but unexpected on `the made`.
+      Output: {{ cloud_init_ds.stdout | default('(empty)') }}
+  when:
+    - cloud_init_ds.rc is defined
+    - cloud_init_ds.rc != 0
+  tags: [worldsaway, azure, cloudinit]

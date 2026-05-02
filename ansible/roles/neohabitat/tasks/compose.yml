@@ -1,0 +1,51 @@
+---
+- name: Render neohabitat-stack systemd unit
+  template:
+    src: neohabitat-stack.service.j2
+    dest: /etc/systemd/system/neohabitat-stack.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
+- name: Enable (but do not start) neohabitat-stack.service
+  # We don't `state: started` here — bringing the stack up is handled by
+  # the explicit `docker compose up` step below so we control timing and
+  # the --no-recreate flag.
+  systemd:
+    name: neohabitat-stack.service
+    enabled: true
+    daemon_reload: true
+
+- name: Pull compose images
+  community.docker.docker_compose_v2:
+    project_src: "{{ neohabitat_repo_path }}"
+    files: "{{ neohabitat_compose_files }}"
+    pull: always
+    state: present
+  become: true
+  become_user: "{{ neohabitat_owner }}"
+  when: neohabitat_compose_pull | bool
+  changed_when: false  # `pull` doesn't tell us if anything actually moved
+
+- name: Bring compose stack up (no recreate)
+  community.docker.docker_compose_v2:
+    project_src: "{{ neohabitat_repo_path }}"
+    files: "{{ neohabitat_compose_files }}"
+    state: present
+    recreate: never
+    remove_orphans: true
+  become: true
+  become_user: "{{ neohabitat_owner }}"
+  when: not (neohabitat_compose_recreate | bool)
+
+- name: Bring compose stack up (recreate when config drifts)
+  community.docker.docker_compose_v2:
+    project_src: "{{ neohabitat_repo_path }}"
+    files: "{{ neohabitat_compose_files }}"
+    state: present
+    recreate: auto
+    remove_orphans: true
+  become: true
+  become_user: "{{ neohabitat_owner }}"
+  when: neohabitat_compose_recreate | bool

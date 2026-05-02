@@ -1,0 +1,34 @@
+#
+# Microsoft Azure Linux Agent Configuration
+# Managed by Ansible (worldsaway role) — local edits will be overwritten.
+#
+
+Provisioning.Enabled={{ waagent_provisioning_enabled }}
+Extensions.Enabled={{ waagent_extensions_enabled }}
+Provisioning.UseCloudInit={{ waagent_use_cloudinit }}
+Provisioning.DeleteRootPassword=y
+Provisioning.RegenerateSshHostKeyPair={{ waagent_regenerate_ssh_host_key }}
+Provisioning.SshHostKeyPairType={{ waagent_ssh_host_key_pair_type }}
+Provisioning.MonitorHostName=n
+Provisioning.DecodeCustomData=n
+Provisioning.ExecuteCustomData=n
+Provisioning.AllowResetSysUser=n
+
+ResourceDisk.Format={{ waagent_resource_disk_format }}
+ResourceDisk.Filesystem={{ waagent_resource_disk_filesystem }}
+ResourceDisk.MountPoint={{ waagent_resource_disk_mountpoint }}
+ResourceDisk.EnableSwap={{ waagent_resource_disk_enable_swap }}
+ResourceDisk.SwapSizeMB=0
+ResourceDisk.MountOptions=None
+
+LBProbeResponder={{ waagent_lb_probe_responder }}
+Logs.Verbose={{ waagent_logs_verbose }}
+
+OS.EnableFIPS=n
+OS.RootDeviceScsiTimeout=300
+OS.OpensslPath=None
+OS.SshDir=/etc/ssh
+OS.EnableFirewall={{ waagent_os_enable_firewall }}
+
+CGroups.EnforceLimits=n
+CGroups.Excluded=customscript,runcommand

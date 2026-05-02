@@ -1,0 +1,18 @@
+[Unit]
+Description=Neohabitat docker-compose stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory={{ neohabitat_repo_path }}
+User={{ neohabitat_owner }}
+Group={{ neohabitat_group }}
+ExecStart=/usr/bin/docker compose {% for f in neohabitat_compose_files %}-f {{ f }} {% endfor %}up -d --remove-orphans
+ExecStop=/usr/bin/docker compose {% for f in neohabitat_compose_files %}-f {{ f }} {% endfor %}down
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target

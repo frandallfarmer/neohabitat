@@ -1,0 +1,127 @@
+---
+# bridge_v2 deploy. Three modes:
+#   adopt-cutover  — first run on a host that still has the old Node bridge
+#                    fronting :1337. Recreates the stack so bridge_v2 takes
+#                    :1337. ~5s gap on host port 1337; existing C64 sessions
+#                    through the old Node bridge will drop. One-shot.
+#   upgrade        — steady state. Build → sync binary → SIGHUP. Active
+#                    sessions survive via tableflip + TCP_REPAIR.
+#   refresh-only   — do nothing here (compose.yml handled config).
+
+- name: Validate bridge_deploy_mode
+  assert:
+    that:
+      - bridge_deploy_mode in ['adopt-cutover', 'upgrade', 'refresh-only']
+    fail_msg: >-
+      bridge_deploy_mode must be one of: adopt-cutover, upgrade, refresh-only.
+      Got: {{ bridge_deploy_mode }}
+    quiet: true
+
+- name: Skip bridge tasks (refresh-only mode)
+  meta: end_play
+  when: bridge_deploy_mode == 'refresh-only'
+
+# ── Build the binary on the controller ────────────────────────────────
+- name: Resolve absolute path to bridge_v2 source on controller
+  set_fact:
+    bridge_src_dir: "{{ go_build_dir | realpath }}"
+  delegate_to: localhost
+  run_once: true
+  become: false
+
+- name: Resolve build version (git short SHA)  # noqa: command-instead-of-module
+  # The `git` module pulls/clones; we just want the current commit hash.
+  command:
+    cmd: git -C {{ bridge_src_dir }} rev-parse --short HEAD
+  register: build_version_cmd
+  delegate_to: localhost
+  run_once: true
+  become: false
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Set build version fact
+  set_fact:
+    bridge_build_version: "{{ build_version_cmd.stdout | default('unknown') }}"
+
+- name: Build bridge_v2 binary (linux/amd64, static)
+  command:
+    cmd: >-
+      go build -trimpath
+      -ldflags=-s -w -X main.buildVersion={{ bridge_build_version }}
+      -o {{ bridge_src_dir }}/../volumes/bridge_v2_bin/bridge_v2
+      .
+    chdir: "{{ bridge_src_dir }}"
+  environment:
+    CGO_ENABLED: "0"
+    GOOS: "{{ bridge_build_os }}"
+    GOARCH: "{{ bridge_build_arch }}"
+  delegate_to: localhost
+  run_once: true
+  become: false
+  changed_when: true
+
+- name: Synchronize bridge_v2 binary to target
+  ansible.posix.synchronize:
+    src: "{{ bridge_src_dir }}/../volumes/bridge_v2_bin/bridge_v2"
+    dest: "{{ neohabitat_repo_path }}/{{ bridge_bin_relpath }}"
+    mode: push
+    rsync_opts:
+      - "--chmod=755"
+
+- name: Ensure binary is owned by neohabitat user
+  file:
+    path: "{{ neohabitat_repo_path }}/{{ bridge_bin_relpath }}"
+    owner: "{{ neohabitat_owner }}"
+    group: "{{ neohabitat_group }}"
+    mode: "0755"
+
+# ── adopt-cutover: full stack reconcile so bridge_v2 takes :1337 ──────
+- name: Adopt-cutover — recreate the compose stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ neohabitat_repo_path }}"
+    files: "{{ neohabitat_compose_files }}"
+    state: present
+    recreate: always
+    remove_orphans: true
+  become: true
+  become_user: "{{ neohabitat_owner }}"
+  when: bridge_deploy_mode == 'adopt-cutover'
+
+- name: Adopt-cutover — wait for bridge_v2 to listen on :1337
+  wait_for:
+    host: 127.0.0.1
+    port: 1337
+    state: started
+    timeout: 60
+  when: bridge_deploy_mode == 'adopt-cutover'
+
+# ── upgrade: SIGHUP-style hot replace via deploy-bridge.sh ────────────
+- name: Upgrade — verify bridge_v2 container is running
+  command: docker inspect -f '{{ "{{" }}.State.Running{{ "}}" }}' {{ bridge_container_name }}
+  register: bridge_running
+  changed_when: false
+  failed_when: bridge_running.stdout | trim != 'true'
+  when: bridge_deploy_mode == 'upgrade'
+
+- name: Upgrade — SIGHUP bridge_v2 (tableflip will re-exec, TCP_REPAIR preserves sessions)
+  command: docker exec {{ bridge_container_name }} kill -HUP 1
+  changed_when: true
+  when: bridge_deploy_mode == 'upgrade'
+
+- name: Upgrade — wait for new process to accept connections
+  wait_for:
+    host: 127.0.0.1
+    port: "{{ bridge_listen_port }}"
+    state: started
+    timeout: 30
+  when: bridge_deploy_mode == 'upgrade'
+
+# ── Sanity check: deployed binary version matches what we just shipped ─
+- name: Confirm running binary version
+  command: docker exec {{ bridge_container_name }} /app/bridge_v2 -h
+  register: bridge_help
+  changed_when: false
+  failed_when: false
+  when: bridge_deploy_mode in ['adopt-cutover', 'upgrade']

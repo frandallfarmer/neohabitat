@@ -1,0 +1,16 @@
+---
+# Project-wide yamllint config. The Ansible tree has its own (more lenient)
+# config at ansible/.yamllint; this one applies everywhere else (mainly
+# .github/workflows/).
+extends: default
+
+rules:
+  line-length:
+    max: 160
+  # GitHub Actions uses `on:` as a key — yamllint's `truthy` rule would
+  # otherwise complain that "on" looks like a boolean.
+  truthy:
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: disable

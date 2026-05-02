@@ -1,0 +1,44 @@
+---
+# ── Repo management ───────────────────────────────────────────────────
+# When true, the role clones/updates {{ neohabitat_repo_path }} from
+# {{ neohabitat_repo_url }} at {{ neohabitat_git_ref }}. Set to false on
+# hosts where the working copy is owned by a human (e.g. `the made`).
+neohabitat_manage_repo: false
+
+# ── Compose ──────────────────────────────────────────────────────────
+neohabitat_compose_files:
+  - docker-compose.yml
+  - docker-compose.prod.yml
+
+# Pulled at every run so a fresh install gets recent images. The actual
+# container update is gated by neohabitat_compose_recreate.
+neohabitat_compose_pull: true
+
+# false  → `up -d --no-recreate` (default, doesn't bounce running services)
+# true   → `up -d` (recreate when config drifts; will restart containers)
+neohabitat_compose_recreate: false
+
+# ── Bridge_v2 ────────────────────────────────────────────────────────
+bridge_container_name: neohabitat-bridge_v2-1
+bridge_listen_port: 2026
+bridge_health_retries: 30
+bridge_health_delay: 1
+
+# Where on the controller we build the binary. `synchronize` ships it
+# into volumes/bridge_v2_bin/ on the target.
+bridge_build_arch: amd64
+bridge_build_os: linux
+
+# ── Bots ─────────────────────────────────────────────────────────────
+# The systemd units predate the docker `bots` service. Mask them so they
+# never come back, and remove the unit files. The compose `bots` service
+# replaces them.
+legacy_bot_units:
+  - elizabot.service
+  - welcomebot.service
+
+# ── Node ──────────────────────────────────────────────────────────────
+# We install NodeSource Node 20 system-wide. Anything still depending on
+# nvm/Node-18 should be migrated; the role doesn't manage nvm.
+nodesource_distro: nodistro
+nodesource_node_major: 20
