@@ -1,0 +1,27 @@
+---
+# Apt packages we want everywhere.
+base_packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - git
+  - jq
+  - htop
+  - net-tools
+  - rsync
+  - unattended-upgrades
+  - chrony
+  - python3-apt
+
+# Apt packages we explicitly do NOT want. The legacy `docker-compose` 1.25
+# is shadowed by the v2 plugin and only causes confusion.
+base_packages_remove:
+  - docker-compose
+
+base_timezone: UTC
+
+# Opt-in SSH hardening. Off by default — flipping this on against a host
+# whose users still rely on password auth will lock them out. Enable only
+# after confirming every operator has key-based access.
+base_harden_sshd: false

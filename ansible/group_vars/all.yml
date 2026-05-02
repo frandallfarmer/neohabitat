@@ -1,0 +1,40 @@
+---
+# ── Repo / deployment ────────────────────────────────────────────────
+neohabitat_repo_url: https://github.com/frandallfarmer/neohabitat
+neohabitat_repo_path: /opt/neohabitat
+neohabitat_git_ref: master
+neohabitat_owner: themade
+neohabitat_group: themade
+
+# ── SSH keys for the `themade` account ───────────────────────────────
+# `exclusive: false` is set in the role so adding/removing entries here
+# is non-destructive of any other key already on the box. The Azure
+# generated key is captured verbatim so a fresh-build host gets it back.
+themade_authorized_keys:
+  - name: generated-by-azure
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1LAqgzBeOOak5ZwwWjgym380S6A0twr+9Ggt3CWAtvmZPLPoWulOc6GPN2mlZXNEyGw825/ZkctO35UakJ6X+wBKNcKHN5Mb+ELtYtN61yTgx0DCzM+g1Kk7wXt6G6tg56G92hg2eHxky9yZnW9K6CnWRY7io/XJMk3jUoc3cYaggBoUrw5lO29tC9WI4zgJVAbAx6yMw8569x2L04uYGsTVAtvSHFbiSlv8bFbD92s21mOMApwMsjaq3hKAl5Grms/4anu88b7aWKcv37aJSYILi+xQRRqrF+YEb8ey4LOJgP+zYubKUKbPEU1dEEiiCGrrcpzlKKBmI3IDUPWe+N8ovfohJwir/yNm5iwjh5AChRZcSNI2prwRjoc8quC7S6iJfS/WWUsgaEJt9ckXSZeXwrF1IQy5LlWF9G/lb+3NxZaMaKmi19htRAKEANhgQn4+sIzSDqgpjpuAS177f16XvBit2ITrvIW61KthNspR/WjFfXkP3dcg2r4uEbIE= generated-by-azure"
+  - name: steve@heathaze
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDR0gMyoC1+9+h2EweEnmtxKQJQnZbQoLC8f3GO2Hicl7VaEhDMBojebMgVkhnUQRx5/1WcDr3XyOlgogV2xgMQWsk28qlz1dwoDZimcXfEo5aDukfOVZrFJySjEdx1j1p+yC9fK6PM/iZnBxQyusrSERNnPK/tFcDqhwk8+SM2Ajvoxl+RxsHh9B8ceTCCKATLcdAYsQnYy4im3IdH9bs88yhVxidRfmz8CUjTOvBEn82NBOSqBsY+YlF5QjAOFfmv89G0eBN1IfyJPosZTFYpQNIcqdrFNW5wbgS7k6H1X7nAIosDIzt1vyi8uTXBimD51tt9FRNh8c+DaSOzR5mh steve@heathaze.local"
+
+# ── Bridge_v2 deploy ──────────────────────────────────────────────────
+# Modes:
+#   adopt-cutover  — first run on a host that still has the old Node
+#                    bridge fronting :1337. Recreates elko with
+#                    SHOULD_RUN_BRIDGE=false and binds bridge_v2 to :1337.
+#                    One-shot. ~5s gap on host :1337; existing C64
+#                    sessions through the old bridge will drop.
+#   upgrade        — steady-state. Re-builds binary, syncs, SIGHUPs.
+#                    Active sessions survive via tableflip + TCP_REPAIR.
+#   refresh-only   — converge config/units, no SIGHUP.
+bridge_deploy_mode: upgrade
+
+# Where on the controller the Go toolchain lives. The bridge_v2 binary
+# is built locally for linux/amd64 and shipped — we never install Go on
+# the production host.
+go_build_dir: "{{ playbook_dir }}/../../bridge_v2"
+bridge_bin_relpath: volumes/bridge_v2_bin/bridge_v2
+
+# ── Azure / WorldsAway ────────────────────────────────────────────────
+# Set host_is_azure: false in inventory for non-Azure hosts to skip
+# the worldsaway role.
+host_is_azure: false

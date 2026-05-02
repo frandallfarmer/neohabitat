@@ -1,0 +1,33 @@
+---
+# Today on `the made`, eliza/welcome bots run twice — once via the docker
+# `bots` service (managed by compose) and once via /etc/systemd/system
+# units that predate the compose service. Consolidate onto compose.
+
+- name: Check for legacy bot systemd unit files
+  stat:
+    path: "/etc/systemd/system/{{ item }}"
+  register: legacy_unit_stat
+  loop: "{{ legacy_bot_units }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Stop legacy bot systemd units
+  systemd:
+    name: "{{ item.item }}"
+    state: stopped
+    enabled: false
+    masked: true
+  loop: "{{ legacy_unit_stat.results }}"
+  when: item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Remove legacy bot unit files
+  file:
+    path: "/etc/systemd/system/{{ item.item }}"
+    state: absent
+  loop: "{{ legacy_unit_stat.results }}"
+  when: item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+  notify: Reload systemd

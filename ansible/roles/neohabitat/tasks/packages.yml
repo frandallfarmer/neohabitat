@@ -1,0 +1,96 @@
+---
+# ── Docker (idempotent — `the made` already has it) ──────────────────
+- name: Ensure Docker apt key directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add Docker GPG key
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+    force: false
+
+- name: Add Docker apt repository
+  apt_repository:
+    repo: >-
+      deb [arch={{ ansible_architecture | replace('x86_64', 'amd64') }}
+      signed-by=/etc/apt/keyrings/docker.asc]
+      https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    filename: docker
+    state: present
+    update_cache: true
+
+- name: Install Docker engine + compose plugin
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+      - docker-buildx-plugin
+    state: present
+
+- name: Ensure docker service is enabled and running
+  systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Add neohabitat user to docker group
+  user:
+    name: "{{ neohabitat_owner }}"
+    groups: docker
+    append: true
+
+# ── CRIU (live migration for bridge_v2) ──────────────────────────────
+- name: Install criu (required by deploy-bridge.sh --migrate)
+  apt:
+    name: criu
+    state: present
+
+# ── NodeSource Node 20 ───────────────────────────────────────────────
+- name: Add NodeSource GPG key
+  get_url:
+    url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
+    dest: /etc/apt/keyrings/nodesource.asc
+    mode: "0644"
+    force: false
+
+- name: Add NodeSource apt repository
+  apt_repository:
+    repo: >-
+      deb [signed-by=/etc/apt/keyrings/nodesource.asc]
+      https://deb.nodesource.com/node_{{ nodesource_node_major }}.x
+      {{ nodesource_distro }} main
+    filename: nodesource
+    state: present
+    update_cache: true
+
+- name: Install Node.js from NodeSource (major {{ nodesource_node_major }})
+  apt:
+    name: nodejs
+    state: present
+
+# ── Kernel module sanity for TCP_REPAIR ──────────────────────────────
+# bridge_v2's tableflip → child process uses TCP_REPAIR to restore active
+# sockets. tcp_diag/inet_diag must be loaded; on Ubuntu cloud images
+# they autoload, but on minimal images they don't.
+- name: Ensure tcp_diag/inet_diag are loaded
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - tcp_diag
+    - inet_diag
+
+- name: Persist tcp_diag/inet_diag autoload across reboots
+  copy:
+    dest: /etc/modules-load.d/neohabitat-bridge.conf
+    mode: "0644"
+    content: |
+      # Required by bridge_v2 TCP_REPAIR socket handover.
+      tcp_diag
+      inet_diag

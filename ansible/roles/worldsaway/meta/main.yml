@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: worldsaway
+  author: neohabitat
+  description: >-
+    Azure / Hyper-V guest agent stack (waagent + hv_* daemons + cloud-init
+    Azure datasource). Named "worldsaway" as a noun-pun on `wa-linux-agent`;
+    skipped automatically on non-Azure hosts.
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions: [focal, jammy, noble]
+dependencies: []

@@ -1,0 +1,25 @@
+---
+# Full convergence: base → worldsaway → neohabitat.
+#
+# Usage:
+#   ansible-playbook playbooks/site.yml --check --diff       # dry run
+#   ansible-playbook playbooks/site.yml                      # converge
+#
+# First adoption of `the made` (one-shot, recreates the stack so bridge_v2
+# takes :1337):
+#   ansible-playbook playbooks/site.yml -e bridge_deploy_mode=adopt-cutover
+#
+# Steady state (default mode is `upgrade` → SIGHUP, sessions survive):
+#   ansible-playbook playbooks/site.yml
+
+- name: Converge neohabitat hosts
+  hosts: neohabitat_servers
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - role: base
+      tags: [base]
+    - role: worldsaway
+      tags: [worldsaway, azure]
+    - role: neohabitat
+      tags: [neohabitat]

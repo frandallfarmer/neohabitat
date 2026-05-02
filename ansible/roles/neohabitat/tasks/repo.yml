@@ -1,0 +1,52 @@
+---
+- name: Ensure repo path exists (parent only — git module makes the rest)
+  file:
+    path: "{{ neohabitat_repo_path | dirname }}"
+    state: directory
+    owner: "{{ neohabitat_owner }}"
+    group: "{{ neohabitat_group }}"
+    mode: "0755"
+  when: neohabitat_repo_path | dirname not in ['/home', '/']
+
+- name: Clone or update the neohabitat repo
+  git:
+    repo: "{{ neohabitat_repo_url }}"
+    dest: "{{ neohabitat_repo_path }}"
+    version: "{{ neohabitat_git_ref }}"
+    update: true
+    force: false
+  become: true
+  become_user: "{{ neohabitat_owner }}"
+  when: neohabitat_manage_repo | bool
+  register: repo_state
+
+- name: Sanity-check that the repo path looks like neohabitat
+  stat:
+    path: "{{ neohabitat_repo_path }}/{{ item }}"
+  register: repo_files
+  loop:
+    - docker-compose.yml
+    - docker-compose.prod.yml
+    - bridge_v2/main.go
+    - scripts/deploy-bridge.sh
+  failed_when: not repo_files.stat.exists
+  loop_control:
+    label: "{{ item }}"
+
+- name: Ensure state directories exist
+  file:
+    path: "{{ neohabitat_repo_path }}/{{ item }}"
+    state: directory
+    owner: "{{ neohabitat_owner }}"
+    group: "{{ neohabitat_group }}"
+    mode: "0755"
+  loop:
+    - data
+    - data/mariadb
+    - volumes
+    - volumes/bridge_v2_bin
+
+- name: Make scripts/deploy-bridge.sh executable
+  file:
+    path: "{{ neohabitat_repo_path }}/scripts/deploy-bridge.sh"
+    mode: "0755"

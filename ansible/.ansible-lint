@@ -1,0 +1,17 @@
+---
+profile: production
+
+# Per project preference: short names for ansible.builtin modules read better
+# than the verbose FQCN form. Non-builtin collections still use FQCN.
+skip_list:
+  - fqcn
+  - fqcn[action-core]
+  # Variable names like `waagent_*` and `themade_*` are domain-meaningful;
+  # forcing every variable to start with the role name (`worldsaway_waagent_*`)
+  # would just add noise.
+  - var-naming[no-role-prefix]
+
+exclude_paths:
+  - .ansible_cache/
+  - ../node_modules/
+  - ../target/

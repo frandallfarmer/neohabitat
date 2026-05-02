@@ -1,0 +1,120 @@
+---
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: inventory_hostname not in ['localhost']
+  tags: [base, hostname]
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ base_timezone }}"
+  tags: [base, timezone]
+
+- name: Apt cache refresh
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+  tags: [base, apt]
+
+- name: Install base packages
+  apt:
+    name: "{{ base_packages }}"
+    state: present
+  tags: [base, apt]
+
+- name: Remove obsolete packages
+  apt:
+    name: "{{ base_packages_remove }}"
+    state: absent
+    purge: true
+  tags: [base, apt]
+
+- name: Ensure unattended-upgrades is enabled
+  copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+  tags: [base, apt]
+
+- name: Ensure chrony is running
+  systemd:
+    name: chrony
+    enabled: true
+    state: started
+  tags: [base, time]
+
+# ── User: themade ─────────────────────────────────────────────────────
+- name: Ensure themade group
+  group:
+    name: "{{ neohabitat_group }}"
+    state: present
+  tags: [base, user]
+
+- name: Ensure themade user
+  user:
+    name: "{{ neohabitat_owner }}"
+    group: "{{ neohabitat_group }}"
+    groups: [sudo]
+    append: true
+    shell: /bin/bash
+    create_home: true
+    state: present
+  tags: [base, user]
+
+- name: Authorize SSH keys for themade (non-exclusive)
+  ansible.posix.authorized_key:
+    user: "{{ neohabitat_owner }}"
+    key: "{{ item.key }}"
+    comment: "{{ item.name }}"
+    state: present
+    exclusive: false
+  loop: "{{ themade_authorized_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
+  tags: [base, ssh, user]
+
+- name: Passwordless sudo for themade
+  copy:
+    dest: /etc/sudoers.d/themade
+    mode: "0440"
+    content: "themade ALL=(ALL) NOPASSWD:ALL\n"
+    validate: visudo -cf %s
+  tags: [base, sudo]
+
+# ── Optional SSH hardening (off by default) ──────────────────────────
+- name: Harden sshd (opt-in)
+  copy:
+    dest: /etc/ssh/sshd_config.d/10-ansible-base.conf
+    mode: "0644"
+    content: |
+      # Managed by ansible base role (base_harden_sshd: true).
+      PasswordAuthentication no
+      ChallengeResponseAuthentication no
+      PermitRootLogin no
+  notify: Restart sshd
+  when: base_harden_sshd | bool
+  tags: [base, ssh, harden]
+
+# ── Firewall ─────────────────────────────────────────────────────────
+# UFW is intentionally NOT enabled. The Azure NSG is the perimeter; turning
+# UFW on without first encoding every NSG rule will black-hole game traffic.
+- name: Assert UFW is disabled (rely on Azure NSG)
+  command: ufw status
+  register: ufw_status
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags: [base, firewall]
+
+- name: Warn if UFW is active
+  debug:
+    msg: >-
+      UFW is reporting active. The base role intentionally leaves it off
+      (Azure NSG is the perimeter). If this is intentional, ignore.
+  when:
+    - ufw_status.stdout is defined
+    - ufw_status.stdout is search('^Status:\s+active', multiline=True)
+  tags: [base, firewall]

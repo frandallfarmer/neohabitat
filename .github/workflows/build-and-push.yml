@@ -1,0 +1,159 @@
+---
+name: build-and-push
+
+# CI for the neohabitat repo. Replaces the old Travis pipeline.
+#
+#   1. go-test       — `go test ./...` on bridge_v2 (Linux-only syscalls).
+#   2. compose-smoke — `docker compose build && up -d`, port reachability,
+#                      then `down`. Catches "stack doesn't even come up".
+#   3. build         — matrix-builds the three images. Pushes to GHCR on
+#                      master / v* tags. Gated on the two test jobs.
+#
+# Images:
+#   ghcr.io/<owner>/neohabitat          (Dockerfile at repo root — elko + bridge + pushserver)
+#   ghcr.io/<owner>/neohabitat-bots     (habibots/Dockerfile)
+#   ghcr.io/<owner>/neohabitat-bridge   (bridge_v2/Dockerfile — distroless Go binary)
+
+on:
+  push:
+    branches: [master]
+    tags: ["v*"]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: build-and-push-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  go-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: bridge_v2/go.mod
+          cache-dependency-path: bridge_v2/go.sum
+
+      - name: go vet
+        working-directory: bridge_v2
+        run: go vet ./...
+
+      - name: go test
+        working-directory: bridge_v2
+        run: go test -race -count=1 ./...
+
+  compose-smoke:
+    # Real-world "does the stack even come up" check. Builds all three
+    # images locally (no GHCR push), starts the dev compose, waits for
+    # health, then tears down.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build compose stack
+        run: docker compose -f docker-compose.yml build --pull
+
+      - name: Bring stack up
+        run: docker compose -f docker-compose.yml up -d
+
+      - name: Wait for ports
+        # The elko server takes ~30-60s to come up on a cold start because
+        # it builds the schema. Poll generously.
+        run: |
+          set -euo pipefail
+          for port in 27017 1337 2026; do
+            echo "Waiting for :$port..."
+            for i in $(seq 1 90); do
+              if nc -z -w 2 127.0.0.1 "$port"; then
+                echo "  :$port reachable"
+                break
+              fi
+              sleep 2
+              if [ "$i" -eq 90 ]; then
+                echo "  :$port never came up" >&2
+                docker compose -f docker-compose.yml ps
+                docker compose -f docker-compose.yml logs --tail=200
+                exit 1
+              fi
+            done
+          done
+
+      - name: Container status
+        if: always()
+        run: docker compose -f docker-compose.yml ps
+
+      - name: Stack logs (last 100 lines per service)
+        if: failure()
+        run: docker compose -f docker-compose.yml logs --tail=100
+
+      - name: Bring stack down
+        if: always()
+        run: docker compose -f docker-compose.yml down --volumes --remove-orphans
+
+  build:
+    needs: [go-test, compose-smoke]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: neohabitat
+            context: .
+            dockerfile: Dockerfile
+          - name: neohabitat-bots
+            context: ./habibots
+            dockerfile: habibots/Dockerfile
+          - name: neohabitat-bridge
+            context: ./bridge_v2
+            dockerfile: bridge_v2/Dockerfile
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      # Login is only needed when we're going to push. Skip on PRs from
+      # forks (which don't have access to packages:write anyway).
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-,format=short
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build${{ github.event_name != 'pull_request' && ' and push' || '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+          provenance: false

@@ -1,0 +1,15 @@
+---
+all:
+  children:
+    neohabitat_servers:
+      hosts:
+        the_made:
+          ansible_host: 20.3.249.92
+          ansible_user: themade
+          ansible_ssh_private_key_file: ~/Downloads/neohabitat_admin.cer
+          ansible_become: true
+          # On `the made` the existing working copy lives under the user's
+          # home, not /opt. Adoption mode keeps it there.
+          neohabitat_repo_path: /home/themade/neohabitat
+          # Azure-hosted, so the worldsaway (waagent + hv_*) role applies.
+          host_is_azure: true

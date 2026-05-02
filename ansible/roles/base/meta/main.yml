@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: base
+  author: neohabitat
+  description: Host basics for neohabitat servers — packages, user, ssh keys, time.
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions: [focal, jammy, noble]
+dependencies: []

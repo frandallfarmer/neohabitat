@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: neohabitat
+  author: neohabitat
+  description: >-
+    Deploys the Neohabitat docker-compose stack including the new Go
+    bridge_v2 (tableflip + TCP_REPAIR for zero-downtime restarts) and
+    consolidates legacy systemd-managed bots onto the compose `bots`
+    service.
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions: [focal, jammy, noble]
+dependencies: []
