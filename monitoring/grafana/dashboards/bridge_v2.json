@@ -1,5 +1,7 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -10,10 +12,16 @@
       {
         "name": "session_id",
         "type": "query",
-        "datasource": { "type": "loki", "uid": "loki" },
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
         "query": "label_values(session_id)",
         "includeAll": true,
-        "current": { "text": "All", "value": "$__all" },
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
         "multi": false,
         "sort": 2,
         "refresh": 2
@@ -21,10 +29,16 @@
       {
         "name": "avatar",
         "type": "query",
-        "datasource": { "type": "loki", "uid": "loki" },
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
         "query": "label_values(avatar)",
         "includeAll": true,
-        "current": { "text": "All", "value": "$__all" },
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
         "multi": false,
         "sort": 1,
         "refresh": 2
@@ -35,151 +49,371 @@
     {
       "title": "Active Sessions",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 5 },
-              { "color": "red", "value": 10 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
             ]
           }
         },
         "overrides": []
       },
-      "targets": [{ "expr": "bridge_v2_sessions_active", "legendFormat": "active", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "bridge_v2_sessions_active",
+          "legendFormat": "active",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Total Sessions",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
-          "thresholds": { "steps": [{ "color": "blue", "value": null }] }
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "targets": [{ "expr": "bridge_v2_sessions_total", "legendFormat": "total", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "bridge_v2_sessions_total",
+          "legendFormat": "total",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Messages In (rate/s)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "drawStyle": "line", "fillOpacity": 15, "lineWidth": 2, "spanNulls": false, "stacking": { "mode": "none" } },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          },
           "unit": "ops"
         },
         "overrides": []
       },
-      "targets": [{ "expr": "rate(bridge_v2_messages_in_total[1m])", "legendFormat": "{{ peer }}", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "rate(bridge_v2_messages_in_total[1m])",
+          "legendFormat": "{{ peer }}",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Messages Out (rate/s)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "drawStyle": "line", "fillOpacity": 15, "lineWidth": 2, "spanNulls": false, "stacking": { "mode": "none" } },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          },
           "unit": "ops"
         },
         "overrides": []
       },
-      "targets": [{ "expr": "rate(bridge_v2_messages_out_total[1m])", "legendFormat": "{{ peer }}", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "rate(bridge_v2_messages_out_total[1m])",
+          "legendFormat": "{{ peer }}",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Elko Round-Trip Latency (p50 / p95 / p99)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2, "spanNulls": false, "stacking": { "mode": "none" } },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2,
+            "spanNulls": false,
+            "stacking": {
+              "mode": "none"
+            }
+          },
           "unit": "s"
         },
         "overrides": []
       },
       "targets": [
-        { "expr": "histogram_quantile(0.50, rate(bridge_v2_elko_round_trip_seconds_bucket[5m]))", "legendFormat": "p50", "refId": "A" },
-        { "expr": "histogram_quantile(0.95, rate(bridge_v2_elko_round_trip_seconds_bucket[5m]))", "legendFormat": "p95", "refId": "B" },
-        { "expr": "histogram_quantile(0.99, rate(bridge_v2_elko_round_trip_seconds_bucket[5m]))", "legendFormat": "p99", "refId": "C" }
+        {
+          "expr": "histogram_quantile(0.50, rate(bridge_v2_elko_round_trip_seconds_bucket[5m]))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(bridge_v2_elko_round_trip_seconds_bucket[5m]))",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(bridge_v2_elko_round_trip_seconds_bucket[5m]))",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
       ]
     },
     {
       "title": "Elko Requests (rate/s by op)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "drawStyle": "bars", "fillOpacity": 80, "lineWidth": 1, "stacking": { "mode": "normal" } },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "lineWidth": 1,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
           "unit": "ops"
         },
         "overrides": []
       },
-      "targets": [{ "expr": "sum by (op) (rate(bridge_v2_elko_round_trip_seconds_count[1m]))", "legendFormat": "{{ op }}", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "sum by (op) (rate(bridge_v2_elko_round_trip_seconds_count[1m]))",
+          "legendFormat": "{{ op }}",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Go Runtime: Goroutines",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 16 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 16
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "fixedColor": "purple", "mode": "fixed" },
-          "custom": { "drawStyle": "line", "fillOpacity": 20, "lineWidth": 2 }
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2
+          }
         },
         "overrides": []
       },
-      "targets": [{ "expr": "process_runtime_go_goroutines", "legendFormat": "goroutines", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "go_goroutine_count",
+          "legendFormat": "goroutines",
+          "refId": "A"
+        }
+      ]
     },
     {
-      "title": "Go Runtime: Heap (bytes)",
+      "title": "Go Runtime: Memory in use (bytes, non-stack)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 16 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 16
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "fixedColor": "orange", "mode": "fixed" },
-          "custom": { "drawStyle": "line", "fillOpacity": 20, "lineWidth": 2 },
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2
+          },
           "unit": "bytes"
         },
         "overrides": []
       },
-      "targets": [{ "expr": "process_runtime_go_mem_heap_alloc", "legendFormat": "heap alloc", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "go_memory_used_bytes{go_memory_type=\"other\"}",
+          "legendFormat": "heap alloc",
+          "refId": "A"
+        }
+      ]
     },
     {
-      "title": "Go Runtime: GC Pause (p95)",
+      "title": "Go Runtime: Allocation rate (bytes/s)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 16 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "fixedColor": "red", "mode": "fixed" },
-          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 },
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          },
           "unit": "s"
         },
         "overrides": []
       },
-      "targets": [{ "expr": "histogram_quantile(0.95, rate(process_runtime_go_gc_pause_ns_bucket[5m])) / 1e9", "legendFormat": "gc pause p95", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "rate(go_memory_allocated_bytes_total[5m])",
+          "legendFormat": "gc pause p95",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Session Logs",
       "description": "Filtered by $session_id and $avatar template variables",
       "type": "logs",
-      "datasource": { "type": "loki", "uid": "loki" },
-      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 22 },
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
       "options": {
         "showTime": true,
         "showLabels": true,
@@ -190,18 +424,28 @@
         "sortOrder": "Descending",
         "dedupStrategy": "none"
       },
-      "targets": [{
-        "expr": "{container=~\".*bridge_v2.*\"} |= `` | json | session_id=~\"${session_id:regex}\" | avatar=~\"${avatar:regex}\"",
-        "legendFormat": "",
-        "refId": "A"
-      }]
+      "targets": [
+        {
+          "expr": "{container=~\".*bridge_v2.*\"} | json",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Error Logs",
       "description": "Errors and warnings only, filtered by session/avatar",
       "type": "logs",
-      "datasource": { "type": "loki", "uid": "loki" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 34 },
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
       "options": {
         "showTime": true,
         "showLabels": true,
@@ -212,35 +456,69 @@
         "sortOrder": "Descending",
         "dedupStrategy": "none"
       },
-      "targets": [{
-        "expr": "{container=~\".*bridge_v2.*\"} |= `` | json | level=~\"error|warn|fatal\" | session_id=~\"${session_id:regex}\" | avatar=~\"${avatar:regex}\"",
-        "legendFormat": "",
-        "refId": "A"
-      }]
+      "targets": [
+        {
+          "expr": "{container=~\".*bridge_v2.*\"} | json | level=~\"error|warn|fatal\"",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Client Crashes",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 42 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 42
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
-          "thresholds": { "steps": [
-            { "color": "green", "value": null },
-            { "color": "red", "value": 1 }
-          ]}
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "targets": [{ "expr": "bridge_v2_client_crashes_total", "legendFormat": "crashes", "refId": "A" }]
+      "targets": [
+        {
+          "expr": "bridge_v2_client_crashes_total",
+          "legendFormat": "crashes",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Crash Reports",
       "description": "Detailed crash logs with C64 diagnostic state",
       "type": "logs",
-      "datasource": { "type": "loki", "uid": "loki" },
-      "gridPos": { "h": 8, "w": 20, "x": 4, "y": 42 },
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 20,
+        "x": 4,
+        "y": 42
+      },
       "options": {
         "showTime": true,
         "showLabels": true,
@@ -249,28 +527,47 @@
         "sortOrder": "Descending",
         "dedupStrategy": "none"
       },
-      "targets": [{
-        "expr": "{container=~\".*bridge_v2.*\"} |= \"Client crash report\" | json",
-        "legendFormat": "",
-        "refId": "A"
-      }]
+      "targets": [
+        {
+          "expr": "{container=~\".*bridge_v2.*\"} |= \"Client crash report\" | json",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ]
     },
     {
       "title": "Recent Traces",
       "type": "table",
-      "datasource": { "type": "tempo", "uid": "tempo" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 50 },
-      "targets": [{
-        "queryType": "nativeSearch",
-        "serviceName": "bridge_v2",
-        "limit": 20,
-        "refId": "A"
-      }]
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 50
+      },
+      "targets": [
+        {
+          "queryType": "nativeSearch",
+          "serviceName": "bridge_v2",
+          "limit": 20,
+          "refId": "A"
+        }
+      ]
     }
   ],
   "schemaVersion": 39,
-  "tags": ["habitat", "bridge_v2", "otel"],
-  "time": { "from": "now-30m", "to": "now" },
+  "tags": [
+    "habitat",
+    "bridge_v2",
+    "otel"
+  ],
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "browser",
   "title": "bridge_v2 Observability",
