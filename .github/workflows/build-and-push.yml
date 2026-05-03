@@ -268,18 +268,44 @@ jobs:
           # — we substitute the actual Grafana Cloud UIDs before pushing
           # so the same dashboard JSON works across any stack.
           echo "::group::datasource UID mapping"
-          curl -sS -H "Authorization: Bearer $GRAFANA_TOKEN" \
-            "$GRAFANA_URL/api/datasources" > /tmp/datasources.json
+          status=$(curl -sS -o /tmp/datasources.json -w '%{http_code}' \
+            -H "Authorization: Bearer $GRAFANA_TOKEN" \
+            "$GRAFANA_URL/api/datasources")
+          echo "GET /api/datasources -> HTTP $status"
+
+          if [ "$status" != "200" ]; then
+            echo "Response body:"
+            cat /tmp/datasources.json; echo
+            echo "::error::Could not list datasources. The service-account token needs 'datasources:read' (Editor role usually has it; double-check in Settings → Service accounts → <name> → Permissions)."
+            exit 1
+          fi
+
+          # The Editor role can return a plain {"message":"..."} on 200
+          # in some Grafana versions when permissions don't allow viewing
+          # secure fields. Verify we actually got an array.
+          if [ "$(jq -r 'type' /tmp/datasources.json)" != "array" ]; then
+            echo "Response was not an array (got $(jq -r 'type' /tmp/datasources.json)):"
+            cat /tmp/datasources.json | jq . || cat /tmp/datasources.json
+            exit 1
+          fi
+
+          echo "Datasources visible to the token:"
+          jq -r '.[] | "  \(.type)\t\(.name)\t\(.uid)\(if .isDefault then "  [default]" else "" end)"' \
+            /tmp/datasources.json
+
           declare -A ds_map
           for placeholder in prometheus loki tempo; do
+            # Prefer default-of-type, fall back to first-of-type.
             real=$(jq -r --arg t "$placeholder" \
-              'map(select(.type == $t)) | (.[] | select(.isDefault == true) // .[0]) | .uid // empty' \
+              '[.[] | select(.type == $t)] as $matches
+               | ($matches | map(select(.isDefault)) | .[0]) // ($matches | .[0])
+               | .uid // empty' \
               /tmp/datasources.json)
             if [ -n "$real" ]; then
               ds_map[$placeholder]=$real
               echo "  $placeholder -> $real"
             else
-              echo "  $placeholder -> (no datasource of that type found; leaving as-is)"
+              echo "  $placeholder -> (no datasource of that type; leaving placeholder)"
             fi
           done
           echo "::endgroup::"
