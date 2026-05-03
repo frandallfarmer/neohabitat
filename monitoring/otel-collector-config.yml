@@ -64,7 +64,14 @@ exporters:
     auth:
       authenticator: basicauth/grafana_logs
 
-  # Uncomment when GCLOUD_TEMPO_URL / GCLOUD_TEMPO_ID are added.
+  # No-op exporter for traces. Without a traces pipeline, the OTLP HTTP
+  # receiver returns 404 on /v1/traces and bridge_v2 spams its logs with
+  # export errors. Absorbing them here is harmless until we add a real
+  # Tempo endpoint.
+  nop:
+
+  # Uncomment when GCLOUD_TEMPO_URL / GCLOUD_TEMPO_ID are added; remove
+  # `nop` from the traces pipeline below at the same time.
   # otlphttp/grafana_tempo:
   #   endpoint: "${env:GCLOUD_TEMPO_URL}"
   #   auth:
@@ -82,7 +89,7 @@ service:
       receivers: [otlp]
       processors: [batch, resource]
       exporters: [loki/grafana_cloud]
-    # traces:
-    #   receivers: [otlp]
-    #   processors: [batch, resource]
-    #   exporters: [otlphttp/grafana_tempo]
+    traces:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [nop]

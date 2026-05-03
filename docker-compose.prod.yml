@@ -48,6 +48,11 @@ services:
     volumes:
       - ./volumes/bridge_v2_bin:/app
     entrypoint: ["/app/bridge_v2"]
+    environment:
+      # OTel SDK default push interval is 60s — that means rate(...[1m])
+      # only ever sees one data point and returns no value. Push every
+      # 10s so 1-min rates have 6 samples to work with.
+      OTEL_METRIC_EXPORT_INTERVAL: "10000"
     command:
       - "--graceful"
       - "--qlink"
