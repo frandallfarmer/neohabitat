@@ -263,6 +263,27 @@ jobs:
           fi
           echo "::endgroup::"
 
+          # Build a placeholder→real datasource UID map. Dashboards in
+          # this repo use placeholder UIDs ("prometheus", "loki", "tempo")
+          # — we substitute the actual Grafana Cloud UIDs before pushing
+          # so the same dashboard JSON works across any stack.
+          echo "::group::datasource UID mapping"
+          curl -sS -H "Authorization: Bearer $GRAFANA_TOKEN" \
+            "$GRAFANA_URL/api/datasources" > /tmp/datasources.json
+          declare -A ds_map
+          for placeholder in prometheus loki tempo; do
+            real=$(jq -r --arg t "$placeholder" \
+              'map(select(.type == $t)) | (.[] | select(.isDefault == true) // .[0]) | .uid // empty' \
+              /tmp/datasources.json)
+            if [ -n "$real" ]; then
+              ds_map[$placeholder]=$real
+              echo "  $placeholder -> $real"
+            else
+              echo "  $placeholder -> (no datasource of that type found; leaving as-is)"
+            fi
+          done
+          echo "::endgroup::"
+
           shopt -s nullglob
           dashboards=(monitoring/grafana/dashboards/*.json)
           if [ ${#dashboards[@]} -eq 0 ]; then
@@ -279,8 +300,17 @@ jobs:
             fi
 
             echo "::group::push $name (uid=$uid)"
-            payload=$(jq -n --slurpfile dash "$d" \
-              '{dashboard: ($dash[0] | .id = null), folderUid: "", overwrite: true, message: "ci: push from ${{ github.sha }}"}')
+
+            # Rewrite placeholder datasource UIDs throughout the dashboard.
+            remapped=$(cat "$d")
+            for placeholder in "${!ds_map[@]}"; do
+              real=${ds_map[$placeholder]}
+              remapped=$(echo "$remapped" | jq --arg p "$placeholder" --arg r "$real" \
+                'walk(if type == "object" and .uid == $p then .uid = $r else . end)')
+            done
+
+            payload=$(echo "$remapped" | jq --arg sha "${{ github.sha }}" \
+              '{dashboard: (. | .id = null), folderUid: "", overwrite: true, message: ("ci: push from " + $sha)}')
 
             status=$(echo "$payload" | curl -sS -o /tmp/resp.json -w '%{http_code}' \
               -X POST \

@@ -58,7 +58,14 @@ just log loudly until it is.
 2. Dashboard → Settings → JSON Model → copy.
 3. Save as `monitoring/grafana/dashboards/<slug>.json`.
 4. Make sure `uid` is set (used as the stable identifier across pushes).
-5. Commit + push to master — the `deploy-dashboards` job uploads it.
+5. **Replace stack-specific datasource UIDs with placeholders** before
+   committing — use `"uid": "prometheus"` for the Prometheus datasource,
+   `"uid": "loki"` for Loki, `"uid": "tempo"` for Tempo. The push job
+   rewrites these to your stack's actual UIDs at deploy time. Without
+   this step the dashboard works in your stack but not in any future
+   replica, and it'll silently regress to "no data" if Grafana Cloud
+   ever rotates a UID.
+6. Commit + push to master — the `deploy-dashboards` job uploads it.
 
 `overwrite: true` is set on the API call, so subsequent pushes replace
 the dashboard with the same `uid` rather than creating duplicates.
