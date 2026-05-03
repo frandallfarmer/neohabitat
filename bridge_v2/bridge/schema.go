@@ -208,7 +208,11 @@ type HabitatMod struct {
 	MagicType       *uint8    `json:"magic_type,omitempty" bson:"magic_type,omitempty"`
 	Mass            *uint8    `json:"mass,omitempty" bson:"mass,omitempty"`
 	Neighbors       *[]string `json:"neighbors,omitempty" bson:"neighbors,omitempty"`
-	NittyBits       *uint8    `json:"nitty_bits,omitempty" bson:"nitty_bits,omitempty"`
+	// NittyBits is *int32 rather than *uint8 because legacy elko-Java
+	// data sometimes stored values >255 (sentinels like 0x40000008 mixed
+	// in with the nominal flag byte). Wire/protocol use is still single-byte
+	// — callers should mask & 0xFF when serializing back to clients.
+	NittyBits       *int32    `json:"nitty_bits,omitempty" bson:"nitty_bits,omitempty"`
 	// Noid is uint16 (not uint8) because Elko sends 256 as a sentinel for
 	// "the session user's own objects" — Avatar, Head, Paper, Tokens —
 	// before the bridge has assigned a local noid. See UNASSIGNED_NOID.

@@ -891,7 +891,7 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 						int32(rand.Intn(15) + rand.Intn(15)*16),
 						int32(rand.Intn(15) + rand.Intn(15)*16),
 					}),
-					NittyBits: Uint8P(0),
+					NittyBits: Int32P(0),
 				},
 			},
 		}

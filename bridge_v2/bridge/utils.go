@@ -173,6 +173,10 @@ func Uint32P(i uint32) *uint32 {
 	return &i
 }
 
+func Int32P(i int32) *int32 {
+	return &i
+}
+
 func StringP(s string) *string {
 	return &s
 }
