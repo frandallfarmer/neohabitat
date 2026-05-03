@@ -2,10 +2,12 @@
 extends: default
 rules:
   line-length:
-    max: 160
-    # SSH public keys live on single lines and are commonly > 160 chars.
+    max: 240
+    # SSH public keys and apt repository lines live on single lines and
+    # are inherently long.
     ignore: |
-      group_vars/all.yml
+      inventory/group_vars/all.yml
+      roles/neohabitat/tasks/packages.yml
   truthy: disable
   comments-indentation: disable
   comments:

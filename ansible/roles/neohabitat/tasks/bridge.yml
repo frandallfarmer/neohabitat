@@ -46,12 +46,17 @@
     bridge_build_version: "{{ build_version_cmd.stdout | default('unknown') }}"
 
 - name: Build bridge_v2 binary (linux/amd64, static)
+  # argv (not cmd): each list element is one argv entry, so the
+  # multi-word -ldflags string stays as a single argument.
   command:
-    cmd: >-
-      go build -trimpath
-      -ldflags=-s -w -X main.buildVersion={{ bridge_build_version }}
-      -o {{ bridge_src_dir }}/../volumes/bridge_v2_bin/bridge_v2
-      .
+    argv:
+      - go
+      - build
+      - -trimpath
+      - "-ldflags=-s -w -X main.buildVersion={{ bridge_build_version }}"
+      - -o
+      - "{{ bridge_src_dir }}/../volumes/bridge_v2_bin/bridge_v2"
+      - .
     chdir: "{{ bridge_src_dir }}"
   environment:
     CGO_ENABLED: "0"
@@ -67,8 +72,7 @@
     src: "{{ bridge_src_dir }}/../volumes/bridge_v2_bin/bridge_v2"
     dest: "{{ neohabitat_repo_path }}/{{ bridge_bin_relpath }}"
     mode: push
-    rsync_opts:
-      - "--chmod=755"
+  # The next task fixes ownership and the +x bit explicitly.
 
 - name: Ensure binary is owned by neohabitat user
   file:
@@ -78,15 +82,20 @@
     mode: "0755"
 
 # ── adopt-cutover: full stack reconcile so bridge_v2 takes :1337 ──────
-- name: Adopt-cutover — recreate the compose stack
+- name: Adopt-cutover — recreate the compose stack (with image rebuild)
   community.docker.docker_compose_v2:
     project_src: "{{ neohabitat_repo_path }}"
     files: "{{ neohabitat_compose_files }}"
     state: present
     recreate: always
     remove_orphans: true
+    # Build images fresh — without this, an older cached
+    # frandallfarmer/neohabitat (e.g. the made's stale 2024 image) gets
+    # reused and lacks recent Dockerfile fixes (db/npm install, etc.).
+    build: always
   become: true
-  become_user: "{{ neohabitat_owner }}"
+  # Run as root: themade was just added to docker group but the SSH session
+  # doesn't see the new group membership until reauth.
   when: bridge_deploy_mode == 'adopt-cutover'
 
 - name: Adopt-cutover — wait for bridge_v2 to listen on :1337

@@ -24,7 +24,8 @@
     pull: always
     state: present
   become: true
-  become_user: "{{ neohabitat_owner }}"
+  # Run as root: themade was just added to docker group but the SSH session
+  # doesn't see the new group membership until reauth.
   when: neohabitat_compose_pull | bool
   changed_when: false  # `pull` doesn't tell us if anything actually moved
 
@@ -36,7 +37,8 @@
     recreate: never
     remove_orphans: true
   become: true
-  become_user: "{{ neohabitat_owner }}"
+  # Run as root: themade was just added to docker group but the SSH session
+  # doesn't see the new group membership until reauth.
   when: not (neohabitat_compose_recreate | bool)
 
 - name: Bring compose stack up (recreate when config drifts)
@@ -47,5 +49,6 @@
     recreate: auto
     remove_orphans: true
   become: true
-  become_user: "{{ neohabitat_owner }}"
+  # Run as root: themade was just added to docker group but the SSH session
+  # doesn't see the new group membership until reauth.
   when: neohabitat_compose_recreate | bool

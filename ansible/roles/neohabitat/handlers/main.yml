@@ -2,3 +2,7 @@
 - name: Reload systemd
   systemd:
     daemon_reload: true
+
+- name: Apt cache refresh
+  apt:
+    update_cache: true

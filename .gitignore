@@ -28,3 +28,6 @@ volumes/bridge_v2_bin/
 .claude/statsig/
 .claude/shell-snapshots/
 .claude/ide/
+
+# Ansible runtime cache (controller-side fact cache)
+ansible/.ansible_cache/

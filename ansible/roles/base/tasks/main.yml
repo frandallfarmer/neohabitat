@@ -1,10 +1,4 @@
 ---
-- name: Set hostname
-  hostname:
-    name: "{{ inventory_hostname }}"
-  when: inventory_hostname not in ['localhost']
-  tags: [base, hostname]
-
 - name: Set timezone
   community.general.timezone:
     name: "{{ base_timezone }}"

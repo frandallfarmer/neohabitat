@@ -11,10 +11,10 @@
   import_tasks: bots.yml
   tags: [neohabitat, bots]
 
+- name: Deploy bridge_v2 (build + sync binary first so compose has it)
+  import_tasks: bridge.yml
+  tags: [neohabitat, bridge]
+
 - name: Bring up compose stack
   import_tasks: compose.yml
   tags: [neohabitat, compose]
-
-- name: Deploy bridge_v2
-  import_tasks: bridge.yml
-  tags: [neohabitat, bridge]

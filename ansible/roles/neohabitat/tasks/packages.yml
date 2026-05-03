@@ -14,14 +14,16 @@
     force: false
 
 - name: Add Docker apt repository
-  apt_repository:
-    repo: >-
-      deb [arch={{ ansible_architecture | replace('x86_64', 'amd64') }}
-      signed-by=/etc/apt/keyrings/docker.asc]
-      https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-    filename: docker
-    state: present
-    update_cache: true
+  # Use copy rather than apt_repository: the latter appends new lines to
+  # an existing file when signed-by paths differ, leading to "Conflicting
+  # values set for option Signed-By" errors. copy makes the file exactly
+  # what we want, idempotently.
+  copy:
+    dest: /etc/apt/sources.list.d/docker.list
+    mode: "0644"
+    content: |
+      deb [arch={{ ansible_architecture | replace('x86_64', 'amd64') }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+  notify: Apt cache refresh
 
 - name: Install Docker engine + compose plugin
   apt:
@@ -60,14 +62,12 @@
     force: false
 
 - name: Add NodeSource apt repository
-  apt_repository:
-    repo: >-
-      deb [signed-by=/etc/apt/keyrings/nodesource.asc]
-      https://deb.nodesource.com/node_{{ nodesource_node_major }}.x
-      {{ nodesource_distro }} main
-    filename: nodesource
-    state: present
-    update_cache: true
+  copy:
+    dest: /etc/apt/sources.list.d/nodesource.list
+    mode: "0644"
+    content: |
+      deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_{{ nodesource_node_major }}.x {{ nodesource_distro }} main
+  notify: Apt cache refresh
 
 - name: Install Node.js from NodeSource (major {{ nodesource_node_major }})
   apt:

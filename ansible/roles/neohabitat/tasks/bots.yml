@@ -11,18 +11,19 @@
   loop_control:
     label: "{{ item }}"
 
-- name: Stop legacy bot systemd units
+- name: Stop and disable legacy bot systemd units
   systemd:
     name: "{{ item.item }}"
     state: stopped
     enabled: false
-    masked: true
   loop: "{{ legacy_unit_stat.results }}"
   when: item.stat.exists
   loop_control:
     label: "{{ item.item }}"
 
 - name: Remove legacy bot unit files
+  # Removing the file is enough — masking would conflict because the
+  # mask operation tries to create a /dev/null symlink at the same path.
   file:
     path: "/etc/systemd/system/{{ item.item }}"
     state: absent
