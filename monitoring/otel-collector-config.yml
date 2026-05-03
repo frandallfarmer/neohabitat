@@ -30,10 +30,15 @@ extensions:
 receivers:
   otlp:
     protocols:
+      # Bind to the container's own hostname (docker writes it to
+      # /etc/hosts against the bridge IP) instead of 0.0.0.0. Functionally
+      # identical for our use — the container has no published ports —
+      # but silences the v0.110 "Using the 0.0.0.0 address exposes this
+      # server to every network interface" warning.
       http:
-        endpoint: "0.0.0.0:4318"
+        endpoint: "otel-collector:4318"
       grpc:
-        endpoint: "0.0.0.0:4317"
+        endpoint: "otel-collector:4317"
 
 processors:
   batch:
