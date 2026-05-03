@@ -13,6 +13,7 @@ neohabitat_group: themade
 neohabitat_compose_files:
   - docker-compose.yml
   - docker-compose.prod.yml
+  - docker-compose.monitoring.yml
 
 # ── SSH keys for the `themade` account ───────────────────────────────
 # `exclusive: false` is set in the role so adding/removing entries here

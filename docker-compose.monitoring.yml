@@ -1,0 +1,48 @@
+# Monitoring overlay — adds otel-collector + promtail, both shipping to
+# Grafana Cloud. Loaded by the made's compose stack alongside the base
+# and prod compose files (see ansible/inventory/group_vars/all.yml ::
+# neohabitat_compose_files).
+#
+# Credentials live on the host at /etc/neohabitat/monitoring.env (chmod
+# 600, owned by themade). The ansible role renders that file from a
+# vaulted template; for first-time setup, drop it in by hand.
+#
+# .env file format:
+#   GRAFANA_OTLP_ENDPOINT=https://otlp-gateway-prod-us-east-0.grafana.net/otlp
+#   GRAFANA_OTLP_AUTH=Basic <base64(instance-id:api-key)>
+#   GRAFANA_LOKI_URL=https://logs-prod-006.grafana.net/loki/api/v1/push
+#   GRAFANA_LOKI_USERNAME=<loki instance id>
+#   GRAFANA_LOKI_API_KEY=<api key with MetricsPublisher role>
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.110.0
+    restart: unless-stopped
+    env_file:
+      # required: false so the stack still comes up if creds aren't on
+      # the box yet — otel-collector will just fail-loop in its own logs.
+      - path: /etc/neohabitat/monitoring.env
+        required: false
+    volumes:
+      - ./monitoring/otel-collector-config.yml:/etc/otelcol-contrib/config.yaml:ro
+    networks:
+      - neohabitat
+    # The base bridge_v2 service already points at otel-collector:4318
+    # via OTEL_EXPORTER_OTLP_ENDPOINT.
+
+  promtail:
+    image: grafana/promtail:3.2.1
+    restart: unless-stopped
+    env_file:
+      - path: /etc/neohabitat/monitoring.env
+        required: false
+    command: -config.file=/etc/promtail/config.yml -config.expand-env=true
+    volumes:
+      - ./monitoring/promtail.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - promtail-positions:/tmp
+    networks:
+      - neohabitat
+
+volumes:
+  promtail-positions:

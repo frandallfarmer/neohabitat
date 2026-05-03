@@ -1,3 +1,12 @@
+# promtail tails docker container logs and ships them to Grafana Cloud
+# Loki. Reads ALL neohabitat-* containers (not just bridge_v2 like the
+# old self-hosted setup did).
+#
+# Required environment variables (from /etc/neohabitat/monitoring.env):
+#   GRAFANA_LOKI_URL       — e.g. https://logs-prod-006.grafana.net/loki/api/v1/push
+#   GRAFANA_LOKI_USERNAME  — Grafana Cloud Loki instance ID (a number)
+#   GRAFANA_LOKI_API_KEY   — Grafana Cloud API key (with "MetricsPublisher" role)
+
 server:
   http_listen_port: 9080
   grpc_listen_port: 0
@@ -6,7 +15,13 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
-  - url: http://loki:3100/loki/api/v1/push
+  - url: ${GRAFANA_LOKI_URL}
+    basic_auth:
+      username: ${GRAFANA_LOKI_USERNAME}
+      password: ${GRAFANA_LOKI_API_KEY}
+    external_labels:
+      cluster: the_made
+      environment: production
 
 scrape_configs:
   - job_name: docker
@@ -15,23 +30,30 @@ scrape_configs:
         refresh_interval: 5s
         filters:
           - name: name
-            values: [".*bridge_v2.*"]
+            values: ["neohabitat-.*"]
     relabel_configs:
       - source_labels: ['__meta_docker_container_name']
         target_label: container
         regex: '/(.*)'
       - source_labels: ['__meta_docker_container_log_stream']
         target_label: stream
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+        target_label: service
     pipeline_stages:
-      - json:
-          expressions:
-            level: level
-            ip: ip
-            session_id: session_id
-            avatar: avatar
-            message: message
-      - labels:
-          level:
-          ip:
-          session_id:
-          avatar:
+      # bridge_v2 logs are zerolog JSON — extract structured fields as
+      # Loki labels so we can filter by ip/session/avatar/level.
+      - match:
+          selector: '{service="bridge_v2"}'
+          stages:
+            - json:
+                expressions:
+                  level: level
+                  ip: ip
+                  session_id: session_id
+                  avatar: avatar
+                  message: message
+            - labels:
+                level:
+                ip:
+                session_id:
+                avatar:

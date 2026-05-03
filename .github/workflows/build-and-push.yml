@@ -210,3 +210,58 @@ jobs:
             -e ghcr_username=${{ github.actor }} \
             -e ghcr_token=${{ secrets.GHCR_PULL_TOKEN }} \
             playbooks/deploy.yml
+
+  deploy-dashboards:
+    # Pushes every monitoring/grafana/dashboards/*.json to Grafana Cloud
+    # via the HTTP API. `overwrite: true` so re-pushes update in-place
+    # rather than creating duplicates (uid in the dashboard JSON is the
+    # stable identifier).
+    #
+    # Required secrets:
+    #   GRAFANA_URL    — https://<your-stack>.grafana.net
+    #   GRAFANA_TOKEN  — service-account token with `dashboards:write`
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Push dashboards to Grafana Cloud
+        env:
+          GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GRAFANA_URL:-}" ] || [ -z "${GRAFANA_TOKEN:-}" ]; then
+            echo "::warning::GRAFANA_URL or GRAFANA_TOKEN not set — skipping dashboard push."
+            exit 0
+          fi
+
+          shopt -s nullglob
+          dashboards=(monitoring/grafana/dashboards/*.json)
+          if [ ${#dashboards[@]} -eq 0 ]; then
+            echo "No dashboards to push."
+            exit 0
+          fi
+
+          for d in "${dashboards[@]}"; do
+            name=$(basename "$d" .json)
+            uid=$(jq -r '.uid // empty' "$d")
+            if [ -z "$uid" ]; then
+              echo "::error file=$d::dashboard has no uid; refusing to push (would create a duplicate on every run)"
+              exit 1
+            fi
+
+            echo "::group::push $name (uid=$uid)"
+            payload=$(jq -n --slurpfile dash "$d" \
+              '{dashboard: ($dash[0] | .id = null), folderUid: "", overwrite: true, message: "ci: push from ${{ github.sha }}"}')
+
+            response=$(curl --fail-with-body -sS \
+              -X POST \
+              -H "Authorization: Bearer $GRAFANA_TOKEN" \
+              -H "Content-Type: application/json" \
+              "$GRAFANA_URL/api/dashboards/db" \
+              -d "$payload")
+            echo "$response" | jq '{status, uid, version, url}'
+            echo "::endgroup::"
+          done

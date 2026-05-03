@@ -1,32 +1,52 @@
+# otel-collector ships traces + metrics + logs to Grafana Cloud's OTLP
+# gateway. Receivers stay local (bridge_v2 sends OTLP over HTTP to
+# otel-collector:4318); the exporter is a single HTTP target with basic
+# auth (instance-id:api-key, base64-encoded).
+#
+# Required environment variables (read from /etc/neohabitat/monitoring.env
+# on the made, mounted into the container by docker-compose.monitoring.yml):
+#   GRAFANA_OTLP_ENDPOINT  — e.g. https://otlp-gateway-prod-us-east-0.grafana.net/otlp
+#   GRAFANA_OTLP_AUTH      — "Basic <base64(instanceId:apiKey)>"
+
 receivers:
   otlp:
     protocols:
       http:
         endpoint: "0.0.0.0:4318"
-
-exporters:
-  otlphttp/tempo:
-    endpoint: "http://tempo:4318"
-    tls:
-      insecure: true
-
-  prometheus:
-    endpoint: "0.0.0.0:8889"
-    resource_to_telemetry_conversion:
-      enabled: true
+      grpc:
+        endpoint: "0.0.0.0:4317"
 
 processors:
   batch:
     timeout: 5s
     send_batch_size: 1024
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: production
+        action: upsert
+      - key: service.namespace
+        value: neohabitat
+        action: upsert
+
+exporters:
+  otlphttp/grafana_cloud:
+    endpoint: "${env:GRAFANA_OTLP_ENDPOINT}"
+    headers:
+      Authorization: "${env:GRAFANA_OTLP_AUTH}"
+    compression: gzip
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
-      exporters: [otlphttp/tempo]
+      processors: [batch, resource]
+      exporters: [otlphttp/grafana_cloud]
     metrics:
       receivers: [otlp]
-      processors: [batch]
-      exporters: [prometheus]
+      processors: [batch, resource]
+      exporters: [otlphttp/grafana_cloud]
+    logs:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [otlphttp/grafana_cloud]
