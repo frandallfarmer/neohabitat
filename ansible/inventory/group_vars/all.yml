@@ -6,6 +6,14 @@ neohabitat_git_ref: master
 neohabitat_owner: themade
 neohabitat_group: themade
 
+# Compose files used by every play that touches the stack (the
+# neohabitat role, deploy.yml, deploy-bridge.yml). Lives in group_vars
+# instead of role defaults so playbooks that don't include the role
+# can still reference it.
+neohabitat_compose_files:
+  - docker-compose.yml
+  - docker-compose.prod.yml
+
 # ── SSH keys for the `themade` account ───────────────────────────────
 # `exclusive: false` is set in the role so adding/removing entries here
 # is non-destructive of any other key already on the box. The Azure

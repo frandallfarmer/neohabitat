@@ -6,9 +6,9 @@
 neohabitat_manage_repo: false
 
 # ── Compose ──────────────────────────────────────────────────────────
-neohabitat_compose_files:
-  - docker-compose.yml
-  - docker-compose.prod.yml
+# neohabitat_compose_files lives in inventory/group_vars/all.yml so
+# playbooks that don't include this role (deploy.yml, deploy-bridge.yml)
+# can also reference it.
 
 # Pulled at every run so a fresh install gets recent images. The actual
 # container update is gated by neohabitat_compose_recreate.
