@@ -157,3 +157,53 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
           provenance: false
+
+  deploy:
+    # Pulls the freshly-pushed GHCR images onto the made and recreates any
+    # service whose image digest changed. Runs only on master pushes, after
+    # all three image builds succeed.
+    #
+    # Required secrets (GitHub repo → Settings → Secrets and variables → Actions):
+    #   SSH_DEPLOY_KEY  — private ed25519 key whose pub is in themade@20.3.249.92
+    #                     authorized_keys (also added to themade_authorized_keys
+    #                     in inventory/group_vars/all.yml so the base role keeps it).
+    #   GHCR_PULL_TOKEN — PAT with read:packages, used for `docker login ghcr.io`
+    #                     on the made (only needed while GHCR packages are private).
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: deploy-the-made
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install ansible + collections
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet ansible-core
+          ansible-galaxy collection install -q \
+            community.general community.docker ansible.posix
+
+      - name: Write SSH deploy key
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s' "$SSH_DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 20.3.249.92 >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Run ansible deploy
+        working-directory: ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "True"
+        run: |
+          ansible-playbook \
+            -i inventory/production.yml \
+            --private-key ~/.ssh/deploy_key \
+            -e ghcr_username=${{ github.actor }} \
+            -e ghcr_token=${{ secrets.GHCR_PULL_TOKEN }} \
+            playbooks/deploy.yml

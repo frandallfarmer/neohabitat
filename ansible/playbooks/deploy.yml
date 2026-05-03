@@ -1,0 +1,50 @@
+---
+# Steady-state deploy: pull the latest GHCR images and `docker compose up -d`.
+# Compose only recreates services whose image digest actually changed, so
+# pushes that don't touch a particular service leave its container alone.
+#
+# Used by the build-and-push GitHub Actions workflow on master push,
+# after the build matrix succeeds.
+#
+# For the bridge_v2-specific zero-downtime path (build binary locally,
+# rsync to target, SIGHUP for tableflip re-exec), see deploy-bridge.yml.
+
+- name: Deploy latest GHCR images to neohabitat hosts
+  hosts: neohabitat_servers
+  gather_facts: true
+  any_errors_fatal: true
+  tasks:
+    - name: Login to GHCR (if a token is provided)
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ ghcr_username }}"
+        password: "{{ ghcr_token }}"
+      become: true
+      when:
+        - ghcr_username is defined
+        - ghcr_token is defined
+        - ghcr_token | length > 0
+
+    - name: Pull latest compose images
+      community.docker.docker_compose_v2:
+        project_src: "{{ neohabitat_repo_path }}"
+        files: "{{ neohabitat_compose_files }}"
+        pull: always
+        state: present
+      become: true
+      changed_when: false
+
+    - name: Bring stack up — only recreates services whose image changed
+      community.docker.docker_compose_v2:
+        project_src: "{{ neohabitat_repo_path }}"
+        files: "{{ neohabitat_compose_files }}"
+        state: present
+        recreate: auto
+        remove_orphans: true
+      become: true
+      register: compose_up
+
+    - name: Report what changed
+      debug:
+        msg: "{{ compose_up.actions | default([]) | map(attribute='id') | list }}"
+      when: compose_up.actions is defined
