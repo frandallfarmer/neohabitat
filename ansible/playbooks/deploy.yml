@@ -170,7 +170,11 @@
       register: compose_up
       changed_when: "'Recreated' in compose_up.stderr or 'Started' in compose_up.stderr"
 
-    - name: Restart sidecars if monitoring.env changed
+    - name: Force-recreate monitoring sidecars every deploy
+      # Compose can't tell when a bind-mounted config file (otel-collector
+      # config, promtail config) changes content, so changes to those land
+      # via git but never get applied until the container is recreated.
+      # Sidecars are stateless and restart in <5s, so just always recreate.
       shell: |
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
@@ -179,7 +183,6 @@
         chdir: "{{ neohabitat_repo_path }}"
         executable: /bin/bash
       become: true
-      when: monitoring_env_file is defined and monitoring_env_file.changed
       changed_when: true
 
     - name: Show what the compose up did
