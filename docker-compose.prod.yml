@@ -51,12 +51,12 @@ services:
       - "--rate=1200"
       - "--log.level=INFO"
     # CRIU needs these capabilities to checkpoint/restore processes.
+    # NET_ADMIN and seccomp:unconfined are already set in the base
+    # docker-compose.yml — compose merges security_opt lists, so listing
+    # them again here would produce a duplicate that compose v2 rejects.
     user: "0"
     cap_add:
       - SYS_PTRACE
-      - NET_ADMIN
-    security_opt:
-      - seccomp:unconfined
     # Don't let Docker restart kill a draining parent — it'll exit
     # on its own once sessions close.
     restart: "no"
