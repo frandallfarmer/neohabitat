@@ -21,6 +21,15 @@
 #   All TCP connections, Go runtime state, and session data survive.
 
 services:
+  neohabitatmongo:
+    # Persist the elko DB on the host so `docker compose down` can't
+    # silently drop it (anonymous volumes get destroyed on `down`).
+    # Lives only in prod overlay because in dev/CI we want compose to
+    # auto-create an empty data dir without us having to chown it to
+    # the in-container mongo uid.
+    volumes:
+      - ./data/mongo:/data/db
+
   neohabitat:
     # Production overrides for the elko + pushserver container:
     #   - run pushserver in production mode with config.prod.yml

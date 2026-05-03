@@ -12,11 +12,9 @@ services:
     image: mongodb/mongodb-community-server:7.0-ubuntu2204
     ports:
       - "27017:27017"
-    # Persist mongo data on the host so `docker compose down` doesn't drop
-    # the elko DB. Was an anonymous volume previously, which compose
-    # silently destroyed on `down`.
-    volumes:
-      - ./data/mongo:/data/db
+    # Production persists data via host bind mount to ./data/mongo (set in
+    # docker-compose.prod.yml). In dev / CI we use an anonymous volume —
+    # nothing to chown, nothing to clean up.
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.stats()"]
       interval: 30s
