@@ -200,10 +200,11 @@ jobs:
         working-directory: ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "True"
+          # Picked up by the inventory's env-var lookup for ansible_ssh_private_key_file.
+          ANSIBLE_SSH_KEY: ${{ env.HOME }}/.ssh/deploy_key
         run: |
           ansible-playbook \
             -i inventory/production.yml \
-            --private-key ~/.ssh/deploy_key \
             -e ghcr_username=${{ github.actor }} \
             -e ghcr_token=${{ secrets.GHCR_PULL_TOKEN }} \
             playbooks/deploy.yml

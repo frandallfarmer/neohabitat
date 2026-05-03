@@ -6,7 +6,9 @@ all:
         the_made:
           ansible_host: 20.3.249.92
           ansible_user: themade
-          ansible_ssh_private_key_file: ~/Downloads/neohabitat_admin.cer
+          # CI sets ANSIBLE_SSH_KEY=$HOME/.ssh/deploy_key (the gha-deploy
+          # ed25519 key); locally falls back to the admin key in Downloads.
+          ansible_ssh_private_key_file: "{{ lookup('env', 'ANSIBLE_SSH_KEY') or '~/Downloads/neohabitat_admin.cer' }}"
           ansible_become: true
           # On `the made` the existing working copy lives under the user's
           # home, not /opt. Adoption mode keeps it there.
