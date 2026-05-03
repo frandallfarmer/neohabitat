@@ -116,6 +116,8 @@
       # Explicit service list excludes bridge_v2, which we've just
       # SIGHUP-handled above. Without the exclusion, compose would
       # recreate bridge_v2's container, defeating tableflip.
+      # `--pull always` belt-and-suspenders the earlier compose pull —
+      # if a tag floated between then and now, we get the latest digest.
       command:
         chdir: "{{ neohabitat_repo_path }}"
         argv:
@@ -127,6 +129,8 @@
           - docker-compose.prod.yml
           - up
           - -d
+          - --pull
+          - always
           - --remove-orphans
           - neohabitatmongo
           - neohabitat
@@ -135,7 +139,31 @@
       register: compose_up
       changed_when: "'Recreated' in compose_up.stderr or 'Started' in compose_up.stderr"
 
-    - name: Report bridge_v2 deploy mode
+    - name: Show what the compose up did
       debug:
-        msg: >-
-          bridge_v2: {{ 'SIGHUP\'d (sessions preserved)' if bv2_binary_changed else 'unchanged, no re-exec' }}
+        msg: "{{ compose_up.stderr_lines | default([]) }}"
+
+    - name: Final container status
+      command:
+        chdir: "{{ neohabitat_repo_path }}"
+        argv:
+          - docker
+          - compose
+          - -f
+          - docker-compose.yml
+          - -f
+          - docker-compose.prod.yml
+          - ps
+      become: true
+      register: compose_ps
+      changed_when: false
+
+    - name: Container status output
+      debug:
+        msg: "{{ compose_ps.stdout_lines }}"
+
+    - name: Deploy summary
+      debug:
+        msg:
+          - "bridge_v2: {{ 'SIGHUP\\'d (sessions preserved)' if bv2_binary_changed else 'unchanged, no re-exec' }}"
+          - "mongo / neohabitat / bots: handled by compose up (see lines above for what got recreated)"
