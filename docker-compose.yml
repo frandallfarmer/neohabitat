@@ -22,14 +22,14 @@ services:
       - neohabitat
 
   neohabitat:
+    # Production pulls this from GHCR (built and pushed by
+    # .github/workflows/build-and-push.yml on every master push).
+    # `build:` is kept so CI's compose-smoke job and local devs can still
+    # build from source on demand. Compose uses the local image if present;
+    # ansible/production does `pull: always` so GHCR wins.
+    image: ghcr.io/frandallfarmer/neohabitat:latest
     build: .
     restart: unless-stopped
-    # The dev bind-mount (`.:/neohabitat`) lives in docker-compose.override.yml
-    # so that `docker compose -f docker-compose.yml ...` (CI) gets the image
-    # exactly as built, with its baked-in node_modules and jar intact.
-    # Local `docker compose up` (no -f) auto-loads the override and gets
-    # live source editing.
-    image: frandallfarmer/neohabitat
     environment:
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER
@@ -62,6 +62,7 @@ services:
       - neohabitat
 
   bridge_v2:
+    image: ghcr.io/frandallfarmer/neohabitat-bridge:latest
     build:
       context: ./bridge_v2
       dockerfile: Dockerfile.dev
@@ -87,6 +88,7 @@ services:
       - neohabitat
 
   bots:
+    image: ghcr.io/frandallfarmer/neohabitat-bots:latest
     build:
       context: ./habibots
     environment:
