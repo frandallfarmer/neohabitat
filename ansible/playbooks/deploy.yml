@@ -23,6 +23,16 @@
     # fragile (newlines mangle); env-var lookup avoids that entirely.
     monitoring_env: "{{ lookup('env', 'MONITORING_ENV') | default('', true) }}"
   tasks:
+    - name: Pull latest repo (so new compose files are present)
+      git:
+        repo: "{{ neohabitat_repo_url }}"
+        dest: "{{ neohabitat_repo_path }}"
+        version: "{{ neohabitat_git_ref }}"
+        update: true
+        force: false
+      become: true
+      become_user: "{{ neohabitat_owner }}"
+
     - name: Login to GHCR (only when packages are still private)
       community.docker.docker_login:
         registry_url: ghcr.io
