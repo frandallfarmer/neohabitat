@@ -22,8 +22,8 @@ them onto `the made` automatically.
 | Secret | Value |
 |---|---|
 | `MONITORING_ENV` | The full multi-line content of `/etc/neohabitat/monitoring.env` (see template below). The deploy job writes this verbatim to the made on each run, chmod 600, owned by `themade`, and restarts the sidecars when it changes. |
-| `GRAFANA_URL`    | `https://<your-stack>.grafana.net` (used by the dashboard-push job). |
-| `GRAFANA_TOKEN`  | Service-account token with `dashboards:write` (used by the dashboard-push job). |
+| `GRAFANA_URL`    | `https://<your-stack>.grafana.net` — the **Grafana instance URL**, NOT a prometheus/loki/tempo endpoint. |
+| `GRAFANA_TOKEN`  | A **Grafana service-account token** with the Editor role (Settings → Service accounts → New → Add token). NOT a Grafana Cloud Access Policy token (`glc_*` tokens are for management APIs and return 401 against `/api/dashboards/db`). |
 
 ### `MONITORING_ENV` template
 

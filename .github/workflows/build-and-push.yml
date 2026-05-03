@@ -221,8 +221,13 @@ jobs:
     # stable identifier).
     #
     # Required secrets:
-    #   GRAFANA_URL    — https://<your-stack>.grafana.net
-    #   GRAFANA_TOKEN  — service-account token with `dashboards:write`
+    #   GRAFANA_URL    — https://<your-stack>.grafana.net (the Grafana
+    #                    instance URL, NOT prometheus/loki/tempo URLs)
+    #   GRAFANA_TOKEN  — Grafana SERVICE-ACCOUNT token (Settings →
+    #                    Service accounts → Add token) with the Editor
+    #                    role. NOT a Grafana Cloud Access Policy token
+    #                    (those `glc_*` tokens are for management APIs
+    #                    and return 401 against /api/dashboards/db).
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
@@ -239,6 +244,24 @@ jobs:
             echo "::warning::GRAFANA_URL or GRAFANA_TOKEN not set — skipping dashboard push."
             exit 0
           fi
+
+          # Sanity-check the token before iterating dashboards: hit a
+          # cheap endpoint that requires auth and surface its response so
+          # 401s tell us which kind of token / URL is wrong.
+          echo "::group::auth check"
+          status=$(curl -sS -o /tmp/whoami.txt -w '%{http_code}' \
+            -H "Authorization: Bearer $GRAFANA_TOKEN" \
+            "$GRAFANA_URL/api/user")
+          echo "GET $GRAFANA_URL/api/user -> HTTP $status"
+          cat /tmp/whoami.txt; echo
+          if [ "$status" != "200" ]; then
+            echo "::error::Auth check failed. Confirm:"
+            echo "  1) GRAFANA_URL is your Grafana instance URL (https://<stack>.grafana.net), NOT prometheus/loki/tempo."
+            echo "  2) GRAFANA_TOKEN is a Grafana SERVICE-ACCOUNT token (Settings → Service accounts), NOT a Cloud Access Policy 'glc_*' token."
+            echo "  3) The service account has the Editor role."
+            exit 1
+          fi
+          echo "::endgroup::"
 
           shopt -s nullglob
           dashboards=(monitoring/grafana/dashboards/*.json)
@@ -259,12 +282,16 @@ jobs:
             payload=$(jq -n --slurpfile dash "$d" \
               '{dashboard: ($dash[0] | .id = null), folderUid: "", overwrite: true, message: "ci: push from ${{ github.sha }}"}')
 
-            response=$(curl --fail-with-body -sS \
+            status=$(echo "$payload" | curl -sS -o /tmp/resp.json -w '%{http_code}' \
               -X POST \
               -H "Authorization: Bearer $GRAFANA_TOKEN" \
               -H "Content-Type: application/json" \
               "$GRAFANA_URL/api/dashboards/db" \
-              -d "$payload")
-            echo "$response" | jq '{status, uid, version, url}'
+              -d @-)
+            echo "POST /api/dashboards/db -> HTTP $status"
+            cat /tmp/resp.json | jq . || cat /tmp/resp.json
+            if [ "$status" != "200" ]; then
+              exit 1
+            fi
             echo "::endgroup::"
           done
