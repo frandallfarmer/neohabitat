@@ -33,7 +33,7 @@
   loop_control:
     label: "{{ item }}"
 
-- name: Ensure state directories exist
+- name: Ensure state directories exist (themade-owned)
   file:
     path: "{{ neohabitat_repo_path }}/{{ item }}"
     state: directory
@@ -42,9 +42,19 @@
     mode: "0755"
   loop:
     - data
-    - data/mongo
     - volumes
     - volumes/bridge_v2_bin
+
+- name: Ensure mongo data dir is owned by the in-container mongo user (uid 1000)
+  # The mongodb-community-server:8 image runs as uid=1000(mongodb). With
+  # a host bind-mount we have to align ownership or mongod can't read
+  # storage.bson and fails fatally.
+  file:
+    path: "{{ neohabitat_repo_path }}/data/mongo"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
 
 - name: Make scripts/deploy-bridge.sh executable
   file:

@@ -4,7 +4,10 @@ networks:
 
 services:
   neohabitatmongo:
-    image: mongodb/mongodb-community-server:latest
+    # Pin to major 8 — `:latest` already silently bumped from 7 → 8 once
+    # mid-deploy, which moved the in-container mongo uid from 101 to 1000
+    # and broke bind-mount reads. Pin so future pulls don't surprise us.
+    image: mongodb/mongodb-community-server:8
     ports:
       - "27017:27017"
     # Persist mongo data on the host so `docker compose down` doesn't drop
