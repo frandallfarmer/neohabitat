@@ -293,17 +293,35 @@ jobs:
           jq -r '.[] | "  \(.type)\t\(.name)\t\(.uid)\(if .isDefault then "  [default]" else "" end)"' \
             /tmp/datasources.json
 
+          # Grafana Cloud provisions multiple datasources of each type
+          # (e.g. for `loki` you get both `grafanacloud-<stack>-logs` AND
+          # `grafanacloud-<stack>-alert-state-history`). Picking arbitrarily
+          # by type alone gave us the alert-state Loki, which is empty.
+          # Prefer datasources whose NAME ends with the canonical suffix
+          # for the signal we want; only fall back to "default of type"
+          # then "first of type" if no name match exists.
           declare -A ds_map
+          declare -A suffix_for=(
+            [prometheus]=prom
+            [loki]=logs
+            [tempo]=traces
+          )
           for placeholder in prometheus loki tempo; do
-            # Prefer default-of-type, fall back to first-of-type.
-            real=$(jq -r --arg t "$placeholder" \
+            suffix=${suffix_for[$placeholder]}
+            real=$(jq -r --arg t "$placeholder" --arg sfx "-$suffix" \
               '[.[] | select(.type == $t)] as $matches
-               | ($matches | map(select(.isDefault)) | .[0]) // ($matches | .[0])
+               | ($matches | map(select(.name | endswith($sfx))) | .[0])
+                 // ($matches | map(select(.isDefault)) | .[0])
+                 // ($matches | .[0])
                | .uid // empty' \
               /tmp/datasources.json)
             if [ -n "$real" ]; then
+              # Also report which datasource NAME we picked so it's
+              # obvious in the log when the wrong one wins.
+              picked_name=$(jq -r --arg u "$real" \
+                '.[] | select(.uid == $u) | .name' /tmp/datasources.json)
               ds_map[$placeholder]=$real
-              echo "  $placeholder -> $real"
+              echo "  $placeholder -> $real  ($picked_name)"
             else
               echo "  $placeholder -> (no datasource of that type; leaving placeholder)"
             fi
