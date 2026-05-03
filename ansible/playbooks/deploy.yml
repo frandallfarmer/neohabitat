@@ -53,6 +53,8 @@
         cid=$(docker create {{ bridge_image }})
         trap 'docker rm -f "$cid" >/dev/null 2>&1 || true' EXIT
         docker cp "$cid:/bridge_v2" {{ bridge_bin_host_path }}.new
+      args:
+        executable: /bin/bash   # need pipefail; default /bin/sh is dash on Ubuntu
       become: true
       changed_when: false
 
