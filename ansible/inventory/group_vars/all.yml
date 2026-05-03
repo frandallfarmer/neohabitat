@@ -15,6 +15,8 @@ themade_authorized_keys:
     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1LAqgzBeOOak5ZwwWjgym380S6A0twr+9Ggt3CWAtvmZPLPoWulOc6GPN2mlZXNEyGw825/ZkctO35UakJ6X+wBKNcKHN5Mb+ELtYtN61yTgx0DCzM+g1Kk7wXt6G6tg56G92hg2eHxky9yZnW9K6CnWRY7io/XJMk3jUoc3cYaggBoUrw5lO29tC9WI4zgJVAbAx6yMw8569x2L04uYGsTVAtvSHFbiSlv8bFbD92s21mOMApwMsjaq3hKAl5Grms/4anu88b7aWKcv37aJSYILi+xQRRqrF+YEb8ey4LOJgP+zYubKUKbPEU1dEEiiCGrrcpzlKKBmI3IDUPWe+N8ovfohJwir/yNm5iwjh5AChRZcSNI2prwRjoc8quC7S6iJfS/WWUsgaEJt9ckXSZeXwrF1IQy5LlWF9G/lb+3NxZaMaKmi19htRAKEANhgQn4+sIzSDqgpjpuAS177f16XvBit2ITrvIW61KthNspR/WjFfXkP3dcg2r4uEbIE= generated-by-azure"
   - name: steve@heathaze
     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDR0gMyoC1+9+h2EweEnmtxKQJQnZbQoLC8f3GO2Hicl7VaEhDMBojebMgVkhnUQRx5/1WcDr3XyOlgogV2xgMQWsk28qlz1dwoDZimcXfEo5aDukfOVZrFJySjEdx1j1p+yC9fK6PM/iZnBxQyusrSERNnPK/tFcDqhwk8+SM2Ajvoxl+RxsHh9B8ceTCCKATLcdAYsQnYy4im3IdH9bs88yhVxidRfmz8CUjTOvBEn82NBOSqBsY+YlF5QjAOFfmv89G0eBN1IfyJPosZTFYpQNIcqdrFNW5wbgS7k6H1X7nAIosDIzt1vyi8uTXBimD51tt9FRNh8c+DaSOzR5mh steve@heathaze.local"
+  - name: gha-deploy
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDQdPAg4DDN3k6ebOSC5T6Uf9kAnZE91ZqZx8tIb22T1 gha-deploy@neohabitat"
 
 # ── Bridge_v2 deploy ──────────────────────────────────────────────────
 # Modes:
