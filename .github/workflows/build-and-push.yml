@@ -200,11 +200,14 @@ jobs:
         working-directory: ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "True"
+          # MONITORING_ENV is the literal contents of /etc/neohabitat/monitoring.env
+          # (multi-line, GRAFANA_OTLP_ENDPOINT/AUTH + GRAFANA_LOKI_*).
+          # When unset, the deploy task no-ops on it.
+          MONITORING_ENV: ${{ secrets.MONITORING_ENV }}
         run: |
-          # Inventory looks up ANSIBLE_SSH_KEY at runtime; export it from
-          # the shell so $HOME expands properly (GHA ${{ env.HOME }} is
-          # empty in expression context).
           export ANSIBLE_SSH_KEY="$HOME/.ssh/deploy_key"
+          # MONITORING_ENV is read by the playbook via lookup('env',...);
+          # passing it via -e would break on its newlines.
           ansible-playbook \
             -i inventory/production.yml \
             -e ghcr_username=${{ github.actor }} \

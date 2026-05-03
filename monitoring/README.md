@@ -14,17 +14,21 @@ in `.github/workflows/build-and-push.yml` on every master push.
 
 ## First-time setup
 
-### 1. Credentials on `the made`
+All credentials live as **GitHub repo secrets** — the deploy job ships
+them onto `the made` automatically.
 
-Create `/etc/neohabitat/monitoring.env` (chmod 600, owned by `themade`)
-with the values from your Grafana Cloud account → "Connections" → each
-data source's "Send X" page:
+### Repo secrets to add
 
-```sh
-sudo install -d -m 0750 -o themade -g themade /etc/neohabitat
-sudo install -m 0600 -o themade -g themade /dev/null /etc/neohabitat/monitoring.env
-sudoedit /etc/neohabitat/monitoring.env
-```
+| Secret | Value |
+|---|---|
+| `MONITORING_ENV` | The full multi-line content of `/etc/neohabitat/monitoring.env` (see template below). The deploy job writes this verbatim to the made on each run, chmod 600, owned by `themade`, and restarts the sidecars when it changes. |
+| `GRAFANA_URL`    | `https://<your-stack>.grafana.net` (used by the dashboard-push job). |
+| `GRAFANA_TOKEN`  | Service-account token with `dashboards:write` (used by the dashboard-push job). |
+
+### `MONITORING_ENV` template
+
+Pick the region endpoints that match your Grafana Cloud stack, then
+paste the whole thing (including newlines) into the secret value:
 
 ```ini
 GRAFANA_OTLP_ENDPOINT=https://otlp-gateway-prod-us-east-0.grafana.net/otlp
@@ -35,19 +39,9 @@ GRAFANA_LOKI_USERNAME=<loki instance id>
 GRAFANA_LOKI_API_KEY=<api key with MetricsPublisher role>
 ```
 
-(Pick the region endpoints that match your Grafana Cloud stack.)
-
 The compose `env_file` directive uses `required: false`, so the stack
-still comes up if this file is missing — the sidecars will just log
-errors. Once the file is there, `docker compose up -d --force-recreate
-otel-collector promtail` from `/home/themade/neohabitat`.
-
-### 2. GitHub repo secrets (for dashboard push)
-
-| Secret | Value |
-|---|---|
-| `GRAFANA_URL`   | `https://<your-stack>.grafana.net` |
-| `GRAFANA_TOKEN` | Service-account token with **Editor** role and `dashboards:write` |
+still comes up if `MONITORING_ENV` isn't set yet — the sidecars will
+just log loudly until it is.
 
 ### 3. Adding a dashboard
 
