@@ -4,11 +4,12 @@ networks:
 
 services:
   neohabitatmongo:
-    # Pin to a specific minor — `:latest` already silently bumped from
-    # 7 → 8 once mid-deploy, which moved the in-container mongo uid
-    # from 101 to 1000 and broke bind-mount reads. The mongodb-community-server
-    # image only publishes specific x.y.z tags (no `:8` floating tag).
-    image: mongodb/mongodb-community-server:8.2.7-ubuntu2204
+    # Pin to 7.0 — the data on disk has featureCompatibilityVersion=7.0,
+    # and mongo 8.x refuses to start against it without an FCV bump done
+    # by 8.0 first. Stay on 7.0 until we want to do that migration.
+    # `:latest` previously silently jumped from 7 → 8 mid-deploy, which
+    # is exactly what we're avoiding.
+    image: mongodb/mongodb-community-server:7.0-ubuntu2204
     ports:
       - "27017:27017"
     # Persist mongo data on the host so `docker compose down` doesn't drop
