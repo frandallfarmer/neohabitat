@@ -158,47 +158,26 @@
       # recreate bridge_v2's container, defeating tableflip.
       # `--pull always` belt-and-suspenders the earlier compose pull —
       # if a tag floated between then and now, we get the latest digest.
-      command:
+      shell: |
+        set -euo pipefail
+        docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
+          up -d --pull always --remove-orphans \
+          neohabitatmongo neohabitat bots otel-collector promtail
+      args:
         chdir: "{{ neohabitat_repo_path }}"
-        argv:
-          - docker
-          - compose
-          - -f
-          - docker-compose.yml
-          - -f
-          - docker-compose.prod.yml
-          - up
-          - -d
-          - --pull
-          - always
-          - --remove-orphans
-          - neohabitatmongo
-          - neohabitat
-          - bots
-          - otel-collector
-          - promtail
+        executable: /bin/bash
       become: true
       register: compose_up
       changed_when: "'Recreated' in compose_up.stderr or 'Started' in compose_up.stderr"
 
     - name: Restart sidecars if monitoring.env changed
-      command:
+      shell: |
+        set -euo pipefail
+        docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
+          up -d --force-recreate --no-deps otel-collector promtail
+      args:
         chdir: "{{ neohabitat_repo_path }}"
-        argv:
-          - docker
-          - compose
-          - -f
-          - docker-compose.yml
-          - -f
-          - docker-compose.prod.yml
-          - -f
-          - docker-compose.monitoring.yml
-          - up
-          - -d
-          - --force-recreate
-          - --no-deps
-          - otel-collector
-          - promtail
+        executable: /bin/bash
       become: true
       when: monitoring_env_file is defined and monitoring_env_file.changed
       changed_when: true
@@ -208,16 +187,12 @@
         msg: "{{ compose_up.stderr_lines | default([]) }}"
 
     - name: Final container status
-      command:
+      shell: |
+        set -euo pipefail
+        docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} ps
+      args:
         chdir: "{{ neohabitat_repo_path }}"
-        argv:
-          - docker
-          - compose
-          - -f
-          - docker-compose.yml
-          - -f
-          - docker-compose.prod.yml
-          - ps
+        executable: /bin/bash
       become: true
       register: compose_ps
       changed_when: false
