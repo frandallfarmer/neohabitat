@@ -182,7 +182,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m pip install --quiet ansible-core
-          ansible-galaxy collection install -q \
+          ansible-galaxy collection install \
             community.general community.docker ansible.posix
 
       - name: Write SSH deploy key
