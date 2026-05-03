@@ -27,17 +27,26 @@ them onto `the made` automatically.
 
 ### `MONITORING_ENV` template
 
-Pick the region endpoints that match your Grafana Cloud stack, then
-paste the whole thing (including newlines) into the secret value:
+Use the var names that Grafana Cloud's bootstrap script gives you (so
+you can paste the output verbatim, with newlines):
 
 ```ini
-GRAFANA_OTLP_ENDPOINT=https://otlp-gateway-prod-us-east-0.grafana.net/otlp
-GRAFANA_OTLP_AUTH=Basic <base64(instance-id:api-key)>
-
-GRAFANA_LOKI_URL=https://logs-prod-006.grafana.net/loki/api/v1/push
-GRAFANA_LOKI_USERNAME=<loki instance id>
-GRAFANA_LOKI_API_KEY=<api key with MetricsPublisher role>
+GCLOUD_HOSTED_METRICS_ID=<your prometheus instance id>
+GCLOUD_HOSTED_METRICS_URL=https://prometheus-prod-XX-prod-us-east-N.grafana.net/api/prom/push
+GCLOUD_HOSTED_LOGS_ID=<your loki instance id>
+GCLOUD_HOSTED_LOGS_URL=https://logs-prod-NNN.grafana.net/loki/api/v1/push
+GCLOUD_RW_API_KEY=glc_…
 ```
+
+For traces, add (once you grab them from Grafana Cloud → Connections → Tempo):
+
+```ini
+GCLOUD_TEMPO_ID=<your tempo instance id>
+GCLOUD_TEMPO_URL=https://tempo-prod-NN.grafana.net/tempo
+```
+
+…then uncomment the `traces` pipeline + `otlphttp/grafana_tempo`
+exporter in `otel-collector-config.yml`.
 
 The compose `env_file` directive uses `required: false`, so the stack
 still comes up if `MONITORING_ENV` isn't set yet — the sidecars will

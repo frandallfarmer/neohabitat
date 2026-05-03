@@ -2,10 +2,10 @@
 # Loki. Reads ALL neohabitat-* containers (not just bridge_v2 like the
 # old self-hosted setup did).
 #
-# Required environment variables (from /etc/neohabitat/monitoring.env):
-#   GRAFANA_LOKI_URL       — e.g. https://logs-prod-006.grafana.net/loki/api/v1/push
-#   GRAFANA_LOKI_USERNAME  — Grafana Cloud Loki instance ID (a number)
-#   GRAFANA_LOKI_API_KEY   — Grafana Cloud API key (with "MetricsPublisher" role)
+# Required env vars (from /etc/neohabitat/monitoring.env):
+#   GCLOUD_HOSTED_LOGS_URL  e.g. https://logs-prod-NNN.grafana.net/loki/api/v1/push
+#   GCLOUD_HOSTED_LOGS_ID   numeric Loki instance id
+#   GCLOUD_RW_API_KEY       glc_… key (same one as metrics; needs logs-publish scope)
 
 server:
   http_listen_port: 9080
@@ -15,10 +15,10 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
-  - url: ${GRAFANA_LOKI_URL}
+  - url: ${GCLOUD_HOSTED_LOGS_URL}
     basic_auth:
-      username: ${GRAFANA_LOKI_USERNAME}
-      password: ${GRAFANA_LOKI_API_KEY}
+      username: ${GCLOUD_HOSTED_LOGS_ID}
+      password: ${GCLOUD_RW_API_KEY}
     external_labels:
       cluster: the_made
       environment: production

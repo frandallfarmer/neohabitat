@@ -1,12 +1,31 @@
-# otel-collector ships traces + metrics + logs to Grafana Cloud's OTLP
-# gateway. Receivers stay local (bridge_v2 sends OTLP over HTTP to
-# otel-collector:4318); the exporter is a single HTTP target with basic
-# auth (instance-id:api-key, base64-encoded).
+# otel-collector receives OTLP from bridge_v2 (over HTTP at :4318) and
+# ships:
+#   - metrics → Grafana Cloud Prometheus via remote_write
+#   - logs    → Grafana Cloud Loki  (also covered by promtail; this picks
+#                 up anything bridge_v2 sends as OTLP logs that the docker
+#                 log driver doesn't see)
+#   - traces  → DISABLED until we add a Tempo endpoint (Grafana Cloud →
+#                 Connections → Tempo → Send Traces. Add GCLOUD_TEMPO_URL
+#                 + GCLOUD_TEMPO_ID to MONITORING_ENV and uncomment the
+#                 traces pipeline + tempo exporter below).
 #
-# Required environment variables (read from /etc/neohabitat/monitoring.env
-# on the made, mounted into the container by docker-compose.monitoring.yml):
-#   GRAFANA_OTLP_ENDPOINT  — e.g. https://otlp-gateway-prod-us-east-0.grafana.net/otlp
-#   GRAFANA_OTLP_AUTH      — "Basic <base64(instanceId:apiKey)>"
+# Required env vars (from /etc/neohabitat/monitoring.env, written by the
+# CI deploy job from the MONITORING_ENV repo secret):
+#   GCLOUD_HOSTED_METRICS_URL  e.g. https://prometheus-prod-XX-prod-us-east-N.grafana.net/api/prom/push
+#   GCLOUD_HOSTED_METRICS_ID   numeric Prometheus instance id
+#   GCLOUD_HOSTED_LOGS_URL     e.g. https://logs-prod-NNN.grafana.net/loki/api/v1/push
+#   GCLOUD_HOSTED_LOGS_ID      numeric Loki instance id
+#   GCLOUD_RW_API_KEY          glc_… key with metrics-publish + logs-publish
+
+extensions:
+  basicauth/grafana_metrics:
+    client_auth:
+      username: "${env:GCLOUD_HOSTED_METRICS_ID}"
+      password: "${env:GCLOUD_RW_API_KEY}"
+  basicauth/grafana_logs:
+    client_auth:
+      username: "${env:GCLOUD_HOSTED_LOGS_ID}"
+      password: "${env:GCLOUD_RW_API_KEY}"
 
 receivers:
   otlp:
@@ -30,23 +49,35 @@ processors:
         action: upsert
 
 exporters:
-  otlphttp/grafana_cloud:
-    endpoint: "${env:GRAFANA_OTLP_ENDPOINT}"
-    headers:
-      Authorization: "${env:GRAFANA_OTLP_AUTH}"
-    compression: gzip
+  prometheusremotewrite/grafana_cloud:
+    endpoint: "${env:GCLOUD_HOSTED_METRICS_URL}"
+    auth:
+      authenticator: basicauth/grafana_metrics
+
+  loki/grafana_cloud:
+    endpoint: "${env:GCLOUD_HOSTED_LOGS_URL}"
+    auth:
+      authenticator: basicauth/grafana_logs
+
+  # Uncomment when GCLOUD_TEMPO_URL / GCLOUD_TEMPO_ID are added.
+  # otlphttp/grafana_tempo:
+  #   endpoint: "${env:GCLOUD_TEMPO_URL}"
+  #   auth:
+  #     authenticator: basicauth/grafana_traces
+  #   compression: gzip
 
 service:
+  extensions: [basicauth/grafana_metrics, basicauth/grafana_logs]
   pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch, resource]
-      exporters: [otlphttp/grafana_cloud]
     metrics:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [otlphttp/grafana_cloud]
+      exporters: [prometheusremotewrite/grafana_cloud]
     logs:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [otlphttp/grafana_cloud]
+      exporters: [loki/grafana_cloud]
+    # traces:
+    #   receivers: [otlp]
+    #   processors: [batch, resource]
+    #   exporters: [otlphttp/grafana_tempo]
