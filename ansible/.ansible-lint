@@ -6,9 +6,8 @@ profile: production
 skip_list:
   - fqcn
   - fqcn[action-core]
-  # Variable names like `waagent_*` and `themade_*` are domain-meaningful;
-  # forcing every variable to start with the role name (`worldsaway_waagent_*`)
-  # would just add noise.
+  # Variable names like `themade_*` and `bridge_*` are domain-meaningful;
+  # forcing every variable to start with the role name would just add noise.
   - var-naming[no-role-prefix]
 
 exclude_paths:

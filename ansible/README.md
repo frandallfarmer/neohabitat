@@ -1,11 +1,10 @@
 # Neohabitat Ansible
 
-Three idempotent roles to provision and operate the Neohabitat host (`the made` and any future replicas):
+Two idempotent roles to provision and operate the Neohabitat host (`the made` and any future replicas):
 
 | Role | What it owns |
 |------|--------------|
-| `base`        | apt packages, `themade` user + SSH keys, timezone, unattended-upgrades. UFW left disabled (Azure NSG is the perimeter). |
-| `worldsaway`  | Azure / Hyper-V guest agent stack — `walinuxagent`, `hv-*` daemons, `/etc/waagent.conf`. Skipped automatically on non-Azure hosts. |
+| `base`        | apt packages, `themade` user + SSH keys, timezone, unattended-upgrades. UFW left disabled (Azure NSG is the perimeter on the made). |
 | `neohabitat`  | Docker engine + compose plugin, `criu`, NodeSource Node 20, the docker-compose stack (mongo / mariadb / elko / qlink / bots), bot consolidation (mask the legacy systemd units), and the `bridge_v2` deploy pipeline (build → ship → SIGHUP). |
 
 ## Layout
@@ -18,7 +17,7 @@ ansible/
   playbooks/
     site.yml                    # full converge
     deploy-bridge.yml           # bridge_v2 only (steady-state push)
-  roles/{base,worldsaway,neohabitat}/
+  roles/{base,neohabitat}/
 ```
 
 ## Prerequisites (controller)
@@ -52,10 +51,7 @@ ansible-playbook playbooks/deploy-bridge.yml
 
 # Just one role
 ansible-playbook playbooks/site.yml --tags neohabitat
-ansible-playbook playbooks/site.yml --tags worldsaway
-
-# Skip the Azure stack on a non-Azure host
-ansible-playbook playbooks/site.yml --skip-tags worldsaway
+ansible-playbook playbooks/site.yml --tags base
 ```
 
 ## Bridge_v2 deploy modes
@@ -70,7 +66,6 @@ The `upgrade` task is a thin wrapper around `scripts/deploy-bridge.sh` (no args)
 
 ## Notes
 
-- `the made` is Ubuntu 20.04 (Focal) — EOL April 2025. The roles target Focal/Jammy/Noble and should work after an in-place upgrade.
-- `host_is_azure: true` in inventory makes the `worldsaway` role apply. Set to `false` (or override per-host) to skip on non-Azure replicas.
+- The roles target Ubuntu LTS releases; on Azure, `walinuxagent`, the `hv_*` daemons, and `linux-azure` are managed by Microsoft's Ubuntu image — there's no IaC needed for those.
 - SSH hardening (`base_harden_sshd: true`) is opt-in. Don't flip it on against `the made` until every operator has key-based access.
 - The role does **not** manage the `/home/themade/neohabitat` git checkout (`neohabitat_manage_repo: false` in inventory). Operators continue to `git pull` by hand. For greenfield deploys to `/opt/neohabitat`, set `neohabitat_manage_repo: true`.

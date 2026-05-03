@@ -1,5 +1,5 @@
 ---
-# Full convergence: base → worldsaway → neohabitat.
+# Full convergence: base → neohabitat.
 #
 # Usage:
 #   ansible-playbook playbooks/site.yml --check --diff       # dry run
@@ -19,7 +19,5 @@
   roles:
     - role: base
       tags: [base]
-    - role: worldsaway
-      tags: [worldsaway, azure]
     - role: neohabitat
       tags: [neohabitat]

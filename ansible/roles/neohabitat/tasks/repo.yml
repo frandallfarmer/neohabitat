@@ -42,7 +42,7 @@
     mode: "0755"
   loop:
     - data
-    - data/mariadb
+    - data/mongo
     - volumes
     - volumes/bridge_v2_bin
 

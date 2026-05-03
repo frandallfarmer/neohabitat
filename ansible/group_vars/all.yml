@@ -33,8 +33,3 @@ bridge_deploy_mode: upgrade
 # the production host.
 go_build_dir: "{{ playbook_dir }}/../../bridge_v2"
 bridge_bin_relpath: volumes/bridge_v2_bin/bridge_v2
-
-# ── Azure / WorldsAway ────────────────────────────────────────────────
-# Set host_is_azure: false in inventory for non-Azure hosts to skip
-# the worldsaway role.
-host_is_azure: false
