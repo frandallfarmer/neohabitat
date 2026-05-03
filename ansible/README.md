@@ -59,7 +59,7 @@ ansible-playbook playbooks/site.yml --tags base
 The `neohabitat` role has three modes, gated by `bridge_deploy_mode` (default `upgrade`):
 
 - **`adopt-cutover`** — first run on a host that still has the old Node bridge fronting `:1337`. Recreates the compose stack so `bridge_v2` binds host port `1337`. One-shot; ~5s `docker-proxy` rebind gap; existing sessions through the old bridge **do** drop.
-- **`upgrade`** — steady state. Builds binary, syncs it to `volumes/bridge_v2_bin/bridge_v2`, then `docker exec ... kill -HUP 1`. `tableflip` re-execs the new binary; `TCP_REPAIR` hands active sockets to the child. **Active C64 sessions survive.**
+- **`upgrade`** — steady state. Builds binary, syncs it to `volumes/bridge_v2_bin/bridge_v2`, then `docker kill --signal=HUP <container>`. `tableflip` re-execs the new binary; `TCP_REPAIR` hands active sockets to the child. **Active C64 sessions survive.**
 - **`refresh-only`** — only converge config / units, skip the bridge SIGHUP entirely.
 
 The `upgrade` task is a thin wrapper around `scripts/deploy-bridge.sh` (no args) — implementation details (binary location, healthcheck) live there.

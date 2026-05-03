@@ -73,7 +73,8 @@ cmd_upgrade() {
     fi
 
     log "Sending SIGHUP to $CONTAINER..."
-    docker exec "$CONTAINER" kill -HUP 1
+    # docker exec ... kill won't work — bridge image is distroless.
+    docker kill --signal=HUP "$CONTAINER"
 
     log "Waiting for new process to be ready..."
     sleep 2
@@ -168,7 +169,7 @@ cmd_rolling() {
         log "New bridge healthy on $target."
         log "Draining old bridge on source..."
         # Stop accepting new connections on source (close listener)
-        docker exec "$CONTAINER" kill -HUP 1 2>/dev/null || true
+        docker kill --signal=HUP "$CONTAINER" 2>/dev/null || true
         log "Source bridge draining. It will exit when all sessions close."
         log "Monitor with: docker logs -f $CONTAINER 2>&1 | grep 'drain\\|session'"
     else

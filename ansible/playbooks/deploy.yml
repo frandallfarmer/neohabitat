@@ -95,7 +95,10 @@
       when: bv2_binary_changed
 
     - name: SIGHUP bridge_v2 (tableflip re-exec; TCP_REPAIR keeps sessions)
-      command: docker exec {{ bridge_container_name }} kill -HUP 1
+      # `docker exec ... kill` doesn't work — the bridge image is
+      # distroless and has no kill binary. `docker kill --signal` sends
+      # the signal via the Docker API, no in-container binary needed.
+      command: docker kill --signal=HUP {{ bridge_container_name }}
       become: true
       when: bv2_binary_changed
       changed_when: true

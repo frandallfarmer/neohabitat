@@ -115,7 +115,9 @@
   when: bridge_deploy_mode == 'upgrade'
 
 - name: Upgrade — SIGHUP bridge_v2 (tableflip will re-exec, TCP_REPAIR preserves sessions)
-  command: docker exec {{ bridge_container_name }} kill -HUP 1
+  # `docker kill --signal` not `docker exec ... kill` — the bridge image
+  # is distroless and has no kill binary.
+  command: docker kill --signal=HUP {{ bridge_container_name }}
   changed_when: true
   when: bridge_deploy_mode == 'upgrade'
 
