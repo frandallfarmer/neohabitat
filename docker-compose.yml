@@ -7,11 +7,17 @@ services:
     image: mongodb/mongodb-community-server:latest
     ports:
       - "27017:27017"
+    # Persist mongo data on the host so `docker compose down` doesn't drop
+    # the elko DB. Was an anonymous volume previously, which compose
+    # silently destroyed on `down`.
+    volumes:
+      - ./data/mongo:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.stats()"]
       interval: 30s
-      timeout: 30s
-      retries: 30
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - neohabitat
 
@@ -41,8 +47,10 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 1701"]
       interval: 30s
-      timeout: 30s
-      retries: 30
+      timeout: 10s
+      retries: 10
+      # Schema rebuild + JVM warmup can take ~30-60s on a cold start.
+      start_period: 90s
     ports:
       - "1701:1701"
       - "1987:1987"
