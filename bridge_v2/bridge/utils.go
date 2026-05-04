@@ -180,3 +180,55 @@ func Int32P(i int32) *int32 {
 func StringP(s string) *string {
 	return &s
 }
+
+// ── nil-safe deref helpers ──────────────────────────────────────────
+//
+// Translator ToClient bodies historically dereferenced fields on the
+// inbound ElkoMessage directly (e.g. `b.AddInt(*o.Err)`). When the
+// server omitted the field — Elko skips fields it didn't set — the
+// deref panicked, and a panic in elkoReader takes down the whole
+// bridge process (one client's bad reply drops every connected
+// client). These helpers default to a sane wire value (0 / "") so a
+// missing field becomes "first slot" / "no error" rather than SIGSEGV.
+
+func u8(p *uint8) uint8 {
+	if p == nil {
+		return 0
+	}
+	return *p
+}
+
+func u8d(p *uint8, def uint8) uint8 {
+	if p == nil {
+		return def
+	}
+	return *p
+}
+
+func u32(p *uint32) uint32 {
+	if p == nil {
+		return 0
+	}
+	return *p
+}
+
+func i32slice(p *[]int32) []int32 {
+	if p == nil {
+		return nil
+	}
+	return *p
+}
+
+func u8slice(p *[]uint8) []uint8 {
+	if p == nil {
+		return nil
+	}
+	return *p
+}
+
+func str(p *string) string {
+	if p == nil {
+		return ""
+	}
+	return *p
+}

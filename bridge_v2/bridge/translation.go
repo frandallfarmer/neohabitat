@@ -11,9 +11,9 @@ func init() {
 	Translators["HELP"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
 			if o.ASCII != nil && len(*o.ASCII) > 0 {
-				b.AddIntSlice(*o.ASCII)
+				b.AddIntSlice(u8slice(o.ASCII))
 			} else if o.Text != nil {
-				text := *o.Text
+				text := str(o.Text)
 				textBoundary := MinInt(len(text), 114)
 				b.AddString(text[0:textBoundary])
 			}
@@ -23,7 +23,7 @@ func init() {
 
 	Translators["GET"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -58,8 +58,8 @@ func init() {
 
 	Translators["WEAR"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -86,10 +86,10 @@ func init() {
 			}
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Target)
-			b.AddInt(*o.X)
-			b.AddInt(*o.Y)
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Target))
+			b.AddInt(u8(o.X))
+			b.AddInt(u8(o.Y))
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -101,7 +101,7 @@ func init() {
 			m.Text = &textStr
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Esp)
+			b.AddInt(u8(o.Esp))
 			return false
 		},
 	}
@@ -115,7 +115,7 @@ func init() {
 			m.Text = &textStr
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Esp)
+			b.AddInt(u8(o.Esp))
 			return false
 		},
 	}
@@ -136,8 +136,8 @@ func init() {
 
 	Translators["RUB"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.RubSuccess)
-			b.AddString(*o.RubMessage)
+			b.AddInt(u8(o.RubSuccess))
+			b.AddString(str(o.RubMessage))
 			return false
 		},
 	}
@@ -147,7 +147,7 @@ func init() {
 			m.Pose = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -159,10 +159,10 @@ func init() {
 			m.How = &a[2]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.X)
-			b.AddInt(*o.Y)
+			b.AddInt(u8(o.X))
+			b.AddInt(u8(o.Y))
 			if o.How != nil {
-				b.AddInt(*o.How)
+				b.AddInt(u8(o.How))
 			}
 			return false
 		},
@@ -174,8 +174,8 @@ func init() {
 			m.SeatId = &a[1]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
-			b.AddInt(*o.Slot)
+			b.AddInt(u8(o.Err))
+			b.AddInt(u8(o.Slot))
 			return false
 		},
 	}
@@ -186,19 +186,19 @@ func init() {
 			m.Target = &a[1]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["CORPORATE"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Success)
-			b.AddInt(*o.NewNoid)
-			b.AddInt(uint8(*o.Balance & 0x000000FF))
-			b.AddInt(uint8((*o.Balance & 0x0000FF00) >> 8))
-			b.AddInt(uint8((*o.Balance & 0x00FF0000) >> 16))
-			b.AddInt(uint8((*o.Balance & 0xFF000000) >> 24))
+			b.AddInt(u8(o.Success))
+			b.AddInt(u8(o.NewNoid))
+			b.AddInt(uint8(u32(o.Balance) & 0x000000FF))
+			b.AddInt(uint8((u32(o.Balance) & 0x0000FF00) >> 8))
+			b.AddInt(uint8((u32(o.Balance) & 0x00FF0000) >> 16))
+			b.AddInt(uint8((u32(o.Balance) & 0xFF000000) >> 24))
 			if o.Body != nil {
 				b.AddHabBuf(s.Vectorize(o.Body, ""))
 			} else {
@@ -210,12 +210,12 @@ func init() {
 
 	Translators["DISCORPORATE"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Success)
-			b.AddInt(*o.NewNoid)
-			b.AddInt(uint8(*o.Balance & 0x000000FF))
-			b.AddInt(uint8((*o.Balance & 0x0000FF00) >> 8))
-			b.AddInt(uint8((*o.Balance & 0x00FF0000) >> 16))
-			b.AddInt(uint8((*o.Balance & 0xFF000000) >> 24))
+			b.AddInt(u8(o.Success))
+			b.AddInt(u8(o.NewNoid))
+			b.AddInt(uint8(u32(o.Balance) & 0x000000FF))
+			b.AddInt(uint8((u32(o.Balance) & 0x0000FF00) >> 8))
+			b.AddInt(uint8((u32(o.Balance) & 0x00FF0000) >> 16))
+			b.AddInt(uint8((u32(o.Balance) & 0xFF000000) >> 24))
 			if o.Body != nil {
 				b.AddHabBuf(s.Vectorize(o.Body, ""))
 			} else {
@@ -237,56 +237,56 @@ func init() {
 			m.Target = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["OFF"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["ON"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["OPEN"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["CLOSE"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["OPENCONTAINER"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["CLOSECONTAINER"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["FAKESHOOT"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.FakeshootSuccess)
+			b.AddInt(u8(o.FakeshootSuccess))
 			return false
 		},
 	}
@@ -296,8 +296,8 @@ func init() {
 			m.Page = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.NextPage)
-			b.AddIntSlice(*o.ASCII)
+			b.AddInt(u8(o.NextPage))
+			b.AddIntSlice(u8slice(o.ASCII))
 			// This reply should be split upon transmission to the client.
 			return true
 		},
@@ -327,28 +327,28 @@ func init() {
 			}
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["RESET"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.ResetSuccess)
+			b.AddInt(u8(o.ResetSuccess))
 			return false
 		},
 	}
 
 	Translators["ROLL"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.RollState)
+			b.AddInt(u8(o.RollState))
 			return false
 		},
 	}
 
 	Translators["SCAN"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.ScanDetection)
+			b.AddInt(u8(o.ScanDetection))
 			return false
 		},
 	}
@@ -365,7 +365,7 @@ func init() {
 			m.PassageId = &a[1]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -375,9 +375,9 @@ func init() {
 			m.Limb = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.SpraySuccess)
-			b.AddInt(*o.SprayCustomize0)
-			b.AddInt(*o.SprayCustomize1)
+			b.AddInt(u8(o.SpraySuccess))
+			b.AddInt(u8(o.SprayCustomize0))
+			b.AddInt(u8(o.SprayCustomize1))
 			return false
 		},
 	}
@@ -387,15 +387,15 @@ func init() {
 			m.TargetNoid = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
-			b.AddInt(*o.ChangeNewOrientation)
+			b.AddInt(u8(o.Err))
+			b.AddInt(u8(o.ChangeNewOrientation))
 			return false
 		},
 	}
 
 	Translators["DIRECT"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			text := *o.Text
+			text := str(o.Text)
 			textBounds := MinInt(len(text), 114)
 			b.AddString(text[0:textBounds])
 			return false
@@ -407,8 +407,8 @@ func init() {
 			m.PointedNoid = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.AttackResult)
-			b.AddInt(*o.AttackTarget)
+			b.AddInt(u8(o.AttackResult))
+			b.AddInt(u8(o.AttackTarget))
 			return false
 		},
 	}
@@ -418,14 +418,14 @@ func init() {
 			m.Target = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["TAKE"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.TakeSuccess)
+			b.AddInt(u8(o.TakeSuccess))
 			return false
 		},
 	}
@@ -452,21 +452,21 @@ func init() {
 			}
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Success)
-			b.AddInt(*o.AmountLo)
-			b.AddInt(*o.AmountHi)
-			b.AddHabBuf(s.Vectorize(o.Object, *o.Container))
+			b.AddInt(u8(o.Success))
+			b.AddInt(u8(o.AmountLo))
+			b.AddInt(u8(o.AmountHi))
+			b.AddHabBuf(s.Vectorize(o.Object, str(o.Container)))
 			return false
 		},
 	}
 
 	Translators["PAY"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
-			b.AddInt(*o.AmountLo)
-			b.AddInt(*o.AmountHi)
+			b.AddInt(u8(o.Err))
+			b.AddInt(u8(o.AmountLo))
+			b.AddInt(u8(o.AmountHi))
 			if o.Text != nil {
-				text := *o.Text
+				text := str(o.Text)
 				textBound := MinInt(len(text), 114)
 				b.AddString(text[0:textBound])
 			}
@@ -476,7 +476,7 @@ func init() {
 
 	Translators["PULLPIN"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.PullpinSuccess)
+			b.AddInt(u8(o.PullpinSuccess))
 			return false
 		},
 	}
@@ -487,14 +487,14 @@ func init() {
 			m.AmountHi = &a[1]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["MUNCH"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -504,7 +504,7 @@ func init() {
 			m.Target = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -514,7 +514,7 @@ func init() {
 			m.TokenNoid = &a[0]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -525,7 +525,7 @@ func init() {
 			m.PortNumber = &portNumber
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
@@ -536,48 +536,48 @@ func init() {
 			m.AmountHi = &a[1]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.AmountLo)
-			b.AddInt(*o.AmountHi)
-			b.AddInt(*o.ResultCode)
+			b.AddInt(u8(o.AmountLo))
+			b.AddInt(u8(o.AmountHi))
+			b.AddInt(u8(o.ResultCode))
 			return false
 		},
 	}
 
 	Translators["FILL"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["POUR"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["SEXCHANGE"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["VSELECT"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.PriceLo)
-			b.AddInt(*o.PriceHi)
-			b.AddInt(*o.DisplayItem)
+			b.AddInt(u8(o.PriceLo))
+			b.AddInt(u8(o.PriceHi))
+			b.AddInt(u8(o.DisplayItem))
 			return false
 		},
 	}
 
 	Translators["VEND"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Success)
-			b.AddInt(*o.ItemPriceLo)
-			b.AddInt(*o.ItemPriceHi)
+			b.AddInt(u8(o.Success))
+			b.AddInt(u8(o.ItemPriceLo))
+			b.AddInt(u8(o.ItemPriceHi))
 			b.AddHabBuf(s.Vectorize(o.Object, ""))
 			return false
 		},
@@ -585,56 +585,56 @@ func init() {
 
 	Translators["FLUSH"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["BUGOUT"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["DIG"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["README"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddIntSlice(*o.ASCII)
+			b.AddIntSlice(u8slice(o.ASCII))
 			return false
 		},
 	}
 
 	Translators["PSENDMAIL"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
 
 	Translators["KING"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.State)
+			b.AddInt(u8(o.State))
 			return false
 		},
 	}
 
 	Translators["GRAB"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.ItemNoid)
+			b.AddInt(u8(o.ItemNoid))
 			return false
 		},
 	}
 
 	Translators["HAND"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
+			b.AddInt(u8(o.Err))
 			return false
 		},
 	}
