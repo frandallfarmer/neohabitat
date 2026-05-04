@@ -37,6 +37,7 @@ const Defaults = {
   reconnect: true,
   persona: "a curious old-timer of Habitat who's seen it all and likes meeting newcomers",
   wanderSeconds: 180,
+  interactSeconds: 90,
 }
 
 const Argv = require('yargs')
@@ -50,6 +51,7 @@ const Argv = require('yargs')
   .option('reconnect',     { alias: 'r', default: Defaults.reconnect })
   .option('persona',       { default: Defaults.persona })
   .option('wander-seconds',{ default: Defaults.wanderSeconds, number: true })
+  .option('interact-seconds',{ default: Defaults.interactSeconds, number: true })
   .argv
 
 log.level = Argv.loglevel
@@ -125,14 +127,52 @@ async function askClaude(userMessage) {
   }
 }
 
+// Habitat object types we know how to interact with. Mod.type values come
+// from the Elko object class; the action says how sage should engage.
+const SITTABLE_TYPES = new Set(['Seat', 'Couch', 'Chair', 'Bench', 'Hot_tub', 'Bed'])
+const OPENABLE_TYPES = new Set(['Door', 'Bridge', 'Box', 'Bag', 'Chest', 'Trunk', 'Mailbox', 'Dropbox', 'Aquarium', 'Hot_tub'])
+const PICKUPABLE_HINT_TYPES = new Set(['Book', 'Compass', 'Knick_knack', 'Plant', 'Magic_lamp', 'Magic_wand', 'Crystal_ball', 'Cookie', 'Coffee', 'Garbage_can', 'Token'])
+
+function objectsByType() {
+  const buckets = { sittable: [], openable: [], pickupable: [], other: [] }
+  for (const noid in SageBot.noids) {
+    const o = SageBot.noids[noid]
+    if (!o || !o.mods || !o.mods[0]) continue
+    const t = o.mods[0].type
+    if (!t || t === 'Avatar' || t === 'Ghost' || t === 'Region') continue
+    if (SITTABLE_TYPES.has(t)) buckets.sittable.push(o)
+    else if (OPENABLE_TYPES.has(t)) buckets.openable.push(o)
+    else if (PICKUPABLE_HINT_TYPES.has(t)) buckets.pickupable.push(o)
+    else buckets.other.push(o)
+  }
+  return buckets
+}
+
 function describeScene() {
-  const myNoid = SageBot.getAvatarNoid()
   const others = SageBot.collectAvatarNoids()
     .map((a) => a.name)
     .filter((n) => n)
   const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
   const region = SageBot.realm && SageBot.realm.name ? SageBot.realm.name : '(unknown region)'
-  return `Region: ${region}. Other avatars present: ${others.length ? others.join(', ') : 'none'}. Exits: ${exits.length ? exits.join(', ') : 'none'}.`
+  const objs = objectsByType()
+  // Compress object lists to short type counts so the prompt stays small.
+  const objSummary = ['sittable', 'openable', 'pickupable', 'other']
+    .map((cat) => {
+      const list = objs[cat]
+      if (!list.length) return null
+      const counts = {}
+      for (const o of list) counts[o.mods[0].type] = (counts[o.mods[0].type] || 0) + 1
+      return `${cat}: ${Object.entries(counts).map(([t, c]) => c > 1 ? `${t}×${c}` : t).join(', ')}`
+    })
+    .filter(Boolean)
+    .join(' | ') || 'none'
+  return `Region: ${region}. Other avatars present: ${others.length ? others.join(', ') : 'none'}. Exits: ${exits.length ? exits.join(', ') : 'none'}. Objects in room: ${objSummary}.`
+}
+
+// Pick up an object — Habitat GET op. Not in habibot.js's helper set but
+// the framework accepts arbitrary ops via send().
+function getObj(ref, containerNoid) {
+  return SageBot.send({ op: 'GET', to: ref, containerNoid: containerNoid || 0 })
 }
 
 // Walk to a comfortable speaking distance from a target avatar's coords.
@@ -251,3 +291,57 @@ async function wanderTick() {
 }
 
 setInterval(wanderTick, Argv.wanderSeconds * 1000)
+
+// ── periodic interact ────────────────────────────────────────────────
+// Pick a random nearby object and do something with it (sit, open, pick
+// up). Then ask Claude to generate a short comment about what we did so
+// the action lands in the world as flavor speech rather than a silent
+// pose change.
+async function interactTick() {
+  const objs = objectsByType()
+  // Build a candidate list of (action, object, label) tuples.
+  const choices = []
+  for (const o of objs.sittable) choices.push({ kind: 'sit', obj: o })
+  for (const o of objs.openable) choices.push({ kind: 'open', obj: o })
+  for (const o of objs.pickupable) choices.push({ kind: 'get', obj: o })
+  if (choices.length === 0) {
+    log.debug('No interactable objects in room')
+    return
+  }
+  const choice = choices[Math.floor(Math.random() * choices.length)]
+  const mod = choice.obj.mods[0]
+  const objType = mod.type
+  const objRef = choice.obj.ref
+
+  log.info('Interact: %s the %s (ref=%s, noid=%s)', choice.kind, objType, objRef, mod.noid)
+
+  try {
+    if (choice.kind === 'sit') {
+      // First walk near it, then sit.
+      if (mod.x != null && mod.y != null) {
+        await SageBot.walkTo(mod.x, mod.y, 0).catch(() => {})
+      }
+      await SageBot.sitOrstand(1, mod.noid)   // 1 = sit down
+    } else if (choice.kind === 'open') {
+      await SageBot.openDoor(objRef)
+    } else if (choice.kind === 'get') {
+      await getObj(objRef, mod.noid)
+    }
+  } catch (e) {
+    log.warn('Interact failed (%s on %s): %s', choice.kind, objType, e.message)
+    return
+  }
+
+  const verb = { sit: 'sat down on', open: 'opened', get: 'picked up' }[choice.kind]
+  const prompt =
+    `${describeScene()}\n\n` +
+    `Event: you just ${verb} the ${objType} in the room. ` +
+    `Make a brief in-character remark about doing it (or about the object).`
+  const line = await askClaude(prompt)
+  if (line) {
+    log.info('Comment after %s: %s', choice.kind, line)
+    SageBot.say(line)
+  }
+}
+
+setInterval(interactTick, Argv.interactSeconds * 1000)
