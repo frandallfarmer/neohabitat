@@ -94,6 +94,19 @@ if [[ "${@}" = *"oracle"* ]]; then
     -u devil &
 fi
 
+if [[ "${@}" = *"sage"* ]]; then
+  echo 'Launching sage...'
+  : "${HABIBOTS_SAGE_REGION:=context-Downtown_5f}"
+  : "${HABIBOTS_SAGE_USER:=sage}"
+  : "${HABIBOTS_SAGE_PERSONA:=a curious old-timer of Habitat who's seen it all and likes meeting newcomers}"
+  supervisor -w "${DIR}" -- bots/sage.js \
+    -c "${HABIBOTS_SAGE_REGION}" \
+    -h "${HABITAT_HOST}" \
+    -p "${HABITAT_PORT}" \
+    -u "${HABIBOTS_SAGE_USER}" \
+    --persona "${HABIBOTS_SAGE_PERSONA}" &
+fi
+
 if [[ "${@}" = *"hatchery"* ]]; then
   echo 'Launching hatchery...'
   supervisor -w "${DIR}" -- bots/hatchery.js \
