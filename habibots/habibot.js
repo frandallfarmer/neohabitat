@@ -759,8 +759,28 @@ class HabiBot {
       this.addNames(o.to)
     }
 
+    if (o === null) {
+      return;
+    }
+
+    // Region transition. Elko sends `{type: "changeContext", context: ..., immediate: ...}`
+    // when the avatar's location changes (e.g. after a NEWREGION walk). The
+    // server then streams a fresh batch of `make` messages for the new
+    // region's contents. Without resetting our local state here, old
+    // noids/avatars/neighbors from the previous region linger and collide
+    // with the new region's noids — leaving the bot's world model
+    // incoherent. (This was the "bot gets super screwed up on region
+    // transition" bug. gotoContext() already does this explicitly because
+    // it knows it's about to transition; `newRegion()` walks rely on the
+    // server-initiated path here.)
+    if (o.type === 'changeContext') {
+      log.debug('changeContext to %s — clearing local region state', o.context)
+      this.clearState()
+      return;
+    }
+
     // If this is not a state-modifying Elko message, ignores it.
-    if (o === null || !o.op) {
+    if (!o.op) {
       return;
     }
 
