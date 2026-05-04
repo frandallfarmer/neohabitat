@@ -197,6 +197,11 @@
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
           up -d --force-recreate --no-deps otel-collector promtail
+      args:
+        chdir: "{{ neohabitat_repo_path }}"
+        executable: /bin/bash
+      become: true
+      changed_when: true
 
     - name: Recreate bots if bots.env changed (so sage picks up the new key)
       shell: |
