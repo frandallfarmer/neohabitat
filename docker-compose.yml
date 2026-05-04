@@ -98,6 +98,13 @@ services:
     environment:
       - HABIBOTS_HOST=bridge_v2
       - HABIBOTS_PORT=2026
+    env_file:
+      # Carries ANTHROPIC_API_KEY (and any future bot-specific creds).
+      # required: false so the stack still comes up before the deploy
+      # job has written the file; sage will exit on startup if the key
+      # is missing, but the other bots keep running.
+      - path: /etc/neohabitat/bots.env
+        required: false
     depends_on:
       neohabitat:
         condition: service_healthy
@@ -106,4 +113,4 @@ services:
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']
-    command: ['hatchery', 'eliza']
+    command: ['hatchery', 'eliza', 'sage']

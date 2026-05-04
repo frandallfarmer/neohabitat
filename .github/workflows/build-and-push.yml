@@ -204,6 +204,11 @@ jobs:
           # (multi-line, GRAFANA_OTLP_ENDPOINT/AUTH + GRAFANA_LOKI_*).
           # When unset, the deploy task no-ops on it.
           MONITORING_ENV: ${{ secrets.MONITORING_ENV }}
+          # ANTHROPIC_API_KEY is sage's LLM credential. Deploy writes it
+          # into /etc/neohabitat/bots.env which the bots compose service
+          # reads via env_file. When unset, sage exits at startup; the
+          # other bots keep running.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           export ANSIBLE_SSH_KEY="$HOME/.ssh/deploy_key"
           # MONITORING_ENV is read by the playbook via lookup('env',...);

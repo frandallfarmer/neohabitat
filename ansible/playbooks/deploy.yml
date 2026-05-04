@@ -22,6 +22,8 @@
     # Picked up from the runner's env. Multi-line secrets via -e are
     # fragile (newlines mangle); env-var lookup avoids that entirely.
     monitoring_env: "{{ lookup('env', 'MONITORING_ENV') | default('', true) }}"
+    # Single-value: the Anthropic API key sage uses for LLM calls.
+    anthropic_api_key: "{{ lookup('env', 'ANTHROPIC_API_KEY') | default('', true) }}"
   tasks:
     - name: Pull latest repo (so new compose files are present)
       git:
@@ -57,7 +59,9 @@
         group: "{{ neohabitat_group }}"
         mode: "0750"
       become: true
-      when: monitoring_env is defined and monitoring_env | length > 0
+      when: >
+        (monitoring_env is defined and monitoring_env | length > 0) or
+        (anthropic_api_key is defined and anthropic_api_key | length > 0)
 
     - name: Write /etc/neohabitat/monitoring.env from CI secret
       copy:
@@ -70,6 +74,20 @@
       when: monitoring_env is defined and monitoring_env | length > 0
       register: monitoring_env_file
       no_log: true   # don't leak secrets into job logs
+
+    # ── bots credentials (sage's Anthropic key + future bot keys) ─────
+    - name: Write /etc/neohabitat/bots.env from CI secret
+      copy:
+        dest: /etc/neohabitat/bots.env
+        content: |
+          ANTHROPIC_API_KEY={{ anthropic_api_key }}
+        owner: "{{ neohabitat_owner }}"
+        group: "{{ neohabitat_group }}"
+        mode: "0600"
+      become: true
+      when: anthropic_api_key is defined and anthropic_api_key | length > 0
+      register: bots_env_file
+      no_log: true
 
     - name: Pull latest compose images
       community.docker.docker_compose_v2:
@@ -179,10 +197,17 @@
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
           up -d --force-recreate --no-deps otel-collector promtail
+
+    - name: Recreate bots if bots.env changed (so sage picks up the new key)
+      shell: |
+        set -euo pipefail
+        docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
+          up -d --force-recreate --no-deps bots
       args:
         chdir: "{{ neohabitat_repo_path }}"
         executable: /bin/bash
       become: true
+      when: bots_env_file is defined and bots_env_file.changed
       changed_when: true
 
     - name: Show what the compose up did
