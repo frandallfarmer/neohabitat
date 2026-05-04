@@ -99,6 +99,17 @@ const GREETING_COOLDOWN_MS = 5 * 60 * 1000 // 5 min
 const LLM_COOLDOWN_MS = 5_000            // global gap between calls
 let lastLlmCallAt = 0
 
+// Wrap a promise so it rejects after `ms` instead of hanging forever.
+// The bot is single-threaded by convention — one stuck await blocks every
+// future event. Used everywhere we await something the network owns.
+function withTimeout(promise, ms, label) {
+  let timer
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+  })
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
+}
+
 async function askClaude(userMessage) {
   const now = Date.now()
   const sinceLast = now - lastLlmCallAt
@@ -108,17 +119,19 @@ async function askClaude(userMessage) {
   lastLlmCallAt = Date.now()
 
   try {
-    const resp = await claude.messages.create({
+    log.debug('askClaude: calling %s (%d chars in)', MODEL, userMessage.length)
+    const resp = await withTimeout(claude.messages.create({
       model: MODEL,
       max_tokens: 120,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
-    })
+    }), 30_000, 'claude.messages.create')
     const text = resp.content.map((c) => c.text || '').join('').trim()
     if (!text) {
       log.warn('Claude returned empty response')
       return null
     }
+    log.debug('askClaude: got %d chars back', text.length)
     // Habitat speech bubbles are short. Hard cap.
     return text.length > 200 ? text.slice(0, 197) + '...' : text
   } catch (e) {
@@ -184,12 +197,14 @@ async function approachAvatar(avatarObj) {
   }
   // Stand a few tiles to the right/left of them, facing inward.
   const myAvatar = SageBot.getAvatar()
-  const myX = myAvatar && myAvatar.mods[0].x
+  const myX = myAvatar && myAvatar.mods[0] && myAvatar.mods[0].x
   const offset = (myX != null && myX > mod.x) ? 24 : -24
   const targetX = Math.max(8, Math.min(248, mod.x + offset))
   const facing = offset < 0 ? 1 : 0   // 0=face right, 1=face left (rough)
+  log.debug('approachAvatar: walking to (%d,%d) facing %d', targetX, mod.y, facing)
   try {
-    await SageBot.walkTo(targetX, mod.y, facing)
+    await withTimeout(SageBot.walkTo(targetX, mod.y, facing), 15_000, 'walkTo')
+    log.debug('approachAvatar: walkTo done')
   } catch (e) {
     log.warn('walkTo failed: %s', e.message)
   }
@@ -210,83 +225,104 @@ SageBot.on('enteredRegion', (bot) => {
 })
 
 // ── new avatar in the region ─────────────────────────────────────────
+// Top-level try/catch on every async handler: an unhandled rejection
+// inside a callback registered with HabiBot.on() bubbles to nothing —
+// the framework awaits these promises but doesn't surface the failure,
+// so the bot looks alive while every event handler silently no-ops.
 SageBot.on('APPEARING_$', async (bot, msg) => {
-  const avatar = bot.getNoid(msg.appearing)
-  if (!avatar) return
-  const name = avatar.name
-  if (!name) return
-  if (name === Argv.username) return       // ignore own re-appearance
-  if (looksLikeBot(name)) {
-    log.debug('Ignoring bot avatar: %s', name)
-    return
-  }
-  const last = greetedAt.get(name) || 0
-  if (Date.now() - last < GREETING_COOLDOWN_MS) {
-    log.debug('Already greeted %s recently, skipping', name)
-    return
-  }
-  greetedAt.set(name, Date.now())
+  log.debug('APPEARING_$ enter: noid=%s', msg && msg.appearing)
+  try {
+    const avatar = bot.getNoid(msg.appearing)
+    if (!avatar) { log.debug('APPEARING_$: no avatar object for noid %s', msg.appearing); return }
+    const name = avatar.name
+    log.debug('APPEARING_$: avatar.name=%s', name)
+    if (!name) { log.debug('APPEARING_$: avatar has no name, skipping'); return }
+    if (name === Argv.username) { log.debug('APPEARING_$: ignoring own re-appearance'); return }
+    if (looksLikeBot(name)) {
+      log.debug('Ignoring bot avatar: %s', name)
+      return
+    }
+    const last = greetedAt.get(name) || 0
+    if (Date.now() - last < GREETING_COOLDOWN_MS) {
+      log.debug('Already greeted %s recently, skipping', name)
+      return
+    }
+    greetedAt.set(name, Date.now())
 
-  log.info('Approaching new avatar: %s', name)
-  await approachAvatar(avatar)
+    log.info('Approaching new avatar: %s', name)
+    await approachAvatar(avatar)
 
-  const prompt =
-    `${describeScene()}\n\n` +
-    `Event: a new avatar named "${name}" just appeared in the region.\n` +
-    `You walked over to greet them. What do you say?`
+    log.debug('APPEARING_$: building prompt for %s', name)
+    const prompt =
+      `${describeScene()}\n\n` +
+      `Event: a new avatar named "${name}" just appeared in the region.\n` +
+      `You walked over to greet them. What do you say?`
 
-  const line = await askClaude(prompt)
-  if (line) {
-    log.info('Greeting %s: %s', name, line)
-    bot.say(line)
+    const line = await askClaude(prompt)
+    if (line) {
+      log.info('Greeting %s: %s', name, line)
+      bot.say(line)
+    } else {
+      log.debug('APPEARING_$: no greeting line generated for %s', name)
+    }
+  } catch (e) {
+    log.error('APPEARING_$ handler crashed: %s\n%s', e.message, e.stack)
   }
 })
 
 // ── someone spoke ────────────────────────────────────────────────────
 SageBot.on('SPEAK$', async (bot, msg) => {
-  // msg shape: {type:"broadcast", noid:N, op:"SPEAK$", text:"...", esp:0}
-  const speakerNoid = msg.noid
-  const text = msg.text
-  if (!text) return
-  const speaker = bot.getNoid(speakerNoid)
-  const speakerName = speaker && speaker.name
-  if (!speakerName) return
-  if (speakerName === Argv.username) return // our own speech echoed back
-  if (looksLikeBot(speakerName)) {
-    log.debug('Ignoring speech from bot %s', speakerName)
-    return
-  }
+  log.debug('SPEAK$ enter: noid=%s text=%s', msg && msg.noid, msg && msg.text)
+  try {
+    // msg shape: {type:"broadcast", noid:N, op:"SPEAK$", text:"...", esp:0}
+    const speakerNoid = msg.noid
+    const text = msg.text
+    if (!text) { log.debug('SPEAK$: empty text, skipping'); return }
+    const speaker = bot.getNoid(speakerNoid)
+    const speakerName = speaker && speaker.name
+    if (!speakerName) { log.debug('SPEAK$: no speaker name for noid %s', speakerNoid); return }
+    if (speakerName === Argv.username) { log.debug('SPEAK$: own speech echo, skipping'); return }
+    if (looksLikeBot(speakerName)) {
+      log.debug('Ignoring speech from bot %s', speakerName)
+      return
+    }
 
-  const prompt =
-    `${describeScene()}\n\n` +
-    `Event: ${speakerName} just said: "${text}"\n` +
-    `Reply in character. Acknowledge them by name if it feels natural.`
+    log.debug('SPEAK$: building reply prompt for %s', speakerName)
+    const prompt =
+      `${describeScene()}\n\n` +
+      `Event: ${speakerName} just said: "${text}"\n` +
+      `Reply in character. Acknowledge them by name if it feels natural.`
 
-  const line = await askClaude(prompt)
-  if (line) {
-    log.info('Replying to %s: %s', speakerName, line)
-    bot.say(line)
+    const line = await askClaude(prompt)
+    if (line) {
+      log.info('Replying to %s: %s', speakerName, line)
+      bot.say(line)
+    } else {
+      log.debug('SPEAK$: no reply line generated for %s', speakerName)
+    }
+  } catch (e) {
+    log.error('SPEAK$ handler crashed: %s\n%s', e.message, e.stack)
   }
 })
 
 // ── periodic wander ──────────────────────────────────────────────────
 async function wanderTick() {
-  // Only wander if no humans are around to talk to — otherwise stay put.
-  const humans = SageBot.collectAvatarNoids().filter((a) => !looksLikeBot(a.name))
-  if (humans.length > 0) {
-    log.debug('Humans present, staying put for chat')
-    return
-  }
-  const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
-  if (exits.length === 0) {
-    log.debug('No exits from this region; can\'t wander')
-    return
-  }
-  log.info('Wandering to a random exit')
   try {
-    await SageBot.walkToRandomExit()
+    // Only wander if no humans are around to talk to — otherwise stay put.
+    const humans = SageBot.collectAvatarNoids().filter((a) => !looksLikeBot(a.name))
+    if (humans.length > 0) {
+      log.debug('Humans present, staying put for chat')
+      return
+    }
+    const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
+    if (exits.length === 0) {
+      log.debug('No exits from this region; can\'t wander')
+      return
+    }
+    log.info('Wandering to a random exit')
+    await withTimeout(SageBot.walkToRandomExit(), 30_000, 'walkToRandomExit')
   } catch (e) {
-    log.warn('walkToRandomExit failed: %s', e.message)
+    log.warn('wanderTick failed: %s', e.message)
   }
 }
 
@@ -298,53 +334,67 @@ setInterval(wanderTick, Argv.wanderSeconds * 1000)
 // the action lands in the world as flavor speech rather than a silent
 // pose change.
 async function interactTick() {
-  const objs = objectsByType()
-  // Build a candidate list of (action, object, label) tuples.
-  const choices = []
-  for (const o of objs.sittable) choices.push({ kind: 'sit', obj: o })
-  for (const o of objs.openable) choices.push({ kind: 'open', obj: o })
-  for (const o of objs.pickupable) choices.push({ kind: 'get', obj: o })
-  if (choices.length === 0) {
-    log.debug('No interactable objects in room')
-    return
-  }
-  const choice = choices[Math.floor(Math.random() * choices.length)]
-  const mod = choice.obj.mods[0]
-  const objType = mod.type
-  const objRef = choice.obj.ref
-
-  log.info('Interact: %s the %s (ref=%s, noid=%s)', choice.kind, objType, objRef, mod.noid)
-
   try {
-    if (choice.kind === 'sit') {
-      // First walk near it, then sit.
-      if (mod.x != null && mod.y != null) {
-        await SageBot.walkTo(mod.x, mod.y, 0).catch(() => {})
+    const objs = objectsByType()
+    // Build a candidate list of (action, object, label) tuples.
+    const choices = []
+    for (const o of objs.sittable) choices.push({ kind: 'sit', obj: o })
+    for (const o of objs.openable) choices.push({ kind: 'open', obj: o })
+    for (const o of objs.pickupable) choices.push({ kind: 'get', obj: o })
+    if (choices.length === 0) {
+      log.debug('No interactable objects in room')
+      return
+    }
+    const choice = choices[Math.floor(Math.random() * choices.length)]
+    const mod = choice.obj.mods[0]
+    const objType = mod.type
+    const objRef = choice.obj.ref
+
+    log.info('Interact: %s the %s (ref=%s, noid=%s)', choice.kind, objType, objRef, mod.noid)
+
+    try {
+      if (choice.kind === 'sit') {
+        // First walk near it, then sit.
+        if (mod.x != null && mod.y != null) {
+          await withTimeout(SageBot.walkTo(mod.x, mod.y, 0), 15_000, 'walkTo').catch(() => {})
+        }
+        await withTimeout(SageBot.sitOrstand(1, mod.noid), 10_000, 'sitOrstand')
+      } else if (choice.kind === 'open') {
+        await withTimeout(SageBot.openDoor(objRef), 10_000, 'openDoor')
+      } else if (choice.kind === 'get') {
+        await withTimeout(getObj(objRef, mod.noid), 10_000, 'getObj')
       }
-      await SageBot.sitOrstand(1, mod.noid)   // 1 = sit down
-    } else if (choice.kind === 'open') {
-      await SageBot.openDoor(objRef)
-    } else if (choice.kind === 'get') {
-      await getObj(objRef, mod.noid)
+    } catch (e) {
+      log.warn('Interact failed (%s on %s): %s', choice.kind, objType, e.message)
+      return
+    }
+
+    const verb = { sit: 'sat down on', open: 'opened', get: 'picked up' }[choice.kind]
+    const prompt =
+      `${describeScene()}\n\n` +
+      `Event: you just ${verb} the ${objType} in the room. ` +
+      `Make a brief in-character remark about doing it (or about the object).`
+    const line = await askClaude(prompt)
+    if (line) {
+      log.info('Comment after %s: %s', choice.kind, line)
+      SageBot.say(line)
     }
   } catch (e) {
-    log.warn('Interact failed (%s on %s): %s', choice.kind, objType, e.message)
-    return
-  }
-
-  const verb = { sit: 'sat down on', open: 'opened', get: 'picked up' }[choice.kind]
-  const prompt =
-    `${describeScene()}\n\n` +
-    `Event: you just ${verb} the ${objType} in the room. ` +
-    `Make a brief in-character remark about doing it (or about the object).`
-  const line = await askClaude(prompt)
-  if (line) {
-    log.info('Comment after %s: %s', choice.kind, line)
-    SageBot.say(line)
+    log.warn('interactTick failed: %s', e.message)
   }
 }
 
 setInterval(interactTick, Argv.interactSeconds * 1000)
+
+// Last-resort visibility: anything that escapes our handler try/catches
+// (e.g. a sync throw before the await chain starts) lands here instead
+// of vanishing into Node's default "unhandledRejection" warning.
+process.on('unhandledRejection', (reason, promise) => {
+  log.error('unhandledRejection: %s', reason && reason.stack ? reason.stack : reason)
+})
+process.on('uncaughtException', (err) => {
+  log.error('uncaughtException: %s', err && err.stack ? err.stack : err)
+})
 
 // HabiBot.newWithConfig() returns a NOT-CONNECTED bot — every other bot
 // in this directory ends with the explicit connect() call. Without this
