@@ -345,3 +345,9 @@ async function interactTick() {
 }
 
 setInterval(interactTick, Argv.interactSeconds * 1000)
+
+// HabiBot.newWithConfig() returns a NOT-CONNECTED bot — every other bot
+// in this directory ends with the explicit connect() call. Without this
+// the process loads, registers callbacks, and silently sits forever
+// (kept alive by setInterval).
+SageBot.connect()
