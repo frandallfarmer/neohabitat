@@ -10,6 +10,7 @@ services:
     # `:latest` previously silently jumped from 7 → 8 mid-deploy, which
     # is exactly what we're avoiding.
     image: mongodb/mongodb-community-server:7.0-ubuntu2204
+    restart: unless-stopped
     ports:
       - "27017:27017"
     # Production persists data via host bind mount to ./data/mongo (set in
@@ -95,6 +96,7 @@ services:
     image: ghcr.io/frandallfarmer/neohabitat-bots:latest
     build:
       context: ./habibots
+    restart: unless-stopped
     environment:
       - HABIBOTS_HOST=bridge_v2
       - HABIBOTS_PORT=2026

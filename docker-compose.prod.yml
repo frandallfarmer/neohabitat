@@ -72,6 +72,8 @@ services:
     user: "0"
     cap_add:
       - SYS_PTRACE
-    # Don't let Docker restart kill a draining parent — it'll exit
-    # on its own once sessions close.
-    restart: "no"
+    # `on-failure` instead of `no`: a tableflip drain exits 0 (no
+    # restart, parent quietly retires once sessions close), but a panic
+    # exits non-zero and Docker brings the bridge back automatically.
+    # Cap the retries so a hard-deterministic crash doesn't loop forever.
+    restart: on-failure:5
