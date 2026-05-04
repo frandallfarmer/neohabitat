@@ -36,8 +36,22 @@ func init() {
 			m.Orientation = &a[3]
 		},
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
-			b.AddInt(*o.Err)
-			b.AddInt(*o.Pos)
+			// Elko's PUT reply doesn't always include err/pos (e.g. when
+			// the server rejects PUT before computing a slot). Direct
+			// deref panics — SIGSEGV here takes down the whole bridge
+			// process and drops every connected client. Default to 0
+			// (success / first slot) when absent — matches the C64
+			// client's expectation of two bytes back.
+			err := uint8(0)
+			if o.Err != nil {
+				err = *o.Err
+			}
+			pos := uint8(0)
+			if o.Pos != nil {
+				pos = *o.Pos
+			}
+			b.AddInt(err)
+			b.AddInt(pos)
 			return false
 		},
 	}
