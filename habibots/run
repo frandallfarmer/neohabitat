@@ -96,9 +96,14 @@ fi
 
 if [[ "${@}" = *"sage"* ]]; then
   echo 'Launching sage...'
+  # Defaults via separate vars — embedding a default with an apostrophe
+  # directly inside ${VAR:=...} confuses bash's quote scanner (the `'`
+  # in "who's" reads as a string-start and bash hunts for a matching one
+  # all the way to EOF).
+  SAGE_PERSONA_DEFAULT="a curious old-timer of Habitat who has seen it all and likes meeting newcomers"
   : "${HABIBOTS_SAGE_REGION:=context-Downtown_5f}"
   : "${HABIBOTS_SAGE_USER:=sage}"
-  : "${HABIBOTS_SAGE_PERSONA:=a curious old-timer of Habitat who's seen it all and likes meeting newcomers}"
+  : "${HABIBOTS_SAGE_PERSONA:=$SAGE_PERSONA_DEFAULT}"
   supervisor -w "${DIR}" -- bots/sage.js \
     -c "${HABIBOTS_SAGE_REGION}" \
     -h "${HABITAT_HOST}" \
