@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: bridge_host
+  description: |
+    Installs the bridge_v2 binary directory and systemd unit on the
+    Neohabitat host. The bridge runs outside Docker so tableflip's
+    fork+exec graceful upgrade actually works (Docker treats PID 1
+    exit as container death, which kills the tableflip child).
+  license: MIT
+  min_ansible_version: "2.12"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+dependencies: []

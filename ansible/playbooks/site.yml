@@ -1,16 +1,14 @@
 ---
-# Full convergence: base → neohabitat.
+# Full convergence: base → neohabitat → bridge_host.
+#
+# bridge_host installs the bridge_v2 binary + systemd unit on the host
+# (NOT in docker). Running outside docker is the only way tableflip's
+# fork+exec graceful upgrade works — Docker treats PID 1 exit as
+# container death, which kills the tableflip child along with it.
 #
 # Usage:
 #   ansible-playbook playbooks/site.yml --check --diff       # dry run
 #   ansible-playbook playbooks/site.yml                      # converge
-#
-# First adoption of `the made` (one-shot, recreates the stack so bridge_v2
-# takes :1337):
-#   ansible-playbook playbooks/site.yml -e bridge_deploy_mode=adopt-cutover
-#
-# Steady state (default mode is `upgrade` → SIGHUP, sessions survive):
-#   ansible-playbook playbooks/site.yml
 
 - name: Converge neohabitat hosts
   hosts: neohabitat_servers
@@ -21,3 +19,8 @@
       tags: [base]
     - role: neohabitat
       tags: [neohabitat]
+    # bridge_host runs after the docker stack so the OTel collector +
+    # habiproxy port-mappings on 127.0.0.1 already exist when the
+    # service first starts.
+    - role: bridge_host
+      tags: [bridge_host]

@@ -39,21 +39,39 @@ scrape_configs:
         target_label: stream
       - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
         target_label: service
+
+  # bridge_v2 used to be in docker; it's now a host systemd service, so
+  # we tail journald for that one unit. Keeps the same `service=bridge_v2`
+  # label as the docker scrape so existing Loki queries / dashboards
+  # don't break.
+  - job_name: bridge_v2_journal
+    journal:
+      path: /run/log/journal
+      max_age: 12h
+      labels:
+        job: bridge_v2_journal
+    relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        regex: 'bridge_v2\.service'
+        action: keep
+      - source_labels: ['__journal__systemd_unit']
+        target_label: unit
+      - target_label: service
+        replacement: bridge_v2
+      - target_label: container
+        replacement: bridge_v2
     pipeline_stages:
       # bridge_v2 logs are zerolog JSON — extract structured fields as
       # Loki labels so we can filter by ip/session/avatar/level.
-      - match:
-          selector: '{service="bridge_v2"}'
-          stages:
-            - json:
-                expressions:
-                  level: level
-                  ip: ip
-                  session_id: session_id
-                  avatar: avatar
-                  message: message
-            - labels:
-                level:
-                ip:
-                session_id:
-                avatar:
+      - json:
+          expressions:
+            level: level
+            ip: ip
+            session_id: session_id
+            avatar: avatar
+            message: message
+      - labels:
+          level:
+          ip:
+          session_id:
+          avatar:

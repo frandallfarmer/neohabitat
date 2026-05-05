@@ -1,0 +1,15 @@
+---
+- name: Reload systemd unit files
+  systemd:
+    daemon_reload: true
+  become: true
+
+- name: Restart bridge_v2 service
+  # Hard restart, not reload — used when the unit file itself changed
+  # (Environment= lines, ExecStart args, etc.) and a SIGHUP wouldn't
+  # pick those up. The deploy job uses a separate `systemctl reload`
+  # for binary-only swaps where tableflip can preserve sessions.
+  systemd:
+    name: "{{ bridge_host_service_name }}"
+    state: restarted
+  become: true

@@ -1,0 +1,49 @@
+[Unit]
+Description=Neohabitat Habitat protocol bridge (bridge_v2)
+Documentation=https://github.com/frandallfarmer/neohabitat
+# docker.service brings up mongo / habiproxy / otel-collector that the
+# bridge dials on startup. We don't *require* them — bridge_v2 has its
+# own elko-reachability backoff — but ordering avoids a noisy probe.
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ bridge_host_user }}
+Group={{ bridge_host_group }}
+ExecStart={{ bridge_host_binary_path }} \
+  --graceful \
+  --qlink \
+  --otel.enabled \
+{% for addr in bridge_host_listen_addrs %}
+  --listen={{ addr }} \
+{% endfor %}
+  --elko.host={{ bridge_host_elko_host }} \
+  --mongo.host={{ bridge_host_mongo_url }} \
+  --mongo.db={{ bridge_host_mongo_db }} \
+  --mongo.collection={{ bridge_host_mongo_collection }} \
+  --context={{ bridge_host_initial_context }} \
+  --rate={{ bridge_host_rate }} \
+  --log.level={{ bridge_host_log_level }}
+# `systemctl reload bridge_v2` → SIGHUP → tableflip graceful upgrade.
+# The new binary on disk (placed by the deploy job at
+# {{ bridge_host_binary_path }}) takes over via fork+exec; sessions
+# survive via TCP_REPAIR. This is the whole reason we run on the host
+# instead of in docker.
+ExecReload=/bin/kill -HUP $MAINPID
+# tableflip's child re-exec returns exit 0 from the parent. Don't
+# treat that as a crash. Real crashes are non-zero — those we restart.
+Restart=on-failure
+RestartSec=5s
+# TCP_REPAIR setsockopt requires CAP_NET_ADMIN. With User=root this is
+# already granted; keep the explicit declaration so a future move to a
+# non-root user only needs to flip User=.
+AmbientCapabilities=CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_ADMIN
+# OTLP / OTel SDK config — same values the in-container service used.
+Environment=OTEL_EXPORTER_OTLP_ENDPOINT={{ bridge_host_otel_endpoint }}
+Environment=OTEL_SERVICE_NAME=bridge_v2
+Environment=OTEL_METRIC_EXPORT_INTERVAL=10000
+
+[Install]
+WantedBy=multi-user.target

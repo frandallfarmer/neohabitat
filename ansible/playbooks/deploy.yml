@@ -1,11 +1,14 @@
 ---
 # Steady-state deploy: pull the latest GHCR images, then surgically
 # update each service:
-#   - bridge_v2: extract the new binary from the pulled image, atomically
-#     replace volumes/bridge_v2_bin/bridge_v2, SIGHUP the running container.
-#     tableflip + TCP_REPAIR preserve active C64 sessions across the swap.
-#   - everyone else: `docker compose up -d` only on those services, which
-#     recreates only when their image digest actually changed.
+#   - bridge_v2: extract the new binary from the pulled bridge image,
+#     atomically replace /opt/neohabitat/bin/bridge_v2 on the host,
+#     `systemctl reload bridge_v2`. tableflip + TCP_REPAIR preserve
+#     active sessions across the re-exec. The bridge runs as a host
+#     systemd service (NOT in docker) so tableflip's PID-changing
+#     fork+exec doesn't kill its own container.
+#   - everyone else: `docker compose up -d` only on those services,
+#     which recreates only when their image digest actually changed.
 #
 # Used by the build-and-push GitHub Actions workflow on master push,
 # after the build matrix succeeds.
@@ -16,9 +19,10 @@
   any_errors_fatal: true
   vars:
     bridge_image: "ghcr.io/{{ ghcr_image_owner | default('frandallfarmer') }}/neohabitat-bridge:latest"
-    bridge_container_name: neohabitat-bridge_v2-1
-    bridge_listen_port: 2026
-    bridge_bin_host_path: "{{ neohabitat_repo_path }}/volumes/bridge_v2_bin/bridge_v2"
+    # Where the host systemd service expects the binary. Must match
+    # bridge_host_binary_path in roles/bridge_host/defaults/main.yml.
+    bridge_host_install_dir: /opt/neohabitat/bin
+    bridge_host_binary_path: "{{ bridge_host_install_dir }}/bridge_v2"
     # Picked up from the runner's env. Multi-line secrets via -e are
     # fragile (newlines mangle); env-var lookup avoids that entirely.
     monitoring_env: "{{ lookup('env', 'MONITORING_ENV') | default('', true) }}"
@@ -138,18 +142,36 @@
       changed_when: false
 
     # ── bridge_v2 hot-swap ────────────────────────────────────────────
-    # The prod overlay mounts the binary from volumes/bridge_v2_bin/
-    # (NOT the image's baked-in /bridge_v2). To pick up a new build, we
-    # have to copy the binary out of the just-pulled image, replace the
-    # on-disk file, then SIGHUP. tableflip re-execs into the new binary
-    # and TCP_REPAIR hands active sockets to the child.
+    # bridge_v2 lives on the HOST as a systemd service, not in docker.
+    # tableflip's parent forks a child and exits — Docker treats PID 1
+    # exit as container death (and kills the new child along with it),
+    # so the in-container path was structurally broken. On the host,
+    # tableflip works as designed: SIGHUP, fork, child takes over via
+    # TCP_REPAIR, parent exits, systemd doesn't care because PID 1 is
+    # systemd itself.
+    #
+    # Deploy flow:
+    #   1. Extract /bridge_v2 from the new GHCR image to a .new path.
+    #   2. Compare checksums — skip the dance if unchanged.
+    #   3. Atomic mv into the path systemd's ExecStart points at.
+    #   4. systemctl reload bridge_v2 → ExecReload sends SIGHUP →
+    #      tableflip re-execs; sessions survive.
+
+    - name: Ensure bridge_v2 install directory exists
+      file:
+        path: "{{ bridge_host_install_dir | default('/opt/neohabitat/bin') }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      become: true
 
     - name: Extract bridge_v2 binary from the new GHCR image
       shell: |
         set -euo pipefail
         cid=$(docker create {{ bridge_image }})
         trap 'docker rm -f "$cid" >/dev/null 2>&1 || true' EXIT
-        docker cp "$cid:/bridge_v2" {{ bridge_bin_host_path }}.new
+        docker cp "$cid:/bridge_v2" {{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}.new
       args:
         executable: /bin/bash   # need pipefail; default /bin/sh is dash on Ubuntu
       become: true
@@ -160,61 +182,75 @@
         path: "{{ item }}"
         checksum_algorithm: sha256
       loop:
-        - "{{ bridge_bin_host_path }}"
-        - "{{ bridge_bin_host_path }}.new"
+        - "{{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}"
+        - "{{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}.new"
       register: bv2_stats
       become: true
 
-    - name: Decide whether bridge_v2 needs a SIGHUP
+    - name: Decide whether bridge_v2 needs a reload
       set_fact:
         bv2_binary_changed: "{{ (bv2_stats.results[0].stat.checksum | default('')) != (bv2_stats.results[1].stat.checksum | default('')) }}"
 
     - name: Atomically replace bridge_v2 binary (only if changed)
-      command: mv -f "{{ bridge_bin_host_path }}.new" "{{ bridge_bin_host_path }}"
+      command: mv -f "{{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}.new" "{{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}"
       become: true
       when: bv2_binary_changed
       changed_when: true
 
     - name: Drop staged binary if no change
       file:
-        path: "{{ bridge_bin_host_path }}.new"
+        path: "{{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}.new"
         state: absent
       become: true
       when: not bv2_binary_changed
 
-    - name: Ensure bridge_v2 binary ownership/perms
+    - name: Ensure bridge_v2 binary perms
       file:
-        path: "{{ bridge_bin_host_path }}"
-        owner: "{{ neohabitat_owner }}"
-        group: "{{ neohabitat_group }}"
+        path: "{{ bridge_host_binary_path | default('/opt/neohabitat/bin/bridge_v2') }}"
+        owner: root
+        group: root
         mode: "0755"
       become: true
       when: bv2_binary_changed
 
-    - name: SIGHUP bridge_v2 (tableflip re-exec; TCP_REPAIR keeps sessions)
-      # `docker exec ... kill` doesn't work — the bridge image is
-      # distroless and has no kill binary. `docker kill --signal` sends
-      # the signal via the Docker API, no in-container binary needed.
-      command: docker kill --signal=HUP {{ bridge_container_name }}
+    # If the unit file isn't installed yet (first migration run from
+    # the docker-bridge era) the systemctl reload below would fail.
+    # Make sure the bridge_host role's tasks run first; idempotent on
+    # subsequent deploys.
+    - name: Ensure bridge_host role applied (systemd unit installed)
+      include_role:
+        name: bridge_host
+
+    - name: Reload bridge_v2 (tableflip re-exec; TCP_REPAIR keeps sessions)
+      systemd:
+        name: bridge_v2.service
+        state: reloaded   # ExecReload=/bin/kill -HUP $MAINPID
       become: true
       when: bv2_binary_changed
-      changed_when: true
 
-    - name: Wait for bridge_v2 to accept connections after SIGHUP
+    - name: Start bridge_v2 if not running (covers first-run / crash)
+      systemd:
+        name: bridge_v2.service
+        state: started
+      become: true
+
+    - name: Wait for bridge_v2 to accept connections
       wait_for:
         host: 127.0.0.1
-        port: "{{ bridge_listen_port }}"
+        port: "{{ item }}"
         state: started
         timeout: 30
-      when: bv2_binary_changed
+      loop:
+        - 1337
+        - 1986
+        - 2026
 
     # ── everyone else ────────────────────────────────────────────────
     - name: Bring up non-bridge services (recreate only on image change)
-      # Explicit service list excludes bridge_v2, which we've just
-      # SIGHUP-handled above. Without the exclusion, compose would
-      # recreate bridge_v2's container, defeating tableflip.
-      # `--pull always` belt-and-suspenders the earlier compose pull —
-      # if a tag floated between then and now, we get the latest digest.
+      # Explicit service list — bridge_v2 isn't in docker anymore (it's
+      # a host systemd service handled above). `--pull always` belt-
+      # and-suspenders the earlier compose pull: if a tag floated
+      # between then and now, we get the latest digest.
       shell: |
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \

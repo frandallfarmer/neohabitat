@@ -59,38 +59,20 @@ services:
       - "1701:1701"
       - "1987:1987"
       - "5005:5005"
+      # Habiproxy (JSON pass-through to elko on :9000) — exposed to
+      # 127.0.0.1 so the host-side bridge_v2 process can dial it. Bound
+      # to loopback only; nothing external should hit habiproxy directly.
+      - "127.0.0.1:2018:2018"
     depends_on:
       neohabitatmongo:
         condition: service_healthy
     networks:
       - neohabitat
 
-  bridge_v2:
-    image: ghcr.io/frandallfarmer/neohabitat-bridge:latest
-    build:
-      context: ./bridge_v2
-      dockerfile: Dockerfile.dev
-    command: ["air"]
-    environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
-      OTEL_SERVICE_NAME: "bridge_v2"
-    volumes:
-      - ./bridge_v2:/app
-    ports:
-      - "1337:2026"
-      - "1986:2026"  # legacy QLink port — clients hard-code this; bridge_v2's --qlink mode handles it
-      - "2026:2026"
-    cap_add:
-      - NET_ADMIN
-    security_opt:
-      - seccomp:unconfined
-    depends_on:
-      neohabitatmongo:
-        condition: service_healthy
-      neohabitat:
-        condition: service_healthy
-    networks:
-      - neohabitat
+  # NOTE: bridge_v2 used to live here. It now runs as a host systemd
+  # service (see ansible/roles/bridge_host/) — Docker treats PID 1 exit
+  # as container death, which broke tableflip's fork+exec graceful
+  # upgrade. Running on the host, tableflip works as designed.
 
   bots:
     image: ghcr.io/frandallfarmer/neohabitat-bots:latest
@@ -98,8 +80,13 @@ services:
       context: ./habibots
     restart: unless-stopped
     environment:
-      - HABIBOTS_HOST=bridge_v2
+      # bridge_v2 lives on the host, not in this docker network. The
+      # `host-gateway` magic value resolves host.docker.internal to the
+      # docker bridge interface IP — works on Linux docker 20.10+.
+      - HABIBOTS_HOST=host.docker.internal
       - HABIBOTS_PORT=2026
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       # Carries ANTHROPIC_API_KEY (and any future bot-specific creds).
       # required: false so the stack still comes up before the deploy
@@ -110,8 +97,6 @@ services:
     depends_on:
       neohabitat:
         condition: service_healthy
-      bridge_v2:
-        condition: service_started
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']

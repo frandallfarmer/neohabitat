@@ -1,0 +1,39 @@
+---
+# bridge_v2 host install layout. The binary lives outside the docker
+# stack so tableflip can fork+exec normally — Docker treats PID 1 exit
+# as container death, which kills the tableflip child too.
+bridge_host_install_dir: /opt/neohabitat/bin
+bridge_host_binary_path: "{{ bridge_host_install_dir }}/bridge_v2"
+
+# Service unit lives directly under /etc/systemd/system. ExecReload
+# sends SIGHUP, which trips tableflip's graceful upgrade path; the new
+# binary at bridge_host_binary_path takes over via re-exec.
+bridge_host_service_name: bridge_v2.service
+bridge_host_service_path: "/etc/systemd/system/{{ bridge_host_service_name }}"
+
+# One process listens on all three ports. Single in-memory session map
+# means clients on 1337 (C64), 1986 (legacy QLink), and 2026 (bots in
+# docker) can all see each other.
+bridge_host_listen_addrs:
+  - "0.0.0.0:1337"
+  - "0.0.0.0:1986"
+  - "0.0.0.0:2026"
+
+# Where the bridge dials its dependencies. mongo and elko-via-habiproxy
+# are docker services with host port-mappings on 127.0.0.1; otel
+# collector likewise.
+bridge_host_elko_host: "127.0.0.1:2018"
+bridge_host_mongo_url: "mongodb://127.0.0.1:27017"
+bridge_host_mongo_db: "elko"
+bridge_host_mongo_collection: "odb"
+bridge_host_otel_endpoint: "http://127.0.0.1:4318"
+bridge_host_initial_context: "context-hatchery"
+bridge_host_rate: 1200
+bridge_host_log_level: "INFO"
+
+# Run as root for now: TCP_REPAIR requires CAP_NET_ADMIN, the /proc
+# walk in SnapshotAllWithTCP wants self-process visibility, and the
+# in-container bridge already ran as root via `user: "0"`. Tighten to
+# a system user with AmbientCapabilities=CAP_NET_ADMIN later.
+bridge_host_user: root
+bridge_host_group: root

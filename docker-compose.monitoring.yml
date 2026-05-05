@@ -25,10 +25,14 @@ services:
         required: false
     volumes:
       - ./monitoring/otel-collector-config.yml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      # OTLP/HTTP exposed to 127.0.0.1 so the host-side bridge_v2
+      # systemd service can ship metrics here. Loopback only — public
+      # exposure of the collector would let anyone push junk metrics
+      # against our Grafana Cloud quota.
+      - "127.0.0.1:4318:4318"
     networks:
       - neohabitat
-    # The base bridge_v2 service already points at otel-collector:4318
-    # via OTEL_EXPORTER_OTLP_ENDPOINT.
 
   promtail:
     image: grafana/promtail:3.2.1
@@ -40,6 +44,11 @@ services:
     volumes:
       - ./monitoring/promtail.yml:/etc/promtail/config.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      # bridge_v2 logs to journald now (it's a host systemd service).
+      # Mount /run/log/journal so promtail can tail it. /etc/machine-id
+      # is required for journal-id resolution.
+      - /run/log/journal:/run/log/journal:ro
+      - /etc/machine-id:/etc/machine-id:ro
       - promtail-positions:/tmp
     networks:
       - neohabitat

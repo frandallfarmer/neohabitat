@@ -1,24 +1,15 @@
-# Production compose overlay — extends docker-compose.yml with:
-#   - tableflip graceful restart (--graceful flag, volume-mounted binary)
-#   - CRIU checkpoint/restore support for live migration
+# Production compose overlay — extends docker-compose.yml.
 #
 # Usage:
 #   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 #
-# Code update (zero-downtime):
-#   1. Build: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o deploy/bridge_v2 ./bridge_v2/
-#   2. Replace: cp deploy/bridge_v2 volumes/bridge_v2_bin/bridge_v2
-#   3. Reload: docker exec neohabitat-bridge_v2-1 kill -HUP 1
-#   tableflip re-execs the new binary. Old sessions drain, new sessions
-#   get new code.
-#
-# Host migration (CRIU):
-#   1. Checkpoint: docker checkpoint create neohabitat-bridge_v2-1 migr1
-#   2. Export:     tar -C /var/lib/docker/containers/<id>/checkpoints -cf migr1.tar migr1
-#   3. Transfer:   scp migr1.tar target-host:
-#   4. Import:     tar -C /var/lib/docker/containers/<id>/checkpoints -xf migr1.tar
-#   5. Restore:    docker start --checkpoint migr1 neohabitat-bridge_v2-1
-#   All TCP connections, Go runtime state, and session data survive.
+# bridge_v2 used to live in this file with a volume-mounted binary +
+# tableflip SIGHUP for zero-downtime upgrades. It now runs as a host
+# systemd service (ansible/roles/bridge_host/) — Docker treats PID 1
+# exit as container death, which broke tableflip's fork+exec graceful
+# upgrade. Running on the host, tableflip works as designed; the
+# binary is replaced under /opt/neohabitat/bin/ and `systemctl reload`
+# trips a SIGHUP-driven re-exec.
 
 services:
   neohabitatmongo:
@@ -41,39 +32,7 @@ services:
       - "80:1701"
       - "1987:1987"
       - "5005:5005"
-
-  bridge_v2:
-    # Override the baked-in binary with a volume mount so tableflip
-    # can re-exec a replaced binary without rebuilding the image.
-    volumes:
-      - ./volumes/bridge_v2_bin:/app
-    entrypoint: ["/app/bridge_v2"]
-    environment:
-      # OTel SDK default push interval is 60s — that means rate(...[1m])
-      # only ever sees one data point and returns no value. Push every
-      # 10s so 1-min rates have 6 samples to work with.
-      OTEL_METRIC_EXPORT_INTERVAL: "10000"
-    command:
-      - "--graceful"
-      - "--qlink"
-      - "--otel.enabled"
-      - "--listen=0.0.0.0:2026"
-      - "--elko.host=neohabitat:2018"
-      - "--mongo.host=mongodb://neohabitatmongo:27017"
-      - "--mongo.db=elko"
-      - "--mongo.collection=odb"
-      - "--context=context-hatchery"
-      - "--rate=1200"
-      - "--log.level=INFO"
-    # CRIU needs these capabilities to checkpoint/restore processes.
-    # NET_ADMIN and seccomp:unconfined are already set in the base
-    # docker-compose.yml — compose merges security_opt lists, so listing
-    # them again here would produce a duplicate that compose v2 rejects.
-    user: "0"
-    cap_add:
-      - SYS_PTRACE
-    # `on-failure` instead of `no`: a tableflip drain exits 0 (no
-    # restart, parent quietly retires once sessions close), but a panic
-    # exits non-zero and Docker brings the bridge back automatically.
-    # Cap the retries so a hard-deterministic crash doesn't loop forever.
-    restart: on-failure:5
+      # Habiproxy on 127.0.0.1:2018 — same as base. Re-asserted here
+      # so the prod overlay's port list (which compose REPLACES rather
+      # than merges) doesn't accidentally drop it.
+      - "127.0.0.1:2018:2018"

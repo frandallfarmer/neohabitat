@@ -1,0 +1,71 @@
+---
+# Provisions /opt/neohabitat/bin/ + the bridge_v2.service systemd unit.
+# Does NOT install a binary — that's the deploy job's responsibility
+# (it extracts from the GHCR image on every push to master). The role
+# is safe to run before any binary exists; systemd will fail to start
+# until the deploy job lands a real binary.
+
+- name: Ensure bridge_v2 install directory exists
+  file:
+    path: "{{ bridge_host_install_dir }}"
+    state: directory
+    owner: "{{ bridge_host_user }}"
+    group: "{{ bridge_host_group }}"
+    mode: "0755"
+  become: true
+
+- name: Stop and remove any docker bridge_v2 container
+  # Migration step — older deploys put bridge_v2 inside the docker
+  # compose stack. With the host systemd service taking over, leaving
+  # the container running would race for ports 1337/1986/2026.
+  shell: |
+    set -euo pipefail
+    if docker inspect neohabitat-bridge_v2-1 >/dev/null 2>&1; then
+      docker rm -f neohabitat-bridge_v2-1
+      echo CHANGED
+    fi
+  args:
+    executable: /bin/bash
+  become: true
+  register: docker_bridge_rm
+  changed_when: "'CHANGED' in docker_bridge_rm.stdout"
+  failed_when: false
+
+- name: Install bridge_v2 systemd unit
+  template:
+    src: bridge_v2.service.j2
+    dest: "{{ bridge_host_service_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify:
+    - Reload systemd unit files
+    - Restart bridge_v2 service
+
+# Run pending handlers right now so the unit is loaded before the
+# enable/start tasks below try to reference it.
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Enable bridge_v2 service (start at boot)
+  systemd:
+    name: "{{ bridge_host_service_name }}"
+    enabled: true
+  become: true
+
+# Don't `state: started` here unconditionally — on a fresh provisioning
+# run the binary may not exist yet (deploy job lands it). The deploy
+# playbook explicitly starts/reloads the service after writing the
+# binary. If the binary IS already there, start it.
+- name: Check whether bridge_v2 binary is present
+  stat:
+    path: "{{ bridge_host_binary_path }}"
+  register: bridge_bin_stat
+
+- name: Start bridge_v2 service when binary is present
+  systemd:
+    name: "{{ bridge_host_service_name }}"
+    state: started
+  become: true
+  when: bridge_bin_stat.stat.exists
