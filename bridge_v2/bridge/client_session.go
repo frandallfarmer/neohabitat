@@ -674,23 +674,30 @@ func (c *ClientSession) removeNoid(noid uint8) error {
 	return nil
 }
 
-// setFirstConnection sets mods.0.firstConnection = true on the user
-// document. Called from ensureUserCreated for returning users.
+// clearFirstConnection sets mods.0.firstConnection = false on the
+// user document. Called from ensureUserCreated when a *returning*
+// user re-enters: tells elko this isn't actually the user's first
+// connection so the noteUserArrival path doesn't re-fire MOTD,
+// "X has arrived" announcements, or ghost-curse setup on every
+// region transit.
 //
-// REVERTED 2026-05-05: an earlier attempt to "fix" this by flipping
-// the value to false broke C64 login entirely — Steve's client got
-// stuck in an infinite region-transition loop on every login. The
-// bug we were trying to fix (sage hearing "X has arrived" announce
-// on every region transit) needs a different fix; do NOT flip this
-// again without first understanding the elko-side init paths that
-// depend on firstConnection=true at entercontext time.
-func (c *ClientSession) setFirstConnection() error {
+// History note: a prior version of this function set the field to
+// true (and was named setFirstConnection accordingly). That looked
+// like the original intent at the time but it meant elko saw
+// firstConnection=true on EVERY connect/transit, not just the
+// genuine first one — which is why sage's region transits broadcast
+// "SageBot has arrived" to the whole region every time. We did
+// briefly suspect this flip caused an infinite-region-transition
+// regression on C64 login, but the actual cause turned out to be a
+// wedged elko context (Downtown_5f stuck in amClosing=true after a
+// bridge restart cascade); restarting elko cleared it.
+func (c *ClientSession) clearFirstConnection() error {
 	// Targeted update rather than a whole-document round-trip through
 	// HabitatMod, which would strip every Elko @JSONMethod parameter
 	// the Go struct doesn't know about (restricted, lastConnectedDay,
 	// from_orientation, magic_data[1..5], etc.).
 	return c.patchHabitatMod(c.userRef, bson.M{
-		"mods.0.firstConnection": true,
+		"mods.0.firstConnection": false,
 	})
 }
 
@@ -869,7 +876,7 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			return
 		}
 		if user != nil {
-			err = c.setFirstConnection()
+			err = c.clearFirstConnection()
 			if err != nil {
 				return
 			}
