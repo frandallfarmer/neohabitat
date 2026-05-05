@@ -87,18 +87,32 @@ class HabiBot {
 
   /**
    * Connects this HabiBot to the Neohabitat server if it is not yet connected.
+   *
+   * Listens for both 'end' AND 'error'. 'end' fires on a clean half-close
+   * (FIN from peer); 'error' fires on a hard reset (RST/ECONNRESET) — which
+   * is what happens when the bridge process gets killed mid-flight (e.g.
+   * systemd nukes the cgroup, container OOM, kill -9). Without an 'error'
+   * listener, Node would either crash or silently leave the socket dead
+   * with this.connected still true, and the bot would zombie until restart.
+   *
+   * If `connect()` itself fails (server down at reconnect time), it also
+   * surfaces as an 'error' event on the socket — funnel that into
+   * onDisconnect so the shouldReconnect retry path keeps trying with backoff.
    */
   connect() {
     var self = this
     if (this.host === undefined || this.port === undefined) {
-      log.error('No host or port specified: %s:%d', this.host. this.port)
+      log.error('No host or port specified: %s:%d', this.host, this.port)
       return
     }
 
-    if (!this.connected) {
+    if (!this.connected && !this.connecting) {
+      self.connecting = true
       self.clearState()
       this.server = net.connect(this.port, this.host, () => {
+        self.connecting = false
         self.connected = true
+        self.reconnectDelayMs = 1000  // reset backoff on successful connect
         log.info('Connected to server @%s:%d', self.host, self.port)
         log.debug('Running callbacks for connect @%s:%d', self.host, self.port)
         for (var i in self.callbacks.connected) {
@@ -107,6 +121,11 @@ class HabiBot {
       })
       self.server.on('data', self.processData.bind(self))
       self.server.on('end', self.onDisconnect.bind(self))
+      self.server.on('error', (err) => {
+        log.warn('Socket error @%s:%d: %s', self.host, self.port, err.message)
+        self.connecting = false
+        self.onDisconnect()
+      })
     }
   }
 
@@ -733,6 +752,14 @@ class HabiBot {
   }
 
   onDisconnect() {
+    // Idempotent: 'end' followed by 'error' (or vice versa) on the same
+    // dead socket would otherwise schedule two reconnects and double the
+    // disconnect callback fan-out.
+    if (!this.connected && this._disconnectFiredAt &&
+        Date.now() - this._disconnectFiredAt < 100) {
+      return
+    }
+    this._disconnectFiredAt = Date.now()
     log.info('Disconnected from server @%s:%d...', this.host, this.port)
     this.connected = false
 
@@ -742,7 +769,14 @@ class HabiBot {
     }
 
     if (this.config.shouldReconnect) {
-      this.connect()
+      // Exponential backoff capped at 30s. Reset to 1s on successful
+      // connect (see connect()). Without backoff, every failed reconnect
+      // attempt synchronously triggers another 'error' → onDisconnect →
+      // connect, which spins the event loop and floods logs.
+      var delay = this.reconnectDelayMs || 1000
+      log.debug('Scheduling reconnect in %dms', delay)
+      setTimeout(() => this.connect(), delay)
+      this.reconnectDelayMs = Math.min(delay * 2, 30000)
     }
   }
 
