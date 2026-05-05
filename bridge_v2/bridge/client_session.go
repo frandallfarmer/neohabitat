@@ -1292,10 +1292,15 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 
 	if msg.Op != nil && *msg.Op == "ready" && c.waitingForAvatarContents {
 		c.waitingForAvatarContents = false
-		to := ""
-		if msg.To != nil {
-			to = *msg.To
-		}
+		// Address the synthesized handshake to the *region*, not to
+		// `ready.to`. The `ready` message's `to` field carries the
+		// user-ref (e.g. user-foo-12345), but FINGER_IN_QUE and
+		// I_AM_HERE are @JSONMethods on Region.java — sending them to
+		// the user-ref makes Elko reply
+		//   "no message handler method for verb 'FINGER_IN_QUE'"
+		// on every region entry. c.regionRef was captured from the
+		// `make you:true` that arrived earlier in this same session.
+		to := c.regionRef
 		// Synthesize the two messages the C64 would send after a
 		// successful region unpack. These go back to Elko, not to
 		// the client.

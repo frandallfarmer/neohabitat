@@ -209,7 +209,11 @@ func TestHandleElkoMessageJson_ReadyWithoutWaitingRelays(t *testing.T) {
 func TestHandleElkoMessageJson_ReadyWhileWaitingSynthesizes(t *testing.T) {
 	sess, client, elko := newJsonTestSession(nil)
 	sess.waitingForAvatarContents = true
-	raw := []byte(`{"op":"ready","to":"context-Downtown_5f"}`)
+	// Mirror what the prior `make you:true` would have set: regionRef
+	// is the context, while the `ready` message's `to` is the user-ref.
+	// FINGER_IN_QUE / I_AM_HERE must address the region, not the user.
+	sess.regionRef = "context-Downtown_5f"
+	raw := []byte(`{"op":"ready","to":"user-elizabot-12345"}`)
 	msg := parseElko(t, raw)
 	sess.handleElkoMessageJson(raw, msg)
 
