@@ -660,13 +660,18 @@ class HabiBot {
    * @returns {Promise}
    */
   walkToExit(direction) {
-    // Capture the destination ref BEFORE the .then() chain runs. The
-    // sequence is: send NEWREGION → server emits changeContext →
-    // processElkoMessage clearState() empties this.neighbors → THEN
-    // the .then() fires. Reading this.neighbors[X] from inside the
-    // arrow would see undefined, so gotoContext(undefined) would send
-    // an entercontext with no context field — server interprets that
-    // as "go home" and the bot bounces back to its starting region.
+    // bridge_v2 owns JSON-passthrough region transitions: when the
+    // server emits changeContext (in response to NEWREGION), the
+    // bridge auto-reconnects to elko and re-enters the new context
+    // for us. The bot just needs to send NEWREGION and wait for the
+    // new region's `make` storm to arrive on the same socket.
+    //
+    // Pre-bridge_v2 code here also called .then(() => this.gotoContext(target))
+    // — that was needed for the old in-elko-container Node bridge
+    // which required the client to explicitly re-enter. With
+    // bridge_v2, the followup gotoContext was a NOP at best and a
+    // noid-table-burner at worst (created a duplicate user-session
+    // in elko racing the bridge's auto-enter).
     const idx = CardinalToNeighborIndex[direction]
     const target = this.neighbors[idx]
     if (target === undefined || target === null || target.length < 1) {
@@ -674,21 +679,13 @@ class HabiBot {
     }
     switch(direction) {
       case "NORTH":
-        return this.walkTo(80, 160, 0)
-          .then(() => this.newRegion(1))
-          .then(() => this.gotoContext(target))
+        return this.walkTo(80, 160, 0).then(() => this.newRegion(1))
       case "EAST":
-        return this.walkTo(156, 142, 1)
-          .then(() => this.newRegion(2))
-          .then(() => this.gotoContext(target))
+        return this.walkTo(156, 142, 1).then(() => this.newRegion(2))
       case "SOUTH":
-        return this.walkTo(80, 128, 0)
-          .then(() => this.newRegion(3))
-          .then(() => this.gotoContext(target))
+        return this.walkTo(80, 128, 0).then(() => this.newRegion(3))
       case "WEST":
-        return this.walkTo(0, 142, 1)
-          .then(() => this.newRegion(0))
-          .then(() => this.gotoContext(target))
+        return this.walkTo(0, 142, 1).then(() => this.newRegion(0))
       default:
         return Promise.reject(`Bot given invalid direction: ${direction}`)
     }

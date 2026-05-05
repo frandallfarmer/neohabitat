@@ -88,6 +88,15 @@ type ClientSession struct {
 	ctx                      context.Context    // context carrying the session root span
 	span                     trace.Span         // root span for this session, ended in Close()
 	jsonPassthrough          bool               // true => client speaks JSON directly to Elko; bridge relays
+	// bridgeAutoEnteredContext records the most recent context the
+	// bridge entered on the client's behalf (after a server-initiated
+	// changeContext in JSON-passthrough mode). Used to suppress the
+	// client's redundant entercontext for the same target — bots like
+	// habibot send gotoContext() after newRegion() out of legacy
+	// compat, but bridge_v2 already handled the entry, so a second
+	// entercontext just creates a duplicate user-session in elko and
+	// burns noid table slots.
+	bridgeAutoEnteredContext string
 	objects                  map[uint8]*ElkoMessage
 	objectNoidOrder          []uint8
 	otherContents            []*ElkoMessage
@@ -1209,6 +1218,25 @@ func (c *ClientSession) runJsonPassthrough() {
 			if msg.Op != nil && *msg.Op == "entercontext" && msg.User != nil {
 				userName := strings.TrimPrefix(*msg.User, "user-")
 				c.stateMu.Lock()
+				// Suppression: if the bridge already entered this
+				// exact context on the client's behalf (after a
+				// server-initiated changeContext), skip forwarding
+				// the client's redundant entercontext. Forwarding it
+				// would create a SECOND user-session in elko (new
+				// user-X-NNNN ref) racing the one the bridge already
+				// established, doubling the noid table footprint per
+				// region transit and causing the static region items
+				// (Ground, Sky, Flag, ...) to leak / end up at
+				// noid=256 for whoever logs in next. habibot.js's
+				// walkToExit historically did this dance because the
+				// old JS bridge required it; bridge_v2 doesn't.
+				if msg.Context != nil && c.bridgeAutoEnteredContext != "" && *msg.Context == c.bridgeAutoEnteredContext {
+					c.log.Debug().Str("ctx", *msg.Context).
+						Msg("Suppressing redundant entercontext (bridge already auto-entered after changeContext)")
+					c.bridgeAutoEnteredContext = ""
+					c.stateMu.Unlock()
+					continue
+				}
 				if uerr := c.ensureUserCreated(userName); uerr != nil {
 					c.log.Error().Err(uerr).Str("user", userName).
 						Msg("Could not ensure User created, relaying entercontext anyway")
@@ -1232,6 +1260,10 @@ func (c *ClientSession) runJsonPassthrough() {
 							Msg("Could not canonicalize entercontext.user; forwarding as-is")
 					}
 				}
+				// A non-suppressed entercontext means the client
+				// genuinely wants to enter a context — clear any
+				// stale auto-enter tracking from a prior transit.
+				c.bridgeAutoEnteredContext = ""
 				c.stateMu.Unlock()
 			}
 		}
@@ -1313,13 +1345,23 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 		if msg.Context != nil {
 			c.nextRegion = *msg.Context
 		}
-		immediate := false
-		if msg.Immediate != nil {
-			immediate = *msg.Immediate
-		}
+		// In JSON-passthrough mode, the bridge owns the region transit
+		// — it reconnects to elko AND auto-enters the new context so
+		// the JSON client (a bot) doesn't have to. Force immediate=true
+		// regardless of what the elko-side flag said; the alternative
+		// (waiting for the client to send entercontext) races the
+		// bridge's reconnect and ends up with the client writing to a
+		// closed elko conn. Track the target so the next entercontext
+		// from the client (if any — habibot's walkToExit historically
+		// sent one as a leftover from the old bridge) gets suppressed
+		// instead of doubling up.
+		c.bridgeAutoEnteredContext = c.nextRegion
+		immediate := true
 		go c.reconnectToElko(immediate, c.nextRegion)
-		// Relay the changeContext to the client as well — some JSON
-		// clients act on it directly.
+		// Relay the changeContext to the client as well — habibot
+		// uses it to clear its in-memory region state (noid map,
+		// neighbors, etc.) so the next batch of `make` messages from
+		// the new region populates a clean slate.
 		c.writeJsonToClient(raw)
 		return
 	}
