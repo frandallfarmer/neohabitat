@@ -674,21 +674,23 @@ func (c *ClientSession) removeNoid(noid uint8) error {
 	return nil
 }
 
-// clearFirstConnection marks the user as no-longer-in-their-first-connection
-// in mongo. Called from ensureUserCreated whenever a *returning* user
-// re-enters; if not cleared, every subsequent region transit would
-// re-fire the firstConnection-only paths (MOTD, "X has arrived"
-// announcement, ghost-curse setup) because elko reads firstConnection
-// fresh from mongo on each entercontext. Was previously named
-// setFirstConnection and (incorrectly) set the value to true, which is
-// what was producing "X has arrived" on every region transit for sage.
-func (c *ClientSession) clearFirstConnection() error {
+// setFirstConnection sets mods.0.firstConnection = true on the user
+// document. Called from ensureUserCreated for returning users.
+//
+// REVERTED 2026-05-05: an earlier attempt to "fix" this by flipping
+// the value to false broke C64 login entirely — Steve's client got
+// stuck in an infinite region-transition loop on every login. The
+// bug we were trying to fix (sage hearing "X has arrived" announce
+// on every region transit) needs a different fix; do NOT flip this
+// again without first understanding the elko-side init paths that
+// depend on firstConnection=true at entercontext time.
+func (c *ClientSession) setFirstConnection() error {
 	// Targeted update rather than a whole-document round-trip through
 	// HabitatMod, which would strip every Elko @JSONMethod parameter
 	// the Go struct doesn't know about (restricted, lastConnectedDay,
 	// from_orientation, magic_data[1..5], etc.).
 	return c.patchHabitatMod(c.userRef, bson.M{
-		"mods.0.firstConnection": false,
+		"mods.0.firstConnection": true,
 	})
 }
 
@@ -867,7 +869,7 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			return
 		}
 		if user != nil {
-			err = c.clearFirstConnection()
+			err = c.setFirstConnection()
 			if err != nil {
 				return
 			}
