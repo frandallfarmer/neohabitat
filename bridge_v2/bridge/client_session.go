@@ -683,30 +683,31 @@ func (c *ClientSession) removeNoid(noid uint8) error {
 	return nil
 }
 
-// clearFirstConnection sets mods.0.firstConnection = false on the
-// user document. Called from ensureUserCreated when a *returning*
-// user re-enters: tells elko this isn't actually the user's first
-// connection so the noteUserArrival path doesn't re-fire MOTD,
-// "X has arrived" announcements, or ghost-curse setup on every
-// region transit.
+// setFirstConnection sets mods.0.firstConnection = true on the user
+// document. Called from ensureUserCreated for returning users.
 //
-// History note: a prior version of this function set the field to
-// true (and was named setFirstConnection accordingly). That looked
-// like the original intent at the time but it meant elko saw
-// firstConnection=true on EVERY connect/transit, not just the
-// genuine first one — which is why sage's region transits broadcast
-// "SageBot has arrived" to the whole region every time. We did
-// briefly suspect this flip caused an infinite-region-transition
-// regression on C64 login, but the actual cause turned out to be a
-// wedged elko context (Downtown_5f stuck in amClosing=true after a
-// bridge restart cascade); restarting elko cleared it.
-func (c *ClientSession) clearFirstConnection() error {
+// History (2026-05-05): we tried twice to flip this to false on the
+// theory that "the field name says first connection, returning users
+// aren't on their first" — both times the change was suspected of
+// breaking C64 login. The first attempt's actual root cause turned
+// out to be a wedged elko context, but on the second attempt the
+// behavior was suspect enough that we backed off again. Until we
+// understand what elko-side init paths assume firstConnection=true,
+// keep writing true to match the legacy bridge.
+//
+// Known cosmetic side-effect of writing true: elko's
+// Region.noteUserArrival's firstConnection-only branch fires on
+// every reconnect for returning users (MOTD + "X has arrived"
+// broadcast). For sage that means the announcement on every region
+// transit, which is annoying but harmless. Address that with a
+// targeted change in the elko-side handler if it bothers anyone.
+func (c *ClientSession) setFirstConnection() error {
 	// Targeted update rather than a whole-document round-trip through
 	// HabitatMod, which would strip every Elko @JSONMethod parameter
 	// the Go struct doesn't know about (restricted, lastConnectedDay,
 	// from_orientation, magic_data[1..5], etc.).
 	return c.patchHabitatMod(c.userRef, bson.M{
-		"mods.0.firstConnection": false,
+		"mods.0.firstConnection": true,
 	})
 }
 
@@ -885,7 +886,7 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			return
 		}
 		if user != nil {
-			err = c.clearFirstConnection()
+			err = c.setFirstConnection()
 			if err != nil {
 				return
 			}
