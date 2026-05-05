@@ -25,13 +25,52 @@
     # Single-value: the Anthropic API key sage uses for LLM calls.
     anthropic_api_key: "{{ lookup('env', 'ANTHROPIC_API_KEY') | default('', true) }}"
   tasks:
+    # If somebody has been hand-editing files on the box (the made has
+    # historically lived this way), `ansible.builtin.git` with force=false
+    # refuses to overwrite. force=true alone would silently nuke the
+    # changes. Instead: snapshot anything dirty onto a saved-<UTC>
+    # branch first, then pull cleanly.
+    - name: Check for local modifications in the deploy repo
+      command: git status --porcelain
+      args:
+        chdir: "{{ neohabitat_repo_path }}"
+      register: deploy_repo_dirty
+      changed_when: false
+      failed_when: false
+      become: true
+      become_user: "{{ neohabitat_owner }}"
+
+    - name: Snapshot local modifications to a saved-<UTC> branch
+      shell: |
+        set -euo pipefail
+        branch="saved-$(date -u +%Y%m%dT%H%M%SZ)"
+        echo "Saving local mods to ${branch}"
+        git checkout -b "${branch}"
+        git add -A
+        git -c user.email='deploy@themade' -c user.name='ansible-deploy' \
+          commit -m "auto-saved local modifications before deploy"
+        # Hop back to the deploy ref so the next git task can fast-forward.
+        # Use -f because a partially applied checkout could otherwise refuse.
+        git checkout -f "{{ neohabitat_git_ref }}"
+      args:
+        chdir: "{{ neohabitat_repo_path }}"
+        executable: /bin/bash
+      when:
+        - deploy_repo_dirty.stdout is defined
+        - deploy_repo_dirty.stdout | length > 0
+      become: true
+      become_user: "{{ neohabitat_owner }}"
+
     - name: Pull latest repo (so new compose files are present)
       git:
         repo: "{{ neohabitat_repo_url }}"
         dest: "{{ neohabitat_repo_path }}"
         version: "{{ neohabitat_git_ref }}"
         update: true
-        force: false
+        # Safe to force: any local diffs were branched off in the
+        # snapshot task above. force=false here just made the deploy
+        # fail loudly every time someone edited a file on the host.
+        force: true
       become: true
       become_user: "{{ neohabitat_owner }}"
 
