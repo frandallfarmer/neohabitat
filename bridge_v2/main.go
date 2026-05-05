@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/cloudflare/tableflip"
+	"github.com/coreos/go-systemd/v22/daemon"
 	"github.com/frandallfarmer/neohabitat/bridge_v2/bridge"
 	"github.com/frandallfarmer/neohabitat/bridge_v2/observability"
 	"github.com/rs/zerolog"
@@ -21,8 +22,20 @@ import (
 
 var buildVersion = "dev"
 
+// stringSliceFlag is a flag.Value that accumulates repeated occurrences
+// of the same flag into a slice. Lets the bridge accept several
+// --listen=... flags so one stateful process can serve every host port
+// (1337/1986/2026 historically) without splitting session state.
+type stringSliceFlag []string
+
+func (s *stringSliceFlag) String() string { return strings.Join(*s, ",") }
+func (s *stringSliceFlag) Set(v string) error {
+	*s = append(*s, v)
+	return nil
+}
+
 var initialContext = flag.String("context", "context-Downtown_5f", "Parameter for entercontext for unknown users")
-var listen = flag.String("listen", "127.0.0.1:1337", "Host:Port to listen for client connections")
+var listenAddrs stringSliceFlag
 var elko = flag.String("elko.host", "127.0.0.1:2018", "Host:Port of Habiproxy (or Elko directly)")
 var mongo = flag.String("mongo.host", "mongodb://127.0.0.1:27017", "MongoDB server host")
 var mongoDatabase = flag.String("mongo.db", "elko", "Database within MongoDB to use")
@@ -53,7 +66,11 @@ func setLogLevel(level string) {
 }
 
 func main() {
+	flag.Var(&listenAddrs, "listen", "Address (Host:Port) to listen on. May be specified multiple times to bind several ports in one process; sessions accepted on any listener share the same in-memory state.")
 	flag.Parse()
+	if len(listenAddrs) == 0 {
+		listenAddrs = stringSliceFlag{"127.0.0.1:1337"}
+	}
 	setLogLevel(*logLevel)
 	if !*otelEnabled {
 		log.Logger = log.Output(zerolog.ConsoleWriter{
@@ -85,7 +102,7 @@ func main() {
 
 func newBridge() *bridge.Bridge {
 	return bridge.NewBridge(
-		*initialContext, *listen, *elko, *mongo,
+		*initialContext, []string(listenAddrs), *elko, *mongo,
 		*mongoDatabase, *mongoCollection, *rate, *qlinkMode,
 	)
 }
@@ -110,21 +127,23 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 	defer upg.Stop()
 
 	habitatBridge := newBridge()
-	var ln net.Listener
+	listeners := make([]net.Listener, len(listenAddrs))
 
 	// Check if we're restoring from a parent's snapshot.
 	restoring := os.Getenv(snapshotEnvVar) != ""
 
 	if restoring {
-		// The child inherited the parent's listener via tableflip.
-		// Retrieve and close it — it's bound to *:2026 and blocks
-		// the TCP_REPAIR bind.
-		if inheritedLn, _ := upg.Fds.Listen("tcp", *listen); inheritedLn != nil {
-			inheritedLn.Close()
+		// The child inherited the parent's listeners via tableflip.
+		// Retrieve and close each — they're still bound to their
+		// configured ports and would block the TCP_REPAIR bind.
+		for _, addr := range listenAddrs {
+			if inheritedLn, _ := upg.Fds.Listen("tcp", addr); inheritedLn != nil {
+				inheritedLn.Close()
+			}
 		}
 
-		// Now create a fresh listener with SO_REUSEPORT so it
-		// coexists with the restored connections.
+		// Now create fresh listeners (one per configured address) with
+		// SO_REUSEPORT so they coexist with the restored connections.
 		lc := net.ListenConfig{
 			Control: func(network, address string, c syscall.RawConn) error {
 				return c.Control(func(fd uintptr) {
@@ -132,11 +151,14 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 				})
 			},
 		}
-		ln, err = lc.Listen(context.Background(), "tcp", *listen)
-		if err != nil {
-			log.Fatal().Err(err).Msg("Could not create listener for restore")
+		for i, addr := range listenAddrs {
+			ln, lerr := lc.Listen(context.Background(), "tcp", addr)
+			if lerr != nil {
+				log.Fatal().Err(lerr).Str("addr", addr).Msg("Could not create listener for restore")
+			}
+			log.Info().Str("addr", ln.Addr().String()).Msg("Created fresh listener for restore")
+			listeners[i] = ln
 		}
-		log.Info().Str("addr", ln.Addr().String()).Msg("Created fresh listener for restore")
 
 		// Restore sessions from manifest + inherited fds
 		manifest, merr := bridge.ReadManifest(os.Getenv(snapshotEnvVar))
@@ -161,7 +183,9 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 					log.Error().Str("session", snap.SessionID).
 						Bool("cc_nil", cc == nil).
 						Msg("FileConn returned conn with nil RemoteAddr; skipping")
-					if cc != nil { cc.Close() }
+					if cc != nil {
+						cc.Close()
+					}
 					continue
 				}
 				ec, eerr := net.DialTimeout("tcp", *elko, 5*time.Second)
@@ -181,24 +205,31 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 			os.Remove(os.Getenv(snapshotEnvVar))
 		}
 	} else {
-		// First run or normal tableflip cycle: use tableflip's listener.
-		ln, err = upg.Fds.Listen("tcp", *listen)
-		if err != nil {
-			log.Fatal().Err(err).Str("addr", *listen).Msg("Could not obtain listener")
+		// First run or normal tableflip cycle: get one listener per
+		// configured address from tableflip's Fds (inherited or fresh).
+		for i, addr := range listenAddrs {
+			ln, lerr := upg.Fds.Listen("tcp", addr)
+			if lerr != nil {
+				log.Fatal().Err(lerr).Str("addr", addr).Msg("Could not obtain listener")
+			}
+			listeners[i] = ln
 		}
 	}
 
-	habitatBridge.SetListener(ln)
+	habitatBridge.SetListeners(listeners)
 
-	// SIGHUP: close listener, TCP_REPAIR save+restore, pass fds, upgrade
+	// SIGHUP: close listeners, TCP_REPAIR save+restore, pass fds, upgrade
 	go func() {
 		sig := make(chan os.Signal, 1)
 		signal.Notify(sig, syscall.SIGHUP)
 		for range sig {
 			log.Info().Msg("SIGHUP received, starting graceful upgrade...")
 
-			// 1. Snapshot sessions (quiesce at frame boundary)
-			manifest, serr := habitatBridge.SnapshotAllWithTCP(ln)
+			// 1. Snapshot sessions (quiesce at frame boundary).
+			// SnapshotAllWithTCP closes every listener registered with
+			// the bridge before TCP_REPAIR bind, then walks /proc to
+			// force-close any tableflip-dup'd fds for the same ports.
+			manifest, serr := habitatBridge.SnapshotAllWithTCP()
 			if serr != nil {
 				log.Error().Err(serr).Msg("Snapshot failed; aborting upgrade")
 				continue
@@ -268,6 +299,26 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 	habitatBridge.Start()
 
 	log.Info().Msg("Ready")
+	// Tell systemd we're ready AND that the main PID is now this
+	// process. Critical on the SIGHUP path: tableflip forked us as a
+	// child of the previous bridge_v2, but systemd's Type=notify still
+	// thinks the *parent* is the main PID. Without this, when the
+	// parent exits cleanly post-Ready(), systemd sees its tracked main
+	// PID die and (with KillMode=control-group, the default) kills the
+	// entire cgroup — including us, the new child. Symptom on the
+	// made: bridge_v2.service goes "Deactivated successfully" right
+	// after "Child restored sessions; parent exiting", and the child
+	// dies along with the parent.
+	//
+	// SdNotify is a no-op when NOTIFY_SOCKET isn't set (i.e., when we
+	// aren't running under systemd Type=notify), so it's safe in dev,
+	// docker, and the simple non-graceful path.
+	notifyMsg := fmt.Sprintf("READY=1\nMAINPID=%d", os.Getpid())
+	if sent, nerr := daemon.SdNotify(false, notifyMsg); nerr != nil {
+		log.Warn().Err(nerr).Msg("sd_notify failed (only matters under systemd Type=notify)")
+	} else if sent {
+		log.Info().Int("pid", os.Getpid()).Msg("sd_notify: claimed MAINPID + READY=1")
+	}
 	if err := upg.Ready(); err != nil {
 		log.Fatal().Err(err).Msg("Could not signal readiness to parent")
 	}

@@ -28,17 +28,26 @@ type Bridge struct {
 	QLinkMode       bool
 	Sessions        map[string]*ClientSession
 
-	listener        net.Listener
-	listenHost      string
+	// listeners and listenAddrs are 1:1 by index. Multiple listeners
+	// let one stateful bridge process serve multiple host ports
+	// (1337/1986/2026 historically) without splitting session state
+	// across processes — clients on different ports can still see each
+	// other's avatars because they share the in-memory session map.
+	listeners       []net.Listener
+	listenAddrs     []string
 	elkoHost        string
 	mongoURL        string
 	mongoCancelFunc context.CancelFunc
 	mongoDatabase   string
 	mongoCollection string
 	mongoCtx        context.Context
-	acceptDone      chan struct{}
-	sessionsMutex   sync.Mutex
-	wg              sync.WaitGroup
+	// acceptDone is closed once *every* per-listener accept goroutine
+	// has exited. SnapshotAllWithTCP waits on this before TCP_REPAIR
+	// bind, so all listener fds must be released first.
+	acceptDone    chan struct{}
+	acceptWg      sync.WaitGroup
+	sessionsMutex sync.Mutex
+	wg            sync.WaitGroup
 }
 
 func (b *Bridge) Close() {
@@ -48,9 +57,13 @@ func (b *Bridge) Close() {
 		session.Close()
 	}
 	b.mongoCancelFunc()
-	err := b.listener.Close()
-	if err != nil {
-		log.Error().Msgf("Could not close Bridge listener: %v", err)
+	for _, ln := range b.listeners {
+		if ln == nil {
+			continue
+		}
+		if err := ln.Close(); err != nil {
+			log.Error().Err(err).Str("addr", ln.Addr().String()).Msg("Could not close Bridge listener")
+		}
 	}
 	b.wg.Wait()
 }
@@ -113,56 +126,104 @@ func (b *Bridge) Run() {
 			delay = elkoProbeMax
 		}
 	}
-	if b.listener == nil {
-		log.Info().Msgf("Starting bridge listener at: %s", b.listenHost)
-		b.listener, err = net.Listen("tcp", b.listenHost)
-		if err != nil {
-			log.Fatal().Msgf("Could not initialize TCP listener on %s: %v", b.listenHost, err)
+	// Lazy-create any listeners not already injected by tableflip
+	// (SetListeners). One listener per configured address; indexes match
+	// b.listenAddrs so the log line and the /proc walk in
+	// SnapshotAllWithTCP can correlate them.
+	if len(b.listeners) < len(b.listenAddrs) {
+		// Pad up to the number of configured addresses, then fill empties.
+		newListeners := make([]net.Listener, len(b.listenAddrs))
+		copy(newListeners, b.listeners)
+		b.listeners = newListeners
+	}
+	for i, addr := range b.listenAddrs {
+		if b.listeners[i] != nil {
+			log.Info().Str("addr", b.listeners[i].Addr().String()).Msg("Using inherited listener")
+			continue
+		}
+		log.Info().Str("addr", addr).Msg("Starting bridge listener")
+		ln, lerr := net.Listen("tcp", addr)
+		if lerr != nil {
+			log.Fatal().Err(lerr).Str("addr", addr).Msg("Could not initialize TCP listener")
 			return
 		}
-	} else {
-		log.Info().Msgf("Using inherited listener at: %s", b.listener.Addr())
+		b.listeners[i] = ln
 	}
+
+	// One Accept goroutine per listener. acceptDone fires once *all*
+	// have exited, so SnapshotAllWithTCP can rely on the channel as a
+	// "all listener fds released" signal.
+	for _, ln := range b.listeners {
+		ln := ln
+		b.acceptWg.Add(1)
+		go b.acceptLoop(ln)
+	}
+	go func() {
+		b.acceptWg.Wait()
+		close(b.acceptDone)
+	}()
+}
+
+// acceptLoop runs Accept for a single listener. Spawned once per
+// configured listen address by Run.
+func (b *Bridge) acceptLoop(ln net.Listener) {
+	defer b.acceptWg.Done()
+	addr := ln.Addr().String()
 	for {
-		conn, err := b.listener.Accept()
+		conn, err := ln.Accept()
 		if err != nil {
-			log.Error().Msgf("Failed to accept TCP connection: %v", err)
-			// Signal that the accept loop has exited and the listener
-			// fd is fully released. SnapshotAllWithTCP waits for this
-			// before TCP_REPAIR bind.
-			close(b.acceptDone)
+			log.Error().Err(err).Str("addr", addr).Msg("Failed to accept TCP connection")
 			return
-		} else {
-			newSession := NewClientSession(b, NewClientConnection(b, conn))
-			b.Sessions[conn.RemoteAddr().String()] = newSession
-			// Increment the active-sessions gauge here rather than inside
-			// NewClientSession so the counter only ticks for accepted
-			// connections, not for synthetic sessions in tests.
-			observability.IncSessionsTotal(context.Background())
-			observability.AddSessionActive(context.Background(), 1)
-			newSession.Start()
 		}
+		newSession := NewClientSession(b, NewClientConnection(b, conn))
+		b.Sessions[conn.RemoteAddr().String()] = newSession
+		// Increment the active-sessions gauge here rather than inside
+		// NewClientSession so the counter only ticks for accepted
+		// connections, not for synthetic sessions in tests.
+		observability.IncSessionsTotal(context.Background())
+		observability.AddSessionActive(context.Background(), 1)
+		newSession.Start()
 	}
 }
 
-func (b *Bridge) listenPort() int {
-	_, portStr, _ := net.SplitHostPort(b.listenHost)
-	p, _ := strconv.Atoi(portStr)
-	return p
+// listenPorts returns the set of TCP ports the bridge is configured
+// to listen on. Used by SnapshotAllWithTCP's /proc walk to find
+// listener fds that need to be force-closed before TCP_REPAIR bind.
+func (b *Bridge) listenPorts() map[int]struct{} {
+	ports := make(map[int]struct{}, len(b.listenAddrs))
+	for _, addr := range b.listenAddrs {
+		_, portStr, perr := net.SplitHostPort(addr)
+		if perr != nil {
+			continue
+		}
+		if p, cerr := strconv.Atoi(portStr); cerr == nil {
+			ports[p] = struct{}{}
+		}
+	}
+	return ports
 }
 
-// SetListener injects a listener managed by tableflip instead of
-// having Run() create one via net.Listen. When set, Run() skips
-// the listen call and uses this listener directly.
-func (b *Bridge) SetListener(ln net.Listener) {
-	b.listener = ln
+// SetListeners injects listeners managed by tableflip instead of
+// having Run() create them via net.Listen. Order must match the
+// configured listenAddrs so the addresses logged in Run line up with
+// the actual sockets. Pass nil at any index to let Run() create that
+// listener itself (mixed inherited/fresh is supported but not used in
+// production today).
+func (b *Bridge) SetListeners(listeners []net.Listener) {
+	b.listeners = listeners
 }
 
 // SnapshotAllWithTCP quiesces sessions and captures both application
 // state and TCP connection state (via TCP_REPAIR getsockopt). The
 // child process uses the TCP state to create brand new sockets —
 // no fd inheritance, no epoll conflicts.
-func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
+//
+// All configured listeners (b.listeners) are closed before TCP_REPAIR
+// bind so the kernel releases each port. With multiple listeners we
+// also walk /proc looking for *any* listening fd matching *any* of
+// our listen ports — Go and tableflip can each hold dup'd fds for
+// each listener.
+func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 	b.sessionsMutex.Lock()
 	defer b.sessionsMutex.Unlock()
 
@@ -186,6 +247,19 @@ func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
 		if dead {
 			log.Debug().Str("session", sess.sessionID).
 				Msg("Session already closed; skipping")
+			continue
+		}
+		// JSON-passthrough sessions (the bots, web clients) don't
+		// participate in the snapshotReq protocol — that path is wired
+		// only into the binary handler loops (handleClientMessage and
+		// runHabilink). Trying anyway just blocks for 10s per session
+		// before timing out and landing in the same skip branch. Skip
+		// them up front: they reconnect via shouldReconnect, while the
+		// C64 binary sessions are the ones that actually need
+		// TCP_REPAIR preservation across upgrades.
+		if sess.jsonPassthrough {
+			log.Debug().Str("session", sess.sessionID).
+				Msg("Skipping snapshot (JSON passthrough — relies on client reconnect)")
 			continue
 		}
 		if tc, ok := sess.clientConn.conn.(*net.TCPConn); ok {
@@ -216,19 +290,25 @@ func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
 		return manifest, nil
 	}
 
-	// Phase 2: close the listener and wait for the Accept loop to
-	// exit. The Accept goroutine holds an incref on the listener fd;
-	// until it returns, the kernel keeps the bind hash entry and
-	// TCP_REPAIR bind fails with EADDRINUSE.
-	log.Info().Msg("Closing listener for TCP_REPAIR bind")
-	ln.Close()
+	// Phase 2: close every listener and wait for *all* Accept loops to
+	// exit. Each Accept goroutine holds an incref on its listener fd;
+	// until they all return, the kernel keeps the bind hash entries
+	// and TCP_REPAIR bind fails with EADDRINUSE.
+	for _, ln := range b.listeners {
+		if ln == nil {
+			continue
+		}
+		log.Info().Str("addr", ln.Addr().String()).Msg("Closing listener for TCP_REPAIR bind")
+		ln.Close()
+	}
 	<-b.acceptDone
-	// Go's Close and tableflip's Fds leave multiple dup'd fds for
-	// the listener (one in Fds.used, one in the net.TCPListener).
-	// Closing one doesn't release the bind because the other still
-	// references the same kernel socket. Brute-force: find and close
-	// ALL fds on our listen port via /proc/self/fd.
-	_ = ln.Addr()
+	// Go's Close and tableflip's Fds leave multiple dup'd fds for each
+	// listener (one in Fds.used, one in the net.TCPListener). Closing
+	// one doesn't release the bind because the other still references
+	// the same kernel socket. Brute-force: walk /proc/self/fd once,
+	// close every LISTEN socket whose port matches *any* of our
+	// configured listen ports.
+	ports := b.listenPorts()
 	fdDir := fmt.Sprintf("/proc/%d/fd", os.Getpid())
 	entries, _ := os.ReadDir(fdDir)
 	for _, e := range entries {
@@ -238,26 +318,25 @@ func (b *Bridge) SnapshotAllWithTCP(ln net.Listener) (*HandoffManifest, error) {
 		}
 		var fdNum int
 		fmt.Sscanf(e.Name(), "%d", &fdNum)
-		// Check if this fd is a LISTEN socket on our port
+		// Check if this fd is a LISTEN socket on one of our ports.
 		sa, gerr := unix.Getsockname(fdNum)
 		if gerr != nil {
 			continue
 		}
-		// Only close LISTEN sockets, not ESTABLISHED connections.
 		// SO_ACCEPTCONN is 1 for listening sockets, 0 for connected.
 		isListen, _ := unix.GetsockoptInt(fdNum, unix.SOL_SOCKET, unix.SO_ACCEPTCONN)
 		if isListen != 1 {
 			continue
 		}
 		if sa4, ok := sa.(*unix.SockaddrInet4); ok {
-			if sa4.Port == b.listenPort() {
-				log.Info().Int("fd", fdNum).Msg("Force-closing listener fd")
+			if _, match := ports[sa4.Port]; match {
+				log.Info().Int("fd", fdNum).Int("port", sa4.Port).Msg("Force-closing listener fd")
 				unix.Close(fdNum)
 			}
 		}
 		if sa6, ok := sa.(*unix.SockaddrInet6); ok {
-			if sa6.Port == b.listenPort() {
-				log.Info().Int("fd", fdNum).Msg("Force-closing listener fd (v6)")
+			if _, match := ports[sa6.Port]; match {
+				log.Info().Int("fd", fdNum).Int("port", sa6.Port).Msg("Force-closing listener fd (v6)")
 				unix.Close(fdNum)
 			}
 		}
@@ -327,9 +406,11 @@ func (b *Bridge) Start() {
 	go b.Run()
 }
 
+// NewBridge constructs a Bridge configured to listen on one or more
+// addresses. Pass at least one address — main.go validates this.
 func NewBridge(
 	context string,
-	listenHost string,
+	listenAddrs []string,
 	elkoHost string,
 	mongoURL string,
 	mongoDatabase string,
@@ -337,13 +418,15 @@ func NewBridge(
 	dataRate int,
 	qlinkMode bool,
 ) *Bridge {
+	// Defensive copy so the caller's slice can't mutate ours later.
+	addrs := append([]string(nil), listenAddrs...)
 	return &Bridge{
 		Context:         context,
 		DataRate:        dataRate,
 		QLinkMode:       qlinkMode,
 		Sessions:        make(map[string]*ClientSession),
 		acceptDone:      make(chan struct{}),
-		listenHost:      listenHost,
+		listenAddrs:     addrs,
 		elkoHost:        elkoHost,
 		mongoURL:        mongoURL,
 		mongoDatabase:   mongoDatabase,

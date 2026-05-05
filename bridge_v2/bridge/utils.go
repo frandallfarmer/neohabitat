@@ -218,6 +218,23 @@ func u8(p *uint8) uint8 {
 	return *p
 }
 
+// noidU8 narrows a *uint16 noid field (Speaker, Appearing, etc.) to the
+// uint8 the binary Habitat protocol speaks. The Elko-side type is
+// uint16 specifically to accept the UNASSIGNED_NOID (256) sentinel —
+// here we substitute GHOST_NOID (255) so the C64 client gets a valid
+// noid byte instead of seeing the value silently truncate to 0. nil
+// inputs return 0 (the same default the *uint8 deref helpers above
+// give for missing fields).
+func noidU8(p *uint16) uint8 {
+	if p == nil {
+		return 0
+	}
+	if *p == UNASSIGNED_NOID {
+		return GHOST_NOID
+	}
+	return uint8(*p)
+}
+
 func u8d(p *uint8, def uint8) uint8 {
 	if p == nil {
 		return def

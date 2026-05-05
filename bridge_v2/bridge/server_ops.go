@@ -13,7 +13,10 @@ func init() {
 	ServerOps["APPEARING_$"] = &ServerOp{
 		Reqno: 18,
 		ToClient: func(o *ElkoMessage, buf *HabBuf, s *ClientSession) bool {
-			buf.AddInt(*o.Appearing)
+			// noidU8 narrows uint16 → uint8, mapping UNASSIGNED_NOID
+			// (256) → GHOST_NOID (255) so the C64 client sees a valid
+			// noid byte instead of a silent truncation to 0.
+			buf.AddInt(noidU8(o.Appearing))
 			return false
 		},
 	}
@@ -210,7 +213,8 @@ func init() {
 	ServerOps["OBJECTSPEAK_$"] = &ServerOp{
 		Reqno: 15,
 		ToClient: func(o *ElkoMessage, buf *HabBuf, s *ClientSession) bool {
-			buf.AddInt(*o.Speaker)
+			// See APPEARING_$ above for the UNASSIGNED_NOID narrowing.
+			buf.AddInt(noidU8(o.Speaker))
 			if o.ASCII != nil {
 				buf.AddIntSlice(*o.ASCII)
 			} else {

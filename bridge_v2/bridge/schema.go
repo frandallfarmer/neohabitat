@@ -9,7 +9,12 @@ type ElkoMessage struct {
 	Adjustment           *uint8         `json:"adjustment,omitempty"`
 	AmountLo             *uint8         `json:"amount_lo,omitempty"`
 	AmountHi             *uint8         `json:"amount_hi,omitempty"`
-	Appearing            *uint8         `json:"appearing,omitempty"`
+	// *uint16 (not *uint8) because Elko uses UNASSIGNED_NOID (256) as a
+	// sentinel for an avatar that hasn't been assigned a region noid
+	// yet — the bridge's binary path narrows to GHOST_NOID at encode
+	// time, but for JSON-passthrough clients we'd silently drop the
+	// whole APPEARING_$ message if json.Unmarshal blew up here.
+	Appearing            *uint16        `json:"appearing,omitempty"`
 	ArgCount             *uint8         `json:"argCount,omitempty"`
 	AttackResult         *uint8         `json:"ATTACK_result,omitempty"`
 	AttackTarget         *uint8         `json:"ATTACK_target,omitempty"`
@@ -78,7 +83,10 @@ type ElkoMessage struct {
 	SeatId               *uint8         `json:"seat_id,omitempty"`
 	SfxNumber            *uint8         `json:"sfx_number,omitempty"`
 	Slot                 *uint8         `json:"slot,omitempty"`
-	Speaker              *uint8         `json:"speaker,omitempty"`
+	// *uint16 for the same UNASSIGNED_NOID sentinel reason as Appearing
+	// above. OBJECTSPEAK_$ broadcasts ("X has arrived") use speaker=256
+	// when the noid hasn't been assigned yet.
+	Speaker              *uint16        `json:"speaker,omitempty"`
 	SpraySprayee         *uint8         `json:"SPRAY_SPRAYEE,omitempty"`
 	SpraySuccess         *uint8         `json:"SPRAY_SUCCESS,omitempty"`
 	SprayCustomize0      *uint8         `json:"SPRAY_CUSTOMIZE_0,omitempty"`
