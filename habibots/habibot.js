@@ -660,26 +660,35 @@ class HabiBot {
    * @returns {Promise}
    */
   walkToExit(direction) {
-    if (this.neighbors[CardinalToNeighborIndex[direction]].length < 1) {
+    // Capture the destination ref BEFORE the .then() chain runs. The
+    // sequence is: send NEWREGION → server emits changeContext →
+    // processElkoMessage clearState() empties this.neighbors → THEN
+    // the .then() fires. Reading this.neighbors[X] from inside the
+    // arrow would see undefined, so gotoContext(undefined) would send
+    // an entercontext with no context field — server interprets that
+    // as "go home" and the bot bounces back to its starting region.
+    const idx = CardinalToNeighborIndex[direction]
+    const target = this.neighbors[idx]
+    if (target === undefined || target === null || target.length < 1) {
       return Promise.reject(`Could not find a region to the: ${direction}`)
     }
     switch(direction) {
-      case "NORTH": 
+      case "NORTH":
         return this.walkTo(80, 160, 0)
           .then(() => this.newRegion(1))
-          .then(() => this.gotoContext(this.neighbors[0]))
+          .then(() => this.gotoContext(target))
       case "EAST":
         return this.walkTo(156, 142, 1)
           .then(() => this.newRegion(2))
-          .then(() => this.gotoContext(this.neighbors[1]))
+          .then(() => this.gotoContext(target))
       case "SOUTH":
         return this.walkTo(80, 128, 0)
           .then(() => this.newRegion(3))
-          .then(() => this.gotoContext(this.neighbors[2]))
+          .then(() => this.gotoContext(target))
       case "WEST":
         return this.walkTo(0, 142, 1)
           .then(() => this.newRegion(0))
-          .then(() => this.gotoContext(this.neighbors[3]))
+          .then(() => this.gotoContext(target))
       default:
         return Promise.reject(`Bot given invalid direction: ${direction}`)
     }

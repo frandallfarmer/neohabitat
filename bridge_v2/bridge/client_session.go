@@ -674,13 +674,21 @@ func (c *ClientSession) removeNoid(noid uint8) error {
 	return nil
 }
 
-func (c *ClientSession) setFirstConnection() error {
+// clearFirstConnection marks the user as no-longer-in-their-first-connection
+// in mongo. Called from ensureUserCreated whenever a *returning* user
+// re-enters; if not cleared, every subsequent region transit would
+// re-fire the firstConnection-only paths (MOTD, "X has arrived"
+// announcement, ghost-curse setup) because elko reads firstConnection
+// fresh from mongo on each entercontext. Was previously named
+// setFirstConnection and (incorrectly) set the value to true, which is
+// what was producing "X has arrived" on every region transit for sage.
+func (c *ClientSession) clearFirstConnection() error {
 	// Targeted update rather than a whole-document round-trip through
 	// HabitatMod, which would strip every Elko @JSONMethod parameter
 	// the Go struct doesn't know about (restricted, lastConnectedDay,
 	// from_orientation, magic_data[1..5], etc.).
 	return c.patchHabitatMod(c.userRef, bson.M{
-		"mods.0.firstConnection": true,
+		"mods.0.firstConnection": false,
 	})
 }
 
@@ -859,7 +867,7 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			return
 		}
 		if user != nil {
-			err = c.setFirstConnection()
+			err = c.clearFirstConnection()
 			if err != nil {
 				return
 			}
