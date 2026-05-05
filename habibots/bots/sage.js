@@ -173,19 +173,22 @@ function withTimeout(promise, ms, label) {
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
 }
 
-async function askClaude(userMessage) {
-  const now = Date.now()
-  const sinceLast = now - lastLlmCallAt
+// Cooldown gate shared by all Claude calls (text-only or tool-using).
+async function llmCooldownGate() {
+  const sinceLast = Date.now() - lastLlmCallAt
   if (sinceLast < LLM_COOLDOWN_MS) {
     await new Promise((r) => setTimeout(r, LLM_COOLDOWN_MS - sinceLast))
   }
   lastLlmCallAt = Date.now()
+}
 
+async function askClaude(userMessage) {
+  await llmCooldownGate()
   try {
     log.debug('askClaude: calling %s (%d chars in)', MODEL, userMessage.length)
     const resp = await withTimeout(claude.messages.create({
       model: MODEL,
-      max_tokens: 120,
+      max_tokens: 300,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     }), 30_000, 'claude.messages.create')
@@ -195,11 +198,102 @@ async function askClaude(userMessage) {
       return null
     }
     log.debug('askClaude: got %d chars back', text.length)
-    // Habitat speech bubbles are short. Hard cap.
-    return text.length > 200 ? text.slice(0, 197) + '...' : text
+    // No truncation here — sayChunked() splits long responses into
+    // multiple speech bubbles when sent to the world.
+    return text
   } catch (e) {
     log.error('Claude call failed: %s', e.message)
     return null
+  }
+}
+
+// askClaudeWithTools is the SPEAK$-time variant: includes the rich
+// scene description (object refs + noids) and gives Claude a set of
+// tools it can call to act on the world instead of just talking. The
+// caller executes any returned tool_uses and speaks the text.
+async function askClaudeWithTools(userMessage) {
+  await llmCooldownGate()
+  try {
+    log.debug('askClaudeWithTools: calling %s (%d chars in)', MODEL, userMessage.length)
+    const resp = await withTimeout(claude.messages.create({
+      model: MODEL,
+      max_tokens: 400,
+      system: SYSTEM_PROMPT,
+      tools: TOOLS,
+      messages: [{ role: 'user', content: userMessage }],
+    }), 30_000, 'claude.messages.create')
+    let text = ''
+    const toolUses = []
+    for (const block of resp.content || []) {
+      if (block.type === 'text' && block.text) text += block.text
+      else if (block.type === 'tool_use') toolUses.push(block)
+    }
+    log.debug('askClaudeWithTools: %d chars text, %d tool_uses', text.length, toolUses.length)
+    return { text: text.trim(), toolUses }
+  } catch (e) {
+    log.error('Claude tool call failed: %s', e.message)
+    return { text: '', toolUses: [] }
+  }
+}
+
+// === Speech chunking =====================================================
+// Habitat SPEAK$ caps the wire payload at 114 chars when the bridge
+// translates to the binary client (see bridge_v2/bridge/server_ops.go).
+// Anything longer is silently truncated. Chunk LLM output into multiple
+// bubbles spaced 10s apart so a long reply lands in full instead of
+// clipped mid-word.
+const SPEECH_CHUNK_LIMIT = 110
+const SPEECH_GAP_MS = 10_000
+
+function chunkSpeech(text, limit) {
+  const cap = limit || SPEECH_CHUNK_LIMIT
+  if (!text) return []
+  const t = String(text).trim()
+  if (t.length <= cap) return [t]
+  // Prefer sentence boundaries; fall back to word boundaries when a
+  // single sentence is still too long.
+  const sentences = t.match(/[^.!?]+[.!?]+\s*|\S[^.!?]*$/g) || [t]
+  const chunks = []
+  let cur = ''
+  for (let raw of sentences) {
+    const s = raw.trim()
+    if (!s) continue
+    if (s.length > cap) {
+      // Long sentence — flush current and word-split.
+      if (cur) { chunks.push(cur); cur = '' }
+      let part = ''
+      for (const w of s.split(/\s+/)) {
+        const candidate = part ? part + ' ' + w : w
+        if (candidate.length > cap) {
+          if (part) chunks.push(part)
+          part = w.length > cap ? w.slice(0, cap) : w
+        } else {
+          part = candidate
+        }
+      }
+      if (part) chunks.push(part)
+    } else {
+      const candidate = cur ? cur + ' ' + s : s
+      if (candidate.length > cap) {
+        if (cur) chunks.push(cur)
+        cur = s
+      } else {
+        cur = candidate
+      }
+    }
+  }
+  if (cur) chunks.push(cur)
+  return chunks
+}
+
+async function sayChunked(bot, text) {
+  if (!text) return
+  const chunks = chunkSpeech(text)
+  for (let i = 0; i < chunks.length; i++) {
+    if (i > 0) {
+      await new Promise((r) => setTimeout(r, SPEECH_GAP_MS))
+    }
+    bot.say(chunks[i])
   }
 }
 
@@ -249,6 +343,136 @@ function describeScene() {
 // the framework accepts arbitrary ops via send().
 function getObj(ref, containerNoid) {
   return SageBot.send({ op: 'GET', to: ref, containerNoid: containerNoid || 0 })
+}
+
+// === Tool definitions for Claude ========================================
+// Each tool maps to a HabiBot method (or a small helper). When a SPEAK$
+// arrives, we describe the scene with object refs/noids and let Claude
+// pick which tool to invoke. Tools execute in the order Claude returns
+// them, AFTER sage speaks its in-character reply.
+const TOOLS = [
+  {
+    name: 'walk_to_exit',
+    description: 'Walk to a region exit and transit to the adjacent region. Use only when someone explicitly asks you to leave or follow them in a direction.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        direction: { type: 'string', enum: ['NORTH', 'EAST', 'SOUTH', 'WEST'] },
+      },
+      required: ['direction'],
+    },
+  },
+  {
+    name: 'open_door',
+    description: 'Open a door, box, bag, chest, or other openable container present in the room. Use when someone asks you to open something.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'The Habitat object ref shown in the scene description.' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'close_door',
+    description: 'Close a door, box, bag, chest, or other openable container present in the room.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'sit_down',
+    description: 'Sit down on a chair, couch, bench, bed, or hot tub present in the room.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'The noid of the seat object.' },
+      },
+      required: ['noid'],
+    },
+  },
+  {
+    name: 'stand_up',
+    description: 'Stand up if currently seated.',
+    input_schema: { type: 'object', properties: {} },
+  },
+  {
+    name: 'pick_up',
+    description: 'Pick up a small portable item (book, coin, knick-knack, plant, magic lamp, etc.) currently in the room.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        noid: { type: 'integer' },
+      },
+      required: ['ref', 'noid'],
+    },
+  },
+]
+
+async function executeAction(toolUse) {
+  const { name, input } = toolUse
+  log.info('Tool: %s(%s)', name, JSON.stringify(input || {}))
+  try {
+    switch (name) {
+      case 'walk_to_exit':
+        return await withTimeout(SageBot.walkToExit(input.direction), 30_000, 'walkToExit')
+      case 'open_door':
+        return await withTimeout(SageBot.openDoor(input.ref), 10_000, 'openDoor')
+      case 'close_door':
+        return await withTimeout(SageBot.closeDoor(input.ref), 10_000, 'closeDoor')
+      case 'sit_down':
+        return await withTimeout(SageBot.sitOrstand(1, input.noid), 10_000, 'sit')
+      case 'stand_up':
+        return await withTimeout(SageBot.sitOrstand(0, 0), 10_000, 'stand')
+      case 'pick_up':
+        return await withTimeout(getObj(input.ref, input.noid), 10_000, 'pickUp')
+      default:
+        log.warn('Unknown tool: %s', name)
+        return null
+    }
+  } catch (e) {
+    log.warn('Tool %s failed: %s', name, e.message)
+    return null
+  }
+}
+
+// Rich scene description for tool-mode prompts: lists each interactable
+// object with its ref and noid so Claude can pass valid arguments to
+// open_door/sit_down/pick_up. The compact describeScene() summary above
+// is fine for greeting/comment prompts where Claude only needs gist.
+function describeSceneForTools() {
+  const objs = objectsByType()
+  const lines = []
+  for (const o of objs.sittable) {
+    const m = o.mods[0]
+    lines.push(`  - sittable: type=${m.type} ref=${o.ref} noid=${m.noid}`)
+  }
+  for (const o of objs.openable) {
+    const m = o.mods[0]
+    lines.push(`  - openable: type=${m.type} ref=${o.ref} noid=${m.noid}`)
+  }
+  for (const o of objs.pickupable) {
+    const m = o.mods[0]
+    lines.push(`  - pickupable: type=${m.type} ref=${o.ref} noid=${m.noid}`)
+  }
+  const others = SageBot.collectAvatarNoids()
+    .filter((a) => a && a.name)
+    .map((a) => `  - avatar: name=${a.name} noid=${a.mods[0].noid}`)
+  const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
+  const region = SageBot.realm && SageBot.realm.name ? SageBot.realm.name : '(unknown region)'
+  return [
+    `Region: ${region}`,
+    `Exits available: ${exits.length ? exits.join(', ') : 'none'}`,
+    `Avatars present:`,
+    ...(others.length ? others : ['  (none)']),
+    `Interactable objects:`,
+    ...(lines.length ? lines : ['  (none)']),
+  ].join('\n')
 }
 
 // Walk to a comfortable speaking distance from a target avatar's coords.
@@ -325,7 +549,7 @@ SageBot.on('APPEARING_$', async (bot, msg) => {
     if (line) {
       const safe = sanitizeForC64(line)
       log.info('Greeting %s: %s', name, safe)
-      bot.say(safe)
+      await sayChunked(bot, safe)
     } else {
       log.debug('APPEARING_$: no greeting line generated for %s', name)
     }
@@ -362,10 +586,10 @@ SageBot.on('SPEAK$', async (bot, msg) => {
       const exitIdx = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 }[dir]
       const hasExit = SageBot.neighbors && SageBot.neighbors[exitIdx] && SageBot.neighbors[exitIdx].length > 0
       if (!hasExit) {
-        bot.say(sanitizeForC64(`No way out to the ${dir.toLowerCase()} from here, ${speakerName}.`))
+        await sayChunked(bot, sanitizeForC64(`No way out to the ${dir.toLowerCase()} from here, ${speakerName}.`))
         return
       }
-      bot.say(sanitizeForC64(`Heading ${dir.toLowerCase()}, ${speakerName}.`))
+      await sayChunked(bot, sanitizeForC64(`Heading ${dir.toLowerCase()}, ${speakerName}.`))
       try {
         await withTimeout(SageBot.walkToExit(dir), 30_000, 'walkToExit:' + dir)
       } catch (e) {
@@ -374,19 +598,27 @@ SageBot.on('SPEAK$', async (bot, msg) => {
       return
     }
 
-    log.debug('SPEAK$: building reply prompt for %s', speakerName)
+    log.debug('SPEAK$: building tool-aware reply prompt for %s', speakerName)
     const prompt =
-      `${describeScene()}\n\n` +
-      `Event: ${speakerName} just said: "${text}"\n` +
-      `Reply in character. Acknowledge them by name if it feels natural.`
+      `${describeSceneForTools()}\n\n` +
+      `Event: ${speakerName} just said: "${text}"\n\n` +
+      `Reply in character. Acknowledge them by name if it feels natural. ` +
+      `If they're asking you to do something physical — sit on a chair, open a door, ` +
+      `pick up an item, or walk somewhere — use the matching tool AND say a brief ` +
+      `in-character line about it. Use the refs/noids exactly as listed in the ` +
+      `scene description above; do not invent values.`
 
-    const line = await askClaude(prompt)
-    if (line) {
-      const safe = sanitizeForC64(line)
+    const { text: reply, toolUses } = await askClaudeWithTools(prompt)
+    if (reply) {
+      const safe = sanitizeForC64(reply)
       log.info('Replying to %s: %s', speakerName, safe)
-      bot.say(safe)
-    } else {
-      log.debug('SPEAK$: no reply line generated for %s', speakerName)
+      await sayChunked(bot, safe)
+    } else if (toolUses.length === 0) {
+      log.debug('SPEAK$: empty response (no text, no tools) for %s', speakerName)
+    }
+    // Execute tool calls AFTER speaking so "OK, opening it" lands first.
+    for (const t of toolUses) {
+      await executeAction(t)
     }
   } catch (e) {
     log.error('SPEAK$ handler crashed: %s\n%s', e.message, e.stack)
@@ -466,7 +698,7 @@ async function interactTick() {
     if (line) {
       const safe = sanitizeForC64(line)
       log.info('Comment after %s: %s', choice.kind, safe)
-      SageBot.say(safe)
+      await sayChunked(SageBot, safe)
     }
   } catch (e) {
     log.warn('interactTick failed: %s', e.message)
