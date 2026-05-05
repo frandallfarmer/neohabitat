@@ -204,35 +204,60 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 				continue
 			}
 
-			// 2. Write manifest
-			snapPath := filepath.Join(os.TempDir(),
-				fmt.Sprintf("bridge_v2_handoff_%d.json", os.Getpid()))
-			if werr := bridge.WriteManifest(snapPath, manifest); werr != nil {
-				log.Error().Err(werr).Msg("Could not write manifest")
-				continue
-			}
-			os.Setenv(snapshotEnvVar, snapPath)
-
-			// 3. Pass restored client fds to child (blocking mode,
-			//    won't register with child's epoll in newParent)
-			for _, snap := range manifest.Sessions {
-				fd := snap.RestoredClientFd()
-				if fd < 0 {
+			// 2. Write manifest + arm the restore path *only* when
+			// there is actually something to restore. With zero
+			// sessions, SnapshotAllWithTCP returns early without
+			// closing the parent's listener (the listener teardown
+			// lives in phase 2 of TCP_REPAIR). If we still set
+			// snapshotEnvVar, the child takes the restore branch,
+			// tries to bind a fresh listener with SO_REUSEPORT on
+			// *:2026, and fails with "address already in use" because
+			// the parent's listener (no SO_REUSEPORT) still holds
+			// the port. Symptom in logs:
+			//   "Could not create listener for restore"
+			//   "child pid=N exited: exit status 1 / Upgrade failed"
+			// Falling back to the plain tableflip path lets the child
+			// inherit the listener via Fds.Listen() and start cleanly.
+			if len(manifest.Sessions) > 0 {
+				snapPath := filepath.Join(os.TempDir(),
+					fmt.Sprintf("bridge_v2_handoff_%d.json", os.Getpid()))
+				if werr := bridge.WriteManifest(snapPath, manifest); werr != nil {
+					log.Error().Err(werr).Msg("Could not write manifest")
 					continue
 				}
-				f := os.NewFile(uintptr(fd), "client-"+snap.SessionID)
-				if err := upg.Fds.AddFile("client-"+snap.SessionID, f); err != nil {
-					log.Error().Err(err).Str("session", snap.SessionID).
-						Msg("AddFile failed")
-				}
-				f.Close()
-			}
+				os.Setenv(snapshotEnvVar, snapPath)
 
-			// 4. Upgrade
-			if uerr := upg.Upgrade(); uerr != nil {
-				log.Error().Err(uerr).Msg("Upgrade failed")
-				os.Remove(snapPath)
-				continue
+				// 3. Pass restored client fds to child (blocking mode,
+				//    won't register with child's epoll in newParent)
+				for _, snap := range manifest.Sessions {
+					fd := snap.RestoredClientFd()
+					if fd < 0 {
+						continue
+					}
+					f := os.NewFile(uintptr(fd), "client-"+snap.SessionID)
+					if err := upg.Fds.AddFile("client-"+snap.SessionID, f); err != nil {
+						log.Error().Err(err).Str("session", snap.SessionID).
+							Msg("AddFile failed")
+					}
+					f.Close()
+				}
+
+				// 4. Upgrade (restore-armed path)
+				if uerr := upg.Upgrade(); uerr != nil {
+					log.Error().Err(uerr).Msg("Upgrade failed")
+					os.Remove(snapPath)
+					os.Unsetenv(snapshotEnvVar)
+					continue
+				}
+			} else {
+				// 4b. Upgrade (plain path — no sessions to hand off).
+				log.Info().Msg("No sessions to snapshot; using plain tableflip upgrade")
+				// Defensive: ensure no stale env var from a prior cycle.
+				os.Unsetenv(snapshotEnvVar)
+				if uerr := upg.Upgrade(); uerr != nil {
+					log.Error().Err(uerr).Msg("Upgrade failed")
+					continue
+				}
 			}
 
 			log.Info().Int("sessions", len(manifest.Sessions)).
