@@ -138,6 +138,33 @@ func TestContainsSubslice(t *testing.T) {
 	}
 }
 
+// ---------- rewriteJsonField ----------
+
+// rewriteJsonField is the helper used to canonicalize entercontext.user
+// before forwarding to Elko. Verify it (a) sets the field, (b) returns
+// valid JSON for Elko's parser, (c) leaves other fields intact, and
+// (d) errors on garbage input rather than silently mangling it.
+func TestRewriteJsonField(t *testing.T) {
+	in := []byte(`{"op":"entercontext","to":"session","context":"context-Downtown_5f","user":"user-SageBot"}`)
+	out, err := rewriteJsonField(in, "user", "user-sagebot")
+	if err != nil {
+		t.Fatalf("rewriteJsonField: %v", err)
+	}
+	var got map[string]interface{}
+	if err := json.Unmarshal(out, &got); err != nil {
+		t.Fatalf("output not valid JSON: %v: %q", err, out)
+	}
+	if got["user"] != "user-sagebot" {
+		t.Errorf("user = %v, want user-sagebot", got["user"])
+	}
+	if got["op"] != "entercontext" || got["context"] != "context-Downtown_5f" || got["to"] != "session" {
+		t.Errorf("other fields lost: %v", got)
+	}
+	if _, err := rewriteJsonField([]byte(`not json`), "user", "x"); err == nil {
+		t.Error("expected error on garbage input, got nil")
+	}
+}
+
 // ---------- sendOpToElko ----------
 
 // sendOpToElko should produce a JSON payload with exactly to+op fields

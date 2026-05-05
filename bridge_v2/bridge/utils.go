@@ -1,9 +1,29 @@
 package bridge
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/rs/zerolog/log"
 )
+
+// rewriteJsonField parses a JSON object line, replaces (or sets) one
+// top-level field, and returns a re-marshalled line. Field order is
+// not preserved — Elko parses by name, not position, so order doesn't
+// matter for the bridge's forwarding use case.
+//
+// Used by JSON-passthrough mode to canonicalize entercontext.user
+// before forwarding to Elko: the bot may submit "user-SageBot" but
+// the mongo doc lives under "user-sagebot" (ensureUserCreated
+// lowercases). Forwarding the original case makes Elko's user lookup
+// fail and it then EOFs the connection.
+func rewriteJsonField(line []byte, field, value string) ([]byte, error) {
+	var m map[string]interface{}
+	if err := json.Unmarshal(line, &m); err != nil {
+		return nil, err
+	}
+	m[field] = value
+	return json.Marshal(m)
+}
 
 type Uint8Slice []uint8
 

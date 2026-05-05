@@ -1198,6 +1198,23 @@ func (c *ClientSession) runJsonPassthrough() {
 				}
 				c.bindAvatar(userName)
 				c.UserName = userName
+				// ensureUserCreated normalizes the user ref (lowercase,
+				// underscores for spaces). The bot may have sent a
+				// mixed-case ref (e.g. "user-SageBot"); the mongo doc
+				// got created as "user-sagebot". If we forward the
+				// original line verbatim, Elko looks up the wrong-cased
+				// ref, doesn't find the user, and EOFs the connection.
+				// Symptom: the bot is stuck firstConnection=true /
+				// amAGhost=true forever. Rewrite the user field to the
+				// canonical ref before forwarding.
+				if c.userRef != "" && *msg.User != c.userRef {
+					if rewritten, rerr := rewriteJsonField(line, "user", c.userRef); rerr == nil {
+						line = rewritten
+					} else {
+						c.log.Warn().Err(rerr).Str("orig", *msg.User).Str("canonical", c.userRef).
+							Msg("Could not canonicalize entercontext.user; forwarding as-is")
+					}
+				}
 				c.stateMu.Unlock()
 			}
 		}
