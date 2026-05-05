@@ -158,6 +158,17 @@ func runWithTableflip(otelShutdown func(context.Context) error) {
 			}
 			log.Info().Str("addr", ln.Addr().String()).Msg("Created fresh listener for restore")
 			listeners[i] = ln
+			// CRUCIAL: register the fresh listener with tableflip so the
+			// *next* upgrade cycle's child can inherit it via Fds.Listen.
+			// Without this the next reload's plain-path child gets no
+			// inherited fd, falls through to a fresh bind, and fails
+			// with "address already in use" because the parent (us)
+			// still holds the port. Symptom in production: every
+			// subsequent SIGHUP after a session-bearing reload would
+			// fail with the new child exiting status 1 immediately.
+			if aerr := upg.Fds.AddListener("tcp", addr, ln.(tableflip.Listener)); aerr != nil {
+				log.Error().Err(aerr).Str("addr", addr).Msg("Could not register restored listener with tableflip; future upgrades will not inherit it")
+			}
 		}
 
 		// Restore sessions from manifest + inherited fds
