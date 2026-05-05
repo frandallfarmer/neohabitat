@@ -84,7 +84,10 @@ stay engaged. When you have nothing to react to, you can choose to wander
 to a new region — but only when prompted.
 
 Output ONLY the line your avatar would say. No stage directions, no
-quotes, no labels.`
+quotes, no labels. Use plain ASCII only — the C64 client renders
+PETSCII, so no smart quotes, em-dashes, ellipsis characters, or
+emojis. If you'd reach for an emoji, use a 1980s-style emoticon
+like :-) or ;-) instead.`
 
 // Naming heuristic for "is this another bot?" — pretty crude but enough
 // to avoid sage <-> eliza/welcomebot/etc. infinite loops.
@@ -93,6 +96,63 @@ function looksLikeBot(name) {
   if (!name) return false
   const n = name.toLowerCase()
   return KNOWN_BOT_SUBSTRINGS.some((s) => n.includes(s))
+}
+
+// Strip / fold any non-PETSCII characters out of LLM output before it
+// reaches the C64 client. Symptom of NOT doing this: the C64 client
+// shows garbage block characters where the multi-byte UTF-8 of a
+// smart-quote, em-dash, or emoji landed (each byte renders as its own
+// PETSCII glyph). The system prompt asks Claude to stay in ASCII, but
+// it slips occasionally — this is the belt-and-braces.
+function sanitizeForC64(text) {
+  if (!text) return text
+  return text
+    // Common typography that an LLM produces by default.
+    .replace(/[‘’‚‛]/g, "'")    // fancy single quotes
+    .replace(/[“”„‟]/g, '"')    // fancy double quotes
+    .replace(/[–—―]/g, '-')          // en/em/horizontal dash
+    .replace(/…/g, '...')                      // ellipsis
+    .replace(/[     ]/g, ' ') // non-breaking / thin spaces
+    .replace(/[·•]/g, '*')                // middle dot / bullet
+    // Emoji ranges → :-) so the bot still acknowledges affect even
+    // though the original glyph is gone. Multiple matches collapse
+    // to a single :-) below.
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F2FF}]/gu, ':-)')
+    // Final pass: any byte still outside printable ASCII gets dropped.
+    // Includes stray combining marks, zero-width joiners, etc.
+    .replace(/[^\x20-\x7E]/g, '')
+    // Collapse any duplicated :-) the emoji-fold introduced.
+    .replace(/(:-\))(\s*:-\))+/g, '$1')
+    .trim()
+}
+
+// Cardinal direction the speaker is asking sage to go, or null if the
+// utterance isn't a movement request. Matches "go north", "head east",
+// "walk south", "let's head west", etc., AND lone direction words when
+// they're the whole utterance ("north!", "south?"). Avoids false
+// positives like "northwest is great" by requiring a movement verb OR
+// the direction to be the dominant content.
+function parseMovementRequest(text) {
+  if (!text) return null
+  const t = text.toLowerCase().trim()
+  const verb = /\b(go|head|move|walk|take|let'?s\s+go|come|follow)\b/
+  const dirs = [
+    { name: 'NORTH', re: /\bnorth(ward)?\b/ },
+    { name: 'SOUTH', re: /\bsouth(ward)?\b/ },
+    { name: 'EAST',  re: /\beast(ward)?\b/ },
+    { name: 'WEST',  re: /\bwest(ward)?\b/ },
+  ]
+  for (const { name, re } of dirs) {
+    if (!re.test(t)) continue
+    // "go north" / "head east" / "let's go south"
+    if (verb.test(t)) return name
+    // Bare direction word as the whole utterance (with optional
+    // trailing punctuation).
+    if (/^[a-z]+[\s!?.,]*$/.test(t) && t.replace(/[^a-z]/g, '') === name.toLowerCase()) {
+      return name
+    }
+  }
+  return null
 }
 
 // Bot identity and run state.
@@ -263,8 +323,9 @@ SageBot.on('APPEARING_$', async (bot, msg) => {
 
     const line = await askClaude(prompt)
     if (line) {
-      log.info('Greeting %s: %s', name, line)
-      bot.say(line)
+      const safe = sanitizeForC64(line)
+      log.info('Greeting %s: %s', name, safe)
+      bot.say(safe)
     } else {
       log.debug('APPEARING_$: no greeting line generated for %s', name)
     }
@@ -290,6 +351,29 @@ SageBot.on('SPEAK$', async (bot, msg) => {
       return
     }
 
+    // Direct movement request — short-circuit the LLM and just walk.
+    // Region transitions are slow (10+s for the new region's contents
+    // to stream), so don't also wait on a Claude round-trip; ack with
+    // a fixed line, then walk.
+    const dir = parseMovementRequest(text)
+    if (dir) {
+      const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
+      log.info('%s asked to move %s; exits available: %s', speakerName, dir, exits.join(','))
+      const exitIdx = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 }[dir]
+      const hasExit = SageBot.neighbors && SageBot.neighbors[exitIdx] && SageBot.neighbors[exitIdx].length > 0
+      if (!hasExit) {
+        bot.say(sanitizeForC64(`No way out to the ${dir.toLowerCase()} from here, ${speakerName}.`))
+        return
+      }
+      bot.say(sanitizeForC64(`Heading ${dir.toLowerCase()}, ${speakerName}.`))
+      try {
+        await withTimeout(SageBot.walkToExit(dir), 30_000, 'walkToExit:' + dir)
+      } catch (e) {
+        log.warn('walkToExit %s failed: %s', dir, e.message)
+      }
+      return
+    }
+
     log.debug('SPEAK$: building reply prompt for %s', speakerName)
     const prompt =
       `${describeScene()}\n\n` +
@@ -298,8 +382,9 @@ SageBot.on('SPEAK$', async (bot, msg) => {
 
     const line = await askClaude(prompt)
     if (line) {
-      log.info('Replying to %s: %s', speakerName, line)
-      bot.say(line)
+      const safe = sanitizeForC64(line)
+      log.info('Replying to %s: %s', speakerName, safe)
+      bot.say(safe)
     } else {
       log.debug('SPEAK$: no reply line generated for %s', speakerName)
     }
@@ -379,8 +464,9 @@ async function interactTick() {
       `Make a brief in-character remark about doing it (or about the object).`
     const line = await askClaude(prompt)
     if (line) {
-      log.info('Comment after %s: %s', choice.kind, line)
-      SageBot.say(line)
+      const safe = sanitizeForC64(line)
+      log.info('Comment after %s: %s', choice.kind, safe)
+      SageBot.say(safe)
     }
   } catch (e) {
     log.warn('interactTick failed: %s', e.message)
