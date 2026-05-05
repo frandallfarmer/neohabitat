@@ -57,8 +57,11 @@ const Argv = require('yargs')
 log.level = Argv.loglevel
 
 if (!process.env.ANTHROPIC_API_KEY) {
-  log.error('ANTHROPIC_API_KEY env var must be set')
-  process.exit(1)
+  // Exit 0 (success) so supervisor doesn't treat the missing key as a
+  // crash and put us in a restart loop. The deploy stack starts the
+  // bots container before the secret env file is necessarily in place;
+  // sage simply opts out of the lineup that cycle.
+  process.exit(0)
 }
 
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
