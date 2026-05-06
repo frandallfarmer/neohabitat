@@ -29,7 +29,14 @@ bridge_host_mongo_collection: "odb"
 bridge_host_otel_endpoint: "http://127.0.0.1:4318"
 bridge_host_initial_context: "context-hatchery"
 bridge_host_rate: 1200
-bridge_host_log_level: "INFO"
+# Default to DEBUG. Bridge client lockups have been hard to diagnose
+# at INFO because the per-message wire flow isn't logged — when a
+# Habitat NAK or session hang shows up, we can't see what command
+# came in or what reply went out. Volume is manageable for the
+# made's session count; promtail ingests it into Loki via journald.
+# Override per-host in inventory/group_vars if a noisier or quieter
+# level is wanted.
+bridge_host_log_level: "DEBUG"
 
 # Run as root for now: TCP_REPAIR requires CAP_NET_ADMIN, the /proc
 # walk in SnapshotAllWithTCP wants self-process visibility, and the
