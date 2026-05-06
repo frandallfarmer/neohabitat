@@ -46,7 +46,10 @@ scrape_configs:
   # don't break.
   - job_name: bridge_v2_journal
     journal:
-      path: /run/log/journal
+      # Persistent journal location on the made (Ubuntu's default when
+      # /var/log/journal exists is to use it; /run/log/journal is the
+      # volatile fallback and stays empty on this host).
+      path: /var/log/journal
       max_age: 12h
       labels:
         job: bridge_v2_journal

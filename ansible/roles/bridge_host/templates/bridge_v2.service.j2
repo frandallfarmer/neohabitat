@@ -8,7 +8,16 @@ After=network-online.target docker.service
 Wants=network-online.target
 
 [Service]
-Type=simple
+# Type=notify so the new tableflip child can call sd_notify(MAINPID=...)
+# and have systemd update its main-PID tracking before the parent
+# exits. With Type=simple, KillMode=control-group nukes the entire
+# cgroup when the parent dies, killing the tableflip child along with
+# it — service goes "Deactivated successfully" 1s after every reload.
+# NotifyAccess=all is required because the tableflip child isn't
+# systemd's direct descendant (the parent forked it), so the default
+# NotifyAccess=main rejects its sd_notify.
+Type=notify
+NotifyAccess=all
 User={{ bridge_host_user }}
 Group={{ bridge_host_group }}
 ExecStart={{ bridge_host_binary_path }} \

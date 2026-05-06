@@ -45,9 +45,12 @@ services:
       - ./monitoring/promtail.yml:/etc/promtail/config.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # bridge_v2 logs to journald now (it's a host systemd service).
-      # Mount /run/log/journal so promtail can tail it. /etc/machine-id
-      # is required for journal-id resolution.
-      - /run/log/journal:/run/log/journal:ro
+      # Persistent journal storage lives in /var/log/journal on this
+      # host — /run/log/journal is volatile/unused. Mount the persistent
+      # path so promtail's journal scraper can read it across reboots.
+      # /etc/machine-id is required by libsystemd for journal-id
+      # resolution; without it the reader silently sees zero entries.
+      - /var/log/journal:/var/log/journal:ro
       - /etc/machine-id:/etc/machine-id:ro
       - promtail-positions:/tmp
     networks:
