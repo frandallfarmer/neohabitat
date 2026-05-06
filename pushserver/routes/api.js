@@ -2,7 +2,6 @@ const fs = require('fs');
 
 const express = require('express');
 const log = require('winston');
-const showdown = require('showdown');
 
 
 class APIRoutes {

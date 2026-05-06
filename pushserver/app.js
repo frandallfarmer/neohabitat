@@ -41,8 +41,14 @@ if (logToDebugger === 'true') {
 }
 
 // Ensures all Markdown is rendered as GitHub Flavored Markdown.
-var showdown = require('showdown');
-showdown.setFlavor('github');
+// (Swapped from `showdown` to `marked` — showdown's only open advisory
+// has no upstream fix; marked is actively maintained.) Sets process-
+// wide defaults so the converter instances in routes/docs.js inherit
+// them — gfm:true is the marked equivalent of showdown's
+// setFlavor('github'), breaks:false matches showdown's default
+// simpleLineBreaks:false.
+var marked = require('marked');
+marked.setOptions({ gfm: true, breaks: false });
 
 var app = express();
 

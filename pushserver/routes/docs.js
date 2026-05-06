@@ -2,7 +2,11 @@ const fs = require('fs');
 
 const express = require('express');
 const log = require('winston');
-const showdown = require('showdown');
+// `marked` (replaces showdown — see app.js for the swap rationale).
+// API mapping: showdown's `new Converter().makeHtml(md)` becomes
+// `marked.parse(md)`. Per-instance options aren't needed here; the
+// process-wide gfm/breaks defaults set in app.js are inherited.
+const { marked } = require('marked');
 
 const Helpfiles = require('../constants/Helpfiles.js');
 
@@ -19,8 +23,6 @@ class DocsRoutes {
     self.habiproxy = habiproxy;
     self.config = config;
     self.mongoDb = mongoDb;
-    self.mdConverter = new showdown.Converter();
-    self.mdConverter.setOption('simpleLineBreaks', false);
     self.router = express.Router();
 
     fs.readFile(RegionNotFoundLocation, 'utf8', function(err, contents) {
@@ -28,7 +30,7 @@ class DocsRoutes {
         log.error('Region not found doc failed to open: %s', err);
         self.regionNotFoundDoc = '<h1>No docs found.</h1>'
       } else {
-        self.regionNotFoundDoc = self.mdConverter.makeHtml(contents);
+        self.regionNotFoundDoc = marked.parse(contents);
       }
     });
 
@@ -37,7 +39,7 @@ class DocsRoutes {
         log.error('Region not found doc failed to open: %s', err);
         self.helpNotFoundDoc = '<h1>No docs found.</h1>'
       } else {
-        self.helpNotFoundDoc = self.mdConverter.makeHtml(contents);
+        self.helpNotFoundDoc = marked.parse(contents);
       }
     });
 
@@ -77,7 +79,7 @@ class DocsRoutes {
       // A Markdown doc page was located, so renders it.
       res.render('docPage', {
         title: 'Docs - ' + subject,
-        docPageBody: self.mdConverter.makeHtml(mdContents),
+        docPageBody: marked.parse(mdContents),
         habiproxy: self.habiproxy,
       });
     });
