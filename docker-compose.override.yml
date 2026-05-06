@@ -5,9 +5,9 @@
 # What this adds:
 #   - Bind-mount the repo into /neohabitat so edits on the host take effect
 #     in the container without a rebuild.
-#   - Anonymous volumes on the four paths the image owns (node_modules
-#     for each Node subdir, plus the Maven target/), so the bind mount
-#     doesn't shadow them.
+#   - Anonymous volumes on the paths the image owns (node_modules for each
+#     Node subdir, plus the Maven target/, plus the C64 disk images that
+#     the emulator writes back to mid-session).
 
 services:
   neohabitat:
@@ -17,3 +17,12 @@ services:
       - /neohabitat/pushserver/node_modules
       - /neohabitat/db/node_modules
       - /neohabitat/target
+      # VICE (the embedded C64 emulator served by pushserver) mounts
+      # the .d64 disk images here as WRITABLE — every saved game,
+      # avatar customization, etc. mutates the file. Without this
+      # anonymous-volume shadow, those writes leak through the bind
+      # mount and show up as a permanent "modified" diff on
+      # Habitat-B.d64 in the working tree. Anonymous volume keeps
+      # writes containerized; devs always start from the pristine
+      # image-baked disks.
+      - /neohabitat/pushserver/public/disks
