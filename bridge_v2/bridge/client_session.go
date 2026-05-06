@@ -358,9 +358,18 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 
 	if msg.Type == "changeContext" {
 		// Save for MESSAGE_DESCRIBE to deal with later.
-		c.nextRegion = *msg.Context
-		// Force enterContext after reconnect? aka Client has prematurely sent MESSAGE_DESCRIBE and we ignored it.
-		go c.reconnectToElko(*msg.Immediate, *msg.Context)
+		// Nil-safe deref: Elko can omit either field when it didn't
+		// set them (the JSON decoder leaves the matching pointer nil).
+		// Previously these were `*msg.Context` / `*msg.Immediate`,
+		// which would panic the entire bridge process — and a panic in
+		// elkoReader takes down EVERY connected client, not just the
+		// one whose message was malformed. str() / boolor return
+		// safe defaults; reconnectToElko handles "" context fine
+		// (waits for the client's followup entercontext) and
+		// immediate=false is the conservative choice (don't auto-enter
+		// when we don't know what we're entering).
+		c.nextRegion = str(msg.Context)
+		go c.reconnectToElko(boolor(msg.Immediate, false), c.nextRegion)
 		return
 	}
 

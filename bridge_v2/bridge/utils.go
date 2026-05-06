@@ -173,6 +173,15 @@ func i32sor(p *[]int32, def []int32) []int32 {
 	return *p
 }
 
+// boolor returns *p, or def if p is nil. Mirrors u8or for *bool fields
+// like ElkoMessage.Immediate that Elko frequently omits.
+func boolor(p *bool, def bool) bool {
+	if p == nil {
+		return def
+	}
+	return *p
+}
+
 func BoolP(b bool) *bool {
 	return &b
 }
