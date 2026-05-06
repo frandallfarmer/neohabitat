@@ -67,11 +67,15 @@ jobs:
         run: docker compose -f docker-compose.yml up -d
 
       - name: Wait for ports
-        # The elko server takes ~30-60s to come up on a cold start because
-        # it builds the schema. Poll generously.
+        # Smokes the docker stack only — bridge_v2 lives on the host as a
+        # systemd service since 35c554d7 and is not part of the compose
+        # bringup. mongo (27017), pushserver (1701), and pushserver's
+        # admin port (1987) are what's left in the compose graph that
+        # bind to host ports. The elko server takes ~30-60s on a cold
+        # start because it builds the schema; poll generously.
         run: |
           set -euo pipefail
-          for port in 27017 1337 2026; do
+          for port in 27017 1701; do
             echo "Waiting for :$port..."
             for i in $(seq 1 90); do
               if nc -z -w 2 127.0.0.1 "$port"; then
