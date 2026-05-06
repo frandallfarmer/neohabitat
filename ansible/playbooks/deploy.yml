@@ -166,6 +166,22 @@
         mode: "0755"
       become: true
 
+    - name: Pull latest bridge_v2 image from GHCR
+      # Explicit pull because the bridge_v2 service is no longer in
+      # docker-compose.yml (it runs as a host systemd service since
+      # 35c554d7), so the "Pull latest compose images" task above does
+      # NOT touch this image. Without this pull, `docker create` below
+      # uses whatever's stale in the local cache — and on a host that
+      # ran the old compose-bridge layout, that cache holds a binary
+      # from before the multi-listen + sd_notify refactor. Result was
+      # the deploy installing a broken old binary, the systemd unit
+      # dying immediately, and "Wait for bridge_v2 to accept
+      # connections" timing out on 1337/1986.
+      command: docker pull {{ bridge_image }}
+      become: true
+      register: bridge_image_pull
+      changed_when: "'Downloaded newer image' in bridge_image_pull.stdout or 'Image is up to date' not in bridge_image_pull.stdout"
+
     - name: Extract bridge_v2 binary from the new GHCR image
       shell: |
         set -euo pipefail
