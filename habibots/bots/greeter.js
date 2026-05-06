@@ -19,11 +19,11 @@ var log = require('winston');
 log.remove(log.transports.Console);
 log.add(log.transports.Console, { 'timestamp': true });
 
-const RtmClient = require('@slack/client').RtmClient;
-const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
-const RTM_EVENTS = require('@slack/client').RTM_EVENTS;
-const MemoryDataStore = require('@slack/client').MemoryDataStore;
-
+// @slack/client is loaded LAZILY inside the SlackEnabled block below.
+// It's not in habibots/package.json — same security removal as
+// hatchery.js (the v3.x line drags in critical-CVE-laden request /
+// hawk / hoek). Reinstall with `npm install @slack/client@3` and
+// pass --slackToken to enable Slack notifications.
 const constants = require('../constants');
 const HabiBot = require('../habibot');
 
@@ -49,22 +49,26 @@ const GreeterBot = HabiBot.newWithConfig(Argv.host, Argv.port, Argv.username);
 const GreetingText = fs.readFileSync(Argv.greetingFile).toString().replace(/\r/g, "").split('\n');
 
 const SlackEnabled = Argv.slackToken !== '';
-const SlackClient = new RtmClient(Argv.slackToken, {
-  logLevel: 'error', 
-  dataStore: new MemoryDataStore(),
-  autoReconnect: true,
-  autoMark: true 
-});
-
-
+let SlackClient = null;
 let SlackChannelId;
-SlackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
-  for (const c of rtmStartData.channels) {
-    if (c.name === Argv.slackChannel) {
-      SlackChannelId = c.id;
+let SlackRtmEvents = null;
+if (SlackEnabled) {
+  const Slack = require('@slack/client');
+  SlackRtmEvents = Slack.RTM_EVENTS;
+  SlackClient = new Slack.RtmClient(Argv.slackToken, {
+    logLevel: 'error',
+    dataStore: new Slack.MemoryDataStore(),
+    autoReconnect: true,
+    autoMark: true,
+  });
+  SlackClient.on(Slack.CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
+    for (const c of rtmStartData.channels) {
+      if (c.name === Argv.slackChannel) {
+        SlackChannelId = c.id;
+      }
     }
-  }
-});
+  });
+}
 
 
 GreeterBot.on('OBJECTSPEAK_$', (bot, msg) => {
@@ -107,7 +111,11 @@ GreeterBot.on('enteredRegion', (bot, me) => {
     .then(() => bot.doPosture(constants.WAVE))
     .then(() => bot.faceDirection(constants.FORWARD))
     .then(() => bot.say("Hey there! I'm Phil, the greeting bot!"))
-    .then(() => SlackClient.sendMessage("GreeterBot engaged.", SlackChannelId))
+    .then(() => {
+      if (SlackEnabled) {
+        SlackClient.sendMessage("GreeterBot engaged.", SlackChannelId);
+      }
+    })
 });
 
 
@@ -125,7 +133,7 @@ if (SlackEnabled && Argv.echoChat) {
     }
   });
 
-  SlackClient.on(RTM_EVENTS.MESSAGE, (message) => {
+  SlackClient.on(SlackRtmEvents.MESSAGE, (message) => {
     var username = SlackClient.dataStore.getUserById(message.user).name;
     GreeterBot.say(`@${username}: ${message.text}`);
   });

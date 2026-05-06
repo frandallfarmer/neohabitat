@@ -7,7 +7,6 @@ trap 'kill %1; kill %2' SIGINT
 
 HABITAT_HOST="${HABIBOTS_HOST-habitat.themade.org}"
 HABITAT_PORT="${HABIBOTS_PORT-1337}"
-CONVERSATIONALIST_REGION="${HABIBOTS_CONVERSATIONALIST_REGION-context-welcomecenterinthatch}"
 CONNECTOR_REGION="${HABIBOTS_CONNECTOR_REGION-context-Downtown_5f}"
 ELIZA_REGION="${HABIBOTS_ELIZA_REGION-context-Downtown_5f}"
 GREETER1_REGION="${HABIBOTS_GREETER1_REGION-context-welcomecenterinthatch}"
@@ -45,16 +44,6 @@ if [[ "${@}" = *"connector"* ]]; then
     -h "${HABITAT_HOST}" \
     -p "${HABITAT_PORT}" \
     -u connectorbot &
-fi
-
-if [[ "${@}" = *"conversationalist"* ]]; then
-  echo 'Launching conversationalist...'
-  supervisor -w "${DIR}" -- bots/conversationalist.js \
-    -w "${HABIBOTS_WIT_TOKEN}" \
-    -c "${CONVERSATIONALIST_REGION}" \
-    -h "${HABITAT_HOST}" \
-    -p "${HABITAT_PORT}" \
-    -u tonybanks &
 fi
 
 if [[ "${@}" = *"eliza"* ]]; then

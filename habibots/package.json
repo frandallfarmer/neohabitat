@@ -4,14 +4,9 @@
   "description": "In-world bots for Neohabitat",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.1",
-    "@slack/client": "^3.16.0",
     "elizabot": "^0.0.2",
-    "googlemaps": "^1.12.0",
-    "node-weatherunderground": "^1.2.0",
-    "node-wit": "^4.3.0",
     "promise-queue": "^2.2.3",
     "winston": "^2.3.0",
-    "wundergroundnode": "^0.11.0",
     "yargs": "^17.7.2"
   },
   "license": "MIT",

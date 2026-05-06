@@ -17,11 +17,13 @@ var log = require('winston')
 log.remove(log.transports.Console)
 log.add(log.transports.Console, { 'timestamp': true })
 
-const RtmClient = require('@slack/client').RtmClient
-const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS
-const RTM_EVENTS = require('@slack/client').RTM_EVENTS
-const MemoryDataStore = require('@slack/client').MemoryDataStore
-
+// @slack/client is loaded LAZILY inside the SlackEnabled block below.
+// It's no longer in habibots/package.json since the production lineup
+// (hatchery + eliza + sage) runs without a Slack token, and the v3.x
+// line of @slack/client (the only one whose RtmClient API matched
+// this code) drags in a critical-CVE-laden chain through old `request`,
+// `https-proxy-agent`, `hawk`, and `hoek`. If anyone wants to enable
+// Slack again, `npm install @slack/client@3` here and pass --slackToken.
 const constants = require('../constants')
 const HabiBot = require('../habibot')
 
@@ -47,21 +49,26 @@ const GreetingText = fs.readFileSync(Argv.greetingFile).toString().replace(/\r/g
 
 
 const SlackEnabled = Argv.slackToken !== ''
-const SlackClient = new RtmClient(Argv.slackToken, {
-  logLevel: 'error', 
-  dataStore: new MemoryDataStore(),
-  autoReconnect: true,
-  autoMark: true 
-})
-
+let SlackClient = null
 let SlackChannelId
-SlackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
-  for (const c of rtmStartData.channels) {
-    if (c.name === Argv.slackChannel) {
-      SlackChannelId = c.id 
+if (SlackEnabled) {
+  // Lazy require so the missing dep doesn't crash the bot when Slack
+  // isn't configured (the production case).
+  const Slack = require('@slack/client')
+  SlackClient = new Slack.RtmClient(Argv.slackToken, {
+    logLevel: 'error',
+    dataStore: new Slack.MemoryDataStore(),
+    autoReconnect: true,
+    autoMark: true,
+  })
+  SlackClient.on(Slack.CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
+    for (const c of rtmStartData.channels) {
+      if (c.name === Argv.slackChannel) {
+        SlackChannelId = c.id
+      }
     }
-  }
-})
+  })
+}
 
 HatcheryBot.on('connected', (bot) => {
   log.debug('HatcheryBot connected.')
