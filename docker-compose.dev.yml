@@ -1,0 +1,31 @@
+# Dev overlay — adds bridge_v2 with Air hot-reload.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# (dev.sh does this automatically)
+#
+# Production uses bridge_v2 as a host systemd service (ansible/roles/bridge_host/).
+# This file is never loaded in prod — Ansible uses docker-compose.prod.yml only.
+
+services:
+  bridge_v2:
+    build:
+      context: ./bridge_v2
+      dockerfile: Dockerfile.dev
+    command: ["air"]
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+      OTEL_SERVICE_NAME: "bridge_v2"
+    volumes:
+      - ./bridge_v2:/app
+    ports:
+      - "2026:2026"
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - neohabitat
+    depends_on:
+      neohabitatmongo:
+        condition: service_healthy
+      neohabitat:
+        condition: service_healthy
