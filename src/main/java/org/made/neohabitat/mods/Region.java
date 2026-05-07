@@ -326,13 +326,13 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
     }
 
     public synchronized static String onlinePopulationSummary(int maxLength) {
-        String currentPopulation = "The current population is " + onlineUserCount() + ".";
+        String currentPopulation = onlineUserCount() + " avatars online.";
         List<String> topRealms = topPopulatedRealms(3);
         if (topRealms.isEmpty()) {
             return truncateText(currentPopulation, maxLength);
         }
 
-        String summary = currentPopulation + " The highest populated areas: " + String.join(", ", topRealms) + ".";
+        String summary = currentPopulation + " Most in: " + String.join(", ", topRealms) + ".";
         return truncateText(summary, maxLength);
     }
 
