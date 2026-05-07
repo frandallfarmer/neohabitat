@@ -37,6 +37,15 @@ const MaxClientMessages = 500
 
 var ElkoMsgTerminator = []byte("\n\n")
 
+type habiproxyHatcheryStateMessage struct {
+	To      string `json:"to"`
+	Op      string `json:"op"`
+	State   string `json:"state"`
+	Avatar  string `json:"avatar"`
+	User    string `json:"user"`
+	Session string `json:"session"`
+}
+
 type ClientSession struct {
 	Avatar             *HabitatMod
 	Online             bool
@@ -63,33 +72,34 @@ type ClientSession struct {
 	// stateMu. sync.Mutex is non-reentrant, and folding these fields into
 	// stateMu produced a deadlock right after logging "->CLIENT" on the
 	// IM_ALIVE short-circuit path.
-	qlinkMu                  sync.Mutex
-	qlinkInSeq               byte // sequence number of last received QLink Action (peer's send seq)
-	qlinkOutSeq              byte // sequence number of next QLink Action we will send
-	clientConn               *ClientConnection
-	clientReader             *bufio.Reader
-	closeMutex               sync.Mutex
-	connected                bool
-	contentsVector           *ContentsVector
-	done                     chan struct{}
-	doneClosed               bool
-	elkoConn                 net.Conn
-	elkoConnInitWg           sync.WaitGroup
-	elkoDone                 chan struct{}
-	elkoDoneClosed           bool
-	elkoSendChan             chan *ElkoMessage
-	elkoWg                   sync.WaitGroup
-	firstConnection          bool
-	hatcheryPending          bool
-	hatcheryCompleted        bool
-	largeRequestCache        []byte
-	nextRegion               string
-	nextRegionSet            bool
-	log                      zerolog.Logger     // sticky avatar/ip/session_id structured fields
-	sessionID                string             // monotonic session handle, also a log + span attribute
-	ctx                      context.Context    // context carrying the session root span
-	span                     trace.Span         // root span for this session, ended in Close()
-	jsonPassthrough          bool               // true => client speaks JSON directly to Elko; bridge relays
+	qlinkMu           sync.Mutex
+	qlinkInSeq        byte // sequence number of last received QLink Action (peer's send seq)
+	qlinkOutSeq       byte // sequence number of next QLink Action we will send
+	clientConn        *ClientConnection
+	clientReader      *bufio.Reader
+	closeMutex        sync.Mutex
+	connected         bool
+	contentsVector    *ContentsVector
+	done              chan struct{}
+	doneClosed        bool
+	elkoConn          net.Conn
+	elkoConnInitWg    sync.WaitGroup
+	elkoDone          chan struct{}
+	elkoDoneClosed    bool
+	elkoSendChan      chan *ElkoMessage
+	elkoWriteMu       sync.Mutex
+	elkoWg            sync.WaitGroup
+	firstConnection   bool
+	hatcheryPending   bool
+	hatcheryCompleted bool
+	largeRequestCache []byte
+	nextRegion        string
+	nextRegionSet     bool
+	log               zerolog.Logger  // sticky avatar/ip/session_id structured fields
+	sessionID         string          // monotonic session handle, also a log + span attribute
+	ctx               context.Context // context carrying the session root span
+	span              trace.Span      // root span for this session, ended in Close()
+	jsonPassthrough   bool            // true => client speaks JSON directly to Elko; bridge relays
 	// bridgeAutoEnteredContext records the most recent context the
 	// bridge entered on the client's behalf (after a server-initiated
 	// changeContext in JSON-passthrough mode). Used to suppress the
@@ -262,7 +272,9 @@ func (c *ClientSession) elkoWriter() {
 				c.log.Trace().Msgf("->ELKO: %s", string(msgBytes))
 			}
 			msgBytes = append(msgBytes, ElkoMsgTerminator...)
+			c.elkoWriteMu.Lock()
 			_, err = c.elkoConn.Write(msgBytes)
+			c.elkoWriteMu.Unlock()
 			if err != nil {
 				c.log.Error().Err(err).Str("raw", string(msgBytes)).Msg("Error writing Elko message")
 				span.RecordError(err)
@@ -1001,6 +1013,9 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 		}
 		if c.bridge.OriginalHatchery && !c.jsonPassthrough {
 			c.hatcheryPending = true
+			if stateErr := c.sendHatcheryStateToHabiproxy("started"); stateErr != nil {
+				c.log.Error().Err(stateErr).Str("user_ref", c.userRef).Msg("Could not notify habiproxy that original hatchery started")
+			}
 			c.log.Info().Str("user_ref", c.userRef).Msg("User has no avatar; starting original hatchery flow")
 			return
 		}
@@ -1358,8 +1373,26 @@ func (c *ClientSession) sendRawToElko(line []byte) error {
 	packet = append(packet, line...)
 	packet = append(packet, ElkoMsgTerminator...)
 	observability.IncMessagesOut(c.ctx, observability.PeerAttr("elko"))
+	c.elkoWriteMu.Lock()
+	defer c.elkoWriteMu.Unlock()
 	_, err := c.elkoConn.Write(packet)
 	return err
+}
+
+func (c *ClientSession) sendHatcheryStateToHabiproxy(state string) error {
+	msg := habiproxyHatcheryStateMessage{
+		To:      "habiproxy",
+		Op:      "HATCHERY_STATE",
+		State:   state,
+		Avatar:  c.UserName,
+		User:    c.userRef,
+		Session: c.sessionID,
+	}
+	bytes, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	return c.sendRawToElko(bytes)
 }
 
 // sendOpToElko marshals a minimal ElkoMessage (to/op) to JSON and forwards
@@ -1554,6 +1587,9 @@ func (c *ClientSession) handleHatcheryCustomize(args []byte) {
 	}
 	c.hatcheryPending = false
 	c.hatcheryCompleted = true
+	if err := c.sendHatcheryStateToHabiproxy("completed"); err != nil {
+		c.log.Error().Err(err).Str("user_ref", c.userRef).Msg("Could not notify habiproxy that original hatchery completed")
+	}
 	c.log.Info().
 		Str("user_ref", c.userRef).
 		Uint8("head_style", appearance.headStyle).

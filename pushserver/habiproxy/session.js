@@ -20,6 +20,11 @@ class HabitatSession {
     this.avatarContext = null;
     this.avatarObj = null;
     this.avatarName = 'unknown';
+    this.clientBuffer = '';
+    this.hatcheryState = 'idle';
+    this.hatcheryAvatar = null;
+    this.hatcheryUser = null;
+    this.hatcherySession = null;
     this.region = 'unknown';
     this.regionContents = {};
 
@@ -217,6 +222,10 @@ class HabitatSession {
     this.avatarObj = readySession.avatarObj;
     this.avatarName = readySession.avatarName;
     this.serverConnection = readySession.serverConnection;
+    this.hatcheryState = readySession.hatcheryState;
+    this.hatcheryAvatar = readySession.hatcheryAvatar;
+    this.hatcheryUser = readySession.hatcheryUser;
+    this.hatcherySession = readySession.hatcherySession;
     this.region = readySession.region;
     this.regionContents = readySession.regionContents;
 
@@ -243,29 +252,66 @@ class HabitatSession {
     }
   }
 
+  fireClientCallbacks(eventType, message) {
+    if (eventType in this.clientCallbacks) {
+      log.debug('Running Client callbacks for %s on: %s', eventType, this.id());
+      for (var i in this.clientCallbacks[eventType]) {
+        this.clientCallbacks[eventType][i](this, message);
+      }
+    }
+  }
+
+  isHabiproxyControlMessage(message) {
+    return message.to === 'habiproxy' && message.op === 'HATCHERY_STATE';
+  }
+
+  processHabiproxyControlMessage(message) {
+    if (message.state !== 'started' && message.state !== 'completed') {
+      log.warn('Ignoring unknown hatchery state from bridge on %s: %s',
+        this.id(), JSON.stringify(message));
+      return;
+    }
+
+    this.hatcheryState = message.state;
+    this.hatcheryAvatar = message.avatar || null;
+    this.hatcheryUser = message.user || null;
+    this.hatcherySession = message.session || null;
+    this.fireClientCallbacks('hatcheryState', message);
+  }
+
   // Proxies any data from the client to this session's Server connection.
   handleClientData(buffer) {
-    // Sends the Client message to this session's Elko server.
     log.silly('%s -> %s', this.id(), buffer);
-    try {
-      this.serverConnection.write(buffer);
-    } catch (err) {
-      log.error('Unable to write to Server connection: %s', err)
-    }
-    // Parses client message; if we receive bad data from the client, ignores it.
-    var messages = buffer.toString('utf8').split('\n');
+    this.clientBuffer += buffer.toString('utf8');
+    var messages = this.clientBuffer.split('\n');
+    this.clientBuffer = messages.pop();
+
     for (var i in messages) {
       var message = messages[i];
       if (message.length == 0) {
         continue;
       }
+      var shouldForward = true;
       try {
         var parsedMessage = JSON.parse(message);
       } catch (err) {
-        log.error('Client JSON failed to parse, ignoring: "%s" %s', message, err);
-        continue;
+        log.error('Client JSON failed to parse, forwarding unprocessed: "%s" %s', message, err);
+        parsedMessage = null;
       }
-      this.processClientMessage(parsedMessage);
+      if (parsedMessage !== null && this.isHabiproxyControlMessage(parsedMessage)) {
+        shouldForward = false;
+        this.processHabiproxyControlMessage(parsedMessage);
+      }
+      if (shouldForward) {
+        try {
+          this.serverConnection.write(message+'\n\n');
+        } catch (err) {
+          log.error('Unable to write to Server connection: %s', err)
+        }
+      }
+      if (parsedMessage !== null && shouldForward) {
+        this.processClientMessage(parsedMessage);
+      }
     }
   }
 

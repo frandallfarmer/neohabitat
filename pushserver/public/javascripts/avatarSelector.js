@@ -9,7 +9,6 @@ function trackAvatar(avatarName) {
   AvatarName = avatarName;
   activateDocent();
 }
-window.trackAvatar = trackAvatar;
 
 function activateDocent() {
   startEventSource();

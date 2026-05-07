@@ -123,6 +123,41 @@ class EventRoutes {
       });
     });
 
+    self.router.get('/hatchery/eventStream', function(req, res, next) {
+      req.socket.setTimeout(0);
+
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      });
+      res.write('\n');
+      sendEvent(res, 'hatchery', 'CONNECTED');
+
+      var sendHatcheryStarted = function(session, message) {
+        sendEvent(res, 'hatchery', 'HATCHERY_STARTED', {
+          avatar: message.avatar,
+          user: message.user,
+          session: message.session,
+        });
+      };
+      var sendHatcheryCompleted = function(session, message) {
+        sendEvent(res, 'hatchery', 'HATCHERY_COMPLETED', {
+          avatar: message.avatar,
+          user: message.user,
+          session: message.session,
+        });
+      };
+
+      self.habiproxy.on('hatcheryStarted', sendHatcheryStarted);
+      self.habiproxy.on('hatcheryCompleted', sendHatcheryCompleted);
+
+      req.on('close', function() {
+        self.habiproxy.off('hatcheryStarted', sendHatcheryStarted);
+        self.habiproxy.off('hatcheryCompleted', sendHatcheryCompleted);
+      });
+    });
+
     self.router.get('/:avatarName/eventStream', function(req, res, next) {
       var avatarName = req.params.avatarName;
 
@@ -135,7 +170,7 @@ class EventRoutes {
 
       var session = self.habiproxy.sessions[avatarName];
 
-      req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
+      req.socket.setTimeout(0);
 
       // Establishes the response as an EventStream readable by an EventSource.
       res.writeHead(200, {

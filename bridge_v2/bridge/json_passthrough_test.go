@@ -191,6 +191,39 @@ func TestSendOpToElko_Shape(t *testing.T) {
 	}
 }
 
+func TestSendHatcheryStateToHabiproxyShape(t *testing.T) {
+	sess, _, elko := newJsonTestSession(nil)
+	sess.UserName = "Alice"
+	sess.userRef = "user-alice"
+	sess.sessionID = "session-42"
+
+	if err := sess.sendHatcheryStateToHabiproxy("started"); err != nil {
+		t.Fatalf("sendHatcheryStateToHabiproxy: %v", err)
+	}
+
+	got := elko.Written()
+	if !bytes.HasSuffix(got, ElkoMsgTerminator) {
+		t.Errorf("missing frame terminator, got = %q", got)
+	}
+	payload := bytes.TrimSuffix(got, ElkoMsgTerminator)
+	var parsed map[string]interface{}
+	if err := json.Unmarshal(payload, &parsed); err != nil {
+		t.Fatalf("payload not valid JSON: %q: %v", payload, err)
+	}
+	if parsed["to"] != "habiproxy" {
+		t.Errorf("to = %v, want habiproxy", parsed["to"])
+	}
+	if parsed["op"] != "HATCHERY_STATE" {
+		t.Errorf("op = %v, want HATCHERY_STATE", parsed["op"])
+	}
+	if parsed["state"] != "started" {
+		t.Errorf("state = %v, want started", parsed["state"])
+	}
+	if parsed["avatar"] != "Alice" || parsed["user"] != "user-alice" || parsed["session"] != "session-42" {
+		t.Errorf("identity fields = %v", parsed)
+	}
+}
+
 // ---------- handleElkoMessageJson state machine ----------
 
 // "make" with you:true marks the session as awaiting avatar contents and
