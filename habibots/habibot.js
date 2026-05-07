@@ -570,6 +570,24 @@ class HabiBot {
       target: noid,
     }, 10000)
   }
+
+  /**
+   * Hand an object the bot is holding to another adjacent avatar.
+   * Wire op is HAND. The avatar must be holding the item (server-side
+   * check) and the recipient must be empty-handed; preconditions get
+   * enforced by Elko, this just sends the request.
+   * @param {int} itemNoid the noid of the object the bot is holding
+   * @param {int} recipientNoid the noid of the avatar to hand it to
+   * @returns {Promise}
+   */
+  giveObject(itemNoid, recipientNoid) {
+    return this.sendWithDelay({
+      op: 'HAND',
+      to: 'ME',
+      item: itemNoid,
+      target: recipientNoid,
+    }, 5000)
+  }
   
   /**
    * Tells the HabiBot to open a door
@@ -835,6 +853,16 @@ class HabiBot {
       this.addNames(ref)
       this.history[ref] = o
       if ('mods' in o.obj && o.obj.mods.length > 0) {
+        // Stash the message's `to` field as a non-public _container
+        // marker so a bot can later answer "what's in my pockets?" by
+        // walking noids and matching _container against its own
+        // user-ref. Elko's wire format uses `to` to express the
+        // container relationship: items in the avatar's hand have
+        // to=user-X-..., items lying in the region have
+        // to=context-...-..., items inside an open box have
+        // to=item-box-... etc. Underscore-prefix to signal "client-
+        // side bookkeeping, never sent back to server."
+        o.obj._container = o.to
         this.noids[o.obj.mods[0].noid] = o.obj
       }
       if (o.you) {
