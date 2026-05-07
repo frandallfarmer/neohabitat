@@ -2,6 +2,7 @@
 .vagrant/
 .dbshell
 lib/
+!habibots/lib/
 log/
 node_modules/
 pushserver/node_modules/
