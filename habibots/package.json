@@ -5,6 +5,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.1",
     "elizabot": "^0.0.2",
+    "mongodb": "^7.2.0",
     "promise-queue": "^2.2.3",
     "winston": "^2.3.0",
     "yargs": "^17.7.2"
