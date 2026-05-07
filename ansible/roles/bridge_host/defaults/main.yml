@@ -28,6 +28,7 @@ bridge_host_mongo_db: "elko"
 bridge_host_mongo_collection: "odb"
 bridge_host_otel_endpoint: "http://127.0.0.1:4318"
 bridge_host_initial_context: "context-hatchery"
+bridge_host_original_hatchery: false
 bridge_host_rate: 1200
 # Default to DEBUG. Bridge client lockups have been hard to diagnose
 # at INFO because the per-message wire flow isn't logged — when a

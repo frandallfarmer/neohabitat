@@ -50,6 +50,7 @@ RestartSec=5s
 AmbientCapabilities=CAP_NET_ADMIN
 CapabilityBoundingSet=CAP_NET_ADMIN
 # OTLP / OTel SDK config — same values the in-container service used.
+Environment=NEOHABITAT_ORIGINAL_HATCHERY={{ bridge_host_original_hatchery | ternary('true', 'false') }}
 Environment=OTEL_EXPORTER_OTLP_ENDPOINT={{ bridge_host_otel_endpoint }}
 Environment=OTEL_SERVICE_NAME=bridge_v2
 Environment=OTEL_METRIC_EXPORT_INTERVAL=10000

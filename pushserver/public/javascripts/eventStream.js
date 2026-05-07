@@ -1,9 +1,13 @@
 var CONNECTED = 'CONNECTED';
+var HATCHERY_COMPLETED = 'HATCHERY_COMPLETED';
+var HATCHERY_STARTED = 'HATCHERY_STARTED';
 var REGION_CHANGE = 'REGION_CHANGE';
 var SHOW_HELP = 'SHOW_HELP';
 
 var HabiventsES = null;
+var HatcheryES = null;
 var CurrentAvatars = {};
+var OriginalHatcheryDoc = '/docs/region/ORIGINAL_HATCHERY';
 
 function orientationToRotation(orientation) {
   switch (orientation) {
@@ -26,6 +30,14 @@ const orient     = ["West", "East", "North", "South"];
 function processEvent(event) {
   switch (event.type) {
     case CONNECTED:
+      return;
+    case HATCHERY_STARTED:
+      $('#docsFrame').attr('src', OriginalHatcheryDoc);
+      return;
+    case HATCHERY_COMPLETED:
+      if (event.msg.avatar && typeof trackAvatar === 'function') {
+        trackAvatar(event.msg.avatar);
+      }
       return;
     case REGION_CHANGE:
       $('#regionHeader').text(event.msg.description);
@@ -57,6 +69,22 @@ function processEvent(event) {
     default:
       console.log('Unknown event type: ', event.type)
       return;
+  }
+}
+
+function startHatcheryEventSource() {
+  if (HatcheryES == null || HatcheryES.readyState == 2) {
+    HatcheryES = new EventSource('/events/hatchery/eventStream');
+    HatcheryES.onerror = function(e) {
+      if (HatcheryES.readyState == 2) {
+        console.log('Hatchery EventSource disconnected, retrying in 3 secs:', e);
+        setTimeout(startHatcheryEventSource, 3000);
+      }
+    }
+    HatcheryES.addEventListener('message', function(e) {
+      var event = JSON.parse(e.data);
+      processEvent(event);
+    }, false);
   }
 }
 
@@ -186,3 +214,10 @@ function startDocentUpdates() {
   refreshAvatars();
   setInterval(refreshAvatars, 5000 + Math.floor(Math.random() * 2000));
 }
+
+$(document).ready(function() {
+  if (typeof AvatarName !== 'undefined' && AvatarName === null &&
+      typeof RedirectToEvents !== 'undefined' && RedirectToEvents === false) {
+    startHatcheryEventSource();
+  }
+});
