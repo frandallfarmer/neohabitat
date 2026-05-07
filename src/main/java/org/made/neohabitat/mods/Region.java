@@ -1,8 +1,12 @@
 package org.made.neohabitat.mods;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.elkoserver.foundation.json.JSONMethod;
 import org.elkoserver.foundation.json.OptBoolean;
@@ -56,6 +60,8 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
 
     /** All the currently logged in user names for ESP lookup */
     public static Hashtable<String, User> NameToUser = new Hashtable<String, User>();
+
+    public static final int TEXT_BALLOON_MAX_LENGTH = 114;
 
     /** All the currently instantiated regions for region transition testing  */
     public static Hashtable<String, Region> RefToRegion = new Hashtable<String, Region>();
@@ -312,6 +318,84 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             }
         }
         return oracleList;
+    }
+
+    public synchronized static int onlineUserCount() {
+        return NameToUser.size();
+    }
+
+    public synchronized static String onlinePopulationSummary(int maxLength) {
+        String currentPopulation = "The current population is " + onlineUserCount() + ".";
+        List<String> topRealms = topPopulatedRealms(3);
+        if (topRealms.isEmpty()) {
+            return truncateText(currentPopulation, maxLength);
+        }
+
+        String summary = currentPopulation + " The highest populated areas: " + String.join(", ", topRealms) + ".";
+        return truncateText(summary, maxLength);
+    }
+
+    private synchronized static List<String> topPopulatedRealms(int limit) {
+        Map<String, Integer> realmCounts = new HashMap<>();
+        for (User user : NameToUser.values()) {
+            Avatar avatar = (Avatar) user.getMod(Avatar.class);
+            String realm = currentRealmForAvatar(avatar);
+            if (realm.isEmpty() || realm.equalsIgnoreCase("unknown")) {
+                continue;
+            }
+            realmCounts.put(realm, realmCounts.getOrDefault(realm, 0) + 1);
+        }
+
+        List<Map.Entry<String, Integer>> entries = new ArrayList<>(realmCounts.entrySet());
+        Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> left, Map.Entry<String, Integer> right) {
+                int countCompare = right.getValue().compareTo(left.getValue());
+                if (countCompare != 0) {
+                    return countCompare;
+                }
+                return left.getKey().compareToIgnoreCase(right.getKey());
+            }
+        });
+
+        List<String> realms = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : entries) {
+            if (realms.size() >= limit) {
+                break;
+            }
+            realms.add(entry.getKey());
+        }
+        return realms;
+    }
+
+    private static String currentRealmForAvatar(Avatar avatar) {
+        if (avatar == null) {
+            return "";
+        }
+
+        Region region = null;
+        try {
+            region = avatar.current_region();
+        } catch (RuntimeException ignored) {
+            if (avatar.lastArrivedIn != null) {
+                region = RefToRegion.get(avatar.lastArrivedIn);
+            }
+        }
+
+        if (region == null || region.realm == null) {
+            return "";
+        }
+        return region.realm.trim();
+    }
+
+    private static String truncateText(String text, int maxLength) {
+        if (maxLength < 0) {
+            maxLength = 0;
+        }
+        if (text.length() <= maxLength) {
+            return text;
+        }
+        return text.substring(0, maxLength);
     }
 
     public static User getUserByName(String name) {

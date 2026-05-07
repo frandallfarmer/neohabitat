@@ -76,6 +76,7 @@ public class Avatar extends Container implements UserMod {
         "/h or /help - Shows this help",
         "/i AVATAR - Invites this Avatar to teleport to you",
         "/j AVATAR - Asks this Avatar to teleport you to them",
+        "/online - Shows where people are gathered",
         "/o MESSAGE - Requests help from online Oracles"
     };
 
@@ -1776,6 +1777,10 @@ public class Avatar extends Container implements UserMod {
                 for (String line : SPECIAL_COMMAND_HELP) {
                     object_say(from, UPGRADE_PREFIX + line);
                 }
+                break;
+            case "/online":
+                object_say(from, UPGRADE_PREFIX +
+                    Region.onlinePopulationSummary(Region.TEXT_BALLOON_MAX_LENGTH - UPGRADE_PREFIX.length()));
                 break;
             case "/o":
             case "/oracle":
