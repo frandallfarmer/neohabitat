@@ -537,6 +537,17 @@ class HabiBot {
    */
   sendWithDelay(obj, delayMillis) {
     var self = this
+    // Cap pre-send delays to keep bots interactive. Original callsites
+    // ask for 5s–10s pauses (a relic of the legacy node bridge's slower
+    // pacing); bridge_v2 throttles outbound at the wire (--rate=1200)
+    // so the bot doesn't need to space itself out to keep elko happy.
+    // The actionQueue still serializes, so messages still arrive in
+    // order — they just don't sit idle for 10 seconds first. Floored
+    // to a small value so callers that explicitly pass 0 still get a
+    // tick of breathing room (some elko ops want NOT-instant
+    // back-to-back).
+    var MAX_PRE_SEND_DELAY_MS = 500
+    var clamped = Math.min(Math.max(delayMillis || 0, 50), MAX_PRE_SEND_DELAY_MS)
     return self.actionQueue.add(() => {
       return new Promise((resolve, reject) => {
         if (!self.connected) {
@@ -553,7 +564,7 @@ class HabiBot {
           self.server.write(msg + '\n\n', 'UTF8', () => {
             resolve()
           })
-        }, delayMillis)
+        }, clamped)
       })
     })
   }
@@ -572,20 +583,39 @@ class HabiBot {
   }
 
   /**
-   * Hand an object the bot is holding to another adjacent avatar.
-   * Wire op is HAND. The avatar must be holding the item (server-side
-   * check) and the recipient must be empty-handed; preconditions get
-   * enforced by Elko, this just sends the request.
-   * @param {int} itemNoid the noid of the object the bot is holding
+   * Hand whatever this bot is currently holding (HANDS slot) to another
+   * adjacent avatar. Wire op is HAND.
+   *
+   * Elko's Avatar.HAND semantics (see neohabitat
+   * src/main/java/org/made/neohabitat/mods/Avatar.java :: HAND):
+   *   - The op is addressed to the RECIPIENT's avatar (`to:` = the
+   *     receiver's user-ref). The implementation looks at `from` (the
+   *     sender) as the giver and `this` (the addressee) as the
+   *     receiver.
+   *   - Transfer succeeds only if recipient.HANDS is empty AND
+   *     giver.HANDS is non-empty AND the giver isn't sitting.
+   *   - There is NO `item` parameter — `item` and `target` fields on
+   *     the JSON message are silently ignored. The transferred object
+   *     is whatever sits in the giver's HANDS slot at call time.
+   *
+   * Practical implication: a bot that wants to give a specific pocket
+   * item must first move it into HANDS (by issuing a GET on the item)
+   * before calling giveObject. The itemNoid argument here is informational
+   * only — used for logging — and recipientNoid is what we actually need
+   * to resolve to the target user-ref.
+   *
+   * @param {int} itemNoid the noid the bot intends to give (informational)
    * @param {int} recipientNoid the noid of the avatar to hand it to
    * @returns {Promise}
    */
   giveObject(itemNoid, recipientNoid) {
+    var recipient = this.getNoid(recipientNoid)
+    if (!recipient || !recipient.ref) {
+      return Promise.reject(`giveObject: no avatar at noid ${recipientNoid}`)
+    }
     return this.sendWithDelay({
       op: 'HAND',
-      to: 'ME',
-      item: itemNoid,
-      target: recipientNoid,
+      to: recipient.ref,
     }, 5000)
   }
   
@@ -834,6 +864,26 @@ class HabiBot {
     if (o.type === 'changeContext') {
       log.debug('changeContext to %s — clearing local region state', o.context)
       this.clearState()
+      return;
+    }
+
+    // AUTO_TELEPORT_$ is elko's "you've been teleported, finish the
+    // transition" notification — fired when something other than the
+    // user initiated the move (accept-invite, /j accept, magic items,
+    // turfsetting, etc). The legacy C64 firmware responds by sending
+    // NEWREGION direction=AUTO_TELEPORT_DIR (4); elko then reads the
+    // pre-saved `to_region` and emits the actual changeContext, kicking
+    // off the standard region-transit cycle. Without this auto-response
+    // the bot just sits where it was while elko thinks it teleported —
+    // visible as "OK, joining X..." with no actual movement.
+    //
+    // direction=4 (AUTO_TELEPORT_DIR) is the magic value Avatar.NEWREGION
+    // checks for; passage_id=0 because there's no door involved.
+    if (o.op === 'AUTO_TELEPORT_$') {
+      log.debug('AUTO_TELEPORT_$ received — completing teleport via NEWREGION direction=4')
+      this.newRegion(4).catch((err) => {
+        log.warn('AUTO_TELEPORT_$ followup newRegion failed: %s', err)
+      })
       return;
     }
 

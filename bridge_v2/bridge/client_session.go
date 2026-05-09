@@ -1084,6 +1084,11 @@ func (c *ClientSession) Run() {
 		}
 		defer c.wg.Done()
 		c.jsonPassthrough = true
+		// Bots/JSON clients don't simulate a 1200 baud modem; throttling
+		// them at 120 bytes/sec causes region transitions to silently
+		// drop the changeContext (the make storm queues behind it and
+		// the bot starves). Disable the rate limit for this connection.
+		c.clientConn.SetUnlimited()
 		c.log.Info().Msg("JSON passthrough session connected.")
 		c.runJsonPassthrough()
 		return

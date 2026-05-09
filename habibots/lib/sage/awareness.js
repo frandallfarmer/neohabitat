@@ -19,6 +19,14 @@
 //   describeWorld(bot)       → multiline string for the LLM prompt
 //   currentRegionRef(bot)    → context-XX ref bot is in, or '' before entry
 
+// Container slot index for "the item the avatar is currently holding".
+// Mirrors HANDS = 5 from
+// src/main/java/org/made/neohabitat/Constants.java in elko. Pocket
+// items' `mods[0].y` is the slot they're stored in, so we can tell at a
+// glance which (if any) item is in the avatar's hands vs in numbered
+// pocket slots.
+const HANDS_SLOT = 5
+
 const SITTABLE_TYPES = new Set(['Seat', 'Couch', 'Chair', 'Bench', 'Hot_tub', 'Bed'])
 const OPENABLE_TYPES = new Set(['Door', 'Bridge', 'Box', 'Bag', 'Chest', 'Trunk', 'Mailbox', 'Dropbox', 'Aquarium', 'Hot_tub'])
 const PICKUPABLE_HINT_TYPES = new Set(['Book', 'Compass', 'Knick_knack', 'Plant', 'Magic_lamp', 'Magic_wand', 'Crystal_ball', 'Cookie', 'Coffee', 'Garbage_can', 'Token'])
@@ -47,28 +55,51 @@ function objectsByType(bot) {
 // ground, item-box-ref means inside an open container). habibot.js
 // stashes that as o._container in processElkoMessage; we just filter.
 //
-// The bot's user-ref is `this.names.USER` (set in processElkoMessage when
-// elko sends the "you:true" make for our avatar — looks like
-// "user-sagebot"). Before connect/region-entry, names.USER is undefined
-// and getInventory returns [] cleanly.
+// The bot's per-session full ref is `bot.names.ME` (e.g.
+// "user-sagebot-1765655431951290340"). `bot.names.USER` is the trimmed
+// "user-sagebot" form — fine for matching most things, but pocket items'
+// _container is set to the FULL ref via `to` on the make message, so we
+// have to match `names.ME` (or fall back to a prefix check on USER for
+// pre-region-entry edge cases). Before any make has arrived for our
+// avatar, both names are undefined and getInventory returns [] cleanly.
 function getInventory(bot) {
-  const myRef = bot.names && bot.names.USER
-  if (!myRef) return []
+  const myFullRef = bot.names && bot.names.ME
+  const myShortRef = bot.names && bot.names.USER
+  if (!myFullRef && !myShortRef) return []
   const items = []
   for (const noid in bot.noids) {
     const o = bot.noids[noid]
     if (!o || !o.mods || !o.mods[0]) continue
     if (!o._container) continue
-    if (o._container !== myRef) continue
+    // Match either the full session ref OR the short user-NAME prefix.
+    // Elko sets `to` to the full ref on make, but accepting the short
+    // one too guards against any lookup that happens via names.USER.
+    if (o._container !== myFullRef &&
+        !(myShortRef && o._container.startsWith(myShortRef + '-'))) {
+      continue
+    }
     // Exclude the avatar itself — it's also "contained" by the user-ref
     // in some flows but it's not a pocket item.
     if (o.mods[0].type === 'Avatar' || o.mods[0].type === 'Ghost') continue
-    items.push({
+    const item = {
       ref: o.ref,
       type: o.mods[0].type,
       name: o.name || o.mods[0].type,
       noid: o.mods[0].noid,
-    })
+      // `y` on a pocket item doubles as its container slot index
+      // (HANDS=5, HEAD=6, etc.). Surface it so callers can tell the
+      // in-HANDS item from numbered pocket-slot items.
+      slot: o.mods[0].y,
+    }
+    // Tokens carry their face value in denom_lo + denom_hi*256 (16-bit
+    // little-endian). Surface as `amount` so describeWorld and the
+    // pay_to_avatar tool know what's spendable without re-decoding.
+    if (item.type === 'Tokens') {
+      const lo = o.mods[0].denom_lo || 0
+      const hi = o.mods[0].denom_hi || 0
+      item.amount = lo + hi * 256
+    }
+    items.push(item)
   }
   return items
 }
@@ -134,13 +165,28 @@ function describeWorld(bot) {
   // self-awareness: previously sage couldn't distinguish its own knick-
   // knack from someone else's, leading to it commenting on every pocket
   // trinket in the room.
+  // Pocket items list, with the HANDS slot called out specifically.
+  // An avatar can hold exactly one item in HANDS (slot 5); everything
+  // else lives in numbered pocket slots. The Habitat give-flow is
+  // pick_up (item moves into HANDS) → give_to_avatar (HANDS contents
+  // transfer to recipient). Telling Claude which slot each item sits
+  // in turns the abstract recipe into a concrete plan.
   const inv = getInventory(bot)
   lines.push(`In your pockets:`)
+  let inHandsName = null
   if (inv.length) {
     for (const item of inv) {
       const namePart = item.name && item.name !== item.type ? ` "${item.name}"` : ''
-      lines.push(`  - ${item.type}${namePart} (noid ${item.noid}, ref ${item.ref})`)
+      const slotTag = item.slot === HANDS_SLOT ? ' [IN HANDS]' : ` [pocket slot ${item.slot}]`
+      const amountTag = item.type === 'Tokens' && typeof item.amount === 'number'
+        ? ` — balance ${item.amount} tokens`
+        : ''
+      lines.push(`  - ${item.type}${namePart} (noid ${item.noid}, ref ${item.ref})${slotTag}${amountTag}`)
+      if (item.slot === HANDS_SLOT) inHandsName = item.name || item.type
     }
+    lines.push(inHandsName
+      ? `  (currently holding ${inHandsName} — your HANDS slot is full)`
+      : `  (HANDS slot is empty — you can pick_up another pocket item to give it away)`)
   } else {
     lines.push('  (empty-handed)')
   }
@@ -148,13 +194,22 @@ function describeWorld(bot) {
   // Interactables in the room — by category, with refs+noids so Claude
   // can call open/sit/pick_up with valid arguments.
   const objs = objectsByType(bot)
+  // Same matching as getInventory above — pocket items have _container
+  // = the full session ref (names.ME), not the trimmed user-NAME form.
+  const myFullRef = bot.names && bot.names.ME
+  const myShortRef = bot.names && bot.names.USER
+  const isMine = (o) =>
+    o._container && (
+      o._container === myFullRef ||
+      (myShortRef && o._container.startsWith(myShortRef + '-'))
+    )
   lines.push(`Interactable objects in this region:`)
   let any = false
   for (const cat of ['sittable', 'openable', 'pickupable', 'other']) {
     for (const o of objs[cat]) {
       // Skip items in our own pocket — they're listed above; describing
       // them here too is the exact bug we're fixing.
-      if (o._container && o._container === (bot.names && bot.names.USER)) continue
+      if (isMine(o)) continue
       const m = o.mods[0]
       const namePart = o.name && o.name !== m.type ? ` "${o.name}"` : ''
       lines.push(`  - [${cat}] ${m.type}${namePart} (noid ${m.noid}, ref ${o.ref})`)

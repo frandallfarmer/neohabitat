@@ -30,6 +30,7 @@
 
 const log = require('winston')
 const awareness = require('./awareness')
+const { sanitizeForC64 } = require('./petscii')
 
 const TOOLS = [
   // ── movement / navigation ────────────────────────────────────────
@@ -110,24 +111,68 @@ const TOOLS = [
   // (ESP) IS a tool because it's a deliberate channel choice.
   {
     name: 'whisper',
-    description: 'Send a private ESP message to a specific avatar. Only use when you have something genuinely private to say to one person.',
+    description: 'Send a private ESP (telepathic) message to a specific avatar. Invisible to everyone else in the room. Use for asides, confidences, or follow-ups you don\'t want broadcast.',
     input_schema: {
       type: 'object',
       properties: {
+        to: { type: 'string', description: 'Avatar name to whisper to. Must be present in the region.' },
         text: { type: 'string', description: 'What to whisper. Keep it short (1-2 sentences).' },
       },
-      required: ['text'],
+      required: ['to', 'text'],
     },
+  },
+
+  // ── teleport / social ────────────────────────────────────────────
+  // The /i, /j, /ai, /aj commands are NeoHabitat extensions — sent as
+  // regular SPEAK lines starting with "/", elko's run_special_command
+  // intercepts them. /i invites someone to YOUR location; /j asks to
+  // teleport to THEIRS. /ai accepts a pending invite, /aj accepts a
+  // pending join request.
+  {
+    name: 'invite_to_join',
+    description: 'Invite another avatar to teleport to your current location. They get a popup prompting them to enter /ai. Use this to bring a friend over.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'Avatar name to invite.' },
+      },
+      required: ['name'],
+    },
+  },
+  {
+    name: 'request_join',
+    description: 'Ask another avatar if you can teleport to where THEY are. They get a popup prompting them to enter /aj. Use this to visit someone.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'Avatar name to join.' },
+      },
+      required: ['name'],
+    },
+  },
+  {
+    name: 'accept_invite',
+    description: 'Accept a pending teleport invitation that someone sent you (the prompt mentioned /ai). Teleports you to them.',
+    input_schema: { type: 'object', properties: {} },
+  },
+  {
+    name: 'accept_join',
+    description: 'Accept a pending join request someone sent you (the prompt mentioned /aj). Teleports them to you.',
+    input_schema: { type: 'object', properties: {} },
   },
 
   // ── object manipulation ──────────────────────────────────────────
   {
     name: 'pick_up',
-    description: 'Pick up a small portable item currently on the ground in the room. The item moves into your pocket.',
+    description: 'GET an item — moves it into your HANDS slot. Works for items on the ground in the ' +
+      'room AND for items already in your own pocket (use it to pull a Token, Compass, etc. out of ' +
+      'a pocket slot into your HANDS so you can then give_to_avatar). Requires your HANDS to be ' +
+      'empty first; if you\'re already holding something, put_down or give it away before picking ' +
+      'up something new.',
     input_schema: {
       type: 'object',
       properties: {
-        ref: { type: 'string', description: 'The Habitat object ref shown in the scene description.' },
+        ref: { type: 'string', description: 'The Habitat object ref shown in the scene description (or in your inventory).' },
         noid: { type: 'integer', description: 'The noid shown alongside the ref.' },
       },
       required: ['ref', 'noid'],
@@ -150,14 +195,35 @@ const TOOLS = [
   },
   {
     name: 'give_to_avatar',
-    description: 'Hand an item from your pocket to another avatar.',
+    description: 'Hand whatever is currently in your HANDS slot to another avatar. The full give-something ' +
+      'recipe is: (1) pick_up the pocket item you want to give — this moves it from its pocket slot ' +
+      'into your HANDS; (2) give_to_avatar(recipient_noid=NN) — transfers your HANDS contents to ' +
+      'them. The recipient must also be empty-handed. Habitat\'s wire protocol has no "give specific ' +
+      'item" — whatever is in your HANDS is what gets given. NOTE: for paying MONEY (Tokens), use ' +
+      'pay_to_avatar instead — it transfers a specific amount and leaves your remaining balance in ' +
+      'your pocket, with no pickup dance.',
     input_schema: {
       type: 'object',
       properties: {
-        item_noid: { type: 'integer', description: 'Noid of the item in your pocket.' },
-        recipient_noid: { type: 'integer', description: 'Noid of the recipient avatar.' },
+        recipient_noid: { type: 'integer', description: 'Noid of the recipient avatar (must be present, empty-handed).' },
       },
-      required: ['item_noid', 'recipient_noid'],
+      required: ['recipient_noid'],
+    },
+  },
+  {
+    name: 'pay_to_avatar',
+    description: 'Pay a specific amount of tokens (money) to another avatar. Subtracts from your Tokens ' +
+      'stack and creates a new Tokens stack of `amount` in the recipient\'s HANDS. Use this when ' +
+      'someone asks for money or when you want to gift currency. Recipient must be empty-handed. ' +
+      'The amount must be greater than 0 and strictly less than your current Tokens balance ' +
+      '(emptying the stack entirely uses the give_to_avatar flow instead).',
+    input_schema: {
+      type: 'object',
+      properties: {
+        recipient_noid: { type: 'integer', description: 'Noid of the recipient avatar (must be present, empty-handed).' },
+        amount: { type: 'integer', description: 'How many tokens to pay (1 to 65535).' },
+      },
+      required: ['recipient_noid', 'amount'],
     },
   },
   {
@@ -275,12 +341,38 @@ function getObj(bot, ref, containerNoid) {
   return bot.send({ op: 'GET', to: ref, containerNoid: containerNoid || 0 })
 }
 
-// ESP whisper. HabiBot has bot.ESPsay(text) that targets the most-recent
-// ESP correspondent — but for an LLM-driven bot we want explicit
-// targeting. We don't yet have a per-recipient whisper helper, so reuse
-// ESPsay's mechanism (the bridge resolves ESP by recent context).
-function whisperTo(bot, text) {
-  return bot.ESPsay(text)
+// ESP whisper to a specific avatar. Elko's ESP model: SPEAK with
+// `text:"to:NAME"` (esp=0) sets ESPTargetName for this session
+// (Avatar.SPEAK at line 669-680 of Avatar.java). After that, op:ESP
+// messages route to that target. For an LLM-driven bot we want
+// explicit per-call targeting, so we pair every whisper with the
+// targeting prefix — even though it's redundant when whispering to
+// the same person twice in a row, it eliminates "whoops, I just
+// whispered something private to the wrong person" failure modes
+// after Claude switches conversation partners.
+//
+// Both writes go through sanitizeForC64 so smart quotes / em-dashes /
+// emoji from Claude get folded to PETSCII-safe ASCII before hitting
+// the wire (otherwise the C64 client renders the multi-byte UTF-8 as
+// garbage block glyphs — observed: "Sounds good — be right over."
+// landed as "Sounds good |Ƒ‰| be right over.").
+async function whisperTo(bot, to, text) {
+  if (!to) {
+    throw new Error('whisper target is required')
+  }
+  const safeTo = sanitizeForC64(to)
+  const safeText = sanitizeForC64(text || '')
+  await bot.say(`to:${safeTo}`)
+  await bot.ESPsay(safeText)
+}
+
+// /i, /j, /ai, /aj — special commands sent as plain SPEAK lines starting
+// with "/". Elko's Avatar.SPEAK detects the prefix and routes to
+// run_special_command (Avatar.java line 667). The `say()` helper sends
+// SPEAK with esp=0, which is the only mode that triggers the special
+// path; sending these via ESPsay would just whisper the literal text.
+function specialCommand(bot, line) {
+  return bot.say(line)
 }
 
 // executeAction: run the tool the model asked for and return a JSON-able
@@ -303,11 +395,15 @@ async function executeAction(toolUse, bot, ctx) {
       case 'walk_to_avatar': {
         const target = findAvatarByName(bot, args.name)
         if (!target) return { ok: false, error: `no avatar named ${args.name} present` }
-        await withTimeout(bot.walkToAvatar(target), 15_000, 'walkToAvatar')
+        // 30s, not 15: walkToAvatar → walkTo → sendWithDelay(10s), and the
+        // 10s delay sits inside the action queue. If a previous op (greeting
+        // POSTURE, etc.) is still in flight, the WALK doesn't even start
+        // counting until that completes — easily blowing a 15s budget.
+        await withTimeout(bot.walkToAvatar(target), 30_000, 'walkToAvatar')
         return { ok: true }
       }
       case 'walk_to_coords':
-        await withTimeout(bot.walkTo(args.x, args.y, args.facing || 0), 15_000, 'walkTo')
+        await withTimeout(bot.walkTo(args.x, args.y, args.facing || 0), 30_000, 'walkTo')
         return { ok: true }
       case 'face_direction':
         await withTimeout(bot.faceDirection(args.direction), 5_000, 'faceDirection')
@@ -323,7 +419,23 @@ async function executeAction(toolUse, bot, ctx) {
 
       // ── speech ──────────────────────────────────────────────────
       case 'whisper':
-        await whisperTo(bot, args.text || '')
+        await whisperTo(bot, args.to, args.text || '')
+        return { ok: true }
+
+      // ── teleport / social commands ──────────────────────────────
+      case 'invite_to_join':
+        if (!args.name) return { ok: false, error: 'name required' }
+        await specialCommand(bot, `/i ${args.name}`)
+        return { ok: true }
+      case 'request_join':
+        if (!args.name) return { ok: false, error: 'name required' }
+        await specialCommand(bot, `/j ${args.name}`)
+        return { ok: true }
+      case 'accept_invite':
+        await specialCommand(bot, '/ai')
+        return { ok: true }
+      case 'accept_join':
+        await specialCommand(bot, '/aj')
         return { ok: true }
 
       // ── object manipulation ─────────────────────────────────────
@@ -334,8 +446,30 @@ async function executeAction(toolUse, bot, ctx) {
         await withTimeout(putDown(bot, args.ref, args.container_noid, args.x, args.y, args.orientation), 10_000, 'put_down')
         return { ok: true }
       case 'give_to_avatar':
+        // item_noid is informational; elko ignores it. The actual item
+        // transferred is whatever's in giver's HANDS slot at call time.
         await withTimeout(bot.giveObject(args.item_noid, args.recipient_noid), 10_000, 'give_to_avatar')
         return { ok: true }
+      case 'pay_to_avatar': {
+        // Find sage's Tokens item; PAYTO is sent ON the Tokens object.
+        const inv = awareness.getInventory(bot)
+        const tokens = inv.find((it) => it.type === 'Tokens')
+        if (!tokens) return { ok: false, error: 'no Tokens item in your pocket' }
+        const amount = parseInt(args.amount, 10)
+        if (!Number.isFinite(amount) || amount <= 0 || amount > 65535) {
+          return { ok: false, error: 'amount must be a positive integer ≤ 65535' }
+        }
+        const amount_lo = amount & 0xff
+        const amount_hi = (amount >> 8) & 0xff
+        await withTimeout(bot.send({
+          op: 'PAYTO',
+          to: tokens.ref,
+          target_id: args.recipient_noid,
+          amount_lo,
+          amount_hi,
+        }), 10_000, 'pay_to_avatar')
+        return { ok: true, paid: amount }
+      }
       case 'touch_avatar':
         await withTimeout(bot.touchAvatar(args.noid), 10_000, 'touch_avatar')
         return { ok: true }
