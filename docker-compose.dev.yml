@@ -11,6 +11,11 @@ services:
       context: ./bridge_v2
       dockerfile: Dockerfile.dev
     command: ["air"]
+    # Repo-local .env (see .env.example). Picks up any bridge-relevant
+    # overrides (log levels, debug flags) without compose edits.
+    env_file:
+      - path: .env
+        required: false
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
       OTEL_SERVICE_NAME: "bridge_v2"

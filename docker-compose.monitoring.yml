@@ -19,8 +19,13 @@ services:
     image: otel/opentelemetry-collector-contrib:0.110.0
     restart: unless-stopped
     env_file:
-      # required: false so the stack still comes up if creds aren't on
-      # the box yet — otel-collector will just fail-loop in its own logs.
+      # Repo-local .env (see .env.example) loaded first; the deploy-
+      # rendered /etc/neohabitat/monitoring.env then overrides for
+      # production. required:false on both so the stack still comes
+      # up before either file exists — otel-collector will just
+      # fail-loop in its own logs without creds.
+      - path: .env
+        required: false
       - path: /etc/neohabitat/monitoring.env
         required: false
     volumes:
@@ -38,6 +43,10 @@ services:
     image: grafana/promtail:3.2.1
     restart: unless-stopped
     env_file:
+      # Repo-local .env first, deploy-rendered monitoring.env overrides.
+      # Same rationale as otel-collector above.
+      - path: .env
+        required: false
       - path: /etc/neohabitat/monitoring.env
         required: false
     command: -config.file=/etc/promtail/config.yml -config.expand-env=true
