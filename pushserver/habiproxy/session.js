@@ -33,6 +33,14 @@ class HabitatSession {
     this.connected = false;
     this.ready = false;
 
+    // Bytes from the client buffered while the server-side connection
+    // is being re-established after a changeContext. Drained when the
+    // new server socket finishes its TCP handshake. Kept here (rather
+    // than relying on Node's socket write buffer) because the socket
+    // may not exist at all between cycleServerSide() and reconnectServer().
+    this.serverWriteQueue = [];
+    this.serverReconnecting = false;
+
     this.updatedAt = Math.round((new Date()).getTime() / 1000);
 
     this.clearCallbacks();
@@ -121,13 +129,76 @@ class HabitatSession {
   }
 
   detachClient() {
-    this.clientConnection.removeAllListeners();
+    if (this.clientConnection !== null) {
+      this.clientConnection.removeAllListeners();
+    }
     this.clientConnectionAttached = false;
   }
 
+  // Null-safe — cycleServerSide() can have already nulled serverConnection
+  // before a later disconnectProxy() runs (e.g. during the binary-mode
+  // bridge's reconnect-after-changeContext flow). Without this guard the
+  // NPE bubbles out of an event handler and crashes the whole pushserver
+  // process, taking every habiproxy session down with it.
   detachServer() {
-    this.serverConnection.removeAllListeners();
+    if (this.serverConnection !== null) {
+      this.serverConnection.removeAllListeners();
+    }
     this.serverConnectionAttached = false;
+  }
+
+  // Tear down ONLY the server-side (habiproxy↔elko) connection,
+  // leaving the client-side (bridge↔habiproxy) intact. Used on
+  // changeContext: elko's session model demands a fresh TCP per
+  // context, but the bridge's socket has no such requirement, so we
+  // cycle only the elko hop. The next client write will lazily open
+  // a new server connection via reconnectServer().
+  cycleServerSide() {
+    if (this.serverConnection !== null) {
+      log.debug('Cycling Habiproxy server-side only on: %s', this.id());
+      this.serverConnection.removeAllListeners();
+      this.serverConnectionAttached = false;
+      this.serverConnection.destroy();
+      this.serverConnection = null;
+    }
+  }
+
+  // Asynchronously open a fresh elko connection and drain whatever
+  // client bytes arrived while we were between sockets. Idempotent —
+  // a second call while a connect is in flight just falls through.
+  reconnectServer() {
+    if (this.serverReconnecting) {
+      return;
+    }
+    this.serverReconnecting = true;
+    log.debug('Re-establishing Habiproxy server connection for: %s', this.id());
+    this.serverConnectionAttached = false;
+    this.serverConnection = new net.Socket();
+    var self = this;
+    this.serverConnection.connect(this.serverPort, this.serverHost, function() {
+      log.debug('Habiproxy server reconnected for: %s', self.id());
+      self.attachServer();
+      self.connected = true;
+      self.serverReconnecting = false;
+      // Drain anything the client sent while we were reconnecting.
+      var queue = self.serverWriteQueue;
+      self.serverWriteQueue = [];
+      for (var i in queue) {
+        try {
+          self.serverConnection.write(queue[i]);
+        } catch (err) {
+          log.error('Unable to drain queued buffer to Server: %s', err);
+        }
+      }
+    });
+    // Surface server-side connect errors instead of letting them crash
+    // the process. handleServerDisconnect() will tear the whole session
+    // down, which is the same fate as a hard reconnect failure today.
+    this.serverConnection.once('error', function(err) {
+      log.error('Server reconnect failed for %s: %s', self.id(), err);
+      self.serverReconnecting = false;
+      self.handleServerDisconnect();
+    });
   }
 
   doAction(action) {
@@ -303,10 +374,18 @@ class HabitatSession {
         this.processHabiproxyControlMessage(parsedMessage);
       }
       if (shouldForward) {
-        try {
-          this.serverConnection.write(message+'\n\n');
-        } catch (err) {
-          log.error('Unable to write to Server connection: %s', err)
+        var msgBuf = Buffer.from(message + '\n\n');
+        if (this.serverConnection === null || this.serverConnection.destroyed) {
+          this.serverWriteQueue.push(msgBuf);
+          this.reconnectServer();
+        } else if (this.serverReconnecting) {
+          this.serverWriteQueue.push(msgBuf);
+        } else {
+          try {
+            this.serverConnection.write(msgBuf);
+          } catch (err) {
+            log.error('Unable to write to Server connection: %s', err)
+          }
         }
       }
       if (parsedMessage !== null && shouldForward) {
@@ -448,12 +527,18 @@ class HabitatSession {
       this.serverCallbacks.msg[i](this, message)
     }
 
-    // If this is an immediate changeContext, the client will not automatically disconnect
-    // during the context change; thus, we forcibly disconnect here.
+    // changeContext: elko's session model demands a fresh TCP per
+    // context, but the bridge's socket can persist across region
+    // transitions. Cycle only the elko-side connection — the bridge↔
+    // habiproxy and bot↔bridge sockets stay alive, eliminating the
+    // per-region "Disconnecting Habiproxy connection" / "Habiproxy
+    // client connected" pair from the logs and from the bridge's
+    // session bookkeeping. handleClientData lazily reopens the server
+    // side when the bridge's entercontext for the new region arrives.
     if (message.type === 'changeContext') {
-      log.debug('Client %s received changeContext, disconnecting...',
+      log.debug('Client %s received changeContext, cycling elko-side only',
         this.id());
-      this.disconnectProxy();
+      this.cycleServerSide();
     }
   }
 

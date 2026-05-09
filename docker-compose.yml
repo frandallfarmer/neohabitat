@@ -11,6 +11,13 @@ services:
     # is exactly what we're avoiding.
     image: mongodb/mongodb-community-server:7.0-ubuntu2204
     restart: unless-stopped
+    # Repo-local .env (see .env.example). Loaded by every service so
+    # operators have one place to set MONGO_INITDB_*, debug toggles,
+    # etc. without editing compose files. required:false so the stack
+    # still comes up without one.
+    env_file:
+      - path: .env
+        required: false
     ports:
       - "27017:27017"
     # Production persists data via host bind mount to ./data/mongo (set in
@@ -34,6 +41,13 @@ services:
     image: ghcr.io/frandallfarmer/neohabitat:latest
     build: .
     restart: unless-stopped
+    # Repo-local .env (see .env.example). Loaded first; the inline
+    # `environment:` block below still wins for anything declared
+    # there, and per-host /etc/neohabitat/*.env files (loaded later by
+    # other services) override per their own env_file order.
+    env_file:
+      - path: .env
+        required: false
     environment:
       - NEOHABITAT_MONGO_HOST=neohabitatmongo:27017
       - NEOHABITAT_SHOULD_ENABLE_DEBUGGER
@@ -88,10 +102,14 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
-      # Carries ANTHROPIC_API_KEY (and any future bot-specific creds).
-      # required: false so the stack still comes up before the deploy
-      # job has written the file; sage will exit on startup if the key
-      # is missing, but the other bots keep running.
+      # Repo-local .env (see .env.example) — loaded first so dev
+      # secrets in here are visible to bots, then the deploy-time
+      # /etc/neohabitat/bots.env (rendered by ansible) overrides for
+      # production. required:false on both so the stack comes up even
+      # if neither file exists; sage will exit on startup if
+      # ANTHROPIC_API_KEY is unset, but the other bots keep running.
+      - path: .env
+        required: false
       - path: /etc/neohabitat/bots.env
         required: false
     depends_on:

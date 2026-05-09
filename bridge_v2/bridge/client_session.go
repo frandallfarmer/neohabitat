@@ -393,13 +393,23 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		// Previously these were `*msg.Context` / `*msg.Immediate`,
 		// which would panic the entire bridge process — and a panic in
 		// elkoReader takes down EVERY connected client, not just the
-		// one whose message was malformed. str() / boolor return
-		// safe defaults; reconnectToElko handles "" context fine
-		// (waits for the client's followup entercontext) and
-		// immediate=false is the conservative choice (don't auto-enter
-		// when we don't know what we're entering).
+		// one whose message was malformed.
 		c.nextRegion = str(msg.Context)
-		go c.reconnectToElko(boolor(msg.Immediate, false), c.nextRegion)
+		// Don't cycle the bridge↔habiproxy TCP. Habiproxy now cycles
+		// only its own server-side socket on changeContext (see
+		// pushserver/habiproxy/session.js cycleServerSide), so the
+		// bridge's elko-facing socket can persist across region
+		// transitions for binary clients too — matching the JSON-
+		// passthrough path's behavior. When immediate=true, just enter
+		// the new context on the existing socket; habiproxy lazily
+		// opens a fresh elko TCP and forwards the entercontext to a
+		// fresh elko UserActor that accepts it cleanly.
+		// When immediate=false (the typical NEWREGION-driven case), wait
+		// for the C64's MESSAGE_DESCRIBE to trigger enterContext from
+		// the binary handleClientMessage path; same outcome.
+		if boolor(msg.Immediate, false) {
+			c.enterContext(c.nextRegion)
+		}
 		return
 	}
 
@@ -1461,19 +1471,27 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 		if msg.Context != nil {
 			c.nextRegion = *msg.Context
 		}
-		// In JSON-passthrough mode, the bridge owns the region transit
-		// — it reconnects to elko AND auto-enters the new context so
-		// the JSON client (a bot) doesn't have to. Force immediate=true
-		// regardless of what the elko-side flag said; the alternative
-		// (waiting for the client to send entercontext) races the
-		// bridge's reconnect and ends up with the client writing to a
-		// closed elko conn. Track the target so the next entercontext
-		// from the client (if any — habibot's walkToExit historically
-		// sent one as a leftover from the old bridge) gets suppressed
-		// instead of doubling up.
+		// In JSON-passthrough mode, the bridge owns the region transit.
+		// Previously this called reconnectToElko, which closed the
+		// bridge↔habiproxy TCP and reopened it just to send entercontext
+		// for the new region — visible to operators as a per-transition
+		// "Disconnecting Habiproxy connection... Habiproxy client
+		// connected" pair on every walkToExit.
+		//
+		// Habiproxy now cycles only its own server-side connection on
+		// changeContext (see pushserver/habiproxy/session.js
+		// cycleServerSide), so the bridge's socket can stay alive
+		// across region transitions. We just enter the new context on
+		// the existing socket — habiproxy will lazily open a fresh
+		// elko TCP and forward the entercontext, and the elko-side
+		// fresh UserActor accepts it the same way it would after a
+		// full reconnect.
+		//
+		// bridgeAutoEnteredContext suppresses any redundant entercontext
+		// the bot fires (e.g. a leftover gotoContext after walkToExit
+		// from old habibot code paths) for the same target.
 		c.bridgeAutoEnteredContext = c.nextRegion
-		immediate := true
-		go c.reconnectToElko(immediate, c.nextRegion)
+		c.enterContext(c.nextRegion)
 		// Relay the changeContext to the client as well — habibot
 		// uses it to clear its in-memory region state (noid map,
 		// neighbors, etc.) so the next batch of `make` messages from
