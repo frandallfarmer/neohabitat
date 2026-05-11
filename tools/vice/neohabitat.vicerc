@@ -109,3 +109,9 @@ KeySet1South=65364
 KeySet1East=65363
 KeySet1West=65361
 KeySet1Fire=96
+
+# --- Keyboard map: fix even function keys (F2/F4/F6/F8) ---
+# On a real C64, F2/F4/F6/F8 = Shift+F1/F3/F5/F7. VICE's default map
+# sends these unshifted, so the C64 sees F1/F3/F5/F7 instead.
+# The launch script substitutes the absolute path to the patch file.
+KeymapSymFile="__KEYMAP_FILE__"
