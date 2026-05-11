@@ -18,6 +18,7 @@ services:
       - ./bridge_v2:/app
     ports:
       - "2026:2026"
+      - "2027:2027"
     cap_add:
       - NET_ADMIN
     security_opt:

@@ -6,6 +6,8 @@ websocketProxy:
   listenAddr: 0.0.0.0:1987
   remoteAddr: neohabitatqlink:1986
 
+bridgeAdminAddr: neohabitatqlink:2027
+
 backgroundImages:
   - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_splash.png
   - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/launcher_login.png

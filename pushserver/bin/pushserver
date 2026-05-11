@@ -97,12 +97,14 @@ const startPushserver = async () => {
   var EmulatorRoutes = require('../routes/emulator');
   var EventsRoutes = require('../routes/events');
   var IndexRoutes = require('../routes/index');
+  var StatusRoutes = require('../routes/status');
 
   const apiRoutes = new APIRoutes(habiproxy, config, mongoDb);
   const docsRoutes = new DocsRoutes(habiproxy, config, mongoDb);
   const emulatorRoutes = new EmulatorRoutes(habiproxy, config, mongoDb);
   const eventsRoutes = new EventsRoutes(habiproxy, config, mongoDb);
   const indexRoutes = new IndexRoutes(habiproxy, config, mongoDb);
+  const statusRoutes = new StatusRoutes(config);
 
   // Register application routes.
   app.use('/', indexRoutes.router);
@@ -110,6 +112,7 @@ const startPushserver = async () => {
   app.use('/docs', docsRoutes.router);
   app.use('/emulator', emulatorRoutes.router);
   app.use('/events', eventsRoutes.router);
+  app.use('/status', statusRoutes.router);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

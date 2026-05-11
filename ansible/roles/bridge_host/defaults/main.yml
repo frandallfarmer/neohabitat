@@ -38,6 +38,7 @@ bridge_host_rate: 1200
 # Override per-host in inventory/group_vars if a noisier or quieter
 # level is wanted.
 bridge_host_log_level: "DEBUG"
+bridge_host_admin_listen: "127.0.0.1:2027"
 
 # Run as root for now: TCP_REPAIR requires CAP_NET_ADMIN, the /proc
 # walk in SnapshotAllWithTCP wants self-process visibility, and the
