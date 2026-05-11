@@ -166,6 +166,7 @@ BRIDGE_PORT="${BRIDGE_ADDR##*:}"
 sed \
     -e "s,__DISKS_DIR__,${DISKS_DIR},g" \
     -e "s,__BRIDGE_ADDR__,${BRIDGE_HOST} ${BRIDGE_PORT},g" \
+    -e "s,__KEYMAP_FILE__,${SCRIPT_DIR}/neohabitat.vkm,g" \
     "$TEMPLATE" > "$VICERC"
 
 # Generate a VICE fliplist (.vfl) so the user can hot-swap the boot disk
