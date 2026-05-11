@@ -103,6 +103,125 @@ var Names = {};
 /** An instance of all the objects seen during this session. Used for embedded variable substitution */
 var History = {};
 
+// ── Handler support ──────────────────────────────────────────────────────────
+//
+// Shared scope for > lines and handler blocks. Functions/variables defined
+// with > are available to all subsequent ? and @ handlers.
+var HandlerScope = {
+	Names:   Names,
+	History: History,
+	Telko:   Telko,
+	send:    function(obj) { sendWithSubstituions(obj); },
+	abort:   function(reason) {
+		if (reason) Trace.info('abort: ' + reason);
+		process.exit(0);
+	},
+	log:     function(msg) { console.log(msg); }
+};
+
+// Pending one-shot reply handler: { op, noid, fn }
+// Set when a ?OP line is parsed; cleared when it fires.
+var pendingReply = null;
+
+// Persistent async handlers: key = "OP:noid", value = fn
+var asyncHandlers = {};
+
+// Whether the script is paused waiting for a ? reply.
+var scriptPaused = false;
+
+// Lines buffered while the script is paused.
+var pausedLines = [];
+
+// The noid of the most recently sent message's `to` target.
+var lastSentNoid = null;
+
+function resolveNoid(target) {
+	if (!target || target === '$TARGET') return lastSentNoid;
+	if (target === '*') return '*';
+	var ref = Names[target.replace(/^\$/, '')] || target.replace(/^\$/, '');
+	var obj = History[ref];
+	if (obj && obj.obj && obj.obj.mods && obj.obj.mods[0]) return obj.obj.mods[0].noid;
+	return ref;
+}
+
+function runHandlerCode(code, last) {
+	var scope = Object.assign({}, HandlerScope, { last: last });
+	try {
+		var fn = new Function(Object.keys(scope).join(','), code);
+		return fn.apply(null, Object.values(scope));
+	} catch(e) {
+		Trace.error('Handler error: ' + e.message);
+	}
+}
+
+// For ? handlers: tries code as a return expression (condition mode).
+// Falls back to statement mode and returns true (always advance) if not an expression.
+function runReplyCode(code, last) {
+	var scope = Object.assign({}, HandlerScope, { last: last });
+	try {
+		var fn = new Function(Object.keys(scope).join(','), 'return (' + code + ')');
+		return fn.apply(null, Object.values(scope));
+	} catch(e) {
+		try {
+			var fn = new Function(Object.keys(scope).join(','), code);
+			fn.apply(null, Object.values(scope));
+			return true;
+		} catch(e2) {
+			Trace.error('? handler error: ' + e2.message);
+			return true;
+		}
+	}
+}
+
+function runHandlerCodeWithIgnore(code, last, ignoreKey) {
+	var scope = Object.assign({}, HandlerScope, {
+		last:   last,
+		ignore: function() { delete asyncHandlers[ignoreKey]; }
+	});
+	try {
+		var fn = new Function(Object.keys(scope).join(','), code);
+		fn.apply(null, Object.values(scope));
+	} catch(e) {
+		Trace.error('Handler error: ' + e.message);
+	}
+}
+
+function dispatchIncoming(msg) {
+	var op   = msg.op || msg.type;
+	var noid = msg.noid != null ? msg.noid : null;
+
+	// Check pending reply handler first.
+	if (pendingReply) {
+		var pr = pendingReply;
+		if (pr.op === op && (pr.noid == null || pr.noid === '*' || pr.noid == noid)) {
+			var result = pr.code ? runReplyCode(pr.code, msg) : true;
+			if (!result) {
+				// Condition not met — keep waiting for next matching message.
+				return;
+			}
+			pendingReply = null;
+			scriptPaused = false;
+			// Resume buffered lines.
+			var buffered = pausedLines.slice();
+			pausedLines = [];
+			buffered.forEach(function(line) { handleInputLine(line); });
+			return;
+		}
+	}
+
+	// Check async handlers: exact match, then wildcard (*).
+	var key = op + ':' + noid;
+	if (asyncHandlers[key]) {
+		asyncHandlers[key](msg, key);
+		return;
+	}
+	var wildKey = op + ':*';
+	if (asyncHandlers[wildKey]) {
+		asyncHandlers[wildKey](msg, wildKey);
+	}
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 function pad0(n,z) {
 	z = z || 1;
 	return ("000" + n).slice(-(z + 1));
@@ -269,6 +388,8 @@ const Server = Net.connect(Telko.port, Telko.host, function() {
 function processElkoPacket(s) {
 	console.log(timestamp("<-") + s.trim());
 	scanForRefs(s);
+	var msg = parseElko(s);
+	if (msg && msg.op) dispatchIncoming(msg);
 }
 
 /**
@@ -336,6 +457,16 @@ function sendWithSubstituions(obj) {
 	if (undefined !== obj.op && "entercontext" === obj.op && undefined === obj.context) {
 		obj.context = Telko.context;
 	}
+	// Track the noid of the target for ? default resolution.
+	if (obj.to) {
+		var toRef = obj.to;
+		var toObj = History[toRef];
+		if (toObj && toObj.obj && toObj.obj.mods && toObj.obj.mods[0]) {
+			lastSentNoid = toObj.obj.mods[0].noid;
+		} else {
+			lastSentNoid = null;
+		}
+	}
 	var msg = JSON.stringify(obj);
 	console.log(timestamp("->") + msg.trim());
 	Server.write(msg + "\n\n");
@@ -345,7 +476,16 @@ function startReadingSTDIN() {
 	Readline.createInterface({input: process.stdin}).on('line', (input) => { handleInputLine(input); });
 }
 
+// Pending handler op/target parsed from a ?OP or @OP line, waiting for its (> code) block.
+var pendingHandlerSpec = null;
+
 function handleInputLine(input) {
+	// Buffer lines while paused waiting for a ? reply.
+	if (scriptPaused) {
+		pausedLines.push(input);
+		return;
+	}
+
 	if (input.indexOf("{") === 0) {
 		var obj = parseElko(input.toString());
 		// Send the message, potentially in the future...
@@ -362,7 +502,7 @@ function handleInputLine(input) {
 			}
 			delete obj.Telko;
 		}
-		
+
 		if (when <= now) {
 			sendWithSubstituions(obj);
 			timeLastSent = now;
@@ -374,11 +514,75 @@ function handleInputLine(input) {
 	} else if (input.indexOf("<") === 0) {
 		var file = input.trim().slice(1);
 		if ("STDIN" === file) {
-			// Read from STDIN (usually triggered in a script, so that the timing works out...)
 			startReadingSTDIN();
 		} else {
-			// Run a telko script file!
 			executeScript(file);
+		}
+
+	} else if (input.indexOf(">") === 0) {
+		// Inline code: scheduled at timeLastSent so it runs after preceding sends.
+		// Function declarations are rewritten as HandlerScope assignments so
+		// they are visible to subsequent ? and @ handler blocks.
+		var code = input.slice(1).trim();
+		code = code.replace(/^function\s+(\w+)\s*\(/, 'HandlerScope["$1"] = function(');
+		;(function(c) {
+			var delay = Math.max(0, timeLastSent - new Date().getTime());
+			setTimeout(function() {
+				try {
+					var scope = Object.assign({ HandlerScope: HandlerScope }, HandlerScope);
+					var fn = new Function(Object.keys(scope).join(','), c);
+					fn.apply(null, Object.values(scope));
+				} catch(e) {
+					Trace.error('> eval error: ' + e.message);
+				}
+			}, delay);
+		})(code);
+
+	} else if (input.indexOf("?") === 0) {
+		// Reply handler spec: ?OP [$target]
+		// Resolved immediately — ? pauses the script synchronously so Names
+		// is already populated by the time this line is reached.
+		var parts = input.slice(1).trim().split(/\s+/);
+		var op     = parts[0];
+		var target = parts[1] || '$TARGET';
+		var noid   = resolveNoid(target);
+		pendingHandlerSpec = { kind: '?', op: op, noid: noid };
+
+	} else if (input.indexOf("@") === 0) {
+		// Async handler spec: @OP [$target]
+		// Store raw target — resolveNoid is deferred to registration time
+		// so Names is populated by preceding sends when it runs.
+		var parts = input.slice(1).trim().split(/\s+/);
+		var op     = parts[0];
+		var target = parts[1] || '$TARGET';
+		pendingHandlerSpec = { kind: '@', op: op, target: target };
+
+	} else if (input.indexOf("(>") === 0) {
+		// Code block for the preceding ? or @ spec.
+		var code = input.replace(/^\(>\s*/, '').replace(/\)\s*$/, '').trim();
+		if (!pendingHandlerSpec) {
+			Trace.warn('(> code) with no preceding ? or @ spec, ignoring');
+			return;
+		}
+		var spec = pendingHandlerSpec;
+		pendingHandlerSpec = null;
+
+		if (spec.kind === '?') {
+			pendingReply  = { op: spec.op, noid: spec.noid, code: code };
+			scriptPaused  = true;
+		} else {
+			// Schedule @ registration at timeLastSent so it fires after
+			// preceding sends and Names is populated for resolveNoid.
+			;(function(s, c) {
+				var delay = Math.max(0, timeLastSent - new Date().getTime());
+				setTimeout(function() {
+					var noid = resolveNoid(s.target);
+					var k    = s.op + ':' + noid;
+					asyncHandlers[k] = function(msg, handlerKey) {
+						runHandlerCodeWithIgnore(c, msg, handlerKey);
+					};
+				}, delay);
+			})(spec, code);
 		}
 	}
 }
