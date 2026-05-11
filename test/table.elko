@@ -2,3 +2,6 @@
 
 {"to":"session","op":"entercontext","context":"context-table","user":"$USER"}
 
+?make *
+(> last.you)
+
