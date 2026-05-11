@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= title %></title>
+  <style>
+    body { font-family: monospace; background: #111; color: #ccc; margin: 2em; }
+    h1 { color: #eee; font-size: 1.2em; margin-bottom: 0.5em; }
+    .controls { margin-bottom: 1em; }
+    select, button { background: #222; color: #ccc; border: 1px solid #444; padding: 2px 6px; font-family: monospace; cursor: pointer; }
+    .unavailable { color: #f66; }
+    .empty { color: #666; font-style: italic; }
+    table { border-collapse: collapse; width: 100%; }
+    th { text-align: left; color: #888; font-size: 0.85em; padding: 4px 8px; border-bottom: 1px solid #333; }
+    td { padding: 4px 8px; vertical-align: top; border-bottom: 1px solid #222; font-size: 0.9em; }
+    .level-error { color: #ff3333; }
+    .level-warn  { color: #fa8; }
+    .fields { color: #888; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <h1>NeoHabitat Server Status</h1>
+
+  <div class="controls">
+    <form method="get" action="/status">
+      <select name="level" onchange="this.form.submit()">
+        <option value="error"<% if (level === 'error') { %> selected<% } %>>errors</option>
+        <option value="warn"<% if (level === 'warn') { %> selected<% } %>>warnings</option>
+        <option value=""<% if (level === '') { %> selected<% } %>>all</option>
+      </select>
+      &nbsp;(last 20)
+      &nbsp;<button type="submit">reload</button>
+    </form>
+  </div>
+
+  <% if (bridgeUnavailable) { %>
+    <p class="unavailable">Bridge unavailable.</p>
+  <% } else if (entries.length === 0) { %>
+    <p class="empty">No <%= level || 'log' %> entries.</p>
+  <% } else { %>
+    <table>
+      <tr><th>time</th><th>level</th><th>message</th><th>fields</th></tr>
+      <% entries.forEach(function(e) { %>
+      <tr>
+        <td class="fields"><%= e.time ? e.time.replace('T',' ').replace('Z','') : '' %></td>
+        <td class="level-<%= e.level %>"><%= e.level %></td>
+        <td><%= e.message %></td>
+        <td class="fields"><%= e.fields ? JSON.stringify(e.fields) : '' %></td>
+      </tr>
+      <% }); %>
+    </table>
+  <% } %>
+</body>
+</html>

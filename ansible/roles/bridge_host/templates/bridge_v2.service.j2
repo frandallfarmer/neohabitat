@@ -33,7 +33,8 @@ ExecStart={{ bridge_host_binary_path }} \
   --mongo.collection={{ bridge_host_mongo_collection }} \
   --context={{ bridge_host_initial_context }} \
   --rate={{ bridge_host_rate }} \
-  --log.level={{ bridge_host_log_level }}
+  --log.level={{ bridge_host_log_level }} \
+  --admin.listen={{ bridge_host_admin_listen }}
 # `systemctl reload bridge_v2` → SIGHUP → tableflip graceful upgrade.
 # The new binary on disk (placed by the deploy job at
 # {{ bridge_host_binary_path }}) takes over via fork+exec; sessions
