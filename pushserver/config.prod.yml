@@ -6,7 +6,7 @@ websocketProxy:
   listenAddr: 0.0.0.0:1987
   remoteAddr: habitat.themade.org:1986
 
-bridgeAdminAddr: 127.0.0.1:2027
+bridgeAdminAddr: host.docker.internal:2027
 
 backgroundImages:
   - https://raw.githubusercontent.com/frandallfarmer/neohabitat-doc/master/docs/images/neohabitat_splash.png
