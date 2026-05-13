@@ -159,13 +159,17 @@ func DecodeQLinkFrame(frame []byte) (*QLinkFrame, error) {
 		uint16((frame[3]&0xF0)|(frame[4]&0x0F))
 	calculated := QLinkCRC16(frame[5:])
 	if reported != calculated {
-		// CRC errors show up on real C64 hardware when the RS-232 stream
-		// gets one-bit hiccups (the bit-banged user-port driver is not
-		// immune to IRQ jitter). Rather than dropping the frame, log a
-		// warning and continue; downstream handling will catch any truly
-		// broken payloads.
-		log.Warn().Msgf("qlink: CRC mismatch ignored (reported 0x%04x, calculated 0x%04x)",
-			reported, calculated)
+		// 0x3290/0xa291 is the intentional handshake probe: the client
+		// sends a deliberately malformed packet so the server NAKs it
+		// with valid send/recv sequence numbers. Not a real error.
+		// All other mismatches are real RS-232 bit errors (IRQ jitter on
+		// the C64 user-port driver) and stay at Warn.
+		if reported == 0x3290 && calculated == 0xa291 {
+			log.Debug().Msg("qlink: CRC handshake probe detected.")
+		} else {
+			log.Warn().Msgf("qlink: CRC mismatch ignored (reported 0x%04x, calculated 0x%04x)",
+				reported, calculated)
+		}
 	}
 
 	return &QLinkFrame{
