@@ -911,6 +911,30 @@ var Module = null;
         }, '/emulator');
       },
       preRun: [function() {
+        // F4/F6 are broken in VICE 3.2 SDL: shiftflag=1 only activates when host
+        // Shift is held, but bare F4/F6 presses carry no shift state. Sgeo's
+        // library_sdl.js looks up keycodes by event.key (string), so synthetic
+        // events must include the key name. Intercept F4/F6, inject Shift first,
+        // then replay the F-key with shiftKey:true so VICE matches the shiftflag=1
+        // entries and mirrors shift into the C64 matrix.
+        // F4 (SDLK_F4=285) and F6 (SDLK_F6=287) are broken in VICE 3.2 SDL:
+        // pressing them without host Shift produces C64 F3/F5 instead of F4/F6.
+        // Call VICE's exported keyboard handler directly with KMOD_LSHIFT so
+        // VICE sees Shift+F4/F6 and produces the correct C64 keys.
+        var KMOD_LSHIFT = 1;
+        document.addEventListener('keydown', function(e) {
+          if (e.shiftKey || (e.keyCode !== 115 && e.keyCode !== 117)) return;
+          e.stopPropagation(); e.preventDefault();
+          var sym = e.keyCode === 115 ? 285 : 287;
+          Module._keyboard_key_pressed(304, 0);
+          Module._keyboard_key_pressed(sym, KMOD_LSHIFT);
+        }, true);
+        document.addEventListener('keyup', function(e) {
+          if (e.keyCode !== 115 && e.keyCode !== 117) return;
+          var sym = e.keyCode === 115 ? 285 : 287;
+          Module._keyboard_key_released(sym, KMOD_LSHIFT);
+          Module._keyboard_key_released(304, 0);
+        }, true);
         self._hooks.start.forEach(function(f) {
           //try {
           f && f();

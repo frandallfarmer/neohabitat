@@ -1,9 +1,14 @@
 var CONNECTED = 'CONNECTED';
+var AVATAR_READY = 'AVATAR_READY';
+var HATCHERY_COMPLETED = 'HATCHERY_COMPLETED';
+var HATCHERY_STARTED = 'HATCHERY_STARTED';
 var REGION_CHANGE = 'REGION_CHANGE';
 var SHOW_HELP = 'SHOW_HELP';
 
 var HabiventsES = null;
+var HatcheryES = null;
 var CurrentAvatars = {};
+var OriginalHatcheryDoc = '/docs/region/ORIGINAL_HATCHERY';
 
 function orientationToRotation(orientation) {
   switch (orientation) {
@@ -26,6 +31,17 @@ const orient     = ["West", "East", "North", "South"];
 function processEvent(event) {
   switch (event.type) {
     case CONNECTED:
+      return;
+    case HATCHERY_STARTED:
+      $('#docsFrame').attr('src', OriginalHatcheryDoc);
+      return;
+    case HATCHERY_COMPLETED:
+      return;
+    case AVATAR_READY:
+      if (event.msg.avatar && typeof trackAvatar === 'function') {
+        trackAvatar(event.msg.avatar);
+        stopHatcheryEventSource();
+      }
       return;
     case REGION_CHANGE:
       $('#regionHeader').text(event.msg.description);
@@ -60,14 +76,40 @@ function processEvent(event) {
   }
 }
 
+function stopHatcheryEventSource() {
+  if (HatcheryES !== null) {
+    HatcheryES.close();
+    HatcheryES = null;
+  }
+}
+
+function startHatcheryEventSource() {
+  if (HatcheryES == null || HatcheryES.readyState == 2) {
+    var streamUrl = '/events/hatchery/eventStream';
+    if (typeof DocentSessionId !== 'undefined' && DocentSessionId) {
+      streamUrl += '?docent=' + encodeURIComponent(DocentSessionId);
+    }
+    HatcheryES = new EventSource(streamUrl);
+    HatcheryES.onerror = function(e) {
+      if (HatcheryES.readyState == 2) {
+        console.log('Hatchery EventSource disconnected, retrying in 3 secs:', e);
+        setTimeout(startHatcheryEventSource, 3000);
+      }
+    }
+    HatcheryES.addEventListener('message', function(e) {
+      var event = JSON.parse(e.data);
+      processEvent(event);
+    }, false);
+  }
+}
+
 function startEventSource() {
   if (HabiventsES == null || HabiventsES.readyState == 2) {
-    HabiventsES = new EventSource('/events/'+AvatarName+'/eventStream');
+    HabiventsES = new EventSource('/events/'+encodeURIComponent(AvatarName)+'/eventStream');
     HabiventsES.onerror = function(e) {
-      if (HabiventsES.readyState == 2) {
-        console.log('Habivents EventSource disconnected, retrying in 3 secs:', e);
-        setTimeout(startEventSource, 3000);
-      }
+      console.log('Habivents EventSource disconnected:', e);
+      HabiventsES.close();
+      HabiventsES = null;
     }
     HabiventsES.addEventListener('message', function(e) {
       var event = JSON.parse(e.data);
@@ -186,3 +228,10 @@ function startDocentUpdates() {
   refreshAvatars();
   setInterval(refreshAvatars, 5000 + Math.floor(Math.random() * 2000));
 }
+
+$(document).ready(function() {
+  if (typeof AvatarName !== 'undefined' && AvatarName === null &&
+      typeof RedirectToEvents !== 'undefined' && RedirectToEvents === false) {
+    startHatcheryEventSource();
+  }
+});

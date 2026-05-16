@@ -196,7 +196,6 @@ function generateRecords(userRecords) {
 const processUserStats = async (users) => {
 	var userRecords = {};
 	users.forEach((user) => {
-		var user = users[i];
 		var name = user.name;
 		if (user.mods.length === 0) {
 			return;
@@ -220,8 +219,8 @@ const generateBookOfRecords = async () => {
 	let db = client.db(dbName);
 	const users = await db.collection('odb').find({"ref": {$regex: "user-*"}});
 	const usersArray = await users.toArray();
-	if (undefined !== users) {
-		await processUserStats(users);
+	if (undefined !== usersArray) {
+		await processUserStats(usersArray);
 	}
 	await client.close();
 }

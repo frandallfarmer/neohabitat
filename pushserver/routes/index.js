@@ -1,4 +1,12 @@
 const express = require('express');
+const crypto = require('crypto');
+
+function newDocentSessionId() {
+  if (crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return crypto.randomBytes(16).toString('hex');
+}
 
 
 class IndexRoutes {
@@ -14,9 +22,15 @@ class IndexRoutes {
     var self = this;
 
     this.router.get('/', function(req, res, next) {
+      var docentSessionId = newDocentSessionId();
+      res.cookie('docentSessionId', docentSessionId, {
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
       res.render('emulator', {
         title: 'Login to Neohabitat',
         config: self.config,
+        docentSessionId: docentSessionId,
       });
     });
 

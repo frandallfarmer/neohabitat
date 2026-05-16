@@ -3,6 +3,7 @@ package bridge
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net"
@@ -66,7 +67,8 @@ func (r *recordingConn) Written() []byte {
 // newJsonTestSession creates a session wired up for JSON passthrough unit
 // tests: jsonPassthrough flag set, client conn and elko conn both
 // recording, no real TCP involvement.
-func newJsonTestSession(clientIn []byte) (*ClientSession, *recordingConn, *recordingConn) {
+func newJsonTestSession(t *testing.T, clientIn []byte) (*ClientSession, *recordingConn, *recordingConn) {
+	t.Helper()
 	bridge := &Bridge{DataRate: 1 << 20}
 	clientRC := newRecordingConn(clientIn)
 	elkoRC := newRecordingConn(nil)
@@ -78,15 +80,25 @@ func newJsonTestSession(clientIn []byte) (*ClientSession, *recordingConn, *recor
 		bridge:          bridge,
 		clientConn:      cc,
 		clientReader:    bufio.NewReader(cc),
+		ctx:             context.Background(),
 		elkoConn:        elkoRC,
 		elkoDone:        make(chan struct{}),
-		elkoSendChan:    make(chan *ElkoMessage, MaxClientMessages),
+		elkoSendChan:    make(chan *outboundElkoMessage, MaxClientMessages),
 		firstConnection: true,
 		jsonPassthrough: true,
 		objects:         make(map[uint8]*ElkoMessage),
 		done:            make(chan struct{}),
 	}
 	sess.contentsVector = NewContentsVector(sess, nil, &REGION_NOID, nil, nil)
+	sess.wg.Add(1)
+	sess.elkoWg.Add(1)
+	sess.elkoConnInitWg.Add(1)
+	go sess.elkoWriter()
+	sess.elkoConnInitWg.Wait()
+	t.Cleanup(func() {
+		sess.closeChannels()
+		sess.elkoWg.Wait()
+	})
 	return sess, clientRC, elkoRC
 }
 
@@ -170,7 +182,7 @@ func TestRewriteJsonField(t *testing.T) {
 // sendOpToElko should produce a JSON payload with exactly to+op fields
 // and the two-byte \n\n frame terminator.
 func TestSendOpToElko_Shape(t *testing.T) {
-	sess, _, elko := newJsonTestSession(nil)
+	sess, _, elko := newJsonTestSession(t, nil)
 	if err := sess.sendOpToElko("context-Downtown_5f", "I_AM_HERE"); err != nil {
 		t.Fatalf("sendOpToElko: %v", err)
 	}
@@ -191,12 +203,45 @@ func TestSendOpToElko_Shape(t *testing.T) {
 	}
 }
 
+func TestSendHatcheryStateToHabiproxyShape(t *testing.T) {
+	sess, _, elko := newJsonTestSession(t, nil)
+	sess.UserName = "Alice"
+	sess.userRef = "user-alice"
+	sess.sessionID = "session-42"
+
+	if err := sess.sendHatcheryStateToHabiproxy("started"); err != nil {
+		t.Fatalf("sendHatcheryStateToHabiproxy: %v", err)
+	}
+
+	got := elko.Written()
+	if !bytes.HasSuffix(got, ElkoMsgTerminator) {
+		t.Errorf("missing frame terminator, got = %q", got)
+	}
+	payload := bytes.TrimSuffix(got, ElkoMsgTerminator)
+	var parsed map[string]interface{}
+	if err := json.Unmarshal(payload, &parsed); err != nil {
+		t.Fatalf("payload not valid JSON: %q: %v", payload, err)
+	}
+	if parsed["to"] != "habiproxy" {
+		t.Errorf("to = %v, want habiproxy", parsed["to"])
+	}
+	if parsed["op"] != "HATCHERY_STATE" {
+		t.Errorf("op = %v, want HATCHERY_STATE", parsed["op"])
+	}
+	if parsed["state"] != "started" {
+		t.Errorf("state = %v, want started", parsed["state"])
+	}
+	if parsed["avatar"] != "Alice" || parsed["user"] != "user-alice" || parsed["session"] != "session-42" {
+		t.Errorf("identity fields = %v", parsed)
+	}
+}
+
 // ---------- handleElkoMessageJson state machine ----------
 
 // "make" with you:true marks the session as awaiting avatar contents and
 // remembers the region ref for later handshake synthesis.
 func TestHandleElkoMessageJson_MakeYouSetsWaiting(t *testing.T) {
-	sess, client, _ := newJsonTestSession(nil)
+	sess, client, _ := newJsonTestSession(t, nil)
 	raw := []byte(`{"op":"make","to":"context-Downtown_5f","you":true,"obj":{}}`)
 	msg := parseElko(t, raw)
 	sess.handleElkoMessageJson(raw, msg)
@@ -216,7 +261,7 @@ func TestHandleElkoMessageJson_MakeYouSetsWaiting(t *testing.T) {
 // A lone "ready" without a prior make+you should just be relayed to the
 // client, no handshake synthesis.
 func TestHandleElkoMessageJson_ReadyWithoutWaitingRelays(t *testing.T) {
-	sess, client, elko := newJsonTestSession(nil)
+	sess, client, elko := newJsonTestSession(t, nil)
 	raw := []byte(`{"op":"ready","to":"context-Downtown_5f"}`)
 	msg := parseElko(t, raw)
 	sess.handleElkoMessageJson(raw, msg)
@@ -234,7 +279,7 @@ func TestHandleElkoMessageJson_ReadyWithoutWaitingRelays(t *testing.T) {
 // FINGER_IN_QUE + I_AM_HERE toward Elko and NOT relay the ready to the
 // client. Flag should clear.
 func TestHandleElkoMessageJson_ReadyWhileWaitingSynthesizes(t *testing.T) {
-	sess, client, elko := newJsonTestSession(nil)
+	sess, client, elko := newJsonTestSession(t, nil)
 	sess.waitingForAvatarContents = true
 	// Mirror what the prior `make you:true` would have set: regionRef
 	// is the context, while the `ready` message's `to` is the user-ref.
@@ -280,7 +325,7 @@ func TestHandleElkoMessageJson_ReadyWhileWaitingSynthesizes(t *testing.T) {
 // An unrelated Elko op should pass through to the client verbatim. This
 // is the common case — most of Elko's traffic is relayed as-is.
 func TestHandleElkoMessageJson_UnrelatedOpRelays(t *testing.T) {
-	sess, client, elko := newJsonTestSession(nil)
+	sess, client, elko := newJsonTestSession(t, nil)
 	// Some arbitrary broadcast the bridge shouldn't inspect.
 	raw := []byte(`{"type":"broadcast","noid":5,"op":"SPEAK$","text":"hi"}`)
 	msg := parseElko(t, raw)
@@ -302,7 +347,7 @@ func TestHandleElkoMessageJson_UnrelatedOpRelays(t *testing.T) {
 // still relay to the client AND preserve the waiting flag so the next
 // "ready" can still synthesize the handshake.
 func TestHandleElkoMessageJson_BroadcastPreservesWaiting(t *testing.T) {
-	sess, _, _ := newJsonTestSession(nil)
+	sess, _, _ := newJsonTestSession(t, nil)
 	sess.waitingForAvatarContents = true
 	raw := []byte(`{"type":"broadcast","noid":5,"op":"SPEAK$","text":"hi"}`)
 	msg := parseElko(t, raw)

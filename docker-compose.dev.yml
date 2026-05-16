@@ -17,12 +17,13 @@ services:
       - path: .env
         required: false
     environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
       OTEL_SERVICE_NAME: "bridge_v2"
+      NEOHABITAT_ORIGINAL_HATCHERY: "true"
     volumes:
       - ./bridge_v2:/app
     ports:
       - "2026:2026"
+      - "2027:2027"
     cap_add:
       - NET_ADMIN
     security_opt:

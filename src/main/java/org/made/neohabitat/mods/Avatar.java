@@ -494,7 +494,7 @@ public class Avatar extends Container implements UserMod {
                         }
                         if (obj.HabitatClass() == CLASS_ELEVATOR) {
                             x = obj.x + 12;
-                            y = obj.y -  5;
+                            y = (obj.y - 5) & 0xFF;
                         }
                     }
                 }
@@ -508,12 +508,12 @@ public class Avatar extends Container implements UserMod {
 
 
     private int x_invert(int x) {
-        return (XMAX - x);         
+        return (XMAX - x) & 0xFF;
     }
 
 
     private int y_invert(int y) {
-        return(current_region().depth - y);
+        return (current_region().depth - y) & 0xFF;
     }
 
     private int x_scale(int x) {

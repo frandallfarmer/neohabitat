@@ -24,6 +24,8 @@ class HabiproxyServer {
     this.sessions = {};
 
     this.callbacks = {
+      hatcheryCompleted: [],
+      hatcheryStarted: [],
       sessionReady: [],
     };
 
@@ -54,6 +56,7 @@ class HabiproxyServer {
     log.debug('Habiproxy client connected at: %s', stringifyID(client))
 
     var clientSession = new Session(this.elkoHost, this.elkoPort, client);
+    clientSession.onClient('hatcheryState', this.handleHatcheryState.bind(this));
     clientSession.onServer('sessionReady', this.handleSessionReady.bind(this));
 
     try {
@@ -63,6 +66,25 @@ class HabiproxyServer {
           stringifyID(client), err);
       client.end();
       return;
+    }
+  }
+
+  handleHatcheryState(session, message) {
+    if (session == null || message == null) {
+      return;
+    }
+    var eventType = null;
+    if (message.state === 'started') {
+      eventType = 'hatcheryStarted';
+    } else if (message.state === 'completed') {
+      eventType = 'hatcheryCompleted';
+    } else {
+      log.warn('Unknown hatchery state received from bridge: %s', JSON.stringify(message));
+      return;
+    }
+    for (var i in this.callbacks[eventType]) {
+      log.debug('Handling callback for %s on: %s', eventType, session.id());
+      this.callbacks[eventType][i](session, message);
     }
   }
 
@@ -132,6 +154,16 @@ class HabiproxyServer {
       this.callbacks[eventType].push(callback);
     } else {
       this.callbacks[eventType] = [callback];
+    }
+  }
+
+  off(eventType, callback) {
+    if (!(eventType in this.callbacks)) {
+      return;
+    }
+    var index = this.callbacks[eventType].indexOf(callback);
+    if (index !== -1) {
+      this.callbacks[eventType].splice(index, 1);
     }
   }
 }

@@ -77,6 +77,8 @@ services:
       # 127.0.0.1 so the host-side bridge_v2 process can dial it. Bound
       # to loopback only; nothing external should hit habiproxy directly.
       - "127.0.0.1:2018:2018"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       neohabitatmongo:
         condition: service_healthy

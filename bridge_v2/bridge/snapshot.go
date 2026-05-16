@@ -19,11 +19,13 @@ type SessionSnapshot struct {
 	Who          string `json:"who"`
 	PacketPrefix string `json:"packet_prefix,omitempty"`
 
-	Connected       bool `json:"connected"`
-	FirstConnection bool `json:"first_connection"`
-	JsonPassthrough bool `json:"json_passthrough"`
-	QLinkMode       bool `json:"qlink_mode"`
-	Online          bool `json:"online"`
+	Connected         bool `json:"connected"`
+	FirstConnection   bool `json:"first_connection"`
+	HatcheryPending   bool `json:"hatchery_pending"`
+	HatcheryCompleted bool `json:"hatchery_completed"`
+	JsonPassthrough   bool `json:"json_passthrough"`
+	QLinkMode         bool `json:"qlink_mode"`
+	Online            bool `json:"online"`
 
 	QLinkInSeq  byte  `json:"qlink_in_seq"`
 	QLinkOutSeq byte  `json:"qlink_out_seq"`

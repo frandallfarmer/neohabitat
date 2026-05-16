@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -45,6 +46,7 @@ var logLevel = flag.String("log.level", "INFO", "Log level for logger")
 var qlinkMode = flag.Bool("qlink", false, "Listen for Habilink/QLink clients")
 var otelEnabled = flag.Bool("otel.enabled", false, "Enable OpenTelemetry export")
 var graceful = flag.Bool("graceful", false, "Enable graceful restart via SIGHUP (tableflip). Production only.")
+var adminListen = flag.String("admin.listen", "", "Host:Port for the admin HTTP server (e.g. 127.0.0.1:2027). Disabled if empty.")
 
 const snapshotEnvVar = "BRIDGE_SNAPSHOT_PATH"
 
@@ -72,14 +74,29 @@ func main() {
 		listenAddrs = stringSliceFlag{"127.0.0.1:1337"}
 	}
 	setLogLevel(*logLevel)
+	ringLog := bridge.NewRingLog()
 	if !*otelEnabled {
-		log.Logger = log.Output(zerolog.ConsoleWriter{
+		console := zerolog.ConsoleWriter{
 			Out:        os.Stderr,
 			TimeFormat: "3:04:05PM",
 			FormatTimestamp: func(i interface{}) string {
 				return "\033[35m" + fmt.Sprintf("%s", i) + "\033[0m"
 			},
-		})
+		}
+		log.Logger = log.Output(zerolog.MultiLevelWriter(console, ringLog))
+	} else {
+		log.Logger = log.Output(zerolog.MultiLevelWriter(os.Stderr, ringLog))
+	}
+
+	if *adminListen != "" {
+		mux := http.NewServeMux()
+		mux.Handle("/logs", ringLog)
+		go func() {
+			if err := http.ListenAndServe(*adminListen, mux); err != nil {
+				log.Error().Err(err).Str("addr", *adminListen).Msg("Admin HTTP server failed")
+			}
+		}()
+		log.Info().Str("addr", *adminListen).Msg("Admin HTTP server listening")
 	}
 
 	var otelShutdown func(context.Context) error

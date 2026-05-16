@@ -63,7 +63,7 @@
         <div class="row login-panel text-center align-items-center">
           <div class="mx-auto">
             <div id="docentControls" class="d-inline-flex" style="gap: 0.5rem">
-              <button type="button" disabled="disabled" class="btn btn-primary">Activate Docent</button>
+              <button type="button" disabled="disabled" class="btn btn-primary">Docent Waiting</button>
             </div>
             &nbsp;
             <button type="button" class="btn btn-primary" onclick="emulator.requestFullScreen(); return false;">Full Screen</button>
@@ -77,6 +77,7 @@
       var AvatarName = null;
       var AvatarAttached = false;
       var RedirectToEvents = false;
+      var DocentSessionId = "<%= docentSessionId %>";
       var EmulatorUrl = "<%= config.viceJsUrl %>";
     </script>
     <script type="text/javascript" src="/javascripts/avatarSelector.js"></script>

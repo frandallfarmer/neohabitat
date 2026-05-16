@@ -33,7 +33,8 @@ ExecStart={{ bridge_host_binary_path }} \
   --mongo.collection={{ bridge_host_mongo_collection }} \
   --context={{ bridge_host_initial_context }} \
   --rate={{ bridge_host_rate }} \
-  --log.level={{ bridge_host_log_level }}
+  --log.level={{ bridge_host_log_level }} \
+  --admin.listen={{ bridge_host_admin_listen }}
 # `systemctl reload bridge_v2` → SIGHUP → tableflip graceful upgrade.
 # The new binary on disk (placed by the deploy job at
 # {{ bridge_host_binary_path }}) takes over via fork+exec; sessions
@@ -50,6 +51,7 @@ RestartSec=5s
 AmbientCapabilities=CAP_NET_ADMIN
 CapabilityBoundingSet=CAP_NET_ADMIN
 # OTLP / OTel SDK config — same values the in-container service used.
+Environment=NEOHABITAT_ORIGINAL_HATCHERY={{ bridge_host_original_hatchery | ternary('true', 'false') }}
 Environment=OTEL_EXPORTER_OTLP_ENDPOINT={{ bridge_host_otel_endpoint }}
 Environment=OTEL_SERVICE_NAME=bridge_v2
 Environment=OTEL_METRIC_EXPORT_INTERVAL=10000

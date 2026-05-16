@@ -3,6 +3,7 @@ const log = require('winston');
 const fs = require('fs');
 
 const ClassTable = require('../constants/ClassTable');
+const docentTracker = require('../docentTracker');
 
 function sendEvent(res, avatarName, type, msg) {
   var event = {
@@ -24,6 +25,8 @@ class EventRoutes {
     self.config = config;
     self.mongoDb = mongoDb;
     self.router = express.Router();
+    self.handleSessionReady = docentTracker.handleSessionReady.bind(docentTracker);
+    self.habiproxy.on('sessionReady', self.handleSessionReady);
     self.setRoutes();
   }
 
@@ -123,19 +126,72 @@ class EventRoutes {
       });
     });
 
+    self.router.get('/hatchery/eventStream', function(req, res, next) {
+      var docentSessionId = req.query.docent;
+      req.socket.setTimeout(0);
+
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      });
+      res.write('\n');
+      sendEvent(res, 'hatchery', 'CONNECTED');
+
+      var sendHatcheryStarted = function(session, message) {
+        if (!docentTracker.docentMatchesAvatar(docentSessionId, message.avatar)) {
+          return;
+        }
+        docentTracker.markHatchery(docentSessionId);
+        sendEvent(res, 'hatchery', 'HATCHERY_STARTED', {
+          avatar: message.avatar,
+          user: message.user,
+          session: message.session,
+        });
+      };
+      var sendHatcheryCompleted = function(session, message) {
+        if (!docentTracker.docentMatchesAvatar(docentSessionId, message.avatar)) {
+          return;
+        }
+        docentTracker.markHatchery(docentSessionId);
+        sendEvent(res, 'hatchery', 'HATCHERY_COMPLETED', {
+          avatar: message.avatar,
+          user: message.user,
+          session: message.session,
+        });
+      };
+      var sendAvatarReady = function(readyDocentSessionId, avatarName) {
+        if (readyDocentSessionId !== docentSessionId) {
+          return;
+        }
+        sendEvent(res, 'hatchery', 'AVATAR_READY', {
+          avatar: avatarName,
+        });
+      };
+
+      self.habiproxy.on('hatcheryStarted', sendHatcheryStarted);
+      self.habiproxy.on('hatcheryCompleted', sendHatcheryCompleted);
+      docentTracker.on('avatarReady', sendAvatarReady);
+
+      req.on('close', function() {
+        self.habiproxy.off('hatcheryStarted', sendHatcheryStarted);
+        self.habiproxy.off('hatcheryCompleted', sendHatcheryCompleted);
+        docentTracker.off('avatarReady', sendAvatarReady);
+      });
+    });
+
     self.router.get('/:avatarName/eventStream', function(req, res, next) {
       var avatarName = req.params.avatarName;
 
       if (!(avatarName in self.habiproxy.sessions)) {
-        var err = new Error('Avatar unknown.');
-        err.status = 404;
-        next(err);
+        log.debug('EventStream requested for unknown Avatar: %s', avatarName);
+        res.status(204).end();
         return;
       }
 
       var session = self.habiproxy.sessions[avatarName];
 
-      req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
+      req.socket.setTimeout(0);
 
       // Establishes the response as an EventStream readable by an EventSource.
       res.writeHead(200, {

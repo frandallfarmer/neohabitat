@@ -1,3 +1,6 @@
 {"to":"session", "op":"entercontext", "user":"user-unknown", "Telko": { "delay": 2, "logtime": true } }
 
+?make *
+(> last.you)
+
 {"to":"ME","op":"SPEAK","esp":0,"text":"$ME.name$: I'm a stranger!", "Telko": { "delay": 2 }}

@@ -1,0 +1,14 @@
+# NeoHabitat VICE keyboard map
+#
+# Include the standard SDL symbolic map, then override F4 and F6.
+# On a real C64, F4=Shift+F3 and F6=Shift+F5 — VICE 3.2 ships with
+# these incorrectly mapped as unshifted (producing F3 and F5 instead).
+
+!INCLUDE /C64/sdl_sym.vkm
+
+!LSHIFT 1 7
+!RSHIFT 6 4
+!VSHIFT RSHIFT
+
+285 0 5 1   # F4 (SDL keysym 285) → C64 Shift+F3 = F4
+287 0 6 1   # F6 (SDL keysym 287) → C64 Shift+F5 = F6

@@ -8,7 +8,7 @@ visit every day.
 Logging In
 ----------
 
-To get started, **click on the emulator panel** to start the emulator. Once Neohabitat
+To get started, **click on the emulator panel** to start the emulator. Once NeoHabitat
 loads, **hit any key** to get past the splash screen. Next, enter a name for your
 new **Avatar**, such as **Threepwood**, **dril** or **Phil Collins**.
 
@@ -16,13 +16,12 @@ Flipping Disks
 --------------
 
 Press **Enter**, then wait for the Habitat client to load; this will run at the original
-Commodore 64 speed, so be sure to give it a minute.
+Commodore 64 speed, so be sure to give it a minute or two.
 
 Next, Habitat will ask you to flip to the next disk. To do so on **PC**, press **Alt-N**.
 To do so on **Mac**, press **Option-N**. Then, **press any key**, such as spacebar.
 
-Once you've logged in, be sure to select your avatar name from the selector at the top of
-the screen and select **Activate Docent**. This will activate Neohabitat's interactive web
+Once you've logged in, the Docent feature will be activated. This is NeoHabitat's interactive web
 experience, which will provide you with helpful guidance, dynamic help, and historical
 background for much of the world.
 
@@ -48,5 +47,5 @@ If you run into any issues during your travels throughout the world of Habitat, 
 If you'd like to read this help document at any time, simply click the **Help** button in
 the top bar of the user interface.
 
-Otherwise, from all of us on the Neohabitat restoration team, we hope that you have a
-great time and we'll see you in world!
+Otherwise, from all of us on the NeoHabitat restoration team, we hope that you have a
+great time and we'll see you inworld!

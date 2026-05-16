@@ -1,6 +1,7 @@
 // Vice's Joystick Device 4 == Joystick, whereas Joystick Device 2 == Keyset 1
 var JoyDevice1 = supportsGamepads() ? 4 : 2;
 
+
 var emulatorCanvas = document.getElementById("emulatorCanvas");
 
 var emulator = new Emulator(
@@ -58,9 +59,7 @@ document.addEventListener('keydown', resumeAudio);
 function startEmulator() {
   $('#emulatorPanel').removeClass('d-none');
   $('#emulatorStartPanel').addClass('d-none');
-  emulator.start({
-    waitAfterDownloading: false
-  });
+  emulator.start({waitAfterDownloading: false});
   resumeAudio();
 }
 
