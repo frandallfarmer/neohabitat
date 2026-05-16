@@ -6,3 +6,8 @@
 - name: Apt cache refresh
   apt:
     update_cache: true
+
+- name: Restart docker
+  systemd:
+    name: docker
+    state: restarted
