@@ -19,6 +19,7 @@ dependency-reduced-pom.xml
 neohabitat.iml
 usersDB.json
 volumes/bridge_v2_bin/
+.env
 
 # Claude Code — per-user / transient state.
 # Project-shared bits (settings.json, agents/, commands/, skills/, hooks/)
