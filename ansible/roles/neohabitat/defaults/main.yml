@@ -18,6 +18,12 @@ neohabitat_compose_pull: true
 # true   → `up -d` (recreate when config drifts; will restart containers)
 neohabitat_compose_recreate: false
 
+# ── CRIU ─────────────────────────────────────────────────────────────
+# Pinned upstream tag. criu was dropped from Ubuntu 24.04+ noble apt
+# repos due to upstream FTBFS, so packages.yml builds it from source
+# at this revision. Bump to upgrade.
+criu_version: "4.2"
+
 # ── Bridge_v2 ────────────────────────────────────────────────────────
 bridge_container_name: neohabitat-bridge_v2-1
 bridge_listen_port: 2026

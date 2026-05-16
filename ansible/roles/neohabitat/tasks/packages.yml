@@ -117,10 +117,61 @@
     state: started
 
 # ── CRIU (live migration for bridge_v2) ──────────────────────────────
-- name: Install criu (required by deploy-bridge.sh --migrate)
-  apt:
-    name: criu
-    state: present
+# criu was dropped from Ubuntu 24.04+ noble apt repos (upstream FTBFS).
+# Build from source pinned to v{{ criu_version }}; bump criu_version in
+# defaults/main.yml to upgrade. Binary lands at /usr/local/sbin/criu.
+- name: Check installed criu version
+  shell: criu --version 2>/dev/null || true
+  register: criu_installed
+  changed_when: false
+  check_mode: false
+
+- name: Build & install criu from source
+  when: "'Version: ' + criu_version not in (criu_installed.stdout | default(''))"
+  block:
+    - name: Install criu build dependencies
+      apt:
+        name:
+          - build-essential
+          - pkg-config
+          - libprotobuf-dev
+          - libprotobuf-c-dev
+          - protobuf-c-compiler
+          - protobuf-compiler
+          - python3-protobuf
+          - libnl-3-dev
+          - libnet-dev
+          - libcap-dev
+          - libbsd-dev
+          - libnftables-dev
+          - libgnutls28-dev
+          - python3-future
+          - uuid-dev
+        state: present
+
+    - name: Clone criu source at v{{ criu_version }}
+      git:
+        repo: https://github.com/checkpoint-restore/criu.git
+        dest: /usr/local/src/criu
+        version: "v{{ criu_version }}"
+
+    - name: Clean prior criu build artifacts
+      command: make mrproper
+      args:
+        chdir: /usr/local/src/criu
+      changed_when: true
+
+    - name: Build criu
+      command: make -j{{ ansible_processor_vcpus | default(2) }}
+      args:
+        chdir: /usr/local/src/criu
+      changed_when: true
+
+    - name: Install criu binary (make install-criu → /usr/local/sbin/criu)
+      command: make install-criu
+      args:
+        chdir: /usr/local/src/criu
+      changed_when: true
 
 # ── NodeSource Node 20 ───────────────────────────────────────────────
 - name: Add NodeSource GPG key
