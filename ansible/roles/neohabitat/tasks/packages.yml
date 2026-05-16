@@ -47,6 +47,75 @@
     groups: docker
     append: true
 
+# ── Docker housekeeping (prevent disk exhaustion from dangling images
+#    and unbounded logs/build cache; see issue #495) ──────────────────
+- name: Ensure /etc/docker exists
+  file:
+    path: /etc/docker
+    state: directory
+    mode: "0755"
+
+- name: Configure Docker daemon log rotation and build cache GC
+  copy:
+    dest: /etc/docker/daemon.json
+    mode: "0644"
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        },
+        "builder": {
+          "gc": {
+            "enabled": true,
+            "defaultKeepStorage": "1GB"
+          }
+        }
+      }
+  notify: Restart docker
+
+- name: Install docker-prune service (weekly image/cache/volume cleanup)
+  copy:
+    dest: /etc/systemd/system/docker-prune.service
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Prune dangling Docker images, build cache, and orphaned volumes
+      Requires=docker.service
+      After=docker.service
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/docker system prune -f
+      ExecStart=/usr/bin/docker volume prune -f
+  notify: Reload systemd
+
+- name: Install docker-prune weekly timer
+  copy:
+    dest: /etc/systemd/system/docker-prune.timer
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Weekly docker-prune
+
+      [Timer]
+      OnCalendar=weekly
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+  notify: Reload systemd
+
+- name: Flush handlers so docker-prune.timer unit exists before enabling
+  meta: flush_handlers
+
+- name: Enable and start docker-prune timer
+  systemd:
+    name: docker-prune.timer
+    enabled: true
+    state: started
+
 # ── CRIU (live migration for bridge_v2) ──────────────────────────────
 - name: Install criu (required by deploy-bridge.sh --migrate)
   apt:
