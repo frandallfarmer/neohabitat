@@ -11,11 +11,35 @@ type ClientConnection struct {
 	conn            net.Conn
 	rateBucket      *ratelimit.Bucket
 	rateLimitedConn io.Writer
+	// unlimited bypasses the rate-limited writer and writes directly to
+	// the underlying conn. Set via SetUnlimited() once a session is
+	// classified as JSON-passthrough — bots have no business being
+	// throttled to 1200 baud, and the throttle was the cause of bots
+	// missing changeContext bytes during region transitions because the
+	// downstream make storm queued behind them.
+	unlimited bool
 }
 
 func (c *ClientConnection) Read(p []byte) (n int, err error) {
 	n, err = c.conn.Read(p)
 	return n, err
+}
+
+// SetUnlimited disables the C64-modem rate limit on outbound writes.
+// Called when the session is detected as JSON-passthrough (a bot or
+// other modern client) — those clients aren't simulating a 1200 baud
+// modem and don't tolerate the throttle on multi-kB region make storms.
+func (c *ClientConnection) SetUnlimited() {
+	c.unlimited = true
+}
+
+// writer returns the appropriate sink: the raw conn for unlimited
+// (JSON-passthrough) sessions, the rate-limited wrapper otherwise.
+func (c *ClientConnection) writer() io.Writer {
+	if c.unlimited {
+		return c.conn
+	}
+	return c.rateLimitedConn
 }
 
 func (c *ClientConnection) Write(p []byte) (n int, err error) {
@@ -33,18 +57,18 @@ func (c *ClientConnection) Write(p []byte) (n int, err error) {
 	if log.Trace().Enabled() {
 		log.Trace().Str("ip", c.conn.RemoteAddr().String()).Hex("bytes", escaped).Msg("SEND")
 	}
-	return c.rateLimitedConn.Write(escaped)
+	return c.writer().Write(escaped)
 }
 
-// WriteRaw writes p to the rate-limited socket without applying the
-// Habitat-level escape that Write performs. Used by the QLink/Habilink
-// writer, where the QLink frame is its own escape envelope and we don't
-// want to double-escape the bytes inside it.
+// WriteRaw writes p to the (rate-limited or unlimited) socket without
+// applying the Habitat-level escape that Write performs. Used by the
+// QLink/Habilink writer (where the QLink frame is its own escape
+// envelope) and by the JSON passthrough path.
 func (c *ClientConnection) WriteRaw(p []byte) (n int, err error) {
 	if log.Trace().Enabled() {
 		log.Trace().Str("ip", c.conn.RemoteAddr().String()).Hex("bytes", p).Msg("SEND RAW")
 	}
-	return c.rateLimitedConn.Write(p)
+	return c.writer().Write(p)
 }
 
 func (c *ClientConnection) Close() error {

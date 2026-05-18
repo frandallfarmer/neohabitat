@@ -4,6 +4,7 @@
 .vagrant/
 .dbshell
 lib/
+!habibots/lib/
 log/
 node_modules/
 pushserver/node_modules/
@@ -19,6 +20,12 @@ dependency-reduced-pom.xml
 neohabitat.iml
 usersDB.json
 volumes/bridge_v2_bin/
+.env
+
+# Repo-local environment overrides. Loaded by docker compose for variable
+# substitution AND passed to every container via env_file directives in
+# the compose files. Also sourced by habibots/run for host-side dev runs.
+# Track .env.example as the documented template; never check in .env itself.
 .env
 
 # Claude Code — per-user / transient state.

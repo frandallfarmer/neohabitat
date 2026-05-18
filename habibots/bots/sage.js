@@ -14,9 +14,16 @@
 //   ANTHROPIC_API_KEY env var
 // Optional:
 //   ANTHROPIC_MODEL    env var (default claude-haiku-4-5-20251001)
+//   HABIBOTS_MONGO_URL env var (default mongodb://neohabitatmongo:27017)
 //   --persona          short character description (default "a curious
 //                      old-timer of Habitat who's seen it all")
 //   --wander-seconds   how often to consider roaming (default 180)
+//
+// Subsystem split (post-2026 refactor):
+//   bots/sage.js          — orchestrator: events → prompt → tools → speech
+//   lib/sage/memory.js    — persistent mongo-backed memory
+//   lib/sage/awareness.js — scene + inventory synthesis from HabiBot state
+//   lib/sage/tools.js     — Claude tool catalogue + dispatcher
 //
 // Anti-loop guards:
 //   - never responds to other bots (filters by name suffix list)
@@ -29,6 +36,9 @@ log.remove(log.transports.Console)
 log.add(log.transports.Console, { 'timestamp': true })
 
 const HabiBot = require('../habibot')
+const memoryLib = require('../lib/sage/memory')
+const awareness = require('../lib/sage/awareness')
+const { TOOLS, executeAction } = require('../lib/sage/tools')
 
 const Defaults = {
   host: '127.0.0.1',
@@ -67,6 +77,11 @@ if (!process.env.ANTHROPIC_API_KEY) {
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001'
 
+// Mongo-backed memory. connectMemory is idempotent and degrades to no-op
+// if mongo isn't reachable (dev without the docker stack), so the bot
+// boots regardless.
+const mem = memoryLib.connectMemory()
+
 const SYSTEM_PROMPT = `You are an avatar in Lucasfilm's Habitat (1986), the first graphical
 MMO. You speak in short bursts (max 1-2 sentences, often just one phrase)
 because Habitat speech bubbles are tiny.
@@ -83,6 +98,35 @@ them by name. When someone speaks to you, respond conversationally and
 stay engaged. When you have nothing to react to, you can choose to wander
 to a new region — but only when prompted.
 
+You have memory. The prompt may include "Recent conversation with X" and
+"What you've noted about X" sections — treat those as your own memories.
+Use the remember tool when you learn something durably interesting (a
+person's role, a promise made, a recurring topic). Use recall to search
+older context when a name jogs something you can't quite place.
+
+You also have an inventory. The "In your pockets" section lists what you
+ARE carrying; the "Interactable objects in this region" section lists
+items in the world that are NOT yours. Don't confuse the two — never
+narrate or claim ownership of items in the room as if they were yours.
+When in doubt, use list_inventory to check.
+
+You have social tools beyond plain speech:
+- whisper(to, text): private ESP message to one named avatar — invisible
+  to everyone else. Use for asides, confidences, gossip.
+- invite_to_join(name): teleport invite — they get a popup to /ai over.
+- request_join(name): ask to teleport TO them — they get /aj prompt.
+- accept_invite() / accept_join(): respond to a pending invite or
+  request that was sent to YOU. The system message that triggered the
+  prompt will mention /ai or /aj — those are your hint that you can
+  accept by calling the matching tool.
+Use these the way a Habitat regular would — sparingly, with character.
+
+Every word you emit reaches the world as your avatar's speech. Do NOT
+narrate your plans ("I'll greet them"), describe what you're about to
+do ("Let me check..."), or talk to yourself in first person — all of
+that gets broadcast verbatim and breaks immersion. If you need to act
+before speaking, just call the tool first; you can speak after.
+
 Output ONLY the line your avatar would say. No stage directions, no
 quotes, no labels. Use plain ASCII only — the C64 client renders
 PETSCII, so no smart quotes, em-dashes, ellipsis characters, or
@@ -98,33 +142,10 @@ function looksLikeBot(name) {
   return KNOWN_BOT_SUBSTRINGS.some((s) => n.includes(s))
 }
 
-// Strip / fold any non-PETSCII characters out of LLM output before it
-// reaches the C64 client. Symptom of NOT doing this: the C64 client
-// shows garbage block characters where the multi-byte UTF-8 of a
-// smart-quote, em-dash, or emoji landed (each byte renders as its own
-// PETSCII glyph). The system prompt asks Claude to stay in ASCII, but
-// it slips occasionally — this is the belt-and-braces.
-function sanitizeForC64(text) {
-  if (!text) return text
-  return text
-    // Common typography that an LLM produces by default.
-    .replace(/[‘’‚‛]/g, "'")    // fancy single quotes
-    .replace(/[“”„‟]/g, '"')    // fancy double quotes
-    .replace(/[–—―]/g, '-')          // en/em/horizontal dash
-    .replace(/…/g, '...')                      // ellipsis
-    .replace(/[     ]/g, ' ') // non-breaking / thin spaces
-    .replace(/[·•]/g, '*')                // middle dot / bullet
-    // Emoji ranges → :-) so the bot still acknowledges affect even
-    // though the original glyph is gone. Multiple matches collapse
-    // to a single :-) below.
-    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F2FF}]/gu, ':-)')
-    // Final pass: any byte still outside printable ASCII gets dropped.
-    // Includes stray combining marks, zero-width joiners, etc.
-    .replace(/[^\x20-\x7E]/g, '')
-    // Collapse any duplicated :-) the emoji-fold introduced.
-    .replace(/(:-\))(\s*:-\))+/g, '$1')
-    .trim()
-}
+// PETSCII sanitizer lives in lib/sage/petscii.js — shared with tools.js
+// so whisper text gets the same treatment as broadcast speech. Re-export
+// the local name to keep the rest of this file unchanged.
+const { sanitizeForC64 } = require('../lib/sage/petscii')
 
 // Cardinal direction the speaker is asking sage to go, or null if the
 // utterance isn't a movement request. Matches "go north", "head east",
@@ -160,6 +181,7 @@ const SageBot = HabiBot.newWithConfig(Argv.host, Argv.port, Argv.username)
 const greetedAt = new Map()              // avatarName -> ms timestamp
 const GREETING_COOLDOWN_MS = 5 * 60 * 1000 // 5 min
 const LLM_COOLDOWN_MS = 5_000            // global gap between calls
+const MAX_TOOL_TURNS = 5                 // hard cap on multi-turn tool loop
 let lastLlmCallAt = 0
 
 // Wrap a promise so it rejects after `ms` instead of hanging forever.
@@ -182,24 +204,39 @@ async function llmCooldownGate() {
   lastLlmCallAt = Date.now()
 }
 
+// Extended thinking budget. With thinking enabled, Claude's planning
+// lands in dedicated `thinking` content blocks that we never emit as
+// avatar speech — only `text` blocks reach the world. The Anthropic
+// API enforces `budget_tokens >= 1024` (smaller is rejected with a
+// 400) and `max_tokens > budget_tokens`. 1024 is plenty for a
+// region-aware reply ("scan scene, decide tool, decide line"); the
+// max_tokens on each call is sized well above to leave room for the
+// actual text + tool_use blocks.
+const THINKING_BUDGET = 1024
+
 async function askClaude(userMessage) {
   await llmCooldownGate()
   try {
     log.debug('askClaude: calling %s (%d chars in)', MODEL, userMessage.length)
     const resp = await withTimeout(claude.messages.create({
       model: MODEL,
-      max_tokens: 300,
+      max_tokens: 2048,
+      thinking: { type: 'enabled', budget_tokens: THINKING_BUDGET },
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     }), 30_000, 'claude.messages.create')
-    const text = resp.content.map((c) => c.text || '').join('').trim()
+    // Only collect TEXT blocks — `thinking` blocks are Claude's hidden
+    // reasoning and must never be spoken.
+    const text = (resp.content || [])
+      .filter((c) => c.type === 'text' && c.text)
+      .map((c) => c.text)
+      .join('')
+      .trim()
     if (!text) {
       log.warn('Claude returned empty response')
       return null
     }
     log.debug('askClaude: got %d chars back', text.length)
-    // No truncation here — sayChunked() splits long responses into
-    // multiple speech bubbles when sent to the world.
     return text
   } catch (e) {
     log.error('Claude call failed: %s', e.message)
@@ -207,43 +244,98 @@ async function askClaude(userMessage) {
   }
 }
 
-// askClaudeWithTools is the SPEAK$-time variant: includes the rich
-// scene description (object refs + noids) and gives Claude a set of
-// tools it can call to act on the world instead of just talking. The
-// caller executes any returned tool_uses and speaks the text.
+// Multi-turn tool loop. Claude can chain actions: e.g. list_inventory →
+// see what it has → give_to_avatar → emit a final in-character line.
+//
+// Extended thinking is enabled, so Claude's planning lands in dedicated
+// `thinking` content blocks that we never expose. Only `text` blocks
+// become avatar speech, and only on a terminal turn (no tool_use) so
+// mid-turn intent ("first I'll check inventory, then …") doesn't get
+// broadcast as the bot's reply.
+//
+// Capped at MAX_TOOL_TURNS to bound cost and prevent a tool-error/retry
+// loop from running forever; in practice 1-3 turns covers any realistic
+// chain.
 async function askClaudeWithTools(userMessage) {
-  await llmCooldownGate()
-  try {
-    log.debug('askClaudeWithTools: calling %s (%d chars in)', MODEL, userMessage.length)
-    const resp = await withTimeout(claude.messages.create({
-      model: MODEL,
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
-      tools: TOOLS,
-      messages: [{ role: 'user', content: userMessage }],
-    }), 30_000, 'claude.messages.create')
-    let text = ''
+  const messages = [{ role: 'user', content: userMessage }]
+
+  for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
+    await llmCooldownGate()
+    let resp
+    try {
+      log.debug('askClaudeWithTools turn %d: calling %s', turn, MODEL)
+      resp = await withTimeout(claude.messages.create({
+        model: MODEL,
+        max_tokens: 2048,
+        thinking: { type: 'enabled', budget_tokens: THINKING_BUDGET },
+        system: SYSTEM_PROMPT,
+        tools: TOOLS,
+        messages,
+      }), 30_000, 'claude.messages.create')
+    } catch (e) {
+      log.error('Claude tool call failed turn %d: %s', turn, e.message)
+      return { text: '' }
+    }
+
+    let turnText = ''
     const toolUses = []
+    // Strict block discrimination: only `text` becomes potential avatar
+    // speech, only `tool_use` becomes a tool call. `thinking` and
+    // `redacted_thinking` blocks are Claude's hidden reasoning — drop
+    // them on the floor so they can't leak as in-world chatter.
     for (const block of resp.content || []) {
-      if (block.type === 'text' && block.text) text += block.text
+      if (block.type === 'text' && block.text) turnText += block.text
       else if (block.type === 'tool_use') toolUses.push(block)
     }
-    log.debug('askClaudeWithTools: %d chars text, %d tool_uses', text.length, toolUses.length)
-    return { text: text.trim(), toolUses }
-  } catch (e) {
-    log.error('Claude tool call failed: %s', e.message)
-    return { text: '', toolUses: [] }
+    log.debug('turn %d: %d chars text, %d tool_uses, stop=%s', turn, turnText.length, toolUses.length, resp.stop_reason)
+
+    // Terminal turn: Claude is done with tools and emitting the line
+    // the avatar should actually say. Extended thinking (enabled
+    // below) routes Claude's planning into dedicated `thinking` blocks
+    // that we never see in turnText, so what's left is pure
+    // in-character output.
+    if (toolUses.length === 0) {
+      const safe = sanitizeForC64(turnText.trim())
+      if (safe) {
+        await sayChunked(SageBot, safe)
+      }
+      return { text: safe || '' }
+    }
+
+    // Mid-turn text accompanies a tool call — log for debugging but
+    // never broadcast. This is what was leaking "I'll acknowledge..."
+    // style planning into the world.
+    if (turnText.trim()) {
+      log.debug('turn %d mid-turn text (NOT spoken): %s', turn, turnText.trim().slice(0, 200))
+    }
+
+    // Run tools and feed results back as a tool_result-typed user message.
+    const toolResults = []
+    for (const t of toolUses) {
+      const result = await executeAction(t, SageBot, { mem })
+      toolResults.push({
+        type: 'tool_result',
+        tool_use_id: t.id,
+        content: JSON.stringify(result == null ? null : result),
+      })
+    }
+    messages.push({ role: 'assistant', content: resp.content })
+    messages.push({ role: 'user', content: toolResults })
   }
+
+  log.warn('askClaudeWithTools: hit MAX_TOOL_TURNS=%d', MAX_TOOL_TURNS)
+  return { text: '' }
 }
 
 // === Speech chunking =====================================================
 // Habitat SPEAK$ caps the wire payload at 114 chars when the bridge
 // translates to the binary client (see bridge_v2/bridge/server_ops.go).
 // Anything longer is silently truncated. Chunk LLM output into multiple
-// bubbles spaced 10s apart so a long reply lands in full instead of
-// clipped mid-word.
+// bubbles. Gap was 10s historically, but that long a pause feels like
+// sage forgot the conversation mid-thought; 1s reads as continuous
+// speech while still letting the client render each bubble cleanly.
 const SPEECH_CHUNK_LIMIT = 110
-const SPEECH_GAP_MS = 10_000
+const SPEECH_GAP_MS = 1_000
 
 function chunkSpeech(text, limit) {
   const cap = limit || SPEECH_CHUNK_LIMIT
@@ -297,184 +389,6 @@ async function sayChunked(bot, text) {
   }
 }
 
-// Habitat object types we know how to interact with. Mod.type values come
-// from the Elko object class; the action says how sage should engage.
-const SITTABLE_TYPES = new Set(['Seat', 'Couch', 'Chair', 'Bench', 'Hot_tub', 'Bed'])
-const OPENABLE_TYPES = new Set(['Door', 'Bridge', 'Box', 'Bag', 'Chest', 'Trunk', 'Mailbox', 'Dropbox', 'Aquarium', 'Hot_tub'])
-const PICKUPABLE_HINT_TYPES = new Set(['Book', 'Compass', 'Knick_knack', 'Plant', 'Magic_lamp', 'Magic_wand', 'Crystal_ball', 'Cookie', 'Coffee', 'Garbage_can', 'Token'])
-
-function objectsByType() {
-  const buckets = { sittable: [], openable: [], pickupable: [], other: [] }
-  for (const noid in SageBot.noids) {
-    const o = SageBot.noids[noid]
-    if (!o || !o.mods || !o.mods[0]) continue
-    const t = o.mods[0].type
-    if (!t || t === 'Avatar' || t === 'Ghost' || t === 'Region') continue
-    if (SITTABLE_TYPES.has(t)) buckets.sittable.push(o)
-    else if (OPENABLE_TYPES.has(t)) buckets.openable.push(o)
-    else if (PICKUPABLE_HINT_TYPES.has(t)) buckets.pickupable.push(o)
-    else buckets.other.push(o)
-  }
-  return buckets
-}
-
-function describeScene() {
-  const others = SageBot.collectAvatarNoids()
-    .map((a) => a.name)
-    .filter((n) => n)
-  const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
-  const region = SageBot.realm && SageBot.realm.name ? SageBot.realm.name : '(unknown region)'
-  const objs = objectsByType()
-  // Compress object lists to short type counts so the prompt stays small.
-  const objSummary = ['sittable', 'openable', 'pickupable', 'other']
-    .map((cat) => {
-      const list = objs[cat]
-      if (!list.length) return null
-      const counts = {}
-      for (const o of list) counts[o.mods[0].type] = (counts[o.mods[0].type] || 0) + 1
-      return `${cat}: ${Object.entries(counts).map(([t, c]) => c > 1 ? `${t}×${c}` : t).join(', ')}`
-    })
-    .filter(Boolean)
-    .join(' | ') || 'none'
-  return `Region: ${region}. Other avatars present: ${others.length ? others.join(', ') : 'none'}. Exits: ${exits.length ? exits.join(', ') : 'none'}. Objects in room: ${objSummary}.`
-}
-
-// Pick up an object — Habitat GET op. Not in habibot.js's helper set but
-// the framework accepts arbitrary ops via send().
-function getObj(ref, containerNoid) {
-  return SageBot.send({ op: 'GET', to: ref, containerNoid: containerNoid || 0 })
-}
-
-// === Tool definitions for Claude ========================================
-// Each tool maps to a HabiBot method (or a small helper). When a SPEAK$
-// arrives, we describe the scene with object refs/noids and let Claude
-// pick which tool to invoke. Tools execute in the order Claude returns
-// them, AFTER sage speaks its in-character reply.
-const TOOLS = [
-  {
-    name: 'walk_to_exit',
-    description: 'Walk to a region exit and transit to the adjacent region. Use only when someone explicitly asks you to leave or follow them in a direction.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        direction: { type: 'string', enum: ['NORTH', 'EAST', 'SOUTH', 'WEST'] },
-      },
-      required: ['direction'],
-    },
-  },
-  {
-    name: 'open_door',
-    description: 'Open a door, box, bag, chest, or other openable container present in the room. Use when someone asks you to open something.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        ref: { type: 'string', description: 'The Habitat object ref shown in the scene description.' },
-      },
-      required: ['ref'],
-    },
-  },
-  {
-    name: 'close_door',
-    description: 'Close a door, box, bag, chest, or other openable container present in the room.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        ref: { type: 'string' },
-      },
-      required: ['ref'],
-    },
-  },
-  {
-    name: 'sit_down',
-    description: 'Sit down on a chair, couch, bench, bed, or hot tub present in the room.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        noid: { type: 'integer', description: 'The noid of the seat object.' },
-      },
-      required: ['noid'],
-    },
-  },
-  {
-    name: 'stand_up',
-    description: 'Stand up if currently seated.',
-    input_schema: { type: 'object', properties: {} },
-  },
-  {
-    name: 'pick_up',
-    description: 'Pick up a small portable item (book, coin, knick-knack, plant, magic lamp, etc.) currently in the room.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        ref: { type: 'string' },
-        noid: { type: 'integer' },
-      },
-      required: ['ref', 'noid'],
-    },
-  },
-]
-
-async function executeAction(toolUse) {
-  const { name, input } = toolUse
-  log.info('Tool: %s(%s)', name, JSON.stringify(input || {}))
-  try {
-    switch (name) {
-      case 'walk_to_exit':
-        return await withTimeout(SageBot.walkToExit(input.direction), 30_000, 'walkToExit')
-      case 'open_door':
-        return await withTimeout(SageBot.openDoor(input.ref), 10_000, 'openDoor')
-      case 'close_door':
-        return await withTimeout(SageBot.closeDoor(input.ref), 10_000, 'closeDoor')
-      case 'sit_down':
-        return await withTimeout(SageBot.sitOrstand(1, input.noid), 10_000, 'sit')
-      case 'stand_up':
-        return await withTimeout(SageBot.sitOrstand(0, 0), 10_000, 'stand')
-      case 'pick_up':
-        return await withTimeout(getObj(input.ref, input.noid), 10_000, 'pickUp')
-      default:
-        log.warn('Unknown tool: %s', name)
-        return null
-    }
-  } catch (e) {
-    log.warn('Tool %s failed: %s', name, e.message)
-    return null
-  }
-}
-
-// Rich scene description for tool-mode prompts: lists each interactable
-// object with its ref and noid so Claude can pass valid arguments to
-// open_door/sit_down/pick_up. The compact describeScene() summary above
-// is fine for greeting/comment prompts where Claude only needs gist.
-function describeSceneForTools() {
-  const objs = objectsByType()
-  const lines = []
-  for (const o of objs.sittable) {
-    const m = o.mods[0]
-    lines.push(`  - sittable: type=${m.type} ref=${o.ref} noid=${m.noid}`)
-  }
-  for (const o of objs.openable) {
-    const m = o.mods[0]
-    lines.push(`  - openable: type=${m.type} ref=${o.ref} noid=${m.noid}`)
-  }
-  for (const o of objs.pickupable) {
-    const m = o.mods[0]
-    lines.push(`  - pickupable: type=${m.type} ref=${o.ref} noid=${m.noid}`)
-  }
-  const others = SageBot.collectAvatarNoids()
-    .filter((a) => a && a.name)
-    .map((a) => `  - avatar: name=${a.name} noid=${a.mods[0].noid}`)
-  const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
-  const region = SageBot.realm && SageBot.realm.name ? SageBot.realm.name : '(unknown region)'
-  return [
-    `Region: ${region}`,
-    `Exits available: ${exits.length ? exits.join(', ') : 'none'}`,
-    `Avatars present:`,
-    ...(others.length ? others : ['  (none)']),
-    `Interactable objects:`,
-    ...(lines.length ? lines : ['  (none)']),
-  ].join('\n')
-}
-
 // Walk to a comfortable speaking distance from a target avatar's coords.
 async function approachAvatar(avatarObj) {
   const mod = avatarObj && avatarObj.mods && avatarObj.mods[0]
@@ -482,12 +396,11 @@ async function approachAvatar(avatarObj) {
     log.debug('approachAvatar: target has no coords')
     return
   }
-  // Stand a few tiles to the right/left of them, facing inward.
   const myAvatar = SageBot.getAvatar()
   const myX = myAvatar && myAvatar.mods[0] && myAvatar.mods[0].x
   const offset = (myX != null && myX > mod.x) ? 24 : -24
   const targetX = Math.max(8, Math.min(248, mod.x + offset))
-  const facing = offset < 0 ? 1 : 0   // 0=face right, 1=face left (rough)
+  const facing = offset < 0 ? 1 : 0
   log.debug('approachAvatar: walking to (%d,%d) facing %d', targetX, mod.y, facing)
   try {
     await withTimeout(SageBot.walkTo(targetX, mod.y, facing), 15_000, 'walkTo')
@@ -495,6 +408,55 @@ async function approachAvatar(avatarObj) {
   } catch (e) {
     log.warn('walkTo failed: %s', e.message)
   }
+}
+
+// Build the auto-injected memory block for a SPEAK$ prompt: last few
+// conversation turns with this avatar plus durable notes about them.
+// Returns "" when memory is empty or unavailable, so callers can just
+// drop it inline.
+async function memoryBlockFor(speakerName) {
+  const botName = SageBot.config.username
+  try {
+    const [turns, notes] = await Promise.all([
+      mem.recentTurns({ bot: botName, avatar: speakerName, limit: 5 }),
+      mem.notesAbout({ bot: botName, subject: speakerName, limit: 5 }),
+    ])
+    if (!turns.length && !notes.length) return ''
+    const lines = []
+    if (turns.length) {
+      lines.push(`Recent conversation with ${speakerName}:`)
+      // recentTurns is newest-first; reverse so prompt reads chronologically.
+      for (const r of [...turns].reverse()) {
+        const who = r.direction === 'outgoing' ? 'you' : speakerName.toLowerCase()
+        const ago = humanAgo(r.ts)
+        lines.push(`  [${ago}] ${who}: "${(r.text || '').slice(0, 200)}"`)
+      }
+    }
+    if (notes.length) {
+      lines.push(`What you've noted about ${speakerName}:`)
+      for (const n of notes) {
+        lines.push(`  - ${n.fact}`)
+      }
+    }
+    let block = lines.join('\n')
+    // Cap aggressively — total prompt budget matters more than perfect
+    // recall, and the most-recent rows are at the top/bottom anyway.
+    if (block.length > 1500) block = block.slice(0, 1500) + '\n  ...(truncated)'
+    return block
+  } catch (e) {
+    log.warn('memoryBlockFor failed: %s', e.message)
+    return ''
+  }
+}
+
+function humanAgo(ts) {
+  if (!ts) return '?'
+  const t = ts instanceof Date ? ts : new Date(ts)
+  const sec = Math.max(0, Math.floor((Date.now() - t.getTime()) / 1000))
+  if (sec < 60) return `${sec}s ago`
+  if (sec < 3600) return `${Math.floor(sec / 60)}m ago`
+  if (sec < 86400) return `${Math.floor(sec / 3600)}h ago`
+  return `${Math.floor(sec / 86400)}d ago`
 }
 
 // ── lifecycle ────────────────────────────────────────────────────────
@@ -506,7 +468,15 @@ SageBot.on('connected', (bot) => {
 SageBot.on('enteredRegion', (bot) => {
   bot.ensureCorporated()
     .then(() => {
-      log.info('Entered region. Scene: %s', describeScene())
+      log.info('Entered region. Scene:\n%s', awareness.describeWorld(bot))
+      // Snapshot inventory on every region change. After a restart the
+      // bot's noid table is empty until the next make storm; persisting
+      // the last-seen pocket contents lets the prompt pre-load them on
+      // reconnect (see prompt-build below).
+      const items = awareness.getInventory(bot)
+      mem.saveInventory({ bot: bot.config.username, items }).catch((e) => {
+        log.debug('saveInventory failed (non-fatal): %s', e.message)
+      })
     })
     .catch((e) => log.warn('ensureCorporated failed: %s', e.message))
 })
@@ -539,9 +509,11 @@ SageBot.on('APPEARING_$', async (bot, msg) => {
     log.info('Approaching new avatar: %s', name)
     await approachAvatar(avatar)
 
-    log.debug('APPEARING_$: building prompt for %s', name)
+    const memBlock = await memoryBlockFor(name)
+    log.debug('APPEARING_$: building prompt for %s (memBlock=%d chars)', name, memBlock.length)
     const prompt =
-      `${describeScene()}\n\n` +
+      `${awareness.describeWorld(bot)}\n\n` +
+      (memBlock ? `${memBlock}\n\n` : '') +
       `Event: a new avatar named "${name}" just appeared in the region.\n` +
       `You walked over to greet them. What do you say?`
 
@@ -550,6 +522,13 @@ SageBot.on('APPEARING_$', async (bot, msg) => {
       const safe = sanitizeForC64(line)
       log.info('Greeting %s: %s', name, safe)
       await sayChunked(bot, safe)
+      mem.logTurn({
+        bot: bot.config.username,
+        avatar: name,
+        region: awareness.currentRegionRef(bot),
+        direction: 'outgoing',
+        text: safe,
+      }).catch(() => {})
     } else {
       log.debug('APPEARING_$: no greeting line generated for %s', name)
     }
@@ -562,7 +541,6 @@ SageBot.on('APPEARING_$', async (bot, msg) => {
 SageBot.on('SPEAK$', async (bot, msg) => {
   log.debug('SPEAK$ enter: noid=%s text=%s', msg && msg.noid, msg && msg.text)
   try {
-    // msg shape: {type:"broadcast", noid:N, op:"SPEAK$", text:"...", esp:0}
     const speakerNoid = msg.noid
     const text = msg.text
     if (!text) { log.debug('SPEAK$: empty text, skipping'); return }
@@ -575,6 +553,16 @@ SageBot.on('SPEAK$', async (bot, msg) => {
       return
     }
 
+    // Log the inbound turn before any processing — even fast-path
+    // (movement-shortcut) replies should record what we heard.
+    mem.logTurn({
+      bot: bot.config.username,
+      avatar: speakerName,
+      region: awareness.currentRegionRef(bot),
+      direction: 'incoming',
+      text,
+    }).catch(() => {})
+
     // Direct movement request — short-circuit the LLM and just walk.
     // Region transitions are slow (10+s for the new region's contents
     // to stream), so don't also wait on a Claude round-trip; ack with
@@ -585,50 +573,123 @@ SageBot.on('SPEAK$', async (bot, msg) => {
       log.info('%s asked to move %s; exits available: %s', speakerName, dir, exits.join(','))
       const exitIdx = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 }[dir]
       const hasExit = SageBot.neighbors && SageBot.neighbors[exitIdx] && SageBot.neighbors[exitIdx].length > 0
-      if (!hasExit) {
-        await sayChunked(bot, sanitizeForC64(`No way out to the ${dir.toLowerCase()} from here, ${speakerName}.`))
-        return
-      }
-      await sayChunked(bot, sanitizeForC64(`Heading ${dir.toLowerCase()}, ${speakerName}.`))
-      try {
-        await withTimeout(SageBot.walkToExit(dir), 30_000, 'walkToExit:' + dir)
-      } catch (e) {
-        log.warn('walkToExit %s failed: %s', dir, e.message)
+      const reply = hasExit
+        ? `Heading ${dir.toLowerCase()}, ${speakerName}.`
+        : `No way out to the ${dir.toLowerCase()} from here, ${speakerName}.`
+      const safe = sanitizeForC64(reply)
+      await sayChunked(bot, safe)
+      mem.logTurn({
+        bot: bot.config.username,
+        avatar: speakerName,
+        region: awareness.currentRegionRef(bot),
+        direction: 'outgoing',
+        text: safe,
+      }).catch(() => {})
+      if (hasExit) {
+        try {
+          await withTimeout(SageBot.walkToExit(dir), 30_000, 'walkToExit:' + dir)
+        } catch (e) {
+          log.warn('walkToExit %s failed: %s', dir, e.message)
+        }
       }
       return
     }
 
-    log.debug('SPEAK$: building tool-aware reply prompt for %s', speakerName)
+    const memBlock = await memoryBlockFor(speakerName)
+    log.debug('SPEAK$: building tool-aware reply prompt for %s (memBlock=%d chars)', speakerName, memBlock.length)
     const prompt =
-      `${describeSceneForTools()}\n\n` +
+      `${awareness.describeWorld(bot)}\n\n` +
+      (memBlock ? `${memBlock}\n\n` : '') +
       `Event: ${speakerName} just said: "${text}"\n\n` +
       `Reply in character. Acknowledge them by name if it feels natural. ` +
       `If they're asking you to do something physical — sit on a chair, open a door, ` +
-      `pick up an item, or walk somewhere — use the matching tool AND say a brief ` +
-      `in-character line about it. Use the refs/noids exactly as listed in the ` +
-      `scene description above; do not invent values.`
+      `pick up an item, walk somewhere, hand them an item from your pocket — use the ` +
+      `matching tool AND say a brief in-character line about it. Use refs/noids ` +
+      `exactly as listed above; never invent values. If the request needs a fact you ` +
+      `don't immediately have, try the recall tool before answering.`
 
-    const { text: reply, toolUses } = await askClaudeWithTools(prompt)
+    const { text: reply } = await askClaudeWithTools(prompt)
     if (reply) {
-      const safe = sanitizeForC64(reply)
-      log.info('Replying to %s: %s', speakerName, safe)
-      await sayChunked(bot, safe)
-    } else if (toolUses.length === 0) {
-      log.debug('SPEAK$: empty response (no text, no tools) for %s', speakerName)
-    }
-    // Execute tool calls AFTER speaking so "OK, opening it" lands first.
-    for (const t of toolUses) {
-      await executeAction(t)
+      log.info('Replied to %s: %s', speakerName, reply)
+      mem.logTurn({
+        bot: bot.config.username,
+        avatar: speakerName,
+        region: awareness.currentRegionRef(bot),
+        direction: 'outgoing',
+        text: reply,
+      }).catch(() => {})
     }
   } catch (e) {
     log.error('SPEAK$ handler crashed: %s\n%s', e.message, e.stack)
   }
 })
 
+// ── private message from elko (invites, ESP-from-others, system msgs) ─
+// OBJECTSPEAK_$ is elko's "object_say to one user" channel. It carries:
+//   - "X invited you to join them, enter /ai to accept." (from /i)
+//   - "X asked to join you, enter /aj to accept." (from /j)
+//   - "SageBot has arrived." style arrival pings (own avatar, ignored)
+//   - Plaque/sign reads, command help, error replies
+// ESP-from-other-avatars arrives as a different op (broadcast SPEAK$
+// flagged esp:1 in elko's send_private_msg path); not handled here yet.
+//
+// We feed actual conversational pings (invites, errors, prompts the
+// user might want sage to react to) into Claude with the tool surface
+// available so sage can /ai or /aj its way back. Self-arrival pings
+// and noise are filtered out.
+SageBot.on('OBJECTSPEAK_$', async (bot, msg) => {
+  try {
+    const text = (msg && msg.text) || ''
+    if (!text) return
+    // Skip the "SageBot has arrived." style self-pings — those fire
+    // every time elko enters us into a region and aren't worth a
+    // Claude round-trip.
+    if (text.includes(`${Argv.username} has arrived`)) return
+    // Match the invite / join prompts elko sends. These are the
+    // explicit actionable cases.
+    const inviteMatch = text.match(/^(.+?) invited you to join them, enter \/ai to accept\.?$/)
+    const joinMatch = text.match(/^(.+?) asked to join you, enter \/aj to accept\.?$/)
+    let kind = null
+    let from = null
+    if (inviteMatch) { kind = 'invite'; from = inviteMatch[1] }
+    else if (joinMatch) { kind = 'join_request'; from = joinMatch[1] }
+    else {
+      // Other private messages (oracle replies, error messages, plaque
+      // text, etc.) — not actionable for sage. Log at debug only.
+      log.debug('OBJECTSPEAK_$ (no action taken): %s', text.slice(0, 120))
+      return
+    }
+    log.info('Received %s from %s — handing to Claude', kind, from)
+    const memBlock = await memoryBlockFor(from)
+    const prompt =
+      `${awareness.describeWorld(bot)}\n\n` +
+      (memBlock ? `${memBlock}\n\n` : '') +
+      `Event: ${from} just sent you a teleport ${kind === 'invite' ? 'invitation' : 'join request'}.\n` +
+      `The system message said: "${text}"\n\n` +
+      `This was a PRIVATE prompt to you — respond privately. Use whisper(to="${from}", ` +
+      `text="...") to reply, do NOT broadcast on the public channel. ` +
+      `Decide in character whether to accept (use the ${kind === 'invite' ? 'accept_invite' : 'accept_join'} ` +
+      `tool) or politely decline (just whisper without calling the tool). Either way, ` +
+      `whisper a brief in-character line back to ${from} so they hear your response.`
+    const { text: reply } = await askClaudeWithTools(prompt)
+    if (reply) {
+      log.info('Replied to %s %s: %s', from, kind, reply)
+      mem.logTurn({
+        bot: bot.config.username,
+        avatar: from,
+        region: awareness.currentRegionRef(bot),
+        direction: 'outgoing',
+        text: reply,
+      }).catch(() => {})
+    }
+  } catch (e) {
+    log.error('OBJECTSPEAK_$ handler crashed: %s\n%s', e.message, e.stack)
+  }
+})
+
 // ── periodic wander ──────────────────────────────────────────────────
 async function wanderTick() {
   try {
-    // Only wander if no humans are around to talk to — otherwise stay put.
     const humans = SageBot.collectAvatarNoids().filter((a) => !looksLikeBot(a.name))
     if (humans.length > 0) {
       log.debug('Humans present, staying put for chat')
@@ -653,28 +714,60 @@ setInterval(wanderTick, Argv.wanderSeconds * 1000)
 // up). Then ask Claude to generate a short comment about what we did so
 // the action lands in the world as flavor speech rather than a silent
 // pose change.
+//
+// Two anti-fixation safeguards:
+//   1. INTERACT_COOLDOWN_MS — each ref we just touched is excluded
+//      from the next several picks. With one room and two doors,
+//      naive random was picking the same door over and over.
+//   2. recentInteractComments ring buffer — we feed sage's last few
+//      remarks back into the prompt so Claude doesn't repeat itself
+//      ("door creaks" 4 times in a row was the symptom).
+const INTERACT_COOLDOWN_MS = 10 * 60 * 1000  // 10 minutes
+const RECENT_COMMENTS_KEEP = 8
+const interactedAt = new Map()                 // ref → ms timestamp
+const recentInteractComments = []              // most recent first
+
 async function interactTick() {
   try {
-    const objs = objectsByType()
-    // Build a candidate list of (action, object, label) tuples.
-    const choices = []
-    for (const o of objs.sittable) choices.push({ kind: 'sit', obj: o })
-    for (const o of objs.openable) choices.push({ kind: 'open', obj: o })
-    for (const o of objs.pickupable) choices.push({ kind: 'get', obj: o })
-    if (choices.length === 0) {
+    const objs = awareness.objectsByType(SageBot)
+    // An item is "in the room" iff its _container points at the region
+    // ref (set by the make-event tagging in habibot.js processElkoMessage).
+    // Items in any avatar's pocket have _container = that user's ref;
+    // items inside open containers (Box/Bag/Chest) sit at a non-region
+    // ref — skip both for interactTick.
+    const regionRef = awareness.currentRegionRef(SageBot)
+    const inRoom = (o) => o._container && o._container === regionRef
+    const allChoices = []
+    for (const o of objs.sittable.filter(inRoom)) allChoices.push({ kind: 'sit', obj: o })
+    for (const o of objs.openable.filter(inRoom)) allChoices.push({ kind: 'open', obj: o })
+    for (const o of objs.pickupable.filter(inRoom)) allChoices.push({ kind: 'get', obj: o })
+    if (allChoices.length === 0) {
       log.debug('No interactable objects in room')
+      return
+    }
+    // Filter out anything we touched within the cooldown window. If
+    // *every* candidate is on cooldown, skip this tick entirely
+    // instead of forcing a stale repeat — sage will try again next
+    // tick when the oldest entry has aged out.
+    const now = Date.now()
+    const choices = allChoices.filter((c) => {
+      const last = interactedAt.get(c.obj.ref) || 0
+      return (now - last) >= INTERACT_COOLDOWN_MS
+    })
+    if (choices.length === 0) {
+      log.debug('All %d interactables in cooldown; skipping tick', allChoices.length)
       return
     }
     const choice = choices[Math.floor(Math.random() * choices.length)]
     const mod = choice.obj.mods[0]
     const objType = mod.type
     const objRef = choice.obj.ref
+    interactedAt.set(objRef, now)
 
     log.info('Interact: %s the %s (ref=%s, noid=%s)', choice.kind, objType, objRef, mod.noid)
 
     try {
       if (choice.kind === 'sit') {
-        // First walk near it, then sit.
         if (mod.x != null && mod.y != null) {
           await withTimeout(SageBot.walkTo(mod.x, mod.y, 0), 15_000, 'walkTo').catch(() => {})
         }
@@ -682,7 +775,9 @@ async function interactTick() {
       } else if (choice.kind === 'open') {
         await withTimeout(SageBot.openDoor(objRef), 10_000, 'openDoor')
       } else if (choice.kind === 'get') {
-        await withTimeout(getObj(objRef, mod.noid), 10_000, 'getObj')
+        await withTimeout(
+          SageBot.send({ op: 'GET', to: objRef, containerNoid: mod.noid || 0 }),
+          10_000, 'getObj')
       }
     } catch (e) {
       log.warn('Interact failed (%s on %s): %s', choice.kind, objType, e.message)
@@ -690,15 +785,27 @@ async function interactTick() {
     }
 
     const verb = { sit: 'sat down on', open: 'opened', get: 'picked up' }[choice.kind]
+    const recentBlock = recentInteractComments.length
+      ? `Your last few remarks (avoid repeating phrasing or hitting the same theme):\n` +
+        recentInteractComments.map((c) => `  - "${c}"`).join('\n') + '\n\n'
+      : ''
     const prompt =
-      `${describeScene()}\n\n` +
+      `${awareness.describeWorld(SageBot)}\n\n` +
+      recentBlock +
       `Event: you just ${verb} the ${objType} in the room. ` +
-      `Make a brief in-character remark about doing it (or about the object).`
+      `Make a brief in-character remark — but make it noticeably different from your last few ` +
+      `remarks above. Vary the topic, mood, or angle; don't recycle "creaky", "still ticking", ` +
+      `"after all these years", etc. if you've already used those.`
     const line = await askClaude(prompt)
     if (line) {
       const safe = sanitizeForC64(line)
       log.info('Comment after %s: %s', choice.kind, safe)
       await sayChunked(SageBot, safe)
+      // Push to the ring buffer (most recent first, cap at KEEP).
+      recentInteractComments.unshift(safe)
+      if (recentInteractComments.length > RECENT_COMMENTS_KEEP) {
+        recentInteractComments.length = RECENT_COMMENTS_KEEP
+      }
     }
   } catch (e) {
     log.warn('interactTick failed: %s', e.message)

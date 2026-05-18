@@ -5,6 +5,20 @@ set -eo pipefail
 
 trap 'kill %1; kill %2' SIGINT
 
+# Source the repo-local .env (one level up — this script lives in
+# habibots/) for host-side dev runs. In the docker-compose path the
+# bots container already picks up .env via env_file in compose, so
+# this file may be absent in production — the `-f` test keeps that
+# case silent. `set -a` / `set +a` exports every var defined in .env
+# to the bots' environment without us having to list them by name.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "${SCRIPT_DIR}/../.env" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . "${SCRIPT_DIR}/../.env"
+  set +a
+fi
+
 HABITAT_HOST="${HABIBOTS_HOST-habitat.themade.org}"
 HABITAT_PORT="${HABIBOTS_PORT-1337}"
 CONNECTOR_REGION="${HABIBOTS_CONNECTOR_REGION-context-Downtown_5f}"
