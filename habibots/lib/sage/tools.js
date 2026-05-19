@@ -180,11 +180,18 @@ const TOOLS = [
   },
   {
     name: 'put_down',
-    description: 'Place an item from your pocket onto the floor (or into an open container). Use container_noid=0 for the floor.',
+    description: 'PUT — place the item you are CURRENTLY HOLDING (HANDS slot) onto the floor or into an ' +
+      'open container. Habitat\'s PUT only works on the in-HANDS item; if the item you want to drop is ' +
+      'in a numbered pocket slot, you MUST pick_up(ref, noid) FIRST to move it into HANDS, then ' +
+      'put_down. The "In your pockets" section of the scene shows which item (if any) is [IN HANDS] ' +
+      'vs which are [pocket slot N]. Use container_noid=0 for the floor.\n\n' +
+      'If you call this with an item that\'s still in a pocket slot, the tool will return an error — ' +
+      'do NOT claim to have put the item down in that case. Either pick_up first, or tell the user ' +
+      'you can\'t.',
     input_schema: {
       type: 'object',
       properties: {
-        ref: { type: 'string', description: 'Ref of the item in your pocket.' },
+        ref: { type: 'string', description: 'Ref of the item to put down. Must currently be in your HANDS slot.' },
         container_noid: { type: 'integer', description: '0 to drop on the floor; otherwise the noid of an open container.' },
         x: { type: 'integer', description: 'Target X (0-255). Ignored when dropping into a container.' },
         y: { type: 'integer', description: 'Target Y. Ignored for containers.' },
@@ -442,9 +449,36 @@ async function executeAction(toolUse, bot, ctx) {
       case 'pick_up':
         await withTimeout(getObj(bot, args.ref, args.noid), 10_000, 'pick_up')
         return { ok: true }
-      case 'put_down':
+      case 'put_down': {
+        // Elko's generic_PUT enforces `holding(avatar, item)` — i.e.
+        // the item being PUT must be in the avatar's HANDS slot. If it
+        // isn't, elko silently replies err:1 and the item stays exactly
+        // where it was. Sage's habibot.send() resolves on TCP write,
+        // not on elko's reply, so historically this dispatch returned
+        // ok:true even when the PUT was rejected — which is why sage
+        // would confidently claim to have dropped something it never
+        // actually let go of.
+        //
+        // Pre-flight: find the item in our inventory, confirm it's in
+        // HANDS. If not, return a structured error so Claude sees the
+        // failure and either picks it up first or stops lying about
+        // having put it down.
+        const inv = awareness.getInventory(bot)
+        const item = inv.find((it) => it.ref === args.ref)
+        if (!item) {
+          return { ok: false, error: `no item with ref ${args.ref} in your pocket` }
+        }
+        if (item.slot !== awareness.HANDS_SLOT) {
+          return {
+            ok: false,
+            error: `item is in pocket slot ${item.slot}, not HANDS. ` +
+              `Call pick_up(ref="${args.ref}", noid=${item.noid}) first to move it into HANDS, ` +
+              `then put_down will work. Do NOT tell anyone you put it down — you haven\'t.`,
+          }
+        }
         await withTimeout(putDown(bot, args.ref, args.container_noid, args.x, args.y, args.orientation), 10_000, 'put_down')
         return { ok: true }
+      }
       case 'give_to_avatar':
         // item_noid is informational; elko ignores it. The actual item
         // transferred is whatever's in giver's HANDS slot at call time.

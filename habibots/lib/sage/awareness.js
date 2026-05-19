@@ -238,4 +238,5 @@ module.exports = {
   currentRegionRef,
   regionName,
   looksLikeBotName,
+  HANDS_SLOT,
 }
