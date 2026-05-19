@@ -322,6 +322,457 @@ const TOOLS = [
     description: 'Look in your own pockets and list what you are currently carrying. Use this before claiming you have or don\'t have an item.',
     input_schema: { type: 'object', properties: {} },
   },
+
+  // ── inter-avatar item transfer ───────────────────────────────────
+  {
+    name: 'grab_from_avatar',
+    description: 'Take whatever another avatar is currently holding (their HANDS item) into your own HANDS. ' +
+      'Your HANDS must be empty AND they must be holding something AND the region must allow theft ' +
+      '(some zones are theft-free). Counterpart to give_to_avatar.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        giver_noid: { type: 'integer', description: 'Noid of the avatar you are taking from.' },
+      },
+      required: ['giver_noid'],
+    },
+  },
+
+  // ── world queries ────────────────────────────────────────────────
+  {
+    name: 'user_list',
+    description: 'Ask elko for the global online-user list. The reply arrives as a private message ' +
+      'with names of everyone connected — useful when someone asks "who else is on?".',
+    input_schema: { type: 'object', properties: {} },
+  },
+
+  // ── generic item interaction ─────────────────────────────────────
+  {
+    name: 'read',
+    description: 'READ a Book, Paper, or Plaque. page=0 advances to the next page; positive jumps ' +
+      'directly. The page contents come back as private speech you can quote or summarize.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        page: { type: 'integer', description: '0 to advance, 1..N to jump directly.' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'write_paper',
+    description: 'WRITE on a Paper currently in your HANDS. Replaces the existing contents. Pass an ' +
+      'empty string to clear the paper.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the Paper (must be in your HANDS).' },
+        text: { type: 'string', description: 'New paper contents — plain ASCII only.' },
+      },
+      required: ['ref', 'text'],
+    },
+  },
+  {
+    name: 'mail_paper',
+    description: 'PSENDMAIL — drop a written Paper into the mail system to deliver to the recipient ' +
+      'whose name is encoded on the paper itself.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the Paper to mail.' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'ask_object',
+    description: 'ASK an oracle object — a Crystal_ball, Fountain, or Bureaucrat. Returns a private ' +
+      'reply you can quote. Crystal balls answer yes/no fortune-style; the Fountain responds to ' +
+      'free-form questions; Bureaucrats have a fixed FAQ.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        text: { type: 'string', description: 'The question to ask.' },
+      },
+      required: ['ref', 'text'],
+    },
+  },
+  {
+    name: 'throw_object',
+    description: 'THROW the item you are holding across the region. target_noid=0 means "just land at ' +
+      'x,y on the floor"; a non-zero noid throws at that avatar. Must currently be in your HANDS.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the item you are throwing.' },
+        target_noid: { type: 'integer', description: '0 to throw to coords, otherwise the noid to throw at.' },
+        x: { type: 'integer' },
+        y: { type: 'integer' },
+      },
+      required: ['ref'],
+    },
+  },
+
+  // ── devices (ON/OFF) ─────────────────────────────────────────────
+  {
+    name: 'toggle_device',
+    description: 'Switch a Flashlight, Floor_lamp, or Movie_camera on or off. Lighting changes affect ' +
+      'the region brightness; Movie_camera toggle starts/stops recording.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        on: { type: 'boolean', description: 'true = ON, false = OFF.' },
+      },
+      required: ['ref', 'on'],
+    },
+  },
+
+  // ── apparel ──────────────────────────────────────────────────────
+  {
+    name: 'wear_item',
+    description: 'WEAR a Head or Ring you are holding — moves it from HANDS to the corresponding worn ' +
+      'slot. Your appearance updates for everyone in the region.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the item to wear (must be in your HANDS).' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'remove_item',
+    description: 'REMOVE a worn Head or Ring back into HANDS. Reverse of wear_item.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the worn item to remove.' },
+      },
+      required: ['ref'],
+    },
+  },
+
+  // ── toys / games ─────────────────────────────────────────────────
+  {
+    name: 'wind_toy',
+    description: 'WIND a Windup_toy — it springs into action briefly. Pure flavor / silly fun.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'roll_die',
+    description: 'ROLL a Die. Result is broadcast to the region.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'king_piece',
+    description: 'KING a Game_piece — toggles a checker between regular and king-piece state. Only ' +
+      'meaningful during a board game.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+
+  // ── magic ────────────────────────────────────────────────────────
+  {
+    name: 'rub_lamp',
+    description: 'RUB a Magic_lamp to summon its genie. Once genied, use wish_on_lamp to make a wish. ' +
+      'Lamps are rare and can\'t be given away once a genie is out.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'wish_on_lamp',
+    description: 'WISH on a Magic_lamp whose genie is already out (from a prior rub_lamp). The text ' +
+      'is the wish itself — Habitat has a fixed grammar of wishes, see Magic_lamp.java for what ' +
+      'actually parses; freeform text is mostly comedic.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        text: { type: 'string', description: 'The wish to make.' },
+      },
+      required: ['ref', 'text'],
+    },
+  },
+  {
+    name: 'use_magic',
+    description: 'MAGIC — generic magic verb for Magic_wand, Magic_staff, Amulet, Gemstone, ' +
+      'Knick_knack, Ring, etc. Each item-class implements its own effect; target_noid is the noid ' +
+      'the magic is aimed at (0 if self / no target). Read the item\'s description before guessing ' +
+      'what the magic does.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        target_noid: { type: 'integer', description: '0 for self / no target, otherwise the target avatar/item noid.' },
+      },
+      required: ['ref'],
+    },
+  },
+
+  // ── misc world objects ───────────────────────────────────────────
+  {
+    name: 'direct_compass',
+    description: 'DIRECT — ask a Compass which way is which. Reply names the cardinal directions ' +
+      'available from this region.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'spray_can',
+    description: 'SPRAY paint a body part using a Spray_can in HANDS. limb selects which part (see ' +
+      'Spray_can.java for the body-part codes; 0 = default). Visually changes your avatar.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        limb: { type: 'integer', description: 'Body-part code (0 for default).' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'fill_bottle',
+    description: 'FILL an empty Bottle (must be holding it; presumably at a fountain or spring).',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'pour_bottle',
+    description: 'POUR out a filled Bottle. Counterpart to fill_bottle.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'dig_shovel',
+    description: 'DIG with a Shovel you are holding. Reveals buried items at your current location ' +
+      'if any are there. Mostly used in scavenger hunts.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'feed_aquarium',
+    description: 'FEED the fish in an Aquarium. Drops the in-HANDS item into the tank (usually food).',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'flush_garbage',
+    description: 'FLUSH a Garbage_can — empties whatever has been dropped in. Use sparingly: this is ' +
+      'irreversible from your end (though the made\'s daily script may recycle).',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'take_drug',
+    description: 'TAKE — consume a Drug item you are holding. Effects vary by drug; some are ' +
+      'non-ideal. Use in character only.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'scan_sensor',
+    description: 'SCAN — point a Sensor at the region for a description of what\'s here.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'zap_to_port',
+    description: 'ZAPTO — use a Teleport or Elevator to jump to one of its connected destinations. ' +
+      'port_number is the destination index in the device\'s connections list (default 0).',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string' },
+        port_number: { type: 'integer' },
+      },
+      required: ['ref'],
+    },
+  },
+
+  // ── dangerous / one-shot ─────────────────────────────────────────
+  {
+    name: 'stun_avatar',
+    description: 'STUN another avatar using a Stun_gun in HANDS. Target is immobilized for several ' +
+      'seconds. Use only in character — this is hostile behavior; most regions frown on it.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the Stun_gun in your HANDS.' },
+        target_noid: { type: 'integer', description: 'Noid of the avatar to stun.' },
+      },
+      required: ['ref', 'target_noid'],
+    },
+  },
+  {
+    name: 'pull_grenade_pin',
+    description: 'PULLPIN on a Grenade — starts the countdown. Goes off shortly after; throw it away ' +
+      'first via throw_object unless you want the explosion at your feet. Theatrically dangerous.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'fake_shoot',
+    description: 'FAKESHOOT — fire a Fake_gun. Makes a loud noise and flag; no real damage. Single ' +
+      'shot, then reset_fake_gun before firing again.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'reset_fake_gun',
+    description: 'RESET a spent Fake_gun back to ready state.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'bug_out',
+    description: 'BUGOUT — emergency-teleport home using an Escape_device. Use only when you actually ' +
+      'need to leave the region in a hurry; sends you to your turf.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'sex_change',
+    description: 'SEXCHANGE — toggle avatar body type via a Sex_changer device. Affects your ' +
+      'appearance permanently (until used again).',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+
+  // ── commerce ─────────────────────────────────────────────────────
+  {
+    name: 'deposit_to_atm',
+    description: 'DEPOSIT — feed a Tokens stack from your pocket into an Atm. The Atm consumes the ' +
+      'Tokens item and credits your bank balance.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the Atm.' },
+        token_noid: { type: 'integer', description: 'Noid of YOUR Tokens stack to deposit.' },
+      },
+      required: ['ref', 'token_noid'],
+    },
+  },
+  {
+    name: 'withdraw_from_atm',
+    description: 'WITHDRAW — Atm spawns a fresh Tokens stack of `amount` in your HANDS. Your HANDS ' +
+      'must be empty; bank balance must cover the amount.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the Atm.' },
+        amount: { type: 'integer', description: 'How many tokens to withdraw (1 to 65535).' },
+      },
+      required: ['ref', 'amount'],
+    },
+  },
+  {
+    name: 'pay_machine',
+    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The machine\'s fixed price is ' +
+      'deducted from your pocket Tokens; you get whatever the machine dispenses.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'vend_item',
+    description: 'VEND — buy the currently-displayed item from a Vendo_front. Cost is deducted from ' +
+      'your pocket Tokens; the item appears in your region next to the vendo.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'vendo_select',
+    description: 'VSELECT — cycle the Vendo_front\'s display to the next item available. Use before ' +
+      'vend_item if the visible item isn\'t the one you want.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'munch_pawn',
+    description: 'MUNCH — Pawn_machine consumes the item in your HANDS and credits your bank balance ' +
+      'based on the item\'s value. One-way: the item is gone.',
+    input_schema: {
+      type: 'object',
+      properties: { ref: { type: 'string' } },
+      required: ['ref'],
+    },
+  },
+  {
+    name: 'send_mail',
+    description: 'SENDMAIL — drop the in-HANDS Paper into a Dropbox for delivery. Recipient is ' +
+      'encoded on the paper (you wrote it there via write_paper).',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the Dropbox.' },
+      },
+      required: ['ref'],
+    },
+  },
 ]
 
 // HabiBot helpers / raw ops can hang if elko is slow or the message is
@@ -550,6 +1001,145 @@ async function executeAction(toolUse, bot, ctx) {
       }
       case 'list_inventory':
         return { ok: true, items: awareness.getInventory(bot) }
+
+      // ── inter-avatar item transfer ──────────────────────────────
+      case 'grab_from_avatar':
+        await withTimeout(bot.grabFromAvatar(args.giver_noid), 10_000, 'grab_from_avatar')
+        return { ok: true }
+
+      // ── world queries ───────────────────────────────────────────
+      case 'user_list':
+        await withTimeout(bot.userList(), 10_000, 'user_list')
+        return { ok: true }
+
+      // ── generic item interaction ────────────────────────────────
+      case 'read':
+        await withTimeout(bot.readObject(args.ref, args.page), 10_000, 'read')
+        return { ok: true }
+      case 'write_paper':
+        await withTimeout(bot.writePaper(args.ref, args.text || ''), 10_000, 'write_paper')
+        return { ok: true }
+      case 'mail_paper':
+        await withTimeout(bot.mailPaper(args.ref), 10_000, 'mail_paper')
+        return { ok: true }
+      case 'ask_object':
+        await withTimeout(bot.askObject(args.ref, args.text || ''), 10_000, 'ask_object')
+        return { ok: true }
+      case 'throw_object':
+        await withTimeout(bot.throwObj(args.ref, args.target_noid, args.x, args.y), 10_000, 'throw_object')
+        return { ok: true }
+
+      // ── devices ─────────────────────────────────────────────────
+      case 'toggle_device':
+        await withTimeout(
+          args.on ? bot.deviceOn(args.ref) : bot.deviceOff(args.ref),
+          10_000, 'toggle_device')
+        return { ok: true }
+
+      // ── apparel ─────────────────────────────────────────────────
+      case 'wear_item':
+        await withTimeout(bot.wearItem(args.ref), 10_000, 'wear_item')
+        return { ok: true }
+      case 'remove_item':
+        await withTimeout(bot.removeItem(args.ref), 10_000, 'remove_item')
+        return { ok: true }
+
+      // ── toys / games ────────────────────────────────────────────
+      case 'wind_toy':
+        await withTimeout(bot.windToy(args.ref), 10_000, 'wind_toy')
+        return { ok: true }
+      case 'roll_die':
+        await withTimeout(bot.rollDie(args.ref), 10_000, 'roll_die')
+        return { ok: true }
+      case 'king_piece':
+        await withTimeout(bot.kingPiece(args.ref), 10_000, 'king_piece')
+        return { ok: true }
+
+      // ── magic ───────────────────────────────────────────────────
+      case 'rub_lamp':
+        await withTimeout(bot.rubLamp(args.ref), 10_000, 'rub_lamp')
+        return { ok: true }
+      case 'wish_on_lamp':
+        await withTimeout(bot.wishOnLamp(args.ref, args.text || ''), 10_000, 'wish_on_lamp')
+        return { ok: true }
+      case 'use_magic':
+        await withTimeout(bot.useMagic(args.ref, args.target_noid || 0), 10_000, 'use_magic')
+        return { ok: true }
+
+      // ── misc world objects ──────────────────────────────────────
+      case 'direct_compass':
+        await withTimeout(bot.directCompass(args.ref), 10_000, 'direct_compass')
+        return { ok: true }
+      case 'spray_can':
+        await withTimeout(bot.sprayCan(args.ref, args.limb), 10_000, 'spray_can')
+        return { ok: true }
+      case 'fill_bottle':
+        await withTimeout(bot.fillBottle(args.ref), 10_000, 'fill_bottle')
+        return { ok: true }
+      case 'pour_bottle':
+        await withTimeout(bot.pourBottle(args.ref), 10_000, 'pour_bottle')
+        return { ok: true }
+      case 'dig_shovel':
+        await withTimeout(bot.digShovel(args.ref), 10_000, 'dig_shovel')
+        return { ok: true }
+      case 'feed_aquarium':
+        await withTimeout(bot.feedAquarium(args.ref), 10_000, 'feed_aquarium')
+        return { ok: true }
+      case 'flush_garbage':
+        await withTimeout(bot.flushCan(args.ref), 10_000, 'flush_garbage')
+        return { ok: true }
+      case 'take_drug':
+        await withTimeout(bot.takeDrug(args.ref), 10_000, 'take_drug')
+        return { ok: true }
+      case 'scan_sensor':
+        await withTimeout(bot.scanSensor(args.ref), 10_000, 'scan_sensor')
+        return { ok: true }
+      case 'zap_to_port':
+        await withTimeout(bot.zapToPort(args.ref, args.port_number), 10_000, 'zap_to_port')
+        return { ok: true }
+
+      // ── dangerous / one-shot ────────────────────────────────────
+      case 'stun_avatar':
+        await withTimeout(bot.stunAvatar(args.ref, args.target_noid), 10_000, 'stun_avatar')
+        return { ok: true }
+      case 'pull_grenade_pin':
+        await withTimeout(bot.pullGrenadePin(args.ref), 10_000, 'pull_grenade_pin')
+        return { ok: true }
+      case 'fake_shoot':
+        await withTimeout(bot.fakeShoot(args.ref), 10_000, 'fake_shoot')
+        return { ok: true }
+      case 'reset_fake_gun':
+        await withTimeout(bot.resetFakeGun(args.ref), 10_000, 'reset_fake_gun')
+        return { ok: true }
+      case 'bug_out':
+        await withTimeout(bot.bugOut(args.ref), 10_000, 'bug_out')
+        return { ok: true }
+      case 'sex_change':
+        await withTimeout(bot.sexChange(args.ref), 10_000, 'sex_change')
+        return { ok: true }
+
+      // ── commerce ────────────────────────────────────────────────
+      case 'deposit_to_atm':
+        await withTimeout(bot.depositToAtm(args.ref, args.token_noid), 10_000, 'deposit_to_atm')
+        return { ok: true }
+      case 'withdraw_from_atm':
+        await withTimeout(bot.withdrawFromAtm(args.ref, args.amount), 10_000, 'withdraw_from_atm')
+        return { ok: true }
+      case 'pay_machine':
+        await withTimeout(bot.payMachine(args.ref), 10_000, 'pay_machine')
+        return { ok: true }
+      case 'vend_item':
+        await withTimeout(bot.vendItem(args.ref), 10_000, 'vend_item')
+        return { ok: true }
+      case 'vendo_select':
+        await withTimeout(bot.selectVendo(args.ref), 10_000, 'vendo_select')
+        return { ok: true }
+      case 'munch_pawn':
+        await withTimeout(bot.munchPawn(args.ref), 10_000, 'munch_pawn')
+        return { ok: true }
+      case 'send_mail':
+        await withTimeout(bot.sendMail(args.ref), 10_000, 'send_mail')
+        return { ok: true }
 
       default:
         log.warn('Unknown tool: %s', name)
