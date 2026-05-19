@@ -651,6 +651,231 @@ class HabiBot {
       seat_id: chairNoid
     }, 5000)
   }
+
+  // ── Coverage for the remaining Habitat verbs ────────────────────────
+  // These are thin wrappers over send/sendWithDelay so any bot can
+  // exercise the whole Habitat verb set without re-discovering the
+  // wire shape every time. Wire shapes were derived from each verb's
+  // @JSONMethod signature in src/main/java/org/made/neohabitat/mods/*.java.
+  //
+  // Two cross-cutting conventions:
+  //   • For item verbs, `to:` is the item's ref (item-… or i-…). Elko
+  //     routes the message to the matching mod's handler.
+  //   • For avatar-targeting verbs (GRAB), `to:` is the OTHER avatar's
+  //     ref; the sender is implicit (`from` = our User).
+  //
+  // Most helpers use a 500ms sendWithDelay so they slot into the same
+  // action queue as the rest. A few that have long-running side effects
+  // (mail, vending) get 2000ms to let elko broadcast the result before
+  // the next action fires.
+
+  // GRAB — take whatever the other avatar has in HANDS into our HANDS.
+  // Counterintuitive `to:` direction: we send the verb TO the giver
+  // (we're the implicit caller). Region's grabable() check enforces
+  // theft-free zones; otherwise empty-handed-receiver + holding-giver
+  // is the only precondition.
+  grabFromAvatar(giverNoid) {
+    var giver = this.getNoid(giverNoid)
+    if (!giver || !giver.ref) {
+      return Promise.reject('grabFromAvatar: no avatar at noid ' + giverNoid)
+    }
+    return this.sendWithDelay({ op: 'GRAB', to: giver.ref }, 500)
+  }
+
+  // USERLIST — elko broadcasts the global online-user list to us via
+  // object_say. Reply lands as OBJECTSPEAK_$ messages.
+  userList() {
+    return this.sendWithDelay({ op: 'USERLIST', to: 'ME' }, 500)
+  }
+
+  // THROW — fling an item we're holding. target is a noid (avatar to
+  // catch, or 0 for "no target — land at x,y"); x/y are landing coords.
+  throwObj(itemRef, targetNoid, x, y) {
+    return this.sendWithDelay({
+      op: 'THROW',
+      to: itemRef,
+      target: targetNoid || 0,
+      x: (x == null) ? 80 : x,
+      y: (y == null) ? 144 : y,
+    }, 500)
+  }
+
+  // ASK — query Crystal_ball, Fountain, or Bureaucrat. Reply arrives as
+  // object_say back to us.
+  askObject(itemRef, text) {
+    return this.sendWithDelay({ op: 'ASK', to: itemRef, text: text || '' }, 500)
+  }
+
+  // READ — Book/Paper/Plaque. page=0 means "next page"; positive jumps
+  // directly. Reply contents come back as object_say (one page at a time).
+  readObject(itemRef, page) {
+    return this.sendWithDelay({ op: 'READ', to: itemRef, page: page == null ? 0 : page }, 500)
+  }
+
+  // WRITE — overwrite a Paper's contents. text is a regular string; we
+  // convert to a 7-bit ASCII int array per the wire format. Pass empty
+  // string to clear the paper.
+  writePaper(paperRef, text) {
+    var ascii = []
+    if (text) {
+      for (var i = 0; i < text.length; i++) ascii.push(text.charCodeAt(i) & 0x7F)
+    }
+    return this.sendWithDelay({ op: 'WRITE', to: paperRef, request_ascii: ascii }, 500)
+  }
+
+  // PSENDMAIL — send a Paper via mail. Recipient is encoded into the
+  // paper itself (no separate addressee on the wire).
+  mailPaper(paperRef) {
+    return this.sendWithDelay({ op: 'PSENDMAIL', to: paperRef }, 2000)
+  }
+
+  // SENDMAIL — drop a paper into a Dropbox for delivery.
+  sendMail(dropboxRef) {
+    return this.sendWithDelay({ op: 'SENDMAIL', to: dropboxRef }, 2000)
+  }
+
+  // ── Device toggles ─────────────────────────────────────────────────
+  // ON/OFF apply to Flashlight, Floor_lamp, Movie_camera. Side effects
+  // (region lighting, recording state) are managed elko-side.
+  deviceOn(itemRef) {
+    return this.sendWithDelay({ op: 'ON', to: itemRef }, 500)
+  }
+  deviceOff(itemRef) {
+    return this.sendWithDelay({ op: 'OFF', to: itemRef }, 500)
+  }
+
+  // ── Apparel ────────────────────────────────────────────────────────
+  // WEAR moves a Head/Ring from HANDS to the corresponding worn slot;
+  // REMOVE reverses it. Avatar appearance updates broadcast to neighbors.
+  wearItem(itemRef) {
+    return this.sendWithDelay({ op: 'WEAR', to: itemRef }, 500)
+  }
+  removeItem(itemRef) {
+    return this.sendWithDelay({ op: 'REMOVE', to: itemRef }, 500)
+  }
+
+  // ── Toys / games ───────────────────────────────────────────────────
+  windToy(toyRef) {
+    return this.sendWithDelay({ op: 'WIND', to: toyRef }, 500)
+  }
+  rollDie(dieRef) {
+    return this.sendWithDelay({ op: 'ROLL', to: dieRef }, 500)
+  }
+  kingPiece(pieceRef) {
+    return this.sendWithDelay({ op: 'KING', to: pieceRef }, 500)
+  }
+
+  // ── Magic ──────────────────────────────────────────────────────────
+  // RUB the lamp to summon the genie; once genied, WISH with a message.
+  // MAGIC is the generic per-class trigger used by wands/staves/amulets/
+  // rings/etc. — target is the noid the magic is aimed at (0 = self/no
+  // target, depends on the specific item's class).
+  rubLamp(lampRef) {
+    return this.sendWithDelay({ op: 'RUB', to: lampRef }, 500)
+  }
+  wishOnLamp(lampRef, text) {
+    return this.sendWithDelay({ op: 'WISH', to: lampRef, text: text || '' }, 500)
+  }
+  useMagic(itemRef, targetNoid) {
+    return this.sendWithDelay({ op: 'MAGIC', to: itemRef, target: targetNoid || 0 }, 500)
+  }
+
+  // ── Misc world objects ─────────────────────────────────────────────
+  directCompass(compassRef) {
+    return this.sendWithDelay({ op: 'DIRECT', to: compassRef }, 500)
+  }
+  // SPRAY paints a body part from a Spray_can held in HANDS. `limb` is
+  // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.); a
+  // sensible default lets the can pick its current default target.
+  sprayCan(canRef, limb) {
+    return this.sendWithDelay({ op: 'SPRAY', to: canRef, limb: limb == null ? 0 : limb }, 500)
+  }
+  fillBottle(bottleRef) {
+    return this.sendWithDelay({ op: 'FILL', to: bottleRef }, 500)
+  }
+  pourBottle(bottleRef) {
+    return this.sendWithDelay({ op: 'POUR', to: bottleRef }, 500)
+  }
+  digShovel(shovelRef) {
+    return this.sendWithDelay({ op: 'DIG', to: shovelRef }, 500)
+  }
+  feedAquarium(aquariumRef) {
+    return this.sendWithDelay({ op: 'FEED', to: aquariumRef }, 500)
+  }
+  flushCan(canRef) {
+    return this.sendWithDelay({ op: 'FLUSH', to: canRef }, 500)
+  }
+  takeDrug(drugRef) {
+    return this.sendWithDelay({ op: 'TAKE', to: drugRef }, 500)
+  }
+  scanSensor(sensorRef) {
+    return this.sendWithDelay({ op: 'SCAN', to: sensorRef }, 500)
+  }
+  // ZAPTO — Teleport/Elevator. `port_number` is the destination index
+  // (the device's `connections` array). Default 0 picks the first port.
+  zapToPort(deviceRef, portNumber) {
+    return this.sendWithDelay({ op: 'ZAPTO', to: deviceRef, port_number: portNumber || 0 }, 500)
+  }
+
+  // ── Dangerous / one-shot ───────────────────────────────────────────
+  // Sage's persona may genuinely want these (an old-timer demonstrating
+  // a stun gun, lighting a fake-gun gag) so they're exposed. Each carries
+  // an in-world cost or side effect; bots that don't want them just
+  // don't call them.
+  stunAvatar(gunRef, targetNoid) {
+    return this.sendWithDelay({ op: 'STUN', to: gunRef, target: targetNoid }, 500)
+  }
+  pullGrenadePin(grenadeRef) {
+    return this.sendWithDelay({ op: 'PULLPIN', to: grenadeRef }, 500)
+  }
+  fakeShoot(gunRef) {
+    return this.sendWithDelay({ op: 'FAKESHOOT', to: gunRef }, 500)
+  }
+  resetFakeGun(gunRef) {
+    return this.sendWithDelay({ op: 'RESET', to: gunRef }, 500)
+  }
+  bugOut(deviceRef) {
+    return this.sendWithDelay({ op: 'BUGOUT', to: deviceRef }, 500)
+  }
+  sexChange(deviceRef) {
+    return this.sendWithDelay({ op: 'SEXCHANGE', to: deviceRef }, 500)
+  }
+
+  // ── Commerce ───────────────────────────────────────────────────────
+  // DEPOSIT — feed a Tokens stack (by noid) into an Atm. The Atm
+  // destroys the Tokens object and credits the avatar's bank balance.
+  depositToAtm(atmRef, tokenNoid) {
+    return this.sendWithDelay({ op: 'DEPOSIT', to: atmRef, token_noid: tokenNoid }, 500)
+  }
+  // WITHDRAW — Atm spawns a fresh Tokens stack in our HANDS for the
+  // requested amount (16-bit little-endian split into lo/hi bytes).
+  withdrawFromAtm(atmRef, amount) {
+    amount = amount || 0
+    return this.sendWithDelay({
+      op: 'WITHDRAW',
+      to: atmRef,
+      amount_lo: amount & 0xff,
+      amount_hi: (amount >> 8) & 0xff,
+    }, 500)
+  }
+  // PAY — Coke_machine / Fortune_machine / Teleport. Charge is fixed
+  // by the machine; the bot just signals intent.
+  payMachine(machineRef) {
+    return this.sendWithDelay({ op: 'PAY', to: machineRef }, 500)
+  }
+  // VEND — buy the currently-displayed item from a Vendo_front (charged
+  // against pocket Tokens). VSELECT cycles through what's on display
+  // for a multi-slot vendo.
+  vendItem(vendoFrontRef) {
+    return this.sendWithDelay({ op: 'VEND', to: vendoFrontRef }, 2000)
+  }
+  selectVendo(vendoFrontRef) {
+    return this.sendWithDelay({ op: 'VSELECT', to: vendoFrontRef }, 500)
+  }
+  // MUNCH — Pawn_machine eats the HANDS item and credits bank balance.
+  munchPawn(machineRef) {
+    return this.sendWithDelay({ op: 'MUNCH', to: machineRef }, 2000)
+  }
   /**
    * Returns a list of all cardinal directions from this region which connect to other
    * regions, useful when determining an exit when calling walkToExit.
@@ -946,8 +1171,26 @@ class HabiBot {
       delete this.history[o.to]
     }
 
+    // MAILARRIVED$ detection. Elko does NOT ship a dedicated op for the
+    // "* You have MAIL in your pocket. *" notification — Avatar.send_mail_arrived
+    // (mods/Avatar.java) just object_says the literal string from the
+    // recipient's own avatar noid (OBJECTSPEAK_$, speaker = self). We
+    // promote this into a real `mailArrived` callback so bots can react
+    // without sniffing every OBJECTSPEAK_$ themselves. Matching on BOTH
+    // self-speaker AND the literal "You have MAIL" substring avoids
+    // false positives from /h, /online, and other self-routed system msgs.
+    if (o.op === 'OBJECTSPEAK_$' && o.text && o.text.indexOf('You have MAIL') !== -1) {
+      const myNoid = this.getAvatarNoid()
+      if (myNoid !== -1 && o.speaker === myNoid && 'mailArrived' in this.callbacks) {
+        log.debug('MAILARRIVED detected — firing mailArrived callbacks')
+        for (var i in this.callbacks.mailArrived) {
+          this.callbacks.mailArrived[i](this, o)
+        }
+      }
+    }
+
     // If the operation specified by this Elko message is within this Habibot's callbacks,
-    // calls it. 
+    // calls it.
     if (o.op in this.callbacks) {
       log.debug('Running callbacks for op: %s', o.op)
       for (var i in this.callbacks[o.op]) {
