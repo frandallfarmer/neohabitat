@@ -27,6 +27,24 @@
 // pocket slots.
 const HANDS_SLOT = 5
 
+// MAIL_SLOT = 4 (Constants.java). Every Avatar always has a Paper here;
+// that paper is the mailbox. When new mail arrives for the bot, elko
+// flips its gr_state from BLANK (0) to LETTER (2) and the avatar
+// receives a "* You have MAIL in your pocket. *" OBJECTSPEAK_$ ping.
+const MAIL_SLOT = 4
+
+// Paper gr_state values (mods/Paper.java:34-37). Knowing the difference
+// between a blank pocket page and an unread letter is the whole point
+// of mail-awareness — otherwise sage can't see what just landed.
+const PAPER_BLANK_STATE = 0
+const PAPER_WRITTEN_STATE = 1
+const PAPER_LETTER_STATE = 2
+const PAPER_STATE_LABEL = {
+  0: 'BLANK',
+  1: 'WRITTEN',
+  2: 'LETTER',
+}
+
 const SITTABLE_TYPES = new Set(['Seat', 'Couch', 'Chair', 'Bench', 'Hot_tub', 'Bed'])
 const OPENABLE_TYPES = new Set(['Door', 'Bridge', 'Box', 'Bag', 'Chest', 'Trunk', 'Mailbox', 'Dropbox', 'Aquarium', 'Hot_tub'])
 const PICKUPABLE_HINT_TYPES = new Set(['Book', 'Compass', 'Knick_knack', 'Plant', 'Magic_lamp', 'Magic_wand', 'Crystal_ball', 'Cookie', 'Coffee', 'Garbage_can', 'Token'])
@@ -98,6 +116,14 @@ function getInventory(bot) {
       const lo = o.mods[0].denom_lo || 0
       const hi = o.mods[0].denom_hi || 0
       item.amount = lo + hi * 256
+    }
+    // Paper's gr_state distinguishes blank pocket page from unread mail
+    // (LETTER state, see mods/Paper.java). Surface it so describeWorld
+    // can flag "you have unread mail" without sage needing to call READ
+    // on every pocket paper to check.
+    if (item.type === 'Paper') {
+      item.grState = o.mods[0].gr_state || 0
+      item.paperState = PAPER_STATE_LABEL[item.grState] || `state-${item.grState}`
     }
     items.push(item)
   }
@@ -174,19 +200,44 @@ function describeWorld(bot) {
   const inv = getInventory(bot)
   lines.push(`In your pockets:`)
   let inHandsName = null
+  let unreadMail = false
   if (inv.length) {
     for (const item of inv) {
       const namePart = item.name && item.name !== item.type ? ` "${item.name}"` : ''
-      const slotTag = item.slot === HANDS_SLOT ? ' [IN HANDS]' : ` [pocket slot ${item.slot}]`
+      let slotTag
+      if (item.slot === HANDS_SLOT) {
+        slotTag = ' [IN HANDS]'
+      } else if (item.slot === MAIL_SLOT) {
+        slotTag = ' [mail-slot]'
+      } else {
+        slotTag = ` [pocket slot ${item.slot}]`
+      }
       const amountTag = item.type === 'Tokens' && typeof item.amount === 'number'
         ? ` — balance ${item.amount} tokens`
         : ''
-      lines.push(`  - ${item.type}${namePart} (noid ${item.noid}, ref ${item.ref})${slotTag}${amountTag}`)
+      // Mail / paper annotation: callout if it's an unread letter (LETTER
+      // state in the mail-slot), tag the state otherwise. Quiet for plain
+      // BLANK paper.
+      let paperTag = ''
+      if (item.type === 'Paper') {
+        if (item.grState === PAPER_LETTER_STATE) {
+          paperTag = item.slot === MAIL_SLOT
+            ? ' — UNREAD MAIL (READ it to see who wrote, then it advances)'
+            : ' — open letter (LETTER state)'
+          if (item.slot === MAIL_SLOT) unreadMail = true
+        } else if (item.grState === PAPER_WRITTEN_STATE) {
+          paperTag = ' — written paper'
+        }
+      }
+      lines.push(`  - ${item.type}${namePart} (noid ${item.noid}, ref ${item.ref})${slotTag}${amountTag}${paperTag}`)
       if (item.slot === HANDS_SLOT) inHandsName = item.name || item.type
     }
     lines.push(inHandsName
       ? `  (currently holding ${inHandsName} — your HANDS slot is full)`
       : `  (HANDS slot is empty — you can pick_up another pocket item to give it away)`)
+    if (unreadMail) {
+      lines.push(`  *** You have unread mail in your mail-slot — react in character. ***`)
+    }
   } else {
     lines.push('  (empty-handed)')
   }
@@ -239,4 +290,8 @@ module.exports = {
   regionName,
   looksLikeBotName,
   HANDS_SLOT,
+  MAIL_SLOT,
+  PAPER_BLANK_STATE,
+  PAPER_WRITTEN_STATE,
+  PAPER_LETTER_STATE,
 }

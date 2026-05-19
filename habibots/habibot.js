@@ -1171,8 +1171,26 @@ class HabiBot {
       delete this.history[o.to]
     }
 
+    // MAILARRIVED$ detection. Elko does NOT ship a dedicated op for the
+    // "* You have MAIL in your pocket. *" notification — Avatar.send_mail_arrived
+    // (mods/Avatar.java) just object_says the literal string from the
+    // recipient's own avatar noid (OBJECTSPEAK_$, speaker = self). We
+    // promote this into a real `mailArrived` callback so bots can react
+    // without sniffing every OBJECTSPEAK_$ themselves. Matching on BOTH
+    // self-speaker AND the literal "You have MAIL" substring avoids
+    // false positives from /h, /online, and other self-routed system msgs.
+    if (o.op === 'OBJECTSPEAK_$' && o.text && o.text.indexOf('You have MAIL') !== -1) {
+      const myNoid = this.getAvatarNoid()
+      if (myNoid !== -1 && o.speaker === myNoid && 'mailArrived' in this.callbacks) {
+        log.debug('MAILARRIVED detected — firing mailArrived callbacks')
+        for (var i in this.callbacks.mailArrived) {
+          this.callbacks.mailArrived[i](this, o)
+        }
+      }
+    }
+
     // If the operation specified by this Elko message is within this Habibot's callbacks,
-    // calls it. 
+    // calls it.
     if (o.op in this.callbacks) {
       log.debug('Running callbacks for op: %s', o.op)
       for (var i in this.callbacks[o.op]) {

@@ -218,10 +218,18 @@ Devices and toys:
 - wear_item(ref) / remove_item(ref): Head/Ring — must be in HANDS to
   wear; remove returns it to HANDS. Walking around HEADLESS is tacky.
 - read(ref, page): Book/Paper/Plaque. page=0 advances next page.
-- write_paper(ref, text): overwrites a Paper in your HANDS.
-- mail_paper(ref) or send_mail(dropbox_ref): mail a written paper.
-  The recipient's name is encoded in the paper's first line ("To:
-  name").
+- compose_and_send_mail(recipient, body): one-shot mailer. Finds a
+  blank Paper, picks it up, writes "to: <recipient>\n<body>", and
+  PSENDMAILs it. PREFER THIS over the manual three-step dance — the
+  "to:" first-line address is required by elko and easy to forget.
+- write_paper(ref, text): overwrites a Paper in your HANDS. ONLY use
+  this directly if you need to write something OTHER than mail.
+- mail_paper(ref) or send_mail(dropbox_ref): low-level — mail the
+  Paper currently in your HANDS. Body must start with "to: name\n".
+- The Paper in your mail-slot is your mailbox. If awareness shows it
+  in LETTER state, you have unread mail — pick_up to grab it, then
+  read(ref) to see who wrote and what they said. The mail-slot
+  auto-refills with a fresh blank paper afterward.
 - ask_object(ref, text): query a Crystal_ball, Fountain (the Oracle's
   speaking-fountain), or Bureaucrat-In-A-Box.
 - throw_object(ref, target_noid, x, y): fling the HANDS item. 0
@@ -818,6 +826,48 @@ SageBot.on('OBJECTSPEAK_$', async (bot, msg) => {
     }
   } catch (e) {
     log.error('OBJECTSPEAK_$ handler crashed: %s\n%s', e.message, e.stack)
+  }
+})
+
+// ── mail arrived ─────────────────────────────────────────────────────
+// Habibot promotes the "* You have MAIL in your pocket. *" OBJECTSPEAK_$
+// self-broadcast into a real `mailArrived` event so we can react
+// proactively (without the bot's awareness pass having to notice the
+// LETTER state on the next conversational turn). We DON'T auto-READ
+// the mail — sage's MAIL_SLOT paper picks up the new letter state on
+// its own; the bot's job here is to acknowledge in character.
+//
+// Squelch storm-protection: dedupe rapid duplicate fires within 5s
+// (elko sleeps 1s before sending, but a queued mail-burst could
+// trigger multiple back-to-back). One greeting per arrival is enough.
+let lastMailArrivedAt = 0
+SageBot.on('mailArrived', async (bot, msg) => {
+  try {
+    const now = Date.now()
+    if (now - lastMailArrivedAt < 5000) {
+      log.debug('mailArrived dedupe — too soon after last fire')
+      return
+    }
+    lastMailArrivedAt = now
+    log.info('mailArrived — generating in-character reaction')
+
+    // We don't yet know WHO sent the mail (text_path isn't on the wire
+    // and the postmark line lives inside the paper contents). Leave that
+    // for sage to discover by READing — but cue Claude that mail is
+    // available now and a READ will surface the sender.
+    const prompt =
+      `${awareness.describeWorld(bot)}\n\n` +
+      `Event: the Habitat mail chime just rang — a letter just landed in your mail-slot. ` +
+      `You don't know who it's from yet; to find out, pick_up the mail-slot paper and read it. ` +
+      `Say ONE short line in character acknowledging the chime (something a chatty old-timer ` +
+      `would mutter when mail arrives). Don't list options or narrate — just one line, ` +
+      `the world will hear it as a public SPEAK.`
+    const { text: reply } = await askClaudeWithTools(prompt)
+    if (reply) {
+      log.info('mailArrived reaction: %s', reply)
+    }
+  } catch (e) {
+    log.error('mailArrived handler crashed: %s\n%s', e.message, e.stack)
   }
 })
 

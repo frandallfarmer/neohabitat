@@ -386,6 +386,21 @@ const TOOLS = [
     },
   },
   {
+    name: 'compose_and_send_mail',
+    description: 'One-shot mail composer: takes care of finding a blank Paper, getting it into HANDS, ' +
+      'writing "to: <recipient>\\n<body>" on it, and PSENDMAILing it. Use this instead of the ' +
+      'three-step pick_up + write_paper + mail_paper dance — the "to:" first line is mandatory ' +
+      'and easy to forget. Recipient is auto-lowercased to match elko\'s MailQueue lookup.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        recipient: { type: 'string', description: 'Avatar name to mail (case-insensitive).' },
+        body: { type: 'string', description: 'Letter body. Plain ASCII only; the C64 client mangles UTF-8.' },
+      },
+      required: ['recipient', 'body'],
+    },
+  },
+  {
     name: 'ask_object',
     description: 'ASK an oracle object — a Crystal_ball, Fountain, or Bureaucrat. Returns a private ' +
       'reply you can quote. Crystal balls answer yes/no fortune-style; the Fountain responds to ' +
@@ -1022,6 +1037,54 @@ async function executeAction(toolUse, bot, ctx) {
       case 'mail_paper':
         await withTimeout(bot.mailPaper(args.ref), 10_000, 'mail_paper')
         return { ok: true }
+      case 'compose_and_send_mail': {
+        // The "to: <name>" first line is mandatory and easy for Claude to
+        // forget — bundling pick_up + write + mail into a single tool
+        // eliminates the failure mode where sage writes a body but no
+        // address line, the PSENDMAIL gets rejected, and sage doesn't
+        // notice because the dispatch returned ok:true at TCP-write
+        // time.
+        //
+        // Source-of-blank-paper preference order:
+        //   1. blank Paper already in HANDS — write + mail in place.
+        //   2. blank Paper in a numbered pocket slot — pick_up first.
+        //   3. blank Paper in MAIL_SLOT — pick_up; elko auto-spawns a
+        //      fresh blank Paper in MAIL_SLOT (Paper.GET special-case).
+        //   4. unread LETTER in MAIL_SLOT — refuse with a clear error,
+        //      because picking it up would dismiss unread mail.
+        //   5. no blank paper anywhere — refuse.
+        const recipient = String(args.recipient || '').trim().toLowerCase()
+        const body = String(args.body || '')
+        if (!recipient) return { ok: false, error: 'recipient is required' }
+        if (!/^[a-z0-9._-]{1,20}$/.test(recipient)) {
+          return { ok: false, error: `recipient "${recipient}" doesn't look like an avatar name` }
+        }
+        const inv = awareness.getInventory(bot)
+        const papers = inv.filter((it) => it.type === 'Paper')
+        if (!papers.length) return { ok: false, error: 'you have no Paper in your pocket' }
+        // Categorize by current paper state. grState=0 BLANK, =2 LETTER.
+        const isBlank = (p) => (p.grState || 0) === awareness.PAPER_BLANK_STATE
+        let chosen =
+          papers.find((p) => p.slot === awareness.HANDS_SLOT && isBlank(p)) ||
+          papers.find((p) => p.slot !== awareness.MAIL_SLOT && p.slot !== awareness.HANDS_SLOT && isBlank(p)) ||
+          papers.find((p) => p.slot === awareness.MAIL_SLOT && isBlank(p))
+        if (!chosen) {
+          // The only remaining papers are LETTER state — would lose mail.
+          return {
+            ok: false,
+            error:
+              'all pocket Paper is in LETTER state (unread mail). READ it first, then a blank ' +
+              'paper will be available for composing.',
+          }
+        }
+        if (chosen.slot !== awareness.HANDS_SLOT) {
+          await withTimeout(getObj(bot, chosen.ref, chosen.noid), 10_000, 'compose_and_send_mail.pick_up')
+        }
+        const text = `to: ${recipient}\n${body}`
+        await withTimeout(bot.writePaper(chosen.ref, text), 10_000, 'compose_and_send_mail.write')
+        await withTimeout(bot.mailPaper(chosen.ref), 10_000, 'compose_and_send_mail.send')
+        return { ok: true, recipient }
+      }
       case 'ask_object':
         await withTimeout(bot.askObject(args.ref, args.text || ''), 10_000, 'ask_object')
         return { ok: true }
