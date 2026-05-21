@@ -131,6 +131,40 @@ type ClientSession struct {
 	wg                       sync.WaitGroup
 	who                      string
 
+	// restoredSession is true after RestoreSession has rebuilt this
+	// ClientSession from a snapshot — i.e. we are about to re-enter the
+	// region's elko context on a FRESH elko TCP, and the client already
+	// holds a CONTENTS vector from the parent process with noids that
+	// the parent assigned. Elko allocates noids dynamically and does NOT
+	// pin them across sessions, so its fresh `make` storm carries
+	// DIFFERENT noids than the ones the client knows. Without
+	// reconciliation: (1) we'd send a second CONTENTS that corrupts the
+	// client's noid table, and (2) every subsequent client→elko verb
+	// would arrive with a noid the bridge can't resolve to a ref.
+	//
+	// We address both by: (1) suppressing the post-restore CONTENTS Send
+	// in the `ready` handler, and (2) rewriting Elko's freshly-allocated
+	// noids back to the saved client noids in unpackHabitatObject so
+	// c.objects / c.RefToNoid match the C64's view. The flag is cleared
+	// the moment the first post-restore `ready` lands, after which the
+	// session resumes normal Elko-noid-equals-client-noid operation.
+	restoredSession bool
+
+	// savedRefToNoid preserves the snapshot's ref→noid map across the
+	// initializeState() wipe that enterContext triggers. Lookup target
+	// during the post-restore make storm: any ref we already know gets
+	// its incoming Elko noid rewritten to the saved client noid before
+	// being stored. Refs that are NOT in this map (new objects that
+	// appeared after the snapshot was taken) keep Elko's assignment.
+	savedRefToNoid map[string]uint8
+
+	// restoreElkoToSaved maps Elko's fresh noid → the saved client noid
+	// for refs that already existed before the tableflip. Populated as
+	// the post-restore make storm rewrites noids; consulted for nested
+	// noid fields on later messages in the same burst (e.g. an avatar
+	// arriving with SittingIn pointing at a seat noid we already saw).
+	restoreElkoToSaved map[uint8]uint8
+
 	// snapshotReq is used by SnapshotAll to request a snapshot at a
 	// clean frame boundary. The SIGHUP handler sends a response channel;
 	// the reader goroutine creates the snapshot and sends it back, then
@@ -449,6 +483,27 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 				Str("user_ref", c.userRef).
 				Str("region_ref", c.regionRef).
 				Msg("Avatar known and placed in region")
+			// Tableflip restore: the client already has a CONTENTS vector
+			// from the parent process. We rebuilt c.objects / c.RefToNoid
+			// from Elko's fresh make storm (with noids rewritten back to
+			// the saved client noids in unpackHabitatObject), so the
+			// bridge's internal view matches what the client believes —
+			// but we MUST NOT send a second CONTENTS or the C64 will
+			// overlay two inconsistent noid maps on top of each other
+			// (issue #499). Suppress the Send, clear the restore flags,
+			// and resume normal Elko-noid-equals-client-noid operation.
+			if c.restoredSession {
+				c.log.Info().
+					Str("region_ref", c.regionRef).
+					Int("objects", len(c.objects)).
+					Int("rewrites", len(c.restoreElkoToSaved)).
+					Msg("Restore: suppressing post-tableflip CONTENTS send; client already has it")
+				c.restoredSession = false
+				c.savedRefToNoid = nil
+				c.restoreElkoToSaved = nil
+				c.contentsVector = NewContentsVector(c, nil, nil, nil, nil)
+				return
+			}
 			err := c.contentsVector.Send()
 			if err != nil {
 				c.log.Error().Err(err).Msg("Could not send contents vector")
@@ -670,6 +725,59 @@ func (c *ClientSession) unpackHabitatObject(o *ElkoMessage, containerRef string)
 		// so the remaining values fit in uint8.
 		localNoid := uint8(*mod.Noid)
 		o.Noid = &localNoid
+	}
+
+	// Post-tableflip noid reconciliation. The client (C64) still holds
+	// the noid assignments that the PARENT process committed via its
+	// CONTENTS vector; Elko, on its fresh TCP, re-allocates noids
+	// independently for the same refs. If we let Elko's fresh noids
+	// flow into c.objects / c.RefToNoid, every subsequent client→Elko
+	// verb arrives with a noid the bridge can't resolve. So during the
+	// restore window: for any ref we already know about, rewrite the
+	// incoming noid (on both o.Noid AND mod.Noid, plus the bookkeeping
+	// translation map for nested fields like SittingIn) back to the
+	// saved client noid before any downstream code stores it.
+	if c.restoredSession && o.Noid != nil {
+		if savedNoid, found := c.savedRefToNoid[o.ref]; found && savedNoid != *o.Noid {
+			elkoNoid := *o.Noid
+			c.log.Debug().
+				Str("ref", o.ref).
+				Uint8("elko_noid", elkoNoid).
+				Uint8("saved_noid", savedNoid).
+				Msg("Restore: rewriting elko noid to saved client noid")
+			c.restoreElkoToSaved[elkoNoid] = savedNoid
+			*o.Noid = savedNoid
+			elkoNoid16 := uint16(savedNoid)
+			mod.Noid = &elkoNoid16
+		}
+		// Nested noid references that elko_state_encoders.go writes raw
+		// from state.* (rather than through container or RefToNoid) and
+		// PROTOCOL.md documents as object NOIDs. Each one points at
+		// another object in the same region; if THAT object's noid
+		// shifted across the tableflip, the C64 will look at a noid
+		// (e.g. SittingIn=42 from elko's view) that doesn't match its
+		// own table (e.g. 37 from the saved CONTENTS). Translate via
+		// restoreElkoToSaved if we've already seen the target ref's
+		// make this restore burst.
+		//
+		// SittingIn  — Avatar — seat the avatar is currently sitting on
+		// Restrainer — Avatar — restraining object NOID (handcuffs etc;
+		//              dormant today but reserved in the wire format)
+		// Wisher     — Magic_lamp — avatar noid mid-wish; UNASSIGNED_NOID
+		//              when no wish is in flight, but switches to a real
+		//              avatar noid via Magic_lamp.java's wisher = avatar.noid
+		rewriteNestedNoid := func(field **uint8) {
+			if field == nil || *field == nil {
+				return
+			}
+			if saved, found := c.restoreElkoToSaved[**field]; found && saved != **field {
+				newVal := saved
+				*field = &newVal
+			}
+		}
+		rewriteNestedNoid(&mod.SittingIn)
+		rewriteNestedNoid(&mod.Restrainer)
+		rewriteNestedNoid(&mod.Wisher)
 	}
 
 	if clientMessages, found := ObjectClientMessages[*mod.Type]; found {
@@ -2252,6 +2360,21 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 
 	// Rebuild derived fields
 	sess.contentsVector = NewContentsVector(sess, nil, &REGION_NOID, nil, nil)
+
+	// Post-restore noid reconciliation. The client already holds a
+	// CONTENTS vector from the parent process using the noids in
+	// snap.RefToNoid; Elko (on its fresh TCP) will re-allocate noids
+	// independently when we re-enter the region. We stash a private copy
+	// of the saved map so it survives initializeState()'s wipe, and arm
+	// the per-message rewrite path. See ClientSession.restoredSession
+	// docs for the full rationale.
+	sess.restoredSession = true
+	sess.savedRefToNoid = make(map[string]uint8, len(snap.RefToNoid))
+	for ref, noid := range snap.RefToNoid {
+		sess.savedRefToNoid[ref] = noid
+	}
+	sess.restoreElkoToSaved = make(map[uint8]uint8)
+
 	// Set up the session logger directly instead of calling bindAvatar,
 	// which would go through TableKey() → RemoteAddr(). The inherited
 	// conn's RemoteAddr is valid but we can build the logger from the
@@ -2295,17 +2418,17 @@ func (c *ClientSession) StartRestored() {
 		c.log.Info().Msg("StartRestored: elko goroutines ready")
 
 		// The Elko connection is fresh (not TCP_REPAIR'd). Re-enter the
-		// same context so Elko knows we're here. The C64 client won't
-		// see a region transition because we don't send the contents
-		// vector — just the server-side session setup.
+		// same context so Elko knows we're here. We've armed
+		// c.restoredSession + c.savedRefToNoid in RestoreSession; the
+		// post-restore make storm rewrites elko's fresh noids back to
+		// the saved client noids in unpackHabitatObject, and the eventual
+		// `ready` handler suppresses the second CONTENTS Send so the
+		// client keeps its existing noid table intact. Without this
+		// dance the C64 would receive two CONTENTS payloads with
+		// inconsistent noid maps and render garbage sprites from the
+		// previous region (issue #499).
 		if c.regionRef != "" {
 			c.log.Info().Str("context", c.regionRef).Msg("StartRestored: re-entering context on fresh Elko conn")
-			// Re-enter the region via the bridge's normal enterContext
-			// path. This wipes and rebuilds the bridge's object maps
-			// from Elko's fresh state, and sends a full contents
-			// vector to the C64. The client sees a brief region reload
-			// (~1-2s) but gets fully consistent state — no ref
-			// mismatches between bridge/Elko/client.
 			c.enterContext(c.regionRef)
 		}
 
