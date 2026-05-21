@@ -750,17 +750,34 @@ func (c *ClientSession) unpackHabitatObject(o *ElkoMessage, containerRef string)
 			elkoNoid16 := uint16(savedNoid)
 			mod.Noid = &elkoNoid16
 		}
-		// SittingIn is a nested noid reference (the seat the avatar is
-		// currently on). If we've already mapped that seat's elko noid
-		// to a saved noid earlier in the make storm, swap it too — or
-		// the client will look at SittingIn=42 (elko) and not match its
-		// own seat noid (e.g. 37 from the saved CONTENTS).
-		if mod.SittingIn != nil {
-			if saved, found := c.restoreElkoToSaved[*mod.SittingIn]; found && saved != *mod.SittingIn {
-				newSittingIn := saved
-				mod.SittingIn = &newSittingIn
+		// Nested noid references that elko_state_encoders.go writes raw
+		// from state.* (rather than through container or RefToNoid) and
+		// PROTOCOL.md documents as object NOIDs. Each one points at
+		// another object in the same region; if THAT object's noid
+		// shifted across the tableflip, the C64 will look at a noid
+		// (e.g. SittingIn=42 from elko's view) that doesn't match its
+		// own table (e.g. 37 from the saved CONTENTS). Translate via
+		// restoreElkoToSaved if we've already seen the target ref's
+		// make this restore burst.
+		//
+		// SittingIn  — Avatar — seat the avatar is currently sitting on
+		// Restrainer — Avatar — restraining object NOID (handcuffs etc;
+		//              dormant today but reserved in the wire format)
+		// Wisher     — Magic_lamp — avatar noid mid-wish; UNASSIGNED_NOID
+		//              when no wish is in flight, but switches to a real
+		//              avatar noid via Magic_lamp.java's wisher = avatar.noid
+		rewriteNestedNoid := func(field **uint8) {
+			if field == nil || *field == nil {
+				return
+			}
+			if saved, found := c.restoreElkoToSaved[**field]; found && saved != **field {
+				newVal := saved
+				*field = &newVal
 			}
 		}
+		rewriteNestedNoid(&mod.SittingIn)
+		rewriteNestedNoid(&mod.Restrainer)
+		rewriteNestedNoid(&mod.Wisher)
 	}
 
 	if clientMessages, found := ObjectClientMessages[*mod.Type]; found {

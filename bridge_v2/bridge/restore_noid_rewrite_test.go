@@ -131,6 +131,64 @@ func TestRestore_RewritesSittingInUsingPriorMapping(t *testing.T) {
 	}
 }
 
+func TestRestore_RewritesRestrainerUsingPriorMapping(t *testing.T) {
+	// Restrainer is an Avatar field documented in PROTOCOL.md:536 as
+	// "Restraining object NOID". elko_state_encoders.go writes it raw
+	// from state.Restrainer into the wire bundle, so if a tableflip
+	// shifts the restraining object's noid the client's view of who's
+	// holding the avatar gets corrupted. Verify it's rewritten when
+	// restoreElkoToSaved knows the target.
+	sess := newRestoredTestSession(map[string]uint8{
+		"item-handcuffs-1":    25,
+		"user-randy-12345678": 50,
+	})
+
+	cuffsMsg := makeMsg("Knick_knack", "item-handcuffs-1", 70)
+	if err := sess.unpackHabitatObject(cuffsMsg, "context-Downtown_5c"); err != nil {
+		t.Fatalf("cuffs unpack: %v", err)
+	}
+
+	avatarMsg := makeMsg("Avatar", "user-randy-12345678", 31)
+	restrainer := uint8(70) // elko's noid for the cuffs
+	avatarMsg.Obj.Mods[0].Restrainer = &restrainer
+	if err := sess.unpackHabitatObject(avatarMsg, "context-Downtown_5c"); err != nil {
+		t.Fatalf("avatar unpack: %v", err)
+	}
+
+	avatarMod := avatarMsg.Obj.Mods[0]
+	if avatarMod.Restrainer == nil || *avatarMod.Restrainer != 25 {
+		t.Errorf("Restrainer not rewritten via restoreElkoToSaved: %v", avatarMod.Restrainer)
+	}
+}
+
+func TestRestore_RewritesWisherUsingPriorMapping(t *testing.T) {
+	// Wisher is a Magic_lamp field (Magic_lamp.java:100 sets it to
+	// avatar.noid mid-wish). elko_state_encoders.go writes it raw,
+	// so a tableflip mid-wish corrupts which avatar the client thinks
+	// the lamp is bound to. Verify rewrite through restoreElkoToSaved.
+	sess := newRestoredTestSession(map[string]uint8{
+		"user-randy-12345678": 50,
+		"item-lamp-1":         18,
+	})
+
+	avatarMsg := makeMsg("Avatar", "user-randy-12345678", 31)
+	if err := sess.unpackHabitatObject(avatarMsg, "context-Downtown_5c"); err != nil {
+		t.Fatalf("avatar unpack: %v", err)
+	}
+
+	lampMsg := makeMsg("Magic_lamp", "item-lamp-1", 60)
+	wisher := uint8(31) // elko's noid for randy
+	lampMsg.Obj.Mods[0].Wisher = &wisher
+	if err := sess.unpackHabitatObject(lampMsg, "context-Downtown_5c"); err != nil {
+		t.Fatalf("lamp unpack: %v", err)
+	}
+
+	lampMod := lampMsg.Obj.Mods[0]
+	if lampMod.Wisher == nil || *lampMod.Wisher != 50 {
+		t.Errorf("Wisher not rewritten via restoreElkoToSaved: %v", lampMod.Wisher)
+	}
+}
+
 func TestRestore_FlagOffMeansNoRewrite(t *testing.T) {
 	// Sanity check: with restoredSession=false, the existing behavior
 	// (use Elko's noid as-is) is preserved even if savedRefToNoid is
