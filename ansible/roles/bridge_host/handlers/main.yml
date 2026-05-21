@@ -5,11 +5,20 @@
   become: true
 
 - name: Restart bridge_v2 service
-  # Hard restart, not reload — used when the unit file itself changed
-  # (Environment= lines, ExecStart args, etc.) and a SIGHUP wouldn't
-  # pick those up. The deploy job uses a separate `systemctl reload`
-  # for binary-only swaps where tableflip can preserve sessions.
+  # Hard restart — used when the unit file itself changed (Environment=
+  # lines, ExecStart args, etc.) and a SIGHUP wouldn't pick those up.
+  # Followed immediately by a reload so tableflip fires and the admin
+  # HTTP server (--admin.listen) binds in the child process. Without the
+  # reload the parent (cold-start) process never receives SIGHUP and
+  # port 2027 stays unbound until the next manual reload.
   systemd:
     name: "{{ bridge_host_service_name }}"
     state: restarted
+  become: true
+  notify: Reload bridge_v2 after restart
+
+- name: Reload bridge_v2 after restart
+  systemd:
+    name: "{{ bridge_host_service_name }}"
+    state: reloaded
   become: true

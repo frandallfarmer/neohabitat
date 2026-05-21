@@ -106,19 +106,16 @@
     timeout: 60
   when: bridge_deploy_mode == 'adopt-cutover'
 
-# ── upgrade: SIGHUP-style hot replace via deploy-bridge.sh ────────────
-- name: Upgrade — verify bridge_v2 container is running
-  command: docker inspect -f '{{ "{{" }}.State.Running{{ "}}" }}' {{ bridge_container_name }}
-  register: bridge_running
-  changed_when: false
-  failed_when: bridge_running.stdout | trim != 'true'
-  when: bridge_deploy_mode == 'upgrade'
-
-- name: Upgrade — SIGHUP bridge_v2 (tableflip will re-exec, TCP_REPAIR preserves sessions)
-  # `docker kill --signal` not `docker exec ... kill` — the bridge image
-  # is distroless and has no kill binary.
-  command: docker kill --signal=HUP {{ bridge_container_name }}
-  changed_when: true
+# ── upgrade: SIGHUP-style hot replace via systemctl reload ────────────
+# bridge_v2 runs as a host systemd service (not a Docker container).
+# `systemctl reload` sends SIGHUP → tableflip forks a child that picks
+# up the new binary and binds all ports (including --admin.listen).
+# TCP_REPAIR preserves active C64 sessions across the handoff.
+- name: Upgrade — reload bridge_v2 host service (tableflip, TCP_REPAIR preserves sessions)
+  systemd:
+    name: "{{ bridge_host_service_name }}"
+    state: reloaded
+  become: true
   when: bridge_deploy_mode == 'upgrade'
 
 - name: Upgrade — wait for new process to accept connections
