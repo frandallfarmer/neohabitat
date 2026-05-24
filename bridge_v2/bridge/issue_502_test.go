@@ -156,6 +156,68 @@ func TestMarshal_ContainerNoidStillEmitsCamelCaseForElkoInbound(t *testing.T) {
 	}
 }
 
+func TestUnmarshal_PutBroadcastWithUnassignedNoidNarrowsToGhost(t *testing.T) {
+	// When a fresh JSON-passthrough avatar (whose region noid hasn't
+	// been assigned) does a PUT, elko broadcasts the resulting PUT$
+	// with the avatar's UNASSIGNED_NOID (256) in the top-level noid
+	// slot. Pre-fix, the whole message dropped on the *uint8 unmarshal;
+	// post-fix, 256 narrows to GHOST_NOID (255) so the broadcast
+	// survives and gets relayed.
+	raw := []byte(`{"type":"neighbor","noid":256,"op":"PUT$","obj":256,"cont":0,"x":60,"y":130,"how":0,"orient":16}`)
+	var msg ElkoMessage
+	if err := json.Unmarshal(raw, &msg); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if msg.Noid == nil || *msg.Noid != GHOST_NOID {
+		t.Errorf("Noid = %v, want %d (GHOST_NOID)", msg.Noid, GHOST_NOID)
+	}
+	if msg.ObjectNoid == nil || *msg.ObjectNoid != GHOST_NOID {
+		t.Errorf("ObjectNoid = %v, want %d (GHOST_NOID — obj=256 narrows the same way)", msg.ObjectNoid, GHOST_NOID)
+	}
+}
+
+func TestUnmarshal_GoawayBroadcastWithUnassignedTargetNarrowsToGhost(t *testing.T) {
+	// GOAWAY_$ broadcasts the departing avatar's noid in the `target`
+	// slot. Same UNASSIGNED_NOID problem; same fix.
+	raw := []byte(`{"type":"broadcast","noid":0,"op":"GOAWAY_$","target":256}`)
+	var msg ElkoMessage
+	if err := json.Unmarshal(raw, &msg); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if msg.Target == nil || *msg.Target != GHOST_NOID {
+		t.Errorf("Target = %v, want %d (GHOST_NOID)", msg.Target, GHOST_NOID)
+	}
+}
+
+func TestUnmarshal_NoidAndTargetNormalValues(t *testing.T) {
+	// Regular noid / target values (0..255) must pass through unchanged
+	// — the narrowing path should only fold the 256 sentinel.
+	raw := []byte(`{"type":"neighbor","noid":19,"op":"SPEAK$","target":42}`)
+	var msg ElkoMessage
+	if err := json.Unmarshal(raw, &msg); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if msg.Noid == nil || *msg.Noid != 19 {
+		t.Errorf("Noid = %v, want 19", msg.Noid)
+	}
+	if msg.Target == nil || *msg.Target != 42 {
+		t.Errorf("Target = %v, want 42", msg.Target)
+	}
+}
+
+func TestUnmarshal_NoidOverflowAboveUnassignedRejected(t *testing.T) {
+	// 257+ isn't a documented sentinel and isn't a valid wire shape.
+	// The narrowing path uses uint16 so values up to 65535 unmarshal
+	// fine; 65537 and above would fail. We don't strictly need to
+	// reject 257..65535, but verify malformed input (non-numeric) does
+	// still return an error rather than silently swallowing it.
+	raw := []byte(`{"noid":"not a number"}`)
+	var msg ElkoMessage
+	if err := json.Unmarshal(raw, &msg); err == nil {
+		t.Errorf("expected error for non-numeric noid, got nil with Noid=%v", msg.Noid)
+	}
+}
+
 func TestUnmarshal_BodyShapesUnchanged(t *testing.T) {
 	// Sanity check: the existing body handling (object vs the bare-zero
 	// sentinel) is not regressed by the obj-handling addition.
