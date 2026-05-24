@@ -125,16 +125,38 @@ type ElkoMessage struct {
 }
 
 func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
-	// Elko sends `"body":0` as a no-body sentinel in CORPORATE /
-	// DISCORPORATE replies (and anywhere else the body slot is empty),
-	// but Body is typed *HabitatObject so a bare `0` would fail to
-	// unmarshal. Peel Body off as a RawMessage and only decode it into
-	// a HabitatObject if it actually looks like an object. Matches the
-	// legacy JS bridge, which tolerates o.body being numeric 0 because
+	// Elko's wire format for several fields is polymorphic OR uses a
+	// different key on the inbound (server→bridge) path than the
+	// outbound (bridge→server) path. We can't capture that with a
+	// single struct tag, so we peel the affected fields as RawMessage
+	// and route them by shape / source:
+	//
+	//   - `body` is either an embedded HabitatObject (make, HEREIS_$) or
+	//     the bare integer 0 (CORPORATE / DISCORPORATE replies — no body).
+	//   - `obj` is either an embedded HabitatObject (make, HEREIS_$) or
+	//     a bare noid integer (PUT$ / THROW$ neighbor broadcasts — see
+	//     HabitatMod.java:828, :987). In the bare-noid case the value is
+	//     the noid of the object being put down / thrown, which the
+	//     downstream handlers read as `*o.ObjectNoid` (the same Go field
+	//     CHANGE_CONTAINERS_$ populates via the `object_noid` key).
+	//   - `container_noid` (snake_case) is what elko emits on the
+	//     CHANGE_CONTAINERS_$ broadcast (Avatar.java:1436). The
+	//     ContainerNoid struct tag is `containerNoid` (camelCase) because
+	//     that's what elko expects on the inbound PUT verb
+	//     (HabitatMod.PUT @JSONMethod). Same Go field, different wire
+	//     keys in each direction — route the snake_case key into
+	//     ContainerNoid manually so CHANGE_CONTAINERS_$ no longer drops
+	//     the field on the floor (issue #502 caught this via the PUT$
+	//     unmarshal failure, but it'd been silently latent for any
+	//     inventory-handoff CHANGE_CONTAINERS_$ broadcast as well).
+	//
+	// Matches the legacy JS bridge, which tolerates either shape because
 	// JavaScript is dynamically typed.
 	type elkoMessage ElkoMessage
 	type envelope struct {
-		Body json.RawMessage `json:"body,omitempty"`
+		Body          json.RawMessage `json:"body,omitempty"`
+		Obj           json.RawMessage `json:"obj,omitempty"`
+		ContainerNoid json.RawMessage `json:"container_noid,omitempty"`
 		*elkoMessage
 	}
 	aux := envelope{
@@ -147,6 +169,7 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 		return err
 	}
 	*m = ElkoMessage(*aux.elkoMessage)
+
 	body := string(aux.Body)
 	if len(body) > 0 && body != "0" && body != "null" {
 		var ho HabitatObject
@@ -154,6 +177,37 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 			return fmt.Errorf("parsing elko message body: %w", err)
 		}
 		m.Body = &ho
+	}
+
+	if len(aux.Obj) > 0 && string(aux.Obj) != "null" {
+		switch aux.Obj[0] {
+		case '{':
+			var ho HabitatObject
+			if err := json.Unmarshal(aux.Obj, &ho); err != nil {
+				return fmt.Errorf("parsing elko message obj: %w", err)
+			}
+			m.Obj = &ho
+		default:
+			// Bare integer noid (PUT$/THROW$). Decode into ObjectNoid so
+			// the existing ServerOps handlers Just Work — they already
+			// read *o.ObjectNoid for the noid of the object being acted
+			// on. An explicit `object_noid` from the same message (if
+			// any) would have been set by the standard unmarshal above;
+			// re-setting it here from `obj` keeps the two consistent.
+			var noid uint8
+			if err := json.Unmarshal(aux.Obj, &noid); err != nil {
+				return fmt.Errorf("parsing elko message obj as noid: %w", err)
+			}
+			m.ObjectNoid = &noid
+		}
+	}
+
+	if len(aux.ContainerNoid) > 0 && string(aux.ContainerNoid) != "null" {
+		var noid uint8
+		if err := json.Unmarshal(aux.ContainerNoid, &noid); err != nil {
+			return fmt.Errorf("parsing elko message container_noid: %w", err)
+		}
+		m.ContainerNoid = &noid
 	}
 	return nil
 }
