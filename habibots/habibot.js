@@ -394,6 +394,14 @@ class HabiBot {
   newRegion(direction, timeoutMillis) {
     const self = this
     const timeout = typeof timeoutMillis === 'number' ? timeoutMillis : 15000
+    // Capture the region we're leaving BEFORE the send. enteredRegion
+    // fires from every `make ... you:true` — including the one that
+    // arrives after a silent reconnect's re-enter of the SAME context
+    // (bridge_v2 issue #505 recovery). Without this guard the listener
+    // resolves prematurely on the same-region re-enter, the caller
+    // thinks the transit succeeded, and the bot appears to keep
+    // walking but never actually leaves the room.
+    const startRegion = this._scanForCurrentRegionRef()
     // Pre-register the arrival listener BEFORE the wire write, so we
     // can't race against an unusually fast server (changeContext +
     // make storm + `you:true` arriving before the .then chain attaches).
@@ -402,17 +410,44 @@ class HabiBot {
         self._removeOnce('enteredRegion', onArrived)
         reject(new Error(`newRegion(${direction}) timed out after ${timeout}ms waiting for enteredRegion`))
       }, timeout)
-      function onArrived() {
+      function onArrived(bot, o) {
+        // o.to is the destination region ref on the `make ... you:true`.
+        // Ignore same-region arrivals — those are silent reconnects
+        // re-entering the room we were already in, NOT the transit we
+        // asked for. Keep the listener active so the actual new-region
+        // arrival can still resolve.
+        const arrivedAt = o && o.to
+        if (startRegion && arrivedAt && arrivedAt === startRegion) {
+          log.debug('newRegion: ignoring same-region enteredRegion at %s (likely silent reconnect)', arrivedAt)
+          return
+        }
         clearTimeout(timer)
+        self._removeOnce('enteredRegion', onArrived)
         resolve()
       }
-      self._registerOnce('enteredRegion', onArrived)
+      self.on('enteredRegion', onArrived)
     })
     return this.sendWithDelay({
       to: 'ME',
       op: 'NEWREGION',
       direction: direction,
     }, 10000).then(() => arrivalP)
+  }
+
+  /**
+   * Walk this.history for a Region-typed mod, returning its ref. Used
+   * by newRegion() to capture the pre-transit region so the arrival
+   * listener can distinguish a real region change from a same-region
+   * re-enter (e.g. bridge_v2 silent reconnect).
+   */
+  _scanForCurrentRegionRef() {
+    for (const ref in this.history) {
+      const o = this.history[ref]
+      if (o && o.obj && o.obj.mods && o.obj.mods[0] && o.obj.mods[0].type === 'Region') {
+        return ref
+      }
+    }
+    return ''
   }
 
   /**
