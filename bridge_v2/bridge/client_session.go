@@ -1320,13 +1320,32 @@ func (c *ClientSession) recoverElkoConnection() {
 	}
 	c.elkoWg.Wait()
 
-	// Decide which region to re-enter. nextRegion is set during an
-	// in-flight changeContext that hasn't been confirmed yet;
-	// regionRef is the avatar's last known live region.
-	region := c.nextRegion
+	// Decide which region to re-enter. Priority:
+	//   1. bridgeAutoEnteredContext — set in handleElkoMessageJson's
+	//      changeContext branch BEFORE enterContext wipes nextRegion,
+	//      so this is the only field that still names the in-flight
+	//      transit target after the elko-side disconnect that happens
+	//      right after a JSON-passthrough region change. Without this
+	//      branch the recovery falls back to c.regionRef (the OLD
+	//      region) and re-enters there — visible to the bot as "I
+	//      asked to walk south but ended up back where I started",
+	//      which then loops every wanderTick.
+	//   2. nextRegion — for the binary path where enterContext hasn't
+	//      run yet (it's gated on the client's MESSAGE_DESCRIBE).
+	//   3. regionRef — steady-state recovery (no in-flight transit).
+	//
+	// All three fields are written under c.stateMu (in
+	// handleElkoMessage / handleElkoMessageJson); read them under the
+	// same lock to keep the race detector happy and our view consistent.
+	c.stateMu.Lock()
+	region := c.bridgeAutoEnteredContext
+	if region == "" {
+		region = c.nextRegion
+	}
 	if region == "" {
 		region = c.regionRef
 	}
+	c.stateMu.Unlock()
 
 	var dialErr error
 	backoff := 250 * time.Millisecond

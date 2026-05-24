@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"net"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -195,6 +196,59 @@ func TestRecover_FailsOpenWhenDialKeepsFailing(t *testing.T) {
 		defer clientRC.mu.Unlock()
 		return clientRC.closed
 	})
+}
+
+func TestRecover_PrefersBridgeAutoEnteredContextOverRegionRef(t *testing.T) {
+	// Regression for the "Sage keeps returning to the region they're
+	// in" bug:
+	//   1. Bot in Downtown_5f does NEWREGION south.
+	//   2. Elko replies changeContext context-Downtown_6f.
+	//   3. handleElkoMessageJson sets bridgeAutoEnteredContext = "..._6f",
+	//      then calls enterContext, which WIPES c.nextRegion.
+	//   4. Elko closes its server-side; habiproxy disconnects the
+	//      bridge-side; elkoReader EOFs and fires recovery.
+	//   5. Recovery must re-enter Downtown_6f (the in-flight transit
+	//      target), NOT Downtown_5f (the stale regionRef).
+	elko := newFakeElkoListener(t)
+	sess, _ := recoverTestSession(t, elko.addr(), "context-Downtown_5f")
+	sess.stateMu.Lock()
+	sess.bridgeAutoEnteredContext = "context-Downtown_6f"
+	sess.stateMu.Unlock()
+	waitForRecoveryCondition(t, 2*time.Second, "initial dial", func() bool {
+		return elko.acceptedCount() >= 1
+	})
+
+	// Drain the initial accept's elkoSendChan so we can observe what
+	// recovery sends post-reconnect.
+	elko.closeAllAccepted()
+	waitForRecoveryCondition(t, 5*time.Second, "recovery re-dial", func() bool {
+		return elko.acceptedCount() >= 1
+	})
+
+	// Look for the entercontext that recovery sent after dialing.
+	// connectToElko started a fresh elkoWriter; recovery's
+	// enterContext queues to elkoSendChan, the writer marshals and
+	// writes to the new conn. Pull bytes off the accepted listener
+	// and confirm the target context is Downtown_6f, NOT _5f.
+	elko.mu.Lock()
+	conn := elko.accepted[0]
+	elko.mu.Unlock()
+	if err := conn.SetReadDeadline(time.Now().Add(2 * time.Second)); err != nil {
+		t.Fatalf("SetReadDeadline: %v", err)
+	}
+	buf := make([]byte, 1024)
+	n, err := conn.Read(buf)
+	if err != nil {
+		t.Fatalf("read from recovered conn: %v", err)
+	}
+	got := string(buf[:n])
+	if !strings.Contains(got, "context-Downtown_6f") {
+		t.Errorf("recovery re-entered wrong context — wanted Downtown_6f, got: %s", got)
+	}
+	if strings.Contains(got, "context-Downtown_5f") {
+		t.Errorf("recovery re-entered stale regionRef Downtown_5f: %s", got)
+	}
+	sess.Close()
 }
 
 func TestRecover_PlannedCloseDoesNotTriggerRecovery(t *testing.T) {
