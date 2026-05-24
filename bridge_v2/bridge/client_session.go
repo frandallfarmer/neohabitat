@@ -244,9 +244,19 @@ func (c *ClientSession) elkoReader() {
 		if err != nil {
 			if closing {
 				c.log.Debug().Err(err).Msg("Elko reader exiting (teardown)")
-			} else {
-				c.log.Error().Err(err).Msg("Error reading message from Elko")
+				return
 			}
+			// Unplanned elko-side disconnect (habiproxy/elko restarted,
+			// network blip, etc.) — issue #505. Without an explicit
+			// teardown here the bot's client TCP stays open, HabiBot
+			// never sees a disconnect, and any in-flight elko writes
+			// vanish silently. Tear the whole session down so the bot
+			// detects EOF on its socket and triggers its reconnect-with-
+			// backoff loop; bridge.Close() drops this session from the
+			// bridge's map so the reconnect lands on a clean ClientSession
+			// that re-dials habiproxy.
+			c.log.Error().Err(err).Msg("Error reading message from Elko; tearing down session")
+			go c.Close()
 			return
 		}
 		if len(nextLine) == 0 {
@@ -326,7 +336,22 @@ func (c *ClientSession) elkoWriter() {
 				outbound.writeDone <- err
 			}
 			if err != nil {
-				c.log.Error().Err(err).Str("raw", string(msgBytes)).Msg("Error writing Elko message")
+				// Same teardown rationale as elkoReader (issue #505).
+				// elkoWriter normally exits on c.elkoDone / c.done from
+				// the select above; reaching here means the underlying
+				// elkoConn died mid-session. Trigger the full session
+				// close so the bot's client TCP gets EOF'd and HabiBot
+				// reconnects, instead of leaving the session half-open
+				// with subsequent bot writes silently failing.
+				c.closeMutex.Lock()
+				closing := c.doneClosed
+				c.closeMutex.Unlock()
+				if !closing {
+					c.log.Error().Err(err).Str("raw", string(msgBytes)).Msg("Error writing Elko message; tearing down session")
+					go c.Close()
+				} else {
+					c.log.Debug().Err(err).Msg("Elko writer exiting after write error (teardown)")
+				}
 				span.RecordError(err)
 				span.End()
 				return
