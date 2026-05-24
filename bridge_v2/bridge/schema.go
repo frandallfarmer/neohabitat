@@ -149,6 +149,17 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 	//     the field on the floor (issue #502 caught this via the PUT$
 	//     unmarshal failure, but it'd been silently latent for any
 	//     inventory-handoff CHANGE_CONTAINERS_$ broadcast as well).
+	//   - `noid` and `target` are typed *uint8 on the struct (matches
+	//     what binary-mode encoders need at write time), but Elko can
+	//     legitimately put 256 (UNASSIGNED_NOID) in either slot when
+	//     the broadcasting / targeted avatar has no assigned region noid
+	//     yet (e.g. a fresh JSON-passthrough avatar mid-PUT). The
+	//     standard unmarshal would fail with "cannot unmarshal number
+	//     256 into uint8" and the whole message would be dropped —
+	//     including the PUT$ / GOAWAY_$ broadcasts that other clients
+	//     in the region needed to see. Peel both as RawMessage and
+	//     narrow UNASSIGNED_NOID (256) → GHOST_NOID (255), matching how
+	//     Appearing and Speaker handle the same sentinel.
 	//
 	// Matches the legacy JS bridge, which tolerates either shape because
 	// JavaScript is dynamically typed.
@@ -157,6 +168,8 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 		Body          json.RawMessage `json:"body,omitempty"`
 		Obj           json.RawMessage `json:"obj,omitempty"`
 		ContainerNoid json.RawMessage `json:"container_noid,omitempty"`
+		Noid          json.RawMessage `json:"noid,omitempty"`
+		Target        json.RawMessage `json:"target,omitempty"`
 		*elkoMessage
 	}
 	aux := envelope{
@@ -194,11 +207,14 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 			// on. An explicit `object_noid` from the same message (if
 			// any) would have been set by the standard unmarshal above;
 			// re-setting it here from `obj` keeps the two consistent.
-			var noid uint8
-			if err := json.Unmarshal(aux.Obj, &noid); err != nil {
-				return fmt.Errorf("parsing elko message obj as noid: %w", err)
+			// Use the same UNASSIGNED_NOID→GHOST_NOID narrowing as Noid /
+			// Target — a fresh JSON-passthrough avatar mid-PUT broadcasts
+			// `obj:256` for an unbound-noid object.
+			narrowed, err := narrowNoidField(aux.Obj, "obj")
+			if err != nil {
+				return err
 			}
-			m.ObjectNoid = &noid
+			m.ObjectNoid = narrowed
 		}
 	}
 
@@ -209,7 +225,44 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 		}
 		m.ContainerNoid = &noid
 	}
+
+	// noid and target may carry UNASSIGNED_NOID (256), which doesn't fit
+	// in the *uint8 schema fields. Narrow to GHOST_NOID (255) on the way
+	// in — matches the Appearing/Speaker convention and downstream
+	// encoders treat 255 as "the ghost slot" so the binary path stays
+	// internally consistent.
+	if narrowed, err := narrowNoidField(aux.Noid, "noid"); err != nil {
+		return err
+	} else if narrowed != nil {
+		m.Noid = narrowed
+	}
+	if narrowed, err := narrowNoidField(aux.Target, "target"); err != nil {
+		return err
+	} else if narrowed != nil {
+		m.Target = narrowed
+	}
+
 	return nil
+}
+
+// narrowNoidField decodes a JSON noid-shaped field into a *uint8,
+// folding the elko UNASSIGNED_NOID (256) sentinel down to GHOST_NOID
+// (255). Returns (nil, nil) when the raw is absent or explicitly null.
+func narrowNoidField(raw json.RawMessage, name string) (*uint8, error) {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil, nil
+	}
+	var wide uint16
+	if err := json.Unmarshal(raw, &wide); err != nil {
+		return nil, fmt.Errorf("parsing elko message %s: %w", name, err)
+	}
+	var narrow uint8
+	if wide == UNASSIGNED_NOID {
+		narrow = GHOST_NOID
+	} else {
+		narrow = uint8(wide)
+	}
+	return &narrow, nil
 }
 
 func (e *ElkoMessage) String() string {
