@@ -375,16 +375,112 @@ class HabiBot {
 
   /**
    * Informs the Neohabitat server that the bot's Avatar is entering a new region via
-   * the provided direction and passage.
+   * the provided direction and passage. The returned Promise resolves only when
+   * the bot's own avatar has actually arrived in the new region (signalled by the
+   * `enteredRegion` callback, fired from the inbound `make ... you:true`). If the
+   * region transit doesn't complete within `timeoutMillis` (default 15s) the
+   * Promise rejects so callers like walkToExit() / wanderTick() see the failure
+   * instead of silently looping (issue #506).
+   *
+   * Pre-fix this resolved as soon as NEWREGION hit the socket — a successful
+   * write was indistinguishable from a stuck region transition, and bots that
+   * lost their elko session (issue #505) hammered NEWREGION every wanderTick
+   * forever without anyone noticing.
+   *
    * @param {Number} direction direction from which the bot is entering the new region
-   * @returns {Promise}
+   * @param {Number} [timeoutMillis] how long to wait for enteredRegion before rejecting
+   * @returns {Promise} resolves on arrival, rejects on send failure or timeout
    */
-  newRegion(direction) {
+  newRegion(direction, timeoutMillis) {
+    const self = this
+    const timeout = typeof timeoutMillis === 'number' ? timeoutMillis : 15000
+    // Capture the region we're leaving BEFORE the send. enteredRegion
+    // fires from every `make ... you:true` — including the one that
+    // arrives after a silent reconnect's re-enter of the SAME context
+    // (bridge_v2 issue #505 recovery). Without this guard the listener
+    // resolves prematurely on the same-region re-enter, the caller
+    // thinks the transit succeeded, and the bot appears to keep
+    // walking but never actually leaves the room.
+    const startRegion = this._scanForCurrentRegionRef()
+    // Pre-register the arrival listener BEFORE the wire write, so we
+    // can't race against an unusually fast server (changeContext +
+    // make storm + `you:true` arriving before the .then chain attaches).
+    const arrivalP = new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        self._removeOnce('enteredRegion', onArrived)
+        reject(new Error(`newRegion(${direction}) timed out after ${timeout}ms waiting for enteredRegion`))
+      }, timeout)
+      function onArrived(bot, o) {
+        // o.to is the destination region ref on the `make ... you:true`.
+        // Ignore same-region arrivals — those are silent reconnects
+        // re-entering the room we were already in, NOT the transit we
+        // asked for. Keep the listener active so the actual new-region
+        // arrival can still resolve.
+        const arrivedAt = o && o.to
+        if (startRegion && arrivedAt && arrivedAt === startRegion) {
+          log.debug('newRegion: ignoring same-region enteredRegion at %s (likely silent reconnect)', arrivedAt)
+          return
+        }
+        clearTimeout(timer)
+        self._removeOnce('enteredRegion', onArrived)
+        resolve()
+      }
+      self.on('enteredRegion', onArrived)
+    })
     return this.sendWithDelay({
       to: 'ME',
       op: 'NEWREGION',
       direction: direction,
-    }, 10000)
+    }, 10000).then(() => arrivalP)
+  }
+
+  /**
+   * Walk this.history for a Region-typed mod, returning its ref. Used
+   * by newRegion() to capture the pre-transit region so the arrival
+   * listener can distinguish a real region change from a same-region
+   * re-enter (e.g. bridge_v2 silent reconnect).
+   */
+  _scanForCurrentRegionRef() {
+    for (const ref in this.history) {
+      const o = this.history[ref]
+      if (o && o.obj && o.obj.mods && o.obj.mods[0] && o.obj.mods[0].type === 'Region') {
+        return ref
+      }
+    }
+    return ''
+  }
+
+  /**
+   * Register a callback that fires at most once, then unregisters itself.
+   * Used internally for transit-completion synchronization; exposed so
+   * other bots can do the same kind of "wait for one event then move on"
+   * pattern without leaking listeners.
+   * @param {string} eventType Habitat event type (e.g. 'enteredRegion')
+   * @param {function} callback fired on first matching event
+   */
+  once(eventType, callback) {
+    const self = this
+    function wrapper(...args) {
+      self._removeOnce(eventType, wrapper)
+      callback(...args)
+    }
+    this.on(eventType, wrapper)
+    return wrapper
+  }
+
+  /**
+   * Internal: remove a specific callback from an event's callback list.
+   * Used by once() and by newRegion()'s timeout path to release its
+   * waiter without leaking through to a later region transit.
+   */
+  _registerOnce(eventType, wrapper) {
+    this.on(eventType, wrapper)
+  }
+  _removeOnce(eventType, target) {
+    const list = this.callbacks[eventType]
+    if (!list) return
+    const idx = list.indexOf(target)
+    if (idx >= 0) list.splice(idx, 1)
   }
   
   /**

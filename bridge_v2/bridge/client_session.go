@@ -89,7 +89,6 @@ type ClientSession struct {
 	done              chan struct{}
 	doneClosed        bool
 	elkoConn          net.Conn
-	elkoConnInitWg    sync.WaitGroup
 	elkoDone          chan struct{}
 	elkoDoneClosed    bool
 	elkoSendChan      chan *outboundElkoMessage
@@ -130,6 +129,14 @@ type ClientSession struct {
 	waitingForAvatarContents bool
 	wg                       sync.WaitGroup
 	who                      string
+
+	// elkoRecovering serializes silent-reconnect attempts triggered by
+	// elkoReader EOF and elkoWriter error firing in parallel — without
+	// the guard, two recovery goroutines race to close + redial the
+	// same elkoConn and leave the session with two live writer
+	// goroutines pulling from one elkoSendChan. Accessed with
+	// closeMutex held for cheap reuse of an existing mutex.
+	elkoRecovering bool
 
 	// restoredSession is true after RestoreSession has rebuilt this
 	// ClientSession from a snapshot — i.e. we are about to re-enter the
@@ -225,12 +232,14 @@ func (c *ClientSession) closeChannels() {
 	}
 }
 
-func (c *ClientSession) elkoReader() {
+func (c *ClientSession) elkoReader(ready chan<- struct{}) {
 	defer c.elkoWg.Done()
 	defer c.wg.Done()
 	reader := bufio.NewReader(c.elkoConn)
 	tp := textproto.NewReader(reader)
-	c.elkoConnInitWg.Done()
+	if ready != nil {
+		ready <- struct{}{}
+	}
 	for {
 		nextLine, err := tp.ReadLineBytes()
 		// Cheap one-shot teardown probe shared by the read-error
@@ -244,9 +253,29 @@ func (c *ClientSession) elkoReader() {
 		if err != nil {
 			if closing {
 				c.log.Debug().Err(err).Msg("Elko reader exiting (teardown)")
-			} else {
-				c.log.Error().Err(err).Msg("Error reading message from Elko")
+				return
 			}
+			// Unplanned elko-side disconnect. The common cause is NOT
+			// elko actually dying — it's habiproxy cycling the
+			// bridge-side TCP after elko closed the server-side
+			// following a normal changeContext (pushserver/habiproxy/
+			// session.js:251 disconnectProxy fires after elko sends
+			// changeContext, ~ms before the next entercontext could
+			// reach it). Silently returning here leaves the next
+			// elkoWriter write to fail against the dead conn, the
+			// entercontext for the new region never reaches elko, and
+			// the client sits forever in an infinite region transfer
+			// (issue #505).
+			//
+			// Schedule a silent reconnect to habiproxy on a fresh
+			// goroutine; if it succeeds we resume operations on the
+			// existing client TCP and the region transit completes
+			// normally. If the reconnect cycle gives up (true
+			// container outage), the recovery path tears the bot's
+			// session down so HabiBot's reconnect-with-backoff loop
+			// kicks in cleanly.
+			c.log.Warn().Err(err).Msg("Elko-side disconnect; attempting silent reconnect")
+			go c.recoverElkoConnection()
 			return
 		}
 		if len(nextLine) == 0 {
@@ -277,10 +306,12 @@ func (c *ClientSession) elkoReader() {
 	}
 }
 
-func (c *ClientSession) elkoWriter() {
+func (c *ClientSession) elkoWriter(ready chan<- struct{}) {
 	defer c.elkoWg.Done()
 	defer c.wg.Done()
-	c.elkoConnInitWg.Done()
+	if ready != nil {
+		ready <- struct{}{}
+	}
 	for {
 		select {
 		case outbound := <-c.elkoSendChan:
@@ -326,7 +357,22 @@ func (c *ClientSession) elkoWriter() {
 				outbound.writeDone <- err
 			}
 			if err != nil {
-				c.log.Error().Err(err).Str("raw", string(msgBytes)).Msg("Error writing Elko message")
+				// Same teardown-vs-recover decision as elkoReader: most
+				// "Write failed" events here are habiproxy already
+				// having closed our bridge-side TCP after a
+				// changeContext cycle. Drop into the silent reconnect
+				// path so the post-recovery enterContext gets re-sent
+				// rather than dropped. The closing probe keeps planned
+				// teardown silent (Close() flips doneClosed first).
+				c.closeMutex.Lock()
+				closing := c.doneClosed
+				c.closeMutex.Unlock()
+				if !closing {
+					c.log.Warn().Err(err).Str("raw", string(msgBytes)).Msg("Elko write failed; attempting silent reconnect")
+					go c.recoverElkoConnection()
+				} else {
+					c.log.Debug().Err(err).Msg("Elko writer exiting after write error (teardown)")
+				}
 				span.RecordError(err)
 				span.End()
 				return
@@ -1201,10 +1247,16 @@ func (c *ClientSession) connectToElko() error {
 	// goroutine, before they're started, to satisfy sync.WaitGroup's contract.
 	c.wg.Add(2)
 	c.elkoWg.Add(2)
-	c.elkoConnInitWg.Add(2)
-	go c.elkoReader()
-	go c.elkoWriter()
-	c.elkoConnInitWg.Wait()
+	// Per-call ready channels instead of a shared WaitGroup — reconnect
+	// cycles would otherwise have Add and a previous Wait race without
+	// explicit happens-before (race detector flags this; in pathological
+	// scheduling it can deadlock the WaitGroup mid-reuse).
+	readerReady := make(chan struct{}, 1)
+	writerReady := make(chan struct{}, 1)
+	go c.elkoReader(readerReady)
+	go c.elkoWriter(writerReady)
+	<-readerReady
+	<-writerReady
 	return nil
 }
 
@@ -1223,6 +1275,115 @@ func (c *ClientSession) reconnectToElko(immediate bool, context string) {
 	}
 	if immediate {
 		c.enterContext(context)
+	}
+}
+
+// recoverElkoConnection is the silent-reconnect path invoked from
+// elkoReader / elkoWriter when the bridge-side TCP to habiproxy
+// drops mid-session. The typical trigger isn't a real outage — it's
+// habiproxy's disconnectProxy() firing after elko closed its
+// server-side TCP at the end of a normal changeContext, which races
+// the bridge's followup entercontext.
+//
+// Recovery is bounded: dial habiproxy a few times with backoff, and
+// if every attempt fails (real container outage, network blip
+// extending past ~30s) fall back to tearing down the bot session via
+// Close() — that preserves the issue #505 idle-bot-during-restart
+// recovery behavior by surfacing the disconnect to HabiBot's
+// reconnect loop. On success the bridge re-enters the most recent
+// context so the in-flight region transit completes.
+//
+// Idempotent: parallel firings from elkoReader EOF and elkoWriter
+// error coalesce via the elkoRecovering guard, so we don't end up
+// with two live writer goroutines pulling from one elkoSendChan.
+func (c *ClientSession) recoverElkoConnection() {
+	c.closeMutex.Lock()
+	if c.doneClosed || c.elkoRecovering {
+		c.closeMutex.Unlock()
+		return
+	}
+	c.elkoRecovering = true
+	c.closeMutex.Unlock()
+	defer func() {
+		c.closeMutex.Lock()
+		c.elkoRecovering = false
+		c.closeMutex.Unlock()
+	}()
+
+	// Tear down the current reader/writer goroutines cleanly. Close
+	// the conn so any blocked read returns, signal the writer's done
+	// channel non-blocking, wait for both to exit.
+	_ = c.elkoConn.Close()
+	select {
+	case c.elkoDone <- struct{}{}:
+	default:
+	}
+	c.elkoWg.Wait()
+
+	// Decide which region to re-enter. Priority:
+	//   1. bridgeAutoEnteredContext — set in handleElkoMessageJson's
+	//      changeContext branch BEFORE enterContext wipes nextRegion,
+	//      so this is the only field that still names the in-flight
+	//      transit target after the elko-side disconnect that happens
+	//      right after a JSON-passthrough region change. Without this
+	//      branch the recovery falls back to c.regionRef (the OLD
+	//      region) and re-enters there — visible to the bot as "I
+	//      asked to walk south but ended up back where I started",
+	//      which then loops every wanderTick.
+	//   2. nextRegion — for the binary path where enterContext hasn't
+	//      run yet (it's gated on the client's MESSAGE_DESCRIBE).
+	//   3. regionRef — steady-state recovery (no in-flight transit).
+	//
+	// All three fields are written under c.stateMu (in
+	// handleElkoMessage / handleElkoMessageJson); read them under the
+	// same lock to keep the race detector happy and our view consistent.
+	c.stateMu.Lock()
+	region := c.bridgeAutoEnteredContext
+	if region == "" {
+		region = c.nextRegion
+	}
+	if region == "" {
+		region = c.regionRef
+	}
+	c.stateMu.Unlock()
+
+	var dialErr error
+	backoff := 250 * time.Millisecond
+	for attempt := 1; attempt <= 5; attempt++ {
+		c.closeMutex.Lock()
+		bailingOut := c.doneClosed
+		c.closeMutex.Unlock()
+		if bailingOut {
+			return
+		}
+		if dialErr = c.connectToElko(); dialErr == nil {
+			c.log.Info().Int("attempt", attempt).Str("region", region).
+				Msg("Silent reconnect to Elko succeeded")
+			break
+		}
+		c.log.Warn().Err(dialErr).Int("attempt", attempt).Dur("backoff", backoff).
+			Msg("Silent reconnect to Elko failed; will retry")
+		time.Sleep(backoff)
+		if backoff < 4*time.Second {
+			backoff *= 2
+		}
+	}
+	if dialErr != nil {
+		c.log.Error().Err(dialErr).
+			Msg("Silent reconnect cycle exhausted; tearing down session for HabiBot to retry")
+		go c.Close()
+		return
+	}
+
+	// Re-enter the region the bot/client was in (or moving to). For
+	// JSON-passthrough this drives the bot back into the world
+	// immediately. For binary clients this preempts the client's
+	// MESSAGE_DESCRIBE so the new region's make storm starts flowing
+	// without waiting on the C64 to notice the timeout — which it
+	// often doesn't, hence the historical "infinite region transfer"
+	// symptom.
+	if region != "" {
+		c.enterContext(region)
 	}
 }
 
@@ -2410,10 +2571,12 @@ func (c *ClientSession) StartRestored() {
 		// Start Elko reader/writer goroutines on the inherited connection.
 		c.wg.Add(2)
 		c.elkoWg.Add(2)
-		c.elkoConnInitWg.Add(2)
-		go c.elkoReader()
-		go c.elkoWriter()
-		c.elkoConnInitWg.Wait()
+		readerReady := make(chan struct{}, 1)
+		writerReady := make(chan struct{}, 1)
+		go c.elkoReader(readerReady)
+		go c.elkoWriter(writerReady)
+		<-readerReady
+		<-writerReady
 
 		c.log.Info().Msg("StartRestored: elko goroutines ready")
 

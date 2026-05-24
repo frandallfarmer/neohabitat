@@ -92,9 +92,9 @@ func newJsonTestSession(t *testing.T, clientIn []byte) (*ClientSession, *recordi
 	sess.contentsVector = NewContentsVector(sess, nil, &REGION_NOID, nil, nil)
 	sess.wg.Add(1)
 	sess.elkoWg.Add(1)
-	sess.elkoConnInitWg.Add(1)
-	go sess.elkoWriter()
-	sess.elkoConnInitWg.Wait()
+	writerReady := make(chan struct{}, 1)
+	go sess.elkoWriter(writerReady)
+	<-writerReady
 	t.Cleanup(func() {
 		sess.closeChannels()
 		sess.elkoWg.Wait()
