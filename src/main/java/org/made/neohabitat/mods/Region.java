@@ -472,7 +472,11 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
             result.addParameter("resident", resident);
             result.addParameter("locked", locked);
             result.addParameter("lighting", natural_light_level);   // Persist the light level without real-time side-effects.
-            result.addParameter("shutdown_size", space_usage);		// FRF TODO Is this correct at region shutdown or should I snapshot space_usage into shutdown_size elsewhere?
+            // Write 0 when the region is empty so the bridge's pre-check never
+            // ghosts an incoming avatar due to a stale high value left over from
+            // a previous session. When avatars are present the checkpoint captures
+            // the live space_usage so the bridge sees an accurate recent value.
+            result.addParameter("shutdown_size", avatarsPresent() == 0 ? 0 : space_usage);
         } else {
             result.addParameter("lighting", lighting);				// Tell clients natural_light_level including the effects of object-based light sources.
         }
