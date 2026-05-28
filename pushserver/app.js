@@ -18,27 +18,11 @@ startWebsocketProxy({
   target: config.websocketProxy.remoteAddr,
 });
 
-// Override to use real console.log etc for the Chrome/VSCode debugger.
-var logToDebugger = process.env.LOG_TO_DEBUGGER || 'true';
-
-if (logToDebugger === 'true') {
-  var winstonCommon = require('winston/lib/winston/common');
-
-  log.transports.Console.prototype.log = function (level, message, meta, callback) {
-    const output = winstonCommon.log(Object.assign({}, this, {
-      level,
-      message,
-      meta,
-    }));
-
-    console[level in console ? level : 'log'](output);
-
-    setImmediate(callback, null, true);
-  };
-} else {
-  log.remove(log.transports.Console);
-  log.add(log.transports.Console, { 'timestamp': true });
-}
+log.configure({
+  transports: [new log.transports.Console({
+    format: log.format.combine(log.format.timestamp(), log.format.simple())
+  })]
+});
 
 // Ensures all Markdown is rendered as GitHub Flavored Markdown.
 // (Swapped from `showdown` to `marked` — showdown's only open advisory
