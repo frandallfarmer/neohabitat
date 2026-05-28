@@ -17,7 +17,7 @@
     "express": "^4.22.2",
     "marked": "^18.0.3",
     "mongo": "^0.1.0",
-    "mongodb": "^6.8",
+    "mongodb": "^7.2",
     "morgan": "^1.10.1",
     "serve-favicon": "^2.5.0",
     "server-send-events": "0.0.6",
