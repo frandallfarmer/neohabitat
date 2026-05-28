@@ -25,7 +25,8 @@ log.add(log.transports.Console, { 'timestamp': true })
 const constants = require('../constants');
 const HabiBot = require('../habibot');
 
-const Argv = require('yargs')
+const { hideBin } = require('yargs/helpers')
+const Argv = require('yargs/yargs')(hideBin(process.argv))
   .usage('Usage: $0 [options]')
   .help('help')
   .option('help', { alias: '?', describe: 'Get this usage/help information.' })

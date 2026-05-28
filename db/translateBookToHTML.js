@@ -5,7 +5,8 @@ const File       = require('fs').promises;
 /** Object for trace library - npm install winston */
 const Trace      = require('winston');
 
-const Argv       = require('yargs')
+const { hideBin } = require('yargs/helpers')
+const Argv       = require('yargs/yargs')(hideBin(process.argv))
         .usage('Usage: node $0 --files=json,file,list [options]')
         .example('node $0 --files=Text/text-popmap.json',
            "Translate Habitat Text Documents to HTML documents at the same path.\n\nNOTE: HTML output will be the SAME PATH with .html appended.\n")                   

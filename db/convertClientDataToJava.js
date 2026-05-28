@@ -20,7 +20,8 @@ const Defaults	= {
 		trace:  'info'};
 
 /** Object holding command line args - parsed by yargs library: npm install yargs */	
-const Argv 		 = require('yargs')
+const { hideBin } = require('yargs/helpers')
+const Argv 		 = require('yargs/yargs')(hideBin(process.argv))
 .usage('Usage: $0 [options]')
 .option('input',	 { alias: 'i', default: Defaults.input,		describe: '.jlist file (jmuddle generated)'})
 .option('output',	 { alias: 'o', default: Defaults.output,	describe: '.java output file'})

@@ -51,7 +51,8 @@ const Defaults = {
   interactSeconds: 90,
 }
 
-const Argv = require('yargs')
+const { hideBin } = require('yargs/helpers')
+const Argv = require('yargs/yargs')(hideBin(process.argv))
   .usage('Usage: $0 [options]')
   .help('help')
   .option('host',          { alias: 'h', default: Defaults.host })

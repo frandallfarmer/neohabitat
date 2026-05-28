@@ -7,7 +7,8 @@ const ObjectId 		= require('mongodb').ObjectID;
 const File		    = require('fs');
 
 /** Object holding command line args - parsed by yargs library: npm install yargs */	
-const Argv 		 = require('yargs')
+const { hideBin } = require('yargs/helpers')
+const Argv 		 = require('yargs/yargs')(hideBin(process.argv))
 	.usage('\nAdds a user to the NeoHabitat mongodb [option: Saves in .json file]\n\nUsage: $0 --name=USERNAME')
 	.example('$0 --name=ShortName', 'Create a new NeoHabitat Avatar object, ref: user-shortname  name:ShortName')
 	.example('$0 --name=ExistingName --god --force', 'Set the god bit for an existing avatar-user')

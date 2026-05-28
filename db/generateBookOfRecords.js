@@ -24,7 +24,8 @@ try {
  Trace.debug("Missing/invalid defaults.elko configuration file. Proceeding with factory defaults.");
 }
 
-const 	Argv		= require('yargs')
+const { hideBin } = require('yargs/helpers')
+const 	Argv		= require('yargs/yargs')(hideBin(process.argv))
 .usage('Usage: $0 [options]')
 .help('help')
 .option('help',  { alias: '?', describe: 'Get this usage/help information'})
