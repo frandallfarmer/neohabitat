@@ -8,7 +8,7 @@
     "mongodb": "^7.2.0",
     "promise-queue": "^2.2.3",
     "winston": "^2.3.0",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "license": "MIT",
   "repository": {
