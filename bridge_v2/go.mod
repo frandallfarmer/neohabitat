@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/cloudflare/tableflip v1.2.3
 	github.com/coreos/go-systemd/v22 v22.7.0
-	github.com/juju/ratelimit v1.0.1
+	github.com/juju/ratelimit v1.0.2
 	github.com/rs/zerolog v1.18.0
 	go.mongodb.org/mongo-driver v1.17.9
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.68.0
