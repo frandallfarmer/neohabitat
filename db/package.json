@@ -9,7 +9,7 @@
     "dree": "^5.1.5",
     "exponential-backoff": "^3.1.1",
     "express": "^4.16.2",
-    "mongodb": "^6.8",
+    "mongodb": "^7.2",
     "serve-favicon": "latest",
     "server-send-events": "0.0.6",
     "walk": "^2.3.9",
