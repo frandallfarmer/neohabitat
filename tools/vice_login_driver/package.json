@@ -11,6 +11,6 @@
   "dependencies": {
     "active-window": "^0.1.0",
     "robotjs": "^0.4.5",
-    "sleep": "^5.1.0"
+    "sleep": "^6.3.0"
   }
 }
