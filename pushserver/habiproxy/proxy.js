@@ -45,11 +45,11 @@ class HabiproxyServer {
     return awakeSessions;
   }
 
-  buildContextMap() {
-    var self = this;
-    self.mongoDb.collection('odb').find({ type: 'context' }).forEach(function(context) {
-      self.contextMap[context.ref] = context;
-    });
+  async buildContextMap() {
+    const contexts = await this.mongoDb.collection('odb').find({ type: 'context' }).toArray();
+    for (const context of contexts) {
+      this.contextMap[context.ref] = context;
+    }
   }
 
   handleClientConnect(client) {

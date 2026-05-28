@@ -3,7 +3,7 @@
 
 const MongoClient	= require('mongodb').MongoClient;
 const Assert 		= require('assert');
-const ObjectId 		= require('mongodb').ObjectID;
+const ObjectId 		= require('mongodb').ObjectId;
 const File		    = require('fs');
 
 /** Object holding command line args - parsed by yargs library: npm install yargs */	
@@ -51,37 +51,21 @@ if (Argv.savedir) {
 	}
 }
 
-function testUser(db, callback) {
-	db.collection('odb').findOne({ref: NewUser.ref}, callback);
-}
-
-function insertUser(db, callback) {
-	db.collection('odb').updateOne(
-			{ref: NewUser.ref},
-			{ $set: NewUser},
-			{upsert: true},
-			function(err, result) {
-				Assert.equal(err, null);
-				callback();
-			});
-}
-
 var url = 'mongodb:' + Argv.url;
 
 const dbName = 'elko';
 
-
-MongoClient.connect(url, function(err, client) {
-	Assert.equal(null, err);
-	let db = client.db(dbName);
-	testUser(db, function(err, result) {
-		if (result === null || Argv.force) {
-			insertUser(db, function() {
-				client.close();
-			});
-		} else {
-			client.close();
-		}
-	});
-});
+(async () => {
+	const client = await MongoClient.connect(url);
+	const db = client.db(dbName);
+	const existing = await db.collection('odb').findOne({ref: NewUser.ref});
+	if (existing === null || Argv.force) {
+		await db.collection('odb').updateOne(
+			{ref: NewUser.ref},
+			{ $set: NewUser},
+			{upsert: true}
+		);
+	}
+	await client.close();
+})();
 
