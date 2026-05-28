@@ -12,8 +12,11 @@ const Defaults = {
 
 var eliza = require('elizabot')
 var log = require('winston')
-log.remove(log.transports.Console)
-log.add(log.transports.Console, { 'timestamp': true })
+log.configure({
+  transports: [new log.transports.Console({
+    format: log.format.combine(log.format.timestamp(), log.format.simple())
+  })]
+})
 
 const constants = require('../constants')
 const HabiBot = require('../habibot')

@@ -16,8 +16,11 @@ const Defaults = {
 const fs = require('fs');
 
 var log = require('winston');
-log.remove(log.transports.Console);
-log.add(log.transports.Console, { 'timestamp': true });
+log.configure({
+  transports: [new log.transports.Console({
+    format: log.format.combine(log.format.timestamp(), log.format.simple())
+  })]
+});
 
 const RtmClient = require('@slack/client').RtmClient;
 const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
