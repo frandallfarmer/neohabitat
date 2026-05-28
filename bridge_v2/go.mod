@@ -6,7 +6,7 @@ require (
 	github.com/cloudflare/tableflip v1.2.3
 	github.com/coreos/go-systemd/v22 v22.7.0
 	github.com/juju/ratelimit v1.0.2
-	github.com/rs/zerolog v1.18.0
+	github.com/rs/zerolog v1.35.1
 	go.mongodb.org/mongo-driver v1.17.9
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.68.0
 	go.opentelemetry.io/otel v1.43.0
@@ -28,6 +28,8 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.28.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
