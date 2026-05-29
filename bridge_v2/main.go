@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"net"
@@ -88,15 +89,13 @@ func main() {
 		log.Logger = log.Output(zerolog.MultiLevelWriter(os.Stderr, ringLog))
 	}
 
+	// Build the admin mux here (it needs the ring log), but defer actually
+	// serving it to the run* paths: the graceful path inherits its listener
+	// through tableflip, the simple path binds directly.
+	var adminMux *http.ServeMux
 	if *adminListen != "" {
-		mux := http.NewServeMux()
-		mux.Handle("/logs", ringLog)
-		go func() {
-			if err := http.ListenAndServe(*adminListen, mux); err != nil {
-				log.Error().Err(err).Str("addr", *adminListen).Msg("Admin HTTP server failed")
-			}
-		}()
-		log.Info().Str("addr", *adminListen).Msg("Admin HTTP server listening")
+		adminMux = http.NewServeMux()
+		adminMux.Handle("/logs", ringLog)
 	}
 
 	var otelShutdown func(context.Context) error
@@ -111,9 +110,9 @@ func main() {
 	}
 
 	if *graceful {
-		runWithTableflip(otelShutdown)
+		runWithTableflip(otelShutdown, adminMux)
 	} else {
-		runSimple(otelShutdown)
+		runSimple(otelShutdown, adminMux)
 	}
 }
 
@@ -124,7 +123,18 @@ func newBridge() *bridge.Bridge {
 	)
 }
 
-func runSimple(otelShutdown func(context.Context) error) {
+func runSimple(otelShutdown func(context.Context) error, adminMux *http.ServeMux) {
+	// No tableflip handoff in the simple path, so a plain bind never races
+	// a departing process. Serve the admin mux directly.
+	if adminMux != nil {
+		go func() {
+			if err := http.ListenAndServe(*adminListen, adminMux); err != nil {
+				log.Error().Err(err).Str("addr", *adminListen).Msg("Admin HTTP server failed")
+			}
+		}()
+		log.Info().Str("addr", *adminListen).Msg("Admin HTTP server listening")
+	}
+
 	habitatBridge := newBridge()
 	habitatBridge.Start()
 
@@ -136,12 +146,33 @@ func runSimple(otelShutdown func(context.Context) error) {
 	shutdownOtel(otelShutdown)
 }
 
-func runWithTableflip(otelShutdown func(context.Context) error) {
+func runWithTableflip(otelShutdown func(context.Context) error, adminMux *http.ServeMux) {
 	upg, err := tableflip.New(tableflip.Options{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not initialize tableflip upgrader")
 	}
 	defer upg.Stop()
+
+	// Admin HTTP server: obtain its listener through tableflip so the socket
+	// is inherited across SIGHUP upgrades rather than freshly bound on each
+	// child. A fresh bind raced the departing parent releasing the port and
+	// intermittently failed with EADDRINUSE, leaving the admin server dead
+	// for that process's lifetime (issue #534). An inherited fd is shared
+	// parent→child during the brief handoff window and never re-bound, so
+	// there is no race. Must run before upg.Ready(): tableflip only hands a
+	// listener to the next child if it was registered before readiness.
+	if adminMux != nil {
+		if adminLn, aerr := upg.Fds.Listen("tcp", *adminListen); aerr != nil {
+			log.Error().Err(aerr).Str("addr", *adminListen).Msg("Could not obtain admin listener via tableflip")
+		} else {
+			go func() {
+				if serr := http.Serve(adminLn, adminMux); serr != nil && !errors.Is(serr, net.ErrClosed) {
+					log.Error().Err(serr).Str("addr", *adminListen).Msg("Admin HTTP server failed")
+				}
+			}()
+			log.Info().Str("addr", adminLn.Addr().String()).Msg("Admin HTTP server listening (tableflip)")
+		}
+	}
 
 	habitatBridge := newBridge()
 	listeners := make([]net.Listener, len(listenAddrs))
