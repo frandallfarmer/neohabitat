@@ -17,3 +17,14 @@ services:
       - /neohabitat/pushserver/node_modules
       - /neohabitat/db/node_modules
       - /neohabitat/target
+
+  # In dev there is no host-side bridge_v2, so the base compose's
+  # host.docker.internal:2026 wiring leaves every bot blocked forever on the
+  # entrypoint's `netcat -z` gate. habibots speak Elko's JSON protocol
+  # directly (no binary bridge needed), so point them at the in-network Elko
+  # context server instead — the same :9000 habiproxy/bridge dial in prod,
+  # reached straight over the compose network.
+  bots:
+    environment:
+      - HABIBOTS_HOST=neohabitat
+      - HABIBOTS_PORT=9000
