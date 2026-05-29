@@ -81,6 +81,15 @@ type ClientSession struct {
 	qlinkMu           sync.Mutex
 	qlinkInSeq        byte // sequence number of last received QLink Action (peer's send seq)
 	qlinkOutSeq       byte // sequence number of next QLink Action we will send
+	// QLink reliable delivery (guarded by qlinkMu). bridge_v2 originally had
+	// NO retransmission, so a single dropped region packet hung the C64
+	// forever ("infinite region transfer"). qlinkSentWindow holds un-ACKed
+	// Action frames in send order; the C64 piggybacks its last-received seq
+	// on every frame, so we free acked frames and resend the rest when it
+	// falls behind (SequenceError/NAK, or a RecvSeq stuck across heartbeats).
+	qlinkSentWindow   []qlinkSentFrame
+	qlinkLastRecv     byte
+	qlinkLastResend   time.Time
 	clientConn        *ClientConnection
 	clientReader      *bufio.Reader
 	closeMutex        sync.Mutex
