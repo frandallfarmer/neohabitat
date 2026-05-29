@@ -318,6 +318,18 @@ const TOOLS = [
     },
   },
   {
+    name: 'remember_procedure',
+    description: 'Record a reusable HOW-TO lesson about operating in the world, tied to a place or a kind of object (NOT a person). Use when you work out how to do something that was not obvious — e.g. "to mail a letter, write_paper with a \'to:\' first line then send_mail", or "this door must be opened before you can walk through it". This is your procedural memory and is auto-surfaced whenever you are somewhere it applies. Different from remember, which stores facts about PEOPLE.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        context: { type: 'string', description: 'The region name or object TYPE this how-to applies to (e.g. "Door", "Magic_lamp", "Fountain"). Use the object type as shown in the scene, not a specific ref.' },
+        lesson: { type: 'string', description: 'The reusable procedure, in your own words.' },
+      },
+      required: ['context', 'lesson'],
+    },
+  },
+  {
     name: 'list_inventory',
     description: 'Look in your own pockets and list what you are currently carrying. Use this before claiming you have or don\'t have an item.',
     input_schema: { type: 'object', properties: {} },
@@ -1012,6 +1024,11 @@ async function executeAction(toolUse, bot, ctx) {
       case 'remember': {
         if (!mem) return { ok: false, error: 'memory not configured' }
         await mem.remember({ bot: botName, subject: args.subject, fact: args.fact })
+        return { ok: true }
+      }
+      case 'remember_procedure': {
+        if (!mem) return { ok: false, error: 'memory not configured' }
+        await mem.rememberProcedure({ bot: botName, context: args.context, lesson: args.lesson, outcome: 'observation' })
         return { ok: true }
       }
       case 'list_inventory':

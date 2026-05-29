@@ -282,12 +282,55 @@ function looksLikeBotName(name) {
   return KNOWN_BOT_SUBSTRINGS.some((s) => n.includes(s))
 }
 
+// Resolve an object's elko type from its ref by scanning the noid table.
+// Object refs (item-foo-123) aren't keyed in bot.noids — that table is
+// keyed by noid — so we walk it once. Used to key a procedural lesson on
+// the KIND of object an action touched (a lesson about a Magic_lamp should
+// apply to any Magic_lamp, not just the one instance). Returns '' if the
+// ref isn't (or is no longer) present.
+function typeForRef(bot, ref) {
+  if (!ref) return ''
+  for (const noid in bot.noids) {
+    const o = bot.noids[noid]
+    if (o && o.ref === ref && o.mods && o.mods[0] && o.mods[0].type) {
+      return o.mods[0].type
+    }
+  }
+  return ''
+}
+
+// The set of context keys describing "where sage is right now", for
+// matching against procedural memory (memory.proceduresFor). A lesson is
+// keyed to a region name or an object type; we surface it when sage is in
+// that region OR can see / is carrying that kind of object. All lowercased
+// so storage and retrieval agree on casing.
+function currentContextKeys(bot) {
+  const keys = new Set()
+  const region = currentRegionRef(bot)
+  if (region) keys.add(region.toLowerCase())
+  const rn = regionName(bot)
+  if (rn && rn !== '(unknown region)') keys.add(rn.toLowerCase())
+  const objs = objectsByType(bot)
+  for (const cat of ['sittable', 'openable', 'pickupable', 'other']) {
+    for (const o of objs[cat]) {
+      const t = o.mods && o.mods[0] && o.mods[0].type
+      if (t) keys.add(t.toLowerCase())
+    }
+  }
+  for (const it of getInventory(bot)) {
+    if (it.type) keys.add(it.type.toLowerCase())
+  }
+  return [...keys]
+}
+
 module.exports = {
   objectsByType,
   getInventory,
   describeWorld,
   currentRegionRef,
   regionName,
+  typeForRef,
+  currentContextKeys,
   looksLikeBotName,
   HANDS_SLOT,
   MAIL_SLOT,
