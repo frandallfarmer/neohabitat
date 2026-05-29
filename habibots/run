@@ -111,7 +111,11 @@ if [[ "${@}" = *"sage"* ]]; then
     # all the way to EOF).
     SAGE_PERSONA_DEFAULT="a curious old-timer of Habitat who has seen it all and likes meeting newcomers"
     : "${HABIBOTS_SAGE_REGION:=context-Downtown_5f}"
-    : "${HABIBOTS_SAGE_USER:=SageBot}"
+    # Lowercase: Elko user refs are case-sensitive and the seeded avatar is
+    # `user-sagebot` (like every other bot — elizabot, devil, welcomebot).
+    # The old `SageBot` default produced `user-SageBot`, which Elko rejects
+    # with `baduser`, so sage could never enter a region.
+    : "${HABIBOTS_SAGE_USER:=sagebot}"
     : "${HABIBOTS_SAGE_PERSONA:=$SAGE_PERSONA_DEFAULT}"
     supervisor -w "${DIR}" -- bots/sage.js \
       -c "${HABIBOTS_SAGE_REGION}" \

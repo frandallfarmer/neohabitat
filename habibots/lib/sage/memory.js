@@ -17,6 +17,16 @@
 //                              contents, so a restart can prime sage's
 //                              awareness from disk before the next make
 //                              storm overwrites it.
+//   habibots.procedures      — reusable how-to lessons keyed to a CONTEXT
+//                              (a region name or object TYPE, not a
+//                              person). This is sage's procedural memory:
+//                              the reflection loop writes a lesson when an
+//                              action fails then succeeds, and Claude can
+//                              write one via the remember_procedure tool.
+//                              Retrieval is context-keyed (proceduresFor)
+//                              so a lesson resurfaces whenever sage is
+//                              somewhere it applies. Dedup-on-write;
+//                              persists forever (it's the whole point).
 //
 // Each document carries a `bot` field so eliza/hatchery could later share
 // this infrastructure without overwriting each other's memory.
@@ -43,6 +53,7 @@ class Memory {
     this.conversations = null
     this.notes = null
     this.inventory = null
+    this.procedures = null
     this.ready = false
     this._initPromise = null   // outstanding connect; awaited by ops
   }
@@ -65,6 +76,7 @@ class Memory {
         this.conversations = this.db.collection('conversations')
         this.notes = this.db.collection('notes')
         this.inventory = this.db.collection('inventory')
+        this.procedures = this.db.collection('procedures')
         await this._ensureIndexes()
         this.ready = true
         log.info('memory: connected to %s/%s', this.uri, DB_NAME)
@@ -86,6 +98,10 @@ class Memory {
     await this.conversations.createIndex({ ts: 1 }, { expireAfterSeconds: TTL_SECONDS })
     // {bot, subject, ts desc} — notesAbout lookups
     await this.notes.createIndex({ bot: 1, subject: 1, ts: -1 })
+    // {bot, context, ts desc} — proceduresFor lookups. No TTL: procedural
+    // knowledge is the point of the reinforcement loop, so it persists;
+    // dedup-on-write (rememberProcedure) keeps it from accreting dupes.
+    await this.procedures.createIndex({ bot: 1, context: 1, ts: -1 })
   }
 
   // Fire-and-forget: log a single chat turn. Callers shouldn't block on
@@ -181,6 +197,67 @@ class Memory {
     } catch (e) {
       log.warn('memory.recall failed: %s', e.message)
       return { conversations: [], notes: [] }
+    }
+  }
+
+  // ── procedural memory ─────────────────────────────────────────────
+  // Reusable how-to lessons keyed to a CONTEXT (a region name or object
+  // type), not a person. This is the storage half of sage's reinforcement
+  // loop. Dedup-on-write: an identical (bot, context, lesson) bumps `ts`
+  // and increments `count` instead of inserting a duplicate, so a lesson
+  // that keeps proving true rises in both recency and reinforcement without
+  // the collection ballooning. `outcome` records why it was learned:
+  //   'failure-fix' — captured by the deterministic reflection step after
+  //                   an action failed then succeeded.
+  //   'observation' — Claude wrote it via the remember_procedure tool.
+  async rememberProcedure({ bot, context, lesson, outcome = 'observation' }) {
+    if (!(await this._ensureReady())) return
+    if (!context || !lesson) return
+    const ctx = String(context).toLowerCase().slice(0, 120)
+    const text = String(lesson).slice(0, 400)
+    try {
+      await this.procedures.updateOne(
+        { bot, context: ctx, lesson: text },
+        {
+          $set: { ts: new Date(), outcome },
+          $setOnInsert: { createdAt: new Date() },
+          $inc: { count: 1 },
+        },
+        { upsert: true },
+      )
+    } catch (e) {
+      log.warn('memory.rememberProcedure failed: %s', e.message)
+    }
+  }
+
+  // Lessons whose context matches any of the keys describing where sage is
+  // right now (region ref/name + visible object types + inventory types;
+  // see awareness.currentContextKeys). Newest-first, deduped by lesson
+  // text, capped at `limit`. We over-fetch (limit*3) before de-duping so a
+  // burst of same-context rows can't crowd out distinct lessons.
+  async proceduresFor({ bot, contexts, limit = 6 }) {
+    if (!(await this._ensureReady())) return []
+    if (!contexts || !contexts.length) return []
+    const keys = contexts.map((c) => String(c || '').toLowerCase()).filter(Boolean)
+    if (!keys.length) return []
+    try {
+      const rows = await this.procedures
+        .find({ bot, context: { $in: keys } })
+        .sort({ ts: -1 })
+        .limit(limit * 3)
+        .toArray()
+      const seen = new Set()
+      const out = []
+      for (const r of rows) {
+        if (seen.has(r.lesson)) continue
+        seen.add(r.lesson)
+        out.push(r)
+        if (out.length >= limit) break
+      }
+      return out
+    } catch (e) {
+      log.warn('memory.proceduresFor failed: %s', e.message)
+      return []
     }
   }
 

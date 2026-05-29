@@ -1,0 +1,22 @@
+# Keep the build context hermetic. Without this, `COPY . .` in the
+# Dockerfile copies the host's node_modules over the layer that `npm ci`
+# just installed — and a stale host install (e.g. winston 2.x when
+# package.json pins ^3) silently shadows the correct, locked dependency
+# tree, crashing every bot on startup. The image must rely on `npm ci`.
+node_modules
+npm-debug.log*
+
+# VCS / tooling cruft that has no business in the image.
+.git
+.gitignore
+.dockerignore
+Dockerfile
+
+# Secrets and local env never get baked into the image — they arrive at
+# run time via compose env_file.
+.env
+*.env
+
+# Editor / OS noise.
+.DS_Store
+*.log

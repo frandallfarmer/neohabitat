@@ -34,7 +34,7 @@ const Anthropic = require('@anthropic-ai/sdk')
 const log = require('winston')
 log.configure({
   transports: [new log.transports.Console({
-    format: log.format.combine(log.format.timestamp(), log.format.simple())
+    format: log.format.combine(log.format.timestamp(), log.format.splat(), log.format.simple())
   })]
 })
 
@@ -184,6 +184,12 @@ Memory:
   role, a promise, a recurring topic). NOT for chit-chat.
 - recall(query, avatar?) searches when a name jogs something you can't
   quite place.
+- The prompt may also include "Things you have learned about operating
+  in places/objects like these" — those are your own past lessons about
+  HOW this world works. Trust them and act on them before experimenting.
+- remember_procedure(context, lesson) saves a reusable how-to tied to a
+  place or object TYPE (not a person), so future-you does not relearn
+  something the hard way. Facts about PEOPLE still go in remember().
 
 Inventory & HANDS:
 - "In your pockets" lists what YOU carry; "Interactable objects in
@@ -395,6 +401,10 @@ async function askClaude(userMessage) {
 // chain.
 async function askClaudeWithTools(userMessage) {
   const messages = [{ role: 'user', content: userMessage }]
+  // Trace of every tool call + its {ok,error} verdict this interaction, so
+  // reflectOnTrace can mine failure->success recoveries into procedural
+  // memory once the loop ends. See the reinforcement-loop section below.
+  const trace = []
 
   for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
     await llmCooldownGate()
@@ -411,7 +421,8 @@ async function askClaudeWithTools(userMessage) {
       }), 30_000, 'claude.messages.create')
     } catch (e) {
       log.error('Claude tool call failed turn %d: %s', turn, e.message)
-      return { text: '' }
+      reflectOnTrace(trace)
+      return { text: '', trace }
     }
 
     let turnText = ''
@@ -436,7 +447,8 @@ async function askClaudeWithTools(userMessage) {
       if (safe) {
         await sayChunked(SageBot, safe)
       }
-      return { text: safe || '' }
+      reflectOnTrace(trace)
+      return { text: safe || '', trace }
     }
 
     // Mid-turn text accompanies a tool call — log for debugging but
@@ -450,6 +462,7 @@ async function askClaudeWithTools(userMessage) {
     const toolResults = []
     for (const t of toolUses) {
       const result = await executeAction(t, SageBot, { mem })
+      trace.push({ name: t.name, args: t.input || {}, result })
       toolResults.push({
         type: 'tool_result',
         tool_use_id: t.id,
@@ -461,7 +474,8 @@ async function askClaudeWithTools(userMessage) {
   }
 
   log.warn('askClaudeWithTools: hit MAX_TOOL_TURNS=%d', MAX_TOOL_TURNS)
-  return { text: '' }
+  reflectOnTrace(trace)
+  return { text: '', trace }
 }
 
 // === Speech chunking =====================================================
@@ -594,6 +608,89 @@ function humanAgo(ts) {
   if (sec < 3600) return `${Math.floor(sec / 60)}m ago`
   if (sec < 86400) return `${Math.floor(sec / 3600)}h ago`
   return `${Math.floor(sec / 86400)}d ago`
+}
+
+// ── reinforcement loop ────────────────────────────────────────────────
+// The closed loop: act -> observe outcome -> store a lesson -> surface it
+// next time the context recurs. proceduralBlockFor is the RETRIEVAL half
+// (read lessons keyed to where sage is now); reflectOnTrace is the CAPTURE
+// half (write a lesson from what just happened). The model's weights never
+// change — what changes is the context the frozen model conditions on.
+
+// Build the auto-injected procedural-memory block: how-to lessons sage has
+// learned that apply to the CURRENT region / visible objects (keyed by
+// awareness.currentContextKeys, NOT by who's speaking — that's the whole
+// point, so a lesson about doors resurfaces near any door). Returns "" when
+// empty so callers can drop it inline.
+async function proceduralBlockFor(bot) {
+  try {
+    const contexts = awareness.currentContextKeys(bot)
+    if (!contexts.length) return ''
+    const procs = await mem.proceduresFor({ bot: bot.config.username, contexts, limit: 6 })
+    if (!procs.length) return ''
+    const lines = ['Things you have learned about operating in places/objects like these (apply them before experimenting):']
+    for (const p of procs) {
+      lines.push(`  - [${p.context}] ${p.lesson}`)
+    }
+    let block = lines.join('\n')
+    if (block.length > 1200) block = block.slice(0, 1200) + '\n  ...(truncated)'
+    return block
+  } catch (e) {
+    log.warn('proceduralBlockFor failed: %s', e.message)
+    return ''
+  }
+}
+
+// Best-effort context key for an action: the TYPE of the object it touched
+// (so a lesson generalises to every object of that kind), falling back to
+// the current region ref when the action has no ref or the object is gone.
+function contextKeyForAction(bot, args) {
+  if (args && args.ref) {
+    const t = awareness.typeForRef(bot, args.ref)
+    if (t) return t
+  }
+  return awareness.currentRegionRef(bot) || ''
+}
+
+// The CAPTURE half of the loop, run fire-and-forget after a tool
+// interaction. executeAction returns a structured {ok,error} verdict for
+// every call — that's the reward signal. When an action FAILS with a real
+// validation error and a LATER call of the SAME action SUCCEEDS, sage just
+// recovered from a mistake: exactly the how-to worth keeping. We store the
+// failure mode (the error text is already phrased to instruct — e.g.
+// put_down's "pick_up first") as a procedural lesson keyed to the object
+// type, so it resurfaces next time sage is near that kind of object.
+//
+// Transient wire failures (timeouts, socket/network errors) are skipped —
+// those are bad luck, not reusable lessons.
+function reflectOnTrace(trace) {
+  try {
+    if (!trace || trace.length < 2) return
+    const botName = SageBot.config.username
+    const pendingFailure = new Map()   // tool name -> {error, args}
+    for (const step of trace) {
+      const r = step.result
+      if (r && r.ok === false && r.error) {
+        if (/tim(e|ed)\s*out|timeout|econn|socket|network/i.test(r.error)) continue
+        pendingFailure.set(step.name, { error: r.error, args: step.args })
+        continue
+      }
+      if (r && r.ok === true && pendingFailure.has(step.name)) {
+        const prior = pendingFailure.get(step.name)
+        pendingFailure.delete(step.name)
+        const context =
+          contextKeyForAction(SageBot, step.args) ||
+          contextKeyForAction(SageBot, prior.args)
+        if (!context) continue
+        const lesson = `${step.name} can fail the first time: ${prior.error}`
+        mem.rememberProcedure({ bot: botName, context, lesson, outcome: 'failure-fix' })
+          .catch((e) => log.debug('rememberProcedure (reflect) failed: %s', e.message))
+        log.info('reflect: learned a procedure for "%s" — %s', context, lesson.slice(0, 120))
+      }
+    }
+  } catch (e) {
+    log.warn('reflectOnTrace failed: %s', e.message)
+  }
 }
 
 // ── lifecycle ────────────────────────────────────────────────────────
@@ -733,6 +830,7 @@ SageBot.on('SPEAK$', async (bot, msg) => {
     }
 
     const memBlock = await memoryBlockFor(speakerName)
+    const procBlock = await proceduralBlockFor(bot)
     // Pull in deep-cut Habitat lore (history dates, movies, hall of
     // records, etc.) ONLY when the speaker actually mentions one of
     // those topics. The lore module's regex keyed chunks keep the
@@ -745,6 +843,7 @@ SageBot.on('SPEAK$', async (bot, msg) => {
     const prompt =
       `${awareness.describeWorld(bot)}\n\n` +
       (memBlock ? `${memBlock}\n\n` : '') +
+      (procBlock ? `${procBlock}\n\n` : '') +
       (lore ? `Relevant Habitat lore for this conversation:\n${lore}\n\n` : '') +
       `Event: ${speakerName} just said: "${text}"\n\n` +
       `Reply in character. Acknowledge them by name if it feels natural. ` +
@@ -807,9 +906,11 @@ SageBot.on('OBJECTSPEAK_$', async (bot, msg) => {
     }
     log.info('Received %s from %s — handing to Claude', kind, from)
     const memBlock = await memoryBlockFor(from)
+    const procBlock = await proceduralBlockFor(bot)
     const prompt =
       `${awareness.describeWorld(bot)}\n\n` +
       (memBlock ? `${memBlock}\n\n` : '') +
+      (procBlock ? `${procBlock}\n\n` : '') +
       `Event: ${from} just sent you a teleport ${kind === 'invite' ? 'invitation' : 'join request'}.\n` +
       `The system message said: "${text}"\n\n` +
       `This was a PRIVATE prompt to you — respond privately. Use whisper(to="${from}", ` +
@@ -859,8 +960,10 @@ SageBot.on('mailArrived', async (bot, msg) => {
     // and the postmark line lives inside the paper contents). Leave that
     // for sage to discover by READing — but cue Claude that mail is
     // available now and a READ will surface the sender.
+    const procBlock = await proceduralBlockFor(bot)
     const prompt =
       `${awareness.describeWorld(bot)}\n\n` +
+      (procBlock ? `${procBlock}\n\n` : '') +
       `Event: the Habitat mail chime just rang — a letter just landed in your mail-slot. ` +
       `You don't know who it's from yet; to find out, pick_up the mail-slot paper and read it. ` +
       `Say ONE short line in character acknowledging the chime (something a chatty old-timer ` +
