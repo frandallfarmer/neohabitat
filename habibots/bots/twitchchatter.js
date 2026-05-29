@@ -21,7 +21,7 @@ var irc = require('irc')
 var log = require('winston')
 log.configure({
   transports: [new log.transports.Console({
-    format: log.format.combine(log.format.timestamp(), log.format.simple())
+    format: log.format.combine(log.format.timestamp(), log.format.splat(), log.format.simple())
   })]
 })
 
