@@ -258,18 +258,53 @@ jobs:
           # cheap endpoint that requires auth and surface its response so
           # 401s tell us which kind of token / URL is wrong.
           echo "::group::auth check"
-          status=$(curl -sS -o /tmp/whoami.txt -w '%{http_code}' \
-            -H "Authorization: Bearer $GRAFANA_TOKEN" \
-            "$GRAFANA_URL/api/user")
-          echo "GET $GRAFANA_URL/api/user -> HTTP $status"
-          cat /tmp/whoami.txt; echo
+          # Grafana Cloud instances sleep when idle and answer the first
+          # request(s) with HTTP 503 {"code":"Loading"} while they wake up —
+          # and this auth check is itself what triggers the wake-up. So retry
+          # transient states (503/502/504/429, or curl connection failures ->
+          # 000) with backoff before concluding the token/URL is wrong. Only
+          # 401/403 are genuine auth failures and fail fast.
+          max_attempts=12
+          attempt=1
+          status=000
+          while [ "$attempt" -le "$max_attempts" ]; do
+            status=$(curl -sS -o /tmp/whoami.txt -w '%{http_code}' \
+              -H "Authorization: Bearer $GRAFANA_TOKEN" \
+              "$GRAFANA_URL/api/user" || true)
+            echo "attempt $attempt/$max_attempts: GET $GRAFANA_URL/api/user -> HTTP $status"
+            case "$status" in
+              200)
+                break
+                ;;
+              401|403)
+                cat /tmp/whoami.txt 2>/dev/null; echo
+                echo "::error::Auth check failed (HTTP $status). Confirm:"
+                echo "  1) GRAFANA_URL is your Grafana instance URL (https://<stack>.grafana.net), NOT prometheus/loki/tempo."
+                echo "  2) GRAFANA_TOKEN is a Grafana SERVICE-ACCOUNT token (Settings → Service accounts), NOT a Cloud Access Policy 'glc_*' token."
+                echo "  3) The service account has the Editor role."
+                exit 1
+                ;;
+              *)
+                # Transient: instance still waking / rate-limited / no HTTP
+                # response yet. Back off and retry.
+                sleep_s=$(( attempt < 6 ? 10 : 20 ))
+                echo "  transient response (HTTP $status); waking instance, retrying in ${sleep_s}s..."
+                sleep "$sleep_s"
+                ;;
+            esac
+            attempt=$((attempt + 1))
+          done
+
           if [ "$status" != "200" ]; then
-            echo "::error::Auth check failed. Confirm:"
-            echo "  1) GRAFANA_URL is your Grafana instance URL (https://<stack>.grafana.net), NOT prometheus/loki/tempo."
-            echo "  2) GRAFANA_TOKEN is a Grafana SERVICE-ACCOUNT token (Settings → Service accounts), NOT a Cloud Access Policy 'glc_*' token."
-            echo "  3) The service account has the Editor role."
+            cat /tmp/whoami.txt 2>/dev/null; echo
+            if grep -qi 'loading' /tmp/whoami.txt 2>/dev/null; then
+              echo "::warning::Grafana instance still loading (HTTP $status) after $max_attempts attempts — skipping dashboard push this run; it will retry on the next push to master."
+              exit 0
+            fi
+            echo "::error::Grafana auth check did not succeed after $max_attempts attempts (last HTTP $status); see the response body above."
             exit 1
           fi
+          echo "auth check passed (HTTP 200)"
           echo "::endgroup::"
 
           # Build a placeholder→real datasource UID map. Dashboards in
