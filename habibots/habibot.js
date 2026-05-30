@@ -64,6 +64,11 @@ class HabiBot {
     this.actionQueue = new Queue(1, Infinity)
 
     this.config = util.clone(DefaultHabiBotConfig)
+    // Mirror username into config so callers can read bot.config.username.
+    // The memory subsystem keys its `bot` field on it; without this the
+    // field was undefined and stored as null in mongo (issue #537). The
+    // instance still carries this.username; the two stay in sync.
+    this.config.username = username
 
     this.callbacks = {
       connected: [],
