@@ -28,6 +28,15 @@ const qlinkWindowSize = 16
 // ~3s lets a resent burst arrive and be acked over the ~1200-baud link.
 const qlinkResendInterval = 3 * time.Second
 
+// qlinkChunkPacing spaces out a region DESCRIBE's split chunks. The U64 modem
+// trickles bytes into the C64's 6551 at 9600 baud; while the client is busy
+// rendering the room its RX NMI is starved and the 1-byte RX register overruns
+// (it "falls behind", then self-heals slowly -> the reticule/load delay). A
+// short gap between chunks lets the modem buffer drain and the client drain its
+// RX + render. Must exceed a chunk's ~100ms feed time to create a real gap
+// (else the modem just buffers ahead). Tunable -- raise if client-behind stays.
+const qlinkChunkPacing = 50 * time.Millisecond
+
 // qlinkSentFrame is one un-ACKed Action frame held in the retransmit window.
 type qlinkSentFrame struct {
 	seq   byte
@@ -50,6 +59,28 @@ func (c *ClientSession) qlinkRecordSentLocked(seq byte, frame []byte) {
 // Mirrors the freePackets test in QConnection.
 func qlinkAckCovers(seq, recvSeq byte) bool {
 	return recvSeq >= seq || int(seq)-int(recvSeq) > qlinkWindowSize
+}
+
+// qlinkRefreshRecvSeq returns a copy of a stored frame with its piggyback
+// RecvSeq (byte 6) replaced by recvSeq and its CRC recomputed. A retransmitted
+// frame is otherwise sent verbatim, carrying the stale ack baked in when it was
+// first queued; refreshing it lets the resend ALSO acknowledge the client's
+// most-recent send, draining the client's send window (which otherwise stays
+// pinned until the server emits a brand-new reply). Mirrors EncodeQLinkFrame's
+// CRC encoding exactly (CRC covers frame[5:]).
+func qlinkRefreshRecvSeq(frame []byte, recvSeq byte) []byte {
+	if len(frame) < QLinkHeaderLen {
+		return frame
+	}
+	out := make([]byte, len(frame))
+	copy(out, frame)
+	out[6] = recvSeq
+	crc := QLinkCRC16(out[5:])
+	out[1] = byte(((crc & 0xF000) >> 8) | 0x01)
+	out[2] = byte(((crc & 0x0F00) >> 8) | 0x40)
+	out[3] = byte((crc & 0x00F0) | 0x01)
+	out[4] = byte((crc & 0x000F) | 0x40)
+	return out
 }
 
 // qlinkProcessAck frees window frames the client has acknowledged (via the
@@ -97,16 +128,30 @@ func (c *ClientSession) qlinkProcessAck(frame *QLinkFrame) [][]byte {
 		return nil
 	}
 	c.qlinkLastResend = time.Now()
-	out := make([][]byte, len(c.qlinkSentWindow))
-	for i, sf := range c.qlinkSentWindow {
-		out[i] = sf.frame
-	}
+	// Go-back-1: resend ONLY the oldest un-acked frame — the single frame the
+	// client needs next — NOT the whole window. Measured on real U64 hardware:
+	// blasting the full (up to 64-frame) window at a C64 busy with a heavy
+	// region load overruns its single-frame RSINBF, so the one frame it needs
+	// keeps getting corrupted and re-dropped while the bridge re-floods every
+	// 3s — NXTSEQ frozen for ~52s. One frame at a time, the busy client can
+	// actually receive and accept it.
+	//
+	// Re-encode the piggyback RecvSeq to our CURRENT qlinkInSeq so the resend
+	// also carries a fresh ACK of the client's outstanding send. The stored
+	// frame's baked-in RecvSeq predates the client's HERE_I_AM, so verbatim
+	// resends never drained the client's send window (BUFFS stuck at 1 -> the
+	// targeting reticule stays gated). A fresh ack unblocks that in the same
+	// packet, which is why both freeze symptoms cleared together at resolution.
+	oldest := c.qlinkSentWindow[0]
+	resent := qlinkRefreshRecvSeq(oldest.frame, c.qlinkInSeq)
 	c.log.Debug().
 		Uint8("recv_seq", frame.RecvSeq).
 		Uint8("cmd", frame.Cmd).
-		Int("window", len(out)).
-		Msg("QLink retransmit (client behind)")
-	return out
+		Uint8("resend_seq", oldest.seq).
+		Uint8("fresh_ack", c.qlinkInSeq).
+		Int("window", len(c.qlinkSentWindow)).
+		Msg("QLink retransmit (go-back-1)")
+	return [][]byte{resent}
 }
 
 // ErrQLinkPreamble indicates a failure during the Habilink JSON preamble
@@ -466,6 +511,12 @@ func (c *ClientSession) sendSplitHabitatAction(data []byte) error {
 		pkt = append(pkt, payload[start:start+size]...)
 		if err := c.sendQLinkHabitatAction(pkt); err != nil {
 			return err
+		}
+		// Pace chunks so the busy-rendering C64 isn't fed a continuous
+		// 9600-baud firehose it can't keep up with. No delay after the last
+		// chunk. (Safe to sleep here: no mutex is held between chunks.)
+		if start+size < len(payload) {
+			time.Sleep(qlinkChunkPacing)
 		}
 	}
 	return nil
