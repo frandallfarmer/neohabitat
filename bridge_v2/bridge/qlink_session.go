@@ -377,6 +377,18 @@ func (c *ClientSession) handleQLinkFrame(body []byte) error {
 		return c.sendQLinkAckLikeFrame(QLinkCmdAck)
 
 	case QLinkCmdAction:
+		// Sequence bookkeeping: each Action increments the peer's send
+		// sequence (which we read as inSeq). ACK it FIRST, before the
+		// IsHabitatAction filter below — EVERY Action frame the C64 sends
+		// must be acknowledged, even flow-control / non-Habitat mnemonics
+		// (e.g. the handshake packet the client emits right after a region
+		// change). If we skip the ack for an ignored action, the C64's
+		// send window wedges on that un-acked frame and it can never send
+		// another command.
+		c.qlinkMu.Lock()
+		c.qlinkInSeq = frame.SendSeq
+		c.qlinkMu.Unlock()
+
 		if !frame.IsHabitatAction() {
 			mnemonic := string(frame.Payload[:minOf(2, len(frame.Payload))])
 			// The C64 client sends an "SS" flow-control action inside
@@ -397,11 +409,6 @@ func (c *ClientSession) handleQLinkFrame(body []byte) error {
 			c.log.Debug().Str("mnemonic", mnemonic).Msg("Ignoring non-Habitat QLink action")
 			return nil
 		}
-		// Sequence bookkeeping: each Action increments the peer's send
-		// sequence (which we read as inSeq).
-		c.qlinkMu.Lock()
-		c.qlinkInSeq = frame.SendSeq
-		c.qlinkMu.Unlock()
 
 		// Reconstruct the Habitat packet shape that handleClientMessage
 		// expects: a buffer where len(packetPrefix)+8 bytes precede the
