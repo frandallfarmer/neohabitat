@@ -174,6 +174,19 @@ func (b *Bridge) acceptLoop(ln net.Listener) {
 			log.Error().Err(err).Str("addr", addr).Msg("Failed to accept TCP connection")
 			return
 		}
+		// Enable TCP keepalive so a client that drops uncleanly (cold boot,
+		// modem hangup, freeze) is detected even when the half-open socket
+		// never sends a FIN/RST. Without this the per-session read blocks
+		// forever, Close() never runs, the dedicated bridge->ELKO connection
+		// stays open, and ELKO leaks the avatar as a "ghost" until restart.
+		if tc, ok := conn.(*net.TCPConn); ok {
+			if kaErr := tc.SetKeepAlive(true); kaErr != nil {
+				log.Warn().Err(kaErr).Str("addr", addr).Msg("Failed to enable TCP keepalive on client connection")
+			}
+			if kaErr := tc.SetKeepAlivePeriod(15 * time.Second); kaErr != nil {
+				log.Warn().Err(kaErr).Str("addr", addr).Msg("Failed to set TCP keepalive period on client connection")
+			}
+		}
 		newSession := NewClientSession(b, NewClientConnection(b, conn))
 		b.Sessions[conn.RemoteAddr().String()] = newSession
 		// Increment the active-sessions gauge here rather than inside
