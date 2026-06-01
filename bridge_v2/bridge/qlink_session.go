@@ -17,6 +17,143 @@ import (
 // over to the QLink wire protocol. Mirrors HabilinkProxy.USERNAME_REGEX.
 var habilinkNameRegex = regexp.MustCompile(`"name":\s*"([^"]*)"`)
 
+// qlinkWindowSize is the QLink send window — the max un-ACKed Action frames
+// we keep for retransmission (mirrors QConnection.QSIZE). Also used for the
+// wrap-aware ack comparison in qlinkAckCovers.
+const qlinkWindowSize = 16
+
+// qlinkResendInterval rate-limits heartbeat-driven retransmission. The C64
+// pings several times a second; when its RecvSeq is stuck (it silently
+// dropped a frame it never saw), we resend the window at most this often.
+// ~3s lets a resent burst arrive and be acked over the ~1200-baud link.
+const qlinkResendInterval = 3 * time.Second
+
+// qlinkChunkPacing spaces out a region DESCRIBE's split chunks. The U64 modem
+// trickles bytes into the C64's 6551 at 9600 baud; while the client is busy
+// rendering the room its RX NMI is starved and the 1-byte RX register overruns
+// (it "falls behind", then self-heals slowly -> the reticule/load delay). A
+// short gap between chunks lets the modem buffer drain and the client drain its
+// RX + render. Must exceed a chunk's ~100ms feed time to create a real gap
+// (else the modem just buffers ahead). Tunable -- raise if client-behind stays.
+const qlinkChunkPacing = 50 * time.Millisecond
+
+// qlinkSentFrame is one un-ACKed Action frame held in the retransmit window.
+type qlinkSentFrame struct {
+	seq   byte
+	frame []byte // QLink frame body (no trailing FrameEnd; writeQLinkFrameBytes adds it)
+}
+
+// qlinkRecordSentLocked appends a just-sent Action frame to the retransmit
+// window. Caller must hold qlinkMu. Bounded so an unreachable client can't
+// grow it without limit.
+func (c *ClientSession) qlinkRecordSentLocked(seq byte, frame []byte) {
+	c.qlinkSentWindow = append(c.qlinkSentWindow, qlinkSentFrame{seq: seq, frame: frame})
+	const maxWindow = 64
+	if len(c.qlinkSentWindow) > maxWindow {
+		c.qlinkSentWindow = c.qlinkSentWindow[len(c.qlinkSentWindow)-maxWindow:]
+	}
+}
+
+// qlinkAckCovers reports whether an ack of recvSeq acknowledges a frame sent
+// with sequence seq, accounting for the [QLinkSeqLow, QLinkSeqDefault] wrap.
+// Mirrors the freePackets test in QConnection.
+func qlinkAckCovers(seq, recvSeq byte) bool {
+	return recvSeq >= seq || int(seq)-int(recvSeq) > qlinkWindowSize
+}
+
+// qlinkRefreshRecvSeq returns a copy of a stored frame with its piggyback
+// RecvSeq (byte 6) replaced by recvSeq and its CRC recomputed. A retransmitted
+// frame is otherwise sent verbatim, carrying the stale ack baked in when it was
+// first queued; refreshing it lets the resend ALSO acknowledge the client's
+// most-recent send, draining the client's send window (which otherwise stays
+// pinned until the server emits a brand-new reply). Mirrors EncodeQLinkFrame's
+// CRC encoding exactly (CRC covers frame[5:]).
+func qlinkRefreshRecvSeq(frame []byte, recvSeq byte) []byte {
+	if len(frame) < QLinkHeaderLen {
+		return frame
+	}
+	out := make([]byte, len(frame))
+	copy(out, frame)
+	out[6] = recvSeq
+	crc := QLinkCRC16(out[5:])
+	out[1] = byte(((crc & 0xF000) >> 8) | 0x01)
+	out[2] = byte(((crc & 0x0F00) >> 8) | 0x40)
+	out[3] = byte((crc & 0x00F0) | 0x01)
+	out[4] = byte((crc & 0x000F) | 0x40)
+	return out
+}
+
+// qlinkProcessAck frees window frames the client has acknowledged (via the
+// RecvSeq it piggybacks on every frame) and returns the frames to retransmit,
+// if any. Called for every inbound frame, before the command switch.
+//
+// bridge_v2 originally did not retransmit at all, so any dropped frame hung
+// the client. The C64 has no ack timer of its own; it just keeps heartbeating
+// with its last-received seq. So an explicit SequenceError/NAK resends
+// immediately, and a RecvSeq that hasn't advanced across heartbeats (a silent
+// drop) resends the window, rate-limited by qlinkResendInterval.
+func (c *ClientSession) qlinkProcessAck(frame *QLinkFrame) [][]byte {
+	c.qlinkMu.Lock()
+	defer c.qlinkMu.Unlock()
+
+	// A Reset restarts the sequence space; the old window is meaningless.
+	if frame.Cmd == QLinkCmdReset {
+		c.qlinkSentWindow = nil
+		c.qlinkLastRecv = QLinkSeqLow
+		return nil
+	}
+
+	// Free everything the client has now acknowledged.
+	for len(c.qlinkSentWindow) > 0 && qlinkAckCovers(c.qlinkSentWindow[0].seq, frame.RecvSeq) {
+		c.qlinkSentWindow = c.qlinkSentWindow[1:]
+	}
+	if len(c.qlinkSentWindow) == 0 {
+		c.qlinkLastRecv = frame.RecvSeq
+		return nil
+	}
+
+	resend := false
+	switch frame.Cmd {
+	case QLinkCmdSeqErr, HabitatNAK:
+		resend = true // client explicitly rejected/lost our last packet
+	default:
+		// Stuck RecvSeq across heartbeats => the client is still missing a
+		// frame it never received. Resend the window, rate-limited.
+		if frame.RecvSeq == c.qlinkLastRecv && time.Since(c.qlinkLastResend) >= qlinkResendInterval {
+			resend = true
+		}
+	}
+	c.qlinkLastRecv = frame.RecvSeq
+	if !resend {
+		return nil
+	}
+	c.qlinkLastResend = time.Now()
+	// Go-back-1: resend ONLY the oldest un-acked frame — the single frame the
+	// client needs next — NOT the whole window. Measured on real U64 hardware:
+	// blasting the full (up to 64-frame) window at a C64 busy with a heavy
+	// region load overruns its single-frame RSINBF, so the one frame it needs
+	// keeps getting corrupted and re-dropped while the bridge re-floods every
+	// 3s — NXTSEQ frozen for ~52s. One frame at a time, the busy client can
+	// actually receive and accept it.
+	//
+	// Re-encode the piggyback RecvSeq to our CURRENT qlinkInSeq so the resend
+	// also carries a fresh ACK of the client's outstanding send. The stored
+	// frame's baked-in RecvSeq predates the client's HERE_I_AM, so verbatim
+	// resends never drained the client's send window (BUFFS stuck at 1 -> the
+	// targeting reticule stays gated). A fresh ack unblocks that in the same
+	// packet, which is why both freeze symptoms cleared together at resolution.
+	oldest := c.qlinkSentWindow[0]
+	resent := qlinkRefreshRecvSeq(oldest.frame, c.qlinkInSeq)
+	c.log.Debug().
+		Uint8("recv_seq", frame.RecvSeq).
+		Uint8("cmd", frame.Cmd).
+		Uint8("resend_seq", oldest.seq).
+		Uint8("fresh_ack", c.qlinkInSeq).
+		Int("window", len(c.qlinkSentWindow)).
+		Msg("QLink retransmit (go-back-1)")
+	return [][]byte{resent}
+}
+
 // ErrQLinkPreamble indicates a failure during the Habilink JSON preamble
 // (the username-discovery phase that precedes the QLink frame stream).
 var ErrQLinkPreamble = errors.New("qlink: preamble failed")
@@ -216,6 +353,16 @@ func (c *ClientSession) handleQLinkFrame(body []byte) error {
 		Int("payload_len", len(frame.Payload)).
 		Msg("QLink RX")
 
+	// Reliable delivery: free frames the client has acked (via its piggybacked
+	// RecvSeq) and resend any it's still missing. Done before the switch so it
+	// covers every inbound frame type — Ping/Ack/SequenceError/NAK/Action.
+	for _, f := range c.qlinkProcessAck(frame) {
+		if err := c.writeQLinkFrameBytes(f); err != nil {
+			c.log.Error().Err(err).Msg("QLink retransmit write failed")
+			break
+		}
+	}
+
 	switch frame.Cmd {
 	case QLinkCmdReset:
 		// Reset rewinds the per-session sequences and demands a ResetAck.
@@ -230,6 +377,18 @@ func (c *ClientSession) handleQLinkFrame(body []byte) error {
 		return c.sendQLinkAckLikeFrame(QLinkCmdAck)
 
 	case QLinkCmdAction:
+		// Sequence bookkeeping: each Action increments the peer's send
+		// sequence (which we read as inSeq). ACK it FIRST, before the
+		// IsHabitatAction filter below — EVERY Action frame the C64 sends
+		// must be acknowledged, even flow-control / non-Habitat mnemonics
+		// (e.g. the handshake packet the client emits right after a region
+		// change). If we skip the ack for an ignored action, the C64's
+		// send window wedges on that un-acked frame and it can never send
+		// another command.
+		c.qlinkMu.Lock()
+		c.qlinkInSeq = frame.SendSeq
+		c.qlinkMu.Unlock()
+
 		if !frame.IsHabitatAction() {
 			mnemonic := string(frame.Payload[:minOf(2, len(frame.Payload))])
 			// The C64 client sends an "SS" flow-control action inside
@@ -250,11 +409,6 @@ func (c *ClientSession) handleQLinkFrame(body []byte) error {
 			c.log.Debug().Str("mnemonic", mnemonic).Msg("Ignoring non-Habitat QLink action")
 			return nil
 		}
-		// Sequence bookkeeping: each Action increments the peer's send
-		// sequence (which we read as inSeq).
-		c.qlinkMu.Lock()
-		c.qlinkInSeq = frame.SendSeq
-		c.qlinkMu.Unlock()
 
 		// Reconstruct the Habitat packet shape that handleClientMessage
 		// expects: a buffer where len(packetPrefix)+8 bytes precede the
@@ -320,6 +474,7 @@ func (c *ClientSession) sendQLinkHabitatAction(habitatPkt []byte) error {
 	c.qlinkMu.Lock()
 	c.qlinkOutSeq = QLinkIncSeq(c.qlinkOutSeq)
 	frame := EncodeQLinkFrame(QLinkCmdAction, c.qlinkOutSeq, c.qlinkInSeq, escaped)
+	c.qlinkRecordSentLocked(c.qlinkOutSeq, frame) // buffer for retransmission
 	c.qlinkMu.Unlock()
 	return c.writeQLinkFrameBytes(frame)
 }
@@ -364,6 +519,12 @@ func (c *ClientSession) sendSplitHabitatAction(data []byte) error {
 		if err := c.sendQLinkHabitatAction(pkt); err != nil {
 			return err
 		}
+		// Pace chunks so the busy-rendering C64 isn't fed a continuous
+		// 9600-baud firehose it can't keep up with. No delay after the last
+		// chunk. (Safe to sleep here: no mutex is held between chunks.)
+		if start+size < len(payload) {
+			time.Sleep(qlinkChunkPacing)
+		}
 	}
 	return nil
 }
@@ -390,6 +551,7 @@ func (c *ClientSession) sendHabitatFlowControl(m0, m1 byte) error {
 	c.qlinkMu.Lock()
 	c.qlinkOutSeq = QLinkIncSeq(c.qlinkOutSeq)
 	frame := EncodeQLinkFrame(QLinkCmdAction, c.qlinkOutSeq, c.qlinkInSeq, payload)
+	c.qlinkRecordSentLocked(c.qlinkOutSeq, frame) // buffer for retransmission
 	c.qlinkMu.Unlock()
 	return c.writeQLinkFrameBytes(frame)
 }
