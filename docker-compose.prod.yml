@@ -31,7 +31,7 @@ services:
     ports:
       - "80:1701"
       - "1987:1987"
-      - "5005:5005"
+      - "127.0.0.1:5005:5005"
       # Habiproxy on 127.0.0.1:2018 — same as base. Re-asserted here
       # so the prod overlay's port list (which compose REPLACES rather
       # than merges) doesn't accidentally drop it.

@@ -19,7 +19,7 @@ services:
       - path: .env
         required: false
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     # Production persists data via host bind mount to ./data/mongo (set in
     # docker-compose.prod.yml). In dev / CI we use an anonymous volume —
     # nothing to chown, nothing to clean up.
@@ -72,7 +72,7 @@ services:
     ports:
       - "1701:1701"
       - "1987:1987"
-      - "5005:5005"
+      - "127.0.0.1:5005:5005"
       # Habiproxy (JSON pass-through to elko on :9000) — exposed to
       # 127.0.0.1 so the host-side bridge_v2 process can dial it. Bound
       # to loopback only; nothing external should hit habiproxy directly.
