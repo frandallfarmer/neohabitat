@@ -1043,9 +1043,14 @@ Server sends SequenceError → Client retransmits from 0x15
 
 ### Source Files
 
-**NeoHabitat Bridge**:
-- **bridge/Habitat2ElkoBridge.js**: Main protocol bridge implementation
-- **bridge/hcode.js**: Message definitions, class mappings, encoders
+**NeoHabitat Bridge** (`bridge_v2/` — Go rewrite, current):
+- **bridge_v2/bridge/qlink_session.go**: Q-Link framing, retransmit, session lifecycle
+- **bridge_v2/bridge/server_ops.go**: Elko→binary message encoders (replaces hcode.js)
+- **bridge_v2/bridge/schema.go**: Elko JSON message schema and polymorphic unmarshalling
+
+> The original JavaScript bridge (`bridge/Habitat2ElkoBridge.js`, `bridge/hcode.js`) was
+> removed in 2026 after being fully superseded by `bridge_v2`. It remains available in
+> git history prior to commit 42d1b5d5.
 
 **Q-Link Reloaded Server**:
 - **qlink/src/main/java/org/jbrain/qlink/connection/QConnection.java**: Q-Link connection handler
@@ -1078,6 +1083,8 @@ Server sends SequenceError → Client retransmits from 0x15
 
 ## Version History
 
+- **2026-06-02**: Removed `bridge/` (original JavaScript bridge). Superseded by
+  `bridge_v2` (Go rewrite). Git history preserved.
 - **2025-12-29**: Comprehensive protocol documentation compiled from:
   - NeoHabitat bridge source code analysis
   - Q-Link Reloaded server implementation
