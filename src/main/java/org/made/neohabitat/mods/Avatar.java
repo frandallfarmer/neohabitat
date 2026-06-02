@@ -1013,9 +1013,13 @@ public class Avatar extends Container implements UserMod {
     public void TOUCH(User from,  OptInteger target) {
         Avatar curAvatar = avatar(from);
         HabitatMod targetMod = current_region().noids[target.value(0)];
+        if (targetMod == null || targetMod.HabitatClass() != CLASS_AVATAR) {
+            send_reply_error(from);
+            return;
+        }
         Avatar victim = (Avatar) targetMod;
-        
-        if (amAGhost) { 
+
+        if (amAGhost) {
             illegal_request(from, "Avatar commands not allowed when a ghost.");
             return;
         }
