@@ -148,7 +148,7 @@ func init() {
 			buf.AddInt(*o.Target)
 			buf.AddInt(*o.Offset)
 			buf.AddInt(*o.ArgCount)
-			buf.AddInt(*o.Value)
+			buf.AddIntSlice(o.Value)
 			return false
 		},
 	}

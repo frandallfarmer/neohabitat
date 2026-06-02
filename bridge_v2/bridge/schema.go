@@ -104,7 +104,7 @@ type ElkoMessage struct {
 	Type                 string         `json:"type,omitempty"`
 	UpOrDown             *uint8         `json:"up_or_down,omitempty"`
 	User                 *string        `json:"user,omitempty"`
-	Value                *uint8         `json:"value,omitempty"`
+	Value                []uint8        `json:"value,omitempty"`
 	WishMessage          *string        `json:"WISH_MESSAGE,omitempty"`
 	Who                  *uint8         `json:"who,omitempty"`
 	Why                  *string        `json:"why,omitempty"`
@@ -170,6 +170,7 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 		ContainerNoid json.RawMessage `json:"container_noid,omitempty"`
 		Noid          json.RawMessage `json:"noid,omitempty"`
 		Target        json.RawMessage `json:"target,omitempty"`
+		Value         json.RawMessage `json:"value,omitempty"`
 		*elkoMessage
 	}
 	aux := envelope{
@@ -240,6 +241,30 @@ func (m *ElkoMessage) UnmarshalJSON(text []byte) error {
 		return err
 	} else if narrowed != nil {
 		m.Target = narrowed
+	}
+
+	// `value` is polymorphic on the FIDDLE_$ wire format: a bare integer
+	// for a single-arg fiddle and a JSON array for multi-arg fiddles
+	// (HabitatMod.compose_fiddle_msg @ HabitatMod.java:2207-2211 — gr_state
+	// vs. customize / token-denomination / posted-text). The scalar shape
+	// parsed fine into the old *uint8 field, but the array shape failed the
+	// whole-message unmarshal and the broadcast was silently dropped. Peel
+	// it and accept either shape as a flat []uint8 so the FIDDLE_$ encoder
+	// can emit all argCount value bytes.
+	if len(aux.Value) > 0 && string(aux.Value) != "null" {
+		if aux.Value[0] == '[' {
+			var arr []uint8
+			if err := json.Unmarshal(aux.Value, &arr); err != nil {
+				return fmt.Errorf("parsing elko message value array: %w", err)
+			}
+			m.Value = arr
+		} else {
+			var scalar uint8
+			if err := json.Unmarshal(aux.Value, &scalar); err != nil {
+				return fmt.Errorf("parsing elko message value: %w", err)
+			}
+			m.Value = []uint8{scalar}
+		}
 	}
 
 	return nil
