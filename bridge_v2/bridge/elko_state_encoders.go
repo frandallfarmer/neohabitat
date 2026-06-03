@@ -72,7 +72,7 @@ func init() {
 		}
 		buf.AddInt(u8or(state.TerrainType, 0))
 		// Sets default Region lighting at 1 if no lighting specified.
-		buf.AddInt(u8or(state.Lighting, 1))
+		buf.AddInt(i8or(state.Lighting, 1))
 		buf.AddInt(u8or(state.Depth, 32))
 		buf.AddInt(u8or(state.RegionClass, 0))
 		// WhoAmI is the avatar-noid placeholder; the legacy bridge writes

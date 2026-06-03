@@ -164,6 +164,15 @@ func u8or(p *uint8, def uint8) uint8 {
 	return *p
 }
 
+// i8or returns uint8(*p), or def if p is nil. Used for signed fields (e.g.
+// lighting) where -1 is valid and must be encoded as 0xFF on the wire.
+func i8or(p *int8, def uint8) uint8 {
+	if p == nil {
+		return def
+	}
+	return uint8(*p)
+}
+
 // i32sor returns *p, or def if p is nil. For slice fields like Picture/Pattern/
 // ASCII/Custom that the original JS bridge guards with `state.field || []`.
 func i32sor(p *[]int32, def []int32) []int32 {

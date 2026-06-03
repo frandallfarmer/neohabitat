@@ -342,7 +342,7 @@ type HabitatMod struct {
 	LampState       *uint8    `json:"lamp_state,omitempty" bson:"lamp_state,omitempty"`
 	LastArrivedIn   *string   `json:"lastArrivedIn,omitempty" bson:"lastArrivedIn,omitempty"`
 	LastPage        *uint8    `json:"last_page,omitempty" bson:"last_page,omitempty"`
-	Lighting        *uint8    `json:"lighting,omitempty" bson:"lighting,omitempty"`
+	Lighting        *int8     `json:"lighting,omitempty" bson:"lighting,omitempty"`
 	LowerLeftX      *uint8    `json:"lower_left_x,omitempty" bson:"lower_left_x,omitempty"`
 	LowerRightX     *uint8    `json:"lower_right_x,omitempty" bson:"lower_right_x,omitempty"`
 	MagicType       *uint8    `json:"magic_type,omitempty" bson:"magic_type,omitempty"`
