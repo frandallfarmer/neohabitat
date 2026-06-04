@@ -18,7 +18,7 @@
     "marked": "^18.0.3",
     "mongo": "^0.1.0",
     "mongodb": "^7.2",
-    "morgan": "^1.10.1",
+    "morgan": "^1.11.0",
     "serve-favicon": "^2.5.0",
     "server-send-events": "0.0.6",
     "supervisor": "^0.12.0",
