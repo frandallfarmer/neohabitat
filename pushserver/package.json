@@ -20,7 +20,6 @@
     "mongodb": "^7.2",
     "morgan": "^1.11.0",
     "serve-favicon": "^2.5.0",
-    "server-send-events": "0.0.8",
     "supervisor": "^0.12.0",
     "winston": "^3.19.0",
     "ws": "^8.21.0",
