@@ -264,8 +264,8 @@ Dangerous/one-shot — use only in clearly-in-character mischief:
 - sex_change(ref): toggle body type via Sex_changer device.
 
 Movement and bearing:
-- walk_to_exit(direction): cardinal exit. The scene's "Exits" line
-  tells you which directions exist.
+- walk_to_exit(direction): UP/RIGHT/DOWN/LEFT screen exit. The scene's
+  "Exits" line tells you which screen directions have exits.
 - walk_to_avatar(name): close in on a named avatar.
 - walk_to_coords(x, y, facing): precise spot.
 - face_direction(LEFT|RIGHT|FORWARD|BEHIND).
@@ -290,17 +290,19 @@ function looksLikeBot(name) {
 // the local name to keep the rest of this file unchanged.
 const { sanitizeForC64 } = require('../lib/sage/petscii')
 
-// Cardinal direction the speaker is asking sage to go, or null if the
-// utterance isn't a movement request. Matches "go north", "head east",
-// "walk south", "let's head west", etc., AND lone direction words when
-// they're the whole utterance ("north!", "south?"). Avoids false
-// positives like "northwest is great" by requiring a movement verb OR
-// the direction to be the dominant content.
+// Parse a movement request from player speech and return a direction word
+// (screen: UP/RIGHT/DOWN/LEFT, or compass: NORTH/EAST/SOUTH/WEST), or null.
+// walkToExit() accepts both — screen directions use known coords and derive
+// the neighbor via orientation; compass directions derive both from orientation.
 function parseMovementRequest(text) {
   if (!text) return null
   const t = text.toLowerCase().trim()
-  const verb = /\b(go|head|move|walk|take|let'?s\s+go|come|follow)\b/
+  const verb = /\b(go|head|move|walk|exit|take|let'?s\s+go|come|follow)\b/
   const dirs = [
+    { name: 'UP',    re: /\bup(ward)?\b/ },
+    { name: 'RIGHT', re: /\bright(ward)?\b/ },
+    { name: 'DOWN',  re: /\bdown(ward)?\b/ },
+    { name: 'LEFT',  re: /\bleft(ward)?\b/ },
     { name: 'NORTH', re: /\bnorth(ward)?\b/ },
     { name: 'SOUTH', re: /\bsouth(ward)?\b/ },
     { name: 'EAST',  re: /\beast(ward)?\b/ },
@@ -308,13 +310,8 @@ function parseMovementRequest(text) {
   ]
   for (const { name, re } of dirs) {
     if (!re.test(t)) continue
-    // "go north" / "head east" / "let's go south"
     if (verb.test(t)) return name
-    // Bare direction word as the whole utterance (with optional
-    // trailing punctuation).
-    if (/^[a-z]+[\s!?.,]*$/.test(t) && t.replace(/[^a-z]/g, '') === name.toLowerCase()) {
-      return name
-    }
+    if (/^[a-z]+[\s!?.,]*$/.test(t) && t.replace(/[^a-z]/g, '') === name.toLowerCase()) return name
   }
   return null
 }
@@ -805,8 +802,7 @@ SageBot.on('SPEAK$', async (bot, msg) => {
     if (dir) {
       const exits = Object.keys(SageBot.neighbors || {}).filter((d) => SageBot.neighbors[d])
       log.info('%s asked to move %s; exits available: %s', speakerName, dir, exits.join(','))
-      const exitIdx = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 }[dir]
-      const hasExit = SageBot.neighbors && SageBot.neighbors[exitIdx] && SageBot.neighbors[exitIdx].length > 0
+      const hasExit = SageBot.canExit(dir)
       const reply = hasExit
         ? `Heading ${dir.toLowerCase()}, ${speakerName}.`
         : `No way out to the ${dir.toLowerCase()} from here, ${speakerName}.`

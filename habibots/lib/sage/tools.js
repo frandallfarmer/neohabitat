@@ -36,11 +36,11 @@ const TOOLS = [
   // ── movement / navigation ────────────────────────────────────────
   {
     name: 'walk_to_exit',
-    description: 'Walk to a region exit and transit to the adjacent region. Use only when someone explicitly asks you to leave or follow them in a direction.',
+    description: 'Walk to a region exit and transit to the adjacent region. Use only when someone explicitly asks you to leave or follow them. The scene\'s Exits line shows SCREEN(COMPASS)→ref — always pass the SCREEN direction (UP/RIGHT/DOWN/LEFT). If someone says "go north", look up which screen direction is labeled NORTH and use that.',
     input_schema: {
       type: 'object',
       properties: {
-        direction: { type: 'string', enum: ['NORTH', 'EAST', 'SOUTH', 'WEST'] },
+        direction: { type: 'string', enum: ['UP', 'RIGHT', 'DOWN', 'LEFT'] },
       },
       required: ['direction'],
     },

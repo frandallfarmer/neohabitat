@@ -44,10 +44,10 @@ WalkerBot.on('connected', (bot) => {
 
 var stage = 0
 var path = [
-  'EAST',
-  'NORTH',
-  'WEST',
-  'SOUTH',
+  'DOWN',
+  'RIGHT',
+  'UP',
+  'LEFT',
 ]
 
 WalkerBot.on('enteredRegion', (bot, me) => {

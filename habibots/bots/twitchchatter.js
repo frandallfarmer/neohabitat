@@ -77,7 +77,7 @@ twitchIRC.addListener('message', function(from, to, message) {
   console.log('%s => %s: %s', from, to, message)
   var op = message.toUpperCase().split(" ")
   switch(op[0]) {
-    case "GO": //i.e. GO NORTH, SOUTH, etc
+    case "GO": //i.e. GO RIGHT/LEFT/UP/DOWN or NORTH/SOUTH/EAST/WEST
       TwitchBot.walkToExit(op[1])
       break
     case "POSTURE": //i.e. POSTURE WAVE

@@ -44,6 +44,10 @@ const CardinalToNeighborIndex = {
   WEST:  3,
 }
 
+// Screen-direction labels in clockwise order: index matches the k value
+// used in walkToExit (UP=0, RIGHT=1, DOWN=2, LEFT=3).
+const SCREEN_DIRS = ['UP', 'RIGHT', 'DOWN', 'LEFT']
+
 const DefaultHabiBotConfig = {
   shouldReconnect: true,
 }
@@ -982,9 +986,10 @@ class HabiBot {
    * regions, useful when determining an exit when calling walkToExit.
    */
   travelableDirections() {
+    const o = this.orientation || 0
     return this.neighbors
-      .map((neighbor, i) => neighbor !== '' ? NeighborIndexToCardinal[i] : null)
-      .filter(cardinal => cardinal !== null)
+      .map((neighbor, i) => neighbor !== '' ? SCREEN_DIRS[(i + 5 - o) % 4] : null)
+      .filter(d => d !== null)
   }
   
   /**
@@ -1029,40 +1034,67 @@ class HabiBot {
   }
 
   /**
-   * Walks the bot's Avatar to an exit adjacent to its current region.
-   * @param {String} direction to walk to: NORTH, SOUTH, EAST, or WEST
+   * Walks the bot's Avatar to a screen-side exit in the current region.
+   * @param {String} direction  UP | RIGHT | DOWN | LEFT (screen position of the exit)
    * @returns {Promise}
+   *
+   * Screen coordinates are fixed regardless of region orientation:
+   *   UP    → walkTo(80,  160, 0)   RIGHT → walkTo(156, 142, 1)
+   *   DOWN  → walkTo(80,  128, 0)   LEFT  → walkTo(0,   142, 1)
+   *
+   * The NEWREGION direction value must account for orientation so the
+   * server's formula (direction + orientation + 2) % 4 indexes the right
+   * neighbors slot. With k = screen-dir index (UP=0,RIGHT=1,DOWN=2,LEFT=3):
+   *   newRegion((k - 2*orientation + 9) % 4)
+   *
+   * Exit existence is checked via map index (k - orientation + 7) % 4.
    */
   walkToExit(direction) {
-    // bridge_v2 owns JSON-passthrough region transitions: when the
-    // server emits changeContext (in response to NEWREGION), the
-    // bridge auto-reconnects to elko and re-enters the new context
-    // for us. The bot just needs to send NEWREGION and wait for the
-    // new region's `make` storm to arrive on the same socket.
-    //
-    // Pre-bridge_v2 code here also called .then(() => this.gotoContext(target))
-    // — that was needed for the old in-elko-container Node bridge
-    // which required the client to explicitly re-enter. With
-    // bridge_v2, the followup gotoContext was a NOP at best and a
-    // noid-table-burner at worst (created a duplicate user-session
-    // in elko racing the bridge's auto-enter).
-    const idx = CardinalToNeighborIndex[direction]
-    const target = this.neighbors[idx]
-    if (target === undefined || target === null || target.length < 1) {
+    const o = this.orientation || 0
+    // Screen-direction coords indexed by k (UP=0, RIGHT=1, DOWN=2, LEFT=3).
+    const WALK = [[80, 160, 0], [156, 142, 1], [80, 128, 0], [0, 142, 1]]
+    const COMPASS_MAP = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 }
+
+    let k
+    const si = SCREEN_DIRS.indexOf(direction)
+    if (si >= 0) {
+      // Screen direction: position is known, orientation determines neighbor.
+      k = si
+    } else if (COMPASS_MAP[direction] !== undefined) {
+      // Compass direction: orientation determines both screen side and neighbor.
+      k = (COMPASS_MAP[direction] + 5 - o) % 4
+    } else {
+      return Promise.reject(`Bot given invalid direction: ${direction}`)
+    }
+
+    const mapIdx = (k + o + 3) % 4
+    const target = this.neighbors && this.neighbors[mapIdx]
+    if (!target || target.length < 1) {
       return Promise.reject(`Could not find a region to the: ${direction}`)
     }
-    switch(direction) {
-      case "NORTH":
-        return this.walkTo(80, 160, 0).then(() => this.newRegion(1))
-      case "EAST":
-        return this.walkTo(156, 142, 1).then(() => this.newRegion(2))
-      case "SOUTH":
-        return this.walkTo(80, 128, 0).then(() => this.newRegion(3))
-      case "WEST":
-        return this.walkTo(0, 142, 1).then(() => this.newRegion(0))
-      default:
-        return Promise.reject(`Bot given invalid direction: ${direction}`)
+    const [x, y, how] = WALK[k]
+    return this.walkTo(x, y, how).then(() => this.newRegion((k + 1) % 4))
+  }
+
+  /**
+   * Returns true if there is an exit in the given direction (screen or compass).
+   * Uses the same orientation logic as walkToExit so callers don't duplicate it.
+   */
+  canExit(direction) {
+    const o = this.orientation || 0
+    const COMPASS_MAP = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 }
+    const si = SCREEN_DIRS.indexOf(direction)
+    let k
+    if (si >= 0) {
+      k = si
+    } else if (COMPASS_MAP[direction] !== undefined) {
+      k = (COMPASS_MAP[direction] + 5 - o) % 4
+    } else {
+      return false
     }
+    const mapIdx = (k + o + 3) % 4
+    const target = this.neighbors && this.neighbors[mapIdx]
+    return !!(target && target.length > 0)
   }
 
   /**
@@ -1129,6 +1161,7 @@ class HabiBot {
     this.avatars = {}
     this.neighbors = {}
     this.realm = {}
+    this.orientation = 0
   }
 
   onDisconnect() {
@@ -1259,6 +1292,7 @@ class HabiBot {
       if (o.obj.mods[0].type === 'Region') {
         this.neighbors = o.obj.mods[0].neighbors
         this.realm = o.obj.mods[0].realm
+        this.orientation = o.obj.mods[0].orientation || 0
       }
     }
 

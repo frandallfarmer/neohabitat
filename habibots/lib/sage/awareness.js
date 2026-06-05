@@ -130,8 +130,9 @@ function getInventory(bot) {
   return items
 }
 
-// Cardinal-index → name. HabiBot stores neighbors as a 4-element array
-// keyed by index 0..3 → NORTH/EAST/SOUTH/WEST.
+// Screen-direction labels, clockwise: UP=0, RIGHT=1, DOWN=2, LEFT=3.
+const SCREEN_DIRS = ['UP', 'RIGHT', 'DOWN', 'LEFT']
+// Geographic compass labels indexed by neighbors array slot (MAP_NORTH=0, etc.)
 const CARDINALS = ['NORTH', 'EAST', 'SOUTH', 'WEST']
 
 function currentRegionRef(bot) {
@@ -164,12 +165,18 @@ function describeWorld(bot) {
   const lines = []
   lines.push(`Region: ${regionName(bot)} (${ref || 'unknown'})`)
 
-  // Exits — index → cardinal → target context ref. neighbors[i] is "" if
-  // there's no exit that direction.
+  // Exits labeled by screen position (UP/RIGHT/DOWN/LEFT), accounting for
+  // orientation. neighbors[i] is a geographic slot; (i + orientation + 1) % 4
+  // maps it to the screen direction where it visually appears.
+  const orientation = bot.orientation || 0
   const exits = []
-  for (let i = 0; i < CARDINALS.length; i++) {
+  for (let i = 0; i < SCREEN_DIRS.length; i++) {
     const target = bot.neighbors && bot.neighbors[i]
-    if (target) exits.push(`${CARDINALS[i]}→${target}`)
+    if (target) {
+      const screenDir = SCREEN_DIRS[(i + 5 - orientation) % 4]
+      const compass = CARDINALS[i]
+      exits.push(`${screenDir}(${compass})→${target}`)
+    }
   }
   lines.push(`Exits: ${exits.length ? exits.join(', ') : 'none'}`)
 
