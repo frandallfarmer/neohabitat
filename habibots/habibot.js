@@ -1110,16 +1110,11 @@ class HabiBot {
   }
   
   walkToAvatar(avatar) {
-    var curPos = avatar.mods[0]
-    var how = 0
-    if(curPos.x <= 80) {
-      curPos.x = curPos.x + 20
-    }
-    else {
-      curPos.x = curPos.x - 20
-      how = 1
-    }
-    return this.walkTo(curPos.x, curPos.y, how)
+    const ax = avatar.mods[0].x
+    const ay = avatar.mods[0].y
+    const how = ax <= 80 ? 0 : 1
+    const tx = ax <= 80 ? ax + 20 : ax - 20
+    return this.walkTo(tx, ay, how)
   }
 
   // Private methods:
@@ -1293,6 +1288,16 @@ class HabiBot {
         this.neighbors = o.obj.mods[0].neighbors
         this.realm = o.obj.mods[0].realm
         this.orientation = o.obj.mods[0].orientation || 0
+      }
+    }
+
+    // Another avatar walked — update their tracked position so walkToAvatar
+    // uses fresh coords instead of the frozen make-message snapshot.
+    if (o.op === 'WALK$') {
+      const obj = this.noids[o.noid]
+      if (obj && obj.mods && obj.mods[0]) {
+        obj.mods[0].x = o.x
+        obj.mods[0].y = o.y
       }
     }
 
