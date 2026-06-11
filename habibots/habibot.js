@@ -10,6 +10,7 @@ const Queue = require('promise-queue')
 
 const constants = require('./constants')
 const util = require('./util')
+const { HabitatWorld } = require('../habiworld')
 
 
 const DirectionToPoseId = {
@@ -81,6 +82,11 @@ class HabiBot {
       enteredRegion: [],
       msg: [],
     }
+
+    this.world = new HabitatWorld()
+    this.world.on('unhandledDelta', (msg) => {
+      log.debug('habiworld: unhandled delta op=%s noid=%d', msg.op, msg.noid)
+    })
 
     this.clearState()
 
@@ -1157,6 +1163,7 @@ class HabiBot {
     this.neighbors = {}
     this.realm = {}
     this.orientation = 0
+    if (this.world) this.world.clear()
   }
 
   onDisconnect() {
@@ -1204,6 +1211,8 @@ class HabiBot {
     if (o === null) {
       return;
     }
+
+    this.world.apply(o)
 
     // Region transition. Elko sends `{type: "changeContext", context: ..., immediate: ...}`
     // when the avatar's location changes (e.g. after a NEWREGION walk). The

@@ -81,48 +81,29 @@ function objectsByType(bot) {
 // pre-region-entry edge cases). Before any make has arrived for our
 // avatar, both names are undefined and getInventory returns [] cleanly.
 function getInventory(bot) {
-  const myFullRef = bot.names && bot.names.ME
-  const myShortRef = bot.names && bot.names.USER
-  if (!myFullRef && !myShortRef) return []
+  // Use the live world model so GET$/PUT$ deltas since region-entry are
+  // reflected (fixes the "empty hands while holding a flashlight" bug
+  // family — issues #545/#564). bot.world is always present (constructed
+  // in HabiBot constructor); world.me is null until our make has arrived.
+  if (!bot.world || !bot.world.me) return []
+  const records = bot.world.inventory(bot.world.me.noid)
   const items = []
-  for (const noid in bot.noids) {
-    const o = bot.noids[noid]
-    if (!o || !o.mods || !o.mods[0]) continue
-    if (!o._container) continue
-    // Match either the full session ref OR the short user-NAME prefix.
-    // Elko sets `to` to the full ref on make, but accepting the short
-    // one too guards against any lookup that happens via names.USER.
-    if (o._container !== myFullRef &&
-        !(myShortRef && o._container.startsWith(myShortRef + '-'))) {
-      continue
-    }
-    // Exclude the avatar itself — it's also "contained" by the user-ref
-    // in some flows but it's not a pocket item.
-    if (o.mods[0].type === 'Avatar' || o.mods[0].type === 'Ghost') continue
+  for (const r of records) {
+    if (r.type === 'Avatar' || r.type === 'Ghost') continue
     const item = {
-      ref: o.ref,
-      type: o.mods[0].type,
-      name: o.name || o.mods[0].type,
-      noid: o.mods[0].noid,
-      // `y` on a pocket item doubles as its container slot index
-      // (HANDS=5, HEAD=6, etc.). Surface it so callers can tell the
-      // in-HANDS item from numbered pocket-slot items.
-      slot: o.mods[0].y,
+      ref: r.ref,
+      type: r.type,
+      name: r.name,
+      noid: r.noid,
+      slot: r.mod.y,
     }
-    // Tokens carry their face value in denom_lo + denom_hi*256 (16-bit
-    // little-endian). Surface as `amount` so describeWorld and the
-    // pay_to_avatar tool know what's spendable without re-decoding.
     if (item.type === 'Tokens') {
-      const lo = o.mods[0].denom_lo || 0
-      const hi = o.mods[0].denom_hi || 0
+      const lo = r.mod.denom_lo || 0
+      const hi = r.mod.denom_hi || 0
       item.amount = lo + hi * 256
     }
-    // Paper's gr_state distinguishes blank pocket page from unread mail
-    // (LETTER state, see mods/Paper.java). Surface it so describeWorld
-    // can flag "you have unread mail" without sage needing to call READ
-    // on every pocket paper to check.
     if (item.type === 'Paper') {
-      item.grState = o.mods[0].gr_state || 0
+      item.grState = r.mod.gr_state || 0
       item.paperState = PAPER_STATE_LABEL[item.grState] || `state-${item.grState}`
     }
     items.push(item)
