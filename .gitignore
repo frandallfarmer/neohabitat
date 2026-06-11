@@ -5,6 +5,7 @@
 .dbshell
 lib/
 !habibots/lib/
+!habiworld/lib/
 log/
 node_modules/
 pushserver/node_modules/

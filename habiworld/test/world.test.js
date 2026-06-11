@@ -298,3 +298,16 @@ test('SEXCHANGE$ toggles avatar body-type bit', () => {
   w.apply({ op: 'SEXCHANGE$', noid: 99, AVATAR_NOID: 21 })
   assert.equal(w.get(21).mod.orientation, before) // toggle back
 })
+
+test('deleting an avatar cascades to its pocket contents (no ghost items)', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Hand Naibor the knick-knack: us GET, then observers' view of the give.
+  w.apply({ op: 'GET$', noid: 17, target: 14, how: 1 })
+  w.apply({ op: 'GRABFROM$', noid: 21, avatar_noid: 17 })
+  assert.equal(w.holding(21).noid, 14)
+  // Naibor leaves the region: his avatar AND the item he carries go.
+  w.apply({ op: 'delete', to: NAIBOR_REF })
+  assert.equal(w.get(21), null)
+  assert.equal(w.get(14), null) // would orphan without the cascade
+})

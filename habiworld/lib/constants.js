@@ -1,0 +1,54 @@
+/* jshint esversion: 8 */
+
+'use strict'
+
+// Shared protocol constants. Sources: the C64 object layout
+// (sources/c64/Main/class_equates.m in the MADE repo) and elko's
+// Constants.java, which preserved the same values.
+
+// Avatar container slot indices.
+const MAIL_SLOT = 4
+const HANDS = 5
+const HEAD = 6
+
+// Container noid 0 = the region itself (Main/actions.m:768).
+const THE_REGION = 0
+
+// open_flags bits: Openable.java / Constants.java.
+// OPEN_BIT | UNLOCKED_BIT is the "open and unlocked" state set by OPEN$/OPENCONTAINER$.
+const OPEN_BIT     = 1
+const UNLOCKED_BIT = 2
+
+// Habitat world-coordinate screen width (x runs 0..159). Used to scale
+// walk-animation waits in the action recipes.
+const SCREEN_WIDTH = 160
+
+// FIDDLE_$ pokes an object field by its offset in the C64 in-memory
+// object struct. Offsets from Constants.java C64_*_OFFSET; the field
+// names are the JSON mod fields the same data lands in at make time.
+const FIDDLE_FIELDS = {
+  7: 'x',           // C64_XPOS_OFFSET
+  8: 'y',           // C64_YPOS_OFFSET
+  9: 'orientation', // C64_ORIENT_OFFSET
+  10: 'gr_state',   // C64_GR_STATE_OFFSET
+  // 11 (C64_CONTAINED_OFFSET) is handled specially — container change
+  // 15 (C64_TOKEN_DENOM_OFFSET) is handled specially — two-byte denom
+  // 26 (C64_CUSTOMIZE_OFFSET) is handled specially — custom[] array
+}
+const FIDDLE_CONTAINED_OFFSET = 11
+const FIDDLE_TOKEN_DENOM_OFFSET = 15
+const FIDDLE_CUSTOMIZE_OFFSET = 26
+
+module.exports = {
+  MAIL_SLOT,
+  HANDS,
+  HEAD,
+  THE_REGION,
+  OPEN_BIT,
+  UNLOCKED_BIT,
+  SCREEN_WIDTH,
+  FIDDLE_FIELDS,
+  FIDDLE_CONTAINED_OFFSET,
+  FIDDLE_TOKEN_DENOM_OFFSET,
+  FIDDLE_CUSTOMIZE_OFFSET,
+}

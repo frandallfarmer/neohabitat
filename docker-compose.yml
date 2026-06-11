@@ -92,7 +92,8 @@ services:
   bots:
     image: ghcr.io/frandallfarmer/neohabitat-bots:latest
     build:
-      context: ./habibots
+      context: .
+      dockerfile: habibots/Dockerfile
     restart: unless-stopped
     environment:
       # bridge_v2 lives on the host, not in this docker network. The

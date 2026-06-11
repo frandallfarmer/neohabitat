@@ -820,10 +820,12 @@ function putDown(bot, ref, containerNoid, x, y, orientation) {
   return bot.putObj(ref, containerNoid || 0, x || 80, y || 144, orientation || 0)
 }
 
-// GET op (pick_up). Same rationale as putDown — habibot.js doesn't ship
-// a getObj helper, so we send the raw op.
-function getObj(bot, ref, containerNoid) {
-  return bot.send({ op: 'GET', to: ref, containerNoid: containerNoid || 0 })
+// GET op (used by the compose_and_send_mail flow; pick_up goes through
+// bot.performAction('GET') which adds the goToAndGet choreography).
+// Elko's GET takes no parameters beyond `to` — the old containerNoid
+// field drew an "ignored unknown parameter" warning on every send.
+function getObj(bot, ref) {
+  return bot.send({ op: 'GET', to: ref })
 }
 
 // ESP whisper to a specific avatar. Elko's ESP model: SPEAK with
@@ -924,29 +926,44 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── object manipulation ─────────────────────────────────────
-      case 'pick_up':
-        await withTimeout(getObj(bot, args.ref, args.noid), 10_000, 'pick_up')
-        return { ok: true }
-      case 'put_down': {
-        // Elko's generic_PUT enforces `holding(avatar, item)` — i.e.
-        // the item being PUT must be in the avatar's HANDS slot. If it
-        // isn't, elko silently replies err:1 and the item stays exactly
-        // where it was. Sage's habibot.send() resolves on TCP write,
-        // not on elko's reply, so historically this dispatch returned
-        // ok:true even when the PUT was rejected — which is why sage
-        // would confidently claim to have dropped something it never
-        // actually let go of.
-        //
-        // Pre-flight: find the item in our inventory, confirm it's in
-        // HANDS. If not, return a structured error so Claude sees the
-        // failure and either picks it up first or stops lying about
-        // having put it down.
-        const inv = awareness.getInventory(bot)
-        const item = inv.find((it) => it.ref === args.ref)
-        if (!item) {
-          return { ok: false, error: `no item with ref ${args.ref} in your pocket` }
+      case 'pick_up': {
+        // habiworld GET recipe (generic_goToAndGet.m): hands-empty
+        // precondition, walk to the item, send GET, and apply the
+        // pickup to the world model on the success reply — awareness
+        // reflects the item in HANDS immediately.
+        const got = await withTimeout(bot.performAction('GET', { noid: args.noid }), 20_000, 'pick_up')
+        if (!got.ok) {
+          const why = {
+            'hands-full': 'your HANDS are full — put_down or give away the held item first',
+            'no-such-object': `no object with noid ${args.noid} in this region`,
+            'server-denied': 'the server refused the GET (fixed in place, out of reach, or held by someone else)',
+            'not-in-region': 'not in a region yet',
+          }[got.reason] || got.reason
+          return { ok: false, error: why }
         }
-        if (item.slot !== awareness.HANDS_SLOT) {
+        return { ok: true }
+      }
+      case 'put_down': {
+        // habiworld PUT recipe (generic_goToAndDropAt.m): the recipe
+        // itself enforces the in-HANDS precondition from the world
+        // model, walks to the drop spot, and applies the drop on the
+        // success reply. We keep two Claude-facing guards: a ref
+        // sanity check (PUT drops whatever is in HANDS, so refuse if
+        // that isn't the item Claude named) and the explicit
+        // pocket-slot hint when nothing is held.
+        const held = bot.world && bot.world.me && bot.world.holding(bot.world.me.noid)
+        if (held && args.ref && held.ref !== args.ref) {
+          return {
+            ok: false,
+            error: `you are holding ${held.ref}, not ${args.ref} — PUT drops whatever is in HANDS`,
+          }
+        }
+        if (!held) {
+          const inv = awareness.getInventory(bot)
+          const item = inv.find((it) => it.ref === args.ref)
+          if (!item) {
+            return { ok: false, error: `no item with ref ${args.ref} in your pocket` }
+          }
           return {
             ok: false,
             error: `item is in pocket slot ${item.slot}, not HANDS. ` +
@@ -954,14 +971,35 @@ async function executeAction(toolUse, bot, ctx) {
               `then put_down will work. Do NOT tell anyone you put it down — you haven\'t.`,
           }
         }
-        await withTimeout(putDown(bot, args.ref, args.container_noid, args.x, args.y, args.orientation), 10_000, 'put_down')
+        if (args.container_noid) {
+          // putInto a container — not yet a habiworld recipe; legacy path.
+          await withTimeout(putDown(bot, args.ref, args.container_noid, args.x, args.y, args.orientation), 10_000, 'put_down')
+          return { ok: true }
+        }
+        const put = await withTimeout(bot.performAction('PUT', { x: args.x || 80, y: args.y || 144 }), 20_000, 'put_down')
+        if (!put.ok) {
+          return { ok: false, error: `server refused the PUT (${put.reason})` }
+        }
         return { ok: true }
       }
-      case 'give_to_avatar':
-        // item_noid is informational; elko ignores it. The actual item
-        // transferred is whatever's in giver's HANDS slot at call time.
-        await withTimeout(bot.giveObject(args.item_noid, args.recipient_noid), 10_000, 'give_to_avatar')
+      case 'give_to_avatar': {
+        // habiworld HAND recipe: walks to the recipient first (the
+        // goToAnd* pattern) and moves the item out of our HANDS in the
+        // world model on the success reply — so sage no longer believes
+        // it still holds what it just gave away. item_noid remains
+        // informational; the server transfers whatever is in HANDS.
+        const gave = await withTimeout(bot.performAction('HAND', { noid: args.recipient_noid }), 20_000, 'give_to_avatar')
+        if (!gave.ok) {
+          const why = {
+            'hands-empty': 'your HANDS are empty — pick_up the item first, then give it',
+            'no-such-avatar': `no avatar with noid ${args.recipient_noid} here`,
+            'server-denied': 'the server refused the HAND (recipient busy or out of reach)',
+            'not-in-region': 'not in a region yet',
+          }[gave.reason] || gave.reason
+          return { ok: false, error: why }
+        }
         return { ok: true }
+      }
       case 'pay_to_avatar': {
         // Find sage's Tokens item; PAYTO is sent ON the Tokens object.
         const inv = awareness.getInventory(bot)
@@ -1095,7 +1133,7 @@ async function executeAction(toolUse, bot, ctx) {
           }
         }
         if (chosen.slot !== awareness.HANDS_SLOT) {
-          await withTimeout(getObj(bot, chosen.ref, chosen.noid), 10_000, 'compose_and_send_mail.pick_up')
+          await withTimeout(getObj(bot, chosen.ref), 10_000, 'compose_and_send_mail.pick_up')
         }
         const text = `to: ${recipient}\n${body}`
         await withTimeout(bot.writePaper(chosen.ref, text), 10_000, 'compose_and_send_mail.write')
