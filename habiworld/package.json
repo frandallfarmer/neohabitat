@@ -1,0 +1,18 @@
+{
+  "name": "habiworld",
+  "version": "0.1.0",
+  "description": "Client-side Habitat world model: applies the elko/neohabitat JSON message stream (make storm + delta ops) to an in-memory object table, faithful to the original C64 client semantics.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "habitat",
+    "neohabitat",
+    "elko"
+  ],
+  "license": "MIT"
+}
