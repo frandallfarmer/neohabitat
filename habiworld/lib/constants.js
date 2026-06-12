@@ -14,6 +14,18 @@ const HEAD = 6
 // Container noid 0 = the region itself (Main/actions.m:768).
 const THE_REGION = 0
 
+// User-verb slots in every class's action table (action_head.i:178-185).
+// Slots 8+ are class-specific: host-message handlers for avatar/region
+// (slot number == host message number), internal chain targets elsewhere.
+const ACTION_DO      = 0
+const ACTION_RDO     = 1 // "reverse do" — the in-hand item's depends target
+const ACTION_GO      = 2
+const ACTION_STOP    = 3
+const ACTION_GET     = 4
+const ACTION_PUT     = 5
+const ACTION_TALK    = 6
+const ACTION_DESTROY = 7
+
 // open_flags bits: Openable.java / Constants.java.
 // OPEN_BIT | UNLOCKED_BIT is the "open and unlocked" state set by OPEN$/OPENCONTAINER$.
 const OPEN_BIT     = 1
@@ -44,6 +56,14 @@ module.exports = {
   HANDS,
   HEAD,
   THE_REGION,
+  ACTION_DO,
+  ACTION_RDO,
+  ACTION_GO,
+  ACTION_STOP,
+  ACTION_GET,
+  ACTION_PUT,
+  ACTION_TALK,
+  ACTION_DESTROY,
   OPEN_BIT,
   UNLOCKED_BIT,
   SCREEN_WIDTH,

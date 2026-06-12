@@ -150,10 +150,11 @@ test('HAND walks to the recipient and transfers the held item to them', async ()
   assert.ok(result.ok)
   assert.deepEqual(calls.walks, [{ x: 100, y: 140 }]) // Naibor's spot
   assert.deepEqual(calls.sends, [{ op: 'HAND', to: NAIBOR_REF }])
-  // Two waits: the walk animation, then the 1s hand_out/hand_back chore
-  // (avatar_GRABFROM.m's asyncAnimationWait).
-  assert.equal(calls.waits.length, 2)
-  assert.equal(calls.waits[1], 1000)
+  // One wait: the walk animation. avatar_put.m brackets the send with
+  // hand_out/hand_back chores but does not block on them — the earlier
+  // extra 1s wait here came from avatar_GRABFROM.m, which is the
+  // RECEIVER's chore, not the giver's.
+  assert.equal(calls.waits.length, 1)
   // The giver-side fix for "sage still thinks it holds the Changomatic":
   assert.equal(w.holding(17), null)
   const held = w.holding(21)
