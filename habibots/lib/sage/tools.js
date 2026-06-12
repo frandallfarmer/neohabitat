@@ -31,7 +31,7 @@
 const log = require('winston')
 const awareness = require('./awareness')
 const { sanitizeForC64 } = require('./petscii')
-const { ACTION_DO, ACTION_GO } = require('../../../habiworld').constants
+const { ACTION_DO, ACTION_GO, ACTION_TALK } = require('../../../habiworld').constants
 
 const TOOLS = [
   // ── movement / navigation ────────────────────────────────────────
@@ -68,6 +68,38 @@ const TOOLS = [
         facing: { type: 'integer', enum: [0, 1], description: '0 faces right, 1 faces left.' },
       },
       required: ['x', 'y'],
+    },
+  },
+  {
+    name: 'walk_to_object',
+    description: 'Walk to a specific object in the region using its class\'s GO behavior (same as ' +
+      'pointing at the object and pressing GO on the C64). Handles doors (walks to the adjacent ' +
+      'standing spot) and all other objects. Use pass_through=true ONLY for an already-open door ' +
+      'when you want to walk THROUGH it and enter the region beyond — this requests a region change.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'Noid of the object to walk to.' },
+        pass_through: { type: 'boolean', description: 'true to pass through an open door. Default false.' },
+      },
+      required: ['noid'],
+    },
+  },
+  {
+    name: 'talk_to_object',
+    description: 'TALK to an object (ACTION_TALK / slot 6 in the class table). SageBot walks adjacent ' +
+      'first, then sends the text. Class-specific effects: Teleport — say the destination address ' +
+      '(e.g. "HOME", "CENTRAL-1", a custom port code) to teleport there; the booth must be activated ' +
+      'first (activate it with do_object after paying with pay_machine). ' +
+      'Jukebox — words broadcast to the room. Magic_lamp (genie out) — make a wish. ' +
+      'Most other objects — ordinary region broadcast.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'Noid of the object to talk to.' },
+        text: { type: 'string', description: 'What to say to the object.' },
+      },
+      required: ['noid', 'text'],
     },
   },
   {
@@ -588,13 +620,14 @@ const TOOLS = [
   },
   {
     name: 'spray_can',
-    description: 'SPRAY paint a body part using a Spray_can in HANDS. limb selects which part (see ' +
-      'Spray_can.java for the body-part codes; 0 = default). Visually changes your avatar.',
+    description: 'SPRAY paint a body part using a Spray_can in HANDS. Limb codes: ' +
+      '0=LEGS, 1=TORSO (default if omitted), 2=ARMS, 3=FACE (only works if wearing a Head). ' +
+      'To paint all parts, call once per limb. Visually changes your avatar.',
     input_schema: {
       type: 'object',
       properties: {
         ref: { type: 'string' },
-        limb: { type: 'integer', description: 'Body-part code (0 for default).' },
+        limb: { type: 'integer', description: '0=LEGS, 1=TORSO, 2=ARMS, 3=FACE.' },
       },
       required: ['ref'],
     },
@@ -914,6 +947,24 @@ async function executeAction(toolUse, bot, ctx) {
       case 'walk_to_coords':
         await withTimeout(bot.walkTo(args.x, args.y, args.facing || 0), 30_000, 'walkTo')
         return { ok: true }
+      case 'walk_to_object': {
+        const walked = await withTimeout(
+          bot.performVerb(ACTION_GO, args.noid, args.pass_through ? { passThrough: true } : {}),
+          30_000, 'walk_to_object')
+        return walked.ok ? { ok: true } : { ok: false, error: walked.reason }
+      }
+      case 'talk_to_object': {
+        // Walk adjacent first (GO), then TALK — matches the teleport flow
+        // where adjacency is required before ZAPTO routes through.
+        const go = await withTimeout(
+          bot.performVerb(ACTION_GO, args.noid),
+          30_000, 'talk_to_object.walk')
+        if (!go.ok) return { ok: false, error: `could not walk to object: ${go.reason}` }
+        const talked = await withTimeout(
+          bot.performVerb(ACTION_TALK, args.noid, { text: args.text || '' }),
+          15_000, 'talk_to_object.talk')
+        return talked.ok ? { ok: true } : { ok: false, error: talked.reason }
+      }
       case 'face_direction':
         await withTimeout(bot.faceDirection(args.direction), 5_000, 'faceDirection')
         return { ok: true }
@@ -1047,20 +1098,20 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── containers ──────────────────────────────────────────────
+      // DO on a door/container dispatches generic_adjacentOpenClose which
+      // walks adjacent, waits for the animation, then sends OPEN/CLOSE.
       case 'open': {
         const opened = await withTimeout(
-          bot.performAction('OPEN', { noid: args.noid }),
-          20_000, 'open')
+          bot.performVerb(ACTION_DO, args.noid),
+          30_000, 'open')
         return opened.ok ? { ok: true } : { ok: false, error: opened.reason }
       }
       case 'close': {
         const closed = await withTimeout(
-          bot.performAction('CLOSE', { noid: args.noid }),
-          20_000, 'close')
+          bot.performVerb(ACTION_DO, args.noid),
+          30_000, 'close')
         return closed.ok ? { ok: true } : { ok: false, error: closed.reason }
       }
-      // legacy close path
-        return { ok: true }
 
       // ── avatar state ────────────────────────────────────────────
       // GO at furniture is the C64's sit/stand toggle

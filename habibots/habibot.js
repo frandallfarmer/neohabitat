@@ -1149,6 +1149,19 @@ class HabiBot {
       balloon: (text) => {
         if (text) log.debug('balloon [%s]: %s', self.username, text)
       },
+      // Region transit for pass-through doors and sky/wall exits.
+      // The behavior has already walked to the exit; just send NEWREGION.
+      // Direction math mirrors walkToExit's formula: newRegionDirection =
+      //   (k - 2*orientation + 9) % 4   where k = up=0, right=1, down=2, left=3.
+      changeRegion: (direction) => {
+        const DIR = { up: 0, right: 1, down: 2, left: 3 }
+        const k = DIR[String(direction).toLowerCase()]
+        if (k === undefined) return Promise.resolve({ ok: false, reason: 'unknown-direction' })
+        const o = self.orientation || 0
+        const newRegionDirection = (k - 2 * o + 9) % 4
+        return self.sendForReply({ op: 'NEWREGION', to: 'ME', direction: newRegionDirection })
+          .then(() => ({ ok: true }))
+      },
     }
   }
 

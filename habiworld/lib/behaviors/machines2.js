@@ -70,7 +70,7 @@ async function teleport_put(ctx) {
 async function teleport_talk(ctx) {
   if (ctx.isAdjacent() && ctx.pointed.mod.state === 1) {
     const reply = await ctx.send({
-      op: 'ZAPTO', to: ctx.pointed.ref, text: ctx.args.text || '',
+      op: 'ZAPTO', to: ctx.pointed.ref, port_number: ctx.args.text || '',
     })
     if (succeeded(reply)) {
       ctx.sound('TELEPORT_DEPARTING', ctx.pointed.noid)
