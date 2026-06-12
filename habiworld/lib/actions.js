@@ -36,7 +36,7 @@
 // failures (full hands, server denial); those are outcomes, not errors.
 // Wire/transport failures from the callbacks propagate as rejections.
 
-const { HANDS, THE_REGION, SCREEN_WIDTH } = require('./constants')
+const { HANDS, THE_REGION, SCREEN_WIDTH, OPEN_BIT, UNLOCKED_BIT } = require('./constants')
 
 // How long a walk animation "plays" for a given distance: the C64
 // blocked on animation_wait_bit until the avatar finished walking. We
@@ -46,7 +46,7 @@ function walkWaitMillis(from, to) {
   if (!from || from.x === undefined) return 1000
   const dist = Math.hypot(to.x - from.x, to.y - from.y)
   if (dist < 1) return 0
-  return Math.min(4000, Math.ceil((dist / (SCREEN_WIDTH / 4)) * 1000))
+  return Math.min(8000, Math.ceil((dist / (SCREEN_WIDTH / 4)) * 2000))
 }
 
 // doMyAction ACTION_GO + waitWhile animation_wait_bit, as one step:
@@ -86,6 +86,44 @@ function gotoCoords(world, noid) {
 // err:1, a denied one err:0.
 function succeeded(reply) {
   return !!(reply && reply.err)
+}
+
+// Port of get_object_walk_xy (Main/walkto.m) for door-type objects.
+// The C64 stored walk-standing offsets in the prop image header at
+// image_walk_offset (byte 4): door1 has [0+right, 32+left, 255] — i.e.
+// stand at obj.x + 0 when approaching from the left (left door frame),
+// or obj.x + 32 when approaching from the right (door is 32px wide).
+// orientation bit 0 = flipped (mirrored), which swaps sides and negates
+// the offset exactly as the assembly does.
+function adjacentCoords(world, noid) {
+  const obj = world.get(noid)
+  if (!obj || obj.mod.x === undefined) return null
+  const me = world.me
+  const myX = me ? me.mod.x : 80
+  const flipped = !!(obj.mod.orientation & 1)
+  // pick side: 0 = left frame (obj.x + 0), 1 = right frame (obj.x + 32)
+  let goRight = myX > obj.mod.x
+  if (flipped) goRight = !goRight
+  const rawOffset = goRight ? 32 : 0
+  const xOffset = flipped ? -rawOffset : rawOffset
+  return {
+    x: Math.max(8, Math.min(152, obj.mod.x + xOffset)),
+    y: obj.mod.y,
+  }
+}
+
+// Scan the region for a walkable surface object: Street or Ground first,
+// then a Flat/Trapezoid/Super_trapezoid with flat_type == 2 (GROUND_FLAT).
+// THROW requires a ground-surface noid as the `target` parameter — the
+// server rejects throws onto avatars, walls, sky, etc.
+function findThrowSurface(world) {
+  for (const o of world.objects.values()) {
+    if (o.containerRef !== world.region.ref) continue
+    const t = o.type
+    if (t === 'Street' || t === 'Ground') return o
+    if ((t === 'Flat' || t === 'Trapezoid' || t === 'Super_trapezoid') && o.mod.flat_type === 2) return o
+  }
+  return null
 }
 
 const ACTIONS = {
@@ -155,6 +193,79 @@ const ACTIONS = {
     await cb.animationWait(1000)
     return { ok: true }
   },
+
+  // Avatar THROW — fling the in-HANDS item toward a spot or avatar.
+  // Unlike GET/PUT/HAND, the avatar stays in place (no goTo): the C64
+  // threw from wherever the avatar stood. The server needs a ground-
+  // surface noid as `target` (Class_Street, Class_Ground, or a GROUND_FLAT
+  // Flat/Trapezoid); passing an avatar noid or x<8 / x>152 is rejected.
+  async THROW(world, opts, cb) {
+    const me = world.me
+    if (!me) return { ok: false, reason: 'not-in-region' }
+    const item = world.holding(me.noid)
+    if (!item) return { ok: false, reason: 'hands-empty' }
+
+    let targetX = opts.x != null ? opts.x : 80
+    let targetY = opts.y != null ? opts.y : 144
+
+    if (opts.noid) {
+      const target = world.get(opts.noid)
+      if (target) {
+        targetX = target.mod.x
+        targetY = target.mod.y
+      }
+    }
+
+    // Clamp x to the server's accepted range: generic_THROW rejects x<8 or x>152.
+    targetX = Math.max(8, Math.min(152, targetX))
+
+    const surface = findThrowSurface(world)
+    if (!surface) return { ok: false, reason: 'no-surface' }
+
+    const reply = await cb.send({
+      op: 'THROW',
+      to: item.ref,
+      target: surface.noid,
+      x: targetX,
+      y: targetY,
+    })
+    if (!succeeded(reply)) return { ok: false, reason: 'server-denied' }
+    world._changeContainers(item.noid, THE_REGION, targetX, targetY)
+    return { ok: true }
+  },
+
+  // generic_adjacentOpenClose — walk adjacent to the door (get_object_walk_xy
+  // gives the standing spot; see adjacentCoords), wait out the walk, send OPEN.
+  // The world model updates via the OPEN$ broadcast which arrives before the
+  // reply, so no manual state mutation is needed here.
+  async OPEN(world, opts, cb) {
+    const me = world.me
+    if (!me) return { ok: false, reason: 'not-in-region' }
+    const obj = world.get(opts.noid)
+    if (!obj) return { ok: false, reason: 'no-such-object' }
+    const spot = adjacentCoords(world, opts.noid)
+    if (spot) await goTo(world, spot, cb)
+    const reply = await cb.send({ op: 'OPEN', to: obj.ref })
+    if (!succeeded(reply)) return { ok: false, reason: 'server-denied' }
+    // Don't rely on OPEN$ broadcast — the sender may be excluded from neighbors.
+    obj.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
+    return { ok: true }
+  },
+
+  // generic_adjacentOpenClose (close branch) — same walk pattern as OPEN.
+  async CLOSE(world, opts, cb) {
+    const me = world.me
+    if (!me) return { ok: false, reason: 'not-in-region' }
+    const obj = world.get(opts.noid)
+    if (!obj) return { ok: false, reason: 'no-such-object' }
+    const spot = adjacentCoords(world, opts.noid)
+    if (spot) await goTo(world, spot, cb)
+    const reply = await cb.send({ op: 'CLOSE', to: obj.ref })
+    if (!succeeded(reply)) return { ok: false, reason: 'server-denied' }
+    // Don't rely on CLOSE$ broadcast — apply locally, preserving UNLOCKED_BIT.
+    obj.mod.open_flags = (obj.mod.open_flags || 0) & ~OPEN_BIT
+    return { ok: true }
+  },
 }
 
 // Single entry point: run one named action recipe against the world.
@@ -174,4 +285,4 @@ async function perform(world, verb, opts, cb) {
   return action(world, opts || {}, callbacks)
 }
 
-module.exports = { perform, ACTIONS, gotoCoords, walkWaitMillis }
+module.exports = { perform, ACTIONS, gotoCoords, adjacentCoords, walkWaitMillis }

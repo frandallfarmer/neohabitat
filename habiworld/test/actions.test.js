@@ -5,7 +5,7 @@
 const { test } = require('node:test')
 const assert = require('node:assert')
 const { HabitatWorld, constants, actions } = require('../index')
-const { HANDS, THE_REGION } = constants
+const { HANDS, THE_REGION, OPEN_BIT } = constants
 
 // Same fixture as world.test.js: us (noid 17), Naibor (noid 21), a
 // knick-knack in our pocket slot 0, a flashlight on the ground (noid 30).
@@ -80,7 +80,7 @@ test('GET walks to the item, waits out the walk, sends GET, and lands it in HAND
   // Walk-animation wait scaled by distance: me (12,142) → (60,140) is
   // ~48 units ≈ 1.2 quarter-screens ≈ 1.2s; always within (0, 4000].
   assert.equal(calls.waits.length, 1)
-  assert.ok(calls.waits[0] > 1000 && calls.waits[0] <= 4000)
+  assert.ok(calls.waits[0] > 2000 && calls.waits[0] <= 8000)
   assert.deepEqual(calls.sends, [{ op: 'GET', to: 'item-flashlight-1' }])
   // Our avatar's tracked position followed the walk.
   assert.equal(w.me.mod.x, 60)
@@ -172,6 +172,68 @@ test('HAND refuses when the target is not an avatar', async () => {
   assert.equal(calls.sends.length, 0)
 })
 
+// Helper: add a Street to the world so THROW has a valid surface target.
+function addStreet(world) {
+  world.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-street-1', name: 'Street',
+      mods: [{ type: 'Street', noid: 50, x: 80, y: 160, orientation: 0, gr_state: 0 }],
+    },
+  })
+}
+
+test('THROW stays in place, uses ground surface noid, lands held item in region', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addStreet(w)
+  w.apply({ op: 'GET$', noid: 17, target: 14, how: 1 }) // knick-knack to HANDS
+  const { calls, cb } = recorder()
+  const result = await actions.perform(w, 'THROW', { x: 100, y: 144 }, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.walks.length, 0) // no walk — throw from current spot
+  assert.deepEqual(calls.sends, [{ op: 'THROW', to: 'item-knick-1', target: 50, x: 100, y: 144 }])
+  assert.equal(w.holding(17), null)
+  const item = w.get(14)
+  assert.equal(item.containerRef, REGION_REF)
+  assert.equal(item.mod.x, 100)
+})
+
+test('THROW at avatar uses their position as landing coords', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addStreet(w)
+  w.apply({ op: 'GET$', noid: 17, target: 14, how: 1 })
+  const { calls, cb } = recorder()
+  const result = await actions.perform(w, 'THROW', { noid: 21 }, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.walks.length, 0)
+  // Naibor is at x:100 — must be clamped to [8,152], no clamp needed here
+  assert.equal(calls.sends[0].x, 100)
+  assert.equal(calls.sends[0].target, 50)
+})
+
+test('THROW clamps x to [8,152]', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addStreet(w)
+  w.apply({ op: 'GET$', noid: 17, target: 14, how: 1 })
+  const { calls, cb } = recorder()
+  await actions.perform(w, 'THROW', { x: 0, y: 144 }, cb) // x:0 would be server-rejected
+  assert.equal(calls.sends[0].x, 8)
+})
+
+test('THROW refuses with empty hands', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addStreet(w)
+  const { calls, cb } = recorder()
+  const result = await actions.perform(w, 'THROW', { x: 80, y: 144 }, cb)
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'hands-empty')
+  assert.equal(calls.sends.length, 0)
+})
+
 test('GET on an item inside a container walks to the outermost container', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
@@ -195,4 +257,86 @@ test('GET on an item inside a container walks to the outermost container', async
   assert.ok(result.ok)
   assert.deepEqual(calls.walks, [{ x: 90, y: 130 }]) // the box, not the paper's slot coords
   assert.equal(w.holding(17).noid, 41)
+})
+
+// ── OPEN / CLOSE (adjacentCoords + goTo) ────────────────────────────────────
+
+// Helper: add a door to the world at a given position.
+function addDoor(world, noid, x, orientation, open_flags = 0) {
+  world.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: `item-door-${noid}`, name: 'Door',
+      mods: [{ type: 'Door', noid, x, y: 128, orientation, gr_state: 0, open_flags }],
+    },
+  })
+}
+
+test('OPEN walks adjacent (right side for left-wall door) then sends OPEN', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Left-wall door at x=16, not flipped: avatar at x=12 is to the LEFT,
+  // so goRight=false (myX <= obj.x) → stand at door.x + 0 = 16.
+  // After clamp: 16.
+  addDoor(w, 60, 16, 0, 0)
+  const { calls, cb } = recorder()
+  const result = await actions.perform(w, 'OPEN', { noid: 60 }, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.walks.length, 1)
+  assert.equal(calls.walks[0].x, 16) // left frame — avatar was already to the left
+  assert.deepEqual(calls.sends, [{ op: 'OPEN', to: 'item-door-60' }])
+})
+
+test('OPEN walks to right frame when avatar is to the right of the door', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Door at x=16, avatar at x=12 is LEFT; move avatar right first via WALK$
+  w.apply({ op: 'WALK$', noid: 17, x: 80, y: 142, how: 0 })
+  addDoor(w, 60, 16, 0, 0)
+  const { calls, cb } = recorder()
+  await actions.perform(w, 'OPEN', { noid: 60 }, cb)
+  assert.equal(calls.walks[0].x, 48) // right frame: 16 + 32 = 48
+})
+
+test('OPEN updates world model open_flags on success', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addDoor(w, 60, 16, 0, 0)  // starts closed
+  const { cb } = recorder()
+  const result = await actions.perform(w, 'OPEN', { noid: 60 }, cb)
+  assert.ok(result.ok)
+  assert.equal(w.get(60).mod.open_flags & OPEN_BIT, OPEN_BIT)
+})
+
+test('CLOSE walks adjacent then sends CLOSE', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addDoor(w, 60, 16, 0, OPEN_BIT)  // start open
+  const { calls, cb } = recorder()
+  const result = await actions.perform(w, 'CLOSE', { noid: 60 }, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.walks.length, 1)
+  assert.deepEqual(calls.sends, [{ op: 'CLOSE', to: 'item-door-60' }])
+})
+
+test('CLOSE clears OPEN_BIT from world model on success', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  addDoor(w, 60, 16, 0, OPEN_BIT)  // starts open
+  const { cb } = recorder()
+  const result = await actions.perform(w, 'CLOSE', { noid: 60 }, cb)
+  assert.ok(result.ok)
+  assert.equal(w.get(60).mod.open_flags & OPEN_BIT, 0)
+})
+
+test('adjacentCoords flipped door: right-wall door (orientation=1) stands 32px to the left', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Flipped door at x=128. Avatar at x=12 is to the left.
+  // goRight = (12 > 128) = false; flipped → goRight = true; rawOffset=32; xOffset=-32
+  // walk to 128 - 32 = 96
+  addDoor(w, 60, 128, 1, 0)
+  const { calls, cb } = recorder()
+  await actions.perform(w, 'OPEN', { noid: 60 }, cb)
+  assert.equal(calls.walks[0].x, 96)
 })

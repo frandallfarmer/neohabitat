@@ -1060,7 +1060,7 @@ async function interactTick() {
         }
         await withTimeout(SageBot.sitOrstand(1, mod.noid), 10_000, 'sitOrstand')
       } else if (choice.kind === 'open') {
-        await withTimeout(SageBot.openDoor(objRef), 10_000, 'openDoor')
+        await withTimeout(SageBot.performAction('OPEN', { noid: mod.noid }), 20_000, 'openDoor')
       } else if (choice.kind === 'get') {
         // Full goToAndGet choreography: walk over, GET, world updated
         // on the success reply. (The old raw send also passed a bogus

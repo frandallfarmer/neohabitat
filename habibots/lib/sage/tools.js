@@ -248,24 +248,24 @@ const TOOLS = [
   // ── containers / doors ───────────────────────────────────────────
   {
     name: 'open',
-    description: 'Open a door, box, bag, chest, or other openable container in the room.',
+    description: 'Open a door, box, bag, chest, or other openable container in the room. SageBot will walk adjacent to it first.',
     input_schema: {
       type: 'object',
       properties: {
-        ref: { type: 'string' },
+        noid: { type: 'integer', description: 'Noid of the object to open, as shown in the scene.' },
       },
-      required: ['ref'],
+      required: ['noid'],
     },
   },
   {
     name: 'close',
-    description: 'Close a door, box, bag, chest, or other openable container.',
+    description: 'Close a door, box, bag, chest, or other openable container. SageBot will walk adjacent to it first.',
     input_schema: {
       type: 'object',
       properties: {
-        ref: { type: 'string' },
+        noid: { type: 'integer', description: 'Noid of the object to close, as shown in the scene.' },
       },
-      required: ['ref'],
+      required: ['noid'],
     },
   },
 
@@ -1025,11 +1025,19 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── containers ──────────────────────────────────────────────
-      case 'open':
-        await withTimeout(bot.openDoor(args.ref), 10_000, 'open')
-        return { ok: true }
-      case 'close':
-        await withTimeout(bot.closeDoor(args.ref), 10_000, 'close')
+      case 'open': {
+        const opened = await withTimeout(
+          bot.performAction('OPEN', { noid: args.noid }),
+          20_000, 'open')
+        return opened.ok ? { ok: true } : { ok: false, error: opened.reason }
+      }
+      case 'close': {
+        const closed = await withTimeout(
+          bot.performAction('CLOSE', { noid: args.noid }),
+          20_000, 'close')
+        return closed.ok ? { ok: true } : { ok: false, error: closed.reason }
+      }
+      // legacy close path
         return { ok: true }
 
       // ── avatar state ────────────────────────────────────────────
@@ -1143,9 +1151,12 @@ async function executeAction(toolUse, bot, ctx) {
       case 'ask_object':
         await withTimeout(bot.askObject(args.ref, args.text || ''), 10_000, 'ask_object')
         return { ok: true }
-      case 'throw_object':
-        await withTimeout(bot.throwObj(args.ref, args.target_noid, args.x, args.y), 10_000, 'throw_object')
-        return { ok: true }
+      case 'throw_object': {
+        const thrown = await withTimeout(
+          bot.performAction('THROW', { noid: args.target_noid || 0, x: args.x, y: args.y }),
+          20_000, 'throw_object')
+        return thrown.ok ? { ok: true } : { ok: false, error: thrown.reason }
+      }
 
       // ── devices ─────────────────────────────────────────────────
       case 'toggle_device':
