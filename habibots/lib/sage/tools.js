@@ -31,6 +31,7 @@
 const log = require('winston')
 const awareness = require('./awareness')
 const { sanitizeForC64 } = require('./petscii')
+const { ACTION_DO, ACTION_GO } = require('../../../habiworld').constants
 
 const TOOLS = [
   // ── movement / navigation ────────────────────────────────────────
@@ -269,10 +270,31 @@ const TOOLS = [
     },
   },
 
+  // ── the universal DO verb ────────────────────────────────────────
+  {
+    name: 'do_object',
+    description: 'Operate an object the way the original Habitat DO verb did — each kind of object ' +
+      'responds in its own way: a held Flashlight toggles, a Jukebox shows its next catalog page, a ' +
+      'Vendo machine cycles its display window, a Box/Bag/Chest opens or closes (walk up first happens ' +
+      'automatically), a Garbage_can flushes, held Drugs take a dose, a held Windup_toy winds, a held ' +
+      'Magic_lamp summons the genie, a held Paper/Book reads. SageBot walks to the object when the ' +
+      'verb requires it. Prefer the specific tools (open, pick_up...) when one exists; use this for ' +
+      'everything else.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'Noid of the object, as shown in the scene.' },
+        amount: { type: 'integer', description: 'Token amount, for money interactions.' },
+        text: { type: 'string', description: 'Words, for objects that take them.' },
+      },
+      required: ['noid'],
+    },
+  },
+
   // ── avatar state ─────────────────────────────────────────────────
   {
     name: 'sit_down',
-    description: 'Sit on a chair, couch, bench, bed, or hot tub in the room.',
+    description: 'Sit on a chair, couch, bench, bed, or hot tub in the room. SageBot walks to it first.',
     input_schema: {
       type: 'object',
       properties: {
@@ -1041,12 +1063,32 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── avatar state ────────────────────────────────────────────
-      case 'sit_down':
-        await withTimeout(bot.sitOrstand(1, args.noid), 10_000, 'sit_down')
-        return { ok: true }
-      case 'stand_up':
-        await withTimeout(bot.sitOrstand(0, 0), 10_000, 'stand_up')
-        return { ok: true }
+      // GO at furniture is the C64's sit/stand toggle
+      // (generic_goToFurniture): walks over, SITORSTAND, tracks the
+      // avatar's container so the world model knows we're seated.
+      case 'sit_down': {
+        const sat = await withTimeout(
+          bot.performVerb(ACTION_GO, args.noid), 30_000, 'sit_down')
+        return sat.ok ? { ok: true, posture: sat.posture } : { ok: false, error: sat.reason }
+      }
+      case 'stand_up': {
+        const me = bot.world.me
+        const seat = me && me.containerRef && me.containerRef !== bot.world.region.ref
+          ? bot.world.getByRef(me.containerRef) : null
+        if (!seat) return { ok: false, error: 'not-seated' }
+        const stood = await withTimeout(
+          bot.performVerb(ACTION_GO, seat.noid), 30_000, 'stand_up')
+        return stood.ok ? { ok: true } : { ok: false, error: stood.reason }
+      }
+      case 'do_object': {
+        const done = await withTimeout(
+          bot.performVerb(ACTION_DO, args.noid, {
+            amount: args.amount, text: args.text,
+          }), 30_000, 'do_object')
+        // Pass through whatever the behavior surfaced (read text, key
+        // numbers, catalog pages, detected flags...).
+        return done.ok ? done : { ok: false, error: done.reason }
+      }
       case 'discorporate':
         await withTimeout(bot.discorporate(), 10_000, 'discorporate')
         return { ok: true }
@@ -1159,11 +1201,24 @@ async function executeAction(toolUse, bot, ctx) {
       }
 
       // ── devices ─────────────────────────────────────────────────
-      case 'toggle_device':
-        await withTimeout(
-          args.on ? bot.deviceOn(args.ref) : bot.deviceOff(args.ref),
-          10_000, 'toggle_device')
-        return { ok: true }
+      // The C64 DO is a toggle; the tool promises on/off semantics, so
+      // check the tracked state first and only dispatch when it needs
+      // flipping. (Falls back to the legacy raw sends when the device
+      // isn't in the world model.)
+      case 'toggle_device': {
+        const dev = bot.world.getByRef(args.ref)
+        if (!dev) {
+          await withTimeout(
+            args.on ? bot.deviceOn(args.ref) : bot.deviceOff(args.ref),
+            10_000, 'toggle_device')
+          return { ok: true }
+        }
+        const isOn = !!(dev.mod.on || 0)
+        if (isOn === !!args.on) return { ok: true, note: 'already in that state' }
+        const flipped = await withTimeout(
+          bot.performVerb(ACTION_DO, dev.noid), 30_000, 'toggle_device')
+        return flipped.ok ? { ok: true } : { ok: false, error: flipped.reason }
+      }
 
       // ── apparel ─────────────────────────────────────────────────
       case 'wear_item':

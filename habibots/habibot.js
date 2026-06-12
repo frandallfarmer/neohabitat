@@ -10,7 +10,7 @@ const Queue = require('promise-queue')
 
 const constants = require('./constants')
 const util = require('./util')
-const { HabitatWorld, actions: worldActions } = require('../habiworld')
+const { HabitatWorld, actions: worldActions, dispatch: worldDispatch } = require('../habiworld')
 
 
 const DirectionToPoseId = {
@@ -1103,8 +1103,32 @@ class HabiBot {
    * @returns {Promise<{ok: boolean, reason: ?string}>}
    */
   performAction(verb, opts) {
+    return worldActions.perform(this.world, verb, opts, this.worldClient())
+  }
+
+  /**
+   * Class-dispatched verb, straight through habiworld's behavior table:
+   * the C64 user-verb slots (DO/RDO/GO/STOP/GET/PUT/TALK/DESTROY — use
+   * habiworld constants.ACTION_*). DO on a flashlight toggles it, GO on
+   * a chair sits (and stands), DO on a jukebox flips its catalog —
+   * whatever new.mud says the class does.
+   *
+   * @param {int} verb   action slot (constants.ACTION_*)
+   * @param {int} noid   target object noid
+   * @param {Object} args verb arguments (x/y, amount, text, itemNoid...)
+   * @returns {Promise<{ok: boolean, reason: ?string}>}
+   */
+  performVerb(verb, noid, args) {
+    return worldDispatch(this.world, verb, noid, args || {}, this.worldClient())
+  }
+
+  /**
+   * The client-callback set habiworld behaviors run against — shared by
+   * performAction and performVerb.
+   */
+  worldClient() {
     const self = this
-    return worldActions.perform(this.world, verb, opts, {
+    return {
       // Stand adjacent rather than on top of the target — same sidestep
       // offset walkToAvatar uses. The WALK reply carries the server-
       // confirmed destination; return it so the recipe can track our
@@ -1120,7 +1144,12 @@ class HabiBot {
       },
       send: (msg) => self.sendForReply(msg),
       animationWait: (ms) => self.animationWait(ms),
-    })
+      // Balloon text (read results, key numbers, oracle answers) is the
+      // bot's eyes — log it so sage's tool results can surface it.
+      balloon: (text) => {
+        if (text) log.debug('balloon [%s]: %s', self.username, text)
+      },
+    }
   }
 
   /**
