@@ -104,14 +104,33 @@ test('dispatch routes GET on an item through generic_goToAndGet', async () => {
   assert.equal(w.holding(17).noid, 30)
 })
 
-test('dispatch on an unported behavior fails loudly with the .m name', async () => {
+test('dispatch on an unported behavior fails loudly with the .m name', async (t) => {
+  // Find any class slot whose behavior hasn't been ported yet, so this
+  // test keeps working as the port advances (and retires itself once
+  // everything is ported).
+  let found = null
+  for (const entry of Object.values(classes.classes)) {
+    if (entry.typeName === 'Region') continue // Region mods aren't object records
+    entry.actions.forEach((name, slot) => {
+      if (!found && !behaviors[name]) found = { typeName: entry.typeName, slot, name }
+    })
+    if (found) break
+  }
+  if (!found) return t.skip('all behaviors ported')
+
   const w = new HabitatWorld()
   makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-unported-1', name: found.typeName,
+      mods: [{ type: found.typeName, noid: 90, x: 50, y: 140, orientation: 0, gr_state: 0 }],
+    },
+  })
   const { cb } = recorder()
-  // DO on an avatar → avatar_do, which is not ported yet.
-  const result = await dispatch(w, ACTION_DO, 21, {}, cb)
+  const result = await dispatch(w, found.slot, 90, {}, cb)
   assert.equal(result.ok, false)
-  assert.equal(result.reason, 'unported:avatar_do')
+  assert.equal(result.reason, `unported:${found.name}`)
 })
 
 test('dispatch on an unknown server-only type uses the default item profile', async () => {

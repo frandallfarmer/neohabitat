@@ -123,6 +123,16 @@ B.generic_broadcast = async (ctx) => {
   return { ok: true }
 }
 
+// ── region transit (client capability) ──────────────────────────────
+
+// Behaviors/GoToNewRegion.m: the region's 'go' — leave through an edge.
+B.GoToNewRegion = async (ctx) =>
+  ctx.changeRegion(ctx.args.direction !== undefined ? ctx.args.direction : 'up')
+
+// Behaviors/transit_region.m (region slot 8): host-commanded transit.
+B.transit_region = async (ctx) =>
+  ctx.changeRegion(ctx.args.direction !== undefined ? ctx.args.direction : 'up')
+
 // ── substantial ports (one file per .m) ─────────────────────────────
 
 B.generic_goToAndGet = require('./generic_goToAndGet')
@@ -132,5 +142,19 @@ B.generic_adjacentOpenClose = require('./generic_adjacentOpenClose')
 B.avatar_put = require('./avatar_put')
 B.avatar_get = require('./avatar_get')
 B.head_get = require('./head_get')
+
+// ── family modules (several related .m ports per file) ──────────────
+
+Object.assign(B,
+  require('./containers'),     // pickFrom/dropInto/openCloseContainer
+  require('./devices'),        // switches, lights, read, getMass
+  require('./magic'),          // doMagic, strike, shoot
+  require('./items'),          // key, tokens, paper, head, avatar do/talk
+  require('./furniture'),      // sit/stand, fill bottle at water
+  require('./consumables'),    // bottle, drugs, windup, book, gun, pay
+  require('./gadgets'),        // sensor, spray, shovel, changomatic, mailbox...
+  require('./machines'),       // coinOp, vendo, lamp, sex changer, grenade...
+  require('./machines2'),      // machine puts, stereo/tape, atm, teleport talk
+  require('./host_messages'))  // avatar/region slot 8+ delta delegates
 
 module.exports = B

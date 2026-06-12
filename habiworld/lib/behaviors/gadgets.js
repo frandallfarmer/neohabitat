@@ -1,0 +1,250 @@
+/* jshint esversion: 8 */
+
+'use strict'
+
+// Gadgets and tools — ports of:
+//   Behaviors/sensor_do.m / sensor_SCAN.m
+//   Behaviors/garbage_can_do.m / garbage_can_FLUSH.m
+//   Behaviors/spray_can_do.m / spray_can_SPRAY.m
+//   Behaviors/shovel_rdo.m / shovel_DIG.m
+//   Behaviors/hole_do.m
+//   Behaviors/changomatic_rdo.m / changomatic_CHANGE.m
+//   Behaviors/stun_gun_rdo.m
+//   Behaviors/mailbox_get.m / mailbox_MAILARRIVED.m
+//   Behaviors/generic_askOracle.m
+//   Behaviors/generic_enterOrExit.m
+//   Behaviors/generic_test.m
+
+const { ACTION_GO } = require('../constants')
+const { succeeded } = require('./kernel')
+
+// sensor_do.m: holding the sensor, MSG_SCAN; the reply says whether it
+// detected anything (blinking image if so).
+async function sensor_do(ctx) {
+  const sensor = ctx.pointed
+  if (!ctx.inHand || ctx.inHand.noid !== sensor.noid) return ctx.depends()
+  ctx.sound('SENSOR_SCANNING', sensor.noid)
+  ctx.newImage(sensor.noid, 1) // SENSOR_ON
+  const reply = await ctx.send({ op: 'SCAN', to: sensor.ref })
+  const detected = !!(reply && reply.err)
+  ctx.sound(detected ? 'SENSOR_FOUND_IT' : 'SENSOR_DIDNT_FIND_IT', sensor.noid)
+  ctx.newImage(sensor.noid, detected ? 2 : 0) // SENSOR_BLINKING / off
+  return { ok: true, detected: detected }
+}
+
+// sensor_SCAN.m (host): someone else's sensor scanned.
+async function sensor_SCAN(ctx) {
+  const detected = !!ctx.args.err
+  ctx.sound(detected ? 'SENSOR_FOUND_IT' : 'SENSOR_DIDNT_FIND_IT', ctx.pointed.noid)
+  ctx.newImage(ctx.pointed.noid)
+  return { ok: true }
+}
+
+// garbage_can_do.m: must be adjacent (punt to depends otherwise);
+// MSG_FLUSH and locally purge the can's contents.
+async function garbage_can_do(ctx) {
+  if (!ctx.isAdjacent()) return ctx.depends()
+  ctx.sound('GARBAGE_FLUSH', ctx.pointed.noid)
+  await ctx.send({ op: 'FLUSH', to: ctx.pointed.ref })
+  const world = ctx.world
+  world.contentsOf(ctx.pointed.noid).forEach((o) => world._deleteByNoid(o.noid))
+  return { ok: true }
+}
+
+// garbage_can_FLUSH.m (host): someone flushed it — purge locally.
+async function garbage_can_FLUSH(ctx) {
+  const world = ctx.world
+  ctx.sound('GARBAGE_FLUSH', ctx.pointed.noid)
+  world.contentsOf(ctx.pointed.noid).forEach((o) => world._deleteByNoid(o.noid))
+  return { ok: true }
+}
+
+// spray_can_do.m: holding the can, respray my avatar's body pattern.
+// The C64 passed which limb the cursor touched; bots pass args.limb
+// (default 0). The reply carries the new customize bytes.
+async function spray_can_do(ctx) {
+  const can = ctx.pointed
+  if (!ctx.inHand || ctx.inHand.noid !== can.noid) return ctx.beep('not-holding')
+  ctx.sound('SPRAY', can.noid)
+  const reply = await ctx.send({
+    op: 'SPRAY', to: can.ref, limb: ctx.args.limb !== undefined ? ctx.args.limb : 0,
+  })
+  if (!succeeded(reply)) return ctx.beep('server-denied')
+  if (ctx.actor && Array.isArray(ctx.actor.mod.custom)) {
+    if (reply.custom_0 !== undefined) ctx.actor.mod.custom[0] = reply.custom_0
+    if (reply.custom_1 !== undefined) ctx.actor.mod.custom[1] = reply.custom_1
+  }
+  return { ok: true }
+}
+
+// spray_can_SPRAY.m (host): someone got resprayed — apply their new
+// pattern bytes.
+async function spray_can_SPRAY(ctx) {
+  ctx.sound('SPRAY', ctx.pointed.noid)
+  const sprayee = ctx.world.get(ctx.args.SPRAY_SPRAYEE !== undefined
+    ? ctx.args.SPRAY_SPRAYEE : ctx.args.sprayee)
+  if (sprayee && Array.isArray(sprayee.mod.custom)) {
+    if (ctx.args.custom_0 !== undefined) sprayee.mod.custom[0] = ctx.args.custom_0
+    if (ctx.args.custom_1 !== undefined) sprayee.mod.custom[1] = ctx.args.custom_1
+  }
+  return { ok: true }
+}
+
+// shovel_rdo.m: dig at the subject — walk to it, bend over, MSG_DIG.
+// What the dig uncovers (if anything) arrives asynchronously.
+async function shovel_rdo(ctx) {
+  const shovel = ctx.pointed
+  if (ctx.subject) {
+    const spot = ctx.gotoCoords(ctx.subject.noid)
+    if (spot) {
+      await ctx.walkTo(spot.x, spot.y)
+      await ctx.waitWalkAnimation()
+    }
+  }
+  ctx.chore('bend_over')
+  ctx.sound('DIGGING', shovel.noid)
+  await ctx.send({ op: 'DIG', to: shovel.ref })
+  ctx.chore('bend_back')
+  return { ok: true }
+}
+
+// shovel_DIG.m (host): someone else dug — chores and sound only.
+async function shovel_DIG(ctx) {
+  ctx.sound('DIGGING', ctx.pointed.noid)
+  return { ok: true }
+}
+
+// hole_do.m: poking a hole with a shovel in hand opens/closes it via
+// the hole class's internal slot 8 (generic_adjacentOpenClose there);
+// anything else falls through to depends.
+async function hole_do(ctx) {
+  const inHand = ctx.inHand
+  if (!inHand || inHand.type !== 'Shovel') return ctx.depends()
+  const go = await ctx.doAction(ACTION_GO)
+  if (!go.ok) return ctx.beep(go.reason)
+  await ctx.waitWalkAnimation()
+  return ctx.doAction(8) // hole's internal open/close slot
+}
+
+// changomatic_rdo.m: zap the subject — MSG_CHANGE; success returns the
+// object's new orientation (turf repainting).
+async function changomatic_rdo(ctx) {
+  const wand = ctx.pointed
+  const target = ctx.subject
+  if (!target) return ctx.beep('no-target')
+  ctx.chore('shoot1')
+  ctx.sound('CHANGOMATIC', wand.noid)
+  const reply = await ctx.send({
+    op: 'CHANGE', to: wand.ref, target: target.noid,
+  })
+  ctx.chore('shoot2')
+  if (!succeeded(reply)) return ctx.beep('server-denied')
+  if (reply.orientation !== undefined) target.mod.orientation = reply.orientation
+  ctx.newImage(target.noid)
+  return { ok: true }
+}
+
+// changomatic_CHANGE.m (host): something got changed — apply the new
+// orientation. (deltas.js's CHANGE$ does the same; kept here for the
+// table slot.)
+async function changomatic_CHANGE(ctx) {
+  ctx.sound('CHANGOMATIC', ctx.pointed.noid)
+  const target = ctx.world.get(ctx.args.target)
+  if (target && ctx.args.orientation !== undefined) {
+    target.mod.orientation = ctx.args.orientation
+    ctx.newImage(target.noid)
+  }
+  return { ok: true }
+}
+
+// stun_gun_rdo.m: fire at the subject — only avatars are valid targets;
+// MSG_STUN, hit reaction on success.
+async function stun_gun_rdo(ctx) {
+  const gun = ctx.pointed
+  const victim = ctx.subject
+  ctx.chore('shoot1')
+  ctx.sound('STUN_GUN_FIRE', gun.noid)
+  ctx.chore('shoot2')
+  if (!victim || victim.type !== 'Avatar') {
+    ctx.sound('STUN_GUN_MISS', gun.noid)
+    return ctx.beep('no-such-avatar')
+  }
+  const reply = await ctx.send({ op: 'STUN', to: gun.ref, target: victim.noid })
+  if (!succeeded(reply)) {
+    ctx.sound('STUN_GUN_MISS', gun.noid)
+    return ctx.beep('missed')
+  }
+  ctx.sound('STUN_GUN_HIT', gun.noid)
+  ctx.newImage(victim.noid) // get_shot reaction
+  return { ok: true }
+}
+
+// mailbox_get.m: empty-handed, walk to the mailbox, MSG_READMAIL —
+// a letter lands in my hands (arrives as a make); the reply also says
+// whether more mail is waiting (flag image).
+async function mailbox_get(ctx) {
+  if (ctx.inHand) return ctx.beep('hands-full')
+  const box = ctx.pointed
+  const go = await ctx.doAction(ACTION_GO)
+  if (!go.ok) return ctx.beep(go.reason)
+  await ctx.waitWalkAnimation()
+  ctx.chore('hand_out')
+  const reply = await ctx.send({ op: 'READMAIL', to: box.ref })
+  ctx.chore('hand_back')
+  const moreMail = !!(reply && reply.moremail)
+  box.mod.mail_arrived = moreMail ? 1 : 0
+  ctx.newImage(box.noid)
+  if (!succeeded(reply)) return ctx.beep('no-mail')
+  ctx.sound('MAIL_OUT_OF_MAILBOX', box.noid)
+  return { ok: true, moreMail: moreMail }
+}
+
+// mailbox_MAILARRIVED.m (host): flag goes up.
+async function mailbox_MAILARRIVED(ctx) {
+  ctx.pointed.mod.mail_arrived = 1
+  ctx.newImage(ctx.pointed.noid)
+  return { ok: true }
+}
+
+// generic_askOracle.m: send the typed question to the oracle
+// (crystal ball / fountain). The answer comes back as object speech.
+async function generic_askOracle(ctx) {
+  if (!ctx.args.text) return ctx.beep('nothing-to-ask')
+  await ctx.send({ op: 'ASK', to: ctx.pointed.ref, text: ctx.args.text })
+  return { ok: true }
+}
+
+// generic_enterOrExit.m: walk to just inside the building/doorway
+// footprint (x+8, y+2 foregrounded) — the region change happens via
+// server WAITFOR/transit, not here.
+async function generic_enterOrExit(ctx) {
+  const o = ctx.pointed
+  await ctx.walkTo(o.mod.x + 8, (o.mod.y | 0x80) + 2)
+  return { ok: true }
+}
+
+// generic_test.m: fires raw message number 1 at the object — a debug
+// hook with no JSON op equivalent. Beep instead of inventing one.
+async function generic_test(ctx) {
+  return ctx.beep('debug-hook-not-ported')
+}
+
+module.exports = {
+  sensor_do,
+  sensor_SCAN,
+  garbage_can_do,
+  garbage_can_FLUSH,
+  spray_can_do,
+  spray_can_SPRAY,
+  shovel_rdo,
+  shovel_DIG,
+  hole_do,
+  changomatic_rdo,
+  changomatic_CHANGE,
+  stun_gun_rdo,
+  mailbox_get,
+  mailbox_MAILARRIVED,
+  generic_askOracle,
+  generic_enterOrExit,
+  generic_test,
+}

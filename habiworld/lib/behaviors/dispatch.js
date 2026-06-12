@@ -79,6 +79,13 @@ async function run(world, slot, pointed, args, client, parent) {
     run(world, verb, ctx.pointed,
       overrideArgs !== undefined ? overrideArgs : ctx.args, client, ctx)
 
+  // moveOb subject, pointed + issue_nested_command: re-dispatch a verb
+  // against a different object (head_do → DO my avatar, avatar_do →
+  // DO the held item, ...). The current pointed becomes subject.
+  ctx.doActionOn = (verb, record, overrideArgs) =>
+    run(world, verb, record,
+      overrideArgs !== undefined ? overrideArgs : ctx.args, client, ctx)
+
   // depends: reverse-DO on the in-hand item (or the avatar), original
   // pointed becomes subject (handled by makeCtx's parent comparison).
   ctx.depends = () => {

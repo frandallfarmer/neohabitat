@@ -1,5 +1,13 @@
 # Behavior Layer Port Plan
 
+> **Status (June 12 2026):** phases 1–5 implemented. 140 behaviors
+> ported; 844/849 class-table slots live. Deliberately unported
+> (fail as `unported:<name>`): `avatar_DIE`, `avatar_REINCARNATE`,
+> `generic_sendMail`, `ask_for_help` — the Tier-4 death/text-UI flows.
+> Not yet done: world.apply still routes host messages through the
+> flat deltas.js map rather than table slots 8+ (the delegates exist);
+> sagebot's remaining legacy tools aren't all cut over to dispatch.
+
 Porting the C64 client's complete behavior system into habiworld: every
 `Behaviors/*.m` file becomes a JS function of the same name, dispatched
 through a class-to-resource table transcribed from `new.mud`. Goal: any
