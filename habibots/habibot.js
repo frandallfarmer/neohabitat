@@ -10,6 +10,7 @@ const Queue = require('promise-queue')
 
 const constants = require('./constants')
 const util = require('./util')
+const { HabitatWorld, actions: worldActions, dispatch: worldDispatch } = require('../habiworld')
 
 
 const DirectionToPoseId = {
@@ -81,6 +82,14 @@ class HabiBot {
       enteredRegion: [],
       msg: [],
     }
+
+    this.world = new HabitatWorld()
+    this.world.on('unhandledDelta', (msg) => {
+      log.debug('habiworld[%s]: unhandled delta op=%s noid=%d', username, msg.op, msg.noid)
+    })
+    this.world.on('regionChanged', (ctx) => {
+      log.debug('habiworld[%s]: regionChanged → %s (world cleared)', username, ctx)
+    })
 
     this.clearState()
 
@@ -665,7 +674,7 @@ class HabiBot {
         self.substituteState(obj)
         var msg = JSON.stringify(obj)
         setTimeout(() => {
-          log.debug('->SEND@%s:%s: %s', self.host, self.port, msg.trim())
+          log.debug('->SEND@%s:%s [%s]: %s', self.host, self.port, self.username, msg.trim())
           self.server.write(msg + '\n\n', 'UTF8', () => {
             resolve()
           })
@@ -916,10 +925,11 @@ class HabiBot {
   scanSensor(sensorRef) {
     return this.sendWithDelay({ op: 'SCAN', to: sensorRef }, 500)
   }
-  // ZAPTO — Teleport/Elevator. `port_number` is the destination index
-  // (the device's `connections` array). Default 0 picks the first port.
+  // ZAPTO — Teleport. `port_number` is a string address code (like a
+  // phone number — "HOME", "DOWNTOWN", etc.) matching the booth's
+  // `address` field. The server requires a String, not an integer.
   zapToPort(deviceRef, portNumber) {
-    return this.sendWithDelay({ op: 'ZAPTO', to: deviceRef, port_number: portNumber || 0 }, 500)
+    return this.sendWithDelay({ op: 'ZAPTO', to: deviceRef, port_number: String(portNumber || '') }, 500)
   }
 
   // ── Dangerous / one-shot ───────────────────────────────────────────
@@ -1031,6 +1041,128 @@ class HabiBot {
       y: y,
       how: how,
     }, 10000)
+  }
+
+  /**
+   * Sends a request and resolves with its type:"reply" message — the
+   * C64's getResponse. Habitat is a single-request-in-flight protocol
+   * (actionQueue serializes sends), so the next reply after our write
+   * is ours.
+   *
+   * The pending listener is registered AFTER the write completes: any
+   * reply already in flight from an earlier fire-and-forget send (e.g.
+   * the WALK inside an action recipe) arrives while nothing is pending
+   * and is dropped, instead of being mistaken for our reply. Our own
+   * reply can't be missed by this ordering — registration happens in a
+   * microtask, which always runs before the socket's next data event.
+   *
+   * @param {Object} msg Elko request to send
+   * @param {Number} [timeoutMillis] how long to wait for the reply (default 10s)
+   * @returns {Promise<Object>} resolves with the reply JSON, rejects on timeout
+   */
+  sendForReply(msg, timeoutMillis) {
+    const self = this
+    const timeout = typeof timeoutMillis === 'number' ? timeoutMillis : 10000
+    return this.send(msg).then(() => new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        if (self._pendingReply === onReply) self._pendingReply = null
+        reject(new Error(`sendForReply(${msg.op}) timed out after ${timeout}ms waiting for reply`))
+      }, timeout)
+      function onReply(reply) {
+        clearTimeout(timer)
+        resolve(reply)
+      }
+      self._pendingReply = onReply
+    }))
+  }
+
+  /**
+   * The C64 client's animation wait (waitWhile animation_wait_bit /
+   * asyncAnimationWait): bots have no animation engine, so this is a
+   * plain pause the action recipes use to let walks and chores "play
+   * out" before firing the next step of a goToAnd* script.
+   * @param {Number} [millis] pause length, default 1000
+   * @returns {Promise}
+   */
+  animationWait(millis) {
+    const ms = typeof millis === 'number' ? millis : 1000
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
+  /**
+   * Runs a habiworld action recipe — the C64 goToAnd* choreography:
+   * preconditions checked against the world model, walk to the target,
+   * wait out the walk animation, send the request, apply the state
+   * change locally on a success reply. Verbs: 'GET' {noid}, 'PUT'
+   * {x, y}, 'HAND' {noid}.
+   *
+   * Resolves {ok, reason?}: in-world failures (hands full, server
+   * denial) are outcomes, not rejections; only transport errors reject.
+   *
+   * @param {String} verb action recipe name
+   * @param {Object} opts recipe arguments (see above)
+   * @returns {Promise<{ok: boolean, reason: ?string}>}
+   */
+  performAction(verb, opts) {
+    return worldActions.perform(this.world, verb, opts, this.worldClient())
+  }
+
+  /**
+   * Class-dispatched verb, straight through habiworld's behavior table:
+   * the C64 user-verb slots (DO/RDO/GO/STOP/GET/PUT/TALK/DESTROY — use
+   * habiworld constants.ACTION_*). DO on a flashlight toggles it, GO on
+   * a chair sits (and stands), DO on a jukebox flips its catalog —
+   * whatever new.mud says the class does.
+   *
+   * @param {int} verb   action slot (constants.ACTION_*)
+   * @param {int} noid   target object noid
+   * @param {Object} args verb arguments (x/y, amount, text, itemNoid...)
+   * @returns {Promise<{ok: boolean, reason: ?string}>}
+   */
+  performVerb(verb, noid, args) {
+    return worldDispatch(this.world, verb, noid, args || {}, this.worldClient())
+  }
+
+  /**
+   * The client-callback set habiworld behaviors run against — shared by
+   * performAction and performVerb.
+   */
+  worldClient() {
+    const self = this
+    return {
+      // Walk to the exact coordinates given by the behavior (adjacentCoords
+      // has already computed the precise stand-spot; no sidestep here).
+      // The WALK reply carries the server-confirmed destination; return it
+      // so the recipe can track position and scale the walk-animation wait.
+      walkTo: (x, y) => {
+        const how = x <= 80 ? 0 : 1
+        return self.sendForReply({ op: 'WALK', to: 'ME', x, y, how })
+          .then((reply) => ({
+            x: reply.x !== undefined ? reply.x : x,
+            y: reply.y !== undefined ? reply.y : y,
+          }))
+      },
+      send: (msg) => self.sendForReply(msg),
+      animationWait: (ms) => self.animationWait(ms),
+      // Balloon text (read results, key numbers, oracle answers) is the
+      // bot's eyes — log it so sage's tool results can surface it.
+      balloon: (text) => {
+        if (text) log.debug('balloon [%s]: %s', self.username, text)
+      },
+      // Region transit for pass-through doors and sky/wall exits.
+      // The behavior has already walked to the exit; just send NEWREGION.
+      // Direction math mirrors walkToExit's formula: newRegionDirection =
+      //   (k - 2*orientation + 9) % 4   where k = up=0, right=1, down=2, left=3.
+      changeRegion: (direction) => {
+        const DIR = { up: 0, right: 1, down: 2, left: 3 }
+        const k = DIR[String(direction).toLowerCase()]
+        if (k === undefined) return Promise.resolve({ ok: false, reason: 'unknown-direction' })
+        const o = self.orientation || 0
+        const newRegionDirection = (k - 2 * o + 9) % 4
+        return self.sendForReply({ op: 'NEWREGION', to: 'ME', direction: newRegionDirection })
+          .then(() => ({ ok: true }))
+      },
+    }
   }
 
   /**
@@ -1157,6 +1289,7 @@ class HabiBot {
     this.neighbors = {}
     this.realm = {}
     this.orientation = 0
+    if (this.world) this.world.clear()
   }
 
   onDisconnect() {
@@ -1191,7 +1324,7 @@ class HabiBot {
   processData(buffer) {
     var self = this;
     util.parseElko(buffer).forEach((message) => {
-      log.debug('<-RCVD@%s:%s: %s', self.host, self.port, JSON.stringify(message));
+      log.debug('<-RCVD@%s:%s [%s]: %s', self.host, self.port, self.username, JSON.stringify(message));
       this.processElkoMessage(message);
     });
   }
@@ -1205,6 +1338,24 @@ class HabiBot {
       return;
     }
 
+    // Request replies (type:"reply", no op). Habitat is a single-
+    // request-in-flight protocol (the C64's getResponse blocks until
+    // the reply lands), so the next reply belongs to whoever is waiting
+    // in sendForReply. The world model never consumes replies — the
+    // state effects of our OWN requests are applied by the habiworld
+    // action recipes on a success reply, mirroring the C64's
+    // getResponse → changeContainers pattern.
+    if (o.type === 'reply') {
+      if (this._pendingReply) {
+        const pending = this._pendingReply
+        this._pendingReply = null
+        pending(o)
+      }
+      return;
+    }
+
+    this.world.apply(o)
+
     // Region transition. Elko sends `{type: "changeContext", context: ..., immediate: ...}`
     // when the avatar's location changes (e.g. after a NEWREGION walk). The
     // server then streams a fresh batch of `make` messages for the new
@@ -1216,7 +1367,7 @@ class HabiBot {
     // it knows it's about to transition; `newRegion()` walks rely on the
     // server-initiated path here.)
     if (o.type === 'changeContext') {
-      log.debug('changeContext to %s — clearing local region state', o.context)
+      log.debug('changeContext[%s] to %s — clearing local region state', this.username, o.context)
       this.clearState()
       return;
     }
@@ -1273,6 +1424,15 @@ class HabiBot {
         var split = ref.split('-')
         this.names.ME = ref
         this.names.USER = `${split[0]}-${split[1]}`
+        // Shadow-model sanity trace: habiworld should have seen the same
+        // you:true make (world.apply runs first), so me must be set and
+        // object counts should track the legacy noid table.
+        log.debug('habiworld[%s]: me=%s (noid %s); world objects=%d, legacy noids=%d',
+          this.username,
+          this.world.me ? this.world.me.ref : 'NOT SET',
+          this.world.me ? this.world.me.noid : '-',
+          this.world.objects.size,
+          Object.keys(this.noids).length)
         log.debug('Running callbacks for enteredRegion')
         this.callbacks.enteredRegion.forEach((callback) => {
           callback(this, o)
@@ -1305,7 +1465,13 @@ class HabiBot {
     if (o.op === 'delete') {
       var obj = this.history[o.to]
       this.clearNames(o.to)
-      if ('obj' in obj && obj.obj.mods[0].type === 'Avatar') {
+      // obj can be undefined: the server reaps ghost avatars from PRIOR
+      // sessions on reconnect, broadcasting deletes for refs this bot
+      // never saw a make for. Unguarded, `'obj' in undefined` threw and
+      // killed the process — supervisor restarted it, the fresh session
+      // triggered another ghost reap, and every bot in the region
+      // crash-looped on each other's reap broadcasts.
+      if (obj && 'obj' in obj && obj.obj.mods[0].type === 'Avatar') {
         delete this.avatars[obj.obj.name]
       }
       delete this.history[o.to]

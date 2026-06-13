@@ -11,14 +11,17 @@ RUN apt-get update \
 WORKDIR /habibots
 
 # Install deps first so the npm layer is cached when only source changes.
-COPY package.json package-lock.json ./
+COPY habibots/package.json habibots/package-lock.json ./
 RUN npm ci --omit=dev
 
 # `supervisor` (the file-watcher, not the process manager) restarts each
 # bot on source change. Pure-JS, installs cleanly on Node 20.
 RUN npm install -g supervisor
 
-COPY . .
+# habiworld is a sibling package (../habiworld from the bot's perspective).
+# The build context is the repo root so both dirs are available here.
+COPY habiworld /habiworld
+COPY habibots/ .
 
 # Compose overrides this with `entrypoint: ['/habibots/run']` and
 # `command: ['hatchery', 'eliza', ...]`. Setting exec form here so direct

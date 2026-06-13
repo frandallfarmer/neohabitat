@@ -1,0 +1,21 @@
+FROM node:20-bookworm-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends netcat-openbsd \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /habibots
+
+COPY habibots/package.json habibots/package-lock.json ./
+RUN npm ci --omit=dev
+
+RUN npm install -g supervisor
+
+# habiworld is a sibling package required via '../habiworld'. In prod the
+# real Dockerfile copies it in at build time; in dev the override bind-mounts
+# both dirs so this COPY is a no-op placeholder (the volume wins).
+COPY habiworld /habiworld
+
+COPY habibots/ .
+
+ENTRYPOINT ["/habibots/run"]

@@ -31,6 +31,7 @@
 const log = require('winston')
 const awareness = require('./awareness')
 const { sanitizeForC64 } = require('./petscii')
+const { ACTION_DO, ACTION_GET, ACTION_GO, ACTION_PUT, ACTION_TALK } = require('../../../habiworld').constants
 
 const TOOLS = [
   // ── movement / navigation ────────────────────────────────────────
@@ -67,6 +68,38 @@ const TOOLS = [
         facing: { type: 'integer', enum: [0, 1], description: '0 faces right, 1 faces left.' },
       },
       required: ['x', 'y'],
+    },
+  },
+  {
+    name: 'walk_to_object',
+    description: 'Walk to a specific object in the region using its class\'s GO behavior (same as ' +
+      'pointing at the object and pressing GO on the C64). Handles doors (walks to the adjacent ' +
+      'standing spot) and all other objects. Use pass_through=true ONLY for an already-open door ' +
+      'when you want to walk THROUGH it and enter the region beyond — this requests a region change.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'Noid of the object to walk to.' },
+        pass_through: { type: 'boolean', description: 'true to pass through an open door. Default false.' },
+      },
+      required: ['noid'],
+    },
+  },
+  {
+    name: 'talk_to_object',
+    description: 'TALK to an object (ACTION_TALK / slot 6 in the class table). SageBot walks adjacent ' +
+      'first, then sends the text. Class-specific effects: Teleport — say the destination address ' +
+      '(e.g. "HOME", "CENTRAL-1", a custom port code) to teleport there; the booth must be activated ' +
+      'first (activate it with do_object after paying with pay_machine). ' +
+      'Jukebox — words broadcast to the room. Magic_lamp (genie out) — make a wish. ' +
+      'Most other objects — ordinary region broadcast.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'Noid of the object to talk to.' },
+        text: { type: 'string', description: 'What to say to the object.' },
+      },
+      required: ['noid', 'text'],
     },
   },
   {
@@ -248,31 +281,52 @@ const TOOLS = [
   // ── containers / doors ───────────────────────────────────────────
   {
     name: 'open',
-    description: 'Open a door, box, bag, chest, or other openable container in the room.',
+    description: 'Open a door, box, bag, chest, or other openable container in the room. SageBot will walk adjacent to it first.',
     input_schema: {
       type: 'object',
       properties: {
-        ref: { type: 'string' },
+        noid: { type: 'integer', description: 'Noid of the object to open, as shown in the scene.' },
       },
-      required: ['ref'],
+      required: ['noid'],
     },
   },
   {
     name: 'close',
-    description: 'Close a door, box, bag, chest, or other openable container.',
+    description: 'Close a door, box, bag, chest, or other openable container. SageBot will walk adjacent to it first.',
     input_schema: {
       type: 'object',
       properties: {
-        ref: { type: 'string' },
+        noid: { type: 'integer', description: 'Noid of the object to close, as shown in the scene.' },
       },
-      required: ['ref'],
+      required: ['noid'],
+    },
+  },
+
+  // ── the universal DO verb ────────────────────────────────────────
+  {
+    name: 'do_object',
+    description: 'Operate an object the way the original Habitat DO verb did — each kind of object ' +
+      'responds in its own way: a held Flashlight toggles, a Jukebox shows its next catalog page, a ' +
+      'Vendo machine cycles its display window, a Box/Bag/Chest opens or closes (walk up first happens ' +
+      'automatically), a Garbage_can flushes, held Drugs take a dose, a held Windup_toy winds, a held ' +
+      'Magic_lamp summons the genie, a held Paper/Book reads. SageBot walks to the object when the ' +
+      'verb requires it. Prefer the specific tools (open, pick_up...) when one exists; use this for ' +
+      'everything else.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        noid: { type: 'integer', description: 'Noid of the object, as shown in the scene.' },
+        amount: { type: 'integer', description: 'Token amount, for money interactions.' },
+        text: { type: 'string', description: 'Words, for objects that take them.' },
+      },
+      required: ['noid'],
     },
   },
 
   // ── avatar state ─────────────────────────────────────────────────
   {
     name: 'sit_down',
-    description: 'Sit on a chair, couch, bench, bed, or hot tub in the room.',
+    description: 'Sit on a chair, couch, bench, bed, or hot tub in the room. SageBot walks to it first.',
     input_schema: {
       type: 'object',
       properties: {
@@ -566,13 +620,14 @@ const TOOLS = [
   },
   {
     name: 'spray_can',
-    description: 'SPRAY paint a body part using a Spray_can in HANDS. limb selects which part (see ' +
-      'Spray_can.java for the body-part codes; 0 = default). Visually changes your avatar.',
+    description: 'SPRAY paint a body part using a Spray_can in HANDS. Limb codes: ' +
+      '0=LEGS, 1=TORSO (default if omitted), 2=ARMS, 3=FACE (only works if wearing a Head). ' +
+      'To paint all parts, call once per limb. Visually changes your avatar.',
     input_schema: {
       type: 'object',
       properties: {
         ref: { type: 'string' },
-        limb: { type: 'integer', description: 'Body-part code (0 for default).' },
+        limb: { type: 'integer', description: '0=LEGS, 1=TORSO, 2=ARMS, 3=FACE.' },
       },
       required: ['ref'],
     },
@@ -645,13 +700,14 @@ const TOOLS = [
   },
   {
     name: 'zap_to_port',
-    description: 'ZAPTO — use a Teleport or Elevator to jump to one of its connected destinations. ' +
-      'port_number is the destination index in the device\'s connections list (default 0).',
+    description: 'ZAPTO — use a Teleport booth to jump to a destination. ' +
+      'port_number is the destination address string (like a phone number — e.g. "HOME", "DOWNTOWN"). ' +
+      'Prefer talk_to_object instead: stand in the booth with walk_to_object, then talk_to_object with the address.',
     input_schema: {
       type: 'object',
       properties: {
         ref: { type: 'string' },
-        port_number: { type: 'integer' },
+        port_number: { type: 'string', description: 'Destination address string (e.g. "HOME", "DOWNTOWN").' },
       },
       required: ['ref'],
     },
@@ -820,10 +876,12 @@ function putDown(bot, ref, containerNoid, x, y, orientation) {
   return bot.putObj(ref, containerNoid || 0, x || 80, y || 144, orientation || 0)
 }
 
-// GET op (pick_up). Same rationale as putDown — habibot.js doesn't ship
-// a getObj helper, so we send the raw op.
-function getObj(bot, ref, containerNoid) {
-  return bot.send({ op: 'GET', to: ref, containerNoid: containerNoid || 0 })
+// GET op (used by the compose_and_send_mail flow; pick_up goes through
+// bot.performAction('GET') which adds the goToAndGet choreography).
+// Elko's GET takes no parameters beyond `to` — the old containerNoid
+// field drew an "ignored unknown parameter" warning on every send.
+function getObj(bot, ref) {
+  return bot.send({ op: 'GET', to: ref })
 }
 
 // ESP whisper to a specific avatar. Elko's ESP model: SPEAK with
@@ -890,6 +948,24 @@ async function executeAction(toolUse, bot, ctx) {
       case 'walk_to_coords':
         await withTimeout(bot.walkTo(args.x, args.y, args.facing || 0), 30_000, 'walkTo')
         return { ok: true }
+      case 'walk_to_object': {
+        const walked = await withTimeout(
+          bot.performVerb(ACTION_GO, args.noid, args.pass_through ? { passThrough: true } : {}),
+          30_000, 'walk_to_object')
+        return walked.ok ? { ok: true } : { ok: false, error: walked.reason }
+      }
+      case 'talk_to_object': {
+        // Walk adjacent first (GO), then TALK — matches the teleport flow
+        // where adjacency is required before ZAPTO routes through.
+        const go = await withTimeout(
+          bot.performVerb(ACTION_GO, args.noid),
+          30_000, 'talk_to_object.walk')
+        if (!go.ok) return { ok: false, error: `could not walk to object: ${go.reason}` }
+        const talked = await withTimeout(
+          bot.performVerb(ACTION_TALK, args.noid, { text: args.text || '' }),
+          15_000, 'talk_to_object.talk')
+        return talked.ok ? { ok: true } : { ok: false, error: talked.reason }
+      }
       case 'face_direction':
         await withTimeout(bot.faceDirection(args.direction), 5_000, 'faceDirection')
         return { ok: true }
@@ -924,29 +1000,44 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── object manipulation ─────────────────────────────────────
-      case 'pick_up':
-        await withTimeout(getObj(bot, args.ref, args.noid), 10_000, 'pick_up')
-        return { ok: true }
-      case 'put_down': {
-        // Elko's generic_PUT enforces `holding(avatar, item)` — i.e.
-        // the item being PUT must be in the avatar's HANDS slot. If it
-        // isn't, elko silently replies err:1 and the item stays exactly
-        // where it was. Sage's habibot.send() resolves on TCP write,
-        // not on elko's reply, so historically this dispatch returned
-        // ok:true even when the PUT was rejected — which is why sage
-        // would confidently claim to have dropped something it never
-        // actually let go of.
-        //
-        // Pre-flight: find the item in our inventory, confirm it's in
-        // HANDS. If not, return a structured error so Claude sees the
-        // failure and either picks it up first or stops lying about
-        // having put it down.
-        const inv = awareness.getInventory(bot)
-        const item = inv.find((it) => it.ref === args.ref)
-        if (!item) {
-          return { ok: false, error: `no item with ref ${args.ref} in your pocket` }
+      case 'pick_up': {
+        // habiworld GET recipe (generic_goToAndGet.m): hands-empty
+        // precondition, walk to the item, send GET, and apply the
+        // pickup to the world model on the success reply — awareness
+        // reflects the item in HANDS immediately.
+        const got = await withTimeout(bot.performVerb(ACTION_GET, args.noid), 20_000, 'pick_up')
+        if (!got.ok) {
+          const why = {
+            'hands-full': 'your HANDS are full — put_down or give away the held item first',
+            'no-such-object': `no object with noid ${args.noid} in this region`,
+            'server-denied': 'the server refused the GET (fixed in place, out of reach, or held by someone else)',
+            'not-in-region': 'not in a region yet',
+          }[got.reason] || got.reason
+          return { ok: false, error: why }
         }
-        if (item.slot !== awareness.HANDS_SLOT) {
+        return { ok: true }
+      }
+      case 'put_down': {
+        // habiworld PUT recipe (generic_goToAndDropAt.m): the recipe
+        // itself enforces the in-HANDS precondition from the world
+        // model, walks to the drop spot, and applies the drop on the
+        // success reply. We keep two Claude-facing guards: a ref
+        // sanity check (PUT drops whatever is in HANDS, so refuse if
+        // that isn't the item Claude named) and the explicit
+        // pocket-slot hint when nothing is held.
+        const held = bot.world && bot.world.me && bot.world.holding(bot.world.me.noid)
+        if (held && args.ref && held.ref !== args.ref) {
+          return {
+            ok: false,
+            error: `you are holding ${held.ref}, not ${args.ref} — PUT drops whatever is in HANDS`,
+          }
+        }
+        if (!held) {
+          const inv = awareness.getInventory(bot)
+          const item = inv.find((it) => it.ref === args.ref)
+          if (!item) {
+            return { ok: false, error: `no item with ref ${args.ref} in your pocket` }
+          }
           return {
             ok: false,
             error: `item is in pocket slot ${item.slot}, not HANDS. ` +
@@ -954,14 +1045,50 @@ async function executeAction(toolUse, bot, ctx) {
               `then put_down will work. Do NOT tell anyone you put it down — you haven\'t.`,
           }
         }
-        await withTimeout(putDown(bot, args.ref, args.container_noid, args.x, args.y, args.orientation), 10_000, 'put_down')
+        // Dispatch ACTION_PUT on the drop target (ground surface or container).
+        // The target's PUT slot handles the walk and drop:
+        //   ground/street → generic_goToAndDropAt (walk to coords, bend over, drop)
+        //   bag/box/chest  → generic_goToAndDropInto (walk to container, drop in)
+        const targetNoid = args.container_noid || (() => {
+          for (const o of bot.world.objects.values()) {
+            if (o.containerRef !== bot.world.region.ref) continue
+            if (o.type === 'Street' || o.type === 'Ground') return o.noid
+            if ((o.type === 'Flat' || o.type === 'Trapezoid' || o.type === 'Super_trapezoid') &&
+                o.mod.flat_type === 2) return o.noid
+          }
+          return null
+        })()
+        if (!targetNoid) return { ok: false, error: 'no walkable surface found in region' }
+        const put = await withTimeout(
+          bot.performVerb(ACTION_PUT, targetNoid, { x: args.x || 80, y: args.y || 144 }),
+          20_000, 'put_down')
+        if (!put.ok) {
+          return { ok: false, error: `server refused the PUT (${put.reason})` }
+        }
         return { ok: true }
       }
-      case 'give_to_avatar':
-        // item_noid is informational; elko ignores it. The actual item
-        // transferred is whatever's in giver's HANDS slot at call time.
-        await withTimeout(bot.giveObject(args.item_noid, args.recipient_noid), 10_000, 'give_to_avatar')
+      case 'give_to_avatar': {
+        // habiworld HAND recipe: walks to the recipient first (the
+        // goToAnd* pattern) and moves the item out of our HANDS in the
+        // world model on the success reply — so sage no longer believes
+        // it still holds what it just gave away. item_noid remains
+        // informational; the server transfers whatever is in HANDS.
+        // avatar_put.m: ACTION_PUT pointed at an avatar = the give gesture.
+        const recipient = bot.world.get(args.recipient_noid)
+        if (!recipient || recipient.type !== 'Avatar') {
+          return { ok: false, error: `no avatar with noid ${args.recipient_noid} here` }
+        }
+        const gave = await withTimeout(
+          bot.performVerb(ACTION_PUT, args.recipient_noid), 20_000, 'give_to_avatar')
+        if (!gave.ok) {
+          const why = {
+            'hands-empty': 'your HANDS are empty — pick_up the item first, then give it',
+            'server-denied': 'the server refused the HAND (recipient busy or out of reach)',
+          }[gave.reason] || gave.reason
+          return { ok: false, error: why }
+        }
         return { ok: true }
+      }
       case 'pay_to_avatar': {
         // Find sage's Tokens item; PAYTO is sent ON the Tokens object.
         const inv = awareness.getInventory(bot)
@@ -987,20 +1114,48 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── containers ──────────────────────────────────────────────
-      case 'open':
-        await withTimeout(bot.openDoor(args.ref), 10_000, 'open')
-        return { ok: true }
-      case 'close':
-        await withTimeout(bot.closeDoor(args.ref), 10_000, 'close')
-        return { ok: true }
+      // DO on a door/container dispatches generic_adjacentOpenClose which
+      // walks adjacent, waits for the animation, then sends OPEN/CLOSE.
+      case 'open': {
+        const opened = await withTimeout(
+          bot.performVerb(ACTION_DO, args.noid),
+          30_000, 'open')
+        return opened.ok ? { ok: true } : { ok: false, error: opened.reason }
+      }
+      case 'close': {
+        const closed = await withTimeout(
+          bot.performVerb(ACTION_DO, args.noid),
+          30_000, 'close')
+        return closed.ok ? { ok: true } : { ok: false, error: closed.reason }
+      }
 
       // ── avatar state ────────────────────────────────────────────
-      case 'sit_down':
-        await withTimeout(bot.sitOrstand(1, args.noid), 10_000, 'sit_down')
-        return { ok: true }
-      case 'stand_up':
-        await withTimeout(bot.sitOrstand(0, 0), 10_000, 'stand_up')
-        return { ok: true }
+      // GO at furniture is the C64's sit/stand toggle
+      // (generic_goToFurniture): walks over, SITORSTAND, tracks the
+      // avatar's container so the world model knows we're seated.
+      case 'sit_down': {
+        const sat = await withTimeout(
+          bot.performVerb(ACTION_GO, args.noid), 30_000, 'sit_down')
+        return sat.ok ? { ok: true, posture: sat.posture } : { ok: false, error: sat.reason }
+      }
+      case 'stand_up': {
+        const me = bot.world.me
+        const seat = me && me.containerRef && me.containerRef !== bot.world.region.ref
+          ? bot.world.getByRef(me.containerRef) : null
+        if (!seat) return { ok: false, error: 'not-seated' }
+        const stood = await withTimeout(
+          bot.performVerb(ACTION_GO, seat.noid), 30_000, 'stand_up')
+        return stood.ok ? { ok: true } : { ok: false, error: stood.reason }
+      }
+      case 'do_object': {
+        const done = await withTimeout(
+          bot.performVerb(ACTION_DO, args.noid, {
+            amount: args.amount, text: args.text,
+          }), 30_000, 'do_object')
+        // Pass through whatever the behavior surfaced (read text, key
+        // numbers, catalog pages, detected flags...).
+        return done.ok ? done : { ok: false, error: done.reason }
+      }
       case 'discorporate':
         await withTimeout(bot.discorporate(), 10_000, 'discorporate')
         return { ok: true }
@@ -1095,7 +1250,7 @@ async function executeAction(toolUse, bot, ctx) {
           }
         }
         if (chosen.slot !== awareness.HANDS_SLOT) {
-          await withTimeout(getObj(bot, chosen.ref, chosen.noid), 10_000, 'compose_and_send_mail.pick_up')
+          await withTimeout(getObj(bot, chosen.ref), 10_000, 'compose_and_send_mail.pick_up')
         }
         const text = `to: ${recipient}\n${body}`
         await withTimeout(bot.writePaper(chosen.ref, text), 10_000, 'compose_and_send_mail.write')
@@ -1105,16 +1260,32 @@ async function executeAction(toolUse, bot, ctx) {
       case 'ask_object':
         await withTimeout(bot.askObject(args.ref, args.text || ''), 10_000, 'ask_object')
         return { ok: true }
-      case 'throw_object':
-        await withTimeout(bot.throwObj(args.ref, args.target_noid, args.x, args.y), 10_000, 'throw_object')
-        return { ok: true }
+      case 'throw_object': {
+        const thrown = await withTimeout(
+          bot.performAction('THROW', { noid: args.target_noid || 0, x: args.x, y: args.y }),
+          20_000, 'throw_object')
+        return thrown.ok ? { ok: true } : { ok: false, error: thrown.reason }
+      }
 
       // ── devices ─────────────────────────────────────────────────
-      case 'toggle_device':
-        await withTimeout(
-          args.on ? bot.deviceOn(args.ref) : bot.deviceOff(args.ref),
-          10_000, 'toggle_device')
-        return { ok: true }
+      // The C64 DO is a toggle; the tool promises on/off semantics, so
+      // check the tracked state first and only dispatch when it needs
+      // flipping. (Falls back to the legacy raw sends when the device
+      // isn't in the world model.)
+      case 'toggle_device': {
+        const dev = bot.world.getByRef(args.ref)
+        if (!dev) {
+          await withTimeout(
+            args.on ? bot.deviceOn(args.ref) : bot.deviceOff(args.ref),
+            10_000, 'toggle_device')
+          return { ok: true }
+        }
+        const isOn = !!(dev.mod.on || 0)
+        if (isOn === !!args.on) return { ok: true, note: 'already in that state' }
+        const flipped = await withTimeout(
+          bot.performVerb(ACTION_DO, dev.noid), 30_000, 'toggle_device')
+        return flipped.ok ? { ok: true } : { ok: false, error: flipped.reason }
+      }
 
       // ── apparel ─────────────────────────────────────────────────
       case 'wear_item':

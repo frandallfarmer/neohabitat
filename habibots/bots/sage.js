@@ -39,6 +39,7 @@ log.configure({
 })
 
 const HabiBot = require('../habibot')
+const { ACTION_GO } = require('../../habiworld').constants
 const memoryLib = require('../lib/sage/memory')
 const awareness = require('../lib/sage/awareness')
 const { TOOLS, executeAction } = require('../lib/sage/tools')
@@ -1055,16 +1056,16 @@ async function interactTick() {
 
     try {
       if (choice.kind === 'sit') {
-        if (mod.x != null && mod.y != null) {
-          await withTimeout(SageBot.walkTo(mod.x, mod.y, 0), 15_000, 'walkTo').catch(() => {})
-        }
-        await withTimeout(SageBot.sitOrstand(1, mod.noid), 10_000, 'sitOrstand')
+        // GO at furniture = the C64 sit toggle (generic_goToFurniture):
+        // walks over, SITORSTAND, container tracked in the world model.
+        await withTimeout(SageBot.performVerb(ACTION_GO, mod.noid), 30_000, 'sitOrstand')
       } else if (choice.kind === 'open') {
-        await withTimeout(SageBot.openDoor(objRef), 10_000, 'openDoor')
+        await withTimeout(SageBot.performAction('OPEN', { noid: mod.noid }), 20_000, 'openDoor')
       } else if (choice.kind === 'get') {
-        await withTimeout(
-          SageBot.send({ op: 'GET', to: objRef, containerNoid: mod.noid || 0 }),
-          10_000, 'getObj')
+        // Full goToAndGet choreography: walk over, GET, world updated
+        // on the success reply. (The old raw send also passed a bogus
+        // containerNoid the server warned about on every pick-up.)
+        await withTimeout(SageBot.performAction('GET', { noid: mod.noid }), 20_000, 'getObj')
       }
     } catch (e) {
       log.warn('Interact failed (%s on %s): %s', choice.kind, objType, e.message)

@@ -8,6 +8,10 @@
 #   - Anonymous volumes on the four paths the image owns (node_modules
 #     for each Node subdir, plus the Maven target/), so the bind mount
 #     doesn't shadow them.
+#   - Named volume for MongoDB so data (user accounts, conversation history)
+#     survives `docker compose down`. Use `docker compose down -v` only when
+#     you explicitly want to wipe. Production uses a host bind-mount instead
+#     (docker-compose.prod.yml), so this never touches prod.
 
 services:
   neohabitat:
@@ -20,11 +24,58 @@ services:
 
   # In dev there is no host-side bridge_v2, so the base compose's
   # host.docker.internal:2026 wiring leaves every bot blocked forever on the
-  # entrypoint's `netcat -z` gate. habibots speak Elko's JSON protocol
-  # directly (no binary bridge needed), so point them at the in-network Elko
-  # context server instead — the same :9000 habiproxy/bridge dial in prod,
-  # reached straight over the compose network.
+  # entrypoint's `netcat -z` gate. Point them at the dockerized bridge_v2
+  # service below instead. Bots MUST go through bridge_v2 (not straight to
+  # elko :9000): region transitions rely on the bridge handling the
+  # server's changeContext by re-entering the new context on the client's
+  # behalf — connected directly, a bot clears its state on changeContext
+  # and then waits forever for a make storm that never comes.
   bots:
+    build:
+      context: .
+      dockerfile: habibots/Dockerfile.dev
+    volumes:
+      - ./habibots:/habibots
+      - /habibots/node_modules
+      - ./habiworld:/habiworld
     environment:
-      - HABIBOTS_HOST=neohabitat
-      - HABIBOTS_PORT=9000
+      - HABIBOTS_HOST=bridge_v2
+      - HABIBOTS_PORT=2026
+    depends_on:
+      bridge_v2:
+        condition: service_started
+
+  neohabitatmongo:
+    volumes:
+      - mongodata:/data/db
+
+  bridge_v2:
+    build:
+      context: ./bridge_v2
+      dockerfile: Dockerfile.dev
+    command: ["air"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      OTEL_SERVICE_NAME: "bridge_v2"
+      NEOHABITAT_ORIGINAL_HATCHERY: "true"
+    volumes:
+      - ./bridge_v2:/app
+    ports:
+      - "2026:2026"
+      - "2027:2027"
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - neohabitat
+    depends_on:
+      neohabitatmongo:
+        condition: service_healthy
+      neohabitat:
+        condition: service_healthy
+
+volumes:
+  mongodata:
