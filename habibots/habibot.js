@@ -10,6 +10,7 @@ const Queue = require('promise-queue')
 
 const constants = require('./constants')
 const util = require('./util')
+const { Capture } = require('./lib/capture')
 const { HabitatWorld, actions: worldActions, dispatch: worldDispatch } = require('../habiworld')
 
 
@@ -92,6 +93,13 @@ class HabiBot {
     })
 
     this.clearState()
+
+    // Wire tap for test-fixture capture — null unless HABITAT_CAPTURE is set
+    // (see lib/capture.js). Tapped in sendWithDelay and processData below.
+    this._capture = Capture.fromEnv(username)
+    if (this._capture) {
+      log.info('wire capture enabled → %s', this._capture.path)
+    }
 
     log.debug('Constructed HabiBot @%s:%d: %j', this.host, this.port, this.config)
   }
@@ -675,6 +683,7 @@ class HabiBot {
         var msg = JSON.stringify(obj)
         setTimeout(() => {
           log.debug('->SEND@%s:%s [%s]: %s', self.host, self.port, self.username, msg.trim())
+          if (self._capture) self._capture.record('send', obj)
           self.server.write(msg + '\n\n', 'UTF8', () => {
             resolve()
           })
@@ -1325,6 +1334,7 @@ class HabiBot {
     var self = this;
     util.parseElko(buffer).forEach((message) => {
       log.debug('<-RCVD@%s:%s [%s]: %s', self.host, self.port, self.username, JSON.stringify(message));
+      if (self._capture) self._capture.record('recv', message)
       this.processElkoMessage(message);
     });
   }

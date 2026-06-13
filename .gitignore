@@ -42,3 +42,6 @@ volumes/bridge_v2_bin/
 
 # Ansible runtime cache (controller-side fact cache)
 ansible/.ansible_cache/
+
+# habiworld test-fixture wire captures (dev-local)
+habibots/capture/
