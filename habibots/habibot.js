@@ -10,6 +10,7 @@ const Queue = require('promise-queue')
 
 const constants = require('./constants')
 const util = require('./util')
+const { Capture } = require('./lib/capture')
 const { HabitatWorld, actions: worldActions, dispatch: worldDispatch } = require('../habiworld')
 
 
@@ -92,6 +93,13 @@ class HabiBot {
     })
 
     this.clearState()
+
+    // Wire tap for test-fixture capture — null unless HABITAT_CAPTURE is set
+    // (see lib/capture.js). Tapped in sendWithDelay and processData below.
+    this._capture = Capture.fromEnv(username)
+    if (this._capture) {
+      log.info('wire capture enabled → %s', this._capture.path)
+    }
 
     log.debug('Constructed HabiBot @%s:%d: %j', this.host, this.port, this.config)
   }
@@ -675,6 +683,7 @@ class HabiBot {
         var msg = JSON.stringify(obj)
         setTimeout(() => {
           log.debug('->SEND@%s:%s [%s]: %s', self.host, self.port, self.username, msg.trim())
+          if (self._capture) self._capture.record('send', obj)
           self.server.write(msg + '\n\n', 'UTF8', () => {
             resolve()
           })
@@ -872,8 +881,19 @@ class HabiBot {
   windToy(toyRef) {
     return this.sendWithDelay({ op: 'WIND', to: toyRef }, 500)
   }
-  rollDie(dieRef) {
-    return this.sendWithDelay({ op: 'ROLL', to: dieRef }, 500)
+  // ROLL a die. The server (Die.java) replies to the roller with
+  // ROLL_STATE = the new gr_state (the face value, 1..faces), and only
+  // broadcasts ROLL$ to NEIGHBORS — so our own roll result arrives in the
+  // reply, never as a delta. Read it, update the die's gr_state locally,
+  // and return the value so the caller can report it.
+  async rollDie(dieRef) {
+    const reply = await this.sendForReply({ op: 'ROLL', to: dieRef })
+    const value = reply.ROLL_STATE
+    if (value !== undefined) {
+      const die = this.world.getByRef(this.substituteName(dieRef))
+      if (die) die.mod.gr_state = value
+    }
+    return { ok: value !== undefined, value }
   }
   kingPiece(pieceRef) {
     return this.sendWithDelay({ op: 'KING', to: pieceRef }, 500)
@@ -895,14 +915,45 @@ class HabiBot {
   }
 
   // ── Misc world objects ─────────────────────────────────────────────
-  directCompass(compassRef) {
-    return this.sendWithDelay({ op: 'DIRECT', to: compassRef }, 500)
+  // DIRECT a Compass. Compass.java replies (no `err`) with
+  //   { text: "WEST: <arrow>" }
+  // where <arrow> is a PETSCII direction char pointing the way to the
+  // West Pole: 124 '|' = UP, 125 '}' = DOWN, 126 '~' = LEFT, 127 = RIGHT.
+  // Translate it to a screen direction so the caller can report it.
+  async directCompass(compassRef) {
+    const reply = await this.sendForReply({ op: 'DIRECT', to: compassRef })
+    const ARROWS = { 124: 'UP', 125: 'DOWN', 126: 'LEFT', 127: 'RIGHT' }
+    const text = reply.text || ''
+    const arrow = text.charCodeAt(text.length - 1)
+    const direction = ARROWS[arrow] || null
+    return { ok: true, text, direction }
   }
   // SPRAY paints a body part from a Spray_can held in HANDS. `limb` is
-  // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.); a
-  // sensible default lets the can pick its current default target.
-  sprayCan(canRef, limb) {
-    return this.sendWithDelay({ op: 'SPRAY', to: canRef, limb: limb == null ? 0 : limb }, 500)
+  // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.).
+  //
+  // Spray_can.java replies in TWO shapes, neither using `err`:
+  //   guard failure (not holding the can / out of charges):
+  //     { success: 0|1, custom_1, custom_2 }
+  //   main path:
+  //     { SPRAY_SUCCESS: 0|1, SPRAY_CUSTOMIZE_0, SPRAY_CUSTOMIZE_1 }
+  // In both, success==1 means the spray landed and the two customize
+  // bytes are the avatar's new custom[0]/custom[1]. Apply them locally
+  // and report failure honestly (the common failure is spraying without
+  // the can in HANDS).
+  async sprayCan(canRef, limb) {
+    const reply = await this.sendForReply({
+      op: 'SPRAY', to: canRef, limb: limb == null ? 0 : limb,
+    })
+    const flag = reply.SPRAY_SUCCESS !== undefined ? reply.SPRAY_SUCCESS : reply.success
+    const ok = flag === 1 || flag === true
+    const c0 = reply.SPRAY_CUSTOMIZE_0 !== undefined ? reply.SPRAY_CUSTOMIZE_0 : reply.custom_1
+    const c1 = reply.SPRAY_CUSTOMIZE_1 !== undefined ? reply.SPRAY_CUSTOMIZE_1 : reply.custom_2
+    const me = this.world.me
+    if (me && Array.isArray(me.mod.custom)) {
+      if (c0 !== undefined) me.mod.custom[0] = c0
+      if (c1 !== undefined) me.mod.custom[1] = c1
+    }
+    return { ok, reason: ok ? undefined : 'spray-failed (need the can in HANDS, or it is empty)' }
   }
   fillBottle(bottleRef) {
     return this.sendWithDelay({ op: 'FILL', to: bottleRef }, 500)
@@ -945,6 +996,18 @@ class HabiBot {
   }
   fakeShoot(gunRef) {
     return this.sendWithDelay({ op: 'FAKESHOOT', to: gunRef }, 500)
+  }
+  // ATTACK fires a REAL weapon (Gun/Sword/etc., anything extending
+  // Weapon) at a target noid — distinct from FAKESHOOT, which only the
+  // gag Fake_gun answers (a real Gun silently ignores FAKESHOOT). The
+  // server replies { ATTACK_target, ATTACK_result }: result 0 = no effect
+  // (missed, out of range, or a weapons-free zone), non-zero = a hit of
+  // that damage level, and the top value = a kill. Read it so the caller
+  // knows whether the shot actually landed instead of assuming it did.
+  async attack(weaponRef, targetNoid) {
+    const reply = await this.sendForReply({ op: 'ATTACK', to: weaponRef, pointed_noid: targetNoid })
+    const result = reply.ATTACK_result
+    return { ok: !!result, result, target: reply.ATTACK_target }
   }
   resetFakeGun(gunRef) {
     return this.sendWithDelay({ op: 'RESET', to: gunRef }, 500)
@@ -1325,6 +1388,7 @@ class HabiBot {
     var self = this;
     util.parseElko(buffer).forEach((message) => {
       log.debug('<-RCVD@%s:%s [%s]: %s', self.host, self.port, self.username, JSON.stringify(message));
+      if (self._capture) self._capture.record('recv', message)
       this.processElkoMessage(message);
     });
   }

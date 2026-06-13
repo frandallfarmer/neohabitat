@@ -104,6 +104,51 @@ test('dispatch routes GET on an item through generic_goToAndGet', async () => {
   assert.equal(w.holding(17).noid, 30)
 })
 
+// ── reply-contract regressions (ground truth from a live capture in the
+//    Testing Grounds: Spray_can.java replies with success/SPRAY_SUCCESS
+//    and the customize bytes, never `err`) ────────────────────────────
+
+// Hold a fresh spray can in the avatar's HANDS and give the avatar a
+// two-byte custom pattern so respray effects are observable.
+function withHeldSprayCan(w) {
+  w.me.mod.custom = [0, 0]
+  w.apply({
+    to: ME_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-spray-1', name: 'Spray_can',
+      mods: [{ type: 'Spray_can', noid: 95, x: 0, y: HANDS, orientation: 0, gr_state: 0 }],
+    },
+  })
+}
+
+test('spray_can DO success path: SPRAY_SUCCESS + SPRAY_CUSTOMIZE_* repaint the avatar', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldSprayCan(w)
+  // Spray_can.java main-path reply shape.
+  const { calls, cb } = recorder([
+    { type: 'reply', noid: 95, SPRAY_SUCCESS: 1, SPRAY_CUSTOMIZE_0: 7, SPRAY_CUSTOMIZE_1: 8 },
+  ])
+  const result = await dispatch(w, ACTION_DO, 95, { limb: 2 }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'SPRAY', to: 'item-spray-1', limb: 2 }])
+  assert.deepEqual(w.me.mod.custom, [7, 8]) // new pattern applied
+})
+
+test('spray_can DO guard-failure: {success:0, custom_1, custom_2} beeps and leaves the pattern', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldSprayCan(w)
+  w.me.mod.custom = [34, 129]
+  // Exact guard-failure reply captured live (not holding the can / empty).
+  const { cb } = recorder([
+    { type: 'reply', noid: 95, success: 0, custom_1: 34, custom_2: 129 },
+  ])
+  const result = await dispatch(w, ACTION_DO, 95, { limb: 0 }, cb)
+  assert.equal(result.ok, false) // beeped, not a false success
+  assert.deepEqual(w.me.mod.custom, [34, 129]) // unchanged
+})
+
 test('dispatch on an unported behavior fails loudly with the .m name', async (t) => {
   // Find any class slot whose behavior hasn't been ported yet, so this
   // test keeps working as the port advances (and retires itself once

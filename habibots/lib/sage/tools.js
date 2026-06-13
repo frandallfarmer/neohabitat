@@ -739,12 +739,29 @@ const TOOLS = [
   },
   {
     name: 'fake_shoot',
-    description: 'FAKESHOOT — fire a Fake_gun. Makes a loud noise and flag; no real damage. Single ' +
-      'shot, then reset_fake_gun before firing again.',
+    description: 'FAKESHOOT — fire a Fake_gun (the gag gun) held in HANDS. Makes a loud noise and a ' +
+      'BANG flag; no real damage. Single shot, then reset_fake_gun before firing again. ' +
+      'ONLY works on a Fake_gun — a real Gun ignores this silently; use attack for a real Gun.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },
       required: ['ref'],
+    },
+  },
+  {
+    name: 'attack',
+    description: 'ATTACK — fire a REAL weapon (a Gun, etc.) held in HANDS at a target avatar. This is ' +
+      'the actual Habitat combat verb and can damage or kill the target. Use strictly in character ' +
+      'and only when clearly invited (a demo, a duel) — most regions are weapons-free zones where the ' +
+      'weapon simply will not operate. Returns whether the shot landed and the damage result. ' +
+      'For the harmless gag gun use fake_shoot instead.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the real weapon in your HANDS.' },
+        target_noid: { type: 'integer', description: 'Noid of the avatar to attack.' },
+      },
+      required: ['ref', 'target_noid'],
     },
   },
   {
@@ -1299,9 +1316,12 @@ async function executeAction(toolUse, bot, ctx) {
       case 'wind_toy':
         await withTimeout(bot.windToy(args.ref), 10_000, 'wind_toy')
         return { ok: true }
-      case 'roll_die':
-        await withTimeout(bot.rollDie(args.ref), 10_000, 'roll_die')
-        return { ok: true }
+      case 'roll_die': {
+        const rolled = await withTimeout(bot.rollDie(args.ref), 10_000, 'roll_die')
+        return rolled.ok
+          ? { ok: true, value: rolled.value }
+          : { ok: false, error: 'die did not report a value' }
+      }
       case 'king_piece':
         await withTimeout(bot.kingPiece(args.ref), 10_000, 'king_piece')
         return { ok: true }
@@ -1318,12 +1338,15 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── misc world objects ──────────────────────────────────────
-      case 'direct_compass':
-        await withTimeout(bot.directCompass(args.ref), 10_000, 'direct_compass')
-        return { ok: true }
-      case 'spray_can':
-        await withTimeout(bot.sprayCan(args.ref, args.limb), 10_000, 'spray_can')
-        return { ok: true }
+      case 'direct_compass': {
+        const c = await withTimeout(bot.directCompass(args.ref), 10_000, 'direct_compass')
+        // The West Pole lies in the `direction` screen-direction from here.
+        return { ok: true, west_pole_direction: c.direction, raw: c.text }
+      }
+      case 'spray_can': {
+        const sprayed = await withTimeout(bot.sprayCan(args.ref, args.limb), 10_000, 'spray_can')
+        return sprayed.ok ? { ok: true } : { ok: false, error: sprayed.reason }
+      }
       case 'fill_bottle':
         await withTimeout(bot.fillBottle(args.ref), 10_000, 'fill_bottle')
         return { ok: true }
@@ -1359,6 +1382,12 @@ async function executeAction(toolUse, bot, ctx) {
       case 'fake_shoot':
         await withTimeout(bot.fakeShoot(args.ref), 10_000, 'fake_shoot')
         return { ok: true }
+      case 'attack': {
+        const hit = await withTimeout(bot.attack(args.ref, args.target_noid), 10_000, 'attack')
+        return hit.ok
+          ? { ok: true, result: hit.result }
+          : { ok: false, error: 'no effect — missed, out of range, or a weapons-free zone' }
+      }
       case 'reset_fake_gun':
         await withTimeout(bot.resetFakeGun(args.ref), 10_000, 'reset_fake_gun')
         return { ok: true }
