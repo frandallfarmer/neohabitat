@@ -997,6 +997,18 @@ class HabiBot {
   fakeShoot(gunRef) {
     return this.sendWithDelay({ op: 'FAKESHOOT', to: gunRef }, 500)
   }
+  // ATTACK fires a REAL weapon (Gun/Sword/etc., anything extending
+  // Weapon) at a target noid — distinct from FAKESHOOT, which only the
+  // gag Fake_gun answers (a real Gun silently ignores FAKESHOOT). The
+  // server replies { ATTACK_target, ATTACK_result }: result 0 = no effect
+  // (missed, out of range, or a weapons-free zone), non-zero = a hit of
+  // that damage level, and the top value = a kill. Read it so the caller
+  // knows whether the shot actually landed instead of assuming it did.
+  async attack(weaponRef, targetNoid) {
+    const reply = await this.sendForReply({ op: 'ATTACK', to: weaponRef, pointed_noid: targetNoid })
+    const result = reply.ATTACK_result
+    return { ok: !!result, result, target: reply.ATTACK_target }
+  }
   resetFakeGun(gunRef) {
     return this.sendWithDelay({ op: 'RESET', to: gunRef }, 500)
   }

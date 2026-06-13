@@ -739,12 +739,29 @@ const TOOLS = [
   },
   {
     name: 'fake_shoot',
-    description: 'FAKESHOOT — fire a Fake_gun. Makes a loud noise and flag; no real damage. Single ' +
-      'shot, then reset_fake_gun before firing again.',
+    description: 'FAKESHOOT — fire a Fake_gun (the gag gun) held in HANDS. Makes a loud noise and a ' +
+      'BANG flag; no real damage. Single shot, then reset_fake_gun before firing again. ' +
+      'ONLY works on a Fake_gun — a real Gun ignores this silently; use attack for a real Gun.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },
       required: ['ref'],
+    },
+  },
+  {
+    name: 'attack',
+    description: 'ATTACK — fire a REAL weapon (a Gun, etc.) held in HANDS at a target avatar. This is ' +
+      'the actual Habitat combat verb and can damage or kill the target. Use strictly in character ' +
+      'and only when clearly invited (a demo, a duel) — most regions are weapons-free zones where the ' +
+      'weapon simply will not operate. Returns whether the shot landed and the damage result. ' +
+      'For the harmless gag gun use fake_shoot instead.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of the real weapon in your HANDS.' },
+        target_noid: { type: 'integer', description: 'Noid of the avatar to attack.' },
+      },
+      required: ['ref', 'target_noid'],
     },
   },
   {
@@ -1365,6 +1382,12 @@ async function executeAction(toolUse, bot, ctx) {
       case 'fake_shoot':
         await withTimeout(bot.fakeShoot(args.ref), 10_000, 'fake_shoot')
         return { ok: true }
+      case 'attack': {
+        const hit = await withTimeout(bot.attack(args.ref, args.target_noid), 10_000, 'attack')
+        return hit.ok
+          ? { ok: true, result: hit.result }
+          : { ok: false, error: 'no effect — missed, out of range, or a weapons-free zone' }
+      }
       case 'reset_fake_gun':
         await withTimeout(bot.resetFakeGun(args.ref), 10_000, 'reset_fake_gun')
         return { ok: true }
