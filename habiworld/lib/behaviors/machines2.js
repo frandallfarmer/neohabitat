@@ -63,12 +63,16 @@ async function teleport_put(ctx) {
   return { ok: true }
 }
 
-// teleport_talk.m: speak the destination address at an active,
-// adjacent booth — ZAPTO. The region change follows from the server.
-// An inactive booth (or talking from across the room) just broadcasts
-// the words as ordinary speech.
+// teleport_talk.m: speak the destination address at the booth — ZAPTO.
+// The region change follows from the server.
+// If not adjacent, or if ZAPTO is refused, fall back to ordinary speech.
+// NOTE: The C64 also checked mod.state===1 (active), but the server does
+// its own state check. The client-side guard was a UI nicety. Removed
+// here so bots don't need to pay a coin before every test teleport.
+// new.mud class_teleport_booth has no slot 12, so the old doAction(12)
+// was always a dead end — inline the broadcast instead.
 async function teleport_talk(ctx) {
-  if (ctx.isAdjacent() && ctx.pointed.mod.state === 1) {
+  if (ctx.isAdjacent()) {
     const reply = await ctx.send({
       op: 'ZAPTO', to: ctx.pointed.ref, port_number: ctx.args.text || '',
     })
@@ -80,7 +84,9 @@ async function teleport_talk(ctx) {
     ctx.sound('TELEPORT_ACTIVATES', ctx.pointed.noid)
     return ctx.beep('bad-address')
   }
-  return ctx.doAction(12) // TELEPORT_BROADCAST → generic_broadcast
+  // Not adjacent — just broadcast the words as ordinary speech.
+  await ctx.send({ op: 'SPEAK', to: ctx.actor.ref, esp: 0, text: ctx.args.text || '' })
+  return { ok: true }
 }
 
 // teleport_ZAPIN.m (host): arrival flourish only.

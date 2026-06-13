@@ -925,10 +925,11 @@ class HabiBot {
   scanSensor(sensorRef) {
     return this.sendWithDelay({ op: 'SCAN', to: sensorRef }, 500)
   }
-  // ZAPTO — Teleport/Elevator. `port_number` is the destination index
-  // (the device's `connections` array). Default 0 picks the first port.
+  // ZAPTO — Teleport. `port_number` is a string address code (like a
+  // phone number — "HOME", "DOWNTOWN", etc.) matching the booth's
+  // `address` field. The server requires a String, not an integer.
   zapToPort(deviceRef, portNumber) {
-    return this.sendWithDelay({ op: 'ZAPTO', to: deviceRef, port_number: portNumber || 0 }, 500)
+    return this.sendWithDelay({ op: 'ZAPTO', to: deviceRef, port_number: String(portNumber || '') }, 500)
   }
 
   // ── Dangerous / one-shot ───────────────────────────────────────────
@@ -1129,16 +1130,15 @@ class HabiBot {
   worldClient() {
     const self = this
     return {
-      // Stand adjacent rather than on top of the target — same sidestep
-      // offset walkToAvatar uses. The WALK reply carries the server-
-      // confirmed destination; return it so the recipe can track our
-      // avatar's position and scale the walk-animation wait.
+      // Walk to the exact coordinates given by the behavior (adjacentCoords
+      // has already computed the precise stand-spot; no sidestep here).
+      // The WALK reply carries the server-confirmed destination; return it
+      // so the recipe can track position and scale the walk-animation wait.
       walkTo: (x, y) => {
         const how = x <= 80 ? 0 : 1
-        const tx = x <= 80 ? x + 20 : x - 20
-        return self.sendForReply({ op: 'WALK', to: 'ME', x: tx, y: y, how: how })
+        return self.sendForReply({ op: 'WALK', to: 'ME', x, y, how })
           .then((reply) => ({
-            x: reply.x !== undefined ? reply.x : tx,
+            x: reply.x !== undefined ? reply.x : x,
             y: reply.y !== undefined ? reply.y : y,
           }))
       },

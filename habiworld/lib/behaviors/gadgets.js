@@ -214,12 +214,19 @@ async function generic_askOracle(ctx) {
   return { ok: true }
 }
 
-// generic_enterOrExit.m: walk to just inside the building/doorway
-// footprint (x+8, y+2 foregrounded) — the region change happens via
-// server WAITFOR/transit, not here.
+// generic_enterOrExit.m: walk to the per-class walk-offset spot adjacent
+// to the object (same as adjacentCoords — get_object_walk_xy). Falls back
+// to the C64 hardcoded +8/+2 if the class has no table entry.
+// NOTE: The C64 sets bit 7 of y via `ora #0x80` to select the foreground
+// rendering layer, but Elko JSON y values are raw screen pixels without
+// that flag — do NOT apply | 0x80 here.
 async function generic_enterOrExit(ctx) {
-  const o = ctx.pointed
-  await ctx.walkTo(o.mod.x + 8, (o.mod.y | 0x80) + 2)
+  const spot = ctx.adjacentCoords(ctx.pointed.noid)
+  if (spot) {
+    await ctx.walkTo(spot.x, spot.y)
+  } else {
+    await ctx.walkTo(ctx.pointed.mod.x + 8, ctx.pointed.mod.y + 2)
+  }
   return { ok: true }
 }
 

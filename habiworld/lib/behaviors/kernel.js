@@ -109,7 +109,11 @@ function adjacentCoords(world, noid) {
     xFinal = Math.max(8, Math.min(156, xFinal))
   }
 
-  const y = (obj.mod.y & 0x7F) + (yDelta || 0)
+  // Do NOT mask y with 0x7F — the Elko JSON stores raw screen pixel y
+  // (avatars walk at y≈130-150). The C64's `and #0x7f` cleared a runtime
+  // background-layer flag that was set in C64 RAM but is never present in
+  // the server-side JSON coordinates.
+  const y = obj.mod.y + (yDelta || 0)
   return { x: xFinal, y: Math.max(0, y) }
 }
 
@@ -247,7 +251,7 @@ function makeCtx(world, verb, pointed, args, client, parent) {
     const spot = adjacentCoords(world, target) || gotoCoords(world, target)
     if (!spot) return false
     return Math.abs(me.mod.x - spot.x) <= 32 &&
-      Math.abs((me.mod.y & 0x7f) - (spot.y & 0x7f)) <= 16
+      Math.abs(me.mod.y - spot.y) <= 16
   }
 
   // v_putInto (used by generic_goToAndDropAt and the pocket flows):

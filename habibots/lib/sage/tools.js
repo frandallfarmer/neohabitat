@@ -700,13 +700,14 @@ const TOOLS = [
   },
   {
     name: 'zap_to_port',
-    description: 'ZAPTO — use a Teleport or Elevator to jump to one of its connected destinations. ' +
-      'port_number is the destination index in the device\'s connections list (default 0).',
+    description: 'ZAPTO — use a Teleport booth to jump to a destination. ' +
+      'port_number is the destination address string (like a phone number — e.g. "HOME", "DOWNTOWN"). ' +
+      'Prefer talk_to_object instead: stand in the booth with walk_to_object, then talk_to_object with the address.',
     input_schema: {
       type: 'object',
       properties: {
         ref: { type: 'string' },
-        port_number: { type: 'integer' },
+        port_number: { type: 'string', description: 'Destination address string (e.g. "HOME", "DOWNTOWN").' },
       },
       required: ['ref'],
     },
