@@ -31,6 +31,8 @@
 const {
   HANDS, THE_REGION, SCREEN_WIDTH, OPEN_BIT, UNLOCKED_BIT,
 } = require('../constants')
+const { byTypeName } = require('../classes')
+const { getWalkOffsets } = require('../walk_offsets')
 
 // How long a walk animation "plays" for a given distance: the C64
 // blocked on animation_wait_bit until the avatar finished walking. We
@@ -57,24 +59,58 @@ function gotoCoords(world, noid) {
   return { x: o.mod.x, y: o.mod.y }
 }
 
-// Port of get_object_walk_xy (Main/walkto.m) for door-type objects:
-// stand at obj.x + 0 approaching from the left, obj.x + 32 from the
-// right (32px door width, from the image walk-offset bytes); flipped
-// orientation (bit 0) swaps sides and negates the offset.
+// Port of get_object_walk_xy (Main/walkto.m).
+// Uses per-(class, style) walk-offset tables from Constants.java via
+// walk_offsets.js. The C64 prop-file header bytes 4/5/6 store left/right
+// approach X offsets and a Y delta; orientation bit 0 (flipped) mirrors
+// the X position using the first cel's width. Falls back to hardcoded
+// door values (0 / 32) when the class has no table entry.
 function adjacentCoords(world, noid) {
   const obj = world.get(noid)
   if (!obj || obj.mod.x === undefined) return null
   const me = world.me
   const myX = me ? me.mod.x : 80
   const flipped = !!(obj.mod.orientation & 1)
-  let goRight = myX > obj.mod.x
-  if (flipped) goRight = !goRight
-  const rawOffset = goRight ? 32 : 0
-  const xOffset = flipped ? -rawOffset : rawOffset
-  return {
-    x: Math.max(8, Math.min(152, obj.mod.x + xOffset)),
-    y: obj.mod.y,
+  const classNum = byTypeName[obj.type]
+  const offsets = getWalkOffsets(classNum, obj.mod.style)
+
+  let xLeft, xRight, yDelta
+  if (offsets) {
+    xLeft  = offsets.xLeft
+    xRight = offsets.xRight
+    yDelta = offsets.yDelta
+  } else {
+    // fallback: door-sized offsets (0 / 32) for unmapped types
+    xLeft = 0; xRight = 32; yDelta = 0
   }
+
+  // Side selection: avatar to the left of the object → approach from left.
+  // Flipped orientation XORs the choice (C64: try_side XOR flipped).
+  const tryLeft = myX < obj.mod.x
+  const useLeft = tryLeft !== flipped
+
+  // For flipped non-avatar objects the C64 two's-complement negates the
+  // walk offset (cel mirror), which simplifies to plain sign inversion —
+  // image_celWidth from Java Constants is unused (that code path was
+  // never activated in production; the sign-flip alone is correct).
+  const xOffset = useLeft ? xLeft : xRight
+  const x = flipped
+    ? obj.mod.x - xOffset
+    : obj.mod.x + xOffset
+
+  // Clamp to [8, 156] and 4-pixel align. If out of range on first try,
+  // try the other side (C64's try_other_side branch).
+  let xFinal = x & ~3
+  if (xFinal < 8 || xFinal > 156) {
+    const altOffset = useLeft ? xRight : xLeft
+    const altX = flipped ? obj.mod.x - altOffset : obj.mod.x + altOffset
+    xFinal = Math.max(8, Math.min(156, altX & ~3))
+  } else {
+    xFinal = Math.max(8, Math.min(156, xFinal))
+  }
+
+  const y = (obj.mod.y & 0x7F) + (yDelta || 0)
+  return { x: xFinal, y: Math.max(0, y) }
 }
 
 // Scan the region for a walkable surface object: Street or Ground first,
