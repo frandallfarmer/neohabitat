@@ -44,4 +44,6 @@ volumes/bridge_v2_bin/
 ansible/.ansible_cache/
 
 # habiworld test-fixture wire captures (dev-local)
-habibots/capture/
+
+# dev-local wire captures (mounted outside /habibots to avoid supervisor restarts)
+/captures/

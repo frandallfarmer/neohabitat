@@ -38,6 +38,9 @@ services:
       - ./habibots:/habibots
       - /habibots/node_modules
       - ./habiworld:/habiworld
+      # Wire captures live OUTSIDE /habibots so the node-supervisor file
+      # watcher doesn't restart the bots on every capture write.
+      - ./captures:/captures
     environment:
       - HABIBOTS_HOST=bridge_v2
       - HABIBOTS_PORT=2026
