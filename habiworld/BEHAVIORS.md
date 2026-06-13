@@ -1,12 +1,57 @@
 # Behavior Layer Port Plan
 
-> **Status (June 12 2026):** phases 1–5 implemented. 140 behaviors
-> ported; 844/849 class-table slots live. Deliberately unported
-> (fail as `unported:<name>`): `avatar_DIE`, `avatar_REINCARNATE`,
-> `generic_sendMail`, `ask_for_help` — the Tier-4 death/text-UI flows.
-> Not yet done: world.apply still routes host messages through the
-> flat deltas.js map rather than table slots 8+ (the delegates exist);
-> sagebot's remaining legacy tools aren't all cut over to dispatch.
+> **Status (June 12 2026):** phases 1–5 fully implemented and wired.
+>
+> **Behavior table:** 140 behaviors ported; 844/849 class-table slots live.
+> Deliberately unported (fail as `unported:<name>`): `avatar_DIE`,
+> `avatar_REINCARNATE`, `generic_sendMail`, `ask_for_help` — the Tier-4
+> death/text-UI flows.
+>
+> **SageBot dispatch wiring:** all C64 user-verb slots (DO, GET, PUT, TALK,
+> GO, STOP, DESTROY) now route through `performVerb(ACTION_*, noid)` rather
+> than legacy hand-rolled recipes. New tools: `walk_to_object` (ACTION_GO),
+> `talk_to_object` (ACTION_GO + ACTION_TALK), plus `open`/`close` now
+> dispatch through `generic_adjacentOpenClose` (correct walk-animation wait).
+> `put_down` finds the ground surface and dispatches ACTION_PUT through the
+> class table (generic_goToAndDropAt / generic_goToAndDropInto). The only
+> remaining legacy paths are: `throw_object` (hand-rolled, bypasses depends
+> chain by design), `zap_to_port` (integer port shortcut), and commerce/
+> one-shot ops (STUN, BUGOUT, etc.) that have no class-table walk requirement.
+>
+> **Host-message delta ops (ALLCAPS$) — `deltas.js` coverage:**
+>
+> | Op | Status | State changed |
+> |---|---|---|
+> | `WALK$` | ✓ | avatar x/y |
+> | `GET$` | ✓ | item containerRef → avatar HANDS |
+> | `PUT$` | ✓ | item containerRef → region/container |
+> | `GRABFROM$` | ✓ | item containerRef → my HANDS |
+> | `THROW$` | ✓ | item containerRef → region |
+> | `WEAR$` | ✓ | item containerRef → avatar HEAD slot |
+> | `REMOVE$` | ✓ | item containerRef → HANDS |
+> | `OPEN$` / `CLOSE$` | ✓ | `open_flags` on door/gate |
+> | `OPENCONTAINER$` / `CLOSECONTAINER$` | ✓ | `open_flags` on containers |
+> | `CHANGE$` | ✓ | `orientation` (changomatic) |
+> | `SEXCHANGE$` | ✓ | `orientation` bit 8 (gender) |
+> | `ROLL$` | ✓ | `gr_state` (die face) |
+> | `RESET$` | ✓ | `gr_state` (fake gun ready) |
+> | `FILL$` / `POUR$` | ✓ | `filled`, `gr_state` (bottle) |
+> | `SCAN$` | ✓ | `gr_state` (sensor result) |
+> | `FIDDLE_$` | ✓ | generic field write by offset |
+> | `CHANGELIGHT_$` | ✓ | `region.lighting` |
+> | `GOAWAY_$` | ✓ | object deleted (cascade) |
+> | `ON$` / `OFF$` | ✓ | `mod.on`; Flashlight/Floor_lamp also `gr_state` + `region.lighting` |
+> | `SIT$` | ✓ | avatar `containerRef` → seat (sit) or region (stand) |
+> | `SPRAY$` | ✓ | sprayee `mod.custom[0/1]` appearance |
+> | `VSELECT$` | ✓ | vendo `display_item` + `price` |
+> | `CHANGE_CONTAINERS_$` | ✓ | item forced out of avatar's hands to region |
+> | `WIND$` | ✓ | windup toy `wind_level` += 1 (cap 4) |
+> | `PAY$` / `PAYTO$` / `PAID$` / `SELL$` | todo | token denomination accounting |
+> | `POSTURE$`, `SPEAK$`, `ATTACK$`, `BASH$`, `FAKESHOOT$`, `RUB$`, `WISH$`, `TAKE$`, `BUGOUT$`, `DIG$`, `MUNCH$`, `FLUSH$`, `ZAPTO$`, `APPEARING_$`, `WAITFOR_$`, `PLAY_$`, `OBJECTSPEAK_$` | choreography | animation/sound/text only — deliberate no-ops |
+>
+> **Still not done:** `world.apply` still routes host messages through the flat
+> `deltas.js` map rather than the class-table slot-8+ delegates (the delegates
+> exist in `behaviors/host_messages.js` but are not yet the live path).
 
 Porting the C64 client's complete behavior system into habiworld: every
 `Behaviors/*.m` file becomes a JS function of the same name, dispatched
