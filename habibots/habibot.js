@@ -915,8 +915,18 @@ class HabiBot {
   }
 
   // ── Misc world objects ─────────────────────────────────────────────
-  directCompass(compassRef) {
-    return this.sendWithDelay({ op: 'DIRECT', to: compassRef }, 500)
+  // DIRECT a Compass. Compass.java replies (no `err`) with
+  //   { text: "WEST: <arrow>" }
+  // where <arrow> is a PETSCII direction char pointing the way to the
+  // West Pole: 124 '|' = UP, 125 '}' = DOWN, 126 '~' = LEFT, 127 = RIGHT.
+  // Translate it to a screen direction so the caller can report it.
+  async directCompass(compassRef) {
+    const reply = await this.sendForReply({ op: 'DIRECT', to: compassRef })
+    const ARROWS = { 124: 'UP', 125: 'DOWN', 126: 'LEFT', 127: 'RIGHT' }
+    const text = reply.text || ''
+    const arrow = text.charCodeAt(text.length - 1)
+    const direction = ARROWS[arrow] || null
+    return { ok: true, text, direction }
   }
   // SPRAY paints a body part from a Spray_can held in HANDS. `limb` is
   // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.).

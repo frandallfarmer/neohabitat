@@ -1321,9 +1321,11 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── misc world objects ──────────────────────────────────────
-      case 'direct_compass':
-        await withTimeout(bot.directCompass(args.ref), 10_000, 'direct_compass')
-        return { ok: true }
+      case 'direct_compass': {
+        const c = await withTimeout(bot.directCompass(args.ref), 10_000, 'direct_compass')
+        // The West Pole lies in the `direction` screen-direction from here.
+        return { ok: true, west_pole_direction: c.direction, raw: c.text }
+      }
       case 'spray_can': {
         const sprayed = await withTimeout(bot.sprayCan(args.ref, args.limb), 10_000, 'spray_can')
         return sprayed.ok ? { ok: true } : { ok: false, error: sprayed.reason }
