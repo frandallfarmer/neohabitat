@@ -881,8 +881,19 @@ class HabiBot {
   windToy(toyRef) {
     return this.sendWithDelay({ op: 'WIND', to: toyRef }, 500)
   }
-  rollDie(dieRef) {
-    return this.sendWithDelay({ op: 'ROLL', to: dieRef }, 500)
+  // ROLL a die. The server (Die.java) replies to the roller with
+  // ROLL_STATE = the new gr_state (the face value, 1..faces), and only
+  // broadcasts ROLL$ to NEIGHBORS — so our own roll result arrives in the
+  // reply, never as a delta. Read it, update the die's gr_state locally,
+  // and return the value so the caller can report it.
+  async rollDie(dieRef) {
+    const reply = await this.sendForReply({ op: 'ROLL', to: dieRef })
+    const value = reply.ROLL_STATE
+    if (value !== undefined) {
+      const die = this.world.getByRef(this.substituteName(dieRef))
+      if (die) die.mod.gr_state = value
+    }
+    return { ok: value !== undefined, value }
   }
   kingPiece(pieceRef) {
     return this.sendWithDelay({ op: 'KING', to: pieceRef }, 500)
@@ -908,10 +919,31 @@ class HabiBot {
     return this.sendWithDelay({ op: 'DIRECT', to: compassRef }, 500)
   }
   // SPRAY paints a body part from a Spray_can held in HANDS. `limb` is
-  // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.); a
-  // sensible default lets the can pick its current default target.
-  sprayCan(canRef, limb) {
-    return this.sendWithDelay({ op: 'SPRAY', to: canRef, limb: limb == null ? 0 : limb }, 500)
+  // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.).
+  //
+  // Spray_can.java replies in TWO shapes, neither using `err`:
+  //   guard failure (not holding the can / out of charges):
+  //     { success: 0|1, custom_1, custom_2 }
+  //   main path:
+  //     { SPRAY_SUCCESS: 0|1, SPRAY_CUSTOMIZE_0, SPRAY_CUSTOMIZE_1 }
+  // In both, success==1 means the spray landed and the two customize
+  // bytes are the avatar's new custom[0]/custom[1]. Apply them locally
+  // and report failure honestly (the common failure is spraying without
+  // the can in HANDS).
+  async sprayCan(canRef, limb) {
+    const reply = await this.sendForReply({
+      op: 'SPRAY', to: canRef, limb: limb == null ? 0 : limb,
+    })
+    const flag = reply.SPRAY_SUCCESS !== undefined ? reply.SPRAY_SUCCESS : reply.success
+    const ok = flag === 1 || flag === true
+    const c0 = reply.SPRAY_CUSTOMIZE_0 !== undefined ? reply.SPRAY_CUSTOMIZE_0 : reply.custom_1
+    const c1 = reply.SPRAY_CUSTOMIZE_1 !== undefined ? reply.SPRAY_CUSTOMIZE_1 : reply.custom_2
+    const me = this.world.me
+    if (me && Array.isArray(me.mod.custom)) {
+      if (c0 !== undefined) me.mod.custom[0] = c0
+      if (c1 !== undefined) me.mod.custom[1] = c1
+    }
+    return { ok, reason: ok ? undefined : 'spray-failed (need the can in HANDS, or it is empty)' }
   }
   fillBottle(bottleRef) {
     return this.sendWithDelay({ op: 'FILL', to: bottleRef }, 500)

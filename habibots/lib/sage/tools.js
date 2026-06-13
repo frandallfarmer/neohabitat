@@ -1299,9 +1299,12 @@ async function executeAction(toolUse, bot, ctx) {
       case 'wind_toy':
         await withTimeout(bot.windToy(args.ref), 10_000, 'wind_toy')
         return { ok: true }
-      case 'roll_die':
-        await withTimeout(bot.rollDie(args.ref), 10_000, 'roll_die')
-        return { ok: true }
+      case 'roll_die': {
+        const rolled = await withTimeout(bot.rollDie(args.ref), 10_000, 'roll_die')
+        return rolled.ok
+          ? { ok: true, value: rolled.value }
+          : { ok: false, error: 'die did not report a value' }
+      }
       case 'king_piece':
         await withTimeout(bot.kingPiece(args.ref), 10_000, 'king_piece')
         return { ok: true }
@@ -1321,9 +1324,10 @@ async function executeAction(toolUse, bot, ctx) {
       case 'direct_compass':
         await withTimeout(bot.directCompass(args.ref), 10_000, 'direct_compass')
         return { ok: true }
-      case 'spray_can':
-        await withTimeout(bot.sprayCan(args.ref, args.limb), 10_000, 'spray_can')
-        return { ok: true }
+      case 'spray_can': {
+        const sprayed = await withTimeout(bot.sprayCan(args.ref, args.limb), 10_000, 'spray_can')
+        return sprayed.ok ? { ok: true } : { ok: false, error: sprayed.reason }
+      }
       case 'fill_bottle':
         await withTimeout(bot.fillBottle(args.ref), 10_000, 'fill_bottle')
         return { ok: true }

@@ -69,23 +69,34 @@ async function spray_can_do(ctx) {
   const reply = await ctx.send({
     op: 'SPRAY', to: can.ref, limb: ctx.args.limb !== undefined ? ctx.args.limb : 0,
   })
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // Spray_can.java does NOT use `err`. It replies success/SPRAY_SUCCESS
+  // (1 = landed) with the new customize bytes. Two reply shapes:
+  //   guard failure: { success, custom_1, custom_2 }
+  //   main path:     { SPRAY_SUCCESS, SPRAY_CUSTOMIZE_0, SPRAY_CUSTOMIZE_1 }
+  // custom_1/SPRAY_CUSTOMIZE_0 → custom[0]; custom_2/SPRAY_CUSTOMIZE_1 → custom[1].
+  const flag = reply.SPRAY_SUCCESS !== undefined ? reply.SPRAY_SUCCESS : reply.success
+  if (!(flag === 1 || flag === true)) return ctx.beep('spray-failed')
   if (ctx.actor && Array.isArray(ctx.actor.mod.custom)) {
-    if (reply.custom_0 !== undefined) ctx.actor.mod.custom[0] = reply.custom_0
-    if (reply.custom_1 !== undefined) ctx.actor.mod.custom[1] = reply.custom_1
+    const c0 = reply.SPRAY_CUSTOMIZE_0 !== undefined ? reply.SPRAY_CUSTOMIZE_0 : reply.custom_1
+    const c1 = reply.SPRAY_CUSTOMIZE_1 !== undefined ? reply.SPRAY_CUSTOMIZE_1 : reply.custom_2
+    if (c0 !== undefined) ctx.actor.mod.custom[0] = c0
+    if (c1 !== undefined) ctx.actor.mod.custom[1] = c1
   }
   return { ok: true }
 }
 
-// spray_can_SPRAY.m (host): someone got resprayed — apply their new
-// pattern bytes.
+// spray_can_SPRAY.m (host): a neighbor got resprayed — apply their new
+// pattern bytes. Spray_can.java broadcasts SPRAY$ with SPRAY_SPRAYEE and
+// SPRAY_CUSTOMIZE_0 / SPRAY_CUSTOMIZE_1 (→ custom[0] / custom[1]).
 async function spray_can_SPRAY(ctx) {
   ctx.sound('SPRAY', ctx.pointed.noid)
   const sprayee = ctx.world.get(ctx.args.SPRAY_SPRAYEE !== undefined
     ? ctx.args.SPRAY_SPRAYEE : ctx.args.sprayee)
   if (sprayee && Array.isArray(sprayee.mod.custom)) {
-    if (ctx.args.custom_0 !== undefined) sprayee.mod.custom[0] = ctx.args.custom_0
-    if (ctx.args.custom_1 !== undefined) sprayee.mod.custom[1] = ctx.args.custom_1
+    const c0 = ctx.args.SPRAY_CUSTOMIZE_0 !== undefined ? ctx.args.SPRAY_CUSTOMIZE_0 : ctx.args.custom_0
+    const c1 = ctx.args.SPRAY_CUSTOMIZE_1 !== undefined ? ctx.args.SPRAY_CUSTOMIZE_1 : ctx.args.custom_1
+    if (c0 !== undefined) sprayee.mod.custom[0] = c0
+    if (c1 !== undefined) sprayee.mod.custom[1] = c1
   }
   return { ok: true }
 }
