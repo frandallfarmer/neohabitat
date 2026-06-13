@@ -96,6 +96,12 @@ function getInventory(bot) {
       name: r.name,
       noid: r.noid,
       slot: r.mod.y,
+      // Plain-language location so the LLM never has to decode raw slot
+      // numbers: slot 5 is the one active hand, slot 4 is the mailbox,
+      // everything else is dead storage you must pick_up before using.
+      location: r.mod.y === HANDS_SLOT ? 'HANDS (currently held)'
+        : r.mod.y === MAIL_SLOT ? 'mail-slot (mailbox)'
+          : `pocket slot ${r.mod.y} (stored — pick_up to move into HANDS before use)`,
     }
     if (item.type === 'Tokens') {
       const lo = r.mod.denom_lo || 0
@@ -109,6 +115,23 @@ function getInventory(bot) {
     items.push(item)
   }
   return items
+}
+
+// A single-glance summary of what the avatar is carrying and worth — the
+// shape list_inventory should hand the LLM so it never confuses HANDS vs
+// pocket storage, or bank money vs pocket Tokens. Bank balance is the
+// avatar's spendable money (what machines like the Coke/Choke charge);
+// pocket Tokens are physical cash items, a separate thing.
+function inventorySummary(bot) {
+  const items = getInventory(bot)
+  const held = items.find((i) => i.slot === HANDS_SLOT)
+  const me = bot.world && bot.world.me
+  return {
+    hands: held ? `holding ${held.name} (${held.type}, noid ${held.noid})` : 'empty',
+    bank_balance: me ? (me.mod.bankBalance || 0) : 0,
+    bank_note: 'bank_balance is your spendable money — vending machines (Coke/Choke, etc.) charge THIS, not pocket Tokens',
+    items,
+  }
 }
 
 // Screen-direction labels, clockwise: UP=0, RIGHT=1, DOWN=2, LEFT=3.
@@ -314,6 +337,7 @@ function currentContextKeys(bot) {
 module.exports = {
   objectsByType,
   getInventory,
+  inventorySummary,
   describeWorld,
   currentRegionRef,
   regionName,

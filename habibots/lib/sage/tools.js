@@ -385,7 +385,11 @@ const TOOLS = [
   },
   {
     name: 'list_inventory',
-    description: 'Look in your own pockets and list what you are currently carrying. Use this before claiming you have or don\'t have an item.',
+    description: 'Look in your own pockets and list what you are carrying, plus your bank balance. ' +
+      'Use this before claiming you have or don\'t have an item or money. Each item shows a `location`: ' +
+      '"HANDS (currently held)" is the one item in your hand; "pocket slot N" items are STORED and must be ' +
+      'picked up into HANDS before use; "mail-slot" is your mailbox. `hands` says what (if anything) you hold. ' +
+      '`bank_balance` is your spendable money that vending machines charge — pocket Tokens are separate cash items.',
     input_schema: { type: 'object', properties: {} },
   },
 
@@ -823,8 +827,10 @@ const TOOLS = [
   },
   {
     name: 'pay_machine',
-    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The machine\'s fixed price is ' +
-      'deducted from your pocket Tokens; you get whatever the machine dispenses.',
+    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The fixed price is deducted from your ' +
+      'BANK BALANCE (not pocket Tokens). Returns amount_charged. WARNING: paying does NOT mean you received ' +
+      'anything — a Coke_machine (the "Choke") charges you and dispenses NOTHING as a gag. Never claim you ' +
+      'got an item from a machine without confirming it via list_inventory.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },
@@ -1204,7 +1210,7 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
       }
       case 'list_inventory':
-        return { ok: true, items: awareness.getInventory(bot) }
+        return { ok: true, ...awareness.inventorySummary(bot) }
 
       // ── inter-avatar item transfer ──────────────────────────────
       case 'grab_from_avatar':
@@ -1376,9 +1382,10 @@ async function executeAction(toolUse, bot, ctx) {
       case 'stun_avatar':
         await withTimeout(bot.stunAvatar(args.ref, args.target_noid), 10_000, 'stun_avatar')
         return { ok: true }
-      case 'pull_grenade_pin':
-        await withTimeout(bot.pullGrenadePin(args.ref), 10_000, 'pull_grenade_pin')
-        return { ok: true }
+      case 'pull_grenade_pin': {
+        const pulled = await withTimeout(bot.pullGrenadePin(args.ref), 10_000, 'pull_grenade_pin')
+        return pulled.ok ? { ok: true } : { ok: false, error: pulled.reason }
+      }
       case 'fake_shoot':
         await withTimeout(bot.fakeShoot(args.ref), 10_000, 'fake_shoot')
         return { ok: true }
@@ -1405,9 +1412,20 @@ async function executeAction(toolUse, bot, ctx) {
       case 'withdraw_from_atm':
         await withTimeout(bot.withdrawFromAtm(args.ref, args.amount), 10_000, 'withdraw_from_atm')
         return { ok: true }
-      case 'pay_machine':
-        await withTimeout(bot.payMachine(args.ref), 10_000, 'pay_machine')
-        return { ok: true }
+      case 'pay_machine': {
+        const paid = await withTimeout(bot.payMachine(args.ref), 10_000, 'pay_machine')
+        if (!paid.ok) return { ok: false, error: paid.reason }
+        // Paid != dispensed. Tell the truth: charged this much; check your
+        // inventory for whatever (if anything) came out. A Coke/Choke
+        // machine charges and dispenses nothing — that's the gag.
+        return {
+          ok: true,
+          amount_charged: paid.amount,
+          note: 'Payment was charged to your bank balance. This does NOT mean anything was dispensed — ' +
+            'a Coke_machine (Choke) takes your money and gives nothing back. Check list_inventory to see ' +
+            'if an item actually appeared before claiming you received one.',
+        }
+      }
       case 'vend_item':
         await withTimeout(bot.vendItem(args.ref), 10_000, 'vend_item')
         return { ok: true }
