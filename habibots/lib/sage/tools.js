@@ -31,7 +31,7 @@
 const log = require('winston')
 const awareness = require('./awareness')
 const { sanitizeForC64 } = require('./petscii')
-const { ACTION_DO, ACTION_GO, ACTION_TALK } = require('../../../habiworld').constants
+const { ACTION_DO, ACTION_GET, ACTION_GO, ACTION_PUT, ACTION_TALK } = require('../../../habiworld').constants
 
 const TOOLS = [
   // ── movement / navigation ────────────────────────────────────────
@@ -1004,7 +1004,7 @@ async function executeAction(toolUse, bot, ctx) {
         // precondition, walk to the item, send GET, and apply the
         // pickup to the world model on the success reply — awareness
         // reflects the item in HANDS immediately.
-        const got = await withTimeout(bot.performAction('GET', { noid: args.noid }), 20_000, 'pick_up')
+        const got = await withTimeout(bot.performVerb(ACTION_GET, args.noid), 20_000, 'pick_up')
         if (!got.ok) {
           const why = {
             'hands-full': 'your HANDS are full — put_down or give away the held item first',
@@ -1044,12 +1044,23 @@ async function executeAction(toolUse, bot, ctx) {
               `then put_down will work. Do NOT tell anyone you put it down — you haven\'t.`,
           }
         }
-        if (args.container_noid) {
-          // putInto a container — not yet a habiworld recipe; legacy path.
-          await withTimeout(putDown(bot, args.ref, args.container_noid, args.x, args.y, args.orientation), 10_000, 'put_down')
-          return { ok: true }
-        }
-        const put = await withTimeout(bot.performAction('PUT', { x: args.x || 80, y: args.y || 144 }), 20_000, 'put_down')
+        // Dispatch ACTION_PUT on the drop target (ground surface or container).
+        // The target's PUT slot handles the walk and drop:
+        //   ground/street → generic_goToAndDropAt (walk to coords, bend over, drop)
+        //   bag/box/chest  → generic_goToAndDropInto (walk to container, drop in)
+        const targetNoid = args.container_noid || (() => {
+          for (const o of bot.world.objects.values()) {
+            if (o.containerRef !== bot.world.region.ref) continue
+            if (o.type === 'Street' || o.type === 'Ground') return o.noid
+            if ((o.type === 'Flat' || o.type === 'Trapezoid' || o.type === 'Super_trapezoid') &&
+                o.mod.flat_type === 2) return o.noid
+          }
+          return null
+        })()
+        if (!targetNoid) return { ok: false, error: 'no walkable surface found in region' }
+        const put = await withTimeout(
+          bot.performVerb(ACTION_PUT, targetNoid, { x: args.x || 80, y: args.y || 144 }),
+          20_000, 'put_down')
         if (!put.ok) {
           return { ok: false, error: `server refused the PUT (${put.reason})` }
         }
@@ -1061,13 +1072,17 @@ async function executeAction(toolUse, bot, ctx) {
         // world model on the success reply — so sage no longer believes
         // it still holds what it just gave away. item_noid remains
         // informational; the server transfers whatever is in HANDS.
-        const gave = await withTimeout(bot.performAction('HAND', { noid: args.recipient_noid }), 20_000, 'give_to_avatar')
+        // avatar_put.m: ACTION_PUT pointed at an avatar = the give gesture.
+        const recipient = bot.world.get(args.recipient_noid)
+        if (!recipient || recipient.type !== 'Avatar') {
+          return { ok: false, error: `no avatar with noid ${args.recipient_noid} here` }
+        }
+        const gave = await withTimeout(
+          bot.performVerb(ACTION_PUT, args.recipient_noid), 20_000, 'give_to_avatar')
         if (!gave.ok) {
           const why = {
             'hands-empty': 'your HANDS are empty — pick_up the item first, then give it',
-            'no-such-avatar': `no avatar with noid ${args.recipient_noid} here`,
             'server-denied': 'the server refused the HAND (recipient busy or out of reach)',
-            'not-in-region': 'not in a region yet',
           }[gave.reason] || gave.reason
           return { ok: false, error: why }
         }

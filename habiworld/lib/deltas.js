@@ -346,17 +346,125 @@ const DELTAS = {
     },
   },
 
+  // ── device on/off ─────────────────────────────────────────────────
+
+  // Toggle.java:generic_ON / generic_OFF — sets mod.on and, for
+  // Flashlight/Floor_lamp, also gr_state and region lighting.
+  // Wire: { noid: toggle_object }  (no extra fields)
+  'ON$': {
+    src: 'Toggle.java:generic_ON',
+    apply(world, msg) {
+      const o = world.get(msg.noid)
+      if (!o) return
+      o.mod.on = 1
+      if (o.type === 'Flashlight' || o.type === 'Floor_lamp') {
+        o.mod.gr_state = 1
+        world.region.lighting = (world.region.lighting || 0) + 1
+        world.emit('lighting', world.region.lighting)
+      }
+      world.emit('fieldChanged', o, null)
+    },
+  },
+  'OFF$': {
+    src: 'Toggle.java:generic_OFF',
+    apply(world, msg) {
+      const o = world.get(msg.noid)
+      if (!o) return
+      o.mod.on = 0
+      if (o.type === 'Flashlight' || o.type === 'Floor_lamp') {
+        o.mod.gr_state = 0
+        world.region.lighting = (world.region.lighting || 0) - 1
+        world.emit('lighting', world.region.lighting)
+      }
+      world.emit('fieldChanged', o, null)
+    },
+  },
+
+  // ── avatar sits / stands ──────────────────────────────────────────
+
+  // Avatar.java:SITORSTAND — tracks sitting state via containerRef.
+  // Sitting moves the avatar into the seat's slot (containerRef = seat);
+  // standing returns them to the region. The Y coordinate is overloaded:
+  // for sitting it's the slot index; for standing it's the floor Y.
+  // Wire: { noid: avatar, up_or_down: 1=SIT_DOWN/0=STAND_UP, cont: seat_noid, slot: int }
+  'SIT$': {
+    src: 'Behaviors/avatar_SITORGETUP.m / Avatar.java',
+    apply(world, msg) {
+      const avatar = world.get(msg.noid)
+      if (!avatar) return
+      if (msg.up_or_down) { // SIT_DOWN
+        world._changeContainers(msg.noid, msg.cont, 0, msg.slot || 0)
+      } else { // STAND_UP
+        const seat = world.get(msg.cont)
+        const x = seat ? seat.mod.x : (avatar.mod.x || 80)
+        const y = seat ? (seat.mod.y | 0x80) : 144
+        world._changeContainers(msg.noid, 0 /* THE_REGION */, x, y)
+      }
+    },
+  },
+
+  // ── avatar spray-painted ──────────────────────────────────────────
+
+  // Spray_can.java — updates the sprayee's custom[] appearance array.
+  // Wire: { noid: spray_can, SPRAY_SPRAYEE: avatar_noid,
+  //         SPRAY_CUSTOMIZE_0: int, SPRAY_CUSTOMIZE_1: int }
+  'SPRAY$': {
+    src: 'mods/Spray_can.java',
+    apply(world, msg) {
+      const sprayee = world.get(msg.SPRAY_SPRAYEE)
+      if (!sprayee) return
+      sprayee.mod.custom = [msg.SPRAY_CUSTOMIZE_0 || 0, msg.SPRAY_CUSTOMIZE_1 || 0]
+      world.emit('fieldChanged', sprayee, null)
+    },
+  },
+
+  // ── vendo item selection ──────────────────────────────────────────
+
+  // Vendo_front.java — someone cycled the vendo display.
+  // Wire: { noid: vendo_front, price_lo: int, price_hi: int, display_item: int }
+  'VSELECT$': {
+    src: 'mods/Vendo_front.java',
+    apply(world, msg) {
+      const vendo = world.get(msg.noid)
+      if (!vendo) return
+      vendo.mod.display_item = msg.display_item
+      vendo.mod.price = ((msg.price_hi || 0) << 8) | (msg.price_lo & 0xff)
+      world.emit('fieldChanged', vendo, null)
+    },
+  },
+
+  // ── item dropped by avatar (out of band) ─────────────────────────
+
+  // Avatar.java:drop_object_in_hand — broadcasts when the server forces
+  // an avatar to drop what they're holding (region change, death, etc.).
+  // Wire: { object_noid: int, container_noid: int, x: int, y: int }
+  'CHANGE_CONTAINERS_$': {
+    src: 'Avatar.java:drop_object_in_hand',
+    apply(world, msg) {
+      world._changeContainers(msg.object_noid, msg.container_noid, msg.x, msg.y)
+    },
+  },
+
+  // ── windup toy wound ─────────────────────────────────────────────
+
+  // Windup_toy.java — wind_level increments (cap 4).
+  // Wire: { noid: windup_toy }
+  'WIND$': {
+    src: 'mods/Windup_toy.java',
+    apply(world, msg) {
+      const o = world.get(msg.noid)
+      if (!o) return
+      o.mod.wind_level = Math.min(4, (o.mod.wind_level || 0) + 1)
+      world.emit('fieldChanged', o, null)
+    },
+  },
+
   // ── not yet ported ────────────────────────────────────────────────
 
-  'SIT$':   { todo: true, src: 'Behaviors/avatar_SITORGETUP.m' },
   'PAY$':   { todo: true, src: 'mods/Tokens (denomination transfer)' },
   'PAYTO$': { todo: true, src: 'mods/Tokens' },
   'PAID$':  { todo: true, src: 'Behaviors/avatar_PAID.m' },
   'SELL$':  { todo: true, src: 'mods/Vendo (item/token exchange)' },
-  // VSELECT$ moves two items between container slots inside the vendo
-  // machine; complex enough to warrant a careful read of the Java before
-  // porting. Wire: { noid: vendo_front, price_lo, price_hi, display_item }
-  'VSELECT$': { todo: true, src: 'mods/Vendo_front.java' },
 
   // ── choreography only (sound, animation, text) — deliberate no-ops ─
 
@@ -367,7 +475,6 @@ const DELTAS = {
   'ATTACK$':     { choreography: true, src: 'Behaviors/avatar_ATTACK.m (anim; damage arrives via FIDDLE/CHANGE)' },
   'BASH$':       { choreography: true, src: 'Behaviors/avatar_BASH.m' },
   'FAKESHOOT$':  { choreography: true, src: 'mods/Gun (fake)' },
-  'SPRAY$':      { choreography: true, src: 'mods/Spray_can' },
   'RUB$':        { choreography: true, src: 'mods/Magic_lamp (anim; effects arrive separately)' },
   'WISH$':       { choreography: true, src: 'mods (wish text)' },
   'WISH_MESSAGE':{ choreography: true, src: 'mods (wish text)' },
@@ -380,7 +487,6 @@ const DELTAS = {
   'DIG$':     { choreography: true, src: 'Behaviors/shovel_DIG.m / Shovel.java' },
   'MUNCH$':   { choreography: true, src: 'mods/Pawn_machine.java (eating anim; item removed via GOAWAY_$)' },
   'FLUSH$':   { choreography: true, src: 'mods/Garbage_can.java (lid anim)' },
-  'WIND$':    { choreography: true, src: 'mods/Windup_toy.java (wind anim)' },
   // ZAPTO$: teleporter boing animation for observers. The teleporting avatar
   // exits via a normal changeContext/delete sequence.
   'ZAPTO$':    { choreography: true, src: 'Teleporter.java (teleport anim)' },
