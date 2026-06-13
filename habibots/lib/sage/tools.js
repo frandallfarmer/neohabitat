@@ -1139,17 +1139,17 @@ async function executeAction(toolUse, bot, ctx) {
       // ── containers ──────────────────────────────────────────────
       // DO on a door/container dispatches generic_adjacentOpenClose which
       // walks adjacent, waits for the animation, then sends OPEN/CLOSE.
-      case 'open': {
-        const opened = await withTimeout(
-          bot.performVerb(ACTION_DO, args.noid),
-          30_000, 'open')
-        return opened.ok ? { ok: true } : { ok: false, error: opened.reason }
-      }
+      case 'open':
       case 'close': {
-        const closed = await withTimeout(
-          bot.performVerb(ACTION_DO, args.noid),
-          30_000, 'close')
-        return closed.ok ? { ok: true } : { ok: false, error: closed.reason }
+        // Container/door DO toggles (generic_adjacentOpenClose*) do NOT
+        // walk — they punt to depends() when not adjacent, so the OPEN
+        // never reaches the wire and looks like a silent refusal. Walk
+        // adjacent first (GO), then fire the DO toggle. Matches the C64
+        // GO-then-DO sequence and talk_to_object's pattern.
+        const go = await withTimeout(bot.performVerb(ACTION_GO, args.noid), 30_000, `${name}.walk`)
+        if (!go.ok) return { ok: false, error: `could not walk to it: ${go.reason}` }
+        const toggled = await withTimeout(bot.performVerb(ACTION_DO, args.noid), 30_000, name)
+        return toggled.ok ? { ok: true } : { ok: false, error: toggled.reason }
       }
 
       // ── avatar state ────────────────────────────────────────────
