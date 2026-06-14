@@ -234,6 +234,15 @@ const TOOLS = [
     },
   },
   {
+    name: 'pocket_item',
+    description: 'Pocket the item you are CURRENTLY HOLDING (HANDS slot) — store it in a free pocket slot ' +
+      'of your own avatar. This is the C64 "PUT pointing at yourself". Use it to put away Tokens, a ' +
+      'Compass, etc. For Tokens it merges into any token wad already in your pocket. A Head you are ' +
+      'holding is worn if your head slot is free. Afterwards your HANDS are empty. Fails if your HANDS ' +
+      'are empty (nothing to pocket).',
+    input_schema: { type: 'object', properties: {} },
+  },
+  {
     name: 'give_to_avatar',
     description: 'Hand whatever is currently in your HANDS slot to another avatar. The full give-something ' +
       'recipe is: (1) pick_up the pocket item you want to give — this moves it from its pocket slot ' +
@@ -1091,6 +1100,18 @@ async function executeAction(toolUse, bot, ctx) {
           return { ok: false, error: `server refused the PUT (${put.reason})` }
         }
         return { ok: true }
+      }
+      case 'pocket_item': {
+        // avatar_put.m self branch: ACTION_PUT pointed at our OWN avatar
+        // pockets the held item (server picks the slot, merges Tokens).
+        const me = bot.world && bot.world.me
+        if (!me) return { ok: false, error: 'not in a region yet' }
+        if (!bot.world.holding(me.noid)) {
+          return { ok: false, error: 'your HANDS are empty — pick_up an item first, nothing to pocket' }
+        }
+        const pocketed = await withTimeout(
+          bot.performVerb(ACTION_PUT, me.noid), 20_000, 'pocket_item')
+        return pocketed.ok ? { ok: true } : { ok: false, error: pocketed.reason }
       }
       case 'give_to_avatar': {
         // habiworld HAND recipe: walks to the recipient first (the

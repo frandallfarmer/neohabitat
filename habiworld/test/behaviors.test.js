@@ -262,6 +262,23 @@ test('PUT at another avatar routes to avatar_put and hands the item over', async
   assert.equal(w.holding(21).noid, 30)
 })
 
+test('PUT at MYSELF pockets the held item (avatar_put its_me) — no walk, no HAND', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 17, target: 30, how: 1 }) // frisbee into our HANDS
+  assert.equal(w.holding(17).noid, 30)
+  // Server assigns pocket slot 7 in the PUT reply.
+  const { calls, cb } = recorder([{ type: 'reply', err: 1, pos: 7 }])
+  const result = await dispatch(w, ACTION_PUT, 17, {}, cb) // PUT pointing at self
+  assert.ok(result.ok)
+  assert.deepEqual(calls.walks, []) // pocketing doesn't walk
+  assert.equal(calls.sends.length, 1)
+  assert.equal(calls.sends[0].op, 'PUT')
+  assert.equal(calls.sends[0].containerNoid, 17) // into our own avatar
+  assert.equal(w.holding(17), null) // HANDS now empty
+  assert.equal(w.get(30).mod.y, 7) // item landed in the server-assigned pocket slot
+})
+
 test('GET at another avatar routes to avatar_get and GRABs from their hands', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
