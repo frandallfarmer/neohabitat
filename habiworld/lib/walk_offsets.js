@@ -1,18 +1,25 @@
 /* jshint esversion: 8 */
 'use strict'
 
-// Walk-adjacent coordinate tables ported verbatim from
-// src/main/java/org/made/neohabitat/Constants.java.
+// Walk-adjacent coordinate tables: the prop-file header walk bytes (4/5/6)
+// per (class, style), consumed by get_object_walk_xy in behaviors/kernel.js.
+// Transcribed from src/main/java/org/made/neohabitat/Constants.java and
+// spot-verified against the canonical C64 prop sources (Images/Props/*.m) —
+// e.g. Safe (class 150) safe1.m header `byte 240+right, 28+left, 255` →
+// xLeft=-16, xRight=28, yDelta=-1, matching the table exactly.
 //
-// Usage:
 //   const obase = IMAGE_BASE[classNum] + (mod.style || 0)
 //   IMAGE_X_LEFT[obase]   — left-approach X offset (signed pixels from obj.x)
 //   IMAGE_X_RIGHT[obase]  — right-approach X offset
-//   IMAGE_CEL_WIDTH[obase]— used to mirror position for flipped objects
-//   IMAGE_Y[obase]        — Y delta added to obj.y & 0x7F
+//   IMAGE_Y[obase]        — Y (depth) delta added to obj.y & 0x7F
 //
 // classNum comes from habiworld/lib/classes.js byTypeName[obj.type].
 // style comes from obj.mod.style (server-assigned image variant).
+//
+// NOTE: the prop header also carries a first-cel width used to mirror
+// flipped objects, but Constants.java's image_celWidth transcription is
+// wrong and a plain sign inversion reproduces the C64 result, so it is not
+// kept here (see kernel.js getObjectWalkXY).
 
 // classNum → base index into the per-style image arrays
 const IMAGE_BASE = [
@@ -182,72 +189,6 @@ const IMAGE_X_RIGHT = [
   24,  36,  20,   0,
 ]
 
-const IMAGE_CEL_WIDTH = [
-  0,
- -104, -104, -104, -104, -104, -104,    0,    0,
-  -32,   -8,    0,    0,   -8,    0,    0,   -8,
-    0,    0,    0,    0,    0,    0,    0,    0,
-    0,   -8,  -16,   -8,    0,  -40,    8,    8,
-  264,  -16,   -8,   -8,  -40,  -40,   -8,   -8,
-   -8,    0,    0,   -8,    0,  -24,    8,    0,
-    8,   -8,    8,   -8,    0,    8,    0,    0,
-    0,    0,    0,    0,    0,   56,   -8,    8,
-    0,   -8,    0,    0,    0,    0,    0,   -8,
-   -8,    0,    0,    0,    8,    0,    0,    0,
-    0,    0,    8,    8,    0,    8,    8,    8,
-   -8,    0,    8,  -16,    0,    0,    0,    0,
-    8,    0,  -16,    8,    8,  -32,  -40,   -8,
-   40,  -64,   -8,  -56,  -32,  -40,   -8,   40,
-  -64,   -8,  -56,   -8,   -8,   -8,    8,    0,
-    0,  -24,    8,    0,    0,  -64,  -64,    8,
-    8,    8,    0,    0,  -40,    0,  -48,  -48,
-    0,  -16,    0,    8,    0,    0,  -64,  -64,
-    8,    8,    8,    0,    0,  -40,    0,  -48,
-  -48,    0,    0,    0,  -16,    8,  -40,  -80,
-    0,    0,   -8,   -8,  -16,    0,    0,    0,
-    0,  -64,  -64,    8,    8,    8,    0,    0,
-  -40,    0,  -48,  -48,  -16,    0,    0,   16,
-    0,   -8,  -16,    0,  -24,  -16,   -8,    0,
-  -24,  -56,    8,  -16,   -8,   -8,   -8,   -8,
-  -16,  -40,  -24,    0,  -48,  -16,    8,  -40,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
-    0,    0,   -8,    8,    0,  -64,    0,    0,
-   -8, -104, -104, -104, -104, -104,    0, -104,
-    0, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
-  -32,  -64,   40,  -64,    8,  -64,  -64,    0,
-    0,   40,   40,   40,   40,   40,   40,  -16,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104,    0, -104,
-    0,  -24, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
-   -8,    0,    0,    0,    0,    0,    0,    0,
-    0, -104,    0,   -8,    8,    0,  -64,    0,
-    0, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104, -104,    0, -104,
-    0,    0, -104, -104, -104,    0, -104, -104,
- -104, -104, -104, -104, -104, -104, -104, -104,
-   -8,  -16,  -16,  -16,   -8,  -16,  -24,  -24,
-  -32,   40,    0,    8,    0,  -48,    0,    0,
- -104, -104, -104, -104, -104, -104, -104, -104,
- -104, -104, -104, -104, -104,   -8,  -72,  -72,
-  -40,  -48,   -8,    0,  -24,  -16,  -24,   -8,
-  -16,  -16,  -16,   -8,  -16,  -24,  -24,  -16,
-   -8,  -16,  -32,  -16,  -64,  -64,  -32,    0,
-    0,  -32,  -24,  -64,  -56,   -8,  -48,   -8,
-  -48,  -40,   48,   -8,   -8,  -16,  -40,  -16,
-  -64,   -8,   -8,   -8,  -16,  -40,  -24,    0,
-  -48,  -16,  -48,   -8,  -24,  -56,    8,  -16,
-  -16,  -24,  -16,  -16,
-]
-
 const IMAGE_Y = [
   0,
   0,   0,   0,   0,   0,   0,   0,   0,
@@ -323,11 +264,10 @@ function getWalkOffsets(classNum, style) {
   if (!base && classNum !== 0) return null
   const obase = base + (style || 0)
   return {
-    xLeft:    IMAGE_X_LEFT[obase],
-    xRight:   IMAGE_X_RIGHT[obase],
-    celWidth: IMAGE_CEL_WIDTH[obase],
-    yDelta:   IMAGE_Y[obase],
+    xLeft:  IMAGE_X_LEFT[obase],
+    xRight: IMAGE_X_RIGHT[obase],
+    yDelta: IMAGE_Y[obase],
   }
 }
 
-module.exports = { IMAGE_BASE, IMAGE_X_LEFT, IMAGE_X_RIGHT, IMAGE_CEL_WIDTH, IMAGE_Y, getWalkOffsets }
+module.exports = { getWalkOffsets }

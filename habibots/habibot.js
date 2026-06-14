@@ -991,8 +991,18 @@ class HabiBot {
   stunAvatar(gunRef, targetNoid) {
     return this.sendWithDelay({ op: 'STUN', to: gunRef, target: targetNoid }, 500)
   }
-  pullGrenadePin(grenadeRef) {
-    return this.sendWithDelay({ op: 'PULLPIN', to: grenadeRef }, 500)
+  // PULLPIN on a Grenade. Grenade.java replies { PULLPIN_SUCCESS } (1/0,
+  // not `err`). It only succeeds if you are HOLDING the grenade, the pin
+  // isn't already pulled, and you're not in a weapons-free zone — so a
+  // failure almost always means hands weren't on it. Surface that.
+  async pullGrenadePin(grenadeRef) {
+    const reply = await this.sendForReply({ op: 'PULLPIN', to: grenadeRef })
+    const ok = reply.PULLPIN_SUCCESS === 1 || reply.PULLPIN_SUCCESS === true
+    return {
+      ok,
+      reason: ok ? undefined
+        : 'pin not pulled — you must be HOLDING the grenade (pick_up first), the pin must not already be out, and it must not be a weapons-free zone',
+    }
   }
   fakeShoot(gunRef) {
     return this.sendWithDelay({ op: 'FAKESHOOT', to: gunRef }, 500)
@@ -1036,10 +1046,26 @@ class HabiBot {
       amount_hi: (amount >> 8) & 0xff,
     }, 500)
   }
-  // PAY — Coke_machine / Fortune_machine / Teleport. Charge is fixed
-  // by the machine; the bot just signals intent.
-  payMachine(machineRef) {
-    return this.sendWithDelay({ op: 'PAY', to: machineRef }, 500)
+  // PAY — Coke_machine / Fortune_machine / Teleport. The machine charges a
+  // fixed price by spending a TOKENS item the avatar is HOLDING IN HANDS
+  // (Tokens.spend → avatar.heldObject must be CLASS_TOKENS). It does NOT
+  // touch the bank balance, and pocket-stored tokens don't count — you must
+  // be holding tokens. Reply is { err, amount_lo, amount_hi }: err 1 = paid,
+  // 0 = not enough money (no tokens in HANDS / not enough); amount = price.
+  //
+  // IMPORTANT: paying does NOT imply anything is dispensed. A Coke_machine
+  // (the "Choke" gag) charges you, plays an OPERATE/CHUNK animation, and
+  // hands you nothing — that's the joke. Return the facts so the caller
+  // reports truthfully instead of inventing a drink.
+  async payMachine(machineRef) {
+    const reply = await this.sendForReply({ op: 'PAY', to: machineRef })
+    const paid = !!reply.err
+    const amount = (reply.amount_lo || 0) + (reply.amount_hi || 0) * 256
+    return {
+      ok: paid,
+      amount,
+      reason: paid ? undefined : 'not enough money — you must be HOLDING a Tokens item worth at least the price (bank balance does not count)',
+    }
   }
   // VEND — buy the currently-displayed item from a Vendo_front (charged
   // against pocket Tokens). VSELECT cycles through what's on display

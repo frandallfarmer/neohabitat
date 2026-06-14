@@ -16,6 +16,12 @@
 //
 //   HABITAT_CAPTURE=/tmp/test-region.jsonl node bots/sage.js ... --loglevel debug
 //
+// IMPORTANT: point HABITAT_CAPTURE at a path OUTSIDE the directory the dev
+// file-watcher (node-supervisor, `--watch /habibots`) watches. Writing the
+// capture under /habibots makes every wire message look like a source
+// change and restarts the bot in a tight loop. The dev compose mounts
+// ./captures:/captures for exactly this reason.
+//
 // then drive the bot (e.g. Randy summons SageBot into the TEST region and
 // exercises each item class). Convert the JSONL into a fixture with
 // habiworld/lib/tools/capture_to_fixture.js.

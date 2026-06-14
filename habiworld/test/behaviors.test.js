@@ -98,10 +98,34 @@ test('dispatch routes GET on an item through generic_goToAndGet', async () => {
   const { calls, cb } = recorder()
   const result = await dispatch(w, ACTION_GET, 30, {}, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 60, y: 140 }])
+  assert.deepEqual(calls.walks, [{ x: 40, y: 139 }]) // frisbee's walk-offset spot
   assert.equal(calls.waits.length, 1)
   assert.deepEqual(calls.sends, [{ op: 'GET', to: 'item-frisbee-1' }])
   assert.equal(w.holding(17).noid, 30)
+})
+
+test('a standalone GO waits out the walk animation (post-GO waitWhile)', async () => {
+  // The open/close tool and walk_to_object dispatch ACTION_GO on its own.
+  // generic_goTo walks but doesn't wait (the C64 caller does that), so the
+  // top-level dispatch must wait out the distance — otherwise the next step
+  // (the OPEN, etc.) fires before the walk animation finishes.
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder()
+  await dispatch(w, ACTION_GO, 30, {}, cb) // frisbee, far from the avatar (12,142)
+  assert.equal(calls.walks.length, 1)
+  assert.equal(calls.waits.length, 1, 'a standalone GO must wait out the walk')
+  assert.ok(calls.waits[0] > 0, 'the wait is distance-scaled, not zero')
+})
+
+test('nested GO does not double-wait (goToAndGet waits exactly once)', async () => {
+  // generic_goToAndGet does doAction(ACTION_GO) then waitWalkAnimation in one
+  // chain; the top-level post-walk wait must NOT add a second wait.
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder()
+  await dispatch(w, ACTION_GET, 30, {}, cb)
+  assert.equal(calls.waits.length, 1, 'exactly one wait, no double-wait')
 })
 
 // ── reply-contract regressions (ground truth from a live capture in the
@@ -233,9 +257,26 @@ test('PUT at another avatar routes to avatar_put and hands the item over', async
   const { calls, cb } = recorder()
   const result = await dispatch(w, ACTION_PUT, 21, {}, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 100, y: 140 }]) // avatar_go to Naibor
+  assert.deepEqual(calls.walks, [{ x: 80, y: 140 }]) // avatar_go to Naibor's walk-offset spot
   assert.deepEqual(calls.sends, [{ op: 'HAND', to: NAIBOR_REF }])
   assert.equal(w.holding(21).noid, 30)
+})
+
+test('PUT at MYSELF pockets the held item (avatar_put its_me) — no walk, no HAND', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 17, target: 30, how: 1 }) // frisbee into our HANDS
+  assert.equal(w.holding(17).noid, 30)
+  // Server assigns pocket slot 7 in the PUT reply.
+  const { calls, cb } = recorder([{ type: 'reply', err: 1, pos: 7 }])
+  const result = await dispatch(w, ACTION_PUT, 17, {}, cb) // PUT pointing at self
+  assert.ok(result.ok)
+  assert.deepEqual(calls.walks, []) // pocketing doesn't walk
+  assert.equal(calls.sends.length, 1)
+  assert.equal(calls.sends[0].op, 'PUT')
+  assert.equal(calls.sends[0].containerNoid, 17) // into our own avatar
+  assert.equal(w.holding(17), null) // HANDS now empty
+  assert.equal(w.get(30).mod.y, 7) // item landed in the server-assigned pocket slot
 })
 
 test('GET at another avatar routes to avatar_get and GRABs from their hands', async () => {

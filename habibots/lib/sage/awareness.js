@@ -96,6 +96,12 @@ function getInventory(bot) {
       name: r.name,
       noid: r.noid,
       slot: r.mod.y,
+      // Plain-language location so the LLM never has to decode raw slot
+      // numbers: slot 5 is the one active hand, slot 4 is the mailbox,
+      // everything else is dead storage you must pick_up before using.
+      location: r.mod.y === HANDS_SLOT ? 'HANDS (currently held)'
+        : r.mod.y === MAIL_SLOT ? 'mail-slot (mailbox)'
+          : `pocket slot ${r.mod.y} (stored — pick_up to move into HANDS before use)`,
     }
     if (item.type === 'Tokens') {
       const lo = r.mod.denom_lo || 0
@@ -109,6 +115,23 @@ function getInventory(bot) {
     items.push(item)
   }
   return items
+}
+
+// A single-glance summary of what the avatar is carrying and worth — the
+// shape list_inventory should hand the LLM so it never confuses HANDS vs
+// pocket storage, or bank money vs Tokens. Bank balance is account money
+// (the ATM/bank uses it). Coin-op machines (Coke/Choke, etc.) do NOT spend
+// the bank — they spend a Tokens item you are HOLDING IN HANDS.
+function inventorySummary(bot) {
+  const items = getInventory(bot)
+  const held = items.find((i) => i.slot === HANDS_SLOT)
+  const me = bot.world && bot.world.me
+  return {
+    hands: held ? `holding ${held.name} (${held.type}, noid ${held.noid})` : 'empty',
+    bank_balance: me ? (me.mod.bankBalance || 0) : 0,
+    bank_note: 'bank_balance is account money (ATM/bank). To pay a vending machine you must be HOLDING a Tokens item in HANDS — the bank balance does NOT work in machines.',
+    items,
+  }
 }
 
 // Screen-direction labels, clockwise: UP=0, RIGHT=1, DOWN=2, LEFT=3.
@@ -314,6 +337,7 @@ function currentContextKeys(bot) {
 module.exports = {
   objectsByType,
   getInventory,
+  inventorySummary,
   describeWorld,
   currentRegionRef,
   regionName,

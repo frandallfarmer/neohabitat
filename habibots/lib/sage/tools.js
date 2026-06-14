@@ -234,6 +234,15 @@ const TOOLS = [
     },
   },
   {
+    name: 'pocket_item',
+    description: 'Pocket the item you are CURRENTLY HOLDING (HANDS slot) — store it in a free pocket slot ' +
+      'of your own avatar. This is the C64 "PUT pointing at yourself". Use it to put away Tokens, a ' +
+      'Compass, etc. For Tokens it merges into any token wad already in your pocket. A Head you are ' +
+      'holding is worn if your head slot is free. Afterwards your HANDS are empty. Fails if your HANDS ' +
+      'are empty (nothing to pocket).',
+    input_schema: { type: 'object', properties: {} },
+  },
+  {
     name: 'give_to_avatar',
     description: 'Hand whatever is currently in your HANDS slot to another avatar. The full give-something ' +
       'recipe is: (1) pick_up the pocket item you want to give — this moves it from its pocket slot ' +
@@ -385,7 +394,11 @@ const TOOLS = [
   },
   {
     name: 'list_inventory',
-    description: 'Look in your own pockets and list what you are currently carrying. Use this before claiming you have or don\'t have an item.',
+    description: 'Look in your own pockets and list what you are carrying, plus your bank balance. ' +
+      'Use this before claiming you have or don\'t have an item or money. Each item shows a `location`: ' +
+      '"HANDS (currently held)" is the one item in your hand; "pocket slot N" items are STORED and must be ' +
+      'picked up into HANDS before use; "mail-slot" is your mailbox. `hands` says what (if anything) you hold. ' +
+      '`bank_balance` is account money (ATM/bank only); to pay a vending machine you must be HOLDING a Tokens item.',
     input_schema: { type: 'object', properties: {} },
   },
 
@@ -823,8 +836,12 @@ const TOOLS = [
   },
   {
     name: 'pay_machine',
-    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The machine\'s fixed price is ' +
-      'deducted from your pocket Tokens; you get whatever the machine dispenses.',
+    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The fixed price is paid with a TOKENS ' +
+      'item you are HOLDING IN HANDS — NOT your bank balance, and NOT pocket-stored tokens. If your hands ' +
+      'are empty (or not holding enough tokens) it fails with "not enough money"; pick_up a Tokens item ' +
+      'first. Returns amount_charged. WARNING: paying does NOT mean you received anything — a Coke_machine ' +
+      '(the "Choke") charges you and dispenses NOTHING as a gag. Never claim you got an item from a machine ' +
+      'without confirming it via list_inventory.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },
@@ -1084,6 +1101,18 @@ async function executeAction(toolUse, bot, ctx) {
         }
         return { ok: true }
       }
+      case 'pocket_item': {
+        // avatar_put.m self branch: ACTION_PUT pointed at our OWN avatar
+        // pockets the held item (server picks the slot, merges Tokens).
+        const me = bot.world && bot.world.me
+        if (!me) return { ok: false, error: 'not in a region yet' }
+        if (!bot.world.holding(me.noid)) {
+          return { ok: false, error: 'your HANDS are empty — pick_up an item first, nothing to pocket' }
+        }
+        const pocketed = await withTimeout(
+          bot.performVerb(ACTION_PUT, me.noid), 20_000, 'pocket_item')
+        return pocketed.ok ? { ok: true } : { ok: false, error: pocketed.reason }
+      }
       case 'give_to_avatar': {
         // habiworld HAND recipe: walks to the recipient first (the
         // goToAnd* pattern) and moves the item out of our HANDS in the
@@ -1133,17 +1162,17 @@ async function executeAction(toolUse, bot, ctx) {
       // ── containers ──────────────────────────────────────────────
       // DO on a door/container dispatches generic_adjacentOpenClose which
       // walks adjacent, waits for the animation, then sends OPEN/CLOSE.
-      case 'open': {
-        const opened = await withTimeout(
-          bot.performVerb(ACTION_DO, args.noid),
-          30_000, 'open')
-        return opened.ok ? { ok: true } : { ok: false, error: opened.reason }
-      }
+      case 'open':
       case 'close': {
-        const closed = await withTimeout(
-          bot.performVerb(ACTION_DO, args.noid),
-          30_000, 'close')
-        return closed.ok ? { ok: true } : { ok: false, error: closed.reason }
+        // Container/door DO toggles (generic_adjacentOpenClose*) do NOT
+        // walk — they punt to depends() when not adjacent, so the OPEN
+        // never reaches the wire and looks like a silent refusal. Walk
+        // adjacent first (GO), then fire the DO toggle. Matches the C64
+        // GO-then-DO sequence and talk_to_object's pattern.
+        const go = await withTimeout(bot.performVerb(ACTION_GO, args.noid), 30_000, `${name}.walk`)
+        if (!go.ok) return { ok: false, error: `could not walk to it: ${go.reason}` }
+        const toggled = await withTimeout(bot.performVerb(ACTION_DO, args.noid), 30_000, name)
+        return toggled.ok ? { ok: true } : { ok: false, error: toggled.reason }
       }
 
       // ── avatar state ────────────────────────────────────────────
@@ -1204,7 +1233,7 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
       }
       case 'list_inventory':
-        return { ok: true, items: awareness.getInventory(bot) }
+        return { ok: true, ...awareness.inventorySummary(bot) }
 
       // ── inter-avatar item transfer ──────────────────────────────
       case 'grab_from_avatar':
@@ -1376,9 +1405,10 @@ async function executeAction(toolUse, bot, ctx) {
       case 'stun_avatar':
         await withTimeout(bot.stunAvatar(args.ref, args.target_noid), 10_000, 'stun_avatar')
         return { ok: true }
-      case 'pull_grenade_pin':
-        await withTimeout(bot.pullGrenadePin(args.ref), 10_000, 'pull_grenade_pin')
-        return { ok: true }
+      case 'pull_grenade_pin': {
+        const pulled = await withTimeout(bot.pullGrenadePin(args.ref), 10_000, 'pull_grenade_pin')
+        return pulled.ok ? { ok: true } : { ok: false, error: pulled.reason }
+      }
       case 'fake_shoot':
         await withTimeout(bot.fakeShoot(args.ref), 10_000, 'fake_shoot')
         return { ok: true }
@@ -1405,9 +1435,20 @@ async function executeAction(toolUse, bot, ctx) {
       case 'withdraw_from_atm':
         await withTimeout(bot.withdrawFromAtm(args.ref, args.amount), 10_000, 'withdraw_from_atm')
         return { ok: true }
-      case 'pay_machine':
-        await withTimeout(bot.payMachine(args.ref), 10_000, 'pay_machine')
-        return { ok: true }
+      case 'pay_machine': {
+        const paid = await withTimeout(bot.payMachine(args.ref), 10_000, 'pay_machine')
+        if (!paid.ok) return { ok: false, error: paid.reason }
+        // Paid != dispensed. Tell the truth: charged this much; check your
+        // inventory for whatever (if anything) came out. A Coke/Choke
+        // machine charges and dispenses nothing — that's the gag.
+        return {
+          ok: true,
+          amount_charged: paid.amount,
+          note: 'Payment was charged to your bank balance. This does NOT mean anything was dispensed — ' +
+            'a Coke_machine (Choke) takes your money and gives nothing back. Check list_inventory to see ' +
+            'if an item actually appeared before claiming you received one.',
+        }
+      }
       case 'vend_item':
         await withTimeout(bot.vendItem(args.ref), 10_000, 'vend_item')
         return { ok: true }
