@@ -71,8 +71,13 @@ function recorder(replies) {
 
 // ── the class table itself ──────────────────────────────────────────
 
-test('class table: every class has the 8 user-verb slots and avatar has 31', () => {
+test('class table: every object class has the 8 user-verb slots and avatar has 31', () => {
+  // Region (0) carries no object action slots, and Zone (255) is a
+  // server-side meta class with an empty action table — both legitimately
+  // have fewer than 8 slots.
+  const NO_VERB_SLOTS = new Set([0, 255])
   for (const [num, entry] of Object.entries(classes.classes)) {
+    if (NO_VERB_SLOTS.has(Number(num))) continue
     assert.ok(entry.actions.length >= 8,
       `class ${entry.name} (${num}) has only ${entry.actions.length} action slots`)
   }
@@ -82,10 +87,11 @@ test('class table: every class has the 8 user-verb slots and avatar has 31', () 
   assert.equal(classes.byTypeName.Region, 0)
 })
 
-test('class table: door verbs match new.mud', () => {
+test('class table: door verbs match the canonical beta.mud', () => {
+  // Canonical: PUT (slot 5) is noEffect — items aren't dropped onto a door.
   assert.deepEqual(classes.classes[23].actions, [
     'generic_adjacentOpenClose', 'illegal', 'generic_goToOrPassThrough',
-    'generic_cease', 'noEffect', 'generic_goToAndDropAt',
+    'generic_cease', 'noEffect', 'noEffect',
     'generic_broadcast', 'generic_destroy',
   ])
 })
@@ -205,11 +211,13 @@ test('dispatch on an unported behavior fails loudly with the .m name', async (t)
 test('dispatch on an unknown server-only type uses the default item profile', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
+  // Sidewalk is a real server class (151) that the canonical .mud client
+  // table doesn't carry — so it exercises the DEFAULT_ITEM_ACTIONS fallback.
   w.apply({
     to: REGION_REF, op: 'make',
     obj: {
-      type: 'item', ref: 'item-ghost-1', name: 'Ghost',
-      mods: [{ type: 'Ghost', noid: 60, x: 40, y: 140, orientation: 0, gr_state: 0 }],
+      type: 'item', ref: 'item-sidewalk-1', name: 'Sidewalk',
+      mods: [{ type: 'Sidewalk', noid: 60, x: 40, y: 140, orientation: 0, gr_state: 0 }],
     },
   })
   const { calls, cb } = recorder()

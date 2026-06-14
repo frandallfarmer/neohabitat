@@ -104,6 +104,43 @@ async function teleport_ZAPTO(ctx) {
   return { ok: true }
 }
 
+// ── elevator (a Teleporter variant) ─────────────────────────────────
+// Server-side Elevator extends Teleporter; ZAPTO routes to
+// "otis-<area>-<floor>". Client behaviors mirror the teleport's.
+
+// elevator_talk.m: stand in the elevator and speak the desired floor —
+// ZAPTO with that text. The region change follows from the server. If not
+// adjacent (not in the car), the words just broadcast as ordinary speech.
+async function elevator_talk(ctx) {
+  if (ctx.isAdjacent()) {
+    const reply = await ctx.send({
+      op: 'ZAPTO', to: ctx.pointed.ref, port_number: String(ctx.args.text || ''),
+    })
+    if (succeeded(reply)) {
+      ctx.sound('ELEVATOR_DEPARTING', ctx.pointed.noid)
+      return { ok: true } // changeContext follows
+    }
+    ctx.sound('ELEVATOR_CONF_WAIT', ctx.pointed.noid)
+    return ctx.beep('bad-floor')
+  }
+  await ctx.send({ op: 'SPEAK', to: ctx.actor.ref, esp: 0, text: ctx.args.text || '' })
+  return { ok: true }
+}
+
+// elevator_ZAPIN.m (host): arrival flourish only.
+async function elevator_ZAPIN(ctx) {
+  ctx.sound('ELEVATOR_ARRIVAL', ctx.pointed.noid)
+  return { ok: true }
+}
+
+// elevator_ZAPTO / elevator_ZAPOUT.m (host): departure flourish; the
+// traveler's delete follows.
+async function elevator_ZAPTO(ctx) {
+  ctx.sound('ELEVATOR_DEPARTING', ctx.pointed.noid)
+  ctx.newImage(ctx.pointed.noid)
+  return { ok: true }
+}
+
 // ── stereo and tape ─────────────────────────────────────────────────
 
 // stereo_put.m: PUT at the stereo with a tape in hand loads the tape
@@ -304,6 +341,9 @@ module.exports = {
   teleport_talk,
   teleport_ZAPIN,
   teleport_ZAPTO,
+  elevator_talk,
+  elevator_ZAPIN,
+  elevator_ZAPTO,
   stereo_put,
   stereo_get,
   stereo_UNLOAD,
