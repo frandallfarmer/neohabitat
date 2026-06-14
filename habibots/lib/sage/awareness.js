@@ -119,9 +119,9 @@ function getInventory(bot) {
 
 // A single-glance summary of what the avatar is carrying and worth — the
 // shape list_inventory should hand the LLM so it never confuses HANDS vs
-// pocket storage, or bank money vs pocket Tokens. Bank balance is the
-// avatar's spendable money (what machines like the Coke/Choke charge);
-// pocket Tokens are physical cash items, a separate thing.
+// pocket storage, or bank money vs Tokens. Bank balance is account money
+// (the ATM/bank uses it). Coin-op machines (Coke/Choke, etc.) do NOT spend
+// the bank — they spend a Tokens item you are HOLDING IN HANDS.
 function inventorySummary(bot) {
   const items = getInventory(bot)
   const held = items.find((i) => i.slot === HANDS_SLOT)
@@ -129,7 +129,7 @@ function inventorySummary(bot) {
   return {
     hands: held ? `holding ${held.name} (${held.type}, noid ${held.noid})` : 'empty',
     bank_balance: me ? (me.mod.bankBalance || 0) : 0,
-    bank_note: 'bank_balance is your spendable money — vending machines (Coke/Choke, etc.) charge THIS, not pocket Tokens',
+    bank_note: 'bank_balance is account money (ATM/bank). To pay a vending machine you must be HOLDING a Tokens item in HANDS — the bank balance does NOT work in machines.',
     items,
   }
 }

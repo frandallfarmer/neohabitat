@@ -389,7 +389,7 @@ const TOOLS = [
       'Use this before claiming you have or don\'t have an item or money. Each item shows a `location`: ' +
       '"HANDS (currently held)" is the one item in your hand; "pocket slot N" items are STORED and must be ' +
       'picked up into HANDS before use; "mail-slot" is your mailbox. `hands` says what (if anything) you hold. ' +
-      '`bank_balance` is your spendable money that vending machines charge — pocket Tokens are separate cash items.',
+      '`bank_balance` is account money (ATM/bank only); to pay a vending machine you must be HOLDING a Tokens item.',
     input_schema: { type: 'object', properties: {} },
   },
 
@@ -827,10 +827,12 @@ const TOOLS = [
   },
   {
     name: 'pay_machine',
-    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The fixed price is deducted from your ' +
-      'BANK BALANCE (not pocket Tokens). Returns amount_charged. WARNING: paying does NOT mean you received ' +
-      'anything — a Coke_machine (the "Choke") charges you and dispenses NOTHING as a gag. Never claim you ' +
-      'got an item from a machine without confirming it via list_inventory.',
+    description: 'PAY a Coke_machine, Fortune_machine, or Teleport. The fixed price is paid with a TOKENS ' +
+      'item you are HOLDING IN HANDS — NOT your bank balance, and NOT pocket-stored tokens. If your hands ' +
+      'are empty (or not holding enough tokens) it fails with "not enough money"; pick_up a Tokens item ' +
+      'first. Returns amount_charged. WARNING: paying does NOT mean you received anything — a Coke_machine ' +
+      '(the "Choke") charges you and dispenses NOTHING as a gag. Never claim you got an item from a machine ' +
+      'without confirming it via list_inventory.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },

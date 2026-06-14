@@ -1046,10 +1046,12 @@ class HabiBot {
       amount_hi: (amount >> 8) & 0xff,
     }, 500)
   }
-  // PAY — Coke_machine / Fortune_machine / Teleport. Charge is fixed by
-  // the machine and deducted from the avatar's BANK BALANCE (not pocket
-  // Tokens). The reply is { err, amount_lo, amount_hi }: err 1 = paid,
-  // 0 = not enough money; amount = the price charged.
+  // PAY — Coke_machine / Fortune_machine / Teleport. The machine charges a
+  // fixed price by spending a TOKENS item the avatar is HOLDING IN HANDS
+  // (Tokens.spend → avatar.heldObject must be CLASS_TOKENS). It does NOT
+  // touch the bank balance, and pocket-stored tokens don't count — you must
+  // be holding tokens. Reply is { err, amount_lo, amount_hi }: err 1 = paid,
+  // 0 = not enough money (no tokens in HANDS / not enough); amount = price.
   //
   // IMPORTANT: paying does NOT imply anything is dispensed. A Coke_machine
   // (the "Choke" gag) charges you, plays an OPERATE/CHUNK animation, and
@@ -1062,7 +1064,7 @@ class HabiBot {
     return {
       ok: paid,
       amount,
-      reason: paid ? undefined : 'not enough money in your bank balance',
+      reason: paid ? undefined : 'not enough money — you must be HOLDING a Tokens item worth at least the price (bank balance does not count)',
     }
   }
   // VEND — buy the currently-displayed item from a Vendo_front (charged
