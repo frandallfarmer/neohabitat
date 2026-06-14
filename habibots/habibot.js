@@ -839,7 +839,18 @@ class HabiBot {
     const req = page == null ? 0 : page
     const reply = await this.sendForReply({ op: 'READ', to: itemRef, page: req })
     const bytes = Array.isArray(reply.ascii) ? reply.ascii : []
-    const text = bytes.map((b) => String.fromCharCode(b)).join('').replace(/[\s ]+$/, '')
+    // The page bytes are PETASCII, not clean ASCII. Decode them exactly the
+    // way the server does for its own display (mods/Paper.java:408-422):
+    //   32..127 -> literal ASCII;  10 -> newline;  everything else -> space
+    // (CR/13, control codes, high/PETSCII bytes) so embedded carriage
+    // returns and graphic bytes don't leak through as \r or odd Unicode.
+    let text = ''
+    for (const b of bytes) {
+      if (b >= 32 && b <= 127) text += String.fromCharCode(b)
+      else if (b === 10) text += '\n'
+      else text += ' '
+    }
+    text = text.replace(/[ \t]+\n/g, '\n').replace(/\s+$/, '')
     return { ok: true, page: req, text, nextPage: reply.nextpage }
   }
 

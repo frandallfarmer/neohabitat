@@ -428,9 +428,12 @@ const TOOLS = [
   // ── generic item interaction ─────────────────────────────────────
   {
     name: 'read',
-    description: 'READ a Book, Paper, Plaque, or Sign. Returns the page `text` and `next_page` (the page ' +
-      'number to request to continue). Start at page=0; to read the next page, call read again with ' +
-      'page=next_page. You get the ACTUAL text back — quote or summarize it; do not invent contents.',
+    description: 'READ a Book, Paper, Plaque, or Sign. Returns the object you read (`ref`, `name`), the ' +
+      'page `text`, and `next_page`. IMPORTANT: page=0 means "advance to the next page" — the document ' +
+      'keeps a reading cursor, so calling read(page=0) repeatedly walks through the SAME document page by ' +
+      'page (it does NOT re-read the start). Pass a positive page number to jump to a specific page. The ' +
+      'result always names which object was read, so do not mix up two similar items (e.g. two plaques) — ' +
+      'check `ref`/`name`. You get the ACTUAL text back; quote or summarize it, never invent contents.',
     input_schema: {
       type: 'object',
       properties: {
@@ -1252,9 +1255,19 @@ async function executeAction(toolUse, bot, ctx) {
       // ── generic item interaction ────────────────────────────────
       case 'read': {
         const r = await withTimeout(bot.readObject(args.ref, args.page), 10_000, 'read')
-        // Surface the actual page text + the next page to request, so sage
-        // can read and page through documents instead of guessing.
-        return { ok: true, page: r.page, text: r.text, next_page: r.nextPage }
+        // Echo WHICH object was read (ref + name) so sage can keep similar
+        // documents apart (e.g. two plaques), plus the page text and the
+        // next page. The server keeps a per-document reading cursor that
+        // page=0 advances, so we report the cursor state explicitly.
+        const obj = bot.world && bot.world.getByRef(args.ref)
+        return {
+          ok: true,
+          ref: args.ref,
+          name: obj ? obj.name : undefined,
+          page: r.page,
+          text: r.text,
+          next_page: r.nextPage,
+        }
       }
       case 'write_paper':
         await withTimeout(bot.writePaper(args.ref, args.text || ''), 10_000, 'write_paper')
