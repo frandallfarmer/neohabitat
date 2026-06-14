@@ -671,8 +671,10 @@ const TOOLS = [
   },
   {
     name: 'dig_shovel',
-    description: 'DIG with a Shovel you are holding. Reveals buried items at your current location ' +
-      'if any are there. Mostly used in scavenger hunts.',
+    description: 'DIG with a Shovel you are holding — this is ONLY the digging gesture/animation; by ' +
+      'itself it reveals nothing. To actually dig out (open) or fill in (close) a HOLE and reach what is ' +
+      'buried in it: hold the Shovel, then do_object on the HOLE itself (a Hole is an openable container ' +
+      'that only responds while you hold a shovel). Then pick_up from / put_down into the open hole.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },
