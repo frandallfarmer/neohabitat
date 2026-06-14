@@ -97,7 +97,20 @@ async function run(world, slot, pointed, args, client, parent) {
     return run(world, ACTION_RDO, next, ctx.args, client, ctx)
   }
 
-  return fn(ctx)
+  // Nested dispatches (doAction/depends) just run — the outermost behavior
+  // owns the post-walk wait (or already issued waitWalkAnimation).
+  if (parent) return fn(ctx)
+
+  // Top-level dispatch: the C64 follows `doMyAction ACTION_GO` with
+  // `waitWhile animation_wait_bit`. A standalone GO (e.g. the open/close
+  // tool's walk step, or walk_to_object) has no in-habiworld caller to do
+  // that, so wait out any walk animation the behavior left unconsumed —
+  // the same 0–8s distance-scaled pause the goToAnd* recipes get inline.
+  // Behaviors that already called waitWalkAnimation leave millis = null, so
+  // this never double-waits.
+  const result = await fn(ctx)
+  if (ctx._walkState.millis !== null) await ctx.waitWalkAnimation()
+  return result
 }
 
 // Public entry point: run a verb against an object in the world.

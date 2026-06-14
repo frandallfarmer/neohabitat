@@ -104,6 +104,30 @@ test('dispatch routes GET on an item through generic_goToAndGet', async () => {
   assert.equal(w.holding(17).noid, 30)
 })
 
+test('a standalone GO waits out the walk animation (post-GO waitWhile)', async () => {
+  // The open/close tool and walk_to_object dispatch ACTION_GO on its own.
+  // generic_goTo walks but doesn't wait (the C64 caller does that), so the
+  // top-level dispatch must wait out the distance — otherwise the next step
+  // (the OPEN, etc.) fires before the walk animation finishes.
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder()
+  await dispatch(w, ACTION_GO, 30, {}, cb) // frisbee, far from the avatar (12,142)
+  assert.equal(calls.walks.length, 1)
+  assert.equal(calls.waits.length, 1, 'a standalone GO must wait out the walk')
+  assert.ok(calls.waits[0] > 0, 'the wait is distance-scaled, not zero')
+})
+
+test('nested GO does not double-wait (goToAndGet waits exactly once)', async () => {
+  // generic_goToAndGet does doAction(ACTION_GO) then waitWalkAnimation in one
+  // chain; the top-level post-walk wait must NOT add a second wait.
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder()
+  await dispatch(w, ACTION_GET, 30, {}, cb)
+  assert.equal(calls.waits.length, 1, 'exactly one wait, no double-wait')
+})
+
 // ── reply-contract regressions (ground truth from a live capture in the
 //    Testing Grounds: Spray_can.java replies with success/SPRAY_SUCCESS
 //    and the customize bytes, never `err`) ────────────────────────────
