@@ -704,7 +704,10 @@ const TOOLS = [
   },
   {
     name: 'scan_sensor',
-    description: 'SCAN — point a Sensor at the region for a description of what\'s here.',
+    description: 'SCAN — sweep the region with a Sensor, which is a WEAPONS detector: it checks whether a ' +
+      'gun, knife, club, or grenade is present nearby. You must be HOLDING the sensor. The detection ' +
+      'result is not returned to you, so react in character to the act of scanning rather than asserting ' +
+      'a specific reading.',
     input_schema: {
       type: 'object',
       properties: { ref: { type: 'string' } },
