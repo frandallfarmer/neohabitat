@@ -5,6 +5,7 @@
 const { test } = require('node:test')
 const assert = require('node:assert')
 const { HabitatWorld, constants, actions } = require('../index')
+const { adjacentCoords } = require('../lib/behaviors/kernel')
 const { HANDS, THE_REGION, OPEN_BIT } = constants
 
 // Same fixture as world.test.js: us (noid 17), Naibor (noid 21), a
@@ -76,14 +77,16 @@ test('GET walks to the item, waits out the walk, sends GET, and lands it in HAND
   const { calls, cb } = recorder()
   const result = await actions.perform(w, 'GET', { noid: 30 }, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 60, y: 140 }]) // flashlight's spot
-  // Walk-animation wait scaled by distance: me (12,142) → (60,140) is
-  // ~48 units ≈ 1.2 quarter-screens ≈ 1.2s; always within (0, 4000].
+  // find_goto_coords walk-offset spot for the flashlight (60,140), not the
+  // raw item position: stand to its left at x=40, depth-clamped y=135.
+  assert.deepEqual(calls.walks, [{ x: 40, y: 135 }])
+  // Walk-animation wait scaled by distance: me (12,142) → (40,135) is
+  // ~29 units ≈ 1.4s; always within (0, 8000].
   assert.equal(calls.waits.length, 1)
-  assert.ok(calls.waits[0] > 2000 && calls.waits[0] <= 8000)
+  assert.ok(calls.waits[0] > 1000 && calls.waits[0] <= 8000)
   assert.deepEqual(calls.sends, [{ op: 'GET', to: 'item-flashlight-1' }])
   // Our avatar's tracked position followed the walk.
-  assert.equal(w.me.mod.x, 60)
+  assert.equal(w.me.mod.x, 40)
   const held = w.holding(17)
   assert.ok(held)
   assert.equal(held.noid, 30)
@@ -148,7 +151,7 @@ test('HAND walks to the recipient and transfers the held item to them', async ()
   const { calls, cb } = recorder()
   const result = await actions.perform(w, 'HAND', { noid: 21 }, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 100, y: 140 }]) // Naibor's spot
+  assert.deepEqual(calls.walks, [{ x: 80, y: 140 }]) // Naibor's walk-offset spot (left of 100)
   assert.deepEqual(calls.sends, [{ op: 'HAND', to: NAIBOR_REF }])
   // One wait: the walk animation. avatar_put.m brackets the send with
   // hand_out/hand_back chores but does not block on them — the earlier
@@ -256,7 +259,10 @@ test('GET on an item inside a container walks to the outermost container', async
   const { calls, cb } = recorder()
   const result = await actions.perform(w, 'GET', { noid: 41 }, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 90, y: 130 }]) // the box, not the paper's slot coords
+  // Walk-offset spot of the outermost container (the box at 90,130), not
+  // the paper's slot coords: find_goto_coords climbs containment then
+  // get_object_walk_xy → stand left of the box at x=72, y=129.
+  assert.deepEqual(calls.walks, [{ x: 72, y: 129 }])
   assert.equal(w.holding(17).noid, 41)
 })
 
@@ -340,4 +346,26 @@ test('adjacentCoords flipped door: right-wall door (orientation=1) stands 32px t
   const { calls, cb } = recorder()
   await actions.perform(w, 'OPEN', { noid: 60 }, cb)
   assert.equal(calls.walks[0].x, 96)
+})
+
+// Live-calibrated against the real C64 client (Randy in the Library): a
+// wall-mounted Safe at (30,80) in a region of depth 32. Randy stood adjacent
+// at (56,160) and opened it. get_object_walk_xy: x = (30+28)&0xFC = 56;
+// y = 128 + clamp((80&0x7f) + (-1), 0, 32) = 128 + 32 = 160. The region_depth
+// clamp drops the wall object's stand-spot to the floor — the bug that made
+// SageBot "refuse" the safe before find_goto_coords was ported faithfully.
+test('find_goto_coords: wall Safe — avatar stands on the floor (Randy calibration 56,160)', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.region.depth = 32 // Library depth (makeStorm omits it)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-safe-1', name: 'Wall safe',
+      mods: [{ type: 'Safe', noid: 80, x: 30, y: 80, orientation: 0, gr_state: 0, open_flags: 2 }],
+    },
+  })
+  w.me.mod.x = 80 // approach from the right, like Randy
+  const spot = adjacentCoords(w, 80)
+  assert.deepEqual(spot, { x: 56, y: 160 })
 })

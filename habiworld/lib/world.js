@@ -41,6 +41,10 @@ class HabitatWorld extends EventEmitter {
       neighbors: ['', '', '', ''],
       lighting: 0,
       realm: '',
+      // The walkable depth band. Avatars stand at y = 128 + depth (128 is
+      // the foreground/layer bit); get_object_walk_xy clamps walk targets
+      // into [0, depth]. Drives wall-vs-floor adjacency math.
+      depth: 0,
     }
     this.me = null // record of our own avatar (make arrives with you:true)
   }
@@ -140,6 +144,7 @@ class HabitatWorld extends EventEmitter {
       this.region.neighbors = mod.neighbors || ['', '', '', '']
       this.region.lighting = mod.lighting || 0
       this.region.realm = mod.realm || ''
+      this.region.depth = mod.depth || 0
       this.emit('regionDescribed', this.region)
       return
     }

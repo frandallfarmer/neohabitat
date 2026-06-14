@@ -98,7 +98,7 @@ test('dispatch routes GET on an item through generic_goToAndGet', async () => {
   const { calls, cb } = recorder()
   const result = await dispatch(w, ACTION_GET, 30, {}, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 60, y: 140 }])
+  assert.deepEqual(calls.walks, [{ x: 40, y: 139 }]) // frisbee's walk-offset spot
   assert.equal(calls.waits.length, 1)
   assert.deepEqual(calls.sends, [{ op: 'GET', to: 'item-frisbee-1' }])
   assert.equal(w.holding(17).noid, 30)
@@ -233,7 +233,7 @@ test('PUT at another avatar routes to avatar_put and hands the item over', async
   const { calls, cb } = recorder()
   const result = await dispatch(w, ACTION_PUT, 21, {}, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.walks, [{ x: 100, y: 140 }]) // avatar_go to Naibor
+  assert.deepEqual(calls.walks, [{ x: 80, y: 140 }]) // avatar_go to Naibor's walk-offset spot
   assert.deepEqual(calls.sends, [{ op: 'HAND', to: NAIBOR_REF }])
   assert.equal(w.holding(21).noid, 30)
 })
