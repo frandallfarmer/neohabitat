@@ -91,6 +91,8 @@ const TOOLS = [
       'first, then sends the text. Class-specific effects: Teleport — say the destination address ' +
       '(e.g. "HOME", "CENTRAL-1", a custom port code) to teleport there; the booth must be activated ' +
       'first (activate it with do_object after paying with pay_machine). ' +
+      'Elevator — stand in it (walk_to_object first) and say the desired FLOOR (e.g. "2") to ride to ' +
+      'that floor; this is the ONLY way to operate an elevator (do_object does nothing on it). ' +
       'Jukebox — words broadcast to the room. Magic_lamp (genie out) — make a wish. ' +
       'Most other objects — ordinary region broadcast.',
     input_schema: {
