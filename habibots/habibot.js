@@ -829,10 +829,18 @@ class HabiBot {
     return this.sendWithDelay({ op: 'ASK', to: itemRef, text: text || '' }, 500)
   }
 
-  // READ — Book/Paper/Plaque. page=0 means "next page"; positive jumps
-  // directly. Reply contents come back as object_say (one page at a time).
-  readObject(itemRef, page) {
-    return this.sendWithDelay({ op: 'READ', to: itemRef, page: page == null ? 0 : page }, 500)
+  // READ — Book/Paper/Plaque/Sign. The server replies with the requested
+  // page's text as a byte array plus the next page to request:
+  //   { ascii: int[], nextpage }
+  // (NOT object_say — the content is in the reply). Decode the bytes to a
+  // string, trim trailing pad spaces, and return the text so the caller can
+  // actually read it and page through multi-page documents via nextPage.
+  async readObject(itemRef, page) {
+    const req = page == null ? 0 : page
+    const reply = await this.sendForReply({ op: 'READ', to: itemRef, page: req })
+    const bytes = Array.isArray(reply.ascii) ? reply.ascii : []
+    const text = bytes.map((b) => String.fromCharCode(b)).join('').replace(/[\s ]+$/, '')
+    return { ok: true, page: req, text, nextPage: reply.nextpage }
   }
 
   // WRITE — overwrite a Paper's contents. text is a regular string; we

@@ -428,8 +428,9 @@ const TOOLS = [
   // ── generic item interaction ─────────────────────────────────────
   {
     name: 'read',
-    description: 'READ a Book, Paper, or Plaque. page=0 advances to the next page; positive jumps ' +
-      'directly. The page contents come back as private speech you can quote or summarize.',
+    description: 'READ a Book, Paper, Plaque, or Sign. Returns the page `text` and `next_page` (the page ' +
+      'number to request to continue). Start at page=0; to read the next page, call read again with ' +
+      'page=next_page. You get the ACTUAL text back — quote or summarize it; do not invent contents.',
     input_schema: {
       type: 'object',
       properties: {
@@ -1249,9 +1250,12 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── generic item interaction ────────────────────────────────
-      case 'read':
-        await withTimeout(bot.readObject(args.ref, args.page), 10_000, 'read')
-        return { ok: true }
+      case 'read': {
+        const r = await withTimeout(bot.readObject(args.ref, args.page), 10_000, 'read')
+        // Surface the actual page text + the next page to request, so sage
+        // can read and page through documents instead of guessing.
+        return { ok: true, page: r.page, text: r.text, next_page: r.nextPage }
+      }
       case 'write_paper':
         await withTimeout(bot.writePaper(args.ref, args.text || ''), 10_000, 'write_paper')
         return { ok: true }
