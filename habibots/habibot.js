@@ -886,69 +886,81 @@ class HabiBot {
     return this.sendWithDelay({ op: 'OFF', to: itemRef }, 500)
   }
 
-  // ── Apparel ────────────────────────────────────────────────────────
-  // WEAR moves a Head/Ring from HANDS to the corresponding worn slot;
-  // REMOVE reverses it. Avatar appearance updates broadcast to neighbors.
-  // WEAR a Head. head_WEAR (Head.java) is OVERLOADED by where the head is:
-  //   - head already in HANDS + worn slot free → wears it (HANDS→HEAD), err 1
-  //   - head already in HANDS + worn slot occupied → refused, err 0
-  //   - head NOT in HANDS (pocket/ground/etc.) → it just GETs it into HANDS
-  //     (err 1) — it does NOT put it on. You must WEAR again to wear it.
-  // The server only broadcasts WEAR$ to neighbors, so we update our own
-  // world model to match whichever of the two things actually happened.
-  async wearItem(itemRef) {
-    const item = this.world && this.world.getByRef(this.substituteName(itemRef))
+  // ── Get into HANDS ──────────────────────────────────────────────────
+  // GET an item into HANDS via the canonical path — the verb runs on the
+  // right TARGET, and the behavior owns the state change:
+  //   - item in MY OWN pocket → avatar_get on MYSELF (ACTION_GET, me.noid,
+  //     {item}). The pocket IS the avatar, so unpocketing anything (heads
+  //     included) is an avatar_get: it sends GET on the item, which the
+  //     server unpockets (head GET → head_WEAR → generic_GET for own pocket).
+  //   - anything else (ground, a worn head to doff, another avatar's hands)
+  //     → GET on the ITEM: head_get / generic_goToAndGet / avatar_get-other.
+  // head_get can NOT unpocket (it sends REMOVE), so pocket items must never
+  // be routed there — that was the "head won't budge from my pocket" bug.
+  async getIntoHands(noid) {
     const me = this.world && this.world.me
-    const held = me && this.world.holding(me.noid)
-    const wasInHands = !!(item && held && held.noid === item.noid)
-    const reply = await this.sendForReply({ op: 'WEAR', to: itemRef })
-    const ok = !!reply.err
-    if (!ok) {
-      return { ok: false, worn: false, reason: 'WEAR refused — that worn slot is already occupied (remove what you have on first)' }
-    }
-    if (item && me && wasInHands) {
-      // It was in hand → the server put it ON.
-      this.world._changeContainers(item.noid, me.noid, 0, worldConstants.HEAD)
-      return { ok: true, worn: true }
-    }
-    if (item && me) {
-      // It was elsewhere → the server only pulled it INTO your hands.
-      this.world._changeContainers(item.noid, me.noid, 0, worldConstants.HANDS)
-      return { ok: true, worn: false }
-    }
-    return { ok: true, worn: false }
+    const item = this.world && this.world.get(noid)
+    if (!item) return { ok: false, reason: 'no-such-object' }
+    const inMyPocket = !!(me && item.containerRef === me.ref &&
+      item.mod.y !== worldConstants.HANDS && item.mod.y !== worldConstants.HEAD)
+    return inMyPocket
+      ? this.performVerb(worldConstants.ACTION_GET, me.noid, { item: noid })
+      : this.performVerb(worldConstants.ACTION_GET, noid)
   }
-  // REMOVE a worn Head/Ring back into HANDS. Reply { err }: 1 = removed,
-  // 0 = nothing there to remove / hands not free. On success move the item
-  // worn-slot→HANDS in our world model (avatar_REMOVE.m), since the server
-  // only broadcasts REMOVE$ to neighbors.
+
+  // ── Apparel ────────────────────────────────────────────────────────
+  // Wearing/removing a head goes entirely through habiworld behaviors —
+  // the bot layer NEVER hand-rolls a _changeContainers (see the
+  // "habiworld owns all state" rule). The verb runs on the TARGET:
+  //   - put a HELD head on yourself → avatar_put self-branch (ACTION_PUT,
+  //     me.noid): wears it if the HEAD slot is free, else pockets it.
+  //   - a head not yet in HANDS → getIntoHands (avatar_get from a pocket,
+  //     head_get from the ground/worn).
+  // The behaviors apply the state change off the server's reply, so our
+  // model can never drift. We read it back afterwards to report what
+  // actually happened.
+  async wearItem(itemRef) {
+    const me = this.world && this.world.me
+    const item = this.world && this.world.getByRef(this.substituteName(itemRef))
+    if (!me || !item) return { ok: false, reason: 'not in a region, or no such item' }
+    const held = this.world.holding(me.noid)
+    if (!(held && held.noid === item.noid)) {
+      // Not in HANDS yet — GET it first (pocket → avatar_get, else head_get).
+      const got = await this.getIntoHands(item.noid)
+      return got.ok ? { ok: true, status: 'in-hands' } : { ok: false, reason: got.reason }
+    }
+    // In HANDS → PUT on self; avatar_put owns the wear-or-pocket decision.
+    const put = await this.performVerb(worldConstants.ACTION_PUT, me.noid)
+    if (!put.ok) return { ok: false, reason: put.reason }
+    const now = this.world.getByRef(item.ref)
+    const worn = !!(now && now.mod && now.mod.y === worldConstants.HEAD)
+    return { ok: true, status: worn ? 'worn' : 'pocketed' }
+  }
+  // Doff a worn head = GET it: head_get (ACTION_GET) sends REMOVE and moves
+  // it worn-slot→HANDS. The behavior owns the state change; no hand-roll.
   async removeItem(itemRef) {
     const item = this.world && this.world.getByRef(this.substituteName(itemRef))
-    const reply = await this.sendForReply({ op: 'REMOVE', to: itemRef })
-    const ok = !!reply.err
-    if (ok && item && this.world.me) {
-      this.world._changeContainers(item.noid, this.world.me.noid, 0, worldConstants.HANDS)
+    if (!item) return { ok: false, reason: 'no such item' }
+    const r = await this.performVerb(worldConstants.ACTION_GET, item.noid)
+    return {
+      ok: r.ok,
+      reason: r.ok ? undefined : (r.reason || 'REMOVE refused — nothing worn there, or your HANDS are not free'),
     }
-    return { ok, reason: ok ? undefined : 'REMOVE refused — nothing worn there, or your HANDS are not free' }
   }
 
   // ── Toys / games ───────────────────────────────────────────────────
   windToy(toyRef) {
     return this.sendWithDelay({ op: 'WIND', to: toyRef }, 500)
   }
-  // ROLL a die. The server (Die.java) replies to the roller with
-  // ROLL_STATE = the new gr_state (the face value, 1..faces), and only
-  // broadcasts ROLL$ to NEIGHBORS — so our own roll result arrives in the
-  // reply, never as a delta. Read it, update the die's gr_state locally,
-  // and return the value so the caller can report it.
+  // ROLL a die: DO on it → die_do (Behaviors/die_do.m). The behavior sends
+  // ROLL, reads ROLL_STATE from the reply, and applies the new gr_state to
+  // the model itself (the roller never gets a ROLL$ delta for its own roll).
+  // No hand-rolled state here — die_do owns it; we just relay the value.
   async rollDie(dieRef) {
-    const reply = await this.sendForReply({ op: 'ROLL', to: dieRef })
-    const value = reply.ROLL_STATE
-    if (value !== undefined) {
-      const die = this.world.getByRef(this.substituteName(dieRef))
-      if (die) die.mod.gr_state = value
-    }
-    return { ok: value !== undefined, value }
+    const die = this.world && this.world.getByRef(this.substituteName(dieRef))
+    if (!die) return { ok: false, value: undefined }
+    const r = await this.performVerb(worldConstants.ACTION_DO, die.noid)
+    return { ok: !!r.ok, value: r.value }
   }
   kingPiece(pieceRef) {
     return this.sendWithDelay({ op: 'KING', to: pieceRef }, 500)

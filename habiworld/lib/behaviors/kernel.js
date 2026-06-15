@@ -242,6 +242,14 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   ctx.changeContainers = (itemNoid, containerNoid, x, y) =>
     world._changeContainers(itemNoid, containerNoid, x, y)
 
+  // Set gr_state on the model and redraw (newImage). Used when the new
+  // state arrives in a reply to our own request (die_do's ROLL_STATE),
+  // not as a broadcast delta — keeps the state mutation inside habiworld.
+  ctx.changeState = (noid, state) => {
+    world._changeState(noid, state)
+    if (client.newImage) client.newImage(noid, state)
+  }
+
   ctx.gotoCoords = (noid) => gotoCoords(world, noid)
   ctx.adjacentCoords = (noid) => adjacentCoords(world, noid)
 

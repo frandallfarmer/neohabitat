@@ -204,6 +204,18 @@ class HabitatWorld extends EventEmitter {
     item.mod.y = y
     this.emit('containerChanged', item)
   }
+
+  // Set an object's gr_state (display/animation state). The canonical
+  // counterpart to a ROLL$/CHANGESTATE$ delta (deltas.js applies those for
+  // OTHER players' objects); behaviors call this for our OWN object when the
+  // new state arrives in a request reply rather than a broadcast — e.g.
+  // die_do reads ROLL_STATE from the ROLL reply (Behaviors/die_do.m).
+  _changeState(noid, state) {
+    const o = this.objects.get(noid)
+    if (!o) return
+    o.mod.gr_state = state
+    this.emit('stateChanged', o)
+  }
 }
 
 module.exports = { HabitatWorld, HANDS, HEAD, MAIL_SLOT, THE_REGION }

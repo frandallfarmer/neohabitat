@@ -200,10 +200,12 @@ const TOOLS = [
   {
     name: 'pick_up',
     description: 'GET an item — moves it into your HANDS slot. Works for items on the ground in the ' +
-      'room AND for items already in your own pocket (use it to pull a Token, Compass, etc. out of ' +
-      'a pocket slot into your HANDS so you can then give_to_avatar). Requires your HANDS to be ' +
-      'empty first; if you\'re already holding something, put_down or give it away before picking ' +
-      'up something new.',
+      'room AND for items already in your own pocket (Token, Compass, a HEAD — anything). ' +
+      'Your POCKET is part of your avatar, so retrieving anything FROM your pocket is always a ' +
+      'pick_up, even a head: if the user mentions "pocket" (e.g. "take the sheriff head out of your ' +
+      'pocket"), use pick_up on that item — do NOT treat it as removing a worn head. Requires your ' +
+      'HANDS to be empty first; if you\'re already holding something, put_down or give it away before ' +
+      'picking up something new.',
     input_schema: {
       type: 'object',
       properties: {
@@ -1046,15 +1048,17 @@ async function executeAction(toolUse, bot, ctx) {
 
       // ── object manipulation ─────────────────────────────────────
       case 'pick_up': {
-        // habiworld GET recipe (generic_goToAndGet.m): hands-empty
-        // precondition, walk to the item, send GET, and apply the
-        // pickup to the world model on the success reply — awareness
-        // reflects the item in HANDS immediately.
-        const got = await withTimeout(bot.performVerb(ACTION_GET, args.noid), 20_000, 'pick_up')
+        // bot.getIntoHands routes to the correct habiworld behavior:
+        // an item in our OWN pocket is unpocketed via avatar_get (GET on
+        // self); a ground item walks+GETs via generic_goToAndGet/head_get.
+        // The behavior applies the pickup to the model on the success reply.
+        const got = await withTimeout(bot.getIntoHands(args.noid), 20_000, 'pick_up')
         if (!got.ok) {
           const why = {
             'hands-full': 'your HANDS are full — put_down or give away the held item first',
             'no-such-object': `no object with noid ${args.noid} in this region`,
+            'no-such-pocket-item': `no object with noid ${args.noid} in your pocket`,
+            'not-in-my-pocket': `noid ${args.noid} is not in your pocket`,
             'server-denied': 'the server refused the GET (fixed in place, out of reach, or held by someone else)',
             'not-in-region': 'not in a region yet',
           }[got.reason] || got.reason
@@ -1359,18 +1363,28 @@ async function executeAction(toolUse, bot, ctx) {
 
       // ── apparel ─────────────────────────────────────────────────
       case 'wear_item': {
+        // wearItem routes through habiworld: ACTION_GET (head_get) to bring a
+        // head into HANDS, then ACTION_PUT on self (avatar_put) which wears it
+        // if the HEAD slot is free, else pockets it. Report what actually
+        // happened (read back from the model), never a local guess.
         const r = await withTimeout(bot.wearItem(args.ref), 10_000, 'wear_item')
         if (!r.ok) return { ok: false, error: r.reason }
-        // WEAR on a head that wasn't in HANDS only pulls it INTO your hands
-        // (Habitat overloads WEAR as a get); it is NOT on your head yet.
-        return r.worn
-          ? { ok: true, worn: true }
-          : {
+        if (r.status === 'worn') return { ok: true, worn: true }
+        if (r.status === 'pocketed') {
+          return {
             ok: true,
             worn: false,
-            note: 'The head is now in your HANDS (it was not held before, so WEAR just picked it up). ' +
-              'Call wear_item again to actually put it on.',
+            note: 'You are already wearing a head, so this one went into your POCKET. ' +
+              'remove_item the head you have on first, then wear this one.',
           }
+        }
+        // status === 'in-hands': it was not held before, so we just picked it up.
+        return {
+          ok: true,
+          worn: false,
+          note: 'The head is now in your HANDS (it was not held before). ' +
+            'Call wear_item again to actually put it on.',
+        }
       }
       case 'remove_item': {
         const removed = await withTimeout(bot.removeItem(args.ref), 10_000, 'remove_item')
