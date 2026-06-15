@@ -895,7 +895,8 @@ async function handleEsp(bot, from, text) {
     `${awareness.describeWorld(bot)}\n\n` +
     (memBlock ? `${memBlock}\n\n` : '') +
     `Event: ${from} sent you a PRIVATE ESP (telepathic message): "${text}"\n\n` +
-    `Reply privately. 1-2 sentences, in character. This is NOT public speech.`
+    `Output ONLY the words of your reply — plain text, 1-2 sentences, in character. ` +
+    `No tool calls, no "whisper(...)", no formatting. Just the spoken words.`
 
   const reply = await askClaude(prompt)
   if (!reply) return
