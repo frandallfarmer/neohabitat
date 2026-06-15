@@ -1358,12 +1358,14 @@ async function executeAction(toolUse, bot, ctx) {
       }
 
       // ── apparel ─────────────────────────────────────────────────
-      case 'wear_item':
-        await withTimeout(bot.wearItem(args.ref), 10_000, 'wear_item')
-        return { ok: true }
-      case 'remove_item':
-        await withTimeout(bot.removeItem(args.ref), 10_000, 'remove_item')
-        return { ok: true }
+      case 'wear_item': {
+        const worn = await withTimeout(bot.wearItem(args.ref), 10_000, 'wear_item')
+        return worn.ok ? { ok: true } : { ok: false, error: worn.reason }
+      }
+      case 'remove_item': {
+        const removed = await withTimeout(bot.removeItem(args.ref), 10_000, 'remove_item')
+        return removed.ok ? { ok: true } : { ok: false, error: removed.reason }
+      }
 
       // ── toys / games ────────────────────────────────────────────
       case 'wind_toy':

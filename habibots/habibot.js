@@ -889,11 +889,20 @@ class HabiBot {
   // ── Apparel ────────────────────────────────────────────────────────
   // WEAR moves a Head/Ring from HANDS to the corresponding worn slot;
   // REMOVE reverses it. Avatar appearance updates broadcast to neighbors.
-  wearItem(itemRef) {
-    return this.sendWithDelay({ op: 'WEAR', to: itemRef }, 500)
+  // WEAR a Head/Ring from HANDS to its worn slot. Reply is { err }: 1 =
+  // worn, 0 = refused (e.g. that slot is already occupied — you can only
+  // wear one head). Read it so the caller doesn't claim success on a fail.
+  async wearItem(itemRef) {
+    const reply = await this.sendForReply({ op: 'WEAR', to: itemRef })
+    const ok = !!reply.err
+    return { ok, reason: ok ? undefined : 'WEAR refused — that worn slot is already occupied (remove what you have on first)' }
   }
-  removeItem(itemRef) {
-    return this.sendWithDelay({ op: 'REMOVE', to: itemRef }, 500)
+  // REMOVE a worn Head/Ring back into HANDS. Reply { err }: 1 = removed,
+  // 0 = nothing there to remove / hands not free.
+  async removeItem(itemRef) {
+    const reply = await this.sendForReply({ op: 'REMOVE', to: itemRef })
+    const ok = !!reply.err
+    return { ok, reason: ok ? undefined : 'REMOVE refused — nothing worn there, or your HANDS are not free' }
   }
 
   // ── Toys / games ───────────────────────────────────────────────────
