@@ -1359,8 +1359,18 @@ async function executeAction(toolUse, bot, ctx) {
 
       // ── apparel ─────────────────────────────────────────────────
       case 'wear_item': {
-        const worn = await withTimeout(bot.wearItem(args.ref), 10_000, 'wear_item')
-        return worn.ok ? { ok: true } : { ok: false, error: worn.reason }
+        const r = await withTimeout(bot.wearItem(args.ref), 10_000, 'wear_item')
+        if (!r.ok) return { ok: false, error: r.reason }
+        // WEAR on a head that wasn't in HANDS only pulls it INTO your hands
+        // (Habitat overloads WEAR as a get); it is NOT on your head yet.
+        return r.worn
+          ? { ok: true, worn: true }
+          : {
+            ok: true,
+            worn: false,
+            note: 'The head is now in your HANDS (it was not held before, so WEAR just picked it up). ' +
+              'Call wear_item again to actually put it on.',
+          }
       }
       case 'remove_item': {
         const removed = await withTimeout(bot.removeItem(args.ref), 10_000, 'remove_item')

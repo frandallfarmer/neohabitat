@@ -889,19 +889,34 @@ class HabiBot {
   // ── Apparel ────────────────────────────────────────────────────────
   // WEAR moves a Head/Ring from HANDS to the corresponding worn slot;
   // REMOVE reverses it. Avatar appearance updates broadcast to neighbors.
-  // WEAR a Head/Ring from HANDS to its worn slot. Reply is { err }: 1 =
-  // worn, 0 = refused (e.g. that slot is already occupied — you can only
-  // wear one head). On success we also move the item HANDS→HEAD in our own
-  // world model (the server broadcasts WEAR$ to NEIGHBORS, not the actor,
-  // so nothing else updates our local state — same as avatar_WEAR.m).
+  // WEAR a Head. head_WEAR (Head.java) is OVERLOADED by where the head is:
+  //   - head already in HANDS + worn slot free → wears it (HANDS→HEAD), err 1
+  //   - head already in HANDS + worn slot occupied → refused, err 0
+  //   - head NOT in HANDS (pocket/ground/etc.) → it just GETs it into HANDS
+  //     (err 1) — it does NOT put it on. You must WEAR again to wear it.
+  // The server only broadcasts WEAR$ to neighbors, so we update our own
+  // world model to match whichever of the two things actually happened.
   async wearItem(itemRef) {
     const item = this.world && this.world.getByRef(this.substituteName(itemRef))
+    const me = this.world && this.world.me
+    const held = me && this.world.holding(me.noid)
+    const wasInHands = !!(item && held && held.noid === item.noid)
     const reply = await this.sendForReply({ op: 'WEAR', to: itemRef })
     const ok = !!reply.err
-    if (ok && item && this.world.me) {
-      this.world._changeContainers(item.noid, this.world.me.noid, 0, worldConstants.HEAD)
+    if (!ok) {
+      return { ok: false, worn: false, reason: 'WEAR refused — that worn slot is already occupied (remove what you have on first)' }
     }
-    return { ok, reason: ok ? undefined : 'WEAR refused — that worn slot is already occupied (remove what you have on first)' }
+    if (item && me && wasInHands) {
+      // It was in hand → the server put it ON.
+      this.world._changeContainers(item.noid, me.noid, 0, worldConstants.HEAD)
+      return { ok: true, worn: true }
+    }
+    if (item && me) {
+      // It was elsewhere → the server only pulled it INTO your hands.
+      this.world._changeContainers(item.noid, me.noid, 0, worldConstants.HANDS)
+      return { ok: true, worn: false }
+    }
+    return { ok: true, worn: false }
   }
   // REMOVE a worn Head/Ring back into HANDS. Reply { err }: 1 = removed,
   // 0 = nothing there to remove / hands not free. On success move the item

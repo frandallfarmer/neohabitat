@@ -255,11 +255,22 @@ const IMAGE_Y = [
  -1,  -1,  -5,   0,
 ]
 
+// Heads (CLASS_HEAD = 127) are SPECIAL: they don't live in the normal prop
+// pipeline — they have their own resource spec (C64 Images/Heads/Object_data
+// and the per-head .m files), and every head shares ONE walk offset:
+//   byte 244+right, 28+left, 255  →  xLeft -12, xRight 28, yDelta -1
+// Constants.java's per-style head entries are wrong (xLeft -64 etc.), which
+// made GOTO/GET a ground head walk far off to the side. Use the canonical
+// head offset for all head styles.
+const HEAD_CLASS = 127
+const HEAD_WALK = { xLeft: -12, xRight: 28, yDelta: -1 }
+
 // Return walk offsets for a given class number + style variant.
 // Returns null when the class has no image data (IMAGE_BASE[classNum] === 0
 // for classNum !== 0, meaning the slot is unmapped).
 function getWalkOffsets(classNum, style) {
   if (classNum === undefined || classNum === null) return null
+  if (classNum === HEAD_CLASS) return { ...HEAD_WALK }
   const base = IMAGE_BASE[classNum]
   if (!base && classNum !== 0) return null
   const obase = base + (style || 0)
