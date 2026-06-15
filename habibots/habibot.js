@@ -936,8 +936,12 @@ class HabiBot {
   }
 
   // ── Toys / games ───────────────────────────────────────────────────
+  // WIND — routes through windup_toy_do (ACTION_DO). Behavior checks that
+  // the toy is held, sends WIND, and bumps wind_level in the world model.
   windToy(toyRef) {
-    return this.sendWithDelay({ op: 'WIND', to: toyRef }, 500)
+    const obj = this.world && this.world.getByRef(toyRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-toy' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   // ROLL a die: DO on it → die_do (Behaviors/die_do.m). The behavior sends
   // ROLL, reads ROLL_STATE from the reply, and applies the new gr_state to
