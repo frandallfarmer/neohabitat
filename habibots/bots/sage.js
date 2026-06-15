@@ -324,6 +324,12 @@ const GREETING_COOLDOWN_MS = 5 * 60 * 1000 // 5 min
 const LLM_COOLDOWN_MS = 5_000            // global gap between calls
 const MAX_TOOL_TURNS = 5                 // hard cap on multi-turn tool loop
 let lastLlmCallAt = 0
+// ESP two-part message buffer. Avatar.ESP delivers two consecutive
+// OBJECTSPEAK_$s: "ESP from Name: " then the body. We hold the sender
+// name from the header until the body arrives (within ESP_HEADER_TTL_MS).
+let pendingEspFrom = null
+let pendingEspAt   = 0
+const ESP_HEADER_TTL_MS = 3000
 
 // Wrap a promise so it rejects after `ms` instead of hanging forever.
 // The bot is single-threaded by convention — one stuck await blocks every
@@ -866,18 +872,62 @@ SageBot.on('SPEAK$', async (bot, msg) => {
   }
 })
 
+// ── ESP reply handler ────────────────────────────────────────────────
+// Called when we've assembled a complete ESP (header + body). Asks Claude
+// for a reply using askClaude (NOT askClaudeWithTools) so the response is
+// never accidentally broadcast to the room — we whisper it ourselves.
+async function handleEsp(bot, from, text) {
+  if (looksLikeBot(from)) {
+    log.debug('ESP from bot %s — ignored', from)
+    return
+  }
+  log.info('ESP from %s: %s', from, text)
+  mem.logTurn({
+    bot: bot.config.username,
+    avatar: from,
+    region: awareness.currentRegionRef(bot),
+    direction: 'incoming',
+    text,
+  }).catch(() => {})
+
+  const memBlock = await memoryBlockFor(from)
+  const prompt =
+    `${awareness.describeWorld(bot)}\n\n` +
+    (memBlock ? `${memBlock}\n\n` : '') +
+    `Event: ${from} sent you a PRIVATE ESP (telepathic message): "${text}"\n\n` +
+    `Reply privately. 1-2 sentences, in character. This is NOT public speech.`
+
+  const reply = await askClaude(prompt)
+  if (!reply) return
+  const safe = sanitizeForC64(reply.trim())
+  if (!safe) return
+
+  // Set ESP target, send reply, exit ESP mode — all three in sequence so
+  // the bot leaves no persistent ESP state between interactions.
+  await bot.say(`to:${sanitizeForC64(from)}`)
+  await bot.ESPsay(safe)
+  await bot.ESPsay('')
+
+  log.info('ESP reply to %s: %s', from, safe)
+  mem.logTurn({
+    bot: bot.config.username,
+    avatar: from,
+    region: awareness.currentRegionRef(bot),
+    direction: 'outgoing',
+    text: safe,
+  }).catch(() => {})
+}
+
 // ── private message from elko (invites, ESP-from-others, system msgs) ─
 // OBJECTSPEAK_$ is elko's "object_say to one user" channel. It carries:
+//   - "ESP from Name: " + body (two messages) — handled via pendingEspFrom
 //   - "X invited you to join them, enter /ai to accept." (from /i)
 //   - "X asked to join you, enter /aj to accept." (from /j)
 //   - "SageBot has arrived." style arrival pings (own avatar, ignored)
 //   - Plaque/sign reads, command help, error replies
-// ESP-from-other-avatars arrives as a different op (broadcast SPEAK$
-// flagged esp:1 in elko's send_private_msg path); not handled here yet.
 //
-// We feed actual conversational pings (invites, errors, prompts the
-// user might want sage to react to) into Claude with the tool surface
-// available so sage can /ai or /aj its way back. Self-arrival pings
+// We feed actual conversational pings (invites, ESP, prompts the
+// user might want sage to react to) into Claude. Self-arrival pings
 // and noise are filtered out.
 SageBot.on('OBJECTSPEAK_$', async (bot, msg) => {
   try {
@@ -887,6 +937,25 @@ SageBot.on('OBJECTSPEAK_$', async (bot, msg) => {
     // every time elko enters us into a region and aren't worth a
     // Claude round-trip.
     if (text.includes(`${Argv.username} has arrived`)) return
+
+    // ── ESP: two-part delivery ─────────────────────────────────────
+    // Avatar.ESP calls object_say twice: "ESP from Name: " then the body.
+    // Buffer the sender on the header and assemble on the body.
+    const espHeader = text.match(/^ESP from (.+): $/)
+    if (espHeader) {
+      pendingEspFrom = espHeader[1]
+      pendingEspAt   = Date.now()
+      return
+    }
+    if (pendingEspFrom && Date.now() - pendingEspAt < ESP_HEADER_TTL_MS) {
+      const from = pendingEspFrom
+      const espText = text.trim()
+      pendingEspFrom = null
+      await handleEsp(bot, from, espText)
+      return
+    }
+    pendingEspFrom = null  // stale header — discard and fall through
+
     // Match the invite / join prompts elko sends. These are the
     // explicit actionable cases.
     const inviteMatch = text.match(/^(.+?) invited you to join them, enter \/ai to accept\.?$/)
