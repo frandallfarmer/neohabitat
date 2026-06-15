@@ -167,9 +167,11 @@ test('todo ops emit unhandledDelta instead of failing silently', () => {
   makeStorm(w)
   let unhandled = null
   w.on('unhandledDelta', (msg) => { unhandled = msg })
-  w.apply({ op: 'SIT$', noid: 17, up_or_down: 1, cont: 50, slot: 0 })
+  // PAY$ is still a `todo` delta (deltas.js) — SIT$ used to be the example
+  // here but has since been ported, so it no longer emits unhandledDelta.
+  w.apply({ op: 'PAY$', noid: 17, amount_lo: 5, amount_hi: 0 })
   assert.ok(unhandled)
-  assert.equal(unhandled.op, 'SIT$')
+  assert.equal(unhandled.op, 'PAY$')
 })
 
 test('unknown ops are ignored without throwing', () => {

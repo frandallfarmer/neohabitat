@@ -6,7 +6,7 @@ const { test } = require('node:test')
 const assert = require('node:assert')
 const { HabitatWorld, constants, dispatch, behaviors, classes } = require('../index')
 const {
-  HANDS, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
+  HANDS, HEAD, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
 } = constants
 
 const REGION_REF = 'context-Lori_Ln_113_front'
@@ -287,6 +287,44 @@ test('PUT at MYSELF pockets the held item (avatar_put its_me) — no walk, no HA
   assert.equal(w.get(30).mod.y, 7) // item landed in the server-assigned pocket slot
 })
 
+test('PUT a held head at MYSELF wears it when the HEAD slot is free', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-cat', name: 'cat head',
+      mods: [{ type: 'Head', noid: 60, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(60, 17, 0, HANDS) // cat head in our HANDS
+  const { calls, cb } = recorder([{ type: 'reply', noid: 60, err: 1 }])
+  const result = await dispatch(w, ACTION_PUT, 17, {}, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'WEAR', to: 'item-head-cat' }]) // worn, not pocketed
+  assert.equal(w.get(60).mod.y, HEAD) // moved into the HEAD slot
+})
+
+test('PUT a 2nd head at MYSELF pockets it when already wearing one', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // cat head already worn …
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-cat', name: 'cat head',
+      mods: [{ type: 'Head', noid: 60, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(60, 17, 0, HEAD)
+  // … angel head in HANDS.
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-angel', name: 'angel head',
+      mods: [{ type: 'Head', noid: 61, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(61, 17, 0, HANDS)
+  // Server assigns pocket slot 1 in the PUT reply (HEAD slot is taken).
+  const { calls, cb } = recorder([{ type: 'reply', noid: 61, err: 1, pos: 1 }])
+  const result = await dispatch(w, ACTION_PUT, 17, {}, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.sends[0].op, 'PUT') // pocketed, not WEAR
+  assert.equal(calls.sends[0].containerNoid, 17)
+  assert.notEqual(w.get(61).mod.y, HEAD) // angel did NOT land on the head
+  assert.equal(w.get(61).mod.y, 1) // it's in the server-assigned pocket slot
+  assert.equal(w.get(60).mod.y, HEAD) // cat still worn
+})
+
 test('GET at another avatar routes to avatar_get and GRABs from their hands', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
@@ -298,6 +336,49 @@ test('GET at another avatar routes to avatar_get and GRABs from their hands', as
   assert.deepEqual(calls.sends, [{ op: 'GRAB', to: NAIBOR_REF }])
   assert.equal(w.holding(17).noid, 30)
   assert.equal(w.holding(21), null)
+})
+
+// ── game state (gr_state owned by the behavior, not the bot layer) ──
+
+test('DO on a die rolls it: die_do sends ROLL, relays the value, sets gr_state', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-die-1', name: 'Die',
+      mods: [{ type: 'Die', noid: 40, x: 42, y: 140, orientation: 0, gr_state: 6, state: 6 }] } })
+  // No real server here: the recorder MOCKS the ROLL reply, so the rolled
+  // face is whatever we inject (the server's own RNG, Die.java's
+  // rand.nextInt, is out of scope for this unit test). Die.java replies
+  // ROLL_STATE only to the roller (ROLL$ goes to neighbors), so die_do must
+  // apply the new gr_state itself off the reply. gr_state starts at 6.
+  const { calls, cb } = recorder([{ type: 'reply', noid: 40, ROLL_STATE: 4 }])
+  const result = await dispatch(w, ACTION_DO, 40, {}, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'ROLL', to: 'item-die-1' }])
+  assert.equal(result.value, 4) // value relayed to the caller (rollDie) from ROLL_STATE
+  // Model state is set FROM the relayed value (not a coincidental literal),
+  // and it changed from the die's initial face (6).
+  assert.equal(w.get(40).mod.gr_state, result.value)
+  assert.notEqual(result.value, 6)
+})
+
+test('GET at MYSELF unpockets the named item (avatar_get its_me) — GET on the item, no REMOVE', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // A head sitting in my OWN pocket (slot 1). This is the case head_get
+  // can't handle (it would send REMOVE and beep) — the canonical path is
+  // GET pointed at myself, which sends GET on the item so the server
+  // unpockets it (head GET → head_WEAR → generic_GET for own pocket).
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-sheriff', name: 'Sherif Head',
+      mods: [{ type: 'Head', noid: 62, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(62, 17, 0, 1) // pocket slot 1
+  const { calls, cb } = recorder([{ type: 'reply', noid: 62, err: 1 }])
+  const result = await dispatch(w, ACTION_GET, 17, { item: 62 }, cb) // GET at self
+  assert.ok(result.ok)
+  assert.deepEqual(calls.walks, []) // no walk — it's in my pocket
+  assert.deepEqual(calls.sends, [{ op: 'GET', to: 'item-head-sheriff' }]) // GET, not REMOVE
+  assert.equal(w.holding(17).noid, 62) // head now in HANDS
 })
 
 // ── internal slot chaining ──────────────────────────────────────────
