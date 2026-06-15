@@ -38,6 +38,7 @@ const HOST_OPS = {
   avatar_PAID: 'PAID$',             // Behaviors/avatar_PAID.m
   bottle_FILL: 'FILL$',             // Behaviors/bottle_FILL.m
   bottle_POUR: 'POUR$',             // Behaviors/bottle_POUR.m
+  pawn_machine_MUNCH: 'MUNCH$',     // Behaviors/pawn_machine_MUNCH.m (anim only)
 }
 
 const delegates = {}

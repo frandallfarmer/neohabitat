@@ -167,6 +167,7 @@ B.avatar_put = require('./avatar_put')
 B.avatar_get = require('./avatar_get')
 B.head_get = require('./head_get')
 B.die_do = require('./die_do')
+B.plaque_do = require('./devices').plaque_do
 
 // ── family modules (several related .m ports per file) ──────────────
 

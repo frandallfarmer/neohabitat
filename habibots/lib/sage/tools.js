@@ -863,21 +863,23 @@ const TOOLS = [
   },
   {
     name: 'vend_item',
-    description: 'VEND — buy the currently-displayed item from a Vendo_front. Cost is deducted from ' +
-      'your pocket Tokens; the item appears in your region next to the vendo.',
+    description: 'VEND — buy the currently-displayed item from a vendo machine. ' +
+      'ALWAYS pass the Vendo_front ref (never Vendo_inside — the inside is an internal ' +
+      'component). Cost is deducted from your pocket Tokens; the item appears in the region.',
     input_schema: {
       type: 'object',
-      properties: { ref: { type: 'string' } },
+      properties: { ref: { type: 'string', description: 'ref of the Vendo_front object' } },
       required: ['ref'],
     },
   },
   {
     name: 'vendo_select',
-    description: 'VSELECT — cycle the Vendo_front\'s display to the next item available. Use before ' +
-      'vend_item if the visible item isn\'t the one you want.',
+    description: 'VSELECT — cycle the vendo display to the next available item. ' +
+      'ALWAYS pass the Vendo_front ref (never Vendo_inside). Use before vend_item ' +
+      'if the visible item is not the one you want.',
     input_schema: {
       type: 'object',
-      properties: { ref: { type: 'string' } },
+      properties: { ref: { type: 'string', description: 'ref of the Vendo_front object' } },
       required: ['ref'],
     },
   },

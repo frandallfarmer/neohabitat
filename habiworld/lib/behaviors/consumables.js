@@ -14,6 +14,7 @@
 
 const { ACTION_GO } = require('../constants')
 const { succeeded } = require('./kernel')
+const { decodeRead } = require('./devices')
 
 // bottle_rdo.m: DO something while holding the bottle → walk to the
 // target (subject), and if the bottle is full, MSG_POUR empties it.
@@ -92,11 +93,9 @@ async function book_do(ctx) {
   if (!reply) return ctx.beep('server-denied')
   if (reply.nextpage !== undefined) book.mod.current_page = reply.nextpage
   else book.mod.current_page = page
-  const text = reply.text !== undefined
-    ? (Array.isArray(reply.text) ? reply.text.join('\n') : reply.text)
-    : ''
+  const text = decodeRead(reply)
   ctx.balloon(text)
-  return { ok: true, text: text, page: book.mod.current_page }
+  return { ok: true, text, page: book.mod.current_page }
 }
 
 // gun_do.m: toggle the held gun's safety. Purely local on the C64 —

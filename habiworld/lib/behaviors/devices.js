@@ -103,18 +103,45 @@ async function generic_CHANGESTATE(ctx) {
 
 // ── reading and mass ────────────────────────────────────────────────
 
-// generic_read.m: DO on a held paper/book/etc. reads it — MSG_READ,
-// balloon the returned text. Not held → depends.
+// Server sends ascii: int[] (PETSCII bytes) + nextpage; decode to string.
+function decodeRead(reply) {
+  const bytes = Array.isArray(reply.ascii) ? reply.ascii : []
+  if (bytes.length === 0 && reply.text != null) return String(reply.text)
+  let text = ''
+  for (const b of bytes) {
+    if (b >= 32 && b <= 127) text += String.fromCharCode(b)
+    else if (b === 10) text += '\n'
+    else text += ' '
+  }
+  return text.replace(/[ \t]+\n/g, '\n').replace(/\s+$/, '')
+}
+
+// generic_read.m: DO on a held paper/note/etc. reads it — MSG_READ (no
+// page arg on the wire per the C64 source), balloon the returned text.
+// Not held → depends.
 async function generic_read(ctx) {
   const inHand = ctx.inHand
   if (!inHand || inHand.noid !== ctx.pointed.noid) return ctx.depends()
   const reply = await ctx.send({ op: 'READ', to: ctx.pointed.ref })
   if (!reply) return ctx.beep('server-denied')
-  const text = reply.text !== undefined
-    ? (Array.isArray(reply.text) ? reply.text.join('\n') : reply.text)
-    : ''
+  const text = decodeRead(reply)
   ctx.balloon(text)
-  return { ok: true, text: text }
+  return { ok: true, text }
+}
+
+// plaque_do.m: DO on a wall-mounted plaque — same as book_do but no
+// in-hand check (plaques cannot be picked up).
+async function plaque_do(ctx) {
+  const plaque = ctx.pointed
+  const page = ctx.args.page !== undefined ? ctx.args.page
+    : (plaque.mod.current_page !== undefined ? plaque.mod.current_page + 1 : 1)
+  const reply = await ctx.send({ op: 'READ', to: plaque.ref, page })
+  if (!reply) return ctx.beep('server-denied')
+  if (reply.nextpage !== undefined) plaque.mod.current_page = reply.nextpage
+  else plaque.mod.current_page = page
+  const text = decodeRead(reply)
+  ctx.balloon(text)
+  return { ok: true, text, page: plaque.mod.current_page }
 }
 
 // generic_getMass.m: like goToAndGet, but heavy objects (mass != 0)
@@ -142,6 +169,8 @@ module.exports = {
   generic_ONLIGHT,
   generic_OFFLIGHT,
   generic_CHANGESTATE,
+  decodeRead,
   generic_read,
+  plaque_do,
   generic_getMass,
 }

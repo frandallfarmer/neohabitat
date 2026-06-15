@@ -35,6 +35,17 @@ const {
   FIDDLE_CUSTOMIZE_OFFSET,
 } = require('./constants')
 
+// v_spend for delta handlers: debit the token wad held by avatarNoid.
+function debitTokens(world, avatarNoid, amount) {
+  if (avatarNoid === undefined || !amount) return
+  const wad = world.holding(avatarNoid)
+  if (!wad || wad.type !== 'Tokens') return
+  const denom = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
+  const left = Math.max(0, denom - amount)
+  wad.mod.denom_lo = left & 0xff
+  wad.mod.denom_hi = (left >> 8) & 0xff
+}
+
 const DELTAS = {
   // ── movement ──────────────────────────────────────────────────────
 
@@ -420,16 +431,27 @@ const DELTAS = {
 
   // ── vendo item selection ──────────────────────────────────────────
 
-  // Vendo_front.java — someone cycled the vendo display.
-  // Wire: { noid: vendo_front, price_lo: int, price_hi: int, display_item: int }
+  // Vendo_front.java / Behaviors/vendo_SELECT.m — someone cycled the display.
+  // Wire: { noid: vendo_front, price_lo, price_hi, display_item }
+  // Mirrors the same container swap vendo_do does: display window = slot 1 in
+  // vendo_inside; inventory items live in vendo_front at their numbered slots.
   'VSELECT$': {
-    src: 'mods/Vendo_front.java',
+    src: 'mods/Vendo_front.java / Behaviors/vendo_SELECT.m',
     apply(world, msg) {
-      const vendo = world.get(msg.noid)
-      if (!vendo) return
-      vendo.mod.display_item = msg.display_item
-      vendo.mod.price = ((msg.price_hi || 0) << 8) | (msg.price_lo & 0xff)
-      world.emit('fieldChanged', vendo, null)
+      const front = world.get(msg.noid)
+      if (!front) return
+      const newDisplayItem = msg.display_item
+      if (newDisplayItem === undefined || newDisplayItem === 255) return
+      const inside = world.getByRef(front.containerRef)
+      if (inside) {
+        const oldDisplay = world.inventory(inside.noid).find((o) => o.mod.y === 1)
+        if (oldDisplay) world._changeContainers(oldDisplay.noid, front.noid, 0, front.mod.display_item || 0)
+        const newDisplay = world.inventory(front.noid).find((o) => o.mod.y === newDisplayItem)
+        if (newDisplay) world._changeContainers(newDisplay.noid, inside.noid, 0, 1)
+      }
+      front.mod.display_item = newDisplayItem
+      front.mod.item_price = ((msg.price_hi || 0) << 8) | (msg.price_lo & 0xff)
+      world.emit('fieldChanged', front, null)
     },
   },
 
@@ -459,12 +481,61 @@ const DELTAS = {
     },
   },
 
-  // ── not yet ported ────────────────────────────────────────────────
+  // ── token payments ────────────────────────────────────────────────
 
-  'PAY$':   { todo: true, src: 'mods/Tokens (denomination transfer)' },
-  'PAYTO$': { todo: true, src: 'mods/Tokens' },
-  'PAID$':  { todo: true, src: 'Behaviors/avatar_PAID.m' },
-  'SELL$':  { todo: true, src: 'mods/Vendo (item/token exchange)' },
+  // PAY$ — simple coin-op payment (Coke_machine, fare_box, etc.)
+  // Wire: { noid: machine_noid, amount_lo, amount_hi }
+  // C64: coke_machine_PAY.m / generic_PAY.m read BUYER from byte 0 of the
+  // response vector (C64 binary protocol always prepended the actor's noid).
+  // Neohabitat's JSON protocol does not include that byte, so the buyer is
+  // unknown to observers — no token debit is possible here.
+  'PAY$': {
+    src: 'Behaviors/generic_PAY.m (buyer noid absent in neohabitat JSON wire)',
+    apply(/* world, msg */) {},
+  },
+
+  // PAYTO$ — credit-card / coin-op payment with explicit payer (fortune
+  // machine, teleport booth). Wire: { noid: machine_noid, payer, amount_lo,
+  // amount_hi }. Also activates the teleport booth display.
+  // C64: fortune_machine_PAY.m, teleport_PAY.m
+  'PAYTO$': {
+    src: 'mods/Fortune_machine.java / Teleport.java → Behaviors/teleport_PAY.m',
+    apply(world, msg) {
+      const amount = (msg.amount_lo || 0) + (msg.amount_hi || 0) * 256
+      debitTokens(world, msg.payer, amount)
+      const machine = world.get(msg.noid)
+      if (machine && machine.type === 'Teleport') {
+        machine.mod.state = 1 // TELEPORT_ACTIVE (teleport_PAY.m)
+        world.emit('fieldChanged', machine, null)
+      }
+    },
+  },
+
+  // PAID$ — recipient gets tokens from a PAYTO: materialise the new wad and
+  // debit the payer. Wire: { noid: recipient_avatar_noid, payer, amount_lo,
+  // amount_hi, container: recipient_ref, object: <encoded Tokens item> }
+  // C64: avatar_PAID.m — v_spend (payer) + v_unpack_contents_vector
+  'PAID$': {
+    src: 'Behaviors/avatar_PAID.m / Tokens.java',
+    apply(world, msg) {
+      const amount = (msg.amount_lo || 0) + (msg.amount_hi || 0) * 256
+      debitTokens(world, msg.payer, amount)
+      if (msg.object) world._makeObject(msg.object, msg.container || '', false)
+    },
+  },
+
+  // SELL$ — vendo machine sold an item: materialise it in the region and
+  // debit the buyer. Wire: { noid: vendo_noid, buyer, item_price_lo,
+  // item_price_hi, object: <encoded item> }
+  // C64: vendo_SELL.m — v_spend (buyer) + v_unpack_contents_vector → region
+  'SELL$': {
+    src: 'Behaviors/vendo_SELL.m / Vendo_front.java',
+    apply(world, msg) {
+      const price = (msg.item_price_lo || 0) + (msg.item_price_hi || 0) * 256
+      debitTokens(world, msg.buyer, price)
+      if (msg.object) world._makeObject(msg.object, world.region.ref, false)
+    },
+  },
 
   // ── choreography only (sound, animation, text) — deliberate no-ops ─
 

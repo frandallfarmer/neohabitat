@@ -162,18 +162,6 @@ test('changeContext clears everything for the next make storm', () => {
   assert.equal(w.me, null)
 })
 
-test('todo ops emit unhandledDelta instead of failing silently', () => {
-  const w = new HabitatWorld()
-  makeStorm(w)
-  let unhandled = null
-  w.on('unhandledDelta', (msg) => { unhandled = msg })
-  // PAY$ is still a `todo` delta (deltas.js) — SIT$ used to be the example
-  // here but has since been ported, so it no longer emits unhandledDelta.
-  w.apply({ op: 'PAY$', noid: 17, amount_lo: 5, amount_hi: 0 })
-  assert.ok(unhandled)
-  assert.equal(unhandled.op, 'PAY$')
-})
-
 test('unknown ops are ignored without throwing', () => {
   const w = new HabitatWorld()
   makeStorm(w)
