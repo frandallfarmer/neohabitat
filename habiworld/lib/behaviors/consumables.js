@@ -21,8 +21,10 @@ const { decodeRead } = require('./devices')
 async function bottle_rdo(ctx) {
   const bottle = ctx.pointed // RDO target = the held bottle
   if (!ctx.inHand || ctx.inHand.noid !== bottle.noid) return ctx.beep('hands-empty')
-  if (ctx.subject) {
-    const spot = ctx.gotoCoords(ctx.subject.noid)
+  // ctx.subject is set by the depends chain; args.target is the direct-call path.
+  const target = ctx.args.target !== undefined ? ctx.world.get(ctx.args.target) : ctx.subject
+  if (target) {
+    const spot = ctx.gotoCoords(target.noid)
     if (spot) {
       await ctx.walkTo(spot.x, spot.y)
       await ctx.waitWalkAnimation()
@@ -45,7 +47,8 @@ async function drugs_do(ctx) {
   const drugs = ctx.pointed
   if (!ctx.inHand || ctx.inHand.noid !== drugs.noid) return ctx.depends()
   const reply = await ctx.send({ op: 'TAKE', to: drugs.ref })
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // Drugs.java TAKE replies { TAKE_SUCCESS: 1 } — no err field.
+  if (reply.TAKE_SUCCESS !== 1) return ctx.beep('server-denied')
   const count = (drugs.mod.count || 1) - 1
   if (count <= 0) ctx.world._deleteByNoid(drugs.noid)
   else drugs.mod.count = count

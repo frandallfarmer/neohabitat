@@ -13,14 +13,14 @@
 // So pointed = the weapon, subject = the victim.
 
 // generic_doMagic.m: must be holding the item; complexSound MAGIC and
-// MSG_MAGIC with the affected object (ourselves — the wielder). The
-// host answers asynchronously (effects arrive as host messages), so
-// no response handling.
+// MSG_MAGIC with the affected object (ourselves by default, or args.target
+// for directed magic via direct performVerb call). Host answers async.
 async function generic_doMagic(ctx) {
   const inHand = ctx.inHand
   if (!inHand || inHand.noid !== ctx.pointed.noid) return ctx.depends()
   ctx.sound('MAGIC', ctx.pointed.noid)
-  await ctx.send({ op: 'MAGIC', to: ctx.pointed.ref, target: ctx.actor.noid })
+  const target = ctx.args.target !== undefined ? ctx.args.target : ctx.actor.noid
+  await ctx.send({ op: 'MAGIC', to: ctx.pointed.ref, target })
   return { ok: true }
 }
 
@@ -34,7 +34,43 @@ async function generic_doMagicIfMagic(ctx) {
   const isMagic = !!(mod.isMagic || mod.magic_type)
   if (!isMagic) return ctx.beep('not-magic')
   ctx.sound('MAGIC', ctx.pointed.noid)
-  await ctx.send({ op: 'MAGIC', to: ctx.pointed.ref, target: ctx.actor.noid })
+  const target = ctx.args.target !== undefined ? ctx.args.target : ctx.actor.noid
+  await ctx.send({ op: 'MAGIC', to: ctx.pointed.ref, target })
+  return { ok: true }
+}
+
+// generic_rdoMagic.m: RDO path — the user DOs another object while holding
+// the magic item → depends re-dispatches here with the original pointed as
+// subject. MAGIC op targets the subject. No in-hand check (C64 source
+// doesn't include one for the RDO path).
+// For direct performVerb calls, args.target supplies the target noid.
+async function generic_rdoMagic(ctx) {
+  const subject = ctx.args.target !== undefined
+    ? ctx.world.get(ctx.args.target)
+    : ctx.subject
+  ctx.chore('point')
+  ctx.sound('MAGIC', ctx.pointed.noid)
+  await ctx.send({
+    op: 'MAGIC', to: ctx.pointed.ref,
+    target: subject ? subject.noid : (ctx.actor ? ctx.actor.noid : 0),
+  })
+  return { ok: true }
+}
+
+// generic_rdoMagicIfMagic.m: same, guarded by the isMagic bit.
+async function generic_rdoMagicIfMagic(ctx) {
+  const mod = ctx.pointed.mod
+  const isMagic = !!(mod.isMagic || mod.magic_type)
+  if (!isMagic) return ctx.beep('not-magic')
+  const subject = ctx.args.target !== undefined
+    ? ctx.world.get(ctx.args.target)
+    : ctx.subject
+  ctx.chore('point')
+  ctx.sound('MAGIC', ctx.pointed.noid)
+  await ctx.send({
+    op: 'MAGIC', to: ctx.pointed.ref,
+    target: subject ? subject.noid : (ctx.actor ? ctx.actor.noid : 0),
+  })
   return { ok: true }
 }
 
@@ -58,8 +94,11 @@ async function resolveAttack(ctx, victim, reply) {
 // generic_strike.m: melee — the ACTOR must be adjacent to the victim
 // (adjacency is checked against the subject, not the weapon), then
 // MSG_ATTACK from the weapon naming the victim.
+// ctx.subject set by depends chain; args.pointed_noid for direct calls.
 async function generic_strike(ctx) {
-  const victim = ctx.subject
+  const victim = ctx.args.pointed_noid !== undefined
+    ? ctx.world.get(ctx.args.pointed_noid)
+    : ctx.subject
   if (!victim) return ctx.beep('no-target')
   if (!ctx.isAdjacent(victim.noid)) return ctx.beep('not-adjacent')
   ctx.chore('knife')
@@ -71,8 +110,11 @@ async function generic_strike(ctx) {
 
 // generic_shoot.m: ranged — no adjacency; shoot chores and the GUNSHOT
 // sound bracket the request.
+// ctx.subject set by depends chain; args.pointed_noid for direct calls.
 async function generic_shoot(ctx) {
-  const victim = ctx.subject
+  const victim = ctx.args.pointed_noid !== undefined
+    ? ctx.world.get(ctx.args.pointed_noid)
+    : ctx.subject
   if (!victim) return ctx.beep('no-target')
   ctx.chore('shoot1')
   ctx.sound('GUNSHOT', ctx.pointed.noid)
@@ -86,6 +128,8 @@ async function generic_shoot(ctx) {
 module.exports = {
   generic_doMagic,
   generic_doMagicIfMagic,
+  generic_rdoMagic,
+  generic_rdoMagicIfMagic,
   generic_strike,
   generic_shoot,
 }

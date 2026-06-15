@@ -34,7 +34,12 @@ module.exports = async function generic_throw(ctx) {
   if (!item || !ctx.inHand || ctx.inHand.noid !== item.noid) {
     return ctx.beep('hands-empty')
   }
-  if (!ctx.subject) return ctx.beep('no-surface')
+  // Surface noid: args.target for direct performVerb calls; ctx.subject
+  // (the ground/street pointed at) for the depends-chain path.
+  const surfaceNoid = ctx.args.target !== undefined
+    ? ctx.args.target
+    : (ctx.subject ? ctx.subject.noid : undefined)
+  if (surfaceNoid === undefined) return ctx.beep('no-surface')
 
   const targetX = Math.max(8, Math.min(152, ctx.args.x !== undefined ? ctx.args.x : 80))
   const targetY = ctx.args.y !== undefined ? ctx.args.y : 144
@@ -43,7 +48,7 @@ module.exports = async function generic_throw(ctx) {
   const reply = await ctx.send({
     op: 'THROW',
     to: item.ref,
-    target: ctx.subject.noid,
+    target: surfaceNoid,
     x: targetX,
     y: targetY,
   })

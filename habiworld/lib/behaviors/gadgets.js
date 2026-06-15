@@ -103,10 +103,12 @@ async function spray_can_SPRAY(ctx) {
 
 // shovel_rdo.m: dig at the subject — walk to it, bend over, MSG_DIG.
 // What the dig uncovers (if anything) arrives asynchronously.
+// ctx.subject set by depends chain; args.target for direct calls.
 async function shovel_rdo(ctx) {
   const shovel = ctx.pointed
-  if (ctx.subject) {
-    const spot = ctx.gotoCoords(ctx.subject.noid)
+  const target = ctx.args.target !== undefined ? ctx.world.get(ctx.args.target) : ctx.subject
+  if (target) {
+    const spot = ctx.gotoCoords(target.noid)
     if (spot) {
       await ctx.walkTo(spot.x, spot.y)
       await ctx.waitWalkAnimation()
@@ -170,9 +172,12 @@ async function changomatic_CHANGE(ctx) {
 
 // stun_gun_rdo.m: fire at the subject — only avatars are valid targets;
 // MSG_STUN, hit reaction on success.
+// ctx.subject set by depends chain; args.target for direct calls.
 async function stun_gun_rdo(ctx) {
   const gun = ctx.pointed
-  const victim = ctx.subject
+  const victim = ctx.args.target !== undefined
+    ? ctx.world.get(ctx.args.target)
+    : ctx.subject
   ctx.chore('shoot1')
   ctx.sound('STUN_GUN_FIRE', gun.noid)
   ctx.chore('shoot2')
@@ -247,6 +252,21 @@ async function generic_test(ctx) {
   return ctx.beep('debug-hook-not-ported')
 }
 
+// compass_do: neohabitat uses DIRECT (not C64's READ/MSG_READ). Compass.java
+// replies { text: "WEST: <arrow>" } via send_reply_msg — no err field.
+// PETSCII arrows: 124='|'=UP, 125='}'=DOWN, 126='~'=LEFT, 127=RIGHT.
+const COMPASS_ARROWS = { 124: 'UP', 125: 'DOWN', 126: 'LEFT', 127: 'RIGHT' }
+async function compass_do(ctx) {
+  const compass = ctx.pointed
+  if (!ctx.inHand || ctx.inHand.noid !== compass.noid) return ctx.depends()
+  const reply = await ctx.send({ op: 'DIRECT', to: compass.ref })
+  const text = (reply && reply.text) ? String(reply.text) : ''
+  const arrow = text.charCodeAt(text.length - 1)
+  const direction = COMPASS_ARROWS[arrow] || null
+  ctx.balloon(text)
+  return { ok: true, text, direction }
+}
+
 module.exports = {
   sensor_do,
   sensor_SCAN,
@@ -265,4 +285,5 @@ module.exports = {
   generic_askOracle,
   generic_enterOrExit,
   generic_test,
+  compass_do,
 }

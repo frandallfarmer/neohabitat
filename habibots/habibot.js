@@ -256,16 +256,16 @@ class HabiBot {
   }
   
   /**
-   * Tells the HabiBot to "attack" 
-   * @param {int} 'pointed_noid' Avatar noid of the target
+   * Tells the HabiBot to "attack" — routes through the weapon's RDO behavior
+   * (generic_shoot for guns, generic_strike for melee).
+   * @param {string} objRef weapon ref
+   * @param {int} pointed_noid Avatar noid of the target
    * @returns {Promise}
    */
   attackAvatar(objRef, pointed_noid) {
-    return this.sendWithDelay({
-      op: 'ATTACK',
-      to:  objRef,
-      pointed_noid: pointed_noid,
-    }, 5000)
+    const obj = this.world && this.world.getByRef(objRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-weapon' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid, { pointed_noid })
   }
 
   /**
@@ -743,27 +743,31 @@ class HabiBot {
   }
   
   /**
-   * Tells the HabiBot to open a door
-   * @param {ref} the door's ref
+   * Tells the HabiBot to open a door (toggle via generic_adjacentOpenClose).
+   * @param {string} ref the door's ref
    * @returns {Promise}
    */
   openDoor(ref) {
-    return this.sendWithDelay({
-      op: 'OPEN',
-      to: ref,
-    }, 10000)
+    const obj = this.world && this.world.getByRef(ref)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-door' })
+    // Behavior toggles; only send DO if door is currently closed.
+    const flags = obj.mod && obj.mod.open_flags || 0
+    if (flags & 1) return Promise.resolve({ ok: true }) // already open
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
-  
+
   /**
-   * Tells the HabiBot to close a door
-   * @param {ref} the door's ref
+   * Tells the HabiBot to close a door (toggle via generic_adjacentOpenClose).
+   * @param {string} ref the door's ref
    * @returns {Promise}
    */
-  closeDoor(ref){
-    return this.sendWithDelay({
-      op: 'CLOSE',
-      to: ref,
-    }, 10000)
+  closeDoor(ref) {
+    const obj = this.world && this.world.getByRef(ref)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-door' })
+    // Behavior toggles; only send DO if door is currently open.
+    const flags = obj.mod && obj.mod.open_flags || 0
+    if (!(flags & 1)) return Promise.resolve({ ok: true }) // already closed
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
 
   sitOrstand(num, chairNoid) {
@@ -811,22 +815,25 @@ class HabiBot {
     return this.sendWithDelay({ op: 'USERLIST', to: 'ME' }, 500)
   }
 
-  // THROW — fling an item we're holding. target is a noid (avatar to
-  // catch, or 0 for "no target — land at x,y"); x/y are landing coords.
+  // THROW — fling an item we're holding via generic_throw (ACTION_RDO).
+  // target is the surface noid (ground/street) to throw onto; x/y are the
+  // landing coords. The behavior owns the changeContainers state update.
   throwObj(itemRef, targetNoid, x, y) {
-    return this.sendWithDelay({
-      op: 'THROW',
-      to: itemRef,
+    const obj = this.world && this.world.getByRef(itemRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-item' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid, {
       target: targetNoid || 0,
-      x: (x == null) ? 80 : x,
-      y: (y == null) ? 144 : y,
-    }, 500)
+      x: x == null ? 80 : x,
+      y: y == null ? 144 : y,
+    })
   }
 
-  // ASK — query Crystal_ball, Fountain, or Bureaucrat. Reply arrives as
-  // object_say back to us.
+  // ASK — query Crystal_ball, Fountain, or Bureaucrat. Routes through
+  // generic_askOracle (ACTION_TALK on the oracle).
   askObject(itemRef, text) {
-    return this.sendWithDelay({ op: 'ASK', to: itemRef, text: text || '' }, 500)
+    const obj = this.world && this.world.getByRef(itemRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-object' })
+    return this.performVerb(worldConstants.ACTION_TALK, obj.noid, { text: text || '' })
   }
 
   // READ — Book/Paper/Plaque/Sign. Dispatches ACTION_DO on the object so
@@ -864,13 +871,20 @@ class HabiBot {
   }
 
   // ── Device toggles ─────────────────────────────────────────────────
-  // ON/OFF apply to Flashlight, Floor_lamp, Movie_camera. Side effects
-  // (region lighting, recording state) are managed elko-side.
+  // Flashlight / Floor_lamp / Movie_camera DO = generic_switch / flashlight_do
+  // / floor_lamp_do — all toggle. Guard against no-op: only call if not
+  // already in the desired state so the behavior doesn't flip it back.
   deviceOn(itemRef) {
-    return this.sendWithDelay({ op: 'ON', to: itemRef }, 500)
+    const obj = this.world && this.world.getByRef(itemRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-device' })
+    if (obj.mod.on) return Promise.resolve({ ok: true })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   deviceOff(itemRef) {
-    return this.sendWithDelay({ op: 'OFF', to: itemRef }, 500)
+    const obj = this.world && this.world.getByRef(itemRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-device' })
+    if (!obj.mod.on) return Promise.resolve({ ok: true })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
 
   // ── Get into HANDS ──────────────────────────────────────────────────
@@ -958,87 +972,83 @@ class HabiBot {
   }
 
   // ── Magic ──────────────────────────────────────────────────────────
-  // RUB the lamp to summon the genie; once genied, WISH with a message.
-  // MAGIC is the generic per-class trigger used by wands/staves/amulets/
-  // rings/etc. — target is the noid the magic is aimed at (0 = self/no
-  // target, depends on the specific item's class).
+  // RUB the lamp → magic_lamp_do (ACTION_DO). Behavior checks gr_state and
+  // updates it; Magic_lamp.java RUB calls send_reply_success.
   rubLamp(lampRef) {
-    return this.sendWithDelay({ op: 'RUB', to: lampRef }, 500)
+    const obj = this.world && this.world.getByRef(lampRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-lamp' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   wishOnLamp(lampRef, text) {
+    // WISH has no server reply (Magic_lamp.java sends no send_reply_*).
+    // Keep as raw send — it also doesn't need a state update.
     return this.sendWithDelay({ op: 'WISH', to: lampRef, text: text || '' }, 500)
   }
+  // MAGIC → generic_doMagic (ACTION_DO). The behavior targets args.target
+  // (or self by default). Works for amulets, wands, staves, rings.
   useMagic(itemRef, targetNoid) {
-    return this.sendWithDelay({ op: 'MAGIC', to: itemRef, target: targetNoid || 0 }, 500)
+    const obj = this.world && this.world.getByRef(itemRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-item' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid, { target: targetNoid || 0 })
   }
 
   // ── Misc world objects ─────────────────────────────────────────────
-  // DIRECT a Compass. Compass.java replies (no `err`) with
-  //   { text: "WEST: <arrow>" }
-  // where <arrow> is a PETSCII direction char pointing the way to the
-  // West Pole: 124 '|' = UP, 125 '}' = DOWN, 126 '~' = LEFT, 127 = RIGHT.
-  // Translate it to a screen direction so the caller can report it.
-  async directCompass(compassRef) {
-    const reply = await this.sendForReply({ op: 'DIRECT', to: compassRef })
-    const ARROWS = { 124: 'UP', 125: 'DOWN', 126: 'LEFT', 127: 'RIGHT' }
-    const text = reply.text || ''
-    const arrow = text.charCodeAt(text.length - 1)
-    const direction = ARROWS[arrow] || null
-    return { ok: true, text, direction }
+  // DIRECT a Compass — routes through compass_do (ACTION_DO). The behavior
+  // sends DIRECT, parses the PETSCII arrow, and returns { ok, text, direction }.
+  directCompass(compassRef) {
+    const obj = this.world && this.world.getByRef(compassRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-compass' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   // SPRAY paints a body part from a Spray_can held in HANDS. `limb` is
   // the body-part code (Spray_can.java enumerates HEAD/CHEST/etc.).
-  //
-  // Spray_can.java replies in TWO shapes, neither using `err`:
-  //   guard failure (not holding the can / out of charges):
-  //     { success: 0|1, custom_1, custom_2 }
-  //   main path:
-  //     { SPRAY_SUCCESS: 0|1, SPRAY_CUSTOMIZE_0, SPRAY_CUSTOMIZE_1 }
-  // In both, success==1 means the spray landed and the two customize
-  // bytes are the avatar's new custom[0]/custom[1]. Apply them locally
-  // and report failure honestly (the common failure is spraying without
-  // the can in HANDS).
-  async sprayCan(canRef, limb) {
-    const reply = await this.sendForReply({
-      op: 'SPRAY', to: canRef, limb: limb == null ? 0 : limb,
-    })
-    const flag = reply.SPRAY_SUCCESS !== undefined ? reply.SPRAY_SUCCESS : reply.success
-    const ok = flag === 1 || flag === true
-    const c0 = reply.SPRAY_CUSTOMIZE_0 !== undefined ? reply.SPRAY_CUSTOMIZE_0 : reply.custom_1
-    const c1 = reply.SPRAY_CUSTOMIZE_1 !== undefined ? reply.SPRAY_CUSTOMIZE_1 : reply.custom_2
-    const me = this.world.me
-    if (me && Array.isArray(me.mod.custom)) {
-      if (c0 !== undefined) me.mod.custom[0] = c0
-      if (c1 !== undefined) me.mod.custom[1] = c1
-    }
-    return { ok, reason: ok ? undefined : 'spray-failed (need the can in HANDS, or it is empty)' }
+  // Routes through spray_can_do (ACTION_DO); behavior owns the custom-byte update.
+  sprayCan(canRef, limb) {
+    const obj = this.world && this.world.getByRef(canRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-can' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid, { limb: limb == null ? 0 : limb })
   }
   fillBottle(bottleRef) {
+    // FILL is a neohabitat extension (fountain/pond GET fills the bottle);
+    // no C64 behavior path for direct FILL — keep as raw send.
     return this.sendWithDelay({ op: 'FILL', to: bottleRef }, 500)
   }
   pourBottle(bottleRef) {
-    return this.sendWithDelay({ op: 'POUR', to: bottleRef }, 500)
+    const obj = this.world && this.world.getByRef(bottleRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-bottle' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid)
   }
   digShovel(shovelRef) {
-    return this.sendWithDelay({ op: 'DIG', to: shovelRef }, 500)
+    const obj = this.world && this.world.getByRef(shovelRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-shovel' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid)
   }
   feedAquarium(aquariumRef) {
+    // FEED is a neohabitat extension; aquarium DO = generic_depends in beta.mud.
+    // No standard verb path — keep as raw send.
     return this.sendWithDelay({ op: 'FEED', to: aquariumRef }, 500)
   }
   flushCan(canRef) {
-    return this.sendWithDelay({ op: 'FLUSH', to: canRef }, 500)
+    const obj = this.world && this.world.getByRef(canRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-can' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   takeDrug(drugRef) {
-    return this.sendWithDelay({ op: 'TAKE', to: drugRef }, 500)
+    const obj = this.world && this.world.getByRef(drugRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-drug' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   scanSensor(sensorRef) {
-    return this.sendWithDelay({ op: 'SCAN', to: sensorRef }, 500)
+    const obj = this.world && this.world.getByRef(sensorRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-sensor' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
-  // ZAPTO — Teleport. `port_number` is a string address code (like a
-  // phone number — "HOME", "DOWNTOWN", etc.) matching the booth's
-  // `address` field. The server requires a String, not an integer.
+  // ZAPTO — Teleport. `portNumber` is a string address code matching the
+  // booth's `address` field. Routes through teleport_talk (ACTION_TALK).
   zapToPort(deviceRef, portNumber) {
-    return this.sendWithDelay({ op: 'ZAPTO', to: deviceRef, port_number: String(portNumber || '') }, 500)
+    const obj = this.world && this.world.getByRef(deviceRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-teleport' })
+    return this.performVerb(worldConstants.ACTION_TALK, obj.noid, { text: String(portNumber || '') })
   }
 
   // ── Dangerous / one-shot ───────────────────────────────────────────
@@ -1046,8 +1056,12 @@ class HabiBot {
   // a stun gun, lighting a fake-gun gag) so they're exposed. Each carries
   // an in-world cost or side effect; bots that don't want them just
   // don't call them.
+  // STUN — routes through stun_gun_rdo (ACTION_RDO). The behavior accepts
+  // args.target (target avatar noid) on direct calls.
   stunAvatar(gunRef, targetNoid) {
-    return this.sendWithDelay({ op: 'STUN', to: gunRef, target: targetNoid }, 500)
+    const obj = this.world && this.world.getByRef(gunRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-gun' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid, { target: targetNoid })
   }
   // PULLPIN on a Grenade — routes through grenade_do (ACTION_DO).
   // The behavior checks holding and pin state before sending; Grenade.java
@@ -1063,17 +1077,13 @@ class HabiBot {
     if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-gun' })
     return this.performVerb(worldConstants.ACTION_RDO, obj.noid)
   }
-  // ATTACK fires a REAL weapon (Gun/Sword/etc., anything extending
-  // Weapon) at a target noid — distinct from FAKESHOOT, which only the
-  // gag Fake_gun answers (a real Gun silently ignores FAKESHOOT). The
-  // server replies { ATTACK_target, ATTACK_result }: result 0 = no effect
-  // (missed, out of range, or a weapons-free zone), non-zero = a hit of
-  // that damage level, and the top value = a kill. Read it so the caller
-  // knows whether the shot actually landed instead of assuming it did.
-  async attack(weaponRef, targetNoid) {
-    const reply = await this.sendForReply({ op: 'ATTACK', to: weaponRef, pointed_noid: targetNoid })
-    const result = reply.ATTACK_result
-    return { ok: !!result, result, target: reply.ATTACK_target }
+  // ATTACK fires a REAL weapon (Gun/Sword/etc.) at a target noid — routes
+  // through the weapon class's RDO behavior (generic_shoot for guns,
+  // generic_strike for melee). Both accept args.pointed_noid for direct calls.
+  attack(weaponRef, targetNoid) {
+    const obj = this.world && this.world.getByRef(weaponRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-weapon' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid, { pointed_noid: targetNoid })
   }
   // RESET a Fake_gun — routes through fake_gun_do (ACTION_DO). Behavior
   // checks gr_state first; Fake_gun.java replies { RESET_SUCCESS: 1|0 }.

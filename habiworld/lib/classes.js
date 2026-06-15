@@ -396,7 +396,7 @@ const classes = {
     name: 'class_compass',
     typeName: 'Compass',
     actions: [
-      'generic_read', // 0: do
+      'compass_do', // 0: do (neohabitat sends DIRECT, not C64's READ)
       'generic_throw', // 1: reversed do
       'generic_goTo', // 2: go
       'generic_cease', // 3: stop
