@@ -30,7 +30,11 @@ async function generic_goToFurniture(ctx) {
     return { ok: true }
   }
 
-  const sitting = me.containerRef && me.containerRef !== ctx.world.region.ref
+  // Explicit up_or_down (0=stand, 1=sit) overrides the toggle from world state.
+  // Needed when callers pass an explicit intent (e.g. sitOrstand(1, noid)).
+  const sitting = ctx.args.up_or_down !== undefined
+    ? (ctx.args.up_or_down === 0)
+    : (me.containerRef && me.containerRef !== ctx.world.region.ref)
 
   if (sitting) {
     // Get up.

@@ -11,7 +11,7 @@
 //   Behaviors/avatar_do.m    (TOUCH another avatar / DO the held item on self)
 //   Behaviors/avatar_talk.m  (targeted talk; ESP loop is a text-UI flow)
 
-const { ACTION_DO, ACTION_TALK } = require('../constants')
+const { ACTION_DO, ACTION_TALK, HANDS } = require('../constants')
 const { succeeded } = require('./kernel')
 
 // key_do.m: purely local — holding the key shows its number in a
@@ -90,6 +90,32 @@ async function head_talk(ctx) {
   return { ok: true }
 }
 
+// game_piece.KING: neohabitat's DO for game pieces — toggles gr_state
+// between CHECKER_PIECE (6) and CHECKER_KING (7). Replies { state: gr_state }
+// via send_reply_msg (no err field). Broadcasts ROLL$ (same as a die roll).
+async function game_piece_do(ctx) {
+  const piece = ctx.pointed
+  const reply = await ctx.send({ op: 'KING', to: piece.ref })
+  if (!reply || reply.state === undefined) return ctx.beep('server-denied')
+  piece.mod.gr_state = reply.state
+  ctx.newImage(piece.noid)
+  return { ok: true, state: reply.state }
+}
+
+// telekenesis_get: pick up a game piece without walking (the C64 bypassed
+// the accessable() proximity check for CLASS_GAME_PIECE in generic_GET).
+// Empty-handed only; GET on the piece; server replies send_reply_success.
+async function telekenesis_get(ctx) {
+  const piece = ctx.pointed
+  if (ctx.inHand) return ctx.beep('hands-full')
+  ctx.chore('hand_out')
+  const reply = await ctx.send({ op: 'GET', to: piece.ref })
+  ctx.chore('hand_back')
+  if (!succeeded(reply)) return ctx.beep('server-denied')
+  ctx.changeContainers(piece.noid, ctx.actor.noid, 0, HANDS)
+  return { ok: true }
+}
+
 // avatar_do.m: DO another avatar empty-handed = TOUCH them (must be
 // adjacent — punt to depends otherwise, per v_punt_if_not_adjacent);
 // DO them holding something = depends (use the item on them); DO
@@ -125,6 +151,8 @@ module.exports = {
   paper_do,
   head_do,
   head_talk,
+  game_piece_do,
+  telekenesis_get,
   avatar_do,
   avatar_talk,
 }

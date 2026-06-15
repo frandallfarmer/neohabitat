@@ -330,7 +330,8 @@ test('GET at another avatar routes to avatar_get and GRABs from their hands', as
   makeStorm(w)
   // Put the frisbee in Naibor's hands.
   w.apply({ op: 'PUT$', noid: 17, obj: 30, cont: 21, x: 0, y: HANDS })
-  const { calls, cb } = recorder()
+  // Avatar.GRAB replies { item_noid: N } via send_reply_msg — N=frisbee's noid.
+  const { calls, cb } = recorder([{ type: 'reply', item_noid: 30 }])
   const result = await dispatch(w, ACTION_GET, 21, {}, cb)
   assert.ok(result.ok)
   assert.deepEqual(calls.sends, [{ op: 'GRAB', to: NAIBOR_REF }])

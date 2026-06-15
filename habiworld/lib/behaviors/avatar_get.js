@@ -61,7 +61,9 @@ module.exports = async function avatar_get(ctx) {
   ctx.chore('hand_out')
   const reply = await ctx.send({ op: 'GRAB', to: victim.ref })
   ctx.chore('hand_back')
-  if (!succeeded(reply)) return ctx.beep('server-denied')
-  ctx.changeContainers(theirItem.noid, ctx.actor.noid, 0, HANDS)
+  // GRAB replies { item_noid: N } via send_reply_msg — no `err` field.
+  // N=0 means grab was refused (hands not free, nothing held, theft-free zone).
+  if (!reply || !reply.item_noid) return ctx.beep('server-denied')
+  ctx.changeContainers(reply.item_noid, ctx.actor.noid, 0, HANDS)
   return { ok: true }
 }

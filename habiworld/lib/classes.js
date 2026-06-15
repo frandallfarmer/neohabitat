@@ -712,7 +712,7 @@ const classes = {
     name: 'class_game_piece',
     typeName: 'Game_piece',
     actions: [
-      'generic_chgState', // 0: do
+      'game_piece_do', // 0: do — neohabitat uses KING, not MSG_MAGIC
       'generic_throw', // 1: reversed do
       'generic_goTo', // 2: go
       'generic_cease', // 3: stop

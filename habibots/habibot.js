@@ -693,16 +693,14 @@ class HabiBot {
   }
 
   /**
-   * Tells the HabiBot to "touch" an adjacent Avatar
-   * @param {int} 'target' the Avatar that the bot is touching
+   * Tells the HabiBot to "touch" an adjacent Avatar.
+   * Routes through avatar_do (ACTION_DO): empty-handed DO on another
+   * avatar → TOUCH. The bot must be adjacent and empty-handed.
+   * @param {int} noid the Avatar noid to touch
    * @returns {Promise}
    */
   touchAvatar(noid) {
-    return this.sendWithDelay({
-      op: 'TOUCH',
-      to: 'ME',
-      target: noid,
-    }, 10000)
+    return this.performVerb(worldConstants.ACTION_DO, noid)
   }
 
   /**
@@ -732,14 +730,12 @@ class HabiBot {
    * @returns {Promise}
    */
   giveObject(itemNoid, recipientNoid) {
-    var recipient = this.getNoid(recipientNoid)
-    if (!recipient || !recipient.ref) {
-      return Promise.reject(`giveObject: no avatar at noid ${recipientNoid}`)
-    }
-    return this.sendWithDelay({
-      op: 'HAND',
-      to: recipient.ref,
-    }, 5000)
+    // avatar_put non-self branch: ACTION_PUT on the RECIPIENT avatar
+    // walks to them, sends HAND, updates world model via changeContainers.
+    // itemNoid is informational only (the server uses whatever is in HANDS).
+    const recipient = this.world && this.world.get(recipientNoid)
+    if (!recipient) return Promise.resolve({ ok: false, reason: 'no-such-recipient' })
+    return this.performVerb(worldConstants.ACTION_PUT, recipientNoid)
   }
   
   /**
@@ -771,12 +767,12 @@ class HabiBot {
   }
 
   sitOrstand(num, chairNoid) {
-    return this.sendWithDelay({
-      op: 'SITORSTAND',
-      to: 'ME',
-      up_or_down: num,
-      seat_id: chairNoid
-    }, 5000)
+    // generic_goToFurniture (ACTION_GO): walks to the chair, sits or
+    // stands. args.up_or_down overrides the toggle so num=1 always sits
+    // and num=0 always stands, matching the old wire-message semantics.
+    const obj = this.world && this.world.get(chairNoid)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-chair' })
+    return this.performVerb(worldConstants.ACTION_GO, chairNoid, { up_or_down: num })
   }
 
   // ── Coverage for the remaining Habitat verbs ────────────────────────
@@ -802,11 +798,11 @@ class HabiBot {
   // theft-free zones; otherwise empty-handed-receiver + holding-giver
   // is the only precondition.
   grabFromAvatar(giverNoid) {
-    var giver = this.getNoid(giverNoid)
-    if (!giver || !giver.ref) {
-      return Promise.reject('grabFromAvatar: no avatar at noid ' + giverNoid)
-    }
-    return this.sendWithDelay({ op: 'GRAB', to: giver.ref }, 500)
+    // avatar_get non-self branch (ACTION_GET on the giver's noid): walks
+    // to them, sends GRAB, updates world model via changeContainers.
+    const giver = this.world && this.world.get(giverNoid)
+    if (!giver) return Promise.resolve({ ok: false, reason: 'no-such-avatar' })
+    return this.performVerb(worldConstants.ACTION_GET, giverNoid)
   }
 
   // USERLIST — elko broadcasts the global online-user list to us via
@@ -968,7 +964,10 @@ class HabiBot {
     return { ok: !!r.ok, value: r.value }
   }
   kingPiece(pieceRef) {
-    return this.sendWithDelay({ op: 'KING', to: pieceRef }, 500)
+    // game_piece_do (ACTION_DO): sends KING, toggles gr_state, updates world model.
+    const obj = this.world && this.world.getByRef(pieceRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-piece' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
 
   // ── Magic ──────────────────────────────────────────────────────────
@@ -1008,10 +1007,12 @@ class HabiBot {
     if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-can' })
     return this.performVerb(worldConstants.ACTION_DO, obj.noid, { limb: limb == null ? 0 : limb })
   }
-  fillBottle(bottleRef) {
-    // FILL is a neohabitat extension (fountain/pond GET fills the bottle);
-    // no C64 behavior path for direct FILL — keep as raw send.
-    return this.sendWithDelay({ op: 'FILL', to: bottleRef }, 500)
+  fillBottle(waterSourceRef) {
+    // generic_goToAndFill (ACTION_GET on the water source): walks to the
+    // fountain/pond, sends FILL to the held bottle, updates bottle.mod.filled.
+    const obj = this.world && this.world.getByRef(waterSourceRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-source' })
+    return this.performVerb(worldConstants.ACTION_GET, obj.noid)
   }
   pourBottle(bottleRef) {
     const obj = this.world && this.world.getByRef(bottleRef)
