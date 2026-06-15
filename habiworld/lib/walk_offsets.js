@@ -257,11 +257,16 @@ const IMAGE_Y = [
 
 // Heads (CLASS_HEAD = 127) are SPECIAL: they don't live in the normal prop
 // pipeline — they have their own resource spec (C64 Images/Heads/Object_data
-// and the per-head .m files), and every head shares ONE walk offset:
-//   byte 244+right, 28+left, 255  →  xLeft -12, xRight 28, yDelta -1
-// Constants.java's per-style head entries are wrong (xLeft -64 etc.), which
-// made GOTO/GET a ground head walk far off to the side. Use the canonical
-// head offset for all head styles.
+// and the per-head .m files). Yes — EVERY head has the same adjacency
+// offset: they're interchangeable avatar parts, all drawn to one
+// registration so any head sits on the avatar's neck perfectly, so their
+// geometry (and walk-to spot) is uniform. Verified: all 168 Object_data
+// heads carry the identical walk bytes:
+//   244+right, 28+left, 255  →  xLeft -12, xRight 28, yDelta -1
+// (The head `style` is remapped to select the IMAGE — true_head in Head.java
+// — but that never changes the walk offset.) Constants.java's per-style head
+// entries are wrong (xLeft -64 etc.), which made GOTO/GET a ground head walk
+// far off to the side, so we use the canonical uniform head offset here.
 const HEAD_CLASS = 127
 const HEAD_WALK = { xLeft: -12, xRight: 28, yDelta: -1 }
 
