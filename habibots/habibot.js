@@ -11,7 +11,7 @@ const Queue = require('promise-queue')
 const constants = require('./constants')
 const util = require('./util')
 const { Capture } = require('./lib/capture')
-const { HabitatWorld, actions: worldActions, dispatch: worldDispatch } = require('../habiworld')
+const { HabitatWorld, actions: worldActions, dispatch: worldDispatch, constants: worldConstants } = require('../habiworld')
 
 
 const DirectionToPoseId = {
@@ -891,17 +891,29 @@ class HabiBot {
   // REMOVE reverses it. Avatar appearance updates broadcast to neighbors.
   // WEAR a Head/Ring from HANDS to its worn slot. Reply is { err }: 1 =
   // worn, 0 = refused (e.g. that slot is already occupied — you can only
-  // wear one head). Read it so the caller doesn't claim success on a fail.
+  // wear one head). On success we also move the item HANDS→HEAD in our own
+  // world model (the server broadcasts WEAR$ to NEIGHBORS, not the actor,
+  // so nothing else updates our local state — same as avatar_WEAR.m).
   async wearItem(itemRef) {
+    const item = this.world && this.world.getByRef(this.substituteName(itemRef))
     const reply = await this.sendForReply({ op: 'WEAR', to: itemRef })
     const ok = !!reply.err
+    if (ok && item && this.world.me) {
+      this.world._changeContainers(item.noid, this.world.me.noid, 0, worldConstants.HEAD)
+    }
     return { ok, reason: ok ? undefined : 'WEAR refused — that worn slot is already occupied (remove what you have on first)' }
   }
   // REMOVE a worn Head/Ring back into HANDS. Reply { err }: 1 = removed,
-  // 0 = nothing there to remove / hands not free.
+  // 0 = nothing there to remove / hands not free. On success move the item
+  // worn-slot→HANDS in our world model (avatar_REMOVE.m), since the server
+  // only broadcasts REMOVE$ to neighbors.
   async removeItem(itemRef) {
+    const item = this.world && this.world.getByRef(this.substituteName(itemRef))
     const reply = await this.sendForReply({ op: 'REMOVE', to: itemRef })
     const ok = !!reply.err
+    if (ok && item && this.world.me) {
+      this.world._changeContainers(item.noid, this.world.me.noid, 0, worldConstants.HANDS)
+    }
     return { ok, reason: ok ? undefined : 'REMOVE refused — nothing worn there, or your HANDS are not free' }
   }
 
