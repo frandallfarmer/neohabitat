@@ -829,29 +829,16 @@ class HabiBot {
     return this.sendWithDelay({ op: 'ASK', to: itemRef, text: text || '' }, 500)
   }
 
-  // READ — Book/Paper/Plaque/Sign. The server replies with the requested
-  // page's text as a byte array plus the next page to request:
-  //   { ascii: int[], nextpage }
-  // (NOT object_say — the content is in the reply). Decode the bytes to a
-  // string, trim trailing pad spaces, and return the text so the caller can
-  // actually read it and page through multi-page documents via nextPage.
+  // READ — Book/Paper/Plaque/Sign. Dispatches ACTION_DO on the object so
+  // habiworld picks the right behavior (book_do, generic_read, plaque_do).
+  // The behavior decodes PETSCII and owns the reading cursor.
   async readObject(itemRef, page) {
     const req = page == null ? 0 : page
-    const reply = await this.sendForReply({ op: 'READ', to: itemRef, page: req })
-    const bytes = Array.isArray(reply.ascii) ? reply.ascii : []
-    // The page bytes are PETASCII, not clean ASCII. Decode them exactly the
-    // way the server does for its own display (mods/Paper.java:408-422):
-    //   32..127 -> literal ASCII;  10 -> newline;  everything else -> space
-    // (CR/13, control codes, high/PETSCII bytes) so embedded carriage
-    // returns and graphic bytes don't leak through as \r or odd Unicode.
-    let text = ''
-    for (const b of bytes) {
-      if (b >= 32 && b <= 127) text += String.fromCharCode(b)
-      else if (b === 10) text += '\n'
-      else text += ' '
-    }
-    text = text.replace(/[ \t]+\n/g, '\n').replace(/\s+$/, '')
-    return { ok: true, page: req, text, nextPage: reply.nextpage }
+    const obj = this.world && this.world.getByRef(itemRef)
+    if (!obj) return { ok: false, reason: 'no-such-object' }
+    const result = await this.performVerb(worldConstants.ACTION_DO, obj.noid, { page: req })
+    if (!result.ok) return result
+    return { ok: true, page: req, text: result.text || '', nextPage: result.page }
   }
 
   // WRITE — overwrite a Paper's contents. text is a regular string; we
@@ -1058,21 +1045,19 @@ class HabiBot {
   stunAvatar(gunRef, targetNoid) {
     return this.sendWithDelay({ op: 'STUN', to: gunRef, target: targetNoid }, 500)
   }
-  // PULLPIN on a Grenade. Grenade.java replies { PULLPIN_SUCCESS } (1/0,
-  // not `err`). It only succeeds if you are HOLDING the grenade, the pin
-  // isn't already pulled, and you're not in a weapons-free zone — so a
-  // failure almost always means hands weren't on it. Surface that.
-  async pullGrenadePin(grenadeRef) {
-    const reply = await this.sendForReply({ op: 'PULLPIN', to: grenadeRef })
-    const ok = reply.PULLPIN_SUCCESS === 1 || reply.PULLPIN_SUCCESS === true
-    return {
-      ok,
-      reason: ok ? undefined
-        : 'pin not pulled — you must be HOLDING the grenade (pick_up first), the pin must not already be out, and it must not be a weapons-free zone',
-    }
+  // PULLPIN on a Grenade — routes through grenade_do (ACTION_DO).
+  // The behavior checks holding and pin state before sending; Grenade.java
+  // replies { PULLPIN_SUCCESS: 1|0 } (no err field).
+  pullGrenadePin(grenadeRef) {
+    const obj = this.world && this.world.getByRef(grenadeRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-grenade' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
+  // FAKESHOOT — routes through fake_gun_rdo (ACTION_RDO).
   fakeShoot(gunRef) {
-    return this.sendWithDelay({ op: 'FAKESHOOT', to: gunRef }, 500)
+    const obj = this.world && this.world.getByRef(gunRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-gun' })
+    return this.performVerb(worldConstants.ACTION_RDO, obj.noid)
   }
   // ATTACK fires a REAL weapon (Gun/Sword/etc., anything extending
   // Weapon) at a target noid — distinct from FAKESHOOT, which only the
@@ -1086,32 +1071,43 @@ class HabiBot {
     const result = reply.ATTACK_result
     return { ok: !!result, result, target: reply.ATTACK_target }
   }
+  // RESET a Fake_gun — routes through fake_gun_do (ACTION_DO). Behavior
+  // checks gr_state first; Fake_gun.java replies { RESET_SUCCESS: 1|0 }.
   resetFakeGun(gunRef) {
-    return this.sendWithDelay({ op: 'RESET', to: gunRef }, 500)
+    const obj = this.world && this.world.getByRef(gunRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-gun' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
+  // BUGOUT — routes through escape_device_do (ACTION_DO). Behavior checks
+  // holding and charge; Escape_device.java replies { err: 1|0 }.
   bugOut(deviceRef) {
-    return this.sendWithDelay({ op: 'BUGOUT', to: deviceRef }, 500)
+    const obj = this.world && this.world.getByRef(deviceRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-device' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
+  // SEXCHANGE — routes through sex_changer_do (ACTION_DO). Caller must
+  // be adjacent to the machine (use goto first).
   sexChange(deviceRef) {
-    return this.sendWithDelay({ op: 'SEXCHANGE', to: deviceRef }, 500)
+    const obj = this.world && this.world.getByRef(deviceRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-device' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
 
   // ── Commerce ───────────────────────────────────────────────────────
-  // DEPOSIT — feed a Tokens stack (by noid) into an Atm. The Atm
-  // destroys the Tokens object and credits the avatar's bank balance.
-  depositToAtm(atmRef, tokenNoid) {
-    return this.sendWithDelay({ op: 'DEPOSIT', to: atmRef, token_noid: tokenNoid }, 500)
+  // DEPOSIT — routes through atm_put (ACTION_PUT). The behavior uses the
+  // held Tokens wad (inHand) — the bot must be holding tokens. Atm.java
+  // requires token_noid; the behavior sends it from ctx.inHand.noid.
+  depositToAtm(atmRef) {
+    const obj = this.world && this.world.getByRef(atmRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-atm' })
+    return this.performVerb(worldConstants.ACTION_PUT, obj.noid)
   }
-  // WITHDRAW — Atm spawns a fresh Tokens stack in our HANDS for the
-  // requested amount (16-bit little-endian split into lo/hi bytes).
+  // WITHDRAW — routes through atm_get (ACTION_GET). Pass amount in args.
+  // Atm.java replies { amount_lo, amount_hi, result_code } (no err field).
   withdrawFromAtm(atmRef, amount) {
-    amount = amount || 0
-    return this.sendWithDelay({
-      op: 'WITHDRAW',
-      to: atmRef,
-      amount_lo: amount & 0xff,
-      amount_hi: (amount >> 8) & 0xff,
-    }, 500)
+    const obj = this.world && this.world.getByRef(atmRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-atm' })
+    return this.performVerb(worldConstants.ACTION_GET, obj.noid, { amount: amount || 0 })
   }
   // PAY — Coke_machine / Fortune_machine / Teleport. The machine charges a
   // fixed price by spending a TOKENS item the avatar is HOLDING IN HANDS
@@ -1124,28 +1120,47 @@ class HabiBot {
   // (the "Choke" gag) charges you, plays an OPERATE/CHUNK animation, and
   // hands you nothing — that's the joke. Return the facts so the caller
   // reports truthfully instead of inventing a drink.
-  async payMachine(machineRef) {
-    const reply = await this.sendForReply({ op: 'PAY', to: machineRef })
-    const paid = !!reply.err
-    const amount = (reply.amount_lo || 0) + (reply.amount_hi || 0) * 256
-    return {
-      ok: paid,
-      amount,
-      reason: paid ? undefined : 'not enough money — you must be HOLDING a Tokens item worth at least the price (bank balance does not count)',
+  // Routes through ACTION_PUT (slot 5) on the machine — coke_machine_put,
+  // fortune_machine_put, etc. — never a raw PAY send.
+  payMachine(machineRef) {
+    const obj = this.world && this.world.getByRef(machineRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-machine' })
+    return this.performVerb(worldConstants.ACTION_PUT, obj.noid)
+  }
+
+  // Resolve a vendo ref to the Vendo_front record (accepts either the front
+  // or the inside — the front is always the correct interaction target).
+  _vendoFront(ref) {
+    const obj = this.world && this.world.getByRef(ref)
+    if (!obj) return null
+    if (obj.type === 'Vendo_front') return obj
+    if (obj.type === 'Vendo_inside') {
+      return this.world.contentsOf(obj.noid).find((o) => o.type === 'Vendo_front') || null
     }
+    return null
   }
-  // VEND — buy the currently-displayed item from a Vendo_front (charged
-  // against pocket Tokens). VSELECT cycles through what's on display
-  // for a multi-slot vendo.
-  vendItem(vendoFrontRef) {
-    return this.sendWithDelay({ op: 'VEND', to: vendoFrontRef }, 2000)
+
+  // VEND — buy the currently-displayed item from a Vendo_front via ACTION_PUT
+  // (vendo_put → sends VEND directly). Always targets the front, not the inside.
+  vendItem(vendoRef) {
+    const front = this._vendoFront(vendoRef)
+    if (!front) return Promise.resolve({ ok: false, reason: 'no-vendo-front' })
+    return this.performVerb(worldConstants.ACTION_PUT, front.noid)
   }
-  selectVendo(vendoFrontRef) {
-    return this.sendWithDelay({ op: 'VSELECT', to: vendoFrontRef }, 500)
+
+  // VSELECT — cycle the display via ACTION_DO (vendo_do → VSELECT wire msg).
+  selectVendo(vendoRef) {
+    const front = this._vendoFront(vendoRef)
+    if (!front) return Promise.resolve({ ok: false, reason: 'no-vendo-front' })
+    return this.performVerb(worldConstants.ACTION_DO, front.noid)
   }
-  // MUNCH — Pawn_machine eats the HANDS item and credits bank balance.
+  // MUNCH — routes through pawn_machine_do (ACTION_DO). Behavior walks
+  // adjacent, plays eat animation, sends MUNCH. Pawn_machine.java replies
+  // { MUNCH_SUCCESS: 1 } on success (no err field).
   munchPawn(machineRef) {
-    return this.sendWithDelay({ op: 'MUNCH', to: machineRef }, 2000)
+    const obj = this.world && this.world.getByRef(machineRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-machine' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
   }
   /**
    * Returns a list of all cardinal directions from this region which connect to other

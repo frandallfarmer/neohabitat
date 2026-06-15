@@ -400,6 +400,65 @@ test('GO on a wall-type Flat chains through trap_go to wall_go (slot 9)', async 
   assert.deepEqual(calls.walks, [{ x: 90, y: 120 }])
 })
 
+test('DO on a plaque sends READ with page and decodes ascii reply', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-plaque-1', name: 'Plaque',
+      mods: [{ type: 'Plaque', noid: 85, x: 56, y: 128, orientation: 0, gr_state: 0 }] } })
+  // Reply carries ascii byte array (PETSCII) + nextpage
+  const ascii = [72, 101, 108, 108, 111, 10, 87, 111, 114, 108, 100] // "Hello\nWorld"
+  const { calls, cb } = recorder([{ type: 'reply', ascii, nextpage: 2 }])
+  const result = await dispatch(w, ACTION_DO, 85, { page: 1 }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'READ', to: 'item-plaque-1', page: 1 }])
+  assert.equal(result.text, 'Hello\nWorld')
+  assert.equal(result.page, 2) // next page cursor
+})
+
+test('DO on a pawn machine sends MUNCH and purges its contents on success', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // The machine sits at x=56 (bot's x=12 so it must walk adjacent first).
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-pawn-1', name: 'Pawn Machine',
+      mods: [{ type: 'Pawn_machine', noid: 90, x: 56, y: 140, orientation: 0, gr_state: 0 }] } })
+  // Synthetic contents: two items inside the machine (the items it will munch).
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-widget-1', name: 'Widget',
+      mods: [{ type: 'Frisbee', noid: 91, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-widget-2', name: 'Widget2',
+      mods: [{ type: 'Frisbee', noid: 92, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(91, 90, 0, 0)
+  w._changeContainers(92, 90, 0, 1)
+  assert.equal(w.contentsOf(90).length, 2)
+
+  const { calls, cb } = recorder([
+    { type: 'reply', MUNCH_SUCCESS: 1 }, // MUNCH (Pawn_machine.java: send_reply_msg, no err field)
+  ])
+  const result = await dispatch(w, ACTION_DO, 90, {}, cb)
+  assert.ok(result.ok)
+  assert.ok(calls.sends.some(s => s.op === 'MUNCH'))
+  // Contents purged from world model — tokens arrive later via MAKE
+  assert.equal(w.contentsOf(90).length, 0)
+  assert.equal(w.get(91), undefined)
+  assert.equal(w.get(92), undefined)
+})
+
+test('pawn_machine_MUNCH host delegate is a no-op (choreography only)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-pawn-2', name: 'Pawn Machine',
+      mods: [{ type: 'Pawn_machine', noid: 95, x: 56, y: 140, orientation: 0, gr_state: 0 }] } })
+  const { calls, cb } = recorder()
+  const result = await dispatch(w, 8, 95, { MUNCHER_NOID: 21 }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, []) // no wire traffic
+  assert.equal(w.get(95).mod.gr_state, 0) // no state mutation
+})
+
 test('DO on a door routes to generic_adjacentOpenClose and toggles open', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
@@ -423,4 +482,146 @@ test('DO on a door routes to generic_adjacentOpenClose and toggles open', async 
   assert.ok(again.ok)
   assert.equal(calls.sends[1].op, 'CLOSE')
   assert.equal(w.get(80).mod.open_flags & 1, 0)
+})
+
+// ── vendo machine ───────────────────────────────────────────────────
+
+// Build a minimal vendo world: vendo_inside (noid 110) contains vendo_front
+// (noid 111) and the current display item (coke at slot 1). vendo_front holds
+// two inventory items: a coke at slot 0 and a pretzel at slot 2.
+function makeVendo(world) {
+  // vendo_inside: container of the whole unit
+  world.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-vendo-inside', name: 'Vendo Inside',
+      mods: [{ type: 'Vendo_inside', noid: 110, x: 150, y: 140 }] } })
+  // vendo_front: contained by vendo_inside
+  world.apply({ op: 'make', to: 'item-vendo-inside',
+    obj: { type: 'item', ref: 'item-vendo-front', name: 'Vendo Front',
+      mods: [{ type: 'Vendo_front', noid: 111, x: 0, y: 0, display_item: 0, item_price: 5 }] } })
+  // Display item (coke at slot 0) currently in vendo_inside at slot 1
+  world.apply({ op: 'make', to: 'item-vendo-inside',
+    obj: { type: 'item', ref: 'item-coke-display', name: 'Coke',
+      mods: [{ type: 'Coke', noid: 112, x: 0, y: 1 }] } })
+  // Inventory items inside vendo_front: pretzel at slot 2
+  world.apply({ op: 'make', to: 'item-vendo-front',
+    obj: { type: 'item', ref: 'item-pretzel', name: 'Pretzel',
+      mods: [{ type: 'Pretzel', noid: 113, x: 0, y: 2 }] } })
+}
+
+test('vendo_do VSELECT: swaps display item and updates price balloon', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  makeVendo(w)
+  // Stand adjacent to the vendo front
+  w.me.mod.x = 150; w.me.mod.y = 140
+  const { calls, cb } = recorder([
+    { type: 'reply', display_item: 2, price_lo: 8, price_hi: 0 }, // VSELECT reply
+  ])
+  const result = await dispatch(w, ACTION_DO, 111, {}, cb)
+  assert.ok(result.ok)
+  assert.equal(result.displayItem, 2)
+  assert.equal(result.price, 8)
+
+  // VSELECT was sent to the vendo_front
+  assert.ok(calls.sends.some(s => s.op === 'VSELECT' && s.to === 'item-vendo-front'))
+
+  // Old display item (coke, noid 112) moved back to vendo_front at slot 0
+  assert.equal(w.get(112).containerRef, 'item-vendo-front')
+  assert.equal(w.get(112).mod.y, 0)
+
+  // New display item (pretzel, noid 113) moved to vendo_inside at slot 1
+  assert.equal(w.get(113).containerRef, 'item-vendo-inside')
+  assert.equal(w.get(113).mod.y, 1)
+
+  // vendo_front fields updated
+  assert.equal(w.get(111).mod.display_item, 2)
+  assert.equal(w.get(111).mod.item_price, 8)
+})
+
+test('VSELECT$ delta: observer sees same container swap', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  makeVendo(w)
+  w.apply({ op: 'VSELECT$', noid: 111, display_item: 2, price_lo: 8, price_hi: 0 })
+
+  assert.equal(w.get(112).containerRef, 'item-vendo-front') // coke back in front at slot 0
+  assert.equal(w.get(112).mod.y, 0)
+  assert.equal(w.get(113).containerRef, 'item-vendo-inside') // pretzel now on display
+  assert.equal(w.get(113).mod.y, 1)
+  assert.equal(w.get(111).mod.display_item, 2)
+  assert.equal(w.get(111).mod.item_price, 8)
+})
+
+// ── payment deltas ──────────────────────────────────────────────────
+
+test('PAYTO$ debits payer token wad', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Put tokens in Naibor's hands (noid 21 = Naibor)
+  w.apply({ op: 'make', to: NAIBOR_REF,
+    obj: { type: 'item', ref: 'item-tokens-naibor', name: 'Tokens',
+      mods: [{ type: 'Tokens', noid: 60, x: 0, y: HANDS, denom_lo: 10, denom_hi: 0 }] } })
+  // Fortune machine
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-fortune-1', name: 'Fortune Machine',
+      mods: [{ type: 'Fortune_machine', noid: 70, x: 120, y: 140, state: 0 }] } })
+  w.apply({ op: 'PAYTO$', noid: 70, payer: 21, amount_lo: 2, amount_hi: 0 })
+  const wad = w.holding(21)
+  assert.equal((wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0), 8) // 10 - 2
+})
+
+test('PAYTO$ activates teleport booth display', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: NAIBOR_REF,
+    obj: { type: 'item', ref: 'item-tokens-naibor2', name: 'Tokens',
+      mods: [{ type: 'Tokens', noid: 61, x: 0, y: HANDS, denom_lo: 5, denom_hi: 0 }] } })
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-teleport-1', name: 'Teleport Booth',
+      mods: [{ type: 'Teleport', noid: 71, x: 200, y: 140, state: 0 }] } })
+  w.apply({ op: 'PAYTO$', noid: 71, payer: 21, amount_lo: 2, amount_hi: 0 })
+  assert.equal(w.get(71).mod.state, 1) // TELEPORT_ACTIVE
+  assert.equal((w.holding(21).mod.denom_hi || 0) * 256 + (w.holding(21).mod.denom_lo || 0), 3)
+})
+
+test('PAID$ debits payer and materialises tokens for recipient', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Naibor (noid 21) holds tokens to be debited
+  w.apply({ op: 'make', to: NAIBOR_REF,
+    obj: { type: 'item', ref: 'item-tokens-payer', name: 'Tokens',
+      mods: [{ type: 'Tokens', noid: 62, x: 0, y: HANDS, denom_lo: 20, denom_hi: 0 }] } })
+  // PAID$ targets recipient (SageBot, noid 17); payer is Naibor (noid 21)
+  w.apply({ op: 'PAID$', noid: 17, payer: 21, amount_lo: 15, amount_hi: 0,
+    container: ME_REF,
+    object: { type: 'item', ref: 'item-tokens-recv', name: 'Tokens',
+      mods: [{ type: 'Tokens', noid: 63, x: 0, y: HANDS, denom_lo: 15, denom_hi: 0 }] } })
+  // Payer debited
+  const payerWad = w.holding(21)
+  assert.equal((payerWad.mod.denom_hi || 0) * 256 + (payerWad.mod.denom_lo || 0), 5)
+  // New tokens materialised in recipient's container
+  const recv = w.get(63)
+  assert.ok(recv, 'received token wad should exist')
+  assert.equal(recv.containerRef, ME_REF)
+})
+
+test('SELL$ debits buyer and materialises item in region', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-vendo-1', name: 'Vendo',
+      mods: [{ type: 'Vendo_front', noid: 72, x: 150, y: 140, display_slot: 0 }] } })
+  w.apply({ op: 'make', to: ME_REF,
+    obj: { type: 'item', ref: 'item-tokens-buyer', name: 'Tokens',
+      mods: [{ type: 'Tokens', noid: 64, x: 0, y: HANDS, denom_lo: 8, denom_hi: 0 }] } })
+  w.apply({ op: 'SELL$', noid: 72, buyer: 17, item_price_lo: 3, item_price_hi: 0,
+    object: { type: 'item', ref: 'item-coke-1', name: 'Coke',
+      mods: [{ type: 'Coke', noid: 65, x: 120, y: 140 }] } })
+  // Buyer's tokens debited
+  const buyerWad = w.holding(17)
+  assert.equal((buyerWad.mod.denom_hi || 0) * 256 + (buyerWad.mod.denom_lo || 0), 5)
+  // Item materialised in region
+  const coke = w.get(65)
+  assert.ok(coke, 'sold item should exist in world model')
+  assert.equal(coke.containerRef, REGION_REF)
 })

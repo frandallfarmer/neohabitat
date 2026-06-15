@@ -54,7 +54,7 @@ async function generic_coinOp(ctx) {
     return ctx.beep('payment-rejected')
   }
   ctx.sound('COIN_ACCEPTED', ctx.pointed.noid)
-  spend(ctx, reply.price !== undefined ? reply.price : 0)
+  spend(ctx, (reply.amount_lo || 0) + (reply.amount_hi || 0) * 256)
   return { ok: true }
 }
 
@@ -79,31 +79,68 @@ async function teleport_PAY(ctx) {
 }
 
 // vendo_do.m: cycle the vending machine's display window — walk up,
-// MSG_VSELECT; the host answers with the next display slot, and the
-// previous display item swaps back inside. Elko echoes the container
-// moves to neighbors, so locally we just track the display slot.
+// MSG_VSELECT; the server moves the old display item back into the front's
+// inventory and puts the new one in the display window (vendo_inside slot 1).
+// We mirror both container moves in the world model. The price is returned
+// in the reply and shown as a balloon (C64: v_balloon_printf "Price: $#").
 async function vendo_do(ctx) {
+  const front = ctx.pointed
   const go = await ctx.doAction(ACTION_GO)
   if (!go.ok) return ctx.beep(go.reason)
   await ctx.waitWalkAnimation()
   if (!ctx.isAdjacent()) return ctx.depends()
 
   ctx.chore('operate')
-  const reply = await ctx.send({ op: 'VSELECT', to: ctx.pointed.ref })
+  const reply = await ctx.send({ op: 'VSELECT', to: front.ref })
   ctx.chore('stand')
-  const newSlot = reply ? reply.slot : undefined
-  if (newSlot === undefined || newSlot === 0xff) return ctx.boing('vendo-empty')
-  ctx.sound('VENDO_CHANGING', ctx.pointed.noid)
-  ctx.pointed.mod.display_slot = newSlot
-  ctx.newImage(ctx.pointed.noid)
-  return { ok: true, displaySlot: newSlot }
+
+  const newDisplayItem = reply ? reply.display_item : undefined
+  if (newDisplayItem === undefined || newDisplayItem === 255) return ctx.boing('vendo-empty')
+
+  ctx.sound('VENDO_CHANGING', front.noid)
+
+  // Mirror Vendo_front.java VSELECT: display window = vendo_inside slot 1;
+  // inventory items live in vendo_front at their numbered slots.
+  const inside = ctx.world.getByRef(front.containerRef)
+  if (inside) {
+    const oldDisplay = ctx.world.inventory(inside.noid).find((o) => o.mod.y === 1)
+    if (oldDisplay) ctx.world._changeContainers(oldDisplay.noid, front.noid, 0, front.mod.display_item || 0)
+    const newDisplay = ctx.world.inventory(front.noid).find((o) => o.mod.y === newDisplayItem)
+    if (newDisplay) ctx.world._changeContainers(newDisplay.noid, inside.noid, 0, 1)
+    ctx.newImage(inside.noid)
+  }
+
+  front.mod.display_item = newDisplayItem
+  const price = (reply.price_lo || 0) + (reply.price_hi || 0) * 256
+  front.mod.item_price = price
+  ctx.balloon('Price: $' + price)
+
+  return { ok: true, displayItem: newDisplayItem, price }
 }
 
-// vendo_SELECT.m (host): someone cycled the display — track the slot.
+// vendo_SELECT.m (host): someone else cycled the display — same container
+// swap as vendo_do, driven by args rather than a direct reply.
 async function vendo_SELECT(ctx) {
-  ctx.sound('VENDO_CHANGING', ctx.pointed.noid)
-  if (ctx.args.slot !== undefined) ctx.pointed.mod.display_slot = ctx.args.slot
-  ctx.newImage(ctx.pointed.noid)
+  const front = ctx.pointed
+  const newDisplayItem = ctx.args.display_item
+  if (newDisplayItem === undefined || newDisplayItem === 255) return { ok: true }
+
+  ctx.sound('VENDO_CHANGING', front.noid)
+
+  const inside = ctx.world.getByRef(front.containerRef)
+  if (inside) {
+    const oldDisplay = ctx.world.inventory(inside.noid).find((o) => o.mod.y === 1)
+    if (oldDisplay) ctx.world._changeContainers(oldDisplay.noid, front.noid, 0, front.mod.display_item || 0)
+    const newDisplay = ctx.world.inventory(front.noid).find((o) => o.mod.y === newDisplayItem)
+    if (newDisplay) ctx.world._changeContainers(newDisplay.noid, inside.noid, 0, 1)
+    ctx.newImage(inside.noid)
+  }
+
+  front.mod.display_item = newDisplayItem
+  const price = (ctx.args.price_lo || 0) + (ctx.args.price_hi || 0) * 256
+  front.mod.item_price = price
+  ctx.balloon('Price: $' + price)
+
   return { ok: true }
 }
 
@@ -195,7 +232,8 @@ async function grenade_do(ctx) {
   if (!ctx.inHand || ctx.inHand.noid !== grenade.noid) return ctx.depends()
   if (grenade.mod.pin_pulled) return ctx.beep('pin-already-pulled')
   const reply = await ctx.send({ op: 'PULLPIN', to: grenade.ref })
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // Grenade.java replies { PULLPIN_SUCCESS: 1|0 } — no err field.
+  if (reply.PULLPIN_SUCCESS !== 1) return ctx.beep('server-denied')
   grenade.mod.pin_pulled = 1
   return { ok: true }
 }
@@ -214,7 +252,8 @@ async function fake_gun_do(ctx) {
   if (!ctx.inHand || ctx.inHand.noid !== gun.noid) return ctx.depends()
   if (!gun.mod.gr_state) return ctx.beep('not-fired') // FAKE_GUN_READY
   const reply = await ctx.send({ op: 'RESET', to: gun.ref })
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // Fake_gun.java replies { RESET_SUCCESS: 1|0 } — no err field.
+  if (reply.RESET_SUCCESS !== 1) return ctx.beep('server-denied')
   gun.mod.gr_state = 0
   ctx.newImage(gun.noid)
   return { ok: true }
@@ -226,7 +265,8 @@ async function fake_gun_rdo(ctx) {
   ctx.chore('shoot1')
   const reply = await ctx.send({ op: 'FAKESHOOT', to: gun.ref })
   ctx.chore('shoot2')
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // Fake_gun.java replies { FAKESHOOT_SUCCESS: 1|0 } — no err field.
+  if (reply.FAKESHOOT_SUCCESS !== 1) return ctx.beep('server-denied')
   ctx.sound('JOKE_GUNSHOT', gun.noid)
   gun.mod.gr_state = 1 // FAKE_GUN_FIRED
   ctx.newImage(gun.noid)
@@ -265,6 +305,28 @@ async function hand_of_god_BLAST(ctx) {
   return { ok: true }
 }
 
+// pawn_machine_do.m: walk adjacent, play eat animation, MSG_MUNCH. On
+// success, purge the machine's contents from the world model — the
+// server sends new tokens asynchronously via MAKE.
+async function pawn_machine_do(ctx) {
+  const machine = ctx.pointed
+  const go = await ctx.doAction(ACTION_GO)
+  if (!go.ok) return ctx.beep(go.reason)
+  await ctx.waitWalkAnimation()
+
+  ctx.chore('operate')
+  ctx.sound('PAWN_MUNCH', machine.noid)
+  ctx.newImage(machine.noid, 1)
+  const reply = await ctx.send({ op: 'MUNCH', to: machine.ref })
+  ctx.newImage(machine.noid, 0)
+  ctx.chore('stand')
+
+  // Pawn_machine.java replies { MUNCH_SUCCESS: 1 } — no err field on success.
+  if (reply.MUNCH_SUCCESS !== 1) return ctx.beep('server-denied')
+  ctx.world.contentsOf(machine.noid).forEach((item) => ctx.world._deleteByNoid(item.noid))
+  return { ok: true }
+}
+
 module.exports = {
   generic_coinOp,
   generic_PAY,
@@ -286,4 +348,5 @@ module.exports = {
   fake_gun_RESET,
   instant_object_TRANSFORM,
   hand_of_god_BLAST,
+  pawn_machine_do,
 }

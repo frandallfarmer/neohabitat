@@ -42,12 +42,42 @@ async function jukebox_put(ctx) {
   return ctx.doAction(10) // JUKEBOX_COINOP
 }
 
-// vendo_put.m: pay; the purchased product pops into the region (the
-// C64 unpacked it from the reply — elko sends a make).
+// vendo_put.m + Vendo_front.java VEND: neohabitat uses VEND, not PAY.
+// The C64 chained to generic_coinOp which sent generic_PAY; neohabitat's
+// Vendo_front.java only answers VEND, so we send it directly here.
 async function vendo_put(ctx) {
-  const paid = await ctx.doAction(10) // VENDO_COINOP
-  if (paid.ok) ctx.sound('VENDO_DISPENSING', ctx.pointed.noid)
-  return paid
+  const front = ctx.pointed
+  const go = await ctx.doAction(ACTION_GO)
+  if (!go.ok) return ctx.beep(go.reason)
+  await ctx.waitWalkAnimation()
+
+  const inHand = ctx.inHand
+  if (!inHand) return ctx.beep('hands-empty')
+  if (inHand.type !== 'Tokens') return ctx.beep('not-tokens')
+
+  ctx.chore('operate')
+  ctx.sound('COIN_DEPOSITED', front.noid)
+  const reply = await ctx.send({ op: 'VEND', to: front.ref })
+  ctx.chore('hand_back')
+
+  if (!succeeded(reply)) {
+    ctx.sound('COIN_REJECTED', front.noid)
+    return ctx.beep('payment-rejected')
+  }
+
+  ctx.sound('VENDO_DISPENSING', front.noid)
+  // Debit tokens locally (mirrors C64 v_spend); SELL$ broadcast covers neighbors.
+  const price = (reply.item_price_lo || 0) + (reply.item_price_hi || 0) * 256
+  if (ctx.actor && price) {
+    const wad = ctx.world.inventory(ctx.actor.noid).find((o) => o.type === 'Tokens')
+    if (wad) {
+      const denom = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
+      const left = Math.max(0, denom - price)
+      wad.mod.denom_lo = left & 0xff
+      wad.mod.denom_hi = (left >> 8) & 0xff
+    }
+  }
+  return { ok: true, price }
 }
 
 // teleport_put.m: walk up and pay an inactive booth to activate it.
@@ -251,7 +281,8 @@ async function atm_get(ctx) {
     op: 'WITHDRAW', to: ctx.pointed.ref,
     amount_lo: amount & 0xff, amount_hi: (amount >> 8) & 0xff,
   })
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // Atm.java WITHDRAW replies { amount_lo, amount_hi, result_code } — no err field.
+  if (!reply || reply.result_code !== 1) return ctx.beep('server-denied')
   ctx.sound('MONEY_OUT_OF_ATM', ctx.pointed.noid)
   return { ok: true }
 }
@@ -263,7 +294,9 @@ async function atm_put(ctx) {
   const go = await ctx.doAction(ACTION_GO)
   if (!go.ok) return ctx.beep(go.reason)
   await ctx.waitWalkAnimation()
-  const reply = await ctx.send({ op: 'DEPOSIT', to: ctx.pointed.ref })
+  // Atm.java DEPOSIT(@JSONMethod token_noid) looks up the mod by noid —
+  // must send the wad's noid, not just the request.
+  const reply = await ctx.send({ op: 'DEPOSIT', to: ctx.pointed.ref, token_noid: wad.noid })
   if (!succeeded(reply)) return ctx.beep('server-denied')
   ctx.sound('MONEY_INTO_ATM', ctx.pointed.noid)
   ctx.world._deleteByNoid(wad.noid) // the wad went into the account
