@@ -12,7 +12,7 @@
 // Substantial behaviors get their own file; one-to-three-line .m files
 // are defined here with their source cited.
 
-const { ACTION_GO } = require('../constants')
+const { ACTION_GO, THE_REGION } = require('../constants')
 
 const B = {}
 
@@ -29,6 +29,9 @@ B.unimplemented = async (ctx) => ctx.boing()
 
 // Behaviors/BOING.m: chainTo v_boing
 B.BOING = async (ctx) => ctx.boing()
+
+// beta.mud spells the v_boing terminator lowercase in several Region slots.
+B.boing = async (ctx) => ctx.boing()
 
 // Behaviors/generic_destroy.m: chainTo v_beep ("Eventually will be silent")
 B.generic_destroy = async (ctx) => ctx.beep()
@@ -111,6 +114,27 @@ B.wall_go = async (ctx) => {
 // Behaviors/trap_go.m: a Flat's 'go' re-dispatches to internal slot
 // 8 + flat_type (8 = sky_go, 9 = wall_go, 10 = goToCursor, 11 = noEffect).
 B.trap_go = async (ctx) => ctx.doAction(8 + (ctx.pointed.mod.flat_type || 0))
+
+// Behaviors/trap_put.m: PUT (drop) the held item onto a Trapezoid/Flat/
+// Super_trapezoid — but ONLY when it's a GROUND-type surface
+// (flat_type/TRAP_type == 2); a wall/sky backdrop beeps. Otherwise it is
+// the same walk-and-drop as generic_goToAndDropAt.
+B.trap_put = async (ctx) => {
+  const item = ctx.inHand
+  if (!item) return ctx.beep('hands-empty')
+  if (ctx.pointed && item.noid === ctx.pointed.noid) return ctx.beep('drop-onto-self')
+  if (ctx.pointed.mod.flat_type !== 2) return ctx.beep('not-ground') // ground ONLY
+  const go = await ctx.doAction(ACTION_GO)
+  if (!go.ok) return ctx.beep(go.reason)
+  await ctx.waitWalkAnimation()
+  ctx.face()
+  ctx.chore('bend_over')
+  const x = ctx.args.x !== undefined ? ctx.args.x : (ctx.actor ? ctx.actor.mod.x : 80)
+  const y = ctx.args.y !== undefined ? ctx.args.y : 144
+  const result = await ctx.putInto(THE_REGION, x, y)
+  ctx.chore('bend_back')
+  return result
+}
 
 // ── talk ────────────────────────────────────────────────────────────
 

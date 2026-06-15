@@ -829,10 +829,29 @@ class HabiBot {
     return this.sendWithDelay({ op: 'ASK', to: itemRef, text: text || '' }, 500)
   }
 
-  // READ — Book/Paper/Plaque. page=0 means "next page"; positive jumps
-  // directly. Reply contents come back as object_say (one page at a time).
-  readObject(itemRef, page) {
-    return this.sendWithDelay({ op: 'READ', to: itemRef, page: page == null ? 0 : page }, 500)
+  // READ — Book/Paper/Plaque/Sign. The server replies with the requested
+  // page's text as a byte array plus the next page to request:
+  //   { ascii: int[], nextpage }
+  // (NOT object_say — the content is in the reply). Decode the bytes to a
+  // string, trim trailing pad spaces, and return the text so the caller can
+  // actually read it and page through multi-page documents via nextPage.
+  async readObject(itemRef, page) {
+    const req = page == null ? 0 : page
+    const reply = await this.sendForReply({ op: 'READ', to: itemRef, page: req })
+    const bytes = Array.isArray(reply.ascii) ? reply.ascii : []
+    // The page bytes are PETASCII, not clean ASCII. Decode them exactly the
+    // way the server does for its own display (mods/Paper.java:408-422):
+    //   32..127 -> literal ASCII;  10 -> newline;  everything else -> space
+    // (CR/13, control codes, high/PETSCII bytes) so embedded carriage
+    // returns and graphic bytes don't leak through as \r or odd Unicode.
+    let text = ''
+    for (const b of bytes) {
+      if (b >= 32 && b <= 127) text += String.fromCharCode(b)
+      else if (b === 10) text += '\n'
+      else text += ' '
+    }
+    text = text.replace(/[ \t]+\n/g, '\n').replace(/\s+$/, '')
+    return { ok: true, page: req, text, nextPage: reply.nextpage }
   }
 
   // WRITE — overwrite a Paper's contents. text is a regular string; we
