@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>habisound — Habitat SID soundboard</title>
+  <style>
+    body { font: 14px/1.4 system-ui, sans-serif; margin: 0; background: #11131a; color: #e6e6e6; }
+    header { padding: 18px 22px; background: #1b1e2a; border-bottom: 1px solid #2a2e3e; }
+    h1 { margin: 0 0 4px; font-size: 20px; }
+    header p { margin: 0; color: #9aa0b4; }
+    #bar { padding: 12px 22px; position: sticky; top: 0; background: #11131a; border-bottom: 1px solid #2a2e3e; }
+    #bar button { font-size: 14px; padding: 8px 14px; }
+    input[type=search] { padding: 7px 10px; width: 220px; background: #0c0e14; color: #e6e6e6; border: 1px solid #2a2e3e; border-radius: 6px; }
+    main { padding: 16px 22px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+    button.snd { text-align: left; padding: 9px 11px; background: #1b1e2a; color: #e6e6e6; border: 1px solid #2a2e3e; border-radius: 7px; cursor: pointer; }
+    button.snd:hover { background: #262a3a; border-color: #3a4060; }
+    button.snd:active { background: #324; }
+    button.snd .pw { color: #6cc6ff; font-size: 11px; margin-left: 6px; }
+    .muted { color: #9aa0b4; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>habisound</h1>
+    <p>Habitat's original C64 SID sound effects, synthesized live in your browser from Randy Farmer's 1986 <code>sfx.m</code> driver. Click any sound. <span class="pw" style="color:#6cc6ff">●</span> = has a pulse-width track.</p>
+  </header>
+  <div id="bar">
+    <button id="enable">▶ Enable audio</button>
+    <button id="stop">■ Stop / silence</button>
+    <input id="filter" type="search" placeholder="filter…" />
+    <span id="status" class="muted"></span>
+  </div>
+  <main id="board"></main>
+
+  <script type="module">
+    import { HabiSound } from '../lib/habisound.js';
+
+    const hs = new HabiSound();
+    const board = document.getElementById('board');
+    const status = document.getElementById('status');
+    let names = [];
+
+    async function enable() {
+      try {
+        await hs.init();
+        await hs.resume();
+        names = hs.list();
+        render('');
+        status.textContent = `${names.length} sounds loaded`;
+        document.getElementById('enable').disabled = true;
+      } catch (e) {
+        status.textContent = 'error: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    function render(q) {
+      board.innerHTML = '';
+      for (const key of names) {
+        if (q && !key.includes(q)) continue;
+        const s = hs.bank[key];
+        const b = document.createElement('button');
+        b.className = 'snd';
+        b.innerHTML = key + (s.pw ? ' <span class="pw">●</span>' : '');
+        b.onclick = () => hs.playFile(key);
+        board.appendChild(b);
+      }
+    }
+
+    document.getElementById('enable').onclick = enable;
+    document.getElementById('stop').onclick = () => hs.stop();
+    document.getElementById('filter').oninput = (e) => render(e.target.value.trim());
+  </script>
+</body>
+</html>

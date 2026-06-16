@@ -1,0 +1,23 @@
+{
+  "name": "habisound",
+  "version": "0.1.0",
+  "description": "Play Habitat's original C64 SID sounds in the browser (a port of Randy Farmer's 1986 sfx.m driver)",
+  "type": "module",
+  "main": "lib/habisound.js",
+  "exports": {
+    ".": "./lib/habisound.js",
+    "./interpreter": "./lib/interpreter.js",
+    "./names": "./lib/names.js",
+    "./data/sounds.json": "./data/sounds.json"
+  },
+  "scripts": {
+    "build": "node tools/build-sounds.js",
+    "test": "node --test test/"
+  },
+  "files": [
+    "lib/",
+    "data/sounds.json",
+    "README.md"
+  ],
+  "license": "MIT"
+}
