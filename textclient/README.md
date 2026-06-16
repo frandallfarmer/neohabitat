@@ -47,8 +47,20 @@ Make sure elko + `bridge_v2` are up first (e.g.
 
 ## Commands
 
-Targets accept a **name or a noid** — `LOOK` lists both. A line whose first
-word is not a known command is spoken aloud.
+Targets accept a **name, a noid, or a self-word** (`me` / `self` / `i` /
+`myself`, which resolve to your own avatar — e.g. `DO me`). `LOOK` lists
+the names and noids around you. A line whose first word is not a known
+command is spoken aloud.
+
+When your avatar appears (on entry, after corporating, or after a
+reconnect) the client latches and announces your own noid:
+
+```
+You are Randy (noid 11).
+```
+
+That self-noid (`world.me.noid`) is what every avatar-targeting verb and
+the `me`/`self` words resolve through.
 
 | Command | Effect |
 |---|---|
