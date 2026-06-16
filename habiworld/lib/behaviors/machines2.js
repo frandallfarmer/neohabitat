@@ -283,8 +283,10 @@ async function atm_get(ctx) {
   })
   // Atm.java WITHDRAW replies { amount_lo, amount_hi, result_code } — no err field.
   if (!reply || reply.result_code !== 1) return ctx.beep('server-denied')
+  const withdrawn = (reply.amount_hi || 0) * 256 + (reply.amount_lo || 0)
+  if (ctx.actor) ctx.actor.mod.bankBalance = (ctx.actor.mod.bankBalance || 0) - withdrawn
   ctx.sound('MONEY_OUT_OF_ATM', ctx.pointed.noid)
-  return { ok: true }
+  return { ok: true, withdrawn }
 }
 
 // atm_put.m: deposit the held tokens.
@@ -298,9 +300,11 @@ async function atm_put(ctx) {
   // must send the wad's noid, not just the request.
   const reply = await ctx.send({ op: 'DEPOSIT', to: ctx.pointed.ref, token_noid: wad.noid })
   if (!succeeded(reply)) return ctx.beep('server-denied')
+  const deposited = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
+  if (ctx.actor) ctx.actor.mod.bankBalance = (ctx.actor.mod.bankBalance || 0) + deposited
   ctx.sound('MONEY_INTO_ATM', ctx.pointed.noid)
   ctx.world._deleteByNoid(wad.noid) // the wad went into the account
-  return { ok: true }
+  return { ok: true, deposited }
 }
 
 // ── magic lamp talk / jukebox ───────────────────────────────────────

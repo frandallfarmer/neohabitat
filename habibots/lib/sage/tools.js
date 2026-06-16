@@ -822,6 +822,19 @@ const TOOLS = [
 
   // ── commerce ─────────────────────────────────────────────────────
   {
+    name: 'check_atm_balance',
+    description: 'Read your current bank balance from an Atm. The balance is tracked locally and ' +
+      'updated whenever you deposit or withdraw — no server round-trip needed. Use this before ' +
+      'claiming any specific balance amount; never guess.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        ref: { type: 'string', description: 'Ref of any Atm visible in the scene.' },
+      },
+      required: ['ref'],
+    },
+  },
+  {
     name: 'deposit_to_atm',
     description: 'DEPOSIT — feed a Tokens stack from your pocket into an Atm. The Atm consumes the ' +
       'Tokens item and credits your bank balance.',
@@ -1481,6 +1494,10 @@ async function executeAction(toolUse, bot, ctx) {
         return { ok: true }
 
       // ── commerce ────────────────────────────────────────────────
+      case 'check_atm_balance': {
+        const r = await withTimeout(bot.checkAtmBalance(args.ref), 5_000, 'check_atm_balance')
+        return { ok: true, balance: r.balance }
+      }
       case 'deposit_to_atm':
         await withTimeout(bot.depositToAtm(args.ref, args.token_noid), 10_000, 'deposit_to_atm')
         return { ok: true }

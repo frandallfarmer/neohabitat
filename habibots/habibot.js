@@ -559,22 +559,22 @@ class HabiBot {
   }
 
   /**
-   * Puts the object that the HabiBot is holding onto the provided (x, y) coords
-   * @param {int} containerNoid  where the item is being stored 
-   * @param {int} x              x coordinate to drop the item
-   * @param {int} y              y coordinate to drop the item
-   * @param {int} orientation    new orientation when transfered    
+   * Drops the held item into a container at (x, y). The item must already
+   * be in the bot's hand; objRef is verified but the actual transfer uses
+   * the in-hand item so the world model stays in sync.
+   * @param {string} objRef      ref of the item to put (must be in hand)
+   * @param {int}    containerNoid  destination container noid
+   * @param {int}    x              x coordinate in the container
+   * @param {int}    y              y coordinate in the container
+   * @param {int}    orientation    item orientation after placement
    * @returns {Promise}
    */
   putObj(objRef, containerNoid, x, y, orientation) {
-    return this.sendWithDelay({
-      op: 'PUT',
-      to: objRef,
-      containerNoid: containerNoid,
-      x: x,
-      y: y,
-      orientation: orientation,
-    }, 10000)
+    const obj = this.world && this.world.getByRef(objRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-object' })
+    const me = this.world && this.world.me
+    if (!me) return Promise.resolve({ ok: false, reason: 'not-in-region' })
+    return this.performVerb(worldConstants.ACTION_PUT, me.noid, { containerNoid, x, y, orientation })
   }
 
   /**
@@ -1109,6 +1109,14 @@ class HabiBot {
   }
 
   // ── Commerce ───────────────────────────────────────────────────────
+  // CHECK BALANCE — routes through atm_do (ACTION_DO). The behavior reads
+  // the locally-tracked bankBalance (no server round-trip; the server has
+  // no query-balance op). Returns { ok: true, balance: N }.
+  checkAtmBalance(atmRef) {
+    const obj = this.world && this.world.getByRef(atmRef)
+    if (!obj) return Promise.resolve({ ok: false, reason: 'no-such-atm' })
+    return this.performVerb(worldConstants.ACTION_DO, obj.noid)
+  }
   // DEPOSIT — routes through atm_put (ACTION_PUT). The behavior uses the
   // held Tokens wad (inHand) — the bot must be holding tokens. Atm.java
   // requires token_noid; the behavior sends it from ctx.inHand.noid.

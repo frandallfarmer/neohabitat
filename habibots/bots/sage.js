@@ -298,6 +298,9 @@ const { sanitizeForC64 } = require('../lib/sage/petscii')
 function parseMovementRequest(text) {
   if (!text) return null
   const t = text.toLowerCase().trim()
+  // "pick up" and "put down" contain directional words but are item-
+  // manipulation requests — bail before the verb+direction scan fires.
+  if (/\bpick\s+up\b/.test(t) || /\bput\s+down\b/.test(t)) return null
   const verb = /\b(go|head|move|walk|exit|take|let'?s\s+go|come|follow)\b/
   const dirs = [
     { name: 'UP',    re: /\bup(ward)?\b/ },

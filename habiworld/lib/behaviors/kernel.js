@@ -271,20 +271,24 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   // v_putInto (used by generic_goToAndDropAt and the pocket flows):
   // PUT the in-hand item into a container, apply the transfer on a
   // success reply. The reply's `pos` carries the server-adjusted y.
-  ctx.putInto = async (containerNoid, x, y) => {
+  // Optional `orientation` overrides item.mod.orientation (used by putObj
+  // to place items at a specific rotation).
+  ctx.putInto = async (containerNoid, x, y, orientation) => {
     const item = ctx.inHand
     if (!item) return ctx.beep('hands-empty')
+    const orient = orientation !== undefined ? orientation : (item.mod.orientation || 0)
     const reply = await ctx.send({
       op: 'PUT',
       to: item.ref,
       containerNoid: containerNoid,
       x: x,
       y: y,
-      orientation: item.mod.orientation || 0,
+      orientation: orient,
     })
     if (!succeeded(reply)) return ctx.beep('server-denied')
     const finalY = reply.pos !== undefined ? reply.pos : y
     world._changeContainers(item.noid, containerNoid, x, finalY)
+    if (orientation !== undefined) item.mod.orientation = orientation
     return { ok: true }
   }
 

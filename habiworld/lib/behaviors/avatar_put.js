@@ -29,8 +29,18 @@ module.exports = async function avatar_put(ctx) {
   const item = ctx.inHand
   if (!item) return ctx.beep('hands-empty')
 
-  // ── Self: pocket it. No walk — it's already in our hand. ───────────
+  // ── Self: pocket OR explicit-coords drop. ───────────────────────────
   if (me && recipient.noid === me.noid) {
+    // putObj path: explicit containerNoid means "drop into this container
+    // at (x, y)" rather than pocketing into the avatar.
+    const { containerNoid, x, y, orientation } = ctx.args
+    if (containerNoid !== undefined) {
+      ctx.chore('bend_over')
+      const result = await ctx.putInto(containerNoid, x || 0, y || 0, orientation)
+      ctx.chore('bend_back')
+      return result
+    }
+
     // A Head + free HEAD slot → wear it; else fall through to the pocket.
     const headWorn = ctx.world.inventory(me.noid).some((o) => o.mod.y === HEAD)
     if (item.type === 'Head' && !headWorn) {
