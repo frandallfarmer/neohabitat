@@ -22,6 +22,9 @@ export const ALIASES = {
   ELEVATOR_CONF_WAIT: 'teleport_conf_wait',
   ELEVATOR_DEPARTING: 'teleport_departure',
   ESCAPE_DEVICE_ACTIVATES: 'escape_device_activates',
+  // Only the grenade emits EXPLOSION; grenade_EXPLODE.m plays complexSound 0,
+  // which is the grenade class's sound 0 = big_explosion (per habitat_beta.mud).
+  EXPLOSION: 'big_explosion',
   EXIT_OPENING: 'door_opening',
   EXIT_CLOSING: 'door_closing',
   FORTUNE_DISPENSED: 'fortune_dispensed',
@@ -31,6 +34,9 @@ export const ALIASES = {
   GUNSHOT: 'gunshot',
   GUN_SAFETY_OFF: 'gun_safety_off',
   GUN_SAFETY_ON: 'gun_safety_on',
+  // The pawn machine never had its own sound: habitat_beta.mud aliases the
+  // resource `pawn_machine_munching` to the parking-meter crank .bin/.pwbin.
+  PAWN_MUNCH: 'parking_meter_crank',
   JOKE_GUNSHOT: 'joke_gunshot',
   MAGIC: 'magic',
   MAIL_OUT_OF_MAILBOX: 'mail_out_of_mailbox',
@@ -46,9 +52,7 @@ export const ALIASES = {
   STUN_GUN_HIT: 'stun_gun_hit',
   STUN_GUN_MISS: 'stun_gun_miss',
   SWITCH_CLICK: 'switch_click',
-  // security devices toggle with these; ordinary light switches use SWITCH_CLICK.
-  SWITCHED_ON: 'security_device_on',
-  SWITCHED_OFF: 'security_device_off',
+  // SWITCHED_ON/OFF are class-relative (see resolve()); not fixed aliases.
   TELEPORT_ACTIVATES: 'teleport_activates',
   TELEPORT_ARRIVAL: 'teleport_arrival',
   TELEPORT_DEPARTING: 'teleport_departure',
@@ -62,8 +66,10 @@ const CONTAINER_PREFIX = [
   ['bag', 'bag'],
   ['chest', 'chest_of_drawers'],
   ['box', 'box'],
-  ['safe', 'safe'],
-  // hole, dropbox, etc. reuse the box sounds in classes.js
+  // The safe reuses the box sounds in beta.mud (class_safe: box_opening/closing),
+  // even though standalone safe_opening/safe_closing.sob exist. Match beta.mud.
+  ['safe', 'box'],
+  // hole, dropbox, etc. also reuse the box sounds.
 ];
 
 function containerPrefix(classHint) {
@@ -74,27 +80,33 @@ function containerPrefix(classHint) {
   return 'box';
 }
 
-// 2b) EXPLOSION size by class hint; default medium.
-function explosion(classHint) {
+// 2b) SWITCHED_ON/OFF are class-relative sound indices 0 and 1 (action_head.i:
+// "define SWITCHED_ON = 0 ; for securDev, camera, stereo"). In the data the
+// security device has dedicated on/off sounds while the movie camera (and other
+// generic switchables) just click. Resolve by class hint, defaulting to a click.
+function switched(classHint, on) {
   const h = (classHint || '').toLowerCase();
-  if (h.includes('grenade') || h.includes('bomb')) return 'big_explosion';
-  if (h.includes('fire') || h.includes('cracker')) return 'small_explosion';
-  return 'medium_explosion';
+  if (h.includes('security')) return on ? 'security_device_on' : 'security_device_off';
+  return 'switch_click'; // movie_camera and generic switchables click for both
 }
 
 // 3) Names habiworld emits that have NO original .sob, or whose source name in
 // classes.js differs from the file. Aliased where a file exists; null where the
 // original sound was never built (kept here so callers can detect the gap).
 export const FILE_ALIASES = {
-  garbage_can_flushing: 'garbage_can_flush', // classes.js spelling -> real file
-  pawn_machine_munching: null,               // no .sob exists in the C64 sources
+  garbage_can_flushing: 'garbage_can_flush',     // classes.js spelling -> real file
+  pawn_machine_munching: 'parking_meter_crank',  // habitat_beta.mud aliases it here
 };
 
-// Symbolic names we cannot satisfy from the original data (for documentation
-// and so a client can warn instead of silently doing nothing).
-export const UNRESOLVED = {
-  PAWN_MUNCH: 'no pawn_machine_munching.sob in the C64 sources',
+// Symbolic names that intentionally resolve to nothing because the object is
+// obsolete and never had a canonical sound (so a client can no-op quietly).
+export const OBSOLETE = {
+  MUSIC: 'jukebox is obsolete — no instances, no mod, no sound resource in the .mud',
 };
+
+// Symbolic names we cannot satisfy from the original data. Empty: every name
+// habiworld emits either resolves to a real sound or is listed in OBSOLETE.
+export const UNRESOLVED = {};
 
 export function resolve(name, opts = {}) {
   if (name == null) return null;
@@ -102,8 +114,13 @@ export function resolve(name, opts = {}) {
 
   if (name === 'CONTAINER_OPENING') return `${containerPrefix(classHint)}_opening`;
   if (name === 'CONTAINER_CLOSING') return `${containerPrefix(classHint)}_closing`;
-  if (name === 'EXPLOSION') return explosion(classHint);
-  if (name === 'MUSIC') return 'region_change_music_v0'; // TODO: confirm which track per context
+  if (name === 'SWITCHED_ON') return switched(classHint, true);
+  if (name === 'SWITCHED_OFF') return switched(classHint, false);
+  // MUSIC (jukebox) has no canonical sound: the jukebox is obsolete — no
+  // instances in any region, no Jukebox mod, and no sound resource in the .mud
+  // (jukebox_do plays nothing). habiworld's ctx.sound('MUSIC') is speculative;
+  // we resolve it to null rather than invent one. See OBSOLETE below.
+  if (name in OBSOLETE) return null;
 
   if (name in ALIASES) return ALIASES[name];
   if (name in UNRESOLVED) return null;
