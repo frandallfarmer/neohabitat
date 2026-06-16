@@ -6,6 +6,7 @@
 lib/
 !habibots/lib/
 !habiworld/lib/
+!textclient/lib/
 log/
 node_modules/
 pushserver/node_modules/
