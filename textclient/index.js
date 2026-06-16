@@ -23,6 +23,20 @@
 
 const readline = require('readline')
 
+// Silence one specific, harmless startup warning before anything pulls in
+// winston: HabiBot requires winston, whose internals trip Node's
+// "Accessing non-existent property 'padLevels' ... inside circular
+// dependency" warning. It's a known winston quirk, not our bug, and
+// clutters the very first line a user sees. Filter only that message;
+// every other warning still passes through. Must run before the HabiBot
+// require below (which loads winston).
+const _emitWarning = process.emitWarning.bind(process)
+process.emitWarning = (warning, ...rest) => {
+  const msg = typeof warning === 'string' ? warning : (warning && warning.message) || ''
+  if (msg.includes("padLevels")) return
+  return _emitWarning(warning, ...rest)
+}
+
 const HabiBot = require('../habibots/habibot')
 const { makeRenderer } = require('./lib/render')
 const commands = require('./lib/commands')
