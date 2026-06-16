@@ -123,6 +123,14 @@ If you'd like to contribute to NeoHabitat, there are plenty of great opportuniti
   - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
   - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
 
+In-repo clients and libraries (besides the elko server in `src/` and the Go `bridge_v2/`):
+
+  - [`textclient/`](textclient/README.md) — a human, text-only terminal client: narrates the world and takes verb-first commands (`GO`/`GET`/`SAY`/…).
+  - [`habibots/`](habibots/README.md) — in-world bots (including the LLM-driven `sagebot`), built on the `HabiBot` connection + world-model layer.
+  - [`habiworld/`](habiworld/README.md) — the canonical client-side world model and 1986-faithful behavior dispatcher that the bots and `textclient` share.
+
+Clients and bots connect through `bridge_v2` (port 2026), never to the elko server directly.
+
 Have Fun!
 ---------
 
