@@ -31,10 +31,17 @@ function lc(s) {
 //   record         → resolved
 //   {ambiguous}    → more than one equally-good match
 //   null           → nothing matched
+// Words that mean "my own avatar" — resolved from world.me, the self-noid
+// habiworld latches on the `make … you:true`. Lets the player target
+// themselves (e.g. DO me) without looking up their own noid.
+const SELF_WORDS = new Set(['ME', 'SELF', 'I', 'MYSELF'])
+
 function resolve(world, token) {
   if (!world || !token) return null
   const t = token.trim()
   if (t === '') return null
+
+  if (SELF_WORDS.has(t.toUpperCase())) return world.me || null
 
   if (/^\d+$/.test(t)) {
     return world.get(Number(t))

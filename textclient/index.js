@@ -137,6 +137,22 @@ bot.world.on('removed', (record) => {
   try { renderer.departed(bot, record) } catch (e) { /* non-fatal */ }
 })
 
+// Learn our own noid the moment our avatar make arrives. habiworld sets
+// world.me inside _makeObject (on the `make … you:true`) BEFORE emitting
+// 'added', so `record === bot.world.me` here identifies our own avatar.
+// world.me.noid is the canonical self-noid every avatar-targeting verb
+// resolves through (pocket_item, give, the `me`/`self` command target,
+// etc.); surfacing it confirms we latched it and tells the player who/what
+// they are. We re-announce on a noid change because corporating (ghost →
+// avatar) and silent reconnects hand us a fresh avatar noid.
+let myNoid = null
+bot.world.on('added', (record) => {
+  if (record !== bot.world.me || record.type !== 'Avatar') return
+  if (record.noid === myNoid) return
+  myNoid = record.noid
+  print(`You are ${record.name || argv.username} (noid ${record.noid}).`)
+})
+
 // On region entry, become corporeal then show the room. ensureCorporated
 // waits ~10s for imagery on a fresh corporate; that's fine for a human.
 let arrivedOnce = false
