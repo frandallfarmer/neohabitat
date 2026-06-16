@@ -14,6 +14,13 @@
 
 import { resolve } from './names.js';
 
+// The two 3-part tunes, as the C64 client played them: each part is one SID
+// oscillator voice, all started together (entry staggering lives in the data).
+export const TUNES = {
+  title: ['titles_music_v0', 'titles_music_v1', 'titles_music_v2'],
+  region_change: ['region_change_music_v0', 'region_change_music_v1', 'region_change_music_v2'],
+};
+
 export class HabiSound {
   constructor(opts = {}) {
     // URLs resolve relative to this module by default, so the library works
@@ -74,6 +81,31 @@ export class HabiSound {
     this.resume();
     this.node.port.postMessage({ type: 'play', voices: s.voices, pw: s.pw || null });
     return true;
+  }
+
+  // Play a multi-voice piece: partKeys are bank keys, one per oscillator voice
+  // (max 3), started together. Use for the 3-part tunes. The piece takes over
+  // the chip, as it did in the client.
+  playPiece(partKeys) {
+    if (!this.ready) {
+      console.warn('habisound: call await init() before playing');
+      return false;
+    }
+    const parts = partKeys.slice(0, 3).map((k) => {
+      const s = this.bank[k];
+      if (!s || !s.voices) console.warn(`habisound: no sound named "${k}"`);
+      return { voices: s ? s.voices : null, pw: s ? s.pw || null : null };
+    });
+    this.resume();
+    this.node.port.postMessage({ type: 'playPiece', parts });
+    return true;
+  }
+
+  // Play one of the named TUNES ('title', 'region_change').
+  playTune(name) {
+    const keys = TUNES[name];
+    if (!keys) { console.warn(`habisound: unknown tune "${name}"`); return false; }
+    return this.playPiece(keys);
   }
 
   // Silence everything (useful for the looping music/continuous effects).

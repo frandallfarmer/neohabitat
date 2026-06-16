@@ -11,22 +11,32 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SidSynth } from '../lib/synth.js';
+import { TUNES } from '../lib/habisound.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const bank = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sounds.json'), 'utf8'));
 
 const name = process.argv[2];
-const outFile = process.argv[3] || `${name}.wav`;
+const outFile = process.argv[3] || `${name.replace(/^tune:/, '')}.wav`;
 const maxSeconds = Number(process.argv[4] || 4);
 const FS = 44100;
 
-if (!name || !bank[name]) {
-  console.error(`usage: render-wav.js <sound> [out.wav] [seconds]\nunknown sound: ${name}`);
+const synth = new SidSynth(FS);
+
+if (name && name.startsWith('tune:')) {
+  // 3-part tune: tune:title  or  tune:region_change
+  const keys = TUNES[name.slice(5)];
+  if (!keys) { console.error(`unknown tune: ${name.slice(5)} (have: ${Object.keys(TUNES).join(', ')})`); process.exit(1); }
+  synth.playPiece(keys.map((k) => ({
+    voices: Uint8Array.from(bank[k].voices),
+    pw: bank[k].pw ? Uint8Array.from(bank[k].pw) : null,
+  })));
+} else if (name && bank[name]) {
+  synth.play(Uint8Array.from(bank[name].voices), bank[name].pw ? Uint8Array.from(bank[name].pw) : null);
+} else {
+  console.error(`usage: render-wav.js <sound|tune:NAME> [out.wav] [seconds]\nunknown sound: ${name}`);
   process.exit(1);
 }
-
-const synth = new SidSynth(FS);
-synth.play(Uint8Array.from(bank[name].voices), bank[name].pw ? Uint8Array.from(bank[name].pw) : null);
 
 // render in blocks until the sound finishes (or hits the cap, for loops)
 const block = 1024;

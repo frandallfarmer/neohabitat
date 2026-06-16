@@ -25,6 +25,8 @@ await hs.resume();          // call inside a click/keydown (browser autoplay pol
 hs.play('TELEPORT_ARRIVAL');        // by symbolic name (from habiworld behaviors)
 hs.play('CONTAINER_OPENING', { classHint: 'class_chest' }); // generic name + class
 hs.playFile('switch_click');        // by raw bank key (file stem)
+hs.playTune('title');               // 3-part tune ('title' | 'region_change')
+hs.playPiece(['a_v0','a_v1','a_v2']); // arbitrary multi-voice piece (max 3 parts)
 hs.stop();                          // silence everything (e.g. looping music)
 ```
 
@@ -102,6 +104,12 @@ startup and the effects rely on it; habisound defaults it to `0x0F`.
   averaged (the real chip AND's them) — a usable stand-in.
 - Music tracks (`titles_music_*`, `region_change_music_*`) play through the same engine;
   they loop forever by design (`stop` them when changing regions).
+- **3-part tunes.** The title theme and region-transition music are each three separate
+  one-voice parts (`*_v0/_v1/_v2`), played on oscillator voices 0/1/2 simultaneously —
+  exactly how `init.m` queued them. Each part's entry timing is baked into its own
+  bytecode as leading rests (e.g. the title theme builds up over ~5 s: voice 2 leads,
+  voice 1 enters at ~2.4 s, voice 0 at ~4.8 s). Use `playTune('title' | 'region_change')`,
+  or render offline with `node tools/render-wav.js tune:title out.wav 12`.
 
 ## Name table notes (`lib/names.js`)
 

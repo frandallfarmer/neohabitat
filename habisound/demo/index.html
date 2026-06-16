@@ -28,6 +28,8 @@
   <div id="bar">
     <button id="enable">▶ Enable audio</button>
     <button id="stop">■ Stop / silence</button>
+    <button id="title" title="3-part title theme — voices build in over ~5s">♪ Title theme</button>
+    <button id="region" title="3-part region-transition tune">♪ Region change</button>
     <input id="filter" type="search" placeholder="filter…" />
     <span id="status" class="muted"></span>
   </div>
@@ -70,6 +72,8 @@
 
     document.getElementById('enable').onclick = enable;
     document.getElementById('stop').onclick = () => hs.stop();
+    document.getElementById('title').onclick = () => hs.playTune('title');
+    document.getElementById('region').onclick = () => hs.playTune('region_change');
     document.getElementById('filter').oninput = (e) => render(e.target.value.trim());
   </script>
 </body>

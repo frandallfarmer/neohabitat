@@ -92,6 +92,21 @@ export class SfxPlayer {
     return vi;
   }
 
+  // Play a multi-voice piece: parts[i] = { voices, pw } is assigned to
+  // oscillator voice i (and its paired pulse-width voice i+4), with all parts
+  // started on the same frame — exactly how the C64 queued the 3-part title and
+  // region-change tunes (init.m). Each part's entry timing is in its own
+  // bytecode (leading rests), so a simultaneous start reproduces the staggering.
+  // The piece takes over the chip (reset first), as it did in the client.
+  playPiece(parts) {
+    this.reset();
+    parts.forEach((part, i) => {
+      if (i >= FILTER_VOICE) return; // only the 3 oscillator voices
+      if (part.voices) this.queue[i] = part.voices;
+      if (part.pw) this.queue[i + 4] = part.pw;
+    });
+  }
+
   anyActive() {
     return this.active.some(Boolean);
   }

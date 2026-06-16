@@ -16,6 +16,12 @@ class HabiSoundProcessor extends AudioWorkletProcessor {
         const voices = msg.voices ? Uint8Array.from(msg.voices) : null;
         const pw = msg.pw ? Uint8Array.from(msg.pw) : null;
         if (voices) this.synth.play(voices, pw);
+      } else if (msg.type === 'playPiece') {
+        const parts = msg.parts.map((p) => ({
+          voices: p.voices ? Uint8Array.from(p.voices) : null,
+          pw: p.pw ? Uint8Array.from(p.pw) : null,
+        }));
+        this.synth.playPiece(parts);
       } else if (msg.type === 'stop') {
         this.synth.stop();
       }
