@@ -103,11 +103,20 @@ startup and the effects rely on it; habisound defaults it to `0x0F`.
 - Music tracks (`titles_music_*`, `region_change_music_*`) play through the same engine;
   they loop forever by design (`stop` them when changing regions).
 
-## Known gaps in the name table (`lib/names.js`)
+## Name table notes (`lib/names.js`)
 
-- **`PAWN_MUNCH`** — `classes.js` references `pawn_machine_munching`, but no such `.sob`
-  exists in the C64 sources, so it can't be synthesized. Flagged in `UNRESOLVED`.
-- **`MUSIC`** defaults to `region_change_music_v0`; the right track may depend on context.
-- **`EXPLOSION`** picks small/medium/big from a class hint, defaulting to medium.
-- **`SWITCHED_ON/OFF`** map to `security_device_on/off` (ordinary switches use
-  `SWITCH_CLICK`); confirm against intended behavior.
+The authoritative resource→file map is `habitat_beta.mud` in the C64 sources (its
+`<resource>: "Sounds/<file>.bin"` lines), which is also where sound *aliases* live.
+
+- **`PAWN_MUNCH`** — the pawn machine never had its own sound; `habitat_beta.mud`
+  aliases the `pawn_machine_munching` resource to the parking-meter crank
+  (`parking_meter_crank.bin`/`.pwbin`), so `PAWN_MUNCH` resolves there.
+- **`MUSIC`** resolves to nothing on purpose: it's only emitted by the **jukebox**, which
+  is obsolete — no instances in any region, no server mod, and no jukebox sound resource in
+  the `.mud` (its `jukebox_do` plays nothing). Listed in `OBSOLETE`.
+- **`EXPLOSION`** is `big_explosion`: it's emitted only by the grenade, whose
+  `grenade_EXPLODE.m` plays `complexSound 0` = the grenade class's sound 0 = `big_explosion`
+  (`small_`/`medium_explosion` exist in the bank but aren't reached by this name).
+- **`SWITCHED_ON/OFF`** are class-relative (sound indices 0/1, per `action_head.i`):
+  pass a `classHint`. The security device uses `security_device_on`/`security_device_off`;
+  the movie camera and other generic switchables (and the no-hint default) use `switch_click`.
