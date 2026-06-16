@@ -1,0 +1,22 @@
+{
+  "name": "neohabitat-textclient",
+  "version": "0.1.0",
+  "description": "Human, text-only terminal client for NeoHabitat. A HabiBot driven by a person at a TTY: narrates the world and takes verb-first commands (GO/GET/SAY/...). Consumes the habibots/habiworld libraries read-only.",
+  "main": "index.js",
+  "bin": {
+    "neohabitat-textclient": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "habitat",
+    "neohabitat",
+    "client",
+    "terminal"
+  ],
+  "license": "MIT"
+}
