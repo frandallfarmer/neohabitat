@@ -45,6 +45,7 @@ export class SidSynth {
   }
 
   play(voices, pw = null) { this.player.play(voices, pw); }
+  playPiece(parts) { this.player.playPiece(parts); }
   stop() { this.player.reset(); for (const o of this.osc) Object.assign(o, new OscState()); }
   isBusy() { return this.player.isBusy(); }
 
