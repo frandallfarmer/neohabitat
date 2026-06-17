@@ -8,6 +8,7 @@ lib/
 !habiworld/lib/
 !textclient/lib/
 !habisound/lib/
+!webclient/lib/
 log/
 node_modules/
 pushserver/node_modules/

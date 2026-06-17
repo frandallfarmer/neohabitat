@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NeoHabitat — Web Client</title>
+    <link rel="stylesheet" href="style.css" />
+    <!--
+      No build step. Native ES modules + importmap + vendored deps, served static —
+      the same shape as neohabitat-doc/inspector and habisound. See DESIGN.md.
+      The vendored Preact/htm/signals are copied from the inspector so the Phase 1
+      renderer (region.js/render.js) imports the exact same module instances.
+    -->
+    <script type="importmap">
+        {
+            "imports": {
+                "htm": "./vendor/htm.mjs",
+                "preact": "./vendor/preact.mjs",
+                "preact/hooks": "./vendor/hooks.mjs",
+                "@preact/signals-core": "./vendor/signals-core.mjs",
+                "@preact/signals": "./vendor/signals.mjs"
+            }
+        }
+    </script>
+    <script type="module" src="./app.js"></script>
+</head>
+<body>
+    <div id="app"><noscript>This client requires JavaScript.</noscript></div>
+</body>
+</html>
