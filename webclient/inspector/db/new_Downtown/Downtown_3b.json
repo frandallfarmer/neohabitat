@@ -1,0 +1,185 @@
+[
+  {
+    "ref": "context-Downtown_3b", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "42nd St & Maine", 
+    "aliases": [ "pop-42","pop-42nd","pop-maine", "pop-main", "pop-42andmaine", "pop-42&maine", "pop-theritz" ],
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 3,
+        "realm": "Downtown",         
+        "neighbors": [
+          "context-Downtown_1972",
+          "context-Downtown_4b", 
+          "", 
+          ""         
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall924c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 164
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_3b"
+  }, 
+  {
+    "ref": "item-ground04dd", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_3b"
+  }, 
+  {
+    "ref": "item-sign7339", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 8, 
+        "ascii": [
+          71, 
+          85, 
+          73, 
+          68, 
+          69, 
+          68, 
+          32, 
+          84, 
+          79, 
+          85, 
+          82, 
+          83, 
+          134, 
+          83, 
+          117, 
+          110, 
+          100, 
+          97, 
+          121, 
+          32, 
+          49, 
+          48, 
+          112, 
+          109, 
+          134, 
+          65, 
+          112, 
+          97, 
+          114, 
+          116, 
+          109, 
+          101, 
+          110, 
+          116, 
+          134, 
+          66, 
+          108, 
+          100, 
+          103
+        ], 
+        "gr_state": 3, 
+        "y": 66, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_3b"
+  }, 
+  {
+    "ref": "item-streetlamp898c", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 100, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 81
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_3b"
+  }, 
+  {
+    "ref": "item-teleport75a0", 
+    "mods": [
+      {
+        "y": 144, 
+        "x": 120, 
+        "type": "Teleport",
+        "address": "Pop-Uptown",
+        "orientation": 156
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Downtown_3b"
+  }, 
+  {
+    "ref": "item-short_sign98f5", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          128, 
+          52, 
+          50, 
+          110, 
+          100, 
+          32, 
+          83, 
+          116, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 116, 
+        "x": 4, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_3b"
+  }, 
+  {
+    "ref": "item-streetf625", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 7, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_3b"
+  }
+]

@@ -1,0 +1,331 @@
+[
+  {
+    "ref": "context-Downtown_10351", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Sheriff's Office", 
+    "mods": [
+      {
+        "town_dir": "}", 
+        "port_dir": "}", 
+        "type": "Region",
+        "orientation": 0,
+        "depth": 29,		
+        "neighbors": [
+          "context-Downtown_10352",
+          "context-Downtown_1972",
+          "",
+          ""        
+        ],
+        "realm": "Downtown", 
+        "nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "ref": "item-wall.w9d8.Downtown_10351", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_10351"
+  }, 
+  {
+    "ref": "item-ground.s9k2.Downtown_10351", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_10351"
+  },
+  {
+    "ref": "item-couch1.a9k2.Downtown_10351", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 56, 
+        "gr_state": 0, 
+        "y": 29, 
+        "x": 8, 
+        "type": "Couch"
+      }
+    ], 
+    "type": "item", 
+    "name": "Couch", 
+    "in": "context-Downtown_10351"
+  },
+  {
+	"ref": "item-chair1.d9k2.Downtown_10351",
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 56, 
+        "y": 156, 
+        "x": 120, 
+        "type": "Chair", 
+        "open_flags": 3
+      }
+    ],
+	"type": "item", 
+    "name": "Chair", 
+    "in": "context-Downtown_10351"
+  },
+  {
+	"ref": "item-plaque1.q9d0.Downtown_10351",
+	"mods": [
+	  {
+		"type": "Plaque",
+		"style": 1,
+		"gr_state": 1,
+		"orientation": 16,
+		"x": 108,
+		"y": 78,
+		"last_page": 1,
+		"path": "text-missing.object"
+	  }
+	],
+	"type": "item",
+	"name": "Sheriff's Office Plaque",
+	"in": "context-Downtown_10351"
+  },
+  {
+    "ref": "item-countertop1.d2k2.Downtown_10351", 
+    "mods": [
+      {
+        "y": 143, 
+        "x": 108,
+		"open_flags": 3,
+        "type": "Countertop", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_10351"
+  },
+  {
+    "ref": "item-sign1.k2n2.Downtown_10351", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign",
+        "style": 0,		
+        "gr_state": 0, 
+        "y": 122, 
+        "x": 110, 
+        "ascii": [
+		  42,
+		  42,
+		  42,
+		  42,
+		  134,
+		  134,
+		  134,
+		  134,
+		  42,
+		  42,
+		  42,
+		  42
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_10351"
+  },
+  {
+	"ref": "item-door1.d8k2.Downtown_10351",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 5,
+		"x": 68,
+		"y": 32,
+		"orientation": 120,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10350"
+     }
+	],
+	"type": "item",
+	"name": "Door to Jail!",
+	"in": "context-Downtown_10351"
+  },
+  {
+	"ref": "item-glue1.s9l2.Downtown_10351",
+	"mods": [
+      {
+		"type": "Glue",
+		"x": 140,
+		"y": 78,
+		"gr_state": 1,
+		"open_flags": 3,
+		"x_offset_1": 254,
+		"y_offset_1": 220,
+		"x_offset_2": 254,
+		"y_offset_2": 232,
+		"x_offset_3": 254,
+		"y_offset_3": 244,
+		"x_offset_4": 253,
+		"y_offset_4": 3,
+		"x_offset_5": 0,
+		"y_offset_5": 0,
+		"x_offset_6": 0,
+		"y_offset_6": 0
+      }
+    ],
+	"type": "item",
+	"name": ".",
+	"in": "context-Downtown_10351"
+  },
+  {
+    "ref": "item-gun1.g8j2.Downtown_10351", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0,
+		"style": 0,
+        "type": "Gun", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Gun", 
+    "in": "item-glue1.Downtown_10351"
+  },
+  {
+    "ref": "item-gun2.k4m2.Downtown_10351", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1,
+		"style": 1,
+        "type": "Gun", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Gun", 
+    "in": "item-glue1.Downtown_10351"
+  },
+  {
+    "ref": "item-gun3.e8d9.Downtown_10351", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2,
+		"style": 2,
+        "type": "Gun", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Gun", 
+    "in": "item-glue1.Downtown_10351"
+  },
+  {
+    "ref": "item-gun4.g8k3.Downtown_10351", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3,
+		"style": 3,
+        "type": "Gun", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Gun", 
+    "in": "item-glue1.Downtown_10351"
+  },
+  {
+    "ref": "item-trapezoid1.k2m2.Downtown_10351", 
+    "mods": [
+      {
+		"y": 72, 
+		"x": 136,
+		"orientation": 204,
+		"trapezoid_type": 1,
+		"upper_left_x": 0,
+		"upper_right_x": 23,
+		"lower_left_x": 0,
+		"lower_right_x": 23,  
+		"height": 184, 
+		"type": "Trapezoid"
+      }
+    ], 
+    "type": "item", 
+    "name": "Trapezoid", 
+    "in": "context-Downtown_10351"
+  },
+  {
+    "ref": "item-super_trapezoid1.p2k2.Downtown_10351", 
+    "mods": [
+      {
+        "y": 112, 
+        "x": 8, 
+        "trapezoid_type": 1, 
+        "upper_left_x": 0, 
+        "upper_right_x": 51, 
+        "lower_left_x": 0, 
+        "lower_right_x": 51, 
+        "height": 136, 
+        "pattern_x_size": 1, 
+        "pattern_y_size": 7, 
+        "pattern": [  
+		  85, 
+		  85, 
+		  85, 
+		  85, 
+		  85, 
+		  105, 
+		  85, 
+		  170, 
+		  85, 
+		  170, 
+		  85, 
+		  105, 
+		  85, 
+		  85, 
+		  85, 
+		  85, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0, 
+		  0
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_10351"
+  }
+]

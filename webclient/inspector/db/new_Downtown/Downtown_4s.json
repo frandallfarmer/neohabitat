@@ -1,0 +1,367 @@
+[
+  {
+    "ref": "context-Downtown_4s", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Chess Board", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": DOWN, 
+        "type": "Region",
+        "orientation": 2,
+        "realm": "Downtown", 
+        "neighbors": [
+          "",
+          "", 
+          "", 
+          "context-Downtown_3s"          
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-ground75bb", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 160, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 252
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4s"
+  }, 
+  {
+        "ref" : "item-4s.chess",
+        "mods" : [ {
+            "type" : "Magic_immobile",
+            "y" : 66,
+            "x" : 2,
+            "style": 0,
+            "orientation": 8,
+            "magic_type" : 12,
+            "magic_data" : 36,
+            "magic_data2": 6
+        } ],
+        "type" : "item",
+        "name" : "Chess Reset",
+        "in" : "context-Downtown_4s"
+}, 
+{
+        "type": "item",
+        "ref": "item-4s.reset",
+        "name": "Reset Game",
+        "in": "context-Downtown_4s",
+        "mods": [
+            {
+                "type": "Short_sign",
+                "style": 4,
+                "x": 12,
+                "y": 64,
+                "orientation": 140,
+                "text": "Reset Game",
+                "ascii": []
+            }
+        ]
+},
+  {
+    "ref": "item-wall5fb9", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Wall", 
+        "orientation": 180
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4s"
+  }, 
+  {
+    "ref": "item-super_trapezoid0ee6", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 64, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 95, 
+        "lower_left_x": 0, 
+        "lower_right_x": 95, 
+        "height": 127, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 31,
+        "pattern": [        
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_4s"
+  }, 
+  {
+    "ref": "item-super_trapezoid0bd7", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 76, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "lower_right_x": 11, 
+        "height": 127, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 31,
+        "pattern": [        
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_4s"
+  }, 
+  {
+    "ref": "item-super_trapezoid7c2a", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 100, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "lower_right_x": 11, 
+        "height": 127, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 31,
+        "pattern": [        
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_4s"
+  }, 
+  {
+    "ref": "item-super_trapezoida715", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 124, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "lower_right_x": 11, 
+        "height": 127, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 31,
+        "pattern": [        
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_4s"
+  }, 
+  {
+    "ref": "item-super_trapezoid3653", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 148, 
+        "trapezoid_type": 2, 
+        "upper_left_x": 0, 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "lower_right_x": 11, 
+        "height": 127, 
+        "pattern_x_size": 0, 
+        "pattern_y_size": 31,
+        "pattern": [
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "type": "Super_trapezoid", 
+        "orientation": 196
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_4s"
+  }
+]

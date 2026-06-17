@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>NeoHabitat — Phase 1 region render</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Same importmap as index.html: the inspector modules resolve their bare
+         specifiers (preact/htm/signals) through it, sharing our single vendored copy. -->
+    <script type="importmap">
+        {
+            "imports": {
+                "htm": "./vendor/htm.mjs",
+                "preact": "./vendor/preact.mjs",
+                "preact/hooks": "./vendor/hooks.mjs",
+                "@preact/signals-core": "./vendor/signals-core.mjs",
+                "@preact/signals": "./vendor/signals.mjs"
+            }
+        }
+    </script>
+    <script type="module" src="./lib/region-view.js"></script>
+</head>
+<body>
+    <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <h1 style="font-size: 16px; margin: 0;">Phase 1 — region render (in-memory table → inspector pipeline)</h1>
+        <div id="status" class="statusbar"><span class="dot"></span>booting…</div>
+        <div id="stage" style="background: #000; align-self: flex-start;"></div>
+    </div>
+</body>
+</html>

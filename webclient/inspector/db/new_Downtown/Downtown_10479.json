@@ -1,0 +1,272 @@
+[
+  {
+	"ref": "context-Downtown_10479",
+	"capacity": 64,
+    "type": "context",
+    "name": "Lotto Lobby",
+    "mods": [
+      {
+        "town_dir": "}",
+        "port_dir": "}",
+        "type": "Region",
+		"orientation": 3,
+        "depth": 29,
+        "neighbors": [
+          "context-Downtown_7b",
+          "",
+          "",
+          ""
+        ],
+		"nitty_bits": 3
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-wall.c9m4.Downtown_10479",
+    "in": "context-Downtown_10479",
+    "name": "Wall",
+    "mods": [
+      {
+        "type": "Wall",
+        "x": 0,
+        "y": 0,
+        "orientation": 164,
+        "style": 4
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "ref": "item-ground.v7j3.Downtown_10479",
+    "in": "context-Downtown_10479",
+    "name": "Ground",
+    "mods": [
+      {
+		"type": "Ground",
+        "x": 0,
+        "y": 4,
+        "orientation": 56,
+        "style": 1
+      }
+    ]
+  },
+  {
+	"ref": "item-door1.c9d8.Downtown_10479",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 4,
+		"x": 0,
+		"y": 32,
+		"orientation": 56,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10476"
+     }
+	],
+	"type": "item",
+	"name": "Door to the Booths",
+	"in": "context-Downtown_10479"
+  },
+  {
+	"ref": "item-door2.c9m3.Downtown_10479",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 4,
+		"x": 24,
+		"y": 32,
+		"orientation": 56,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10477"
+     }
+	],
+	"type": "item",
+	"name": "Door to the Booths",
+	"in": "context-Downtown_10479"
+  },
+  {
+	"ref": "item-door3.b7h6.Downtown_10479",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 4,
+		"x": 48,
+		"y": 32,
+		"orientation": 56,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10478"
+     }
+	],
+	"type": "item",
+	"name": "Door to the Booths",
+	"in": "context-Downtown_10479"
+  },
+  {
+	"ref": "item-door4.x8n1.Downtown_10479",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 4,
+		"x": 100,
+		"y": 32,
+		"orientation": 57,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10473"
+     }
+	],
+	"type": "item",
+	"name": "Door to the Booths",
+	"in": "context-Downtown_10479"
+  },
+  {
+	"ref": "item-door5.z7n1.Downtown_10479",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 4,
+		"x": 124,
+		"y": 32,
+		"orientation": 57,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10474"
+     }
+	],
+	"type": "item",
+	"name": "Door to the Booths",
+	"in": "context-Downtown_10479"
+  },
+  {
+	"ref": "item-door6.c8u1.Downtown_10479",
+	"mods": [
+      {
+		"type": "Door",
+		"style": 4,
+		"x": 148,
+		"y": 32,
+		"orientation": 57,
+		"gr_state": 0,
+		"open_flags": 2,
+		"connection": "context-Downtown_10475"
+     }
+	],
+	"type": "item",
+	"name": "Door to the Booths",
+	"in": "context-Downtown_10479"
+  },
+  {
+	"ref": "item-plaque.a8k1.Downtown_10479",
+	"mods": [
+	  {
+		"type": "Plaque",
+		"style": 2,
+		"orientation": 16,
+		"x": 72,
+		"y": 106,
+		"last_page": 1,
+		"path": "text-missing.object"
+	  }
+	],
+	"type": "item",
+	"name": "Courthouse Plaque",
+	"in": "context-Downtown_10479"
+  },
+  {
+    "ref": "item-sign1.p2k4.Downtown_10479", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign",
+        "style": 0,		
+        "gr_state": 3, 
+        "y": 118, 
+        "x": 8, 
+        "ascii": [
+		  133,
+		  72,
+		  65,
+		  66,
+		  73,
+		  84,
+		  65,
+		  84,
+		  32,
+		  32,
+		  32,
+		  32,
+		  76,
+		  79,
+		  84,
+		  84,
+		  79,
+		  33
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_10479"
+  },
+  {
+    "ref": "item-sign2.y8j3.Downtown_10479", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Sign",
+        "style": 0,		
+        "gr_state": 5, 
+        "y": 30, 
+        "x": 4, 
+        "ascii": [
+		  133,
+		  124,
+		  133,
+		  32,
+		  80,
+		  117,
+		  114,
+		  99,
+		  104,
+		  97,
+		  115,
+		  105,
+		  110,
+		  103,
+		  32,
+		  133,
+		  124,
+		  133,
+		  32,
+		  32,
+		  32,
+		  32,
+		  133,
+		  124,
+		  133,
+		  32,
+		  82,
+		  101,
+		  100,
+		  101,
+		  109,
+		  112,
+		  116,
+		  105,
+		  111,
+		  110,
+		  32,
+		  133,
+		  124
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_10479"
+  }
+]

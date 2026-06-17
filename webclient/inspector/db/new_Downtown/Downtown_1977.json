@@ -1,0 +1,322 @@
+[
+  {
+    "ref": "context-Downtown_1977", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Editor:OSGOOD", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Downtown_1978", 
+          ""
+        ], 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "}",
+		"depth": 24, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-chest1.f9d8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 96, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest2.d9c8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 8, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 120, 
+        "type": "Chest", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest3.z9c8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 32, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 144, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest4.x9c8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 80, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 72, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest5.z9c8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 56, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 48, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest6.n9v8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 56, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 48, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest7.n9v8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 80, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 72, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest8.n9g8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 96, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest9.f8s7.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 8, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 1, 
+        "y": 50, 
+        "x": 120, 
+        "type": "Chest", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest10.y0h9.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 32, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 144, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest11.p4j2.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 0, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest12.p9d8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 112, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 25, 
+        "x": 24, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest13.f8a9.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 16, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 0, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-ground.v9x8.Downtown_1977", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-wall.v8z6.Downtown_1977", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 244, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1977"
+  }, 
+  {
+    "ref": "item-chest14.v1m4.Downtown_1977", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 112, 
+        "key_hi": 112, 
+        "key_lo": 23, 
+        "gr_state": 0, 
+        "y": 50, 
+        "x": 24, 
+        "type": "Chest", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Chest", 
+    "in": "context-Downtown_1977"
+  }
+]

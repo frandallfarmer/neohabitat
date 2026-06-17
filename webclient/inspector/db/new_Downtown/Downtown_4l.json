@@ -1,0 +1,274 @@
+[
+  {
+    "ref": "context-Downtown_4l", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "New You Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Downtown_4c", 
+          "", 
+          ""
+        ], 
+        "orientation": 3,
+        "realm": "Downtown", 
+        "nitty_bits": 3, 
+        "port_dir": LEFT,
+		"depth": 24, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall.n9d2.Downtown_4l", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4l"
+  }, 
+  {
+    "ref": "item-ground.s9j3.Downtown_4l", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.f901.Downtown_4l", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 32, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.7d1f.Downtown_4l", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "style": 65, 
+        "type": "Head", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.33ac.Downtown_4l", 
+    "mods": [
+      {
+        "style": 87, 
+        "orientation": 32, 
+        "gr_state": 1, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Head"
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.6fa9.Downtown_4l", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "style": 51, 
+        "type": "Head", 
+        "orientation": 24
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.47fe.Downtown_4l", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "style": 41, 
+        "type": "Head", 
+        "orientation": 8
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.5a45.Downtown_4l", 
+    "mods": [
+      {
+        "style": 61, 
+        "orientation": 40, 
+        "gr_state": 1, 
+        "y": 5, 
+        "x": 5, 
+        "type": "Head"
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.n2m9.Downtown_4l", 
+    "mods": [
+      {
+        "style": 89, 
+        "orientation": 40, 
+        "gr_state": 1, 
+        "y": 6, 
+        "x": 6, 
+        "type": "Head"
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4l"
+  }, 
+  {
+    "ref": "item-vendo_front.0065.Downtown_4l", 
+    "mods": [
+      {
+        "display_item": 7, 
+        "orientation": 236, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0,
+		"prices": [200, 185, 215, 300, 155, 170, 220, 195],
+        "item_price": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.55d2.Downtown_4l"
+  }, 
+  {
+    "ref": "item-head.f9m2.Downtown_4l", 
+    "mods": [
+      {
+        "style": 80, 
+        "orientation": 1, 
+        "gr_state": 1, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Head"
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_inside.55d2.Downtown_4l"
+  }, 
+  {
+    "ref": "item-vendo_inside.55d2.Downtown_4l", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 52, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_4l"
+  }, 
+  {
+    "ref": "item-short_sign1.a8h1.Downtown_4l", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 104, 
+        "x": 60, 
+        "ascii": [
+          128,		
+          67,
+		  104,
+		  105,
+		  99
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4l"
+  },
+  {
+    "ref": "item-short_sign2.n2m8.Downtown_4l", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Short_sign", 
+        "gr_state": 0, 
+        "y": 78, 
+        "x": 4, 
+        "ascii": [
+		  128,
+		  129,
+          133, 
+          131, 
+          126
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4l"
+  },
+  {
+    "ref": "item-pawn_machine.cb51.Downtown_4l", 
+    "mods": [
+      {
+        "y": 138, 
+        "x": 144, 
+        "type": "Pawn_machine", 
+        "orientation": 1
+      }
+    ], 
+    "type": "item", 
+    "name": "Pawn_machine", 
+    "in": "context-Downtown_4l"
+  }
+]

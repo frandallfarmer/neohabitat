@@ -1,0 +1,152 @@
+[
+  {
+    "ref": "context-Downtown_9135", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Hall of Records", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Downtown_5h", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Plaque1.d8x7.Downtown_9135", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "last_page": 2, 
+        "gr_state": 0, 
+        "y": 75, 
+        "x": 108,
+        "path": "text-bookofrecords",		
+        "type": "Plaque"
+      }
+    ], 
+    "type": "item", 
+    "name": "The Great Book of Records", 
+    "in": "context-Downtown_9135"
+  }, 
+  {
+    "ref": "item-Plaque2.c8v7.Downtown_9135", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "last_page": 2, 
+        "gr_state": 0, 
+        "y": 75, 
+        "x": 64,
+        "path": "text-bookofrecords",		
+        "type": "Plaque"
+      }
+    ], 
+    "type": "item", 
+    "name": "The Great Book of Records", 
+    "in": "context-Downtown_9135"
+  }, 
+  {
+    "ref": "item-Ground.a8d7.Downtown_9135", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 252, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9135"
+  }, 
+  {
+    "ref": "item-Super_trapezoid.p3k4.Downtown_9135", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 3, 
+        "lower_right_x": 160, 
+        "orientation": 148, 
+        "pattern": [
+          85, 
+          170, 
+          149, 
+          85, 
+          86, 
+          85, 
+          101, 
+          85, 
+          105, 
+          85, 
+          89, 
+          85, 
+          85, 
+          170, 
+          153, 
+          85, 
+          86, 
+          235, 
+          229, 
+          85, 
+          107, 
+          235, 
+          229, 
+          85, 
+          86, 
+          255, 
+          149, 
+          85, 
+          85, 
+          170, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 160, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 1, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 0, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 7, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9135"
+  }, 
+  {
+    "ref": "item-Plaque3.g7s9.Downtown_9135", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "last_page": 2, 
+        "gr_state": 0, 
+        "y": 75, 
+        "x": 20,
+        "path": "text-bookofrecords", 
+        "type": "Plaque"
+      }
+    ], 
+    "type": "item", 
+    "name": "The Great Book of Records", 
+    "in": "context-Downtown_9135"
+  }
+]

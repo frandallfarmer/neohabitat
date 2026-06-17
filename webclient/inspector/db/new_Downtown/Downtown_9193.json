@@ -1,0 +1,216 @@
+[
+  {
+    "ref": "context-Downtown_9193", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Chess Lobby", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Downtown_8g"
+        ], 
+        "orientation": 2,
+        "depth": 28,		
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Door1.f8z4.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 140, 
+        "key_hi": 0, 
+        "key_lo": 0,	
+        "connection": "context-Downtown_9178",  
+        "y": 33, 
+        "x": 36, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Sign.p9s8.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          131, 
+          133, 
+          35, 
+          49, 
+          32, 
+          32, 
+          35, 
+          50, 
+          32, 
+          32, 
+          35, 
+          51, 
+          32, 
+          32, 
+          35, 
+          52, 
+          32, 
+          32, 
+          35, 
+          53
+        ], 
+        "gr_state": 1, 
+        "y": 120, 
+        "x": 8, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Short_sign.z8x7.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          69, 
+          88, 
+          73, 
+          84, 
+          134, 
+          128, 
+          32, 
+          125
+        ], 
+        "gr_state": 1, 
+        "y": 20, 
+        "x": 64, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Door2.d9a8.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 204, 
+        "key_hi": 0, 
+        "key_lo": 0,		
+        "connection": "context-Downtown_9179", 
+        "y": 33, 
+        "x": 68, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Ground.m8c7.Downtown_9193", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 252, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Door3.f9a8.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 224, 
+        "key_hi": 0, 
+        "key_lo": 0,		
+        "connection": "context-Downtown_9177", 
+        "y": 33, 
+        "x": 4, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Wall.x8c7.Downtown_9193", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 148, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Door4.s9d8.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 164, 
+        "key_hi": 0, 
+        "key_lo": 0,		
+        "connection": "context-Downtown_9208",
+        "y": 33, 
+        "x": 100, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_9193"
+  }, 
+  {
+    "ref": "item-Door5.h9s8.Downtown_9193", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 156, 
+        "key_hi": 0, 
+        "key_lo": 0,		
+        "connection": "context-Downtown_9209", 
+        "y": 33, 
+        "x": 132, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_9193"
+  }
+]

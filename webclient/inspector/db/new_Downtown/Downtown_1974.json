@@ -1,0 +1,197 @@
+[
+  {
+    "ref": "context-Downtown_1974", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "The Wall Drug", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Downtown_1976", 
+          "", 
+          "context-Downtown_1972"
+        ],
+        "realm": "Downtown", 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Door.d8j1.Downtown_1974", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 56, 
+        "key_hi": 103, 
+        "key_lo": 30, 
+        "connection": "context-Downtown_10386", 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 20, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Window1.d9k2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 45, 
+        "x": 112, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Ground.v8j2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Wall.w9k2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 112, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Short_sign.m2n3.Downtown_1974", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 140, 
+        "ascii": [
+          67, 
+          111, 
+          109, 
+          109, 
+          101, 
+          114, 
+          99, 
+          101, 
+          32, 
+          32
+        ], 
+        "gr_state": 7, 
+        "y": 129, 
+        "x": 140, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Street.v8j2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Sign.s8j2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 244, 
+        "ascii": [
+          128, 
+          87, 
+          65, 
+          76, 
+          76, 
+          134, 
+          128, 
+          68, 
+          82, 
+          85, 
+          71
+        ], 
+        "gr_state": 0, 
+        "y": 73, 
+        "x": 52, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Window2.b8m2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 45, 
+        "x": 132, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1974"
+  }, 
+  {
+    "ref": "item-Window3.s9k2.Downtown_1974", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 45, 
+        "x": 92, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1974"
+  }
+]

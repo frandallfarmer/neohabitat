@@ -1,0 +1,175 @@
+[
+  {
+    "ref": "context-Downtown_1976", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Phantasy Guild", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "context-Downtown_1978", 
+          "", 
+          "context-Downtown_1974"
+        ],
+        "realm": "Downtown", 
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Wall.a0k2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 56, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Ground.s8k2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Sign.p3k2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 236, 
+        "ascii": [
+          32, 
+          32, 
+          32, 
+          80, 
+          104, 
+          97, 
+          110, 
+          116, 
+          97, 
+          115, 
+          121, 
+          32, 
+          71, 
+          117, 
+          105, 
+          108, 
+          100
+        ], 
+        "gr_state": 2, 
+        "y": 110, 
+        "x": 32, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Street.f8j2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 8, 
+        "gr_state": 6, 
+        "y": 10, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Door.l2m3.Downtown_1976", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 245, 
+        "key_hi": 165, 
+        "key_lo": 6, 
+        "connection": "context-Downtown_10457", 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 136, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Window1.d9k2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 0, 
+        "y": 45, 
+        "x": 8, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Window2.g8j2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 0, 
+        "y": 45, 
+        "x": 28, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1976"
+  }, 
+  {
+    "ref": "item-Window3.g9c2.Downtown_1976", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "gr_state": 0, 
+        "y": 45, 
+        "x": 48, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1976"
+  }
+]

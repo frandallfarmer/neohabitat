@@ -1,0 +1,179 @@
+[
+  {
+    "ref": "context-Downtown_7j", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Skid Row & Broadway", 
+    "aliases" : [ "pop-skidrow", "pop-broadway", "pop-skidrowandbroadway", "pop-skidrow&broadway", "pop-theskids" ],
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": "", 
+        "type": "Region",
+        "orientation": 1,
+        "realm": "Downtown", 
+        "neighbors": [
+          "",
+          "", 
+          "context-Downtown_7i", 
+          "context-Downtown_6j"
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall5f31", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 5, 
+        "type": "Wall", 
+        "orientation": 148
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-ground9afb", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-signba24", 
+    "mods": [
+      {
+        "style": 6, 
+        "orientation": 8, 
+        "ascii": [
+          32,
+          32,		  
+          83,
+          117,
+          112,
+          112,
+          111,
+          114,
+          116,
+		  134,
+          32,
+          84,
+          72,
+          69,
+          32,
+          77,
+          65,
+          68,
+          69,
+          33,
+		  134,
+		  134,
+		  116,
+		  104,
+		  101,
+		  109,
+		  97,
+		  100,
+		  101,
+		  46,
+		  111,
+		  114,
+		  103
+        ], 
+        "gr_state": 3, 
+        "y": 66, 
+        "x": 20, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-streetlamp084f", 
+    "mods": [
+      {
+        "y": 133, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Streetlamp", 
+        "orientation": 80
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-teleportd6a2", 
+    "mods": [
+      {
+        "y": 136, 
+        "x": 112, 
+        "address": "Pop-Downtown", 
+        "type": "Teleport", 
+        "orientation": 188
+      }
+    ], 
+    "type": "item", 
+    "name": "Teleport", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-short_sign0d69", 
+    "mods": [
+      {
+        "style": 5, 
+        "orientation": 16, 
+        "ascii": [
+          83, 
+          107, 
+          105, 
+          100, 
+          32, 
+          82, 
+          111, 
+          119, 
+          32, 
+          32
+        ], 
+        "gr_state": 9, 
+        "y": 116, 
+        "x": 4, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_7j"
+  }, 
+  {
+    "ref": "item-street858e", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 7, 
+        "y": 8, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_7j"
+  }
+]

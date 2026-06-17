@@ -133,12 +133,15 @@ Resolved during the relevant phase; none blocks starting.
    habiworld's CommonJS API, so `habibots`/`sagebot` keep working unchanged. Any change to
    habiworld itself needs explicit sign-off and a compatibility check; until then the
    adapter lives in `webclient/`.
-2. **Renderer reuse across the repo boundary.** `webclient/` (in `neohabitat`) imports
-   `region.js` / `render.js` / `codec.js` (in `neohabitat-doc`). Either symlink the
-   inspector under the dev-server root or vendor a copy — decided once the import is first
-   exercised. The data seam to swap is the five `useHabitatJson(filename)` call sites in
-   `inspector/region.js`: replace "fetch static JSON" with "read habiworld's live table and
-   re-render on events."
+2. **Renderer reuse across the repo boundary.** ✅ Resolved (Phase 1): the render pipeline
+   and the prop-art database are **vendored** into `webclient/inspector/` (a trimmed,
+   byte-identical copy of `neohabitat-doc/inspector` — see `inspector/VENDOR.md`), so the
+   client is self-contained with no `neohabitat-doc` runtime dependency. `lib/region-view.js`
+   redirects the renderer's document-relative `fetch`es into that dir, leaving the vendored
+   copy unpatched. (Longer-term option still open: extract a shared `habirender` library
+   that both the inspector and this client consume.) The data seam used is the
+   `objects` parameter of `regionView` (bypassing its `useHabitatJson(filename)` fetch);
+   Phase 2 feeds that from habiworld's live table.
 3. **websocketProxy login preamble.** Confirm the exact handshake the proxy expects
    (`extractLoginName`, `MAX_LOGIN_PREAMBLE_BYTES`) and how context/avatar selection is
    forwarded.
@@ -188,8 +191,8 @@ python3 -m http.server 8000
 # open http://localhost:8000/webclient/
 ```
 
-(The cross-repo inspector renderer in Phase 1 is the exception — `neohabitat-doc` is not
-under this root; per open item #2 it gets symlinked or vendored when first exercised.)
+(The renderer + art database are vendored into `webclient/inspector/`, so nothing outside
+this repo is needed at runtime — see open item #2 and `inspector/VENDOR.md`.)
 
 From Phase 2, bring up elko + bridge + pushserver per `docker-compose.dev.yml`, then connect
 the client and compare the live region against the textclient / inspector for the same context.

@@ -1,0 +1,316 @@
+[
+  {
+    "ref": "context-Downtown_4c", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "New You Interior", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_4d", 
+          "context-Downtown_4m", 
+          "", 
+          "context-Downtown_4l"
+        ], 
+        "orientation": 3,
+        "realm": "Downtown", 
+        "nitty_bits": 3, 
+        "port_dir": DOWN,
+		"depth": 24, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-wall.afa2.Downtown_4c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 0, 
+        "style": 6, 
+        "type": "Wall", 
+        "orientation": 172
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_4c"
+  }, 
+  {
+    "ref": "item-ground.59d9.Downtown_4c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 0, 
+        "style": 1, 
+        "type": "Ground", 
+        "orientation": 204
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_4c"
+  }, 
+  {
+    "ref": "item-head.m2s8.Downtown_4c", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 18, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.j3n4.Downtown_4c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "style": 21, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.f9j7.Downtown_4c", 
+    "mods": [
+      {
+        "y": 2, 
+        "x": 2, 
+        "style": 22, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.s8j6.Downtown_4c", 
+    "mods": [
+      {
+        "y": 3, 
+        "x": 3, 
+        "style": 25, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.n9v5.Downtown_4c", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 4, 
+        "style": 28, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.a4n2.Downtown_4c", 
+    "mods": [
+      {
+        "y": 5, 
+        "x": 5, 
+        "style": 31, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },
+  {
+    "ref": "item-head.g9b2.Downtown_4c", 
+    "mods": [
+      {
+        "y": 6, 
+        "x": 6, 
+        "style": 34, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_front.0065.Downtown_4c"
+  },  
+  {
+    "ref": "item-vendo_front.0065.Downtown_4c", 
+    "mods": [
+      {
+        "display_item": 7, 
+        "orientation": 236, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0,
+		"prices": [175, 120, 250, 150, 175, 135, 155, 125],
+        "item_price": 125
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-vendo_inside.55d2.Downtown_4c"
+  }, 
+  {
+    "ref": "item-head.b8t2.Downtown_4c", 
+    "mods": [
+      {
+        "y": 1, 
+        "x": 1, 
+        "style": 101, 
+        "type": "Head", 
+        "orientation": 56
+      }
+    ], 
+    "type": "item", 
+    "name": "Head", 
+    "in": "item-vendo_inside.55d2.Downtown_4c"
+  }, 
+  {
+    "ref": "item-vendo_inside.55d2.Downtown_4c", 
+    "mods": [
+      {
+        "orientation": 236, 
+        "key_lo": 0, 
+        "key_hi": 0, 
+        "y": 24, 
+        "x": 72, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_4c"
+  }, 
+  {
+    "ref": "item-sign.19de.Downtown_4c", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 244, 
+        "ascii": [
+          32, 
+          72, 
+          101, 
+          97, 
+          100, 
+          115, 
+          134, 
+          32, 
+          32, 
+          102, 
+          111, 
+          114, 
+          134, 
+          32, 
+          128, 
+          86, 
+          111, 
+          117, 
+          115
+        ], 
+        "y": 71, 
+        "x": 40, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_4c"
+  }, 
+  {
+    "ref": "item-short_sign1.74fa.Downtown_4c", 
+    "mods": [
+      {
+        "orientation": 0, 
+        "type": "Short_sign", 
+        "gr_state": 1, 
+        "y": 104, 
+        "x": 76, 
+        "ascii": [
+          83, 
+          116, 
+          121, 
+          108, 
+          105, 
+          115, 
+          104
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4c"
+  },
+  {
+    "ref": "item-short_sign2.f3h7.Downtown_4c", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Short_sign", 
+        "gr_state": 0, 
+        "y": 78, 
+        "x": 134, 
+        "ascii": [
+		  128,
+		  129,
+          133, 
+          131, 
+          127
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4c"
+  },
+  {
+    "ref": "item-short_sign3.s7n3.Downtown_4c", 
+    "mods": [
+      {
+        "orientation": 16, 
+        "type": "Short_sign", 
+        "gr_state": 0, 
+        "y": 78, 
+        "x": 4, 
+        "ascii": [
+		  128,
+		  129,
+          133, 
+          131, 
+          126
+        ]
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_4c"
+  }
+]

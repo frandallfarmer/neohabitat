@@ -1,0 +1,118 @@
+[
+  {
+    "ref": "context-Downtown_5e", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Plaza South",
+    "orientation": 0,
+    "realm": "Downtown",	
+    "mods": [
+      {
+        "town_dir": "", 
+        "port_dir": UP + SPACE + DOWN, 
+        "type": "Region", 
+        "neighbors": [
+          "context-Downtown_5f",
+          "context-Downtown_6e",
+          "context-Downtown_5d",
+          "context-Downtown_4e"
+        ], 
+        "nitty_bits": 3
+      }
+    ]
+  }, 
+  {
+    "ref": "item-flat11a6", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 184, 
+        "flat_type": 2, 
+        "type": "Flat", 
+        "orientation": 220
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Downtown_5e"
+  }, 
+  {
+    "ref": "item-sky7dd8", 
+    "mods": [
+      {
+        "y": 0, 
+        "x": 0, 
+        "style": 4, 
+        "type": "Sky", 
+        "orientation": 244
+      }
+    ], 
+    "type": "item", 
+    "name": "Sky", 
+    "in": "context-Downtown_5e"
+  }, 
+  {
+    "ref": "item-flataf41", 
+    "mods": [
+      {
+        "y": 4, 
+        "x": 88, 
+        "flat_type": 2, 
+        "type": "Flat", 
+        "orientation": 104
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Downtown_5e"
+  }, 
+  {
+    "ref": "item-streetfd12", 
+    "mods": [
+      {
+        "orientation": 8, 
+        "type": "Street", 
+        "gr_state": 5, 
+        "y": 12, 
+        "x": 68
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_5e"
+  }, 
+  {
+    "ref": "item-streetlamp9d7d", 
+    "mods": [
+      {
+        "y": 141, 
+        "x": 112, 
+        "type": "Streetlamp", 
+        "orientation": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Streetlamp", 
+    "in": "context-Downtown_5e"
+  },
+  {
+    "ref": "item-Door.a9k5.Downtown_5e", 
+    "mods": [
+      {
+        "style": 3, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "connection": "context-Downtown_9204", 
+        "gr_state": 1, 
+        "y": 10, 
+        "x": 16, 
+        "type": "Door", 
+        "open_flags": 3
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_5e"
+  }
+]

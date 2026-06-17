@@ -1,0 +1,749 @@
+[
+  {
+    "ref": "context-Downtown_9176", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Checkers Room #3", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "", 
+          "context-Downtown_9191"
+        ], 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Game_piece1.g9d8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 87, 
+        "x": 72, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece2.v9b8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 87, 
+        "x": 96, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece3.g9v8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 39, 
+        "x": 108, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece4.s9f8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 87, 
+        "x": 48, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece5.l4k5.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 103, 
+        "x": 60, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece6.k8h6.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 103, 
+        "x": 84, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece7.g9h8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 87, 
+        "x": 120, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece8.k4l5.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 103, 
+        "x": 36, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece9.k1l3.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 103, 
+        "x": 108, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece10.g8a9.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 119, 
+        "x": 48, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Magic_immobile1.c9b8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 2, 
+        "y": 50, 
+        "x": 0,
+        "magic_type" : 13, 
+        "type": "Magic_immobile"
+      }
+    ], 
+    "type": "item", 
+    "name": "Magic_immobile", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Flat1.x9v8.Downtown_9176", 
+    "mods": [
+      {
+        "flat_type": 2, 
+        "style": 4, 
+        "orientation": 148, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Flat"
+      }
+    ], 
+    "type": "item", 
+    "name": "Flat", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Super_trapezoid1.s9v1.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 95, 
+        "orientation": 196, 
+        "pattern": [
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170
+        ], 
+        "upper_right_x": 95, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 32, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 31, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece11.x9v8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 36, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece12.p2k3.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 60, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece13.a9d8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 84, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Super_trapezoid2.d9f8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 11, 
+        "orientation": 196, 
+        "pattern": [
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 68, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 31, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Super_trapezoid3.m1n9.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 11, 
+        "orientation": 196, 
+        "pattern": [
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 92, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 31, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Super_trapezoid4.p2l4.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 11, 
+        "orientation": 196, 
+        "pattern": [
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 116, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 31, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece14.p2k3.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 119, 
+        "x": 96, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece15.c9v8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 119, 
+        "x": 72, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Plaque1.s9f8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "last_page": 1, 
+        "gr_state": 0, 
+        "y": 67, 
+        "x": 0,
+        "path": "text-missing.object", 
+        "type": "Plaque"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plaque", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece16.t8g7.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 23, 
+        "x": 72, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece17.c9x8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 23, 
+        "x": 48, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece18.z9c8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 7, 
+        "x": 108, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Super_trapezoid5.z9c8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "pattern_x_size": 0, 
+        "lower_right_x": 11, 
+        "orientation": 196, 
+        "pattern": [
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          170, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85, 
+          85
+        ], 
+        "upper_right_x": 11, 
+        "lower_left_x": 0, 
+        "trapezoid_type": 2, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 44, 
+        "height": 127, 
+        "type": "Super_trapezoid", 
+        "pattern_y_size": 31, 
+        "upper_left_x": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Super_trapezoid", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece19.z0m1.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 39, 
+        "x": 36, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece20.x1m4.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 6, 
+        "y": 119, 
+        "x": 120, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece21.v0c9.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 23, 
+        "x": 120, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece22.p2k3.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 23, 
+        "x": 96, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece23.c9m1.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 39, 
+        "x": 84, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }, 
+  {
+    "ref": "item-Game_piece24.f0g8.Downtown_9176", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 6, 
+        "y": 39, 
+        "x": 60, 
+        "type": "Game_piece"
+      }
+    ], 
+    "type": "item", 
+    "name": "Game_piece", 
+    "in": "context-Downtown_9176"
+  }
+]

@@ -1,0 +1,274 @@
+[
+  {
+    "ref": "context-Downtown_1980", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "the Order of the Holy Walnut", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "context-Downtown_7c", 
+          "", 
+          "context-Downtown_7b", 
+          "context-Downtown_1978"
+        ],
+        "realm": "Downtown", 
+        "orientation": 2, 
+        "nitty_bits": 3, 
+        "port_dir": "~", 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Window1.d9l2.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 49, 
+        "x": 120, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Street.d9k1.Downtown_1980", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 16, 
+        "gr_state": 13, 
+        "y": 7, 
+        "x": 68, 
+        "type": "Street"
+      }
+    ], 
+    "type": "item", 
+    "name": "Street", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Window2.g8x9.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 49, 
+        "x": 20, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Window3.s9k1.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 59, 
+        "x": 96, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Window4.d9k2.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 39, 
+        "x": 252, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Short_sign.x9k3.Downtown_1980", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          131, 
+          28
+        ], 
+        "gr_state": 1, 
+        "y": 122, 
+        "x": 76, 
+        "type": "Short_sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Short_sign", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Window5.f9k2.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 39, 
+        "x": 144, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Sign.b8k2.Downtown_1980", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          133, 
+          79, 
+          114, 
+          100, 
+          101, 
+          114, 
+          133, 
+          32, 
+          111, 
+          102, 
+          32, 
+          116, 
+          104, 
+          101, 
+          32, 
+          133, 
+          72, 
+          111, 
+          108, 
+          121, 
+          133, 
+          32, 
+          133, 
+          87, 
+          97, 
+          108, 
+          110, 
+          117, 
+          116
+        ], 
+        "gr_state": 1, 
+        "y": 19, 
+        "x": 0, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Wall.n4m5.Downtown_1980", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 140, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Ground.d7j1.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 220, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Plaque.d9k1.Downtown_1980", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 16, 
+        "last_page": 1, 
+        "gr_state": 0, 
+        "y": 38, 
+        "x": 52,
+        "path": "text-missing.object",		
+        "type": "Plaque"
+      }
+    ], 
+    "type": "item", 
+    "name": "Plaque", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Door.n4m6.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 205, 
+        "key_hi": 55, 
+        "key_lo": 30, 
+        "connection": "context-Downtown_1979", 
+        "gr_state": 0, 
+        "y": 32, 
+        "x": 84, 
+        "type": "Door", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Door", 
+    "in": "context-Downtown_1980"
+  }, 
+  {
+    "ref": "item-Window6.h2j4.Downtown_1980", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 59, 
+        "x": 44, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_1980"
+  }
+]

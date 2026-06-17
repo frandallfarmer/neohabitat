@@ -1,0 +1,396 @@
+[
+  {
+    "ref": "context-Downtown_9149", 
+    "capacity": 64, 
+    "type": "context", 
+    "name": "Lefty's", 
+    "mods": [
+      {
+        "town_dir": "", 
+        "neighbors": [
+          "", 
+          "", 
+          "context-Downtown_6j", 
+          ""
+        ], 
+        "realm": "Streets",
+        "orientation": 1, 
+        "nitty_bits": 3, 
+        "port_dir": DOWN, 
+        "type": "Region"
+      }
+    ]
+  }, 
+  {
+    "ref": "item-Wall.d8f7.Downtown_9149", 
+    "mods": [
+      {
+        "style": 4, 
+        "orientation": 196, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Wall"
+      }
+    ], 
+    "type": "item", 
+    "name": "Wall", 
+    "in": "context-Downtown_9149"
+  }, 
+  {
+    "ref": "item-Sign.b8s9.Downtown_9149", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "ascii": [
+          76, 
+          111, 
+          99, 
+          107, 
+          66, 
+          111, 
+          120, 
+          134, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          32, 
+          75, 
+          101, 
+          121, 
+          115, 
+          134
+        ], 
+        "gr_state": 1, 
+        "y": 103, 
+        "x": 16, 
+        "type": "Sign"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sign", 
+    "in": "context-Downtown_9149"
+  }, 
+  {
+    "ref": "item-Ground.s9f8.Downtown_9149", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 204, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 0, 
+        "type": "Ground"
+      }
+    ], 
+    "type": "item", 
+    "name": "Ground", 
+    "in": "context-Downtown_9149"
+  },
+  {
+    "ref": "item-Vendo_inside1.v8x9.Downtown_9149", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 16, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 2, 
+        "y": 29, 
+        "x": 68, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_9149"
+  }, 
+  {
+    "ref": "item-Vendo_front1.d9c8.Downtown_9149", 
+    "mods": [
+      {
+        "display_item": 5, 
+        "style": 1, 
+        "orientation": 0, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 2, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front",
+        "open_flags": 0,
+        "prices": [95, 120, 125, 250, 20, 50],		 
+        "item_price": 50
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-Vendo_inside1.v8x9.Downtown_9149"
+  },
+  {
+    "ref": "item-Key1.c8s7.Downtown_9149", 
+    "mods": [
+      {
+        "key_number_lo": 255, 
+        "style": 0, 
+        "orientation": 0, 
+        "key_number_hi": 255, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-Vendo_front1.d9c8.Downtown_9149"
+  }, 
+  {
+    "ref": "item-Key2.c8v7.Downtown_9149", 
+    "mods": [
+      {
+        "key_number_lo": 127, 
+        "style": 1, 
+        "orientation": 64, 
+        "key_number_hi": 255, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-Vendo_front1.d9c8.Downtown_9149"
+  }, 
+  {
+    "ref": "item-Key3.f8x7.Downtown_9149", 
+    "mods": [
+      {
+        "key_number_lo": 147, 
+        "style": 0, 
+        "orientation": 0, 
+        "key_number_hi": 78, 
+        "gr_state": 1, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-Vendo_front1.d9c8.Downtown_9149"
+  },
+  {
+    "ref": "item-Key4.s8d7.Downtown_9149", 
+    "mods": [
+      {
+        "key_number_lo": 147, 
+        "style": 0, 
+        "orientation": 8, 
+        "key_number_hi": 88, 
+        "gr_state": 0, 
+        "y": 3, 
+        "x": 3, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-Vendo_front1.d9c8.Downtown_9149"
+  },
+  {
+    "ref": "item-Key5.m8b7.Downtown_9149", 
+    "mods": [
+      {
+        "key_number_lo": 147, 
+        "style": 1, 
+        "orientation": 32, 
+        "key_number_hi": 98, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 4, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-Vendo_front1.d9c8.Downtown_9149"
+  },  
+  {
+    "ref": "item-Key6.v8z7.Downtown_9149", 
+    "mods": [
+      {
+        "key_number_lo": 147, 
+        "style": 0, 
+        "orientation": 8, 
+        "key_number_hi": 108, 
+        "gr_state": 1, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Key"
+      }
+    ], 
+    "type": "item", 
+    "name": "Key", 
+    "in": "item-Vendo_inside1.v8x9.Downtown_9149"
+  },   
+  {
+    "ref": "item-Window.z9c8.Downtown_9149", 
+    "mods": [
+      {
+        "style": 2, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 31, 
+        "x": 152, 
+        "type": "Window"
+      }
+    ], 
+    "type": "item", 
+    "name": "Window", 
+    "in": "context-Downtown_9149"
+  }, 
+  {
+    "ref": "item-Countertop.z8m1.Downtown_9149", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 244, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 0, 
+        "y": 144, 
+        "x": 108, 
+        "type": "Countertop", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Countertop", 
+    "in": "context-Downtown_9149"
+  }, 
+  {
+    "ref": "item-Vendo_inside2.d8f7.Downtown_9149", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 228, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 0, 
+        "y": 24, 
+        "x": 12, 
+        "type": "Vendo_inside", 
+        "open_flags": 0
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_inside", 
+    "in": "context-Downtown_9149"
+  }, 
+  {
+    "ref": "item-Vendo_front2.x9c6.Downtown_9149", 
+    "mods": [
+      {
+        "display_item": 1, 
+        "style": 0, 
+        "orientation": 228, 
+        "key_hi": 0, 
+        "key_lo": 0, 
+        "gr_state": 0, 
+        "y": 0, 
+        "x": 0, 
+        "type": "Vendo_front", 
+        "open_flags": 0, 
+        "item_price": 100
+      }
+    ], 
+    "type": "item", 
+    "name": "Vendo_front", 
+    "in": "item-Vendo_inside2.d8f7.Downtown_9149"
+  }, 
+  {
+    "ref": "item-Box1.k3j2.Downtown_9149", 
+    "mods": [
+      {
+        "style": 1, 
+        "orientation": 8, 
+        "key_hi": 108, 
+        "key_lo": 147, 
+        "gr_state": 0, 
+        "y": 5, 
+        "x": 5, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-Vendo_front2.x9c6.Downtown_9149"
+  }, 
+  {
+    "ref": "item-Sensor1.u8d7.Downtown_9149", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 0, 
+        "gr_state": 0, 
+        "y": 4, 
+        "x": 4,
+        "scan_type": 1,		
+        "type": "Sensor"
+      }
+    ], 
+    "type": "item", 
+    "name": "Sensor", 
+    "in": "item-Vendo_front2.x9c6.Downtown_9149"
+  }, 
+  {
+    "ref": "item-Box2.o3j1.Downtown_9149", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 112, 
+        "key_hi": 88, 
+        "key_lo": 147, 
+        "gr_state": 0, 
+        "y": 2, 
+        "x": 2, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-Vendo_front2.x9c6.Downtown_9149"
+  }, 
+  {
+    "ref": "item-Box3.g3h4.Downtown_9149", 
+    "mods": [
+      {
+        "style": 0, 
+        "orientation": 104, 
+        "key_hi": 78, 
+        "key_lo": 147, 
+        "gr_state": 0, 
+        "y": 1, 
+        "x": 1, 
+        "type": "Box", 
+        "open_flags": 2
+      }
+    ], 
+    "type": "item", 
+    "name": "Box", 
+    "in": "item-Vendo_inside2.d8f7.Downtown_9149"
+  }
+]

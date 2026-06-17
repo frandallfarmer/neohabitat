@@ -1,0 +1,321 @@
+{
+  "Bush": {},
+  "Tree": {},
+  "Ground": {},
+  "Sky": {},
+  "Street": {
+    "height": 0,
+    "width": 0
+  },
+  "Fence": {},
+  "Sign": {
+    "text": ""
+  },
+  "Plant": {
+    "mass": 1
+  },
+  "Mailbox": {},
+  "Building": {
+    "connection": ""
+  },
+  "Wall": {},
+  "Bag": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 2
+  },
+  "Door": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "connection": "",
+    "open_flags": 2
+  },
+  "Window": {
+    "gr_width": 20
+  },
+  "Display_case": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Table": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Chair": {
+    "open_flags": 3
+  },
+  "Couch": {},
+  "Chest": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Floor_lamp": {
+    "on": 1
+  },
+  "Picture": {
+    "picture": 0,
+    "mass": 1
+  },
+  "Knick_knack": {
+    "magic_type": 0,
+    "charges": 100,
+    "pattern": 3
+  },
+  "Head": {
+    "style": 1
+  },
+  "Escape_device": {
+    "charge": 9
+  },
+  "Ball": {},
+  "Spray_can": {
+    "charge": 255
+  },
+  "Book": {
+    "last_page": 2,
+    "path": "text-weeklyrant.1",
+    "title": "Weekly Rant, Commemorative First Issue"
+  },
+  "Changomatic": {},
+  "Paper": {
+    "text_path": "text-popmap"
+  },
+  "Box": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Bed": {
+    "open_flags": 3
+  },
+  "Garbage_can": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Teleport": {
+    "address": "Pop-Bleem St North",
+    "take": 310,
+    "activeState": 0
+  },
+  "Compass": {},
+  "Windup_toy": {},
+  "Movie_camera": {},
+  "Bottle": {
+    "filled": 0
+  },
+  "Key": {
+    "key_number_lo": 116,
+    "key_number_hi": 12
+  },
+  "Sensor": {
+    "scan_type": 1
+  },
+  "Flashlight": {
+    "on": 1
+  },
+  "Fake_gun": {},
+  "Magic_wand": {
+    "charges": 10,
+    "magic_type": 3
+  },
+  "Flag": {
+    "mass": 0
+  },
+  "Gemstone": {
+    "magic_type": 1
+  },
+  "Shovel": {},
+  "Streetlamp": {},
+  "House_cat": {},
+  "Vendo_front": {
+    "display_item": 0,
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3,
+    "item_price": 10,
+    "prices": [
+      30,
+      30,
+      30,
+      50,
+      50,
+      50
+    ]
+  },
+  "Rock": {
+    "mass": 0
+  },
+  "Knife": {},
+  "Aquarium": {},
+  "Amulet": {
+    "charges": 10,
+    "magic_type": 9,
+    "magic_data": 6
+  },
+  "Ring": {
+    "charges": 10,
+    "magic_type": 29,
+    "magic_data": 1
+  },
+  "Magic_lamp": {
+    "magic_type": 11
+  },
+  "Crystal_ball": {},
+  "Short_sign": {
+    "text": ""
+  },
+  "Pond": {},
+  "Club": {},
+  "Game_piece": {},
+  "Gun": {},
+  "Tokens": {
+    "denom_hi": 80,
+    "denom_lo": 0
+  },
+  "Fountain": {},
+  "Dropbox": {},
+  "Atm": {},
+  "Countertop": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Vendo_inside": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 3
+  },
+  "Fortune_machine": {},
+  "Coke_machine": {},
+  "Trapezoid": {
+    "height": 15,
+    "upper_left_x": 0,
+    "upper_right_x": 16,
+    "lower_left_x": 2,
+    "lower_right_x":14,
+    "trapezoid_type": 0
+  },
+  "Safe": {
+    "open_flags": 2,
+    "key_lo": 5,
+    "key_hi": 5
+  },
+  "Hot_tub": {},
+  "Magic_immobile": {
+    "charges": 10,
+    "magic_type": 24,
+    "magic_data": 200,
+    "magic_data2": 6
+  },
+  "Plaque": {
+    "last_page": 1,
+    "pages": [],
+    "path": "text-bookofrecords"
+  },
+  "Glue": {
+    "x_offset_1": 0,
+    "x_offset_2": 0,
+    "x_offset_3": 0,
+    "x_offset_4": 0,
+    "x_offset_5": 0,
+    "x_offset_6": 0,
+    "y_offset_1": 0,
+    "y_offset_2": 0,
+    "y_offset_3": 0,
+    "y_offset_4": 0,
+    "y_offset_5": 0,
+    "y_offset_6": 0,
+    "open_flags": 3,
+    "key_hi": 0,
+    "key_lo": 0,
+    "gr_state": 1
+  },
+  "Region": {},
+  "Magic_staff": {
+    "charges": 10,
+    "magic_type": 4
+  },
+  "Hole": {
+    "key_hi": 0,
+    "key_lo": 0,
+    "open_flags": 2
+  },
+  "Flat": {
+    "flat_type": 3
+  },
+  "Bridge": {},
+  "Bureaucrat": {},
+  "Pawn_machine": {
+    "open_flags": 3
+  },
+  "Sex_changer": {},
+  "Stun_gun": {},
+  "Ticket": {},
+  "Hand_of_god": {},
+  "Grenade": {
+    "pinpulled": 0
+  },
+  "Die": {
+    "state": 0
+  },
+  "Drugs": {
+    "count": 5,
+    "effect": 1,
+    "open_flags": 0
+  },
+  "Frisbee": {},
+  "Elevator": {
+    "address": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+    "take": 0,
+    "activeState": 0
+  },
+  "Super_trapezoid": {
+    "pattern": [
+      85,
+      85,
+      85,
+      85,
+      169,
+      85,
+      85,
+      106,
+      170,
+      85,
+      85,
+      170,
+      170,
+      149,
+      169,
+      170,
+      170,
+      149,
+      169,
+      170,
+      170,
+      149,
+      169,
+      170,
+      170,
+      85,
+      85,
+      170,
+      169,
+      85,
+      85,
+      106
+    ],
+    "pattern_x_size": 3,
+    "pattern_y_size": 7,
+    "height": 15,
+    "upper_left_x": 0,
+    "upper_right_x": 16,
+    "lower_left_x": 2,
+    "lower_right_x":14,
+    "trapezoid_type": 0
+  },
+  "Matchbook": {}
+}
