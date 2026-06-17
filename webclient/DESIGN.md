@@ -134,15 +134,14 @@ Resolved during the relevant phase; none blocks starting.
    minimal `EventEmitter`. habiworld is **unmodified** — its CommonJS API is untouched, so
    `habibots`/`sagebot` are unaffected. habiworld is fetched as a sibling under the dev root
    (`../habiworld/`), so it stays in sync automatically (not vendored, since it's in-repo).
-2. **Renderer reuse across the repo boundary.** ✅ Resolved (Phase 1): the render pipeline
-   and the prop-art database are **vendored** into `webclient/inspector/` (a trimmed,
-   byte-identical copy of `neohabitat-doc/inspector` — see `inspector/VENDOR.md`), so the
-   client is self-contained with no `neohabitat-doc` runtime dependency. `lib/region-view.js`
-   redirects the renderer's document-relative `fetch`es into that dir, leaving the vendored
-   copy unpatched. (Longer-term option still open: extract a shared `habirender` library
-   that both the inspector and this client consume.) The data seam used is the
-   `objects` parameter of `regionView` (bypassing its `useHabitatJson(filename)` fetch);
-   Phase 2 feeds that from habiworld's live table.
+2. **Renderer reuse across the repo boundary.** ✅ Resolved: the render pipeline and the
+   prop-art database are **forked** into `webclient/habirender/` (started as a trimmed copy
+   of `neohabitat-doc/inspector` in Phase 1; diverges from Phase 3 on as the webclient
+   patches it — e.g. avatar rendering — see `habirender/README.md`), so the client is
+   self-contained with no `neohabitat-doc` runtime dependency. `lib/region-view.js` /
+   `lib/live.js` redirect the renderer's document-relative `fetch`es into that dir. The data
+   seam used is the `objects` parameter of `regionView` (bypassing its
+   `useHabitatJson(filename)` fetch); Phase 2 feeds that from habiworld's live table.
 3. **websocketProxy login preamble.** ✅ Resolved (Phase 2): there is no separate auth
    handshake in dev — the whole login is a single `{op:"entercontext", to:"session",
    context, user:"user-<name>"}`. Wire framing matches habibot: outbound JSON + `"\n\n"`,
@@ -195,8 +194,8 @@ python3 -m http.server 8000
 # open http://localhost:8000/webclient/
 ```
 
-(The renderer + art database are vendored into `webclient/inspector/`, so nothing outside
-this repo is needed at runtime — see open item #2 and `inspector/VENDOR.md`.)
+(The renderer + art database are forked into `webclient/habirender/`, so nothing outside
+this repo is needed at runtime — see open item #2 and `habirender/README.md`.)
 
 From Phase 2, bring up elko + bridge + pushserver per `docker-compose.dev.yml`, then connect
 the client and compare the live region against the textclient / inspector for the same context.

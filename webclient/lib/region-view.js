@@ -1,31 +1,28 @@
-// Phase 1 harness: render a real Habitat region inside the webclient using the
-// inspector's render pipeline (codec/render/region). The region is composited entirely
-// from the prop-art database — walls, ground, fountain, avatars are all `type:"item"`
-// objects drawn from their decoded cels. There is NO backdrop image; the C64 had none.
+// Phase 1 harness: render a real Habitat region inside the webclient using the habirender
+// pipeline (codec/render/region — our fork of neohabitat-doc/inspector). The region is
+// composited entirely from the prop-art database — walls, ground, fountain, avatars are all
+// `type:"item"` objects drawn from their decoded cels. There is NO backdrop image.
 //
-// What this proves: the cross-repo renderer integration works in the webclient —
-// importing the inspector modules (via the ./inspector symlink), the shared single Preact
-// instance (importmap), charset + prop decoding, scale, and the in-memory `objects` seam
+// What this proves: importing the habirender modules, the shared single Preact instance
+// (importmap), charset + prop decoding, scale, and the in-memory `objects` seam
 // (`regionView({ objects })`, bypassing its built-in static fetch).
 //
-// The one wrinkle: the renderer fetches its database (charset.m, beta.mud, db/,
-// props.json, prop .bin) with *document-relative* URLs via `getFile = fetch`
-// (inspector/shim.js). Served from /webclient/ those would 404. We redirect bare-relative
-// fetches to the vendored ./inspector/ dir below, leaving the vendored copy byte-identical
-// to upstream (see inspector/VENDOR.md). The renderer + art DB are vendored, so the client
-// is self-contained — no neohabitat-doc dependency at runtime.
+// The one wrinkle: habirender fetches its database (charset.m, beta.mud, db/, props.json,
+// prop .bin) with *document-relative* URLs via `getFile = fetch` (habirender/shim.js).
+// Served from /webclient/ those would 404, so we redirect bare-relative fetches to the
+// habirender/ dir below (see habirender/README.md).
 
 import { h, render } from "preact"
 import htm from "htm"
 
-const INSPECTOR_BASE = "./inspector/"
+const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
 globalThis.fetch = (input, init) => {
-  // Redirect the inspector's bare-relative data URLs (no scheme, not /, ./, ../) into the
-  // inspector dir. Our own "./inspector/..." fetches and habisound's absolute
+  // Redirect habirender's bare-relative data URLs (no scheme, not /, ./, ../) into the
+  // habirender dir. Our own "./habirender/..." fetches and habisound's absolute
   // import.meta.url fetches start with a scheme or ./ and pass through untouched.
   if (typeof input === "string" && !/^([a-z][a-z0-9+.-]*:|\/|\.\/|\.\.\/)/i.test(input)) {
-    input = INSPECTOR_BASE + input
+    input = RENDER_BASE + input
   }
   return _fetch(input, init)
 }
@@ -37,17 +34,17 @@ const setStatus = (msg, kind = "") => {
   el.innerHTML = `<span class="dot"></span>${msg}`
 }
 
-// A real Downtown region present in both the capture and the inspector's image map.
-const REGION = "./inspector/db/new_Downtown/Downtown_5f.json"
+// A real Downtown region present in both the capture and habirender's image map.
+const REGION = "./habirender/db/new_Downtown/Downtown_5f.json"
 
 async function main() {
-  setStatus("loading inspector render pipeline…")
-  // NB: dynamic import() resolves relative to THIS module (/webclient/lib/), so the
-  // symlink one level up needs "../inspector". (fetch(), by contrast, resolves against
-  // the document at /webclient/, which is why INSPECTOR_BASE/REGION use "./inspector".)
-  const { regionView } = await import("../inspector/region.js")
-  const { parseHabitatRegion } = await import("../inspector/neohabitat.js")
-  const { errors } = await import("../inspector/view.js")
+  setStatus("loading habirender pipeline…")
+  // NB: dynamic import() resolves relative to THIS module (/webclient/lib/), so habirender
+  // one level up needs "../habirender". (fetch(), by contrast, resolves against the document
+  // at /webclient/, which is why RENDER_BASE/REGION use "./habirender".)
+  const { regionView } = await import("../habirender/region.js")
+  const { parseHabitatRegion } = await import("../habirender/neohabitat.js")
+  const { errors } = await import("../habirender/view.js")
 
   setStatus("loading region object table…")
   // Parse the region with the inspector's own Habitat-MUD parser (the db files use

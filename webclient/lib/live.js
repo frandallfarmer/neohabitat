@@ -18,12 +18,12 @@ import { Transport } from "./transport.js"
 import { loadHabiworld } from "./habiworld.js"
 import { worldToObjects } from "./world-adapter.js"
 
-// Redirect the vendored renderer's bare-relative data fetches into ./inspector/ (same shim
-// as region-view.js). habiworld's loader and the WebSocket use absolute URLs, untouched.
-const INSPECTOR_BASE = "./inspector/"
+// Redirect habirender's bare-relative data fetches into ./habirender/ (same shim as
+// region-view.js). habiworld's loader and the WebSocket use absolute URLs, untouched.
+const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
 globalThis.fetch = (input, init) => {
-  if (typeof input === "string" && !/^([a-z][a-z0-9+.-]*:|\/|\.\/|\.\.\/)/i.test(input)) input = INSPECTOR_BASE + input
+  if (typeof input === "string" && !/^([a-z][a-z0-9+.-]*:|\/|\.\/|\.\.\/)/i.test(input)) input = RENDER_BASE + input
   return _fetch(input, init)
 }
 
@@ -31,7 +31,8 @@ const html = htm.bind(h)
 const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
 
 async function main() {
-  const { regionView } = await import("../inspector/region.js")
+  const { regionView } = await import("../habirender/region.js")
+  const { errors } = await import("../habirender/view.js")  // surfaces caught per-item render errors
   const { HabitatWorld } = await loadHabiworld()
 
   const world = new HabitatWorld()
@@ -87,7 +88,8 @@ async function main() {
         ${region
           ? html`<${regionView} objects=${objs} />`
           : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
-      </div>`
+      </div>
+      <${errors} />`
   }
 
   render(html`<${App} />`, document.getElementById("app"))

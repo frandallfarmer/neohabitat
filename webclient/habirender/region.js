@@ -1,11 +1,11 @@
-import { decodeProp } from "./codec.js"
+import { decodeProp, decodeBody } from "./codec.js"
 import { html, catcher } from "./view.js"
 import { createContext } from "preact"
 import { useContext, useMemo } from "preact/hooks"
 import { signal, computed, effect, useSignal, useSignalEffect } from "@preact/signals"
 import { contextMap, betaMud, logError, promiseToSignal, until, useBinary, useHabitatJson, charset } from './data.js'
-import { translateSpace, topLeftCanvasOffset, Scale, framesFromPropAnimation, frameFromCels, celsFromMask,
-         compositeSpaces, animatedDiv, stringFromText, canvasForSpace, canvasImage } from "./render.js"
+import { translateSpace, topLeftCanvasOffset, Scale, framesFromPropAnimation, framesFromAction, frameFromCels, celsFromMask,
+         compositeSpaces, compositeLayers, animatedDiv, stringFromText, canvasForSpace, canvasImage } from "./render.js"
 import { signedByte } from "./codec.js"
 import { colorsFromOrientation, javaTypeToMuddleClass } from "./neohabitat.js"
 import { getFile } from "./shim.js"
@@ -119,7 +119,122 @@ export const imageSchemaFromMod = (mod) => {
     return { filename: remapImagePath(image.filename), classname, cls, imageKey, width: args[0], flipOffset: args[1] }
 }
 
+// ── webclient (habirender) divergence: avatar/body rendering ──────────────────
+// The inspector renders props (decodeProp); avatars are composite *bodies* (decodeBody +
+// framesFromAction), never wired into the region view because static region files have no
+// avatars. The live client does. Map a body class to its Avatar.bin-style body file; humans
+// use bodies/Avatar.bin (other bodies in bodies.json are Phase 3+).
+const bodyFileForClass = (classname) => classname === "class_avatar" ? "bodies/Avatar.bin" : null
+
+// Avatar contents slots (C64 dataequates.m): only the HEAD (6, at the neck) and a held
+// HANDS item (5) draw on the avatar; all other slots are pocket inventory and are not drawn.
+const AVATAR_HAND = 5
+const AVATAR_HEAD = 6
+// The head (and held item) are composed INTO the avatar frame by composeAvatarFrames (one
+// coordinate space, C64 animate.m), so no avatar contents render as separate contained
+// items. Empty = regionItemView draws no contents for a body. (Held-item compositing TBD.)
+const AVATAR_DRAWN_SLOTS = []
+// Attachment offsets. The head attaches at the face cel (C64 headCelNumber=4) lifted up the
+// neck; screen-Y is inverted (topLeftCanvasOffset: y = 127 - maxY) and containedItemLayout
+// does y = containerY - offsetY, so a NEGATIVE offsetY raises the item. ~-30 ≈ the avatar's
+// height (feet→neck). Calibration constants — tune to seat the head on the neck.
+const AVATAR_HEAD_OFFSET = { x: 0, y: -30 }
+const AVATAR_HAND_OFFSET = { x: 6, y: -14 }
+
+// Limb colors from the avatar's 2 custom bytes, per C64 animate.m get_limb_cel_pattern:
+// slots LEG=0, TORSO=1, ARM=2, FACE=3 (equates.m). LEG/TORSO from custom[0] hi/lo nibble,
+// ARM/FACE from custom[1] hi/lo. (FACE should follow the head's pattern once heads compose.)
+const limbPatternsFromMod = (mod) => {
+    const c = mod.custom || [0, 0]
+    return [(c[0] >> 4) & 0xf, c[0] & 0xf, (c[1] >> 4) & 0xf, c[1] & 0xf]
+}
+
+const bodyActionFor = (body) =>
+    (body.actions && "stand" in body.actions) ? "stand" : Object.keys(body.actions || {})[0]
+
+// Per-view limb draw order (C64 animate.m / simulator DRAW_ORDER). 'head' is the head STEP
+// — the head object then the face overlay (head_placeholder, limb 4) on top — replacing
+// limb 4 in the plain limb order. Side view for now; front/back facing + horizontal flip
+// (orientation) are a follow-up.
+const LIMB_DRAW_ORDER = [0, 1, 2, 3, "head", 5]
+const AVATAR_HEAD_CEL = 4   // head_placeholder limb / neck cel (body.headCelNumber)
+const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is negated → +63
+
+// Chain limb origins (cx_tab/cy_tab) and select each limb's pose cel — first-frame selection
+// from framesFromAction. Kept in the inspector frame convention (frameFromCels ADDS rels) so
+// every composed layer aligns.
+const avatarLimbChain = (body, action) => {
+    const anims = body.limbs.map((l) => (l.animations.length ? { ...l.animations[0] } : { startState: 0, endState: 0 }))
+    for (const ov of body.choreography[body.actions[action]] ?? []) {
+        const na = body.limbs[ov.limb]?.animations[ov.animation]
+        if (na) { anims[ov.limb].startState = na.startState; anims[ov.limb].endState = na.endState }
+    }
+    let xRel = 0, yRel = 0
+    const cx = [], cy = [], cels = []
+    for (let i = 0; i < body.limbs.length; i++) {
+        const istate = body.limbs[i].frames[anims[i].startState]
+        const cel = istate >= 0 ? body.limbs[i].cels[istate] : null
+        cx[i] = xRel; cy[i] = yRel; cels[i] = cel
+        if (cel) { xRel += cel.xRel; yRel += cel.yRel }
+    }
+    return { cx, cy, cels }
+}
+
+// Compose the full avatar (body limbs + head object + face overlay) in ONE coordinate space,
+// in C64 draw order (animate.m display_avatar / draw_a_limb). Each cel is a frameFromCels
+// layer translated to its chain origin; compositeLayers stacks them in order.
+const composeAvatarFrames = (body, avatarMod, headProp, headMod) => {
+    const action = bodyActionFor(body)
+    if (action == null) return []
+    const limbPatterns = limbPatternsFromMod(avatarMod)
+    const { cx, cy, cels } = avatarLimbChain(body, action)
+    const layerFor = (cel, x, y, pattern) =>
+        cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
+
+    const layers = []
+    for (const key of LIMB_DRAW_ORDER) {
+        if (key === "head") {
+            // Head object: cels for the avatar's facing (animations[facing]→celmask), chained
+            // from the neck origin (cx[4],cy[4]) lifted by 63; hair pattern = limbPatterns[3].
+            if (headProp && headProp.celmasks?.length) {
+                const facing = 0 // side; front/back from orientation is a follow-up
+                const anim = headProp.animations?.[facing] ?? { startState: 0 }
+                const state = Math.min(anim.startState ?? 0, headProp.celmasks.length - 1)
+                const headFrame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]),
+                    { colors: { pattern: limbPatterns[3] }, firstCelOrigin: false })
+                if (headFrame) layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT))
+            }
+            // Face overlay (head_placeholder, limb 4) ON TOP of the head object, at the neck
+            // origin. (disk_face per-head gating is a follow-up — needs the head .m flag.)
+            layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL],
+                limbPatterns[body.limbs[AVATAR_HEAD_CEL].pattern]))
+        } else {
+            layers.push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]))
+        }
+    }
+    const drawn = layers.filter(Boolean)
+    return drawn.length ? [compositeLayers(drawn)] : []
+}
+
 export const propFromMod = (mod, ref) => {
+    const bodyFile = bodyFileForClass(javaTypeToMuddleClass(mod.type))
+    if (bodyFile) {
+        // useBinary returns the decoded body (has .limbs) or null while loading; the body
+        // path is keyed off prop.limbs in propFramesFromMod below.
+        const body = useBinary(bodyFile, decodeBody, null)
+        if (body && !body.contentsXY) {
+            // A body isn't a prop, but an avatar *contains* items and the contained-item
+            // layout machinery (offsetsFromContainer / regionItemView) indexes
+            // containerProp.contentsXY[slot] and reads contentsInFront. Only HEAD/HANDS draw
+            // (regionItemView filters the rest); give those their attachment offsets.
+            body.contentsXY = Array.from({ length: 32 }, () => ({ x: 0, y: 0 }))
+            body.contentsXY[AVATAR_HEAD] = { ...AVATAR_HEAD_OFFSET }
+            body.contentsXY[AVATAR_HAND] = { ...AVATAR_HAND_OFFSET }
+            body.contentsInFront = true
+            body.isBody = true  // marks the container as an avatar body for regionItemView
+        }
+        return body
+    }
     const image = imageSchemaFromMod(mod)
     if (!image) {
         // not ready to parse yet
@@ -185,6 +300,11 @@ const colorsFromMod = (mod) => {
 
 // layout / prop rendering as computed signal
 export const propFramesFromMod = (prop, mod, xOrigin = 0, flipOverride = null) => {
+    if (prop && prop.limbs) {  // a decoded body. Avatars are composed (body+head) in the
+        // layout effect via composeAvatarFrames; this is the body-only fallback.
+        const action = bodyActionFor(prop)
+        return action ? framesFromAction(action, prop, { limbPatterns: limbPatternsFromMod(mod) }) : []
+    }
     const colors = colorsFromMod(mod)
     colors.xOrigin = xOrigin
     const flipHorizontal = flipOverride ?? ((mod.orientation ?? 0) & 0x01) != 0
@@ -259,7 +379,22 @@ export const computeLayoutMap = (objects, sig = signal({})) => {
                             container.value.layout.value.frames[0]
                         )
                     } else if (!container.value) {
-                        newLayout = regionItemLayout(prop.value, obj.value.mods[0])
+                        if (prop.value.isBody) {
+                            // Avatar: compose body + head (the HEAD-slot contained item) into
+                            // one frame, positioned like a region item. Find the head via the
+                            // layout-map signal (reactive — the head may arrive after the
+                            // avatar, and its prop loads async; both re-trigger this effect).
+                            const avatarMod = obj.value.mods[0]
+                            const headItem = Object.values(sig.value).find((li) =>
+                                li.obj.value?.in === obj.value.ref && li.obj.value?.mods?.[0]?.y === AVATAR_HEAD)
+                            const headProp = headItem?.prop?.value ?? null
+                            const headMod = headItem?.obj?.value?.mods?.[0]
+                            const frames = composeAvatarFrames(prop.value, avatarMod, headProp, headMod)
+                            const [x, y, z] = propLocationFromObjectXY(avatarMod.x, avatarMod.y)
+                            newLayout = { x, y, z, frames }
+                        } else {
+                            newLayout = regionItemLayout(prop.value, obj.value.mods[0])
+                        }
                     }
                 }
                 layout.value = newLayout
@@ -365,8 +500,13 @@ export const regionItemView = ({ object, contents = [] }) => {
                     <${animatedDiv} frames=${layout.frames}/>
                 <//>
             </div>`
+    // On an avatar body, only the HEAD and held HANDS item draw; all other contained items
+    // are pocket inventory and are invisible in-region (C64 display_avatar).
+    const drawn = prop.isBody
+        ? contents.filter(item => AVATAR_DRAWN_SLOTS.includes(item.mods[0].y))
+        : contents
     if (prop.contentsXY.length > 0) {
-        const children = contents.map(item => html`
+        const children = drawn.map(item => html`
             <${regionItemView} key=${item.ref} object=${item} />`)
         if (prop.contentsInFront) {
             return [container, ...children]
