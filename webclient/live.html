@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>NeoHabitat — Phase 2 live region</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="importmap">
+        {
+            "imports": {
+                "htm": "./vendor/htm.mjs",
+                "preact": "./vendor/preact.mjs",
+                "preact/hooks": "./vendor/hooks.mjs",
+                "@preact/signals-core": "./vendor/signals-core.mjs",
+                "@preact/signals": "./vendor/signals.mjs"
+            }
+        }
+    </script>
+    <script type="module" src="./lib/live.js"></script>
+</head>
+<body>
+    <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <h1 style="font-size: 16px; margin: 0;">Phase 2 — live region (websocketProxy → habiworld → renderer)</h1>
+        <div id="app" style="display: flex; flex-direction: column; gap: 10px;">booting…</div>
+        <p style="color:#9a9aa6; font-size:16px; margin:0; max-width:70ch;">
+            Set the WebSocket proxy, context, and avatar above, then Connect. Defaults seed from
+            query params (<code>?ws=…&amp;context=context-…&amp;user=name</code>). Requires elko +
+            bridge_v2 + pushserver up (docker-compose.dev.yml).
+        </p>
+    </div>
+</body>
+</html>

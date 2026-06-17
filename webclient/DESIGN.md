@@ -128,11 +128,12 @@ that cause those ops; it never hand-rolls world state.
 
 Resolved during the relevant phase; none blocks starting.
 
-1. **habiworld in the browser.** habiworld is CommonJS (`require`). The browser needs an
-   *additive* ESM-consumable form — a thin wrapper or dual export — that does **not** change
-   habiworld's CommonJS API, so `habibots`/`sagebot` keep working unchanged. Any change to
-   habiworld itself needs explicit sign-off and a compatibility check; until then the
-   adapter lives in `webclient/`.
+1. **habiworld in the browser.** ✅ Resolved (Phase 2): `lib/habiworld.js` is a tiny no-build
+   CommonJS loader that fetches habiworld's ~27 modules over http and runs them through a
+   Node-like synchronous `require()`, shimming the one bare dependency (`events`) with a
+   minimal `EventEmitter`. habiworld is **unmodified** — its CommonJS API is untouched, so
+   `habibots`/`sagebot` are unaffected. habiworld is fetched as a sibling under the dev root
+   (`../habiworld/`), so it stays in sync automatically (not vendored, since it's in-repo).
 2. **Renderer reuse across the repo boundary.** ✅ Resolved (Phase 1): the render pipeline
    and the prop-art database are **vendored** into `webclient/inspector/` (a trimmed,
    byte-identical copy of `neohabitat-doc/inspector` — see `inspector/VENDOR.md`), so the
@@ -142,9 +143,12 @@ Resolved during the relevant phase; none blocks starting.
    that both the inspector and this client consume.) The data seam used is the
    `objects` parameter of `regionView` (bypassing its `useHabitatJson(filename)` fetch);
    Phase 2 feeds that from habiworld's live table.
-3. **websocketProxy login preamble.** Confirm the exact handshake the proxy expects
-   (`extractLoginName`, `MAX_LOGIN_PREAMBLE_BYTES`) and how context/avatar selection is
-   forwarded.
+3. **websocketProxy login preamble.** ✅ Resolved (Phase 2): there is no separate auth
+   handshake in dev — the whole login is a single `{op:"entercontext", to:"session",
+   context, user:"user-<name>"}`. Wire framing matches habibot: outbound JSON + `"\n\n"`,
+   inbound a byte stream of JSON split on `"\n"` (empty lines skipped). The proxy is a
+   transparent byte pipe; `extractLoginName` only sniffs `"name"` for docent tracking and
+   does not gate forwarding. See `lib/transport.js`.
 
 ## Phase roadmap
 

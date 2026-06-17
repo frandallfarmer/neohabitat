@@ -13,7 +13,10 @@ deliberately self-contained: it does not depend on the `neohabitat-doc` repo at 
   `mudparse.js`, `shim.js`.
 - **Art database** (the original Habitat prop imagery, decoded client-side — there are no
   pre-rendered backgrounds): `props/`, `heads/`, `bodies/`, `misc/`, `beta/`, their
-  `*.json` indices, `charset.m`, and `beta.mud`.
+  `*.json` indices, `charset.m`, and `beta.mud`. Plus the top-level trapezoid texture
+  templates `super_trap.bin`, `trap0.bin`, `trap1.bin` — required to render
+  `class_super_trapezoid` / `class_trapezoid` walls and ground (without them those render
+  solid black).
 - **Test regions** (offline render fixtures only — the live client gets regions from the
   server's make-storm, not from here): `db/contextmap.json`, `db/new_Downtown/`.
 
@@ -34,6 +37,7 @@ SRC=~/neohabitat-doc/inspector ; DST=~/neohabitat/webclient/inspector
 cp "$SRC"/{region,render,codec,view,data,neohabitat,mudparse,shim}.js "$DST"/
 cp "$SRC"/{charset.m,beta.mud,props,heads,bodies,misc,beta}.json "$DST"/ 2>/dev/null
 cp "$SRC"/{charset.m,beta.mud,default_mod_values.json} "$DST"/
+cp "$SRC"/*.bin "$DST"/                       # trapezoid texture templates
 cp -r "$SRC"/{props,heads,bodies,misc,beta} "$DST"/
 cp "$SRC"/db/contextmap.json "$DST"/db/ ; cp -r "$SRC"/db/new_Downtown "$DST"/db/
 ```

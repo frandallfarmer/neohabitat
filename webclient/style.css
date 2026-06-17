@@ -100,13 +100,13 @@ header.titlebar .tag {
     border-radius: 6px;
     padding: 6px 10px;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12px;
+    font-size: 16px;
     color: var(--muted);
     min-height: 28px;
 }
 .statusbar .dot {
     display: inline-block;
-    width: 8px; height: 8px;
+    width: 10px; height: 10px;
     border-radius: 50%;
     margin-right: 7px;
     background: #555;
