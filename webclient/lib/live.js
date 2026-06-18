@@ -4,11 +4,8 @@
 //   websocketProxy ──▶ Transport ──▶ habiworld.apply (state) ──▶ worldToObjects ──▶ regionView
 //
 // No habibot anywhere. habiworld owns all state; this file only moves messages in and
-// projects state out for rendering. Phase 2 re-renders as the make-storm builds the table;
-// the full live delta event set (moved/fieldChanged/…) is Phase 3.
-//
-// The connect panel (WebSocket proxy / Context / Avatar) mirrors the Phase 0 shell so the
-// region + avatar can be chosen interactively; query params seed the defaults.
+// projects state out for rendering. Avatar walks/gestures are replayed client-side on the
+// render cadence (see lib/avatar-chore.js).
 
 import { h, render } from "preact"
 import htm from "htm"
@@ -17,9 +14,8 @@ import { signal } from "@preact/signals"
 import { Transport } from "./transport.js"
 import { loadHabiworld } from "./habiworld.js"
 import { worldToObjects } from "./world-adapter.js"
+import { createAvatarMotion } from "./avatar-chore.js"
 
-// Redirect habirender's bare-relative data fetches into ./habirender/ (same shim as
-// region-view.js). habiworld's loader and the WebSocket use absolute URLs, untouched.
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
 globalThis.fetch = (input, init) => {
@@ -32,17 +28,18 @@ const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
 
 async function main() {
   const { regionView } = await import("../habirender/region.js")
-  const { errors } = await import("../habirender/view.js")  // surfaces caught per-item render errors
+  const { errors } = await import("../habirender/view.js")
   const { HabitatWorld } = await loadHabiworld()
 
   const world = new HabitatWorld()
+  const avatarMotion = createAvatarMotion()
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const refresh = () => { objects.value = worldToObjects(world) }
-  // Phase 2: react to the make-storm. Phase 3 adds moved/fieldChanged/containerChanged/
-  // lighting and wires sound.
-  for (const ev of ["added", "removed", "regionDescribed", "regionChanged"]) world.on(ev, refresh)
-
+  for (const ev of ["added", "removed", "regionDescribed", "regionChanged",
+                    "moved", "stateChanged", "containerChanged"]) {
+    world.on(ev, refresh)
+  }
   let transport = null
   const connect = (ws, context, user) => {
     if (!ws || !context || !user) {
@@ -50,17 +47,36 @@ async function main() {
       return
     }
     if (transport) transport.close()
-    if (typeof world.clear === "function") world.clear() // fresh state on (re)connect
+    if (typeof world.clear === "function") world.clear()
+    avatarMotion.clear()
     objects.value = []
     status.value = { kind: "", text: `connecting to ${ws}…` }
+    let gotMsg = false
     transport = new Transport({
       url: ws,
-      onMessage: (m) => world.apply(m),
+      onMessage: (m) => {
+        gotMsg = true
+        if (m.op === "WALK$") avatarMotion.beginWalk(m.noid, world.get(m.noid), m)
+        world.apply(m)
+        const rec = world.get(m.noid)
+        if (m.op === "FIDDLE_$" && m.offset === 9) {
+          avatarMotion.noteServerFacing(m.noid)
+        } else {
+          avatarMotion.onOp(m, rec?.mod?.orientation ?? 0, rec?.mod?.activity ?? rec?.mod?.action ?? 129)
+        }
+      },
       onOpen: () => {
         status.value = { kind: "online", text: `connected — entering ${context} as user-${user}…` }
         transport.enterContext(context, user)
       },
-      onClose: () => { status.value = { kind: "error", text: "disconnected" } },
+      onClose: () => {
+        status.value = {
+          kind: "error",
+          text: gotMsg
+            ? "disconnected"
+            : "WebSocket closed with no data — is bridge_v2 up? (docker compose up -d bridge_v2)",
+        }
+      },
       onError: () => { status.value = { kind: "error", text: `connection error — is the websocketProxy up at ${ws}?` } },
     })
     transport.connect()
@@ -73,6 +89,7 @@ async function main() {
     const objs = objects.value
     const st = status.value
     const region = objs.find((o) => o.type === "context")
+    avatarMotion.tick.value
     return html`
       <div class="connect">
         <label>WebSocket proxy
@@ -86,7 +103,7 @@ async function main() {
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
       <div style="background:#000; align-self:flex-start;">
         ${region
-          ? html`<${regionView} objects=${objs} />`
+          ? html`<${regionView} objects=${objs} avatarMotion=${avatarMotion} />`
           : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
       </div>
       <${errors} />`

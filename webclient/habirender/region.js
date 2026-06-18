@@ -1,11 +1,12 @@
 import { decodeProp, decodeBody } from "./codec.js"
+import { choreographyNameFromMod, headFacingFromAction, displayOrientForActivity } from "../lib/avatar-chore.js"
 import { html, catcher } from "./view.js"
 import { createContext } from "preact"
 import { useContext, useMemo } from "preact/hooks"
 import { signal, computed, effect, useSignal, useSignalEffect } from "@preact/signals"
 import { contextMap, betaMud, logError, promiseToSignal, until, useBinary, useHabitatJson, charset } from './data.js'
 import { translateSpace, topLeftCanvasOffset, Scale, framesFromPropAnimation, framesFromAction, frameFromCels, celsFromMask,
-         compositeSpaces, compositeLayers, animatedDiv, stringFromText, canvasForSpace, canvasImage } from "./render.js"
+         compositeSpaces, compositeLayers, flipCanvas, animatedDiv, stringFromText, canvasForSpace, canvasImage } from "./render.js"
 import { signedByte } from "./codec.js"
 import { colorsFromOrientation, javaTypeToMuddleClass } from "./neohabitat.js"
 import { getFile } from "./shim.js"
@@ -149,71 +150,224 @@ const limbPatternsFromMod = (mod) => {
     return [(c[0] >> 4) & 0xf, c[0] & 0xf, (c[1] >> 4) & 0xf, c[1] & 0xf]
 }
 
-const bodyActionFor = (body) =>
-    (body.actions && "stand" in body.actions) ? "stand" : Object.keys(body.actions || {})[0]
-
 // Per-view limb draw order (C64 animate.m / simulator DRAW_ORDER). 'head' is the head STEP
-// — the head object then the face overlay (head_placeholder, limb 4) on top — replacing
-// limb 4 in the plain limb order. Side view for now; front/back facing + horizontal flip
-// (orientation) are a follow-up.
+// — the head object then the face overlay (head_placeholder, limb 4) on top.
 const LIMB_DRAW_ORDER = [0, 1, 2, 3, "head", 5]
 const AVATAR_HEAD_CEL = 4   // head_placeholder limb / neck cel (body.headCelNumber)
 const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is negated → +63
 
-// Chain limb origins (cx_tab/cy_tab) and select each limb's pose cel — first-frame selection
-// from framesFromAction. Kept in the inspector frame convention (frameFromCels ADDS rels) so
-// every composed layer aligns.
-const avatarLimbChain = (body, action) => {
-    const anims = body.limbs.map((l) => (l.animations.length ? { ...l.animations[0] } : { startState: 0, endState: 0 }))
-    for (const ov of body.choreography[body.actions[action]] ?? []) {
-        const na = body.limbs[ov.limb]?.animations[ov.animation]
-        if (na) { anims[ov.limb].startState = na.startState; anims[ov.limb].endState = na.endState }
-    }
-    let xRel = 0, yRel = 0
-    const cx = [], cy = [], cels = []
-    for (let i = 0; i < body.limbs.length; i++) {
-        const istate = body.limbs[i].frames[anims[i].startState]
-        const cel = istate >= 0 ? body.limbs[i].cels[istate] : null
-        cx[i] = xRel; cy[i] = yRel; cels[i] = cel
-        if (cel) { xRel += cel.xRel; yRel += cel.yRel }
-    }
-    return { cx, cy, cels }
+const actionView = (actionName) => {
+    if (actionName === "stand_back" || actionName === "walk_back") return "back"
+    if (actionName === "walk_front" || actionName === "stand_front" || actionName === "sit_front") return "front"
+    return "side"
 }
 
-// Compose the full avatar (body limbs + head object + face overlay) in ONE coordinate space,
-// in C64 draw order (animate.m display_avatar / draw_a_limb). Each cel is a frameFromCels
-// layer translated to its chain origin; compositeLayers stacks them in order.
-const composeAvatarFrames = (body, avatarMod, headProp, headMod) => {
-    const action = bodyActionFor(body)
-    if (action == null) return []
-    const limbPatterns = limbPatternsFromMod(avatarMod)
-    const { cx, cy, cels } = avatarLimbChain(body, action)
+const drawOrderForAction = (body, actionName) => {
+    const view = actionView(actionName)
+    const headStep = (i) => i === AVATAR_HEAD_CEL ? "head" : i
+    if (view === "front") return body.frontFacingLimbOrder.map(headStep)
+    if (view === "back") return body.backFacingLimbOrder.map(headStep)
+    return LIMB_DRAW_ORDER
+}
+
+const initAnimationsForAction = (body, actionName) => {
+    const choreIndex = body.actions?.[actionName]
+    if (choreIndex == null) return null
+    const animations = body.limbs.map((l) =>
+        l.animations.length > 0 ? { ...l.animations[0] } : { startState: 0, endState: 0 })
+    for (const ov of body.choreography[choreIndex] ?? []) {
+        const na = body.limbs[ov.limb]?.animations[ov.animation]
+        if (na) {
+            animations[ov.limb].startState = na.startState
+            animations[ov.limb].endState = na.endState
+        }
+    }
+    return animations
+}
+
+// mix.m find_cel_xy — cel xRel/yRel (bytes 4–5) offset the next anchor; yRel subtracts.
+const findCelXY = (x, y, xRel, yRel, flipHorizontal) => {
+    if (xRel === 0 && yRel === 0) return { x, y }
+    const dx = flipHorizontal ? -xRel : xRel
+    return { x: x + dx, y: y - yRel }
+}
+
+// animate.m AVATAR_HAND held draw: find_cel_xy(cx_tab+5, cy_tab+5, last_cel_*).
+// When both rel bytes are 0, mix.m uses cel_x_origin/cel_y_origin (here cx_tab/cy_tab).
+const findCelXYHeld = (tabX, tabY, xRel, yRel, originX, originY, flipHorizontal) => {
+    if (xRel === 0 && yRel === 0) return { x: originX, y: originY }
+    return findCelXY(tabX, tabY, xRel, yRel, flipHorizontal)
+}
+
+// animate.m cels_affected_by_height — torso/arms/face/hand cy_tab adds avatar_height.
+const avatarHeightFromMod = (mod) => (mod.orientation & 0x7f) >> 3
+const LIMB_HEIGHT_AFFECTED = [false, false, true, true, true, true]
+
+// Chain limb origins (cx_tab/cy_tab) at the current animation frame.
+// Side-view mirroring is applied once in flipComposedFrame (whole canvas), not here —
+// find_cel_xy uses cel_dx on C64, but paint.m also flips each cel; we flip the composite.
+const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
+    const avatarHeight = avatarHeightFromMod(avatarMod)
+    let x = 0, y = 0, xRel = 0, yRel = 0
+    const cx = [], cy = [], cels = []
+    let handTabX = 0, handTabY = 0, handRelX = 0, handRelY = 0
+
+    for (let i = 0; i < body.limbs.length; i++) {
+        const frame = animations[i].current ?? animations[i].startState
+        const istate = body.limbs[i].frames[frame]
+        const cel = istate >= 0 ? body.limbs[i].cels[istate] : null
+        const pos = findCelXY(x, y, xRel, yRel, false)
+        cx[i] = pos.x
+        cy[i] = pos.y + (LIMB_HEIGHT_AFFECTED[i] ? avatarHeight : 0)
+        cels[i] = cel
+        if (i === AVATAR_HAND) {
+            handTabX = pos.x
+            handTabY = pos.y + avatarHeight
+            // animate.m AVATAR_HAND: find_cel_xy(cx_tab+5, cy_tab+5, last_cel_x_rel, last_cel_y_rel).
+            // last_cel_* is whatever get_limb_coords saved last — after the coord loop (limbs 0–5)
+            // that is hand cel rel, NOT face limb rel at draw time.
+            handRelX = cel?.xRel ?? 0
+            handRelY = cel?.yRel ?? 0
+        }
+        x = pos.x
+        y = pos.y
+        xRel = cel?.xRel ?? 0
+        yRel = cel?.yRel ?? 0
+    }
+    const hand = findCelXYHeld(handTabX, handTabY, handRelX, handRelY, handTabX, handTabY, false)
+    return { cx, cy, cels, handX: hand.x, handY: hand.y }
+}
+
+const flipComposedFrame = (frame, avatarMod, actionName) => {
+    if (actionView(actionName) !== "side" || (avatarMod.orientation & 0x01) === 0) return frame
+    frame.canvas = flipCanvas(frame.canvas)
+    const { minX, maxX } = frame
+    frame.minX = -maxX + 1
+    frame.maxX = -minX + 1
+    return frame
+}
+
+const headPatternFromMod = (headMod, fallback) => {
+    if (!headMod) return fallback
+    const c = colorsFromOrientation(headMod.orientation)
+    return c.pattern ?? c.wildcard ?? fallback
+}
+
+const shouldPaintBackFacePlate = (headProp, facing) => {
+    if (facing !== 3 || !headProp) return true
+    // animate.m: back view skips face plate when head disk byte (colorBitmask) has bit 7 clear.
+    return (headProp.colorBitmask & 0x80) !== 0
+}
+
+const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, chain, limbPatterns) => {
+    const { cx, cy, cels, handX, handY } = chain
+    const facing = headFacingFromAction(actionName)
+    const facePattern = headPatternFromMod(headMod, limbPatterns[3])
     const layerFor = (cel, x, y, pattern) =>
         cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
 
+    // Held: find_cel_xy → handX/handY (animate.m). stand_alone=0 so no even_bottoms (mix.m);
+    // paint.m screen_y = cel_y − yOffset. Hand limb uses cy_tab; held cel_y = handY = cy_tab−yRel.
+    // Our additive frameFromCels maxY = anchor + yOffset ⇒ held maxY = placeY + paper.yOffset must
+    // equal cy + yRel + paper.yOffset (C64 gap hand_yOffset − yRel − paper_yOffset below hand top).
+    const flipHeld = actionView(actionName) === "side" && ((avatarMod.orientation & 0x01) !== 0)
+    let heldLayer = null
+    if (handProp && handMod) {
+        const grState = handMod.gr_state ?? 0
+        const maskIdx = Math.min(grState, handProp.celmasks.length - 1)
+        const held = frameFromCels(celsFromMask(handProp, handProp.celmasks[maskIdx]),
+            { colors: colorsFromMod(handMod), flipHorizontal: flipHeld, firstCelOrigin: false })
+        if (held) {
+            const handCel = cels[AVATAR_HAND]
+            const placeY = cy[AVATAR_HAND] + (handCel?.yRel ?? 0)
+            heldLayer = translateSpace(held, handX, placeY)
+        }
+    }
+
     const layers = []
-    for (const key of LIMB_DRAW_ORDER) {
+    for (const key of drawOrderForAction(body, actionName)) {
+        // animate.m AVATAR_HAND: draw_contained_object before paint_limb on limb 5.
+        if (key === AVATAR_HAND && heldLayer) {
+            layers.push(heldLayer)
+        }
         if (key === "head") {
-            // Head object: cels for the avatar's facing (animations[facing]→celmask), chained
-            // from the neck origin (cx[4],cy[4]) lifted by 63; hair pattern = limbPatterns[3].
-            if (headProp && headProp.celmasks?.length) {
-                const facing = 0 // side; front/back from orientation is a follow-up
-                const anim = headProp.animations?.[facing] ?? { startState: 0 }
+            if (headProp?.celmasks?.length) {
+                const anim = headProp.animations?.[facing] ?? headProp.animations?.[0] ?? { startState: 0 }
                 const state = Math.min(anim.startState ?? 0, headProp.celmasks.length - 1)
                 const headFrame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]),
-                    { colors: { pattern: limbPatterns[3] }, firstCelOrigin: false })
-                if (headFrame) layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT))
+                    { colors: headMod ? colorsFromMod(headMod) : { pattern: limbPatterns[3] }, firstCelOrigin: false })
+                if (headFrame) {
+                    layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT))
+                }
             }
-            // Face overlay (head_placeholder, limb 4) ON TOP of the head object, at the neck
-            // origin. (disk_face per-head gating is a follow-up — needs the head .m flag.)
-            layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL],
-                limbPatterns[body.limbs[AVATAR_HEAD_CEL].pattern]))
+            if (shouldPaintBackFacePlate(headProp, facing)) {
+                layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL], facePattern))
+            }
         } else {
             layers.push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]))
         }
     }
     const drawn = layers.filter(Boolean)
-    return drawn.length ? [compositeLayers(drawn)] : []
+    if (!drawn.length) return null
+    return flipComposedFrame(compositeLayers(drawn), avatarMod, actionName)
+}
+
+const advanceAnimations = (animations) => {
+    let restartedCount = 0
+    for (const anim of animations) {
+        if (anim.current === undefined) anim.current = anim.startState
+        else {
+            anim.current++
+            if (anim.current > anim.endState) {
+                anim.current = anim.startState
+                restartedCount++
+            }
+        }
+    }
+    return restartedCount
+}
+
+const choreographyCycleLength = (body, actionName) => {
+    const animations = initAnimationsForAction(body, actionName)
+    if (!animations) return 0
+    const scratch = animations.map((a) => ({ ...a }))
+    let count = 0
+    while (true) {
+        count++
+        if (advanceAnimations(scratch) === scratch.length) break
+    }
+    return count
+}
+
+// Compose every frame of a choreography cycle (walk, wave, stand, …).
+export const composeAvatarFrames = (body, avatarMod, headProp, headMod, handProp, handMod, actionName) => {
+    actionName = actionName ?? choreographyNameFromMod(avatarMod)
+    const animations = initAnimationsForAction(body, actionName)
+    if (!animations) return []
+    const limbPatterns = limbPatternsFromMod(avatarMod)
+    const frames = []
+    while (true) {
+        const frame = composeAvatarFrame(body, avatarMod, headProp, headMod, handProp, handMod, actionName,
+            avatarLimbChainAt(body, animations, avatarMod, actionName), limbPatterns)
+        if (frame) frames.push(frame)
+        if (advanceAnimations(animations) === animations.length) break
+    }
+    return frames
+}
+
+// One choreography frame at a given index (live motion advances index each FRAME_MS).
+export const composeAvatarFrameAt = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, frameIndex) => {
+    actionName = actionName ?? choreographyNameFromMod(avatarMod)
+    const animations = initAnimationsForAction(body, actionName)
+    if (!animations) return null
+    const limbPatterns = limbPatternsFromMod(avatarMod)
+    const cycleLen = choreographyCycleLength(body, actionName)
+    if (!cycleLen) return null
+    const idx = ((frameIndex ?? 0) % cycleLen + cycleLen) % cycleLen
+    const scratch = animations.map((a) => ({ ...a }))
+    for (let i = 0; i < idx; i++) advanceAnimations(scratch)
+    return composeAvatarFrame(body, avatarMod, headProp, headMod, handProp, handMod, actionName,
+        avatarLimbChainAt(body, scratch, avatarMod, actionName), limbPatterns)
 }
 
 export const propFromMod = (mod, ref) => {
@@ -300,10 +454,10 @@ const colorsFromMod = (mod) => {
 
 // layout / prop rendering as computed signal
 export const propFramesFromMod = (prop, mod, xOrigin = 0, flipOverride = null) => {
-    if (prop && prop.limbs) {  // a decoded body. Avatars are composed (body+head) in the
-        // layout effect via composeAvatarFrames; this is the body-only fallback.
-        const action = bodyActionFor(prop)
-        return action ? framesFromAction(action, prop, { limbPatterns: limbPatternsFromMod(mod) }) : []
+    if (prop && prop.limbs) {  // decoded body — standalone preview without head composition
+        const actionName = choreographyNameFromMod(mod)
+        return prop.actions?.[actionName] != null
+            ? framesFromAction(actionName, prop, { limbPatterns: limbPatternsFromMod(mod) }) : []
     }
     const colors = colorsFromMod(mod)
     colors.xOrigin = xOrigin
@@ -347,7 +501,7 @@ export const regionItemLayout = (prop, mod) => {
     return { x, y, z, frames }
 }
 
-export const computeLayoutMap = (objects, sig = signal({})) => {
+export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null) => {
     const layoutMap = {}
     for (const obj of objects) {
         if (obj.type !== "item") continue
@@ -368,6 +522,7 @@ export const computeLayoutMap = (objects, sig = signal({})) => {
             layoutItem.layout = signal(null)
             effect(() => {
                 const { obj, prop, container, layout } = layoutItem
+                avatarMotion?.tick?.value
                 var newLayout = null
                 if (prop.value) {
                     if (container.value?.layout?.value) {
@@ -380,17 +535,47 @@ export const computeLayoutMap = (objects, sig = signal({})) => {
                         )
                     } else if (!container.value) {
                         if (prop.value.isBody) {
-                            // Avatar: compose body + head (the HEAD-slot contained item) into
-                            // one frame, positioned like a region item. Find the head via the
-                            // layout-map signal (reactive — the head may arrive after the
-                            // avatar, and its prop loads async; both re-trigger this effect).
-                            const avatarMod = obj.value.mods[0]
-                            const headItem = Object.values(sig.value).find((li) =>
-                                li.obj.value?.in === obj.value.ref && li.obj.value?.mods?.[0]?.y === AVATAR_HEAD)
+                            const serverMod = obj.value.mods[0]
+                            const motion = avatarMotion?.get?.(serverMod.noid) ?? null
+                            const findSlot = (slot) => Object.values(sig.value).find((li) =>
+                                li.obj.value?.in === obj.value.ref && li.obj.value?.mods?.[0]?.y === slot)
+                            const headItem = findSlot(AVATAR_HEAD)
+                            const handItem = findSlot(AVATAR_HAND)
                             const headProp = headItem?.prop?.value ?? null
-                            const headMod = headItem?.obj?.value?.mods?.[0]
-                            const frames = composeAvatarFrames(prop.value, avatarMod, headProp, headMod)
-                            const [x, y, z] = propLocationFromObjectXY(avatarMod.x, avatarMod.y)
+                            const headMod = headItem?.obj?.value?.mods?.[0] ?? null
+                            const handProp = handItem?.prop?.value ?? null
+                            const handMod = handItem?.obj?.value?.mods?.[0] ?? null
+                            const serverActivity = serverMod.activity ?? serverMod.action
+                            const activity = avatarMotion?.getActivity?.(serverMod.noid, serverActivity)
+                                ?? serverActivity
+                            const baseOrient = avatarMotion?.getOrient?.(serverMod.noid, serverMod.orientation)
+                                ?? serverMod.orientation
+                            const orientForCompose = displayOrientForActivity(activity, baseOrient)
+                            const displayMod = motion?.type === "walk"
+                                ? {
+                                    ...serverMod,
+                                    activity,
+                                    x: motion.x,
+                                    y: (serverMod.y & 128) | (motion.y & 127),
+                                    orientation: motion.orient ?? orientForCompose,
+                                }
+                                : { ...serverMod, activity, orientation: orientForCompose }
+                            const actionName = choreographyNameFromMod(displayMod, motion)
+                            let frames
+                            if (motion) {
+                                const frame = composeAvatarFrameAt(prop.value, displayMod, headProp, headMod, handProp, handMod,
+                                    actionName, motion.animFrame)
+                                frames = frame ? [frame] : []
+                                if (motion.type === "gesture") {
+                                    const cycleLen = choreographyCycleLength(prop.value, actionName)
+                                    avatarMotion.noteCycleLength(serverMod.noid, cycleLen)
+                                }
+                            } else {
+                                const standFrame = composeAvatarFrameAt(prop.value, displayMod, headProp, headMod, handProp, handMod,
+                                    actionName, 0)
+                                frames = standFrame ? [standFrame] : []
+                            }
+                            const [x, y, z] = propLocationFromObjectXY(displayMod.x, displayMod.y)
                             newLayout = { x, y, z, frames }
                         } else {
                             newLayout = regionItemLayout(prop.value, obj.value.mods[0])
@@ -406,17 +591,19 @@ export const computeLayoutMap = (objects, sig = signal({})) => {
 }
 
 export const LayoutMap = createContext(null)
-export const regionLayout = ({ objects, children }) => {
+export const regionLayout = ({ objects, avatarMotion, children }) => {
     const currentLayoutMap = useContext(LayoutMap)
-    if (currentLayoutMap?.objects === objects) {
-        // don't bother recalculating layout if we've already done the work
+    if (!avatarMotion && currentLayoutMap?.objects === objects) {
         return children
     }
     const layoutMap = useSignal({})
     const sigObjects = useSignal(objects)
     sigObjects.value = objects
-    useSignalEffect(() => { computeLayoutMap(sigObjects.value, layoutMap) })
-    return html`<${LayoutMap.Provider} value=${({ objects, map: layoutMap })}>${children}<//>`
+    useSignalEffect(() => {
+        avatarMotion?.tick?.value
+        computeLayoutMap(sigObjects.value, layoutMap, avatarMotion)
+    })
+    return html`<${LayoutMap.Provider} value=${({ objects, map: layoutMap, avatarMotion })}>${children}<//>`
 }
 
 export const useLayout = (ref) => useContext(LayoutMap).map.value[ref]?.layout?.value
@@ -526,12 +713,12 @@ const sortObjects = (objects) => {
                                  .sort((o1, o2) => o2.mods[0].y - o1.mods[0].y)])
 }
 
-export const regionView = ({ filename, objects, style = "", interaction = ({children}) => children }) => {
+export const regionView = ({ filename, objects, avatarMotion, style = "", interaction = ({children}) => children }) => {
     const scale = useContext(Scale)
     objects = objects ?? useHabitatJson(filename)
 
     return html`
-        <${regionLayout} objects=${objects}>
+        <${regionLayout} objects=${objects} avatarMotion=${avatarMotion}>
             <${itemInteraction.Provider} value=${interaction}>
                 <div style="position: relative; line-height: 0px; width: ${320 * scale}px; height: ${128 * scale}px; overflow: hidden; ${style}">
                     ${sortObjects(objects).map(([obj, contents]) => html`

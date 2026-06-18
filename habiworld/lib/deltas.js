@@ -539,7 +539,22 @@ const DELTAS = {
 
   // ── choreography only (sound, animation, text) — deliberate no-ops ─
 
-  'POSTURE$':    { choreography: true, src: 'Behaviors/avatar_POSTURE.m' },
+  // Avatar.java POSTURE — broadcast chore for gestures; activity field updates for facing.
+  'POSTURE$': {
+    src: 'Behaviors/avatar_POSTURE.m',
+    apply(world, msg) {
+      const posture = msg.new_posture
+      if (posture == null) return
+      const persistent = new Set([
+        129, 132, 133, 143, 146, 157, 251, 252, 254, 255,
+      ])
+      if (!persistent.has(posture)) return
+      const o = world.get(msg.noid)
+      if (!o) return
+      o.mod.activity = posture
+      world.emit('stateChanged', o)
+    },
+  },
   'SPEAK$':      { choreography: true, src: 'word balloons' },
   'OBJECTSPEAK_$': { choreography: true, src: 'object word balloons' },
   'PLAY_$':      { choreography: true, src: 'sound effects' },

@@ -549,6 +549,9 @@ export const canvasImage = ({ canvas }) => {
     }
 }
 
+// C64-style animation cadence used by animatedDiv and live avatar motion.
+export const FRAME_MS = 250
+
 export const animatedDiv = ({ frames }) => {
     if (!frames || frames.length == 0) {
         return null
@@ -566,7 +569,7 @@ export const animatedDiv = ({ frames }) => {
     const b = h - y - (frame ? frame.canvas.height : 0)
     useEffect(() => {
         const nextFrame = () => setFrame((iframe + 1) % frames.length)
-        const interval = setInterval(nextFrame, 250)
+        const interval = setInterval(nextFrame, FRAME_MS)
         return () => clearInterval(interval)
     })
 
