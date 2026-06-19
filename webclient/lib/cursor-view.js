@@ -17,6 +17,8 @@ import { cursorSpritePair, CURSOR_SPRITE_W, CURSOR_SPRITE_H } from "./cursor-spr
 
 const html = htm.bind(h)
 const DRAG_THRESHOLD = 10
+// C64 draws cursor sprite after region objects (render.m); above layout.z (0–255).
+const CURSOR_Z_INDEX = 10000
 
 export function RegionCursor({
   width = 320,
@@ -98,7 +100,7 @@ export function RegionCursor({
 
   return html`
     <div
-      style="position: absolute; inset: 0; touch-action: none; cursor: none;"
+      style="position: absolute; inset: 0; z-index: ${CURSOR_Z_INDEX}; touch-action: none; cursor: none;"
       onPointerMove=${onPointerMove}
       onPointerDown=${onPointerDown}
       onPointerUp=${onPointerUp}
