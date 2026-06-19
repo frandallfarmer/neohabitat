@@ -300,11 +300,16 @@ const heldGraphicStateAt = (prop, mod, frameIndex = 0) => {
     return Math.min(info.startState + idx, prop.celmasks.length - 1)
 }
 
+const isWalkAction = (actionName) =>
+    actionName === "walk" || actionName === "walk_front" || actionName === "walk_back"
+
 const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, chain, limbPatterns,
     heldFrameIndex = 0) => {
     const { cx, cy, cels, handX, handY } = chain
     const facing = headFacingFromAction(actionName)
     const facePattern = headPatternFromMod(headMod, limbPatterns[3])
+    // walk: legs_right yRel (−1) is the animating paint offset for upper-body cels (like held + hand yRel).
+    const walkPaintY = isWalkAction(actionName) ? (cels[0]?.yRel ?? 0) : 0
     const layerFor = (cel, x, y, pattern) =>
         cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
 
@@ -338,12 +343,17 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
                 const headFrame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]),
                     { colors: headMod ? colorsFromMod(headMod) : { pattern: limbPatterns[3] }, firstCelOrigin: false })
                 if (headFrame) {
-                    layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT))
+                    layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL],
+                        cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT + walkPaintY))
                 }
             }
             if (shouldPaintFacePlate(headProp, facing)) {
-                layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL], facePattern))
+                layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL],
+                    cy[AVATAR_HEAD_CEL] + walkPaintY, facePattern))
             }
+        } else if (key !== 0) {
+            layers.push(layerFor(cels[key], cx[key], cy[key] + walkPaintY,
+                limbPatterns[body.limbs[key].pattern]))
         } else {
             layers.push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]))
         }
