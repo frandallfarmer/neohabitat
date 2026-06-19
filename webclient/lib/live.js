@@ -26,6 +26,12 @@ import {
   pushBalloon,
   trackAvatarsForBalloons,
 } from "./balloons.js"
+import {
+  TextInputLine,
+  createTextInputState,
+  applyEspReply,
+  clearTextLine,
+} from "./text-input.js"
 import { Scale } from "../habirender/render.js"
 
 const RENDER_BASE = "./habirender/"
@@ -61,6 +67,7 @@ async function main() {
     maxDisplayLines: qNum("balloonLines", 7),
     maxBalloonLines: qNum("balloonHeight", 4),
   }))
+  const textInputState = signal(createTextInputState())
   const balloons = {
     push(w, text, meta) {
       pushBalloon(balloonState.value, w, text, meta)
@@ -74,6 +81,37 @@ async function main() {
     world.on(ev, refresh)
   }
   let transport = null
+  let speakReplyPending = false
+  let speakReplyTimer = null
+  const onTextSubmit = async (payload) => {
+    if (!transport || !payload) return
+    // C64 talk:: / ESP_talk:: send MESSAGE_speak to actor_noid; JSON uses the avatar ref.
+    const avatarRef = world.me?.ref
+    if (!avatarRef) {
+      console.warn("[live] text submit: avatar not in region yet")
+      return
+    }
+    let msg
+    if (payload.kind === "esp-exit") {
+      msg = { op: "ESP", to: avatarRef, esp: 1, text: "" }
+    } else if (payload.kind === "esp") {
+      msg = { op: "ESP", to: avatarRef, esp: 1, text: payload.text }
+    } else if (payload.kind === "speak") {
+      msg = { op: "SPEAK", to: avatarRef, esp: 0, text: payload.text }
+    } else {
+      return
+    }
+    if (!transport.send(msg)) {
+      console.warn("[live] text submit: transport not connected")
+      return
+    }
+    // C64 talk:: clears the line after send_string; ESP reply handled via getResponse.
+    clearTextLine(textInputState.value)
+    textInputState.value = { ...textInputState.value }
+    speakReplyPending = true
+    if (speakReplyTimer) clearTimeout(speakReplyTimer)
+    speakReplyTimer = setTimeout(() => { speakReplyPending = false }, 5000)
+  }
   const connect = async (ws, context, user) => {
     if (!ws || !context || !user) {
       status.value = { kind: "error", text: "set WebSocket proxy, context, and avatar first" }
@@ -102,6 +140,8 @@ async function main() {
     objects.value = []
     clearBalloonState(balloonState.value)
     balloonState.value = { ...balloonState.value }
+    clearTextLine(textInputState.value)
+    textInputState.value = { ...textInputState.value }
     if (untrackBalloons) untrackBalloons()
     untrackBalloons = trackAvatarsForBalloons(balloonState.value, world)
     const presentation = buildPresentationClient({
@@ -155,7 +195,14 @@ async function main() {
       },
       onError: () => { status.value = { kind: "error", text: `connection error — is the websocketProxy up at ${ws}?` } },
     })
-    dispatchClient = buildDispatchClient({ transport, presentation })
+    transport.onReply((reply) => {
+      if (!speakReplyPending || reply.esp === undefined) return
+      speakReplyPending = false
+      if (speakReplyTimer) clearTimeout(speakReplyTimer)
+      applyEspReply(textInputState.value, reply.esp)
+      textInputState.value = { ...textInputState.value }
+    })
+    dispatchClient = buildDispatchClient({ transport, presentation, world })
     globalThis.habitatDo = async (noid) => {
       if (!dispatchClient || !world.me) return { ok: false, reason: "not-ready" }
       return dispatch(world, ACTION_DO, noid, {}, dispatchClient)
@@ -171,6 +218,7 @@ async function main() {
     const st = status.value
     const region = objs.find((o) => o.type === "context")
     balloonState.value.revision
+    textInputState.value.revision
     avatarMotion.tick.value
     return html`
       <div class="connect">
@@ -185,7 +233,16 @@ async function main() {
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
       <div class="habitat-viewport" style="background:#000; align-self:flex-start;">
         <${Scale.Provider} value=${3}>
-          <${BalloonStage} stateSignal=${balloonState}>
+          <${BalloonStage}
+            stateSignal=${balloonState}
+            textInput=${region
+              ? {
+                  Line: TextInputLine,
+                  stateSignal: textInputState,
+                  onSubmit: onTextSubmit,
+                  enabled: true,
+                }
+              : null}>
             ${region
               ? html`<${regionView} objects=${objs} avatarMotion=${avatarMotion} />`
               : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}

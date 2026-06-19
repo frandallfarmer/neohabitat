@@ -180,6 +180,24 @@ header.titlebar .tag {
     z-index: 1;
 }
 
+/* C64 speak line (keyboard.m display_text_line) — below the 128px graphics band. */
+.text-input-line {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    outline: none;
+    cursor: text;
+    flex-shrink: 0;
+}
+.text-input-line:focus {
+    box-shadow: inset 0 0 0 1px #8e3c97;
+}
+.text-input-fallback {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+
 /* Word balloon. Habitat balloons render in a text window at the TOP of the screen and
    hang downward, with a "quip" pointer (sprite) toward the speaker's x — see balloons.m.
    This is a faithful-in-spirit placement; the charset-glyph border and the speaker-tracking

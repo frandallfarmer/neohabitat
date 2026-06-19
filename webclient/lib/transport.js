@@ -20,6 +20,12 @@ export class Transport {
     this._buf = ""
     this._decoder = new TextDecoder()
     this._pendingReply = null
+    this._replyListeners = new Set()
+  }
+
+  onReply(fn) {
+    this._replyListeners.add(fn)
+    return () => this._replyListeners.delete(fn)
   }
 
   sendForReply(msg, timeoutMillis = 10000) {
@@ -47,6 +53,7 @@ export class Transport {
       this._pendingReply = null
       pending(msg)
     }
+    for (const fn of this._replyListeners) fn(msg)
     return true
   }
 

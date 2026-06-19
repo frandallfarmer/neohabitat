@@ -246,7 +246,7 @@ function useQuipExpiry(stateSignal, state) {
   }, [state?.quip?.until, state?.revision])
 }
 
-export function BalloonStage({ stateSignal, children }) {
+export function BalloonStage({ stateSignal, children, textInput = null }) {
   const scale = useContext(Scale)
   const state = stateSignal.value
   const charsetData = useBalloonCharset()
@@ -259,6 +259,7 @@ export function BalloonStage({ stateSignal, children }) {
     [charsetData, state.revision, state.lines.length, state.maxDisplayLines],
   )
   const panelH = balloonPanelHeightPx(state.maxDisplayLines) * scale
+  const TextInputLine = textInput?.Line
 
   return html`
     <div class="balloon-stage" style="width: ${320 * scale}px;">
@@ -271,5 +272,11 @@ export function BalloonStage({ stateSignal, children }) {
         <${QuipSprite} quip=${state.quip} />
         ${children}
       </div>
+      ${TextInputLine
+        ? html`<${TextInputLine}
+            stateSignal=${textInput.stateSignal}
+            onSubmit=${textInput.onSubmit}
+            enabled=${textInput.enabled} />`
+        : null}
     </div>`
 }
