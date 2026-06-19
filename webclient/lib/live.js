@@ -33,7 +33,7 @@ import {
   clearTextLine,
 } from "./text-input.js"
 import { Scale } from "../habirender/render.js"
-import { handleRegionGoClick } from "./go-click.js"
+import { dispatchVerb, dispatchVerbAtPick } from "./verb-dispatch.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -61,14 +61,21 @@ async function main() {
   const { regionView } = await import("../habirender/region.js")
   const { errors } = await import("../habirender/view.js")
   const { HabitatWorld, classes, dispatch, constants } = await loadHabiworld()
-  const { ACTION_DO, ACTION_GO } = constants
+  const {
+    ACTION_DO,
+    ACTION_RDO,
+    ACTION_GO,
+    ACTION_GET,
+    ACTION_PUT,
+    ACTION_TALK,
+  } = constants
 
   const world = new HabitatWorld()
   const avatarMotion = createAvatarMotion()
   const pickState = { layoutMap: null, objects: null }
   let hs = null
   let dispatchClient = null
-  let goInFlight = false
+  let verbInFlight = false
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const playEspSound = (idx) => {
@@ -227,40 +234,42 @@ async function main() {
       textInputState.value = { ...textInputState.value }
     })
     dispatchClient = buildDispatchClient({ transport, presentation, world })
-    globalThis.habitatDo = async (noid) => {
-      if (!dispatchClient || !world.me) return { ok: false, reason: "not-ready" }
-      return dispatch(world, ACTION_DO, noid, {}, dispatchClient)
-    }
-    globalThis.habitatGo = async (noid, args) => {
-      if (!dispatchClient || !world.me) return { ok: false, reason: "not-ready" }
-      return dispatch(world, ACTION_GO, noid, args ?? {}, dispatchClient)
-    }
+    const habitatVerb = (verb, noid, args) => dispatchVerb({
+      world, dispatch, dispatchClient, verb, noid, args: args ?? {},
+    })
+    globalThis.habitatVerb = habitatVerb
+    globalThis.habitatDo = (noid, args) => habitatVerb(ACTION_DO, noid, args)
+    globalThis.habitatRdo = (noid, args) => habitatVerb(ACTION_RDO, noid, args)
+    globalThis.habitatGo = (noid, args) => habitatVerb(ACTION_GO, noid, args)
+    globalThis.habitatGet = (noid, args) => habitatVerb(ACTION_GET, noid, args)
+    globalThis.habitatPut = (noid, args) => habitatVerb(ACTION_PUT, noid, args)
+    globalThis.habitatTalk = (noid, args) => habitatVerb(ACTION_TALK, noid, args)
+    globalThis.habitatVerbAt = (verb, canvasX, canvasY, args, scale = 3) =>
+      dispatchVerbAtPick({
+        world, dispatch, dispatchClient, verb, pickState,
+        canvasX, canvasY, scale, args: args ?? {},
+      })
     transport.connect()
   }
 
-  const onRegionGoClick = async ({ canvasX, canvasY, scale }) => {
-    if (goInFlight || !dispatchClient) return
-    goInFlight = true
+  const runRegionVerb = async (verb, { canvasX, canvasY, scale }, label) => {
+    if (verbInFlight || !dispatchClient) return
+    verbInFlight = true
     try {
-      const result = await handleRegionGoClick({
-        world,
-        dispatch,
-        dispatchClient,
-        ACTION_GO,
-        pickState,
-        canvasX,
-        canvasY,
-        scale,
+      const result = await dispatchVerbAtPick({
+        world, dispatch, dispatchClient, verb, pickState, canvasX, canvasY, scale,
       })
       if (!result?.ok && result?.reason !== "not-ready") {
-        console.warn("[live] GO:", result?.reason ?? result)
+        console.warn(`[live] ${label}:`, result?.reason ?? result)
       }
     } catch (e) {
-      console.warn("[live] GO failed:", e)
+      console.warn(`[live] ${label} failed:`, e)
     } finally {
-      goInFlight = false
+      verbInFlight = false
     }
   }
+
+  const onRegionGoClick = (coords) => runRegionVerb(ACTION_GO, coords, "GO")
 
   const App = () => {
     const [ws, setWs] = useState(q("ws", "ws://localhost:1987"))
