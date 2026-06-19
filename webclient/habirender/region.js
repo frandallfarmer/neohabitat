@@ -261,21 +261,24 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     const layerFor = (cel, x, y, pattern) =>
         cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
 
-    // Held: find_cel_xy → handX/handY (animate.m). stand_alone=0 so no even_bottoms (mix.m);
-    // paint.m screen_y = cel_y − yOffset. Hand limb uses cy_tab; held cel_y = handY = cy_tab−yRel.
-    // Our additive frameFromCels maxY = anchor + yOffset ⇒ held maxY = placeY + paper.yOffset must
-    // equal cy + yRel + paper.yOffset (C64 gap hand_yOffset − yRel − paper_yOffset below hand top).
+    // Held: find_cel_xy → handX (animate.m). stand_alone=0 so no even_bottoms (mix.m).
+    // paint.m: screen_x = cel_x − xOffset, screen_y = cel_y − yOffset.
+    // firstCelOrigin:false keeps the additive Y that matches walk bob (placeY = cy_tab + yRel);
+    // X must subtract 2× the held cel's xOffset so the bitmap lands at cel_x − xOffset, not cel_x + xOffset.
     const flipHeld = actionView(actionName) === "side" && ((avatarMod.orientation & 0x01) !== 0)
     let heldLayer = null
     if (handProp && handMod) {
         const grState = handMod.gr_state ?? 0
         const maskIdx = Math.min(grState, handProp.celmasks.length - 1)
-        const held = frameFromCels(celsFromMask(handProp, handProp.celmasks[maskIdx]),
+        const heldCels = celsFromMask(handProp, handProp.celmasks[maskIdx])
+        const held = frameFromCels(heldCels,
             { colors: colorsFromMod(handMod), flipHorizontal: flipHeld, firstCelOrigin: false })
         if (held) {
             const handCel = cels[AVATAR_HAND]
             const placeY = cy[AVATAR_HAND] + (handCel?.yRel ?? 0)
-            heldLayer = translateSpace(held, handX, placeY)
+            const heldXOffset = heldCels[0]?.xOffset ?? 0
+            const placeX = handX - 2 * (flipHeld ? -heldXOffset : heldXOffset)
+            heldLayer = translateSpace(held, placeX, placeY)
         }
     }
 

@@ -37,27 +37,34 @@ const chainForAction = (body, actionName) => {
     return out
 }
 
+const heldPaintX = (handX, xOffset, flipHeld) => handX - 2 * (flipHeld ? -xOffset : xOffset)
+
 export const logHeldComposeCheck = async () => {
     const res = await fetch("habirender/bodies/Avatar.bin")
     const body = decodeBody(new DataView(await res.arrayBuffer()))
-    const paperRes = await fetch("habirender/props/paper.bin")
     const { decodeProp } = await import("./habirender/codec.js")
-    const paper = decodeProp(new DataView(await paperRes.arrayBuffer()))
-    const pc = paper.cels[0]
-    for (const action of ["stand", "walk"]) {
-        const { hand, handCel, cy } = chainForAction(body, action)
-        const placeY = cy[5] + (handCel?.yRel ?? 0)
-        const heldTop = placeY + pc.yOffset
-        const heldBottom = heldTop - pc.height
-        console.log(action, {
-            feetCy: cy[0],
-            handAnchor: hand,
-            placeY,
-            handLimbOffsets: handCel,
-            paperOffsets: { x: pc.xOffset, y: pc.yOffset, h: pc.height },
-            heldTop,
-            heldBottom,
-            inBody: heldTop >= 0 && heldBottom <= 60,
-        })
+    for (const [label, file] of [["paper", "props/paper.bin"], ["tokens", "props/tok.bin"]]) {
+        const prop = decodeProp(new DataView(await (await fetch(`habirender/${file}`)).arrayBuffer()))
+        const pc = prop.cels[0]
+        for (const action of ["stand", "walk"]) {
+            const { hand, handCel, cy } = chainForAction(body, action)
+            const placeY = cy[5] + (handCel?.yRel ?? 0)
+            const placeX = heldPaintX(hand.x, pc.xOffset, false)
+            const heldTop = placeY + pc.yOffset
+            const heldBottom = heldTop - pc.height
+            console.log(label, action, {
+                handX: hand.x,
+                placeX,
+                xOffset: pc.xOffset,
+                paintLeft: placeX + pc.xOffset,
+                c64PaintLeft: hand.x - pc.xOffset,
+                placeY,
+                heldTop,
+                heldBottom,
+                inBody: heldTop >= 0 && heldBottom <= 60,
+            })
+            console.assert(placeX + pc.xOffset === hand.x - pc.xOffset,
+                `${label} held X should match paint.m cel_x - xOffset`)
+        }
     }
 }
