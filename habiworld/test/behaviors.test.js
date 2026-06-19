@@ -460,6 +460,56 @@ test('MUNCH$ plays PAWN_MUNCH for neighbors', () => {
   assert.deepEqual(sounds, [{ name: 'PAWN_MUNCH', noid: 95 }])
 })
 
+test('OPEN$ plays EXIT_OPENING for neighbor actors', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-door-1', name: 'Door',
+      mods: [{ type: 'Door', noid: 50, x: 120, y: 130, orientation: 0, gr_state: 0, open_flags: 0 }] },
+  })
+  const sounds = []
+  const chores = []
+  w.setClient({
+    sound: (name, noid) => sounds.push({ name, noid }),
+    chore: (act, noid) => chores.push({ act, noid }),
+  })
+  w.apply({ op: 'OPEN$', noid: 21, target: 50 })
+  assert.deepEqual(sounds, [{ name: 'EXIT_OPENING', noid: 50 }])
+  assert.equal(w.get(50).mod.open_flags, 3)
+  assert.deepEqual(chores, [{ act: 'hand_out', noid: 21 }, { act: 'hand_back', noid: 21 }])
+})
+
+test('OPEN$ skips inbound sound when the actor is me', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-door-2', name: 'Door',
+      mods: [{ type: 'Door', noid: 51, x: 120, y: 130, orientation: 0, gr_state: 0, open_flags: 0 }] },
+  })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'OPEN$', noid: 17, target: 51 })
+  assert.equal(sounds.length, 0)
+  assert.equal(w.get(51).mod.open_flags, 3)
+})
+
+test('CLOSE$ plays EXIT_CLOSING for neighbor actors', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-door-3', name: 'Door',
+      mods: [{ type: 'Door', noid: 52, x: 120, y: 130, orientation: 0, gr_state: 0, open_flags: 3 }] },
+  })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'CLOSE$', noid: 21, target: 52, open_flags: 0 })
+  assert.deepEqual(sounds, [{ name: 'EXIT_CLOSING', noid: 52 }])
+  assert.equal(w.get(52).mod.open_flags, 0)
+})
+
 test('OPENCONTAINER$ plays CONTAINER_OPENING for neighbor actors', () => {
   const w = new HabitatWorld()
   makeStorm(w)

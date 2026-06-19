@@ -185,31 +185,7 @@ const DELTAS = {
 
   // ── doors and containers ──────────────────────────────────────────
 
-  // Openable.java / Behaviors/avatar_OPEN.m — sets open_flags = OPEN_BIT | UNLOCKED_BIT
-  // on the door/gate (target). The C64 `putProp subject, DOOR_flags`.
-  // Wire: { noid: actor, target: door_noid }
-  'OPEN$': {
-    src: 'Behaviors/avatar_OPEN.m / Openable.java',
-    apply(world, msg) {
-      const o = world.get(msg.target)
-      if (!o) return
-      o.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
-      world.emit('fieldChanged', o, null)
-    },
-  },
-
-  // Openable.java / Behaviors/avatar_CLOSE.m — sets open_flags to the
-  // host-supplied value (typically 0 = closed; UNLOCKED_BIT may survive).
-  // Wire: { noid: actor, target: door_noid, open_flags: int }
-  'CLOSE$': {
-    src: 'Behaviors/avatar_CLOSE.m / Openable.java',
-    apply(world, msg) {
-      const o = world.get(msg.target)
-      if (!o) return
-      o.mod.open_flags = msg.open_flags || 0
-      world.emit('fieldChanged', o, null)
-    },
-  },
+  // OPEN$ / CLOSE$ — migrated to lib/behaviors/avatar_door_host.js via dispatch_host.js
 
   // OPENCONTAINER$ / CLOSECONTAINER$ — migrated to lib/behaviors/avatar_container_host.js
   // via dispatch_host.js (BEHAVIOR_MIGRATION_PLAN.md Phase 2b).

@@ -22,12 +22,10 @@ const HOST_OPS = {
   avatar_WALK: 'WALK$',             // Behaviors/avatar_WALK.m
   avatar_ATTACK: 'ATTACK$',         // Behaviors/avatar_ATTACK.m
   avatar_BASH: 'BASH$',             // Behaviors/avatar_BASH.m
-  avatar_CLOSE: 'CLOSE$',           // Behaviors/avatar_CLOSE.m
   generic_SPEAK: 'SPEAK$',          // Behaviors/generic_SPEAK.m (no state)
   avatar_GETM: 'GET$',              // Behaviors/avatar_GET_uppercase.m
   avatar_SITORGETUP: 'SIT$',        // Behaviors/avatar_SITORGETUP.m
   avatar_GRABFROM: 'GRABFROM$',     // Behaviors/avatar_GRABFROM.m
-  avatar_OPEN: 'OPEN$',             // Behaviors/avatar_OPEN.m
   avatar_POSTURE: 'POSTURE$',       // Behaviors/avatar_POSTURE.m
   avatar_PUTM: 'PUT$',              // Behaviors/avatar_PUT_uppercase.m
   avatar_THROW: 'THROW$',           // Behaviors/avatar_THROW.m

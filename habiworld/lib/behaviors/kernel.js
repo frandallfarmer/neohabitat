@@ -219,7 +219,7 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   // ── presentation hooks (no-op for bots, real for a renderer) ──────
 
   ctx.sound = (n, noid) => { if (client.sound) client.sound(n, noid) }
-  ctx.chore = (act) => { if (client.chore) client.chore(act) }
+  ctx.chore = (act, noid) => { if (client.chore) client.chore(act, noid ?? pointed.noid) }
   ctx.newImage = (noid, state) => { if (client.newImage) client.newImage(noid, state) }
   ctx.balloon = (text) => { if (client.balloon) client.balloon(text) }
   ctx.face = (dir) => { if (client.face) client.face(dir) }

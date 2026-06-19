@@ -126,9 +126,7 @@ const OP_GESTURE = {
     "GRABFROM$": () => "arm_get",
     "PUT$": () => "hand_out",
     "THROW$": () => "throw",
-    "OPEN$": () => "bend_over",
     "OPENCONTAINER$": () => "bend_over",
-    "CLOSE$": () => "bend_back",
     "CLOSECONTAINER$": () => "bend_back",
 }
 

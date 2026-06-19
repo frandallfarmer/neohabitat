@@ -11,6 +11,8 @@ const { behaviorNameFor } = require('./dispatch')
 
 /** Ops routed through class-table host behaviors instead of deltas.js. */
 const MIGRATED_OPS = new Set([
+  'OPEN$',
+  'CLOSE$',
   'OPENCONTAINER$',
   'CLOSECONTAINER$',
   'FLUSH$',
@@ -34,6 +36,8 @@ const MIGRATED_OPS = new Set([
 // Ops where the server puts an avatar noid on the wire (DIG$, TAKE$, BUGOUT$) stay in
 // deltas.js until pointed-object resolution is extended.
 const HOST_OP_SLOTS = {
+  'CLOSE$': 12,
+  'OPEN$': 18,
   'OPENCONTAINER$': 19,
   'CLOSECONTAINER$': 13,
   'FLUSH$': 8,
