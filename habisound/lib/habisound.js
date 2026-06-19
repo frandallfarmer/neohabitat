@@ -53,34 +53,12 @@ export class HabiSound {
   }
 
   async resume() {
-    if (!this.ctx || this.ctx.state === 'running') return true;
-    try {
-      // Never block the play path indefinitely — a suspended context without a
-      // fresh user gesture can leave resume() pending forever.
-      await Promise.race([
-        this.ctx.resume(),
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('resume timeout')), 250);
-        }),
-      ]);
-    } catch (e) {
-      console.warn('habisound: AudioContext.resume() failed — need a user gesture', e);
-    }
-    return this.ctx.state === 'running';
+    if (this.ctx && this.ctx.state !== 'running') await this.ctx.resume();
   }
 
-  // Call synchronously from a pointerdown/keydown handler (capture phase) so
-  // autoplay policy keeps the context running across tab blur/focus cycles.
-  unlockFromGesture() {
-    if (!this.ctx || this.ctx.state === 'running') return;
-    void this.ctx.resume().catch(() => {});
-  }
-
-  _playWhenRunning(fn) {
-    void (async () => {
-      await this.resume();
-      fn();
-    })();
+  async _playWhenRunning(fn) {
+    await this.resume();
+    fn();
   }
 
   // Play by symbolic name (TELEPORT_ARRIVAL) or by bank key (teleport_arrival).
