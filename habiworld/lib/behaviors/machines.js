@@ -73,9 +73,19 @@ async function generic_coinOp(ctx) {
 }
 
 // generic_PAY.m (host): an avatar paid a machine — debit the payer's wad
-// in the world model (mirrors deltas.js debitTokens).
+// in the world model when PAYTO$ names them. PAY$ (Coke machine) has no payer
+// on the neohabitat wire; neighbors hear the coin-op sounds the actor got from
+// generic_coinOp outbound (send_neighbor_msg excludes the actor).
 function generic_PAY(ctx) {
-  debitByNoid(ctx.world, payerNoid(ctx.args), payAmount(ctx.args))
+  const args = ctx.args
+  const machine = ctx.pointed
+  debitByNoid(ctx.world, payerNoid(args), payAmount(args))
+  if (args.payer === undefined && machine.type === 'Coke_machine') {
+    const noid = machine.noid
+    ctx.sound('COIN_DEPOSITED', noid)
+    ctx.sound('COIN_ACCEPTED', noid)
+    ctx.sound('STINGY_COKE_MACHINE', noid)
+  }
   return { ok: true }
 }
 

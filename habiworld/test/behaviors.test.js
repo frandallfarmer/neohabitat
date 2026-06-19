@@ -656,6 +656,22 @@ test('VSELECT$ plays VENDO_CHANGING for observers', () => {
 
 // ── payment deltas ──────────────────────────────────────────────────
 
+test('PAY$ on coke machine plays coin-op sounds for observers', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-coke-machine-1', name: 'Coke Machine',
+      mods: [{ type: 'Coke_machine', noid: 90, x: 100, y: 140, state: 0 }] } })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'PAY$', noid: 90, amount_lo: 5, amount_hi: 0 })
+  assert.deepEqual(sounds, [
+    { name: 'COIN_DEPOSITED', noid: 90 },
+    { name: 'COIN_ACCEPTED', noid: 90 },
+    { name: 'STINGY_COKE_MACHINE', noid: 90 },
+  ])
+})
+
 test('PAYTO$ debits payer token wad', () => {
   const w = new HabitatWorld()
   makeStorm(w)

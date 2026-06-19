@@ -380,16 +380,8 @@ const DELTAS = {
 
   // ── token payments ────────────────────────────────────────────────
 
-  // PAY$ — simple coin-op payment (Coke_machine, fare_box, etc.)
-  // Wire: { noid: machine_noid, amount_lo, amount_hi }
-  // C64: coke_machine_PAY.m / generic_PAY.m read BUYER from byte 0 of the
-  // response vector (C64 binary protocol always prepended the actor's noid).
-  // Neohabitat's JSON protocol does not include that byte, so the buyer is
-  // unknown to observers — no token debit is possible here.
-  'PAY$': {
-    src: 'Behaviors/generic_PAY.m (buyer noid absent in neohabitat JSON wire)',
-    apply(/* world, msg */) {},
-  },
+  // PAY$ — migrated to lib/behaviors/machines.js generic_PAY via dispatch_host.js
+  // (Coke_machine; wire has amount only — no payer for observer debit)
 
   // PAYTO$ — migrated to lib/behaviors/machines.js generic_PAY / teleport_PAY
   // via dispatch_host.js
