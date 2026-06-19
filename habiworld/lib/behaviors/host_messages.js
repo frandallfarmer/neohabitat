@@ -23,13 +23,11 @@ const HOST_OPS = {
   avatar_ATTACK: 'ATTACK$',         // Behaviors/avatar_ATTACK.m
   avatar_BASH: 'BASH$',             // Behaviors/avatar_BASH.m
   avatar_CLOSE: 'CLOSE$',           // Behaviors/avatar_CLOSE.m
-  avatar_CLOSECONTAINER: 'CLOSECONTAINER$', // avatar_CLOSECONTAINER.m
   generic_SPEAK: 'SPEAK$',          // Behaviors/generic_SPEAK.m (no state)
   avatar_GETM: 'GET$',              // Behaviors/avatar_GET_uppercase.m
   avatar_SITORGETUP: 'SIT$',        // Behaviors/avatar_SITORGETUP.m
   avatar_GRABFROM: 'GRABFROM$',     // Behaviors/avatar_GRABFROM.m
   avatar_OPEN: 'OPEN$',             // Behaviors/avatar_OPEN.m
-  avatar_OPENCONTAINER: 'OPENCONTAINER$', // avatar_OPENCONTAINER.m
   avatar_POSTURE: 'POSTURE$',       // Behaviors/avatar_POSTURE.m
   avatar_PUTM: 'PUT$',              // Behaviors/avatar_PUT_uppercase.m
   avatar_THROW: 'THROW$',           // Behaviors/avatar_THROW.m
@@ -38,7 +36,6 @@ const HOST_OPS = {
   avatar_PAID: 'PAID$',             // Behaviors/avatar_PAID.m
   bottle_FILL: 'FILL$',             // Behaviors/bottle_FILL.m
   bottle_POUR: 'POUR$',             // Behaviors/bottle_POUR.m
-  pawn_machine_MUNCH: 'MUNCH$',     // Behaviors/pawn_machine_MUNCH.m (anim only)
 }
 
 const delegates = {}

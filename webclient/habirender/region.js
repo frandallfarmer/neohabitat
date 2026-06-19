@@ -1,5 +1,6 @@
 import { decodeProp, decodeBody } from "./codec.js"
 import { choreographyNameFromMod, headFacingFromAction, displayOrientForActivity } from "../lib/avatar-chore.js"
+import { shouldPaintFacePlate } from "./face-plate.js"
 import { html, catcher } from "./view.js"
 import { createContext } from "preact"
 import { useContext, useMemo } from "preact/hooks"
@@ -253,12 +254,6 @@ const headPatternFromMod = (headMod, fallback) => {
     return c.pattern ?? c.wildcard ?? fallback
 }
 
-const shouldPaintBackFacePlate = (headProp, facing) => {
-    if (facing !== 3 || !headProp) return true
-    // animate.m: back view skips face plate when head disk byte (colorBitmask) has bit 7 clear.
-    return (headProp.colorBitmask & 0x80) !== 0
-}
-
 const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, chain, limbPatterns) => {
     const { cx, cy, cels, handX, handY } = chain
     const facing = headFacingFromAction(actionName)
@@ -300,7 +295,7 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
                     layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT))
                 }
             }
-            if (shouldPaintBackFacePlate(headProp, facing)) {
+            if (shouldPaintFacePlate(headProp, facing)) {
                 layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL], cy[AVATAR_HEAD_CEL], facePattern))
             }
         } else {

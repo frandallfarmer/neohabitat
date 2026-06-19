@@ -19,6 +19,35 @@ export class Transport {
     this.ws = null
     this._buf = ""
     this._decoder = new TextDecoder()
+    this._pendingReply = null
+  }
+
+  sendForReply(msg, timeoutMillis = 10000) {
+    return new Promise((resolve, reject) => {
+      if (!this.send(msg)) {
+        reject(new Error("transport not connected"))
+        return
+      }
+      const onReply = (reply) => {
+        clearTimeout(timer)
+        resolve(reply)
+      }
+      const timer = setTimeout(() => {
+        if (this._pendingReply === onReply) this._pendingReply = null
+        reject(new Error(`sendForReply(${msg.op}) timed out after ${timeoutMillis}ms`))
+      }, timeoutMillis)
+      this._pendingReply = onReply
+    })
+  }
+
+  _consumeReply(msg) {
+    if (msg?.type !== "reply") return false
+    if (this._pendingReply) {
+      const pending = this._pendingReply
+      this._pendingReply = null
+      pending(msg)
+    }
+    return true
   }
 
   connect() {
@@ -41,7 +70,7 @@ export class Transport {
       if (!line) continue
       let msg
       try { msg = JSON.parse(line) } catch (err) { console.warn("transport: bad JSON line", line); continue }
-      this.onMessage(msg)
+      if (!this._consumeReply(msg)) this.onMessage(msg)
     }
   }
 

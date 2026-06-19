@@ -53,13 +53,16 @@ const fetchCache = new Map() // url -> source text | null(404)
 async function get(url) {
   if (fetchCache.has(url)) return fetchCache.get(url)
   let text = null
-  try { const r = await fetch(url); if (r.ok) text = await r.text() } catch (e) { /* miss */ }
+  try {
+    const r = await fetch(url, { cache: "no-store" })
+    if (r.ok) text = await r.text()
+  } catch (e) { /* miss */ }
   fetchCache.set(url, text)
   return text
 }
 
-// Node-like resolution: <id>, <id>.js, <id>/index.js. Same candidate order is used by the
-// async prefetch and the sync require so they always pick the same file.
+// Node-like resolution: <id>.js then <id>/index.js (same order as Node require).
+// Directory packages (e.g. ./behaviors) may 404 once on behaviors.js before index.js — expected.
 function candidates(id, fromUrl) {
   const base = new URL(id, fromUrl).href
   return base.endsWith(".js") ? [base] : [base + ".js", base.replace(/\/$/, "") + "/index.js"]

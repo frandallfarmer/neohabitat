@@ -170,11 +170,12 @@ async function magic_lamp_do(ctx) {
 }
 
 // magic_lamp_RUB.m (host): someone summoned the genie.
-async function magic_lamp_RUB(ctx) {
+function magic_lamp_RUB(ctx) {
   ctx.sound('GENIE_APPEARS', ctx.pointed.noid)
   ctx.pointed.mod.gr_state = 1
   ctx.newImage(ctx.pointed.noid)
-  if (ctx.args.text) ctx.balloon(ctx.args.text)
+  const text = ctx.args.RUB_MESSAGE ?? ctx.args.text
+  if (text) ctx.balloon(text)
   return { ok: true }
 }
 
@@ -240,7 +241,7 @@ async function grenade_do(ctx) {
 
 // grenade_EXPLODE.m (host): it went off — the server follows with
 // deletes/FIDDLEs for the damage; play the bang.
-async function grenade_EXPLODE(ctx) {
+function grenade_EXPLODE(ctx) {
   ctx.sound('EXPLOSION', ctx.pointed.noid)
   ctx.newImage(ctx.pointed.noid)
   return { ok: true }
@@ -274,7 +275,7 @@ async function fake_gun_rdo(ctx) {
 }
 
 // fake_gun_FAKESHOOT.m (host): someone fired the joke gun nearby.
-async function fake_gun_FAKESHOOT(ctx) {
+function fake_gun_FAKESHOOT(ctx) {
   ctx.sound('JOKE_GUNSHOT', ctx.pointed.noid)
   ctx.pointed.mod.gr_state = 1
   ctx.newImage(ctx.pointed.noid)
@@ -282,7 +283,7 @@ async function fake_gun_FAKESHOOT(ctx) {
 }
 
 // fake_gun_RESET.m (host): it was reset.
-async function fake_gun_RESET(ctx) {
+function fake_gun_RESET(ctx) {
   ctx.pointed.mod.gr_state = 0
   ctx.newImage(ctx.pointed.noid)
   return { ok: true }
@@ -327,6 +328,13 @@ async function pawn_machine_do(ctx) {
   return { ok: true }
 }
 
+// pawn_machine_MUNCH.m (host): neighbor munch animation + sound (contents via GOAWAY_$).
+function pawn_machine_MUNCH(ctx) {
+  ctx.sound('PAWN_MUNCH', ctx.pointed.noid)
+  ctx.newImage(ctx.pointed.noid, 1)
+  return { ok: true }
+}
+
 module.exports = {
   generic_coinOp,
   generic_PAY,
@@ -349,4 +357,5 @@ module.exports = {
   instant_object_TRANSFORM,
   hand_of_god_BLAST,
   pawn_machine_do,
+  pawn_machine_MUNCH,
 }

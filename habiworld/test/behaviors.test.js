@@ -5,6 +5,7 @@
 const { test } = require('node:test')
 const assert = require('node:assert')
 const { HabitatWorld, constants, dispatch, behaviors, classes } = require('../index')
+const { adjacentCoords } = require('../lib/behaviors/kernel')
 const {
   HANDS, HEAD, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
 } = constants
@@ -447,17 +448,107 @@ test('DO on a pawn machine sends MUNCH and purges its contents on success', asyn
   assert.equal(w.get(92), undefined)
 })
 
-test('pawn_machine_MUNCH host delegate is a no-op (choreography only)', async () => {
+test('MUNCH$ plays PAWN_MUNCH for neighbors', () => {
   const w = new HabitatWorld()
   makeStorm(w)
   w.apply({ op: 'make', to: REGION_REF,
     obj: { type: 'item', ref: 'item-pawn-2', name: 'Pawn Machine',
       mods: [{ type: 'Pawn_machine', noid: 95, x: 56, y: 140, orientation: 0, gr_state: 0 }] } })
-  const { calls, cb } = recorder()
-  const result = await dispatch(w, 8, 95, { MUNCHER_NOID: 21 }, cb)
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'MUNCH$', noid: 95 })
+  assert.deepEqual(sounds, [{ name: 'PAWN_MUNCH', noid: 95 }])
+})
+
+test('OPENCONTAINER$ plays CONTAINER_OPENING for neighbor actors', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-bag-1', name: 'Bag',
+      mods: [{ type: 'Bag', noid: 60, x: 80, y: 140, orientation: 0, gr_state: 0, open_flags: 0 }] },
+  })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'OPENCONTAINER$', noid: 21, cont: 60 }) // Naibor (not me)
+  assert.deepEqual(sounds, [{ name: 'CONTAINER_OPENING', noid: 60 }])
+  assert.equal(w.get(60).mod.open_flags, 3)
+})
+
+test('OPENCONTAINER$ skips inbound sound when the actor is me', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-bag-2', name: 'Bag',
+      mods: [{ type: 'Bag', noid: 62, x: 80, y: 140, orientation: 0, gr_state: 0, open_flags: 0 }] },
+  })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'OPENCONTAINER$', noid: 17, cont: 62 }) // SageBot / me
+  assert.equal(sounds.length, 0)
+})
+
+test('FLUSH$ plays GARBAGE_FLUSH and purges can contents', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-trash-1', name: 'Garbage_can',
+      mods: [{ type: 'Garbage_can', noid: 65, x: 80, y: 140, orientation: 0, gr_state: 0, open_flags: 3 }] } })
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-junk-1', name: 'Junk',
+      mods: [{ type: 'Frisbee', noid: 66, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(66, 65, 0, 0)
+  assert.equal(w.contentsOf(65).length, 1)
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'FLUSH$', noid: 65 })
+  assert.deepEqual(sounds, [{ name: 'GARBAGE_FLUSH', noid: 65 }])
+  assert.equal(w.contentsOf(65).length, 0)
+  assert.equal(w.get(66), null)
+})
+
+test('DO on a garbage can sends FLUSH and plays GARBAGE_FLUSH', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-trash-2', name: 'Garbage_can',
+      mods: [{ type: 'Garbage_can', noid: 75, x: 80, y: 140, orientation: 0, gr_state: 0, open_flags: 3 }] } })
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-junk-2', name: 'Junk',
+      mods: [{ type: 'Frisbee', noid: 76, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(76, 75, 0, 0)
+  const spot = adjacentCoords(w, 75)
+  w.me.mod.x = spot.x
+  w.me.mod.y = spot.y
+  const sounds = []
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  cb.sound = (name, noid) => sounds.push({ name, noid })
+  const result = await dispatch(w, ACTION_DO, 75, {}, cb)
   assert.ok(result.ok)
-  assert.deepEqual(calls.sends, []) // no wire traffic
-  assert.equal(w.get(95).mod.gr_state, 0) // no state mutation
+  assert.equal(calls.sends[0].op, 'FLUSH')
+  assert.deepEqual(sounds, [{ name: 'GARBAGE_FLUSH', noid: 75 }])
+  assert.equal(w.contentsOf(75).length, 0)
+})
+
+test('DO on a bag plays CONTAINER_OPENING after a successful OPENCONTAINER reply', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-bag-3', name: 'Bag',
+      mods: [{ type: 'Bag', noid: 70, x: 80, y: 140, orientation: 0, gr_state: 0, open_flags: 2 }] }, // closed, unlocked
+  })
+  const spot = adjacentCoords(w, 70)
+  w.me.mod.x = spot.x
+  w.me.mod.y = spot.y
+  const sounds = []
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  cb.sound = (name, noid) => sounds.push({ name, noid })
+  const result = await dispatch(w, ACTION_DO, 70, {}, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.sends[0].op, 'OPENCONTAINER')
+  assert.deepEqual(sounds, [{ name: 'CONTAINER_OPENING', noid: 70 }])
 })
 
 test('DO on a door routes to generic_adjacentOpenClose and toggles open', async () => {

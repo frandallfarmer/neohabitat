@@ -172,6 +172,7 @@ B.plaque_do = require('./devices').plaque_do
 // ── family modules (several related .m ports per file) ──────────────
 
 Object.assign(B,
+  require('./avatar_container_host'), // avatar_OPENCONTAINER / avatar_CLOSECONTAINER
   require('./containers'),     // pickFrom/dropInto/openCloseContainer
   require('./devices'),        // switches, lights, read, getMass
   require('./magic'),          // doMagic, strike, shoot

@@ -20,6 +20,7 @@
 
 const EventEmitter = require('events')
 const { applyDelta } = require('./deltas')
+const { MIGRATED_OPS, dispatchHostSync } = require('./behaviors/dispatch_host')
 const { MAIL_SLOT, HANDS, HEAD, THE_REGION } = require('./constants')
 
 class HabitatWorld extends EventEmitter {
@@ -47,6 +48,13 @@ class HabitatWorld extends EventEmitter {
       depth: 0,
     }
     this.me = null // record of our own avatar (make arrives with you:true)
+    this._client = null // presentation + I/O callbacks (sound, chore, send, walkTo)
+  }
+
+  // Register client callbacks for behavior presentation and outbound dispatch.
+  // See behaviors/kernel.js and BEHAVIOR_MIGRATION_PLAN.md Phase 5.
+  setClient(client) {
+    this._client = client || null
   }
 
   // Single entry point: apply one parsed elko JSON message. Session-level
@@ -79,7 +87,11 @@ class HabitatWorld extends EventEmitter {
       return
     }
 
-    applyDelta(this, msg)
+    if (MIGRATED_OPS.has(op)) {
+      dispatchHostSync(this, msg)
+    } else {
+      applyDelta(this, msg)
+    }
     this.emit('op', msg)
   }
 

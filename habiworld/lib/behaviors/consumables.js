@@ -77,9 +77,10 @@ async function windup_toy_do(ctx) {
 }
 
 // windup_toy_WIND.m (host): someone wound it.
-async function windup_toy_WIND(ctx) {
+function windup_toy_WIND(ctx) {
   const toy = ctx.pointed
   toy.mod.wind_level = Math.min(4, (toy.mod.wind_level || 0) + 1)
+  ctx.world.emit('fieldChanged', toy, null)
   ctx.newImage(toy.noid, 'WOUND')
   return { ok: true }
 }

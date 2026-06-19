@@ -1,7 +1,8 @@
-// Phase 2 harness: connect to the live server, enter a context, and render the region from
-// habiworld's make-storm — the real C64-model path:
+// Phase 2/3 harness: connect to the live server, enter a context, and render the region
+// from habiworld's make-storm — the real C64-model path:
 //
-//   websocketProxy ──▶ Transport ──▶ habiworld.apply (state) ──▶ worldToObjects ──▶ regionView
+//   websocketProxy ──▶ Transport ──▶ habiworld.apply (state + host behaviors) ──▶ regionView
+//                                    └─▶ ctx.sound / dispatch (command + reply + neighbor)
 //
 // No habibot anywhere. habiworld owns all state; this file only moves messages in and
 // projects state out for rendering. Avatar walks/gestures are replayed client-side on the
@@ -15,6 +16,9 @@ import { Transport } from "./transport.js"
 import { loadHabiworld } from "./habiworld.js"
 import { worldToObjects } from "./world-adapter.js"
 import { createAvatarMotion } from "./avatar-chore.js"
+import { getSoundEngine, SOUND_TRACE } from "./sound.js"
+import { buildPresentationClient } from "./presentation.js"
+import { buildDispatchClient } from "./world-client.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -27,12 +31,18 @@ const html = htm.bind(h)
 const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
 
 async function main() {
+  if (SOUND_TRACE) {
+    console.log("[sound-trace] enabled — filter console on 'sound-trace'; remove via SOUND_TRACE=false in lib/sound.js")
+  }
   const { regionView } = await import("../habirender/region.js")
   const { errors } = await import("../habirender/view.js")
-  const { HabitatWorld } = await loadHabiworld()
+  const { HabitatWorld, classes, dispatch, constants } = await loadHabiworld()
+  const { ACTION_DO } = constants
 
   const world = new HabitatWorld()
   const avatarMotion = createAvatarMotion()
+  let hs = null
+  let dispatchClient = null
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const refresh = () => { objects.value = worldToObjects(world) }
@@ -41,21 +51,52 @@ async function main() {
     world.on(ev, refresh)
   }
   let transport = null
-  const connect = (ws, context, user) => {
+  const connect = async (ws, context, user) => {
     if (!ws || !context || !user) {
       status.value = { kind: "error", text: "set WebSocket proxy, context, and avatar first" }
       return
+    }
+    try {
+      if (!hs) {
+        if (SOUND_TRACE) console.log("[sound-trace] Connect: initializing habisound…")
+        hs = await getSoundEngine()
+        await hs.resume()
+        if (SOUND_TRACE) console.log("[sound-trace] Connect: audioContext =", hs.ctx?.state)
+      }
+    } catch (e) {
+      console.warn("[sound-trace] habisound init FAILED — continuing without sound", e)
+      hs = null
     }
     if (transport) transport.close()
     if (typeof world.clear === "function") world.clear()
     avatarMotion.clear()
     objects.value = []
+    const presentation = buildPresentationClient({ hs, world, classes, avatarMotion })
+    if (typeof world.setClient === "function") {
+      world.setClient(presentation)
+    } else {
+      world._client = presentation
+      console.warn("[live] world.setClient missing — using _client directly (hard-refresh if habiworld is stale)")
+    }
+    if (SOUND_TRACE) console.log("[sound-trace] Connect: world client registered (behavior sound/chore)")
     status.value = { kind: "", text: `connecting to ${ws}…` }
     let gotMsg = false
     transport = new Transport({
       url: ws,
       onMessage: (m) => {
         gotMsg = true
+        const traceChore = m.op === "PLAY_$"
+          || (m.op?.endsWith?.("$") && m.op !== "WALK$" && m.op !== "FIDDLE_$")
+        if (traceChore) {
+          const fromRec = m.from_noid != null ? world.get(m.from_noid) : null
+          console.log("[sound-trace] ws inbound:", m.op, {
+            type: m.type,
+            noid: m.noid,
+            from_noid: m.from_noid,
+            from_in_world: fromRec ? fromRec.type : (m.from_noid != null ? "(missing)" : null),
+            sfx_number: m.sfx_number,
+          })
+        }
         if (m.op === "WALK$") avatarMotion.beginWalk(m.noid, world.get(m.noid), m)
         world.apply(m)
         const rec = world.get(m.noid)
@@ -79,6 +120,11 @@ async function main() {
       },
       onError: () => { status.value = { kind: "error", text: `connection error — is the websocketProxy up at ${ws}?` } },
     })
+    dispatchClient = buildDispatchClient({ transport, presentation })
+    globalThis.habitatDo = async (noid) => {
+      if (!dispatchClient || !world.me) return { ok: false, reason: "not-ready" }
+      return dispatch(world, ACTION_DO, noid, {}, dispatchClient)
+    }
     transport.connect()
   }
 

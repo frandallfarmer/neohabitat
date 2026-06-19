@@ -127,7 +127,7 @@ async function teleport_ZAPIN(ctx) {
 
 // teleport_ZAPTO (host, new.mud name): departure flourish; the
 // traveler's delete follows.
-async function teleport_ZAPTO(ctx) {
+function teleport_ZAPTO(ctx) {
   ctx.sound('TELEPORT_DEPARTING', ctx.pointed.noid)
   ctx.pointed.mod.state = 0
   ctx.newImage(ctx.pointed.noid)

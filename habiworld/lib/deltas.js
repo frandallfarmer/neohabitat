@@ -222,35 +222,8 @@ const DELTAS = {
     },
   },
 
-  // Openable.java / Behaviors/avatar_OPENCONTAINER.m — sets OPEN_BIT|UNLOCKED_BIT
-  // on the container. Contents arrive as separate make messages (elko sends
-  // them asynchronously), so there's nothing to unpack here.
-  // Wire: { noid: actor, cont: container_noid }
-  'OPENCONTAINER$': {
-    src: 'Behaviors/avatar_OPENCONTAINER.m / Openable.java',
-    apply(world, msg) {
-      const o = world.get(msg.cont)
-      if (!o) return
-      o.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
-      world.emit('fieldChanged', o, null)
-    },
-  },
-
-  // Openable.java / Behaviors/avatar_CLOSECONTAINER.m — sets open_flags to
-  // the supplied value, then purges the container's contents from the local
-  // object table (matching C64 `chainTo v_purge_contents`). The server does
-  // NOT send GOAWAY for each item; the client is responsible for the purge.
-  // Wire: { noid: actor, cont: container_noid, open_flags: int }
-  'CLOSECONTAINER$': {
-    src: 'Behaviors/avatar_CLOSECONTAINER.m / Openable.java',
-    apply(world, msg) {
-      const o = world.get(msg.cont)
-      if (!o) return
-      o.mod.open_flags = msg.open_flags || 0
-      world.emit('fieldChanged', o, null)
-      world.contentsOf(msg.cont).forEach((item) => world._deleteByNoid(item.noid))
-    },
-  },
+  // OPENCONTAINER$ / CLOSECONTAINER$ — migrated to lib/behaviors/avatar_container_host.js
+  // via dispatch_host.js (BEHAVIOR_MIGRATION_PLAN.md Phase 2b).
 
   // ── orientation change ────────────────────────────────────────────
 
@@ -300,18 +273,7 @@ const DELTAS = {
 
   // ── fake gun reset ────────────────────────────────────────────────
 
-  // Fake_gun.java / Behaviors/fake_gun_RESET.m — gun resets to READY state
-  // (gr_state 0). `state` in the wire is the gun's secondary state field.
-  // Wire: { noid: fake_gun, state: int }
-  'RESET$': {
-    src: 'Behaviors/fake_gun_RESET.m / Fake_gun.java',
-    apply(world, msg) {
-      const o = world.get(msg.noid)
-      if (!o) return
-      o.mod.gr_state = 0 // FAKE_GUN_READY
-      world.emit('fieldChanged', o, null)
-    },
-  },
+  // RESET$ — migrated to lib/behaviors/machines.js fake_gun_RESET via dispatch_host.js
 
   // ── bottle fill / pour ────────────────────────────────────────────
 
@@ -344,18 +306,7 @@ const DELTAS = {
 
   // ── sensor scan ───────────────────────────────────────────────────
 
-  // Sensor.java — sets gr_state to the scan result. The sensor object is
-  // the actor (noid); scan_type is the result value.
-  // Wire: { noid: sensor, scan_type: int }
-  'SCAN$': {
-    src: 'mods/Sensor.java',
-    apply(world, msg) {
-      const o = world.get(msg.noid)
-      if (!o) return
-      o.mod.gr_state = msg.scan_type
-      world.emit('fieldChanged', o, null)
-    },
-  },
+  // SCAN$ — migrated to lib/behaviors/gadgets.js sensor_SCAN via dispatch_host.js
 
   // ── device on/off ─────────────────────────────────────────────────
 
@@ -416,18 +367,7 @@ const DELTAS = {
 
   // ── avatar spray-painted ──────────────────────────────────────────
 
-  // Spray_can.java — updates the sprayee's custom[] appearance array.
-  // Wire: { noid: spray_can, SPRAY_SPRAYEE: avatar_noid,
-  //         SPRAY_CUSTOMIZE_0: int, SPRAY_CUSTOMIZE_1: int }
-  'SPRAY$': {
-    src: 'mods/Spray_can.java',
-    apply(world, msg) {
-      const sprayee = world.get(msg.SPRAY_SPRAYEE)
-      if (!sprayee) return
-      sprayee.mod.custom = [msg.SPRAY_CUSTOMIZE_0 || 0, msg.SPRAY_CUSTOMIZE_1 || 0]
-      world.emit('fieldChanged', sprayee, null)
-    },
-  },
+  // SPRAY$ — migrated to lib/behaviors/gadgets.js spray_can_SPRAY via dispatch_host.js
 
   // ── vendo item selection ──────────────────────────────────────────
 
@@ -469,17 +409,7 @@ const DELTAS = {
 
   // ── windup toy wound ─────────────────────────────────────────────
 
-  // Windup_toy.java — wind_level increments (cap 4).
-  // Wire: { noid: windup_toy }
-  'WIND$': {
-    src: 'mods/Windup_toy.java',
-    apply(world, msg) {
-      const o = world.get(msg.noid)
-      if (!o) return
-      o.mod.wind_level = Math.min(4, (o.mod.wind_level || 0) + 1)
-      world.emit('fieldChanged', o, null)
-    },
-  },
+  // WIND$ — migrated to lib/behaviors/consumables.js windup_toy_WIND via dispatch_host.js
 
   // ── token payments ────────────────────────────────────────────────
 
@@ -560,8 +490,7 @@ const DELTAS = {
   'PLAY_$':      { choreography: true, src: 'sound effects' },
   'ATTACK$':     { choreography: true, src: 'Behaviors/avatar_ATTACK.m (anim; damage arrives via FIDDLE/CHANGE)' },
   'BASH$':       { choreography: true, src: 'Behaviors/avatar_BASH.m' },
-  'FAKESHOOT$':  { choreography: true, src: 'mods/Gun (fake)' },
-  'RUB$':        { choreography: true, src: 'mods/Magic_lamp (anim; effects arrive separately)' },
+  // FAKESHOOT$ / RUB$ — migrated to lib/behaviors/machines.js via dispatch_host.js
   'WISH$':       { choreography: true, src: 'mods (wish text)' },
   'WISH_MESSAGE':{ choreography: true, src: 'mods (wish text)' },
   // Avatar uses a drug/escape-device — decrement count is client-predicted
@@ -571,11 +500,7 @@ const DELTAS = {
   'BUGOUT$': { choreography: true, src: 'Behaviors/avatar_BUGOUT.m / Escape_device.java' },
   // Animation-only ops: no object-table state changes.
   'DIG$':     { choreography: true, src: 'Behaviors/shovel_DIG.m / Shovel.java' },
-  'MUNCH$':   { choreography: true, src: 'mods/Pawn_machine.java (eating anim; item removed via GOAWAY_$)' },
-  'FLUSH$':   { choreography: true, src: 'mods/Garbage_can.java (lid anim)' },
-  // ZAPTO$: teleporter boing animation for observers. The teleporting avatar
-  // exits via a normal changeContext/delete sequence.
-  'ZAPTO$':    { choreography: true, src: 'Teleporter.java (teleport anim)' },
+  // MUNCH$ / FLUSH$ / ZAPTO$ / EXPLODE$ — migrated via dispatch_host.js
   // APPEARING_$: broadcast when an avatar enters. Their object arrives via
   // a separate make message; this is just an arrival notification.
   'APPEARING_$': { choreography: true, src: 'mods/Region.java (avatar arrival notification)' },

@@ -124,15 +124,12 @@ obscures which op broke. Incremental is preferred.
 
 **Files:** `lib/behaviors/dispatch_host.js` (new), `lib/world.js`, `index.js`
 
-- [ ] `resolveHostDispatch(msg)` → `{ pointedNoid, slot } | null`
+- [x] `resolveHostDispatch(msg)` → `{ pointedNoid, slot } | null`
       - Map wire `op` string → host message slot number (`Constants.java`)
       - Resolve which object record is `pointed` (per-op: `noid`, `cont`,
         `target`, class-specific rules)
-- [ ] `dispatchHost(world, pointed, slot, args, client)` — like `dispatch()` but:
-      - No `send`/`walkTo` required for observer-only behaviors
-      - `args` = raw message fields
-      - Default `client` = noop presentation (`kernel.js` already no-ops missing hooks)
-- [ ] `world.apply` change:
+- [x] `dispatchHostSync(world, msg, client)` — sync host dispatch for `world.apply`
+- [x] `world.apply` change:
 
   ```js
   if (MIGRATED_OPS.has(msg.op)) {
@@ -144,8 +141,7 @@ obscures which op broke. Incremental is preferred.
   this.emit('op', msg)
   ```
 
-- [ ] `world.setClient(client)` or constructor option — web client registers
-      presentation callbacks once
+- [x] `world.setClient(client)` — web client registers presentation callbacks
 - [ ] `HABIWORLD_SHADOW=1` env: run `applyDelta` + `dispatchHost`, deep-compare
       object table, log `shadow-divergence:<op>`
 - [ ] Extract shared mutation helpers from delta `apply()` bodies where behaviors
@@ -176,14 +172,14 @@ Best first candidate: behavior already exists in `lib/behaviors/gadgets.js` with
 
 Replace `host_messages.avatar_OPENCONTAINER` / `avatar_CLOSECONTAINER` stubs.
 
-- [ ] Full port of `avatar_OPENCONTAINER.m` / `avatar_CLOSECONTAINER.m`:
+- [x] Full port of `avatar_OPENCONTAINER.m` / `avatar_CLOSECONTAINER.m`:
       - Merge state logic from current delta `apply()`
       - Merge presentation from outbound `generic_adjacentOpenCloseContainer`
         (`ctx.chore`, `ctx.sound('CONTAINER_OPENING'/'CONTAINER_CLOSING', cont)`)
 - [ ] Pointed = avatar (`msg.noid`), args include `cont`
-- [ ] Add to `MIGRATED_OPS`, shadow, cutover, delete delta entries
-- [ ] Web client: remove matching `OP_GESTURE` entries from `avatar-chore.js` once
-      `ctx.chore` wired
+- [x] Added to `MIGRATED_OPS`; removed from `deltas.js`
+- [x] Web client: `world.setClient` + outbound `habitatDo(noid)` via `dispatch(ACTION_DO)`
+- [ ] Web client: remove matching `OP_GESTURE` entries once inbound uses `ctx.chore` only
 
 ### 2c — `OPEN$` / `CLOSE$` (doors)
 

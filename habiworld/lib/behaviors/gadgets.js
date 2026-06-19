@@ -32,11 +32,18 @@ async function sensor_do(ctx) {
   return { ok: true, detected: detected }
 }
 
-// sensor_SCAN.m (host): someone else's sensor scanned.
-async function sensor_SCAN(ctx) {
-  const detected = !!ctx.args.err
-  ctx.sound(detected ? 'SENSOR_FOUND_IT' : 'SENSOR_DIDNT_FIND_IT', ctx.pointed.noid)
-  ctx.newImage(ctx.pointed.noid)
+// sensor_SCAN.m (host): neighbor scan — gr_state + sound (was deltas.js SCAN$).
+function sensor_SCAN(ctx) {
+  const world = ctx.world
+  const sensor = ctx.pointed
+  const scanType = ctx.args.scan_type
+  const detected = scanType != null ? !!scanType : !!ctx.args.err
+  if (scanType != null) {
+    sensor.mod.gr_state = scanType
+    world.emit('fieldChanged', sensor, null)
+  }
+  ctx.sound(detected ? 'SENSOR_FOUND_IT' : 'SENSOR_DIDNT_FIND_IT', sensor.noid)
+  ctx.newImage(sensor.noid)
   return { ok: true }
 }
 
@@ -51,8 +58,9 @@ async function garbage_can_do(ctx) {
   return { ok: true }
 }
 
-// garbage_can_FLUSH.m (host): someone flushed it — purge locally.
-async function garbage_can_FLUSH(ctx) {
+// garbage_can_FLUSH.m (host): neighbor flushed the can — sound + purge locally.
+// FLUSH$ is neighbor-only (Garbage_can.java send_neighbor_msg); no self-skip needed.
+function garbage_can_FLUSH(ctx) {
   const world = ctx.world
   ctx.sound('GARBAGE_FLUSH', ctx.pointed.noid)
   world.contentsOf(ctx.pointed.noid).forEach((o) => world._deleteByNoid(o.noid))
@@ -88,15 +96,17 @@ async function spray_can_do(ctx) {
 // spray_can_SPRAY.m (host): a neighbor got resprayed — apply their new
 // pattern bytes. Spray_can.java broadcasts SPRAY$ with SPRAY_SPRAYEE and
 // SPRAY_CUSTOMIZE_0 / SPRAY_CUSTOMIZE_1 (→ custom[0] / custom[1]).
-async function spray_can_SPRAY(ctx) {
+function spray_can_SPRAY(ctx) {
+  const world = ctx.world
   ctx.sound('SPRAY', ctx.pointed.noid)
-  const sprayee = ctx.world.get(ctx.args.SPRAY_SPRAYEE !== undefined
+  const sprayee = world.get(ctx.args.SPRAY_SPRAYEE !== undefined
     ? ctx.args.SPRAY_SPRAYEE : ctx.args.sprayee)
   if (sprayee && Array.isArray(sprayee.mod.custom)) {
     const c0 = ctx.args.SPRAY_CUSTOMIZE_0 !== undefined ? ctx.args.SPRAY_CUSTOMIZE_0 : ctx.args.custom_0
     const c1 = ctx.args.SPRAY_CUSTOMIZE_1 !== undefined ? ctx.args.SPRAY_CUSTOMIZE_1 : ctx.args.custom_1
     if (c0 !== undefined) sprayee.mod.custom[0] = c0
     if (c1 !== undefined) sprayee.mod.custom[1] = c1
+    world.emit('fieldChanged', sprayee, null)
   }
   return { ok: true }
 }
