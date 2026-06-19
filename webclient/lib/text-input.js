@@ -3,7 +3,7 @@
 import { h } from "preact"
 import htm from "htm"
 import { useContext, useEffect, useMemo, useRef, useState } from "preact/hooks"
-import { Scale, canvasImage, frameFromText } from "../habirender/render.js"
+import { Scale, frameFromText } from "../habirender/render.js"
 import { charset, until } from "../habirender/data.js"
 import { makeCanvas } from "../habirender/shim.js"
 import {
@@ -33,8 +33,13 @@ export {
   endPrompt,
 } from "./text-input.mjs"
 
-const LINE_PX_W = MAX_TEXT_DISPLAY_LENGTH * 8
+const LAYOUT_PX_W = MAX_TEXT_DISPLAY_LENGTH * 8
 const LINE_PX_H = 8
+// frameFromText defaults to halfSize:true (4px glyphs). C64 display_text_line uses full
+// 8px charset cells; TXTCMD_HALF_SIZE toggles off halfSize. Browser CSS scales native 2:1
+// back down to the 320px layout width (same footprint as halfSize, sharper edges).
+const NATIVE_FONT_SCALE = 2
+const TXTCMD_HALF_SIZE = 128 + 5
 // Balloons: black field + TXTCMD_INVERSE (inverse off) + colored ink — see balloons.js.
 // Speak line is the opposite: white field + default inverse:true (do NOT send TXTCMD_INVERSE)
 // or you get inverse-video cells (white on black). pattern 15 + 0xff bitmap fill = black ink.
@@ -46,13 +51,16 @@ function hasVisibleGlyphs(bytes) {
 }
 
 function renderLineCanvas(bytes, charsetData, cursorVisible) {
-  const canvas = makeCanvas(LINE_PX_W, LINE_PX_H)
+  const nativeW = LAYOUT_PX_W * NATIVE_FONT_SCALE
+  const drawBytes = cursorVisible ? bytes : bytes.map((b) => (b === 0 ? 32 : b))
+  const canvas = makeCanvas(nativeW, LINE_PX_H)
   const ctx = canvas.getContext("2d")
   ctx.fillStyle = "#ffffff"
-  ctx.fillRect(0, 0, LINE_PX_W, LINE_PX_H)
-  const drawBytes = cursorVisible ? bytes : bytes.map((b) => (b === 0 ? 32 : b))
+  ctx.fillRect(0, 0, nativeW, LINE_PX_H)
   if (!hasVisibleGlyphs(drawBytes)) return canvas
-  const frame = frameFromText(0, 8, drawBytes, charsetData, BITMAP_PATTERN, 0, TEXT_COLORS)
+  const frame = frameFromText(
+    0, 8, [TXTCMD_HALF_SIZE, ...drawBytes], charsetData, BITMAP_PATTERN, 0, TEXT_COLORS,
+  )
   if (frame?.canvas) ctx.drawImage(frame.canvas, 0, 0)
   return canvas
 }
@@ -112,16 +120,23 @@ export function TextInputLine({ stateSignal, onSubmit, enabled = true }) {
     [charsetData, bytes, cursorOn],
   )
 
-  const lineH = LINE_PX_H * scale
+  const layoutW = LAYOUT_PX_W * scale
+  const layoutH = LINE_PX_H * scale
 
   return html`
     <div
       ref=${rootRef}
       class="text-input-line"
       tabindex=${enabled ? 0 : -1}
-      style="width: ${LINE_PX_W * scale}px; height: ${lineH}px;"
+      style="width: ${layoutW}px; height: ${layoutH}px;"
       onClick=${() => enabled && rootRef.current?.focus()}
     >
-      ${canvas ? html`<${canvasImage} canvas=${canvas} />` : html`<div class="text-input-fallback" />`}
+      ${canvas
+        ? html`<img
+            class="text-input-canvas"
+            style=${`width: ${layoutW}px; height: ${layoutH}px;`}
+            src=${canvas.toDataURL()}
+            alt="" />`
+        : html`<div class="text-input-fallback" />`}
     </div>`
 }

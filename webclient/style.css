@@ -168,6 +168,10 @@ header.titlebar .tag {
     overflow: hidden;
     flex-shrink: 0;
 }
+.balloon-panel-canvas {
+    display: block;
+    image-rendering: pixelated;
+}
 .balloon-graphics-band {
     position: relative;
     z-index: 0;
@@ -196,6 +200,10 @@ header.titlebar .tag {
     width: 100%;
     height: 100%;
     background: #fff;
+}
+.text-input-canvas {
+    display: block;
+    image-rendering: pixelated;
 }
 
 /* Word balloon. Habitat balloons render in a text window at the TOP of the screen and
