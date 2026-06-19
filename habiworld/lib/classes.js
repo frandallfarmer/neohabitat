@@ -657,9 +657,8 @@ const classes = {
       'fortune_machine_put', // 5: put
       'generic_broadcast', // 6: talk
       'generic_destroy', // 7: destroy
-      'illegal', // 8
+      'generic_PAY', // 8: 8 -- PAY*
       'generic_coinOp', // 9: 9 -- internal COINOP
-      'generic_PAY', // 10: 10
     ],
     sounds: ['coin_accepted_by_coinop', 'coin_accepted_by_coinop_pw', 'coin_deposited_in_coinop', 'coin_deposited_in_coinop_pw', 'coin_rejected_by_coinop', 'coin_rejected_by_coinop_pw', 'fortune_dispensed', 'fortune_dispensed_pw', 'parking_meter_crank', 'parking_meter_crank_pw'],
   },

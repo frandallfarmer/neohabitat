@@ -644,6 +644,16 @@ test('VSELECT$ delta: observer sees same container swap', () => {
   assert.equal(w.get(111).mod.item_price, 8)
 })
 
+test('VSELECT$ plays VENDO_CHANGING for observers', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  makeVendo(w)
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'VSELECT$', noid: 111, display_item: 2, price_lo: 8, price_hi: 0 })
+  assert.deepEqual(sounds, [{ name: 'VENDO_CHANGING', noid: 111 }])
+})
+
 // ── payment deltas ──────────────────────────────────────────────────
 
 test('PAYTO$ debits payer token wad', () => {
@@ -674,6 +684,18 @@ test('PAYTO$ activates teleport booth display', () => {
   w.apply({ op: 'PAYTO$', noid: 71, payer: 21, amount_lo: 2, amount_hi: 0 })
   assert.equal(w.get(71).mod.state, 1) // TELEPORT_ACTIVE
   assert.equal((w.holding(21).mod.denom_hi || 0) * 256 + (w.holding(21).mod.denom_lo || 0), 3)
+})
+
+test('PAYTO$ on teleport plays TELEPORT_ACTIVATES for observers', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-teleport-2', name: 'Teleport Booth',
+      mods: [{ type: 'Teleport', noid: 81, x: 200, y: 140, state: 0 }] } })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'PAYTO$', noid: 81, payer: 21, amount_lo: 2, amount_hi: 0 })
+  assert.deepEqual(sounds, [{ name: 'TELEPORT_ACTIVATES', noid: 81 }])
 })
 
 test('PAID$ debits payer and materialises tokens for recipient', () => {
@@ -716,4 +738,18 @@ test('SELL$ debits buyer and materialises item in region', () => {
   const coke = w.get(65)
   assert.ok(coke, 'sold item should exist in world model')
   assert.equal(coke.containerRef, REGION_REF)
+})
+
+test('SELL$ plays VENDO_DISPENSING for observers', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-vendo-2', name: 'Vendo',
+      mods: [{ type: 'Vendo_front', noid: 82, x: 150, y: 140, display_slot: 0 }] } })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'SELL$', noid: 82, buyer: 17, item_price_lo: 3, item_price_hi: 0,
+    object: { type: 'item', ref: 'item-coke-2', name: 'Coke',
+      mods: [{ type: 'Coke', noid: 83, x: 120, y: 140 }] } })
+  assert.deepEqual(sounds, [{ name: 'VENDO_DISPENSING', noid: 82 }])
 })

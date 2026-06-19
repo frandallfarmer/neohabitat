@@ -23,6 +23,10 @@ const MIGRATED_OPS = new Set([
   'RESET$',
   'WIND$',
   'EXPLODE$',
+  'VSELECT$',
+  'SELL$',
+  'PAYTO$',
+  'PAID$',
 ])
 
 // Host message slot numbers (Constants.java) — class-table slot on msg.noid object.
@@ -41,6 +45,10 @@ const HOST_OP_SLOTS = {
   'RESET$': 9,
   'WIND$': 8,
   'EXPLODE$': 8,
+  'VSELECT$': 8,
+  'SELL$': 9,
+  'PAYTO$': 8,
+  'PAID$': 30,
 }
 
 const noopPresentationClient = () => ({

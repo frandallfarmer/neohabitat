@@ -33,7 +33,6 @@ const HOST_OPS = {
   avatar_THROW: 'THROW$',           // Behaviors/avatar_THROW.m
   avatar_WEAR: 'WEAR$',             // Behaviors/avatar_WEAR.m
   avatar_REMOVE: 'REMOVE$',         // Behaviors/avatar_REMOVE.m
-  avatar_PAID: 'PAID$',             // Behaviors/avatar_PAID.m
   bottle_FILL: 'FILL$',             // Behaviors/bottle_FILL.m
   bottle_POUR: 'POUR$',             // Behaviors/bottle_POUR.m
 }

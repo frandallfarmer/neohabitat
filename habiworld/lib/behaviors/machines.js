@@ -25,12 +25,26 @@ const { succeeded } = require('./kernel')
 // v_spend: debit my held/pocketed tokens by `price`.
 function spend(ctx, price) {
   if (!ctx.actor || !price) return
-  const wad = ctx.world.inventory(ctx.actor.noid).find((o) => o.type === 'Tokens')
-  if (!wad) return
+  debitByNoid(ctx.world, ctx.actor.noid, price)
+}
+
+function debitByNoid(world, avatarNoid, amount) {
+  if (avatarNoid === undefined || !amount) return
+  const wad = world.holding(avatarNoid)
+  if (!wad || wad.type !== 'Tokens') return
   const denom = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
-  const left = Math.max(0, denom - price)
+  const left = Math.max(0, denom - amount)
   wad.mod.denom_lo = left & 0xff
   wad.mod.denom_hi = (left >> 8) & 0xff
+}
+
+function payAmount(args) {
+  if (args.COST !== undefined) return args.COST
+  return (args.amount_lo || 0) + (args.amount_hi || 0) * 256
+}
+
+function payerNoid(args) {
+  return args.payer !== undefined ? args.payer : args.BUYER
 }
 
 // generic_coinOp.m: walk to the machine and feed it the held tokens —
@@ -58,23 +72,22 @@ async function generic_coinOp(ctx) {
   return { ok: true }
 }
 
-// generic_PAY.m (host): an avatar paid a machine — debit them locally
-// if it was us (others' balances aren't tracked client-side).
-async function generic_PAY(ctx) {
-  if (ctx.actor && ctx.args.BUYER === ctx.actor.noid) {
-    spend(ctx, ctx.args.COST !== undefined ? ctx.args.COST : 0)
-  }
+// generic_PAY.m (host): an avatar paid a machine — debit the payer's wad
+// in the world model (mirrors deltas.js debitTokens).
+function generic_PAY(ctx) {
+  debitByNoid(ctx.world, payerNoid(ctx.args), payAmount(ctx.args))
   return { ok: true }
 }
 
 // teleport_PAY.m (host): like generic_PAY plus the booth lights up.
-async function teleport_PAY(ctx) {
-  ctx.sound('TELEPORT_ACTIVATES', ctx.pointed.noid)
-  ctx.pointed.mod.state = 1 // TELEPORT_ACTIVE
-  ctx.newImage(ctx.pointed.noid)
-  if (ctx.actor && ctx.args.BUYER === ctx.actor.noid) {
-    spend(ctx, ctx.args.COST !== undefined ? ctx.args.COST : 0)
-  }
+function teleport_PAY(ctx) {
+  const world = ctx.world
+  const booth = ctx.pointed
+  ctx.sound('TELEPORT_ACTIVATES', booth.noid)
+  booth.mod.state = 1 // TELEPORT_ACTIVE
+  ctx.newImage(booth.noid)
+  world.emit('fieldChanged', booth, null)
+  debitByNoid(world, payerNoid(ctx.args), payAmount(ctx.args))
   return { ok: true }
 }
 
@@ -120,37 +133,39 @@ async function vendo_do(ctx) {
 
 // vendo_SELECT.m (host): someone else cycled the display — same container
 // swap as vendo_do, driven by args rather than a direct reply.
-async function vendo_SELECT(ctx) {
+function vendo_SELECT(ctx) {
+  const world = ctx.world
   const front = ctx.pointed
   const newDisplayItem = ctx.args.display_item
   if (newDisplayItem === undefined || newDisplayItem === 255) return { ok: true }
 
   ctx.sound('VENDO_CHANGING', front.noid)
 
-  const inside = ctx.world.getByRef(front.containerRef)
+  const inside = world.getByRef(front.containerRef)
   if (inside) {
-    const oldDisplay = ctx.world.inventory(inside.noid).find((o) => o.mod.y === 1)
-    if (oldDisplay) ctx.world._changeContainers(oldDisplay.noid, front.noid, 0, front.mod.display_item || 0)
-    const newDisplay = ctx.world.inventory(front.noid).find((o) => o.mod.y === newDisplayItem)
-    if (newDisplay) ctx.world._changeContainers(newDisplay.noid, inside.noid, 0, 1)
+    const oldDisplay = world.inventory(inside.noid).find((o) => o.mod.y === 1)
+    if (oldDisplay) world._changeContainers(oldDisplay.noid, front.noid, 0, front.mod.display_item || 0)
+    const newDisplay = world.inventory(front.noid).find((o) => o.mod.y === newDisplayItem)
+    if (newDisplay) world._changeContainers(newDisplay.noid, inside.noid, 0, 1)
     ctx.newImage(inside.noid)
   }
 
   front.mod.display_item = newDisplayItem
-  const price = (ctx.args.price_lo || 0) + (ctx.args.price_hi || 0) * 256
-  front.mod.item_price = price
-  ctx.balloon('Price: $' + price)
+  front.mod.item_price = ((ctx.args.price_hi || 0) << 8) | (ctx.args.price_lo & 0xff)
+  world.emit('fieldChanged', front, null)
+  ctx.balloon('Price: $' + front.mod.item_price)
 
   return { ok: true }
 }
 
-// vendo_SELL.m (host): a sale happened — dispense sound and debit the
-// buyer if it was us. The product object arrives as a make.
-async function vendo_SELL(ctx) {
+// vendo_SELL.m (host): a sale happened — dispense sound, debit the buyer,
+// and materialise the vended item in the region.
+function vendo_SELL(ctx) {
+  const world = ctx.world
+  const price = (ctx.args.item_price_lo || 0) + (ctx.args.item_price_hi || 0) * 256
   ctx.sound('VENDO_DISPENSING', ctx.pointed.noid)
-  if (ctx.actor && ctx.args.buyer === ctx.actor.noid) {
-    spend(ctx, ctx.args.price !== undefined ? ctx.args.price : 0)
-  }
+  debitByNoid(world, ctx.args.buyer, price)
+  if (ctx.args.object) world._makeObject(ctx.args.object, world.region.ref, false)
   return { ok: true }
 }
 

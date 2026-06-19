@@ -145,6 +145,21 @@ async function avatar_talk(ctx) {
   return { ok: true }
 }
 
+// avatar_PAID.m (host): PAYTO recipient gets a token wad; debit the payer.
+function avatar_PAID(ctx) {
+  const world = ctx.world
+  const amount = (ctx.args.amount_lo || 0) + (ctx.args.amount_hi || 0) * 256
+  const wad = world.holding(ctx.args.payer)
+  if (wad && wad.type === 'Tokens' && amount) {
+    const denom = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
+    const left = Math.max(0, denom - amount)
+    wad.mod.denom_lo = left & 0xff
+    wad.mod.denom_hi = (left >> 8) & 0xff
+  }
+  if (ctx.args.object) world._makeObject(ctx.args.object, ctx.args.container || '', false)
+  return { ok: true }
+}
+
 module.exports = {
   key_do,
   tokens_do,
@@ -155,4 +170,5 @@ module.exports = {
   telekenesis_get,
   avatar_do,
   avatar_talk,
+  avatar_PAID,
 }
