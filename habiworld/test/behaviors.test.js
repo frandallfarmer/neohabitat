@@ -7,7 +7,7 @@ const assert = require('node:assert')
 const { HabitatWorld, constants, dispatch, behaviors, classes } = require('../index')
 const { adjacentCoords } = require('../lib/behaviors/kernel')
 const {
-  HANDS, HEAD, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
+  HANDS, HEAD, THE_REGION, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
 } = constants
 
 const REGION_REF = 'context-Lori_Ln_113_front'
@@ -583,6 +583,81 @@ test('POSTURE$ wave plays transient chore for a neighbor', () => {
   w.apply({ op: 'POSTURE$', noid: 21, new_posture: 141 })
   assert.equal(w.get(21).mod.activity, 254) // unchanged — wave is choreography-only
   assert.deepEqual(chores, [{ act: 'wave', noid: 21 }])
+})
+
+function withHeldGun(w, avatarNoid = 21) {
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-gun-1', name: 'Gun',
+      mods: [{ type: 'Gun', noid: 70, x: 0, y: HANDS, orientation: 0, gr_state: 0 }],
+    },
+  })
+  w._changeContainers(70, avatarNoid, 0, HANDS)
+}
+
+test('ATTACK$ gun shot chore and victim get_shot on hit', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldGun(w, 21)
+  const chores = []
+  const sounds = []
+  w.setClient({
+    chore: (act, noid) => chores.push({ act, noid }),
+    sound: (name, noid) => sounds.push({ name, noid }),
+  })
+  w.apply({ op: 'ATTACK$', noid: 21, ATTACK_TARGET: 17, ATTACK_DAMAGE: 2 })
+  assert.deepEqual(chores, [
+    { act: 'shoot1', noid: 21 },
+    { act: 'shoot2', noid: 21 },
+    { act: 'get_shot', noid: 17 },
+  ])
+  assert.deepEqual(sounds, [{ name: 'GUNSHOT', noid: 21 }])
+})
+
+test('ATTACK$ miss plays attacker chore only', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'ATTACK$', noid: 21, ATTACK_TARGET: 17, ATTACK_DAMAGE: 0 })
+  assert.deepEqual(chores, [{ act: 'punch', noid: 21 }])
+})
+
+test('BASH$ plays attack chore for a neighbor', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldGun(w, 21)
+  const chores = []
+  const sounds = []
+  w.setClient({
+    chore: (act, noid) => chores.push({ act, noid }),
+    sound: (name, noid) => sounds.push({ name, noid }),
+  })
+  w.apply({ op: 'BASH$', noid: 21, BASH_TARGET: 50, BASH_SUCCESS: 0 })
+  assert.deepEqual(chores, [
+    { act: 'shoot1', noid: 21 },
+    { act: 'shoot2', noid: 21 },
+  ])
+  assert.deepEqual(sounds, [{ name: 'GUNSHOT', noid: 21 }])
+})
+
+test('SPEAK$ shows a word balloon', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const balloons = []
+  w.setClient({ balloon: (text) => balloons.push(text) })
+  w.apply({ op: 'SPEAK$', noid: 21, text: 'Hello, neighbor!' })
+  assert.deepEqual(balloons, ['Hello, neighbor!'])
+})
+
+test('PLAY_$ resolves region sfx_number via from_noid', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'PLAY_$', noid: THE_REGION, from_noid: THE_REGION, sfx_number: 8 })
+  assert.deepEqual(sounds, [{ name: 'teleport_arrival', noid: THE_REGION }])
 })
 
 test('GET$ bend_over/bend_back for ground pickup by a neighbor', () => {

@@ -119,8 +119,6 @@ export const orientForPosture = (posture, orient) =>
     displayOrientForActivity(posture, orient)
 
 const OP_GESTURE = {
-    "ATTACK$": () => "punch",
-    "BASH$": () => "punch",
     "OPENCONTAINER$": () => "bend_over",
     "CLOSECONTAINER$": () => "bend_back",
 }

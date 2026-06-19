@@ -8,6 +8,8 @@
 const behaviors = require('./index')
 const { makeCtx } = require('./kernel')
 const { behaviorNameFor } = require('./dispatch')
+const { THE_REGION } = require('../constants')
+const { soundSourceRecord } = require('./avatar_choreography_host')
 
 /** Ops routed through class-table host behaviors instead of deltas.js. */
 const MIGRATED_OPS = new Set([
@@ -38,6 +40,10 @@ const MIGRATED_OPS = new Set([
   'PAYTO$',
   'PAID$',
   'PAY$',
+  'ATTACK$',
+  'BASH$',
+  'SPEAK$',
+  'PLAY_$',
 ])
 
 // Host message slot numbers (Constants.java) — class-table slot on msg.noid object.
@@ -71,6 +77,9 @@ const HOST_OP_SLOTS = {
   'PAYTO$': 8,
   'PAID$': 30,
   'PAY$': 8,
+  'ATTACK$': 9,
+  'BASH$': 10,
+  'SPEAK$': 14,
 }
 
 const noopPresentationClient = () => ({
@@ -80,9 +89,26 @@ const noopPresentationClient = () => ({
 
 function resolveHostDispatch(msg) {
   if (!msg?.op || !MIGRATED_OPS.has(msg.op)) return null
+  if (msg.op === 'PLAY_$') {
+    const pointedNoid = msg.from_noid != null ? msg.from_noid : msg.noid
+    if (pointedNoid == null) return null
+    return { pointedNoid, behavior: 'generic_PLAY' }
+  }
   const slot = HOST_OP_SLOTS[msg.op]
   if (slot == null || msg.noid == null) return null
   return { pointedNoid: msg.noid, slot }
+}
+
+function pointedForHostDispatch(world, spec) {
+  const rec = world.get(spec.pointedNoid)
+  if (rec) return rec
+  if (spec.behavior === 'generic_PLAY') {
+    return soundSourceRecord(world, spec.pointedNoid)
+  }
+  if (spec.pointedNoid === THE_REGION) {
+    return { type: 'Region', noid: THE_REGION, mod: {} }
+  }
+  return null
 }
 
 function mergeClient(world, client) {
@@ -93,9 +119,9 @@ function mergeClient(world, client) {
 function dispatchHostSync(world, msg, client) {
   const spec = resolveHostDispatch(msg)
   if (!spec) return { ok: false, reason: 'unresolved-host-op' }
-  const pointed = world.get(spec.pointedNoid)
+  const pointed = pointedForHostDispatch(world, spec)
   if (!pointed) return { ok: false, reason: 'no-pointed-object' }
-  const name = behaviorNameFor(pointed, spec.slot)
+  const name = spec.behavior || behaviorNameFor(pointed, spec.slot)
   if (!name) return { ok: false, reason: `no-such-slot:${spec.slot}` }
   const fn = behaviors[name]
   if (!fn) return { ok: false, reason: `unported:${name}` }

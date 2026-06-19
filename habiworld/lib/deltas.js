@@ -276,11 +276,8 @@ const DELTAS = {
 
   // ── choreography only (sound, animation, text) — deliberate no-ops ─
 
-  'SPEAK$':      { choreography: true, src: 'word balloons' },
   'OBJECTSPEAK_$': { choreography: true, src: 'object word balloons' },
-  'PLAY_$':      { choreography: true, src: 'sound effects' },
-  'ATTACK$':     { choreography: true, src: 'Behaviors/avatar_ATTACK.m (anim; damage arrives via FIDDLE/CHANGE)' },
-  'BASH$':       { choreography: true, src: 'Behaviors/avatar_BASH.m' },
+  // ATTACK$ / BASH$ / SPEAK$ / PLAY_$ — migrated to avatar_choreography_host.js
   // FAKESHOOT$ / RUB$ — migrated to lib/behaviors/machines.js via dispatch_host.js
   'WISH$':       { choreography: true, src: 'mods (wish text)' },
   'WISH_MESSAGE':{ choreography: true, src: 'mods (wish text)' },
