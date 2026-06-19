@@ -20,14 +20,12 @@ let _unlockInstalled = false
 
 /** Keep AudioContext alive: resume on every user gesture (capture phase). */
 export function installSoundUnlock(hs) {
-  if (_unlockInstalled || !hs?.ctx) return
+  if (_unlockInstalled || !hs?.ctx || typeof document === 'undefined') return
   _unlockInstalled = true
-  const unlock = () => hs.unlockFromGesture()
-  document.addEventListener('pointerdown', unlock, true)
-  document.addEventListener('keydown', unlock, true)
-  hs.ctx.onstatechange = () => {
-    trace("audioContext state:", hs.ctx.state)
-  }
+  const unlock = () => { hs.unlockFromGesture() }
+  document.addEventListener('pointerdown', unlock, { capture: true, passive: true })
+  document.addEventListener('keydown', unlock, { capture: true, passive: true })
+  hs.ctx.onstatechange = () => { trace("audioContext state:", hs.ctx.state) }
   trace("installSoundUnlock: pointerdown + keydown capture listeners")
 }
 
@@ -136,8 +134,13 @@ export function soundClientCallbacks(hs, world, classes) {
   const classesByType = classIndexFromTable(classes)
   return {
     sound(name, noid) {
+      if (!hs?.ready) {
+        trace("sound: engine not ready, skipping", name)
+        return
+      }
       const rec = world.get(noid)
-      hs.play(name, { classHint: classHintFromRecord(rec) })
+      const ok = hs.play(name, { classHint: classHintFromRecord(rec) })
+      trace("sound:", name, "noid", noid, "→", ok ? "queued" : "FAILED", "ctx =", hs.ctx?.state)
     },
     beep() {
       hs.playFile(classesByType.get("Region")?.sounds?.[0] ?? "error_beep")

@@ -31,9 +31,6 @@ export class HabiSound {
     this.ctx = opts.audioContext || null;
     this.node = null;
     this.ready = false;
-    // Serialize play posts so resume() always finishes before postMessage, and
-    // concurrent sounds cannot race after a suspend/resume cycle.
-    this._playChain = Promise.resolve();
   }
 
   async init() {
@@ -56,12 +53,20 @@ export class HabiSound {
   }
 
   async resume() {
-    if (!this.ctx || this.ctx.state === 'running') return;
+    if (!this.ctx || this.ctx.state === 'running') return true;
     try {
-      await this.ctx.resume();
+      // Never block the play path indefinitely — a suspended context without a
+      // fresh user gesture can leave resume() pending forever.
+      await Promise.race([
+        this.ctx.resume(),
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('resume timeout')), 250);
+        }),
+      ]);
     } catch (e) {
       console.warn('habisound: AudioContext.resume() failed — need a user gesture', e);
     }
+    return this.ctx.state === 'running';
   }
 
   // Call synchronously from a pointerdown/keydown handler (capture phase) so
@@ -72,13 +77,10 @@ export class HabiSound {
   }
 
   _playWhenRunning(fn) {
-    this._playChain = this._playChain.then(async () => {
+    void (async () => {
       await this.resume();
       fn();
-    }).catch((e) => {
-      console.warn('habisound: play chain error', e);
-    });
-    return this._playChain;
+    })();
   }
 
   // Play by symbolic name (TELEPORT_ARRIVAL) or by bank key (teleport_arrival).
