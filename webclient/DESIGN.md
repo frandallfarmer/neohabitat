@@ -149,6 +149,17 @@ Resolved during the relevant phase; none blocks starting.
    transparent byte pipe; `extractLoginName` only sniffs `"name"` for docent tracking and
    does not gate forwarding. See `lib/transport.js`.
 
+## Known bugs (deferred)
+
+Do not fix until explicitly picked up.
+
+1. **Face plate on headless avatars** (noted 2026-06-18). The body face overlay
+   (`head_placeholder` / `AVATAR_HEAD_CEL` limb 4 in `composeAvatarFrame`,
+   `habirender/region.js`) is painted even when the equipped head has no face.
+   `shouldPaintBackFacePlate` only suppresses the plate on back view when the head
+   disk `colorBitmask` bit 7 is clear (`animate.m`); front and side views (and other
+   head types) still show a face where the C64 client would not.
+
 ## Phase roadmap
 
 Each phase is independently demoable in the page shell.
