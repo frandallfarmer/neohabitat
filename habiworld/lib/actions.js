@@ -25,6 +25,7 @@
 // behaviors/kernel.js for the full optional set.
 
 const { THE_REGION, OPEN_BIT, UNLOCKED_BIT, ACTION_GET, ACTION_PUT } = require('./constants')
+const { setOpenFlags } = require('./openable')
 const {
   makeCtx, walkWaitMillis, gotoCoords, adjacentCoords, findThrowSurface, succeeded,
 } = require('./behaviors/kernel')
@@ -126,7 +127,7 @@ const ACTIONS = {
     const reply = await cb.send({ op: 'OPEN', to: obj.ref })
     if (!succeeded(reply)) return { ok: false, reason: 'server-denied' }
     // Don't rely on OPEN$ broadcast — the sender may be excluded from neighbors.
-    obj.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
+    setOpenFlags(obj.mod, OPEN_BIT | UNLOCKED_BIT)
     return { ok: true }
   },
 
@@ -139,7 +140,7 @@ const ACTIONS = {
     if (spot) await goTo(world, spot, cb)
     const reply = await cb.send({ op: 'CLOSE', to: obj.ref })
     if (!succeeded(reply)) return { ok: false, reason: 'server-denied' }
-    obj.mod.open_flags = (obj.mod.open_flags || 0) & ~OPEN_BIT
+    setOpenFlags(obj.mod, (obj.mod.open_flags || 0) & ~OPEN_BIT)
     return { ok: true }
   },
 }

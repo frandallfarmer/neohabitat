@@ -6,6 +6,7 @@
 // neighbor opens/closes a door or gate. Wire: { noid: actor, target: door_noid }.
 
 const { OPEN_BIT, UNLOCKED_BIT } = require('../constants')
+const { setOpenFlags } = require('../openable')
 
 const skipInboundSound = (world, msg) =>
   !!(world.me && msg.noid != null && msg.noid === world.me.noid)
@@ -17,7 +18,7 @@ function avatar_OPEN(ctx) {
   const door = world.get(msg.target)
   if (!door) return { ok: false, reason: 'no-door' }
   ctx.chore('hand_out')
-  door.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
+  setOpenFlags(door.mod, OPEN_BIT | UNLOCKED_BIT)
   world.emit('fieldChanged', door, null)
   if (!skipInboundSound(world, msg)) {
     ctx.sound('EXIT_OPENING', msg.target)
@@ -34,7 +35,7 @@ function avatar_CLOSE(ctx) {
   const door = world.get(msg.target)
   if (!door) return { ok: false, reason: 'no-door' }
   ctx.chore('hand_out')
-  door.mod.open_flags = msg.open_flags || 0
+  setOpenFlags(door.mod, msg.open_flags || 0)
   world.emit('fieldChanged', door, null)
   if (!skipInboundSound(world, msg)) {
     ctx.sound('EXIT_CLOSING', msg.target)

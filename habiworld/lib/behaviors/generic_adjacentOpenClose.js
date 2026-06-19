@@ -22,6 +22,7 @@
 // we may not receive our own OPEN$/CLOSE$ broadcast.
 
 const { ACTION_GO, OPEN_BIT, UNLOCKED_BIT } = require('../constants')
+const { setOpenFlags } = require('../openable')
 const { succeeded } = require('./kernel')
 
 module.exports = async function generic_adjacentOpenClose(ctx) {
@@ -48,9 +49,10 @@ module.exports = async function generic_adjacentOpenClose(ctx) {
     ctx.chore('hand_back')
     if (!succeeded(reply)) return ctx.boing('server-denied')
     ctx.sound('EXIT_CLOSING', door.noid)
-    door.mod.open_flags = haveKey
+    setOpenFlags(door.mod, haveKey
       ? flags & ~(OPEN_BIT | UNLOCKED_BIT) // close AND lock
-      : (flags & ~OPEN_BIT) | UNLOCKED_BIT // close but don't lock
+      : (flags & ~OPEN_BIT) | UNLOCKED_BIT) // close but don't lock
+    ctx.world.emit('fieldChanged', door, null)
     ctx.newImage(door.noid)
     return { ok: true }
   }
@@ -65,7 +67,8 @@ module.exports = async function generic_adjacentOpenClose(ctx) {
   ctx.chore('hand_back')
   if (!succeeded(reply)) return ctx.beep('server-denied')
   ctx.sound('EXIT_OPENING', door.noid)
-  door.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
+  setOpenFlags(door.mod, OPEN_BIT | UNLOCKED_BIT)
+  ctx.world.emit('fieldChanged', door, null)
   ctx.newImage(door.noid)
   return { ok: true }
 }

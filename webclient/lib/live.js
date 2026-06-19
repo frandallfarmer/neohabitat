@@ -47,7 +47,7 @@ async function main() {
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const refresh = () => { objects.value = worldToObjects(world) }
   for (const ev of ["added", "removed", "regionDescribed", "regionChanged",
-                    "moved", "stateChanged", "containerChanged"]) {
+                    "moved", "stateChanged", "fieldChanged", "containerChanged", "lighting"]) {
     world.on(ev, refresh)
   }
   let transport = null
@@ -71,7 +71,7 @@ async function main() {
     if (typeof world.clear === "function") world.clear()
     avatarMotion.clear()
     objects.value = []
-    const presentation = buildPresentationClient({ hs, world, classes, avatarMotion })
+    const presentation = buildPresentationClient({ hs, world, classes, avatarMotion, refresh })
     if (typeof world.setClient === "function") {
       world.setClient(presentation)
     } else {

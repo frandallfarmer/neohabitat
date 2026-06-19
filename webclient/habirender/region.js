@@ -219,13 +219,16 @@ const findCelXYHeld = (tabX, tabY, xRel, yRel, originX, originY, flipHorizontal)
     return findCelXY(tabX, tabY, xRel, yRel, flipHorizontal)
 }
 
-// animate.m cels_affected_by_height — torso/arms/face/hand cy_tab adds avatar_height.
+// animate.m: avatar_height = (orientation & 0x7f) >> 3; cy_tab += height for limbs
+// with body.limbs[i].affectedByHeight (Avatar.bin bytes 39+). Y-up: subtract height
+// (C64 cy_tab + height moves down on screen).
 const avatarHeightFromMod = (mod) => (mod.orientation & 0x7f) >> 3
-const LIMB_HEIGHT_AFFECTED = [false, false, true, true, true, true]
 
 // Chain limb origins (cx_tab/cy_tab) at the current animation frame.
 // Side-view mirroring is applied once in flipComposedFrame (whole canvas), not here —
 // find_cel_xy uses cel_dx on C64, but paint.m also flips each cel; we flip the composite.
+// Undrawn limbs (frame → cel −1): C64 skips get_cel_loc_addr so last_cel_x/y_rel and
+// cel_x/y_origin persist — e.g. side stand legs_right y_rel=−1 carries to the torso.
 const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
     const avatarHeight = avatarHeightFromMod(avatarMod)
     let x = 0, y = 0, xRel = 0, yRel = 0
@@ -236,23 +239,22 @@ const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
         const frame = animations[i].current ?? animations[i].startState
         const istate = body.limbs[i].frames[frame]
         const cel = istate >= 0 ? body.limbs[i].cels[istate] : null
+        if (!cel) continue
         const pos = findCelXY(x, y, xRel, yRel, false)
+        const heightLift = body.limbs[i].affectedByHeight ? avatarHeight : 0
         cx[i] = pos.x
-        cy[i] = pos.y + (LIMB_HEIGHT_AFFECTED[i] ? avatarHeight : 0)
+        cy[i] = pos.y - heightLift
         cels[i] = cel
         if (i === AVATAR_HAND) {
             handTabX = pos.x
-            handTabY = pos.y + avatarHeight
-            // animate.m AVATAR_HAND: find_cel_xy(cx_tab+5, cy_tab+5, last_cel_x_rel, last_cel_y_rel).
-            // last_cel_* is whatever get_limb_coords saved last — after the coord loop (limbs 0–5)
-            // that is hand cel rel, NOT face limb rel at draw time.
-            handRelX = cel?.xRel ?? 0
-            handRelY = cel?.yRel ?? 0
+            handTabY = pos.y - heightLift
+            handRelX = cel.xRel ?? 0
+            handRelY = cel.yRel ?? 0
         }
         x = pos.x
         y = pos.y
-        xRel = cel?.xRel ?? 0
-        yRel = cel?.yRel ?? 0
+        xRel = cel.xRel ?? 0
+        yRel = cel.yRel ?? 0
     }
     const hand = findCelXYHeld(handTabX, handTabY, handRelX, handRelY, handTabX, handTabY, false)
     return { cx, cy, cels, handX: hand.x, handY: hand.y }

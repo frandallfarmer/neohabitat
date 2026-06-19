@@ -19,6 +19,7 @@
 const {
   HANDS, ACTION_GO, OPEN_BIT, UNLOCKED_BIT,
 } = require('../constants')
+const { setOpenFlags } = require('../openable')
 const { succeeded } = require('./kernel')
 
 // v_pick_from_container, bot style: resolve which contained item is
@@ -133,9 +134,10 @@ async function generic_adjacentOpenCloseContainer(ctx) {
     ctx.chore('bend_back')
     if (!succeeded(reply)) return ctx.beep('server-denied')
     ctx.sound('CONTAINER_CLOSING', cont.noid)
-    cont.mod.open_flags = haveKey
+    setOpenFlags(cont.mod, haveKey
       ? flags & ~(OPEN_BIT | UNLOCKED_BIT)
-      : (flags & ~OPEN_BIT) | UNLOCKED_BIT
+      : (flags & ~OPEN_BIT) | UNLOCKED_BIT)
+    ctx.world.emit('fieldChanged', cont, null)
     ctx.newImage(cont.noid)
     world.contentsOf(cont.noid).forEach((o) => world._deleteByNoid(o.noid))
     return { ok: true }
@@ -150,7 +152,8 @@ async function generic_adjacentOpenCloseContainer(ctx) {
   ctx.chore('bend_back')
   if (!succeeded(reply)) return ctx.beep('server-denied')
   ctx.sound('CONTAINER_OPENING', cont.noid)
-  cont.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
+  setOpenFlags(cont.mod, OPEN_BIT | UNLOCKED_BIT)
+  ctx.world.emit('fieldChanged', cont, null)
   ctx.newImage(cont.noid)
   // The C64 unpacked a contents vector from the reply; elko sends the
   // contents as separate make messages instead — nothing to do here.

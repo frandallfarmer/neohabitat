@@ -219,8 +219,27 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   // ── presentation hooks (no-op for bots, real for a renderer) ──────
 
   ctx.sound = (n, noid) => { if (client.sound) client.sound(n, noid) }
-  ctx.chore = (act, noid) => { if (client.chore) client.chore(act, noid ?? pointed.noid) }
-  ctx.newImage = (noid, state) => { if (client.newImage) client.newImage(noid, state) }
+  // Avatar chores always run on an Avatar noid (actor_noid on the C64).
+  // Host OPEN$ points at the neighbor actor; DO on a door points at the door.
+  ctx.chore = (act, noid) => {
+    if (!client.chore) return
+    const target = noid != null ? noid
+      : (pointed && pointed.type === 'Avatar' ? pointed.noid : (me ? me.noid : null))
+    if (target != null) client.chore(act, target)
+  }
+  // C64 newImage noid[, state]: optional state sets gr_state then redraws.
+  // Background objects set background_render (full backdrop); the renderer
+  // handles that via refresh on newImage / fieldChanged.
+  ctx.newImage = (noid, state) => {
+    if (state !== undefined && typeof state === 'number') {
+      const o = world.objects.get(noid)
+      if (o) {
+        o.mod.gr_state = state
+        world.emit('stateChanged', o)
+      }
+    }
+    if (client.newImage) client.newImage(noid, state)
+  }
   ctx.balloon = (text) => { if (client.balloon) client.balloon(text) }
   ctx.face = (dir) => { if (client.face) client.face(dir) }
 

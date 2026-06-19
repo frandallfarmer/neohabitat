@@ -216,8 +216,10 @@ test('OPEN$ and CLOSE$ update door open_flags', () => {
   })
   w.apply({ op: 'OPEN$', noid: 17, target: 50 })
   assert.equal(w.get(50).mod.open_flags, 3) // OPEN_BIT | UNLOCKED_BIT
+  assert.equal(w.get(50).mod.gr_state, 1)
   w.apply({ op: 'CLOSE$', noid: 17, target: 50, open_flags: 0 })
   assert.equal(w.get(50).mod.open_flags, 0)
+  assert.equal(w.get(50).mod.gr_state, 0)
 })
 
 test('OPENCONTAINER$ sets open_flags; CLOSECONTAINER$ purges contents', () => {

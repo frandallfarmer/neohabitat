@@ -10,6 +10,7 @@
 // inbound to avoid double-playing alongside avatar-chore.
 
 const { OPEN_BIT, UNLOCKED_BIT } = require('../constants')
+const { setOpenFlags } = require('../openable')
 
 const skipInboundSound = (world, msg) =>
   !!(world.me && msg.noid != null && msg.noid === world.me.noid)
@@ -20,7 +21,7 @@ function avatar_OPENCONTAINER(ctx) {
   const msg = ctx.args
   const cont = world.get(msg.cont)
   if (!cont) return { ok: false, reason: 'no-container' }
-  cont.mod.open_flags = OPEN_BIT | UNLOCKED_BIT
+  setOpenFlags(cont.mod, OPEN_BIT | UNLOCKED_BIT)
   world.emit('fieldChanged', cont, null)
   if (!skipInboundSound(world, msg)) {
     ctx.sound('CONTAINER_OPENING', msg.cont)
@@ -35,7 +36,7 @@ function avatar_CLOSECONTAINER(ctx) {
   const msg = ctx.args
   const cont = world.get(msg.cont)
   if (!cont) return { ok: false, reason: 'no-container' }
-  cont.mod.open_flags = msg.open_flags || 0
+  setOpenFlags(cont.mod, msg.open_flags || 0)
   world.emit('fieldChanged', cont, null)
   world.contentsOf(msg.cont).forEach((item) => world._deleteByNoid(item.noid))
   if (!skipInboundSound(world, msg)) {

@@ -9,15 +9,19 @@ const CHORE_ACTIONS = {
   hand_back: "hand_back",
 }
 
-export function buildPresentationClient({ hs, world, classes, avatarMotion }) {
+export function buildPresentationClient({ hs, world, classes, avatarMotion, refresh }) {
   const sound = hs ? soundClientCallbacks(hs, world, classes) : { sound() {}, beep() {}, boing() {} }
   return {
     ...sound,
     chore(act, noid) {
-      const target = noid ?? world.me?.noid
+      let target = noid ?? world.me?.noid
+      let rec = target != null ? world.get(target) : null
+      if (!rec || rec.type !== "Avatar") {
+        target = world.me?.noid
+        rec = target != null ? world.get(target) : null
+      }
       if (target == null || !avatarMotion) return
       const action = CHORE_ACTIONS[act] ?? act
-      const rec = world.get(target)
       avatarMotion.beginGesture(
         target,
         action,
@@ -25,7 +29,11 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion }) {
         rec?.mod?.activity ?? 129,
       )
     },
-    newImage() { /* region refresh is event-driven from world.apply */ },
+    // C64 newImage redraw hook. Background objects set background_render on
+    // the C64; we have no backdrop cache yet, so refresh repaints everything.
+    newImage() {
+      if (refresh) refresh()
+    },
     balloon() {},
   }
 }

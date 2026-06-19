@@ -89,6 +89,8 @@ async function spray_can_do(ctx) {
     const c1 = reply.SPRAY_CUSTOMIZE_1 !== undefined ? reply.SPRAY_CUSTOMIZE_1 : reply.custom_2
     if (c0 !== undefined) ctx.actor.mod.custom[0] = c0
     if (c1 !== undefined) ctx.actor.mod.custom[1] = c1
+    ctx.world.emit('fieldChanged', ctx.actor, null)
+    ctx.newImage(ctx.actor.noid)
   }
   return { ok: true }
 }
@@ -107,6 +109,7 @@ function spray_can_SPRAY(ctx) {
     if (c0 !== undefined) sprayee.mod.custom[0] = c0
     if (c1 !== undefined) sprayee.mod.custom[1] = c1
     world.emit('fieldChanged', sprayee, null)
+    ctx.newImage(sprayee.noid)
   }
   return { ok: true }
 }

@@ -166,6 +166,19 @@ test('spray_can DO success path: SPRAY_SUCCESS + SPRAY_CUSTOMIZE_* repaint the a
   assert.deepEqual(w.me.mod.custom, [7, 8]) // new pattern applied
 })
 
+test('spray_can DO emits fieldChanged so renderers repaint body paint', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldSprayCan(w)
+  let fieldChanged = 0
+  w.on('fieldChanged', () => { fieldChanged++ })
+  const { cb } = recorder([
+    { type: 'reply', noid: 95, SPRAY_SUCCESS: 1, SPRAY_CUSTOMIZE_0: 3, SPRAY_CUSTOMIZE_1: 4 },
+  ])
+  await dispatch(w, ACTION_DO, 95, { limb: 1 }, cb)
+  assert.equal(fieldChanged, 1)
+})
+
 test('spray_can DO guard-failure: {success:0, custom_1, custom_2} beeps and leaves the pattern', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
@@ -477,6 +490,7 @@ test('OPEN$ plays EXIT_OPENING for neighbor actors', () => {
   w.apply({ op: 'OPEN$', noid: 21, target: 50 })
   assert.deepEqual(sounds, [{ name: 'EXIT_OPENING', noid: 50 }])
   assert.equal(w.get(50).mod.open_flags, 3)
+  assert.equal(w.get(50).mod.gr_state, 1)
   assert.deepEqual(chores, [{ act: 'hand_out', noid: 21 }, { act: 'hand_back', noid: 21 }])
 })
 
@@ -611,7 +625,9 @@ test('DO on a door routes to generic_adjacentOpenClose and toggles open', async 
       mods: [{ type: 'Door', noid: 80, x: 16, y: 128, orientation: 0, gr_state: 0, open_flags: 2 }], // closed, unlocked
     },
   })
+  const chores = []
   const { calls, cb } = recorder()
+  cb.chore = (act, noid) => chores.push({ act, noid })
   // Stand adjacent first so the punt-if-not-adjacent check passes.
   w.me.mod.x = 16
   w.me.mod.y = 128
@@ -619,11 +635,21 @@ test('DO on a door routes to generic_adjacentOpenClose and toggles open', async 
   assert.ok(result.ok)
   assert.equal(calls.sends[0].op, 'OPEN')
   assert.ok(w.get(80).mod.open_flags & 1)
+  assert.equal(w.get(80).mod.gr_state, 1)
+  assert.deepEqual(chores, [
+    { act: 'hand_out', noid: 17 },
+    { act: 'hand_back', noid: 17 },
+  ])
   // DO again: now open → toggles closed.
   const again = await dispatch(w, ACTION_DO, 80, {}, cb)
   assert.ok(again.ok)
   assert.equal(calls.sends[1].op, 'CLOSE')
   assert.equal(w.get(80).mod.open_flags & 1, 0)
+  assert.equal(w.get(80).mod.gr_state, 0)
+  assert.deepEqual(chores.slice(2), [
+    { act: 'hand_out', noid: 17 },
+    { act: 'hand_back', noid: 17 },
+  ])
 })
 
 // ── vendo machine ───────────────────────────────────────────────────

@@ -313,6 +313,7 @@ test('OPEN updates world model open_flags on success', async () => {
   const result = await actions.perform(w, 'OPEN', { noid: 60 }, cb)
   assert.ok(result.ok)
   assert.equal(w.get(60).mod.open_flags & OPEN_BIT, OPEN_BIT)
+  assert.equal(w.get(60).mod.gr_state, 1)
 })
 
 test('CLOSE walks adjacent then sends CLOSE', async () => {
@@ -334,6 +335,7 @@ test('CLOSE clears OPEN_BIT from world model on success', async () => {
   const result = await actions.perform(w, 'CLOSE', { noid: 60 }, cb)
   assert.ok(result.ok)
   assert.equal(w.get(60).mod.open_flags & OPEN_BIT, 0)
+  assert.equal(w.get(60).mod.gr_state, 0)
 })
 
 test('adjacentCoords flipped door: right-wall door (orientation=1) stands 32px to the left', async () => {

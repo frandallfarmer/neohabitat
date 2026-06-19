@@ -134,12 +134,34 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
     const tick = signal(0)
     /** @type {Map<number, object>} */
     const states = new Map()
+    /** @type {Map<number, object[]>} */
+    const gestureQueues = new Map()
     /** WALK$ never updates server orientation/activity — client tracks both after walks. */
     const orientOverrides = new Map()
     const activityOverrides = new Map()
     let timer = null
 
     const bump = () => { tick.value++ }
+
+    const startGestureNow = (noid, action, serverOrient, serverActivity) => {
+        const startOrient = getOrient(noid, serverOrient)
+        const startActivity = getActivity(noid, serverActivity)
+        states.set(noid, {
+            type: "gesture", action, startOrient, startActivity, animFrame: 0, cycleLen: null,
+        })
+        startTimer()
+        bump()
+    }
+
+    const drainGestureQueue = (noid) => {
+        const q = gestureQueues.get(noid)
+        if (!q?.length) {
+            gestureQueues.delete(noid)
+            return
+        }
+        const next = q.shift()
+        startGestureNow(noid, next.action, next.serverOrient, next.serverActivity)
+    }
 
     const getOrient = (noid, serverOrient = 0) => orientOverrides.get(noid) ?? serverOrient
 
@@ -162,6 +184,7 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
                         activityOverrides.set(noid, activity)
                         orientOverrides.set(noid, displayOrientForActivity(activity, s.orient))
                         states.delete(noid)
+                        drainGestureQueue(noid)
                     }
                     changed = true
                 } else if (s.type === "gesture") {
@@ -170,6 +193,7 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
                         orientOverrides.set(noid, s.startOrient)
                         if (s.startActivity != null) activityOverrides.set(noid, s.startActivity)
                         states.delete(noid)
+                        drainGestureQueue(noid)
                     }
                     changed = true
                 }
@@ -223,13 +247,14 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
 
     const beginGesture = (noid, action, serverOrient = 0, serverActivity = 129) => {
         if (noid == null || !action || action === "stand") return
-        const startOrient = getOrient(noid, serverOrient)
-        const startActivity = getActivity(noid, serverActivity)
-        states.set(noid, {
-            type: "gesture", action, startOrient, startActivity, animFrame: 0, cycleLen: null,
-        })
-        startTimer()
-        bump()
+        const item = { action, serverOrient, serverActivity }
+        const active = states.get(noid)
+        if (active) {
+            if (!gestureQueues.has(noid)) gestureQueues.set(noid, [])
+            gestureQueues.get(noid).push(item)
+            return
+        }
+        startGestureNow(noid, action, serverOrient, serverActivity)
     }
 
     const noteServerFacing = (noid) => {
@@ -250,6 +275,7 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
 
     const clear = () => {
         states.clear()
+        gestureQueues.clear()
         orientOverrides.clear()
         activityOverrides.clear()
         bump()
