@@ -53,44 +53,8 @@ const DELTAS = {
     },
   },
 
-  // ── container changes ─────────────────────────────────────────────
-
-  // Behaviors/avatar_GET_uppercase.m:40 — `changeContainers 0,
-  // AVATAR_HAND, actor_noid`: the target item moves into the acting
-  // avatar's HANDS slot at x=0. `how` (ground vs pocket) only selects
-  // the bend-over vs reach-for-pocket chore.
-  'GET$': {
-    src: 'Behaviors/avatar_GET_uppercase.m',
-    apply(world, msg) {
-      world._changeContainers(msg.target, msg.noid, 0, HANDS)
-    },
-  },
-
-  // Behaviors/avatar_PUT_uppercase.m — host dictates the item's new
-  // orientation, then `v_change_containers` with (container, x, y).
-  // cont=0 means the region (item dropped on the ground at x, y);
-  // otherwise y is the destination slot.
-  'PUT$': {
-    src: 'Behaviors/avatar_PUT_uppercase.m',
-    apply(world, msg) {
-      const item = world.get(msg.obj)
-      if (!item) return
-      if (msg.orient !== undefined) item.mod.orientation = msg.orient
-      world._changeContainers(msg.obj, msg.cont, msg.x, msg.y)
-    },
-  },
-
-  // Avatar.java:559/601 — an avatar grabs the item out of another
-  // avatar's HANDS. `avatar_noid` is the victim; the grabbed item is
-  // whatever their HANDS slot holds; it lands in the actor's HANDS.
-  'GRABFROM$': {
-    src: 'Behaviors/avatar_GRABFROM.m',
-    apply(world, msg) {
-      const item = world.holding(msg.avatar_noid)
-      if (!item) return
-      world._changeContainers(item.noid, msg.noid, 0, HANDS)
-    },
-  },
+  // GET$ / PUT$ / GRABFROM$ / THROW$ / WEAR$ / REMOVE$ — migrated to
+  // lib/behaviors/avatar_inventory_host.js via dispatch_host.js.
 
   // ── field pokes ───────────────────────────────────────────────────
 
@@ -138,48 +102,6 @@ const DELTAS = {
     src: 'HabitatMod.java (send_goaway_msg)',
     apply(world, msg) {
       world._deleteByNoid(msg.target)
-    },
-  },
-
-  // ── item throw ────────────────────────────────────────────────────
-
-  // Behaviors/avatar_THROW.m — actor throws the item in their HANDS.
-  // changeContainers puts it on the ground at (x, y); orientation's LSB
-  // is cleared (the "moving" bit used during the throw chore).
-  // Wire: { noid: actor, obj: item, x, y, hit }
-  'THROW$': {
-    src: 'Behaviors/avatar_THROW.m',
-    apply(world, msg) {
-      const item = world.get(msg.obj)
-      if (!item) return
-      if (item.mod.orientation !== undefined) {
-        item.mod.orientation = item.mod.orientation & ~1
-      }
-      world._changeContainers(msg.obj, THE_REGION, msg.x, msg.y)
-    },
-  },
-
-  // ── head wear / remove ────────────────────────────────────────────
-
-  // Behaviors/avatar_WEAR.m — `changeContainers 0, AVATAR_HEAD, actor_noid`:
-  // the item in the actor's HANDS moves to their HEAD slot (slot 6).
-  // Wire: { noid: actor }
-  'WEAR$': {
-    src: 'Behaviors/avatar_WEAR.m',
-    apply(world, msg) {
-      const item = world.holding(msg.noid)
-      if (!item) return
-      world._changeContainers(item.noid, msg.noid, 0, HEAD)
-    },
-  },
-
-  // Behaviors/avatar_REMOVE.m — `changeContainers 0, AVATAR_HAND, actor_noid`:
-  // the head item (target) moves from the HEAD slot back to the HANDS slot.
-  // Wire: { noid: actor, target: head_item_noid }
-  'REMOVE$': {
-    src: 'Behaviors/avatar_REMOVE.m',
-    apply(world, msg) {
-      world._changeContainers(msg.target, msg.noid, 0, HANDS)
     },
   },
 

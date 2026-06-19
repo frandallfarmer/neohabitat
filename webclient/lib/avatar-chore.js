@@ -122,10 +122,6 @@ const OP_GESTURE = {
     "POSTURE$": (msg) => choreographyNameFromAvAct(msg.new_posture),
     "ATTACK$": () => "punch",
     "BASH$": () => "punch",
-    "GET$": () => "arm_get",
-    "GRABFROM$": () => "arm_get",
-    "PUT$": () => "hand_out",
-    "THROW$": () => "throw",
     "OPENCONTAINER$": () => "bend_over",
     "CLOSECONTAINER$": () => "bend_back",
 }

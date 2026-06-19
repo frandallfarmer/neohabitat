@@ -553,6 +553,123 @@ test('OPENCONTAINER$ skips inbound sound when the actor is me', () => {
   assert.equal(sounds.length, 0)
 })
 
+test('GET$ bend_over/bend_back for ground pickup by a neighbor', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 0 })
+  assert.equal(w.holding(21).noid, 30)
+  assert.deepEqual(chores, [
+    { act: 'bend_over', noid: 21 },
+    { act: 'bend_back', noid: 21 },
+  ])
+})
+
+test('GET$ unpocket/stand for pocket retrieval by a neighbor', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 1 })
+  assert.equal(w.holding(21).noid, 30)
+  assert.deepEqual(chores, [
+    { act: 'unpocket', noid: 21 },
+    { act: 'stand', noid: 21 },
+  ])
+})
+
+test('PUT$ bend_over/bend_back when dropping to the region', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 0 })
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'PUT$', noid: 21, obj: 30, cont: 0, x: 88, y: 150, how: 0, orient: 1 })
+  assert.equal(w.holding(21), null)
+  assert.ok(w.inRegion(30))
+  assert.deepEqual(chores, [
+    { act: 'bend_over', noid: 21 },
+    { act: 'bend_back', noid: 21 },
+  ])
+})
+
+test('GRABFROM$ hand_out/hand_back when grabbing from another avatar', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 0 })
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'GRABFROM$', noid: 17, avatar_noid: 21 })
+  assert.equal(w.holding(17).noid, 30)
+  assert.deepEqual(chores, [
+    { act: 'hand_out', noid: 17 },
+    { act: 'hand_back', noid: 17 },
+  ])
+})
+
+test('THROW$ throw/hand_back and clears orientation LSB', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 0 })
+  w.get(30).mod.orientation = 3
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'THROW$', noid: 21, obj: 30, x: 100, y: 160, hit: 0 })
+  assert.equal(w.holding(21), null)
+  assert.equal(w.get(30).mod.orientation, 2)
+  assert.deepEqual(chores, [
+    { act: 'throw', noid: 21 },
+    { act: 'hand_back', noid: 21 },
+  ])
+})
+
+test('WEAR$ plays CLOTHES_DONNED for neighbor actors', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 0 })
+  const sounds = []
+  const chores = []
+  w.setClient({
+    sound: (name, noid) => sounds.push({ name, noid }),
+    chore: (act, noid) => chores.push({ act, noid }),
+  })
+  w.apply({ op: 'WEAR$', noid: 21 })
+  assert.deepEqual(sounds, [{ name: 'CLOTHES_DONNED', noid: 21 }])
+  assert.deepEqual(chores, [{ act: 'stand', noid: 21 }])
+  const worn = w.inventory(21).find((o) => o.mod.y === HEAD)
+  assert.equal(worn.noid, 30)
+})
+
+test('WEAR$ skips inbound sound when the actor is me', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 17, target: 30, how: 0 })
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'WEAR$', noid: 17 })
+  assert.equal(sounds.length, 0)
+  const worn = w.inventory(17).find((o) => o.mod.y === HEAD)
+  assert.equal(worn.noid, 30)
+})
+
+test('REMOVE$ plays CLOTHES_DOFFED for neighbor actors', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'GET$', noid: 21, target: 30, how: 0 })
+  w.apply({ op: 'WEAR$', noid: 21 })
+  const sounds = []
+  const chores = []
+  w.setClient({
+    sound: (name, noid) => sounds.push({ name, noid }),
+    chore: (act, noid) => chores.push({ act, noid }),
+  })
+  w.apply({ op: 'REMOVE$', noid: 21, target: 30 })
+  assert.deepEqual(sounds, [{ name: 'CLOTHES_DOFFED', noid: 21 }])
+  assert.deepEqual(chores, [{ act: 'stand', noid: 21 }])
+  assert.equal(w.holding(21).noid, 30)
+})
+
 test('FLUSH$ plays GARBAGE_FLUSH and purges can contents', () => {
   const w = new HabitatWorld()
   makeStorm(w)
