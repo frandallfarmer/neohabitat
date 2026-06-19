@@ -16,6 +16,20 @@ export const SOUND_TRACE = true
 const trace = (...args) => { if (SOUND_TRACE) console.log("[sound-trace]", ...args) }
 
 let _enginePromise = null
+let _unlockInstalled = false
+
+/** Keep AudioContext alive: resume on every user gesture (capture phase). */
+export function installSoundUnlock(hs) {
+  if (_unlockInstalled || !hs?.ctx) return
+  _unlockInstalled = true
+  const unlock = () => hs.unlockFromGesture()
+  document.addEventListener('pointerdown', unlock, true)
+  document.addEventListener('keydown', unlock, true)
+  hs.ctx.onstatechange = () => {
+    trace("audioContext state:", hs.ctx.state)
+  }
+  trace("installSoundUnlock: pointerdown + keydown capture listeners")
+}
 
 export async function getSoundEngine(opts = {}) {
   if (!_enginePromise) {
@@ -30,6 +44,7 @@ export async function getSoundEngine(opts = {}) {
       trace("init: fetching bank + AudioWorklet…")
       await hs.init()
       trace("init: ready, bank keys =", hs.list().length, "audioContext =", hs.ctx?.state)
+      installSoundUnlock(hs)
       return hs
     })()
   }

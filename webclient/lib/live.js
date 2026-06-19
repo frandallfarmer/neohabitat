@@ -63,6 +63,7 @@ async function main() {
         const AC = globalThis.AudioContext || globalThis.webkitAudioContext
         const gestureCtx = AC ? new AC() : null
         hs = await getSoundEngine({ audioContext: gestureCtx })
+        hs.unlockFromGesture()
         await hs.resume()
         if (SOUND_TRACE) console.log("[sound-trace] Connect: audioContext =", hs.ctx?.state)
       }
