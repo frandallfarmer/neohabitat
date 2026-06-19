@@ -170,16 +170,18 @@ async function changomatic_rdo(ctx) {
   return { ok: true }
 }
 
-// changomatic_CHANGE.m (host): something got changed — apply the new
-// orientation. (deltas.js's CHANGE$ does the same; kept here for the
-// table slot.)
-async function changomatic_CHANGE(ctx) {
-  ctx.sound('CHANGOMATIC', ctx.pointed.noid)
-  const target = ctx.world.get(ctx.args.target)
-  if (target && ctx.args.orientation !== undefined) {
-    target.mod.orientation = ctx.args.orientation
+// changomatic_CHANGE.m (host): apply CHANGE_NEW_ORIENTATION to CHANGE_TARGET.
+function changomatic_CHANGE(ctx) {
+  const msg = ctx.args
+  const targetNoid = msg.CHANGE_TARGET ?? msg.target
+  const orient = msg.CHANGE_NEW_ORIENTATION ?? msg.orientation
+  const target = ctx.world.get(targetNoid)
+  if (target && orient !== undefined) {
+    target.mod.orientation = orient
+    ctx.world.emit('fieldChanged', target, null)
     ctx.newImage(target.noid)
   }
+  ctx.sound('CHANGOMATIC', ctx.pointed.noid)
   return { ok: true }
 }
 

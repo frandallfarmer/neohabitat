@@ -51,6 +51,18 @@ const MIGRATED_OPS = new Set([
   'BUGOUT$',
   'APPEARING_$',
   'WAITFOR_$',
+  'FIDDLE_$',
+  'CHANGELIGHT_$',
+  'GOAWAY_$',
+  'CHANGE_CONTAINERS_$',
+  'CHANGE$',
+  'SEXCHANGE$',
+  'ROLL$',
+  'FILL$',
+  'POUR$',
+  'ON$',
+  'OFF$',
+  'SIT$',
 ])
 
 // Ops whose wire noid does not match the class-table slot on that object (e.g. DIG$ on
@@ -62,6 +74,12 @@ const HOST_FIXED_BEHAVIORS = {
   OBJECTSPEAK_$: 'generic_OBJECTSPEAK',
   APPEARING_$: 'region_APPEARING',
   WAITFOR_$: 'region_WAITFOR',
+  FIDDLE_$: 'host_FIDDLE',
+  CHANGELIGHT_$: 'region_CHANGELIGHT',
+  GOAWAY_$: 'region_GOAWAY',
+  CHANGE_CONTAINERS_$: 'region_CHANGE_CONTAINERS',
+  CHANGE$: 'host_CHANGE',
+  SEXCHANGE$: 'host_SEXCHANGE',
 }
 
 // Host message slot numbers (Constants.java) — class-table slot on msg.noid object.
@@ -97,6 +115,12 @@ const HOST_OP_SLOTS = {
   'BASH$': 10,
   'SPEAK$': 14,
   'WISH$': 8,
+  'ROLL$': 8,
+  'FILL$': 8,
+  'POUR$': 9,
+  'OFF$': 8,
+  'ON$': 9,
+  'SIT$': 16,
 }
 
 const noopPresentationClient = () => ({
@@ -114,7 +138,11 @@ function resolveHostDispatch(msg) {
   const fixed = HOST_FIXED_BEHAVIORS[msg.op]
   if (fixed) {
     let pointedNoid = msg.noid
-    if (pointedNoid == null && (msg.op === 'OBJECTSPEAK_$' || msg.op === 'APPEARING_$' || msg.op === 'WAITFOR_$')) {
+    if (pointedNoid == null && (
+      msg.op === 'OBJECTSPEAK_$' || msg.op === 'APPEARING_$' || msg.op === 'WAITFOR_$'
+      || msg.op === 'FIDDLE_$' || msg.op === 'CHANGELIGHT_$' || msg.op === 'GOAWAY_$'
+      || msg.op === 'CHANGE_CONTAINERS_$'
+    )) {
       pointedNoid = THE_REGION
     }
     if (pointedNoid == null) return null
@@ -129,7 +157,15 @@ function pointedForHostDispatch(world, spec) {
   const rec = world.get(spec.pointedNoid)
   if (rec) return rec
   if (spec.behavior === 'generic_PLAY' || spec.behavior === 'generic_OBJECTSPEAK'
-      || spec.behavior === 'region_APPEARING' || spec.behavior === 'region_WAITFOR') {
+      || spec.behavior === 'region_APPEARING' || spec.behavior === 'region_WAITFOR'
+      || spec.behavior === 'host_FIDDLE' || spec.behavior === 'region_CHANGELIGHT'
+      || spec.behavior === 'region_GOAWAY' || spec.behavior === 'region_CHANGE_CONTAINERS'
+      || spec.behavior === 'host_CHANGE' || spec.behavior === 'host_SEXCHANGE') {
+    const rec = world.get(spec.pointedNoid)
+    if (rec) return rec
+    if (spec.behavior === 'host_CHANGE' || spec.behavior === 'host_SEXCHANGE') {
+      return { type: 'HostStub', noid: spec.pointedNoid, mod: {} }
+    }
     return soundSourceRecord(world, spec.pointedNoid)
   }
   if (spec.pointedNoid === THE_REGION) {

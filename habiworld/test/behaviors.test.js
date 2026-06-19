@@ -736,6 +736,37 @@ test('WISH$ plays MAGIC and shows WISH_MESSAGE balloon', () => {
   assert.deepEqual(balloons, ['Very well, I\'ll see what I can do.'])
 })
 
+test('SIT$ moves avatar into seat container on sit down', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-chair-1', name: 'Chair',
+      mods: [{ type: 'Chair', noid: 75, x: 90, y: 140, orientation: 0, gr_state: 0 }],
+    },
+  })
+  w.apply({ op: 'SIT$', noid: 21, up_or_down: 1, cont: 75, slot: 2 })
+  assert.equal(w.get(21).containerRef, 'item-chair-1')
+  assert.equal(w.get(21).mod.y, 2)
+})
+
+test('ON$ on a flashlight updates gr_state and region lighting', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-flash-1', name: 'Flashlight',
+      mods: [{ type: 'Flashlight', noid: 76, x: 60, y: 140, orientation: 0, gr_state: 0, on: 0 }],
+    },
+  })
+  w.apply({ op: 'ON$', noid: 76 })
+  assert.equal(w.get(76).mod.on, 1)
+  assert.equal(w.get(76).mod.gr_state, 1)
+  assert.equal(w.region.lighting, 1)
+})
+
 test('APPEARING_$ and WAITFOR_$ are choreography no-ops', () => {
   const w = new HabitatWorld()
   makeStorm(w)

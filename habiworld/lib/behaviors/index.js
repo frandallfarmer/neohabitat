@@ -177,6 +177,7 @@ Object.assign(B,
   require('./avatar_inventory_host'),   // avatar_GETM / PUTM / GRABFROM / THROW / WEAR / REMOVE
   require('./avatar_motion_host'),      // avatar_WALK / avatar_POSTURE
   require('./avatar_choreography_host'), // avatar_ATTACK / BASH / generic_SPEAK / PLAY
+  require('./state_host'),       // FIDDLE / GOAWAY / bottle_FILL / avatar_SITORGETUP / …
   require('./containers'),     // pickFrom/dropInto/openCloseContainer
   require('./devices'),        // switches, lights, read, getMass
   require('./magic'),          // doMagic, strike, shoot
@@ -186,6 +187,6 @@ Object.assign(B,
   require('./gadgets'),        // sensor, spray, shovel, changomatic, mailbox...
   require('./machines'),       // coinOp, vendo, lamp, sex changer, grenade...
   require('./machines2'),      // machine puts, stereo/tape, atm, teleport talk
-  require('./host_messages'))  // avatar/region slot 8+ delta delegates
+)
 
 module.exports = B

@@ -219,12 +219,12 @@ async function sex_changer_do(ctx) {
   return { ok: true }
 }
 
-// sex_changer_SEXCHANGE.m (host): someone else got changed. deltas.js's
-// SEXCHANGE$ flips the bit; this slot delegates the machine theatrics.
-async function sex_changer_SEXCHANGE(ctx) {
-  const target = ctx.world.get(ctx.args.target)
-  if (target && target.mod.orientation !== undefined) {
-    target.mod.orientation = target.mod.orientation ^ 8
+// sex_changer_SEXCHANGE.m (host): flip avatar body-type bit (orientation 0x100).
+function sex_changer_SEXCHANGE(ctx) {
+  const target = ctx.world.get(ctx.args.AVATAR_NOID ?? ctx.args.target)
+  if (target) {
+    target.mod.orientation = (target.mod.orientation || 0) ^ 0x100
+    ctx.world.emit('fieldChanged', target, null)
   }
   ctx.sound('SEX_CHANGER', ctx.pointed.noid)
   ctx.newImage(ctx.pointed.noid)

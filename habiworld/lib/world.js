@@ -19,7 +19,6 @@
 // (Museum-of-Art-and-Digital-Entertainment/habitat), path sources/c64/.
 
 const EventEmitter = require('events')
-const { applyDelta } = require('./deltas')
 const { MIGRATED_OPS, dispatchHostSync } = require('./behaviors/dispatch_host')
 const { MAIL_SLOT, HANDS, HEAD, THE_REGION } = require('./constants')
 
@@ -89,8 +88,6 @@ class HabitatWorld extends EventEmitter {
 
     if (MIGRATED_OPS.has(op)) {
       dispatchHostSync(this, msg)
-    } else {
-      applyDelta(this, msg)
     }
     this.emit('op', msg)
   }

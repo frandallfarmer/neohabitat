@@ -62,41 +62,62 @@ async function floor_lamp_do(ctx) {
 // changed state). In host dispatch the "actor" registers point at the
 // receiving object — our ctx.pointed. ─────────────────────────────────
 
-async function generic_ON(ctx) {
-  ctx.pointed.mod.on = 1
-  ctx.newImage(ctx.pointed.noid)
-  ctx.sound('SWITCHED_ON', ctx.pointed.noid)
+function generic_ON(ctx) {
+  const o = ctx.pointed
+  o.mod.on = 1
+  if (o.type === 'Flashlight' || o.type === 'Floor_lamp') {
+    o.mod.gr_state = 1
+    ctx.changeLight(1)
+  }
+  ctx.world.emit('fieldChanged', o, null)
+  ctx.newImage(o.noid)
+  ctx.sound('SWITCHED_ON', o.noid)
   return { ok: true }
 }
 
-async function generic_OFF(ctx) {
-  ctx.pointed.mod.on = 0
-  ctx.newImage(ctx.pointed.noid)
-  ctx.sound('SWITCHED_OFF', ctx.pointed.noid)
+function generic_OFF(ctx) {
+  const o = ctx.pointed
+  o.mod.on = 0
+  if (o.type === 'Flashlight' || o.type === 'Floor_lamp') {
+    o.mod.gr_state = 0
+    ctx.changeLight(-1)
+  }
+  ctx.world.emit('fieldChanged', o, null)
+  ctx.newImage(o.noid)
+  ctx.sound('SWITCHED_OFF', o.noid)
   return { ok: true }
 }
 
-async function generic_ONLIGHT(ctx) {
-  ctx.sound('SWITCH_CLICK', ctx.pointed.noid)
-  ctx.pointed.mod.on = 1
-  ctx.newImage(ctx.pointed.noid)
+function generic_ONLIGHT(ctx) {
+  const o = ctx.pointed
+  ctx.sound('SWITCH_CLICK', o.noid)
+  o.mod.on = 1
+  o.mod.gr_state = 1
   ctx.changeLight(1)
+  ctx.world.emit('fieldChanged', o, null)
+  ctx.newImage(o.noid)
   return { ok: true }
 }
 
-async function generic_OFFLIGHT(ctx) {
-  ctx.sound('SWITCH_CLICK', ctx.pointed.noid)
-  ctx.pointed.mod.on = 0
-  ctx.newImage(ctx.pointed.noid)
+function generic_OFFLIGHT(ctx) {
+  const o = ctx.pointed
+  ctx.sound('SWITCH_CLICK', o.noid)
+  o.mod.on = 0
+  o.mod.gr_state = 0
   ctx.changeLight(-1)
+  ctx.world.emit('fieldChanged', o, null)
+  ctx.newImage(o.noid)
   return { ok: true }
 }
 
 // generic_CHANGESTATE_uppercase.m (new.mud name generic_CHANGESTATE):
 // host pushes a new graphic state.
-async function generic_CHANGESTATE(ctx) {
-  if (ctx.args.new_state !== undefined) ctx.pointed.mod.gr_state = ctx.args.new_state
-  else if (ctx.args.state !== undefined) ctx.pointed.mod.gr_state = ctx.args.state
+function generic_CHANGESTATE(ctx) {
+  const state = ctx.args.state ?? ctx.args.new_state
+  if (state !== undefined) {
+    ctx.pointed.mod.gr_state = state
+    ctx.world.emit('fieldChanged', ctx.pointed, null)
+  }
   ctx.newImage(ctx.pointed.noid, ctx.pointed.mod.gr_state)
   return { ok: true }
 }
