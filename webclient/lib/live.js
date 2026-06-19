@@ -16,7 +16,7 @@ import { Transport } from "./transport.js"
 import { loadHabiworld } from "./habiworld.js"
 import { worldToObjects } from "./world-adapter.js"
 import { createAvatarMotion } from "./avatar-chore.js"
-import { getSoundEngine, SOUND_TRACE } from "./sound.js"
+import { getSoundEngine, installFocusResume, SOUND_TRACE } from "./sound.js"
 import { buildPresentationClient } from "./presentation.js"
 import { buildDispatchClient } from "./world-client.js"
 
@@ -64,7 +64,10 @@ async function main() {
         const gestureCtx = AC ? new AC() : null
         hs = await getSoundEngine({ audioContext: gestureCtx })
         await hs.resume()
+        installFocusResume(() => hs)
         if (SOUND_TRACE) console.log("[sound-trace] Connect: audioContext =", hs.ctx?.state)
+      } else {
+        await hs.resume()
       }
     } catch (e) {
       console.warn("[sound-trace] habisound init FAILED — continuing without sound", e)

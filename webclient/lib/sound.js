@@ -16,6 +16,24 @@ export const SOUND_TRACE = true
 const trace = (...args) => { if (SOUND_TRACE) console.log("[sound-trace]", ...args) }
 
 let _enginePromise = null
+let _focusResumeInstalled = false
+
+/** Same as Connect's `await hs.resume()` — run when the tab regains focus. */
+export function installFocusResume(getHs) {
+  if (_focusResumeInstalled || typeof document === 'undefined') return
+  _focusResumeInstalled = true
+  const resumeIfReady = async () => {
+    if (document.visibilityState !== 'visible') return
+    const hs = getHs()
+    if (!hs?.ctx) return
+    trace("focus: resuming AudioContext (was", hs.ctx.state + ")")
+    await hs.resume()
+    trace("focus: audioContext =", hs.ctx.state)
+  }
+  document.addEventListener('visibilitychange', resumeIfReady)
+  window.addEventListener('focus', resumeIfReady)
+  trace("installFocusResume: visibilitychange + focus")
+}
 
 export async function getSoundEngine(opts = {}) {
   if (!_enginePromise) {
