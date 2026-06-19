@@ -37,7 +37,8 @@ const chainForAction = (body, actionName) => {
     return out
 }
 
-const heldPaintX = (handX, xOffset, flipHeld) => handX - 2 * (flipHeld ? -xOffset : xOffset)
+// Held props are not pre-flipped; flipComposedFrame mirrors the whole avatar on side view.
+const heldPaintX = (handX, xOffset) => handX - 2 * xOffset
 
 export const logHeldComposeCheck = async () => {
     const res = await fetch("habirender/bodies/Avatar.bin")
@@ -49,7 +50,7 @@ export const logHeldComposeCheck = async () => {
         for (const action of ["stand", "walk"]) {
             const { hand, handCel, cy } = chainForAction(body, action)
             const placeY = cy[5] + (handCel?.yRel ?? 0)
-            const placeX = heldPaintX(hand.x, pc.xOffset, false)
+            const placeX = heldPaintX(hand.x, pc.xOffset)
             const heldTop = placeY + pc.yOffset
             const heldBottom = heldTop - pc.height
             console.log(label, action, {

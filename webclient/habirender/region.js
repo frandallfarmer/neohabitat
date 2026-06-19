@@ -265,19 +265,20 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     // paint.m: screen_x = cel_x − xOffset, screen_y = cel_y − yOffset.
     // firstCelOrigin:false keeps the additive Y that matches walk bob (placeY = cy_tab + yRel);
     // X must subtract 2× the held cel's xOffset so the bitmap lands at cel_x − xOffset, not cel_x + xOffset.
-    const flipHeld = actionView(actionName) === "side" && ((avatarMod.orientation & 0x01) !== 0)
+    // Side-view mirror: flipComposedFrame flips the whole avatar once (limbs + held). Do not pre-flip the
+    // held prop — that double-mirrors it back to the right-facing art when the avatar faces left.
     let heldLayer = null
     if (handProp && handMod) {
         const grState = handMod.gr_state ?? 0
         const maskIdx = Math.min(grState, handProp.celmasks.length - 1)
         const heldCels = celsFromMask(handProp, handProp.celmasks[maskIdx])
         const held = frameFromCels(heldCels,
-            { colors: colorsFromMod(handMod), flipHorizontal: flipHeld, firstCelOrigin: false })
+            { colors: colorsFromMod(handMod), flipHorizontal: false, firstCelOrigin: false })
         if (held) {
             const handCel = cels[AVATAR_HAND]
             const placeY = cy[AVATAR_HAND] + (handCel?.yRel ?? 0)
             const heldXOffset = heldCels[0]?.xOffset ?? 0
-            const placeX = handX - 2 * (flipHeld ? -heldXOffset : heldXOffset)
+            const placeX = handX - 2 * heldXOffset
             heldLayer = translateSpace(held, placeX, placeY)
         }
     }
