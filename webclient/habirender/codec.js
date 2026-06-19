@@ -376,7 +376,11 @@ export const decodeProp = (data) => {
         allCelsMask = (allCelsMask << 1) & 0xff
     }
     const contentsXYOff = data.getUint8(3) & 0x7f
-    prop.animations = decodeAnimations(data, graphicStateOff, contentsXYOff == 0 ? firstCelOff : contentsXYOff, stateCount)
+    // When contentsXYOff is non-zero but precedes the animation table (e.g. tok.bin:
+    // contentsXYOff=1, graphicStateOff=20), it is not the animation end bound.
+    const animEndBound = (contentsXYOff === 0 || contentsXYOff < graphicStateOff)
+        ? firstCelOff : contentsXYOff
+    prop.animations = decodeAnimations(data, graphicStateOff, animEndBound, stateCount)
     prop.contentsXY = decodeContentsXY(data, contentsXYOff, firstCelOff)
     return prop
 }

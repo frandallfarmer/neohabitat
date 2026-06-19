@@ -171,16 +171,35 @@ const drawOrderForAction = (body, actionName) => {
     return LIMB_DRAW_ORDER
 }
 
-const initAnimationsForAction = (body, actionName) => {
+// chore.m special_hold: howHeld from the held prop (byte 0 & hold_mask). Non-swing
+// replaces right-arm swing limb_states with hold-out (c5a+3 side, c5a+4 front).
+const AVATAR_HAND_LIMB = 5
+const HOLD_OUT_SIDE_ANIM = 19   // c5a+3 → limb 5 animation 19
+const HOLD_OUT_FRONT_ANIM = 20  // c5a+4 → limb 5 animation 20
+
+const applySpecialHoldOverride = (ov, howHeld) => {
+    if (howHeld === "swing" || howHeld == null || ov.limb !== AVATAR_HAND_LIMB) return ov
+    if (ov.animation === 0 || ov.animation === 1) {
+        return { limb: AVATAR_HAND_LIMB, animation: HOLD_OUT_SIDE_ANIM }
+    }
+    if (ov.animation === 11) {
+        return { limb: AVATAR_HAND_LIMB, animation: HOLD_OUT_FRONT_ANIM }
+    }
+    return ov
+}
+
+const initAnimationsForAction = (body, actionName, handProp) => {
     const choreIndex = body.actions?.[actionName]
     if (choreIndex == null) return null
+    const howHeld = handProp?.howHeld
     const animations = body.limbs.map((l) =>
         l.animations.length > 0 ? { ...l.animations[0] } : { startState: 0, endState: 0 })
     for (const ov of body.choreography[choreIndex] ?? []) {
-        const na = body.limbs[ov.limb]?.animations[ov.animation]
+        const adjusted = applySpecialHoldOverride(ov, howHeld)
+        const na = body.limbs[adjusted.limb]?.animations[adjusted.animation]
         if (na) {
-            animations[ov.limb].startState = na.startState
-            animations[ov.limb].endState = na.endState
+            animations[adjusted.limb].startState = na.startState
+            animations[adjusted.limb].endState = na.endState
         }
     }
     return animations
@@ -254,7 +273,33 @@ const headPatternFromMod = (headMod, fallback) => {
     return c.pattern ?? c.wildcard ?? fallback
 }
 
-const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, chain, limbPatterns) => {
+// animinit.m / draw_prop: gr_state indexes prop.animations[]; that entry's
+// startState..endState range is the cycling graphic frame (not maskIdx = gr_state).
+const heldAnimationForMod = (prop, mod) => {
+    if (!prop?.animations?.length) return null
+    let grState = mod.gr_state ?? 0
+    if (grState >= prop.animations.length) grState = 0
+    const anim = prop.animations[grState]
+    if (!anim) return null
+    const length = anim.endState - anim.startState + 1
+    return { startState: anim.startState, length }
+}
+
+export const heldAnimationCycleLength = (prop, mod) =>
+    heldAnimationForMod(prop, mod)?.length ?? 1
+
+const heldGraphicStateAt = (prop, mod, frameIndex = 0) => {
+    const info = heldAnimationForMod(prop, mod)
+    if (!info) return 0
+    if (info.length <= 1) {
+        return Math.min(info.startState, prop.celmasks.length - 1)
+    }
+    const idx = ((frameIndex % info.length) + info.length) % info.length
+    return Math.min(info.startState + idx, prop.celmasks.length - 1)
+}
+
+const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, chain, limbPatterns,
+    heldFrameIndex = 0) => {
     const { cx, cy, cels, handX, handY } = chain
     const facing = headFacingFromAction(actionName)
     const facePattern = headPatternFromMod(headMod, limbPatterns[3])
@@ -262,24 +307,19 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
         cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
 
     // Held: find_cel_xy → handX (animate.m). stand_alone=0 so no even_bottoms (mix.m).
-    // paint.m: screen_x = cel_x − xOffset, screen_y = cel_y − yOffset.
-    // firstCelOrigin:false keeps the additive Y that matches walk bob (placeY = cy_tab + yRel);
-    // X must subtract 2× the held cel's xOffset so the bitmap lands at cel_x − xOffset, not cel_x + xOffset.
-    // Side-view mirror: flipComposedFrame flips the whole avatar once (limbs + held). Do not pre-flip the
-    // held prop — that double-mirrors it back to the right-facing art when the avatar faces left.
+    // Same additive xOffset model as limb layerFor (firstCelOrigin:false): paint left = anchor + xOffset.
+    // firstCelOrigin:false keeps the additive Y that matches walk bob (placeY = cy_tab + yRel).
+    // Avatar-relative placement only; flipComposedFrame mirrors the whole composite for side view.
     let heldLayer = null
     if (handProp && handMod) {
-        const grState = handMod.gr_state ?? 0
-        const maskIdx = Math.min(grState, handProp.celmasks.length - 1)
+        const maskIdx = heldGraphicStateAt(handProp, handMod, heldFrameIndex)
         const heldCels = celsFromMask(handProp, handProp.celmasks[maskIdx])
         const held = frameFromCels(heldCels,
             { colors: colorsFromMod(handMod), flipHorizontal: false, firstCelOrigin: false })
         if (held) {
             const handCel = cels[AVATAR_HAND]
             const placeY = cy[AVATAR_HAND] + (handCel?.yRel ?? 0)
-            const heldXOffset = heldCels[0]?.xOffset ?? 0
-            const placeX = handX - 2 * heldXOffset
-            heldLayer = translateSpace(held, placeX, placeY)
+            heldLayer = translateSpace(held, handX, placeY)
         }
     }
 
@@ -311,25 +351,25 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     return flipComposedFrame(compositeLayers(drawn), avatarMod, actionName)
 }
 
+const animationsAtStart = (animations) => animations.map((a) => ({ ...a, current: a.startState }))
+
+// C64 animate.m / mix.m: inc graphic frame; if the result equals end → restart at start (end is not shown).
 const advanceAnimations = (animations) => {
     let restartedCount = 0
     for (const anim of animations) {
-        if (anim.current === undefined) anim.current = anim.startState
-        else {
-            anim.current++
-            if (anim.current > anim.endState) {
-                anim.current = anim.startState
-                restartedCount++
-            }
+        anim.current++
+        if (anim.current >= anim.endState) {
+            anim.current = anim.startState
+            restartedCount++
         }
     }
     return restartedCount
 }
 
-const choreographyCycleLength = (body, actionName) => {
-    const animations = initAnimationsForAction(body, actionName)
+const choreographyCycleLength = (body, actionName, handProp) => {
+    const animations = initAnimationsForAction(body, actionName, handProp)
     if (!animations) return 0
-    const scratch = animations.map((a) => ({ ...a }))
+    const scratch = animationsAtStart(animations)
     let count = 0
     while (true) {
         count++
@@ -341,13 +381,13 @@ const choreographyCycleLength = (body, actionName) => {
 // Compose every frame of a choreography cycle (walk, wave, stand, …).
 export const composeAvatarFrames = (body, avatarMod, headProp, headMod, handProp, handMod, actionName) => {
     actionName = actionName ?? choreographyNameFromMod(avatarMod)
-    const animations = initAnimationsForAction(body, actionName)
+    const animations = animationsAtStart(initAnimationsForAction(body, actionName, handProp))
     if (!animations) return []
     const limbPatterns = limbPatternsFromMod(avatarMod)
     const frames = []
     while (true) {
         const frame = composeAvatarFrame(body, avatarMod, headProp, headMod, handProp, handMod, actionName,
-            avatarLimbChainAt(body, animations, avatarMod, actionName), limbPatterns)
+            avatarLimbChainAt(body, animations, avatarMod, actionName), limbPatterns, 0)
         if (frame) frames.push(frame)
         if (advanceAnimations(animations) === animations.length) break
     }
@@ -355,18 +395,19 @@ export const composeAvatarFrames = (body, avatarMod, headProp, headMod, handProp
 }
 
 // One choreography frame at a given index (live motion advances index each FRAME_MS).
-export const composeAvatarFrameAt = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, frameIndex) => {
+export const composeAvatarFrameAt = (body, avatarMod, headProp, headMod, handProp, handMod, actionName,
+    frameIndex, heldFrameIndex = frameIndex) => {
     actionName = actionName ?? choreographyNameFromMod(avatarMod)
-    const animations = initAnimationsForAction(body, actionName)
+    const animations = initAnimationsForAction(body, actionName, handProp)
     if (!animations) return null
     const limbPatterns = limbPatternsFromMod(avatarMod)
-    const cycleLen = choreographyCycleLength(body, actionName)
+    const cycleLen = choreographyCycleLength(body, actionName, handProp)
     if (!cycleLen) return null
     const idx = ((frameIndex ?? 0) % cycleLen + cycleLen) % cycleLen
-    const scratch = animations.map((a) => ({ ...a }))
+    const scratch = animationsAtStart(animations)
     for (let i = 0; i < idx; i++) advanceAnimations(scratch)
     return composeAvatarFrame(body, avatarMod, headProp, headMod, handProp, handMod, actionName,
-        avatarLimbChainAt(body, scratch, avatarMod, actionName), limbPatterns)
+        avatarLimbChainAt(body, scratch, avatarMod, actionName), limbPatterns, heldFrameIndex)
 }
 
 export const propFromMod = (mod, ref) => {
@@ -560,14 +601,24 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                                 }
                                 : { ...serverMod, activity, orientation: orientForCompose }
                             const actionName = choreographyNameFromMod(displayMod, motion)
+                            const heldCycleLen = heldAnimationCycleLength(handProp, handMod)
                             let frames
                             if (motion) {
+                                const heldIdx = heldCycleLen > 1
+                                    ? ((motion.animFrame % heldCycleLen) + heldCycleLen) % heldCycleLen : 0
                                 const frame = composeAvatarFrameAt(prop.value, displayMod, headProp, headMod, handProp, handMod,
-                                    actionName, motion.animFrame)
+                                    actionName, motion.animFrame, heldIdx)
                                 frames = frame ? [frame] : []
                                 if (motion.type === "gesture") {
-                                    const cycleLen = choreographyCycleLength(prop.value, actionName)
+                                    const cycleLen = choreographyCycleLength(prop.value, actionName, handProp)
                                     avatarMotion.noteCycleLength(serverMod.noid, cycleLen)
+                                }
+                            } else if (heldCycleLen > 1) {
+                                frames = []
+                                for (let hi = 0; hi < heldCycleLen; hi++) {
+                                    const frame = composeAvatarFrameAt(prop.value, displayMod, headProp, headMod, handProp, handMod,
+                                        actionName, 0, hi)
+                                    if (frame) frames.push(frame)
                                 }
                             } else {
                                 const standFrame = composeAvatarFrameAt(prop.value, displayMod, headProp, headMod, handProp, handMod,

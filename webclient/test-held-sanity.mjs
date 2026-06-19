@@ -20,7 +20,7 @@ const walkCycleLength = (body) => {
         for (const a of scratch) {
             a.current = a.current ?? a.startState
             a.current++
-            if (a.current > a.endState) { a.current = a.startState; restarted++ }
+            if (a.current >= a.endState) { a.current = a.startState; restarted++ }
         }
         if (restarted === scratch.length) break
     }
@@ -46,7 +46,7 @@ const chainAt = (body, actionName, frameIndex) => {
         let restarted = 0
         for (const a of animations) {
             a.current++
-            if (a.current > a.endState) { a.current = a.startState; restarted++ }
+            if (a.current >= a.endState) { a.current = a.startState; restarted++ }
         }
         if (restarted === animations.length) break
     }

@@ -494,21 +494,14 @@ export const framesFromAction = (action, body, options = {}) => {
         animations[ilimb].startState = newAnim.startState
         animations[ilimb].endState = newAnim.endState
     }
+    for (const animation of animations) {
+        animation.current = animation.startState
+    }
     while (true) {
         const cels = []
         const celColors = []
-        let restartedCount = 0
         for (const [ilimb, limb] of body.limbs.entries()) {
             const animation = animations[ilimb]
-            if (animation.current == undefined) {
-                animation.current = animation.startState
-            } else {
-                animation.current ++
-                if (animation.current > animation.endState) {
-                    animation.current = animation.startState
-                    restartedCount ++
-                }
-            }
             const istate = limb.frames[animation.current]
             if (istate >= 0) {
                 cels.push(limb.cels[istate])
@@ -518,10 +511,18 @@ export const framesFromAction = (action, body, options = {}) => {
             // limb.pattern is not a pattern index, it's a LIMB pattern index
             celColors[ilimb] = {...(options.colors ?? {}), pattern: limbPatterns[limb.pattern] ?? 15 }
         }
-        if (restartedCount == animations.length) {
+        frames.push(frameFromCels(cels, {...options, colors: celColors, paintOrder: limbOrder, firstCelOrigin: false }))
+        let restartedCount = 0
+        for (const animation of animations) {
+            animation.current++
+            if (animation.current >= animation.endState) {
+                animation.current = animation.startState
+                restartedCount++
+            }
+        }
+        if (restartedCount === animations.length) {
             break
         }
-        frames.push(frameFromCels(cels, {...options, colors: celColors, paintOrder: limbOrder, firstCelOrigin: false }))
     }
     return frames
 }

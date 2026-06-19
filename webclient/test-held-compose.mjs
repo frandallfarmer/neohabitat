@@ -38,7 +38,8 @@ const chainForAction = (body, actionName) => {
 }
 
 // Held props are not pre-flipped; flipComposedFrame mirrors the whole avatar on side view.
-const heldPaintX = (handX, xOffset) => handX - 2 * xOffset
+// firstCelOrigin:false frame minX = xOffset, so placeX = handX ⇒ paint left = handX + xOffset.
+const heldPaintX = (handX) => handX
 
 export const logHeldComposeCheck = async () => {
     const res = await fetch("habirender/bodies/Avatar.bin")
@@ -50,7 +51,7 @@ export const logHeldComposeCheck = async () => {
         for (const action of ["stand", "walk"]) {
             const { hand, handCel, cy } = chainForAction(body, action)
             const placeY = cy[5] + (handCel?.yRel ?? 0)
-            const placeX = heldPaintX(hand.x, pc.xOffset)
+            const placeX = heldPaintX(hand.x)
             const heldTop = placeY + pc.yOffset
             const heldBottom = heldTop - pc.height
             console.log(label, action, {
@@ -58,14 +59,13 @@ export const logHeldComposeCheck = async () => {
                 placeX,
                 xOffset: pc.xOffset,
                 paintLeft: placeX + pc.xOffset,
-                c64PaintLeft: hand.x - pc.xOffset,
                 placeY,
                 heldTop,
                 heldBottom,
                 inBody: heldTop >= 0 && heldBottom <= 60,
             })
-            console.assert(placeX + pc.xOffset === hand.x - pc.xOffset,
-                `${label} held X should match paint.m cel_x - xOffset`)
+            console.assert(placeX + pc.xOffset === hand.x + pc.xOffset,
+                `${label} held X should match anchor + xOffset (same model as limb cels)`)
         }
     }
 }
