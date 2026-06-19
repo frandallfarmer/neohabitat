@@ -175,6 +175,7 @@ Object.assign(B,
   require('./avatar_door_host'),        // avatar_OPEN / avatar_CLOSE
   require('./avatar_container_host'),   // avatar_OPENCONTAINER / avatar_CLOSECONTAINER
   require('./avatar_inventory_host'),   // avatar_GETM / PUTM / GRABFROM / THROW / WEAR / REMOVE
+  require('./avatar_motion_host'),      // avatar_WALK / avatar_POSTURE
   require('./containers'),     // pickFrom/dropInto/openCloseContainer
   require('./devices'),        // switches, lights, read, getMass
   require('./magic'),          // doMagic, strike, shoot

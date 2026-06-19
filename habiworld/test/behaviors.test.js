@@ -553,6 +553,38 @@ test('OPENCONTAINER$ skips inbound sound when the actor is me', () => {
   assert.equal(sounds.length, 0)
 })
 
+test('WALK$ updates neighbor avatar position', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'WALK$', noid: 21, x: 40, y: 170, how: 1 })
+  assert.equal(w.get(21).mod.x, 40)
+  assert.equal(w.get(21).mod.y, 170)
+  assert.equal(chores.length, 0) // walk replay is renderer-side, not ctx.chore
+})
+
+test('POSTURE$ STAND_FRONT updates neighbor activity without chore', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'POSTURE$', noid: 21, new_posture: 146 })
+  assert.equal(w.get(21).mod.activity, 146)
+  assert.equal(chores.length, 0)
+})
+
+test('POSTURE$ wave plays transient chore for a neighbor', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.get(21).mod.activity = 254
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'POSTURE$', noid: 21, new_posture: 141 })
+  assert.equal(w.get(21).mod.activity, 254) // unchanged — wave is choreography-only
+  assert.deepEqual(chores, [{ act: 'wave', noid: 21 }])
+})
+
 test('GET$ bend_over/bend_back for ground pickup by a neighbor', () => {
   const w = new HabitatWorld()
   makeStorm(w)

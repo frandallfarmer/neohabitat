@@ -19,12 +19,10 @@ const { applyDelta } = require('../deltas')
 
 // slot-behavior name → wire op consumed by deltas.js
 const HOST_OPS = {
-  avatar_WALK: 'WALK$',             // Behaviors/avatar_WALK.m
   avatar_ATTACK: 'ATTACK$',         // Behaviors/avatar_ATTACK.m
   avatar_BASH: 'BASH$',             // Behaviors/avatar_BASH.m
   generic_SPEAK: 'SPEAK$',          // Behaviors/generic_SPEAK.m (no state)
   avatar_SITORGETUP: 'SIT$',        // Behaviors/avatar_SITORGETUP.m
-  avatar_POSTURE: 'POSTURE$',       // Behaviors/avatar_POSTURE.m
   bottle_FILL: 'FILL$',             // Behaviors/bottle_FILL.m
   bottle_POUR: 'POUR$',             // Behaviors/bottle_POUR.m
 }

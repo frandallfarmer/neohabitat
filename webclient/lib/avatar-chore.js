@@ -119,7 +119,6 @@ export const orientForPosture = (posture, orient) =>
     displayOrientForActivity(posture, orient)
 
 const OP_GESTURE = {
-    "POSTURE$": (msg) => choreographyNameFromAvAct(msg.new_posture),
     "ATTACK$": () => "punch",
     "BASH$": () => "punch",
     "OPENCONTAINER$": () => "bend_over",

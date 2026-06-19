@@ -36,22 +36,8 @@ const {
 } = require('./constants')
 
 const DELTAS = {
-  // ── movement ──────────────────────────────────────────────────────
-
-  // Behaviors/avatar_WALK.m — client animates a walk to (x, y); the
-  // final object-table state is simply the destination. y arrives with
-  // the FOREGROUND_BIT (128) OR'd in, same as at make time; we store
-  // it raw, matching the C64.
-  'WALK$': {
-    src: 'Behaviors/avatar_WALK.m',
-    apply(world, msg) {
-      const o = world.get(msg.noid)
-      if (!o) return
-      o.mod.x = msg.x
-      o.mod.y = msg.y
-      world.emit('moved', o)
-    },
-  },
+  // WALK$ / POSTURE$ — migrated to lib/behaviors/avatar_motion_host.js
+  // via dispatch_host.js.
 
   // GET$ / PUT$ / GRABFROM$ / THROW$ / WEAR$ / REMOVE$ — migrated to
   // lib/behaviors/avatar_inventory_host.js via dispatch_host.js.
@@ -290,22 +276,6 @@ const DELTAS = {
 
   // ── choreography only (sound, animation, text) — deliberate no-ops ─
 
-  // Avatar.java POSTURE — broadcast chore for gestures; activity field updates for facing.
-  'POSTURE$': {
-    src: 'Behaviors/avatar_POSTURE.m',
-    apply(world, msg) {
-      const posture = msg.new_posture
-      if (posture == null) return
-      const persistent = new Set([
-        129, 132, 133, 143, 146, 157, 251, 252, 254, 255,
-      ])
-      if (!persistent.has(posture)) return
-      const o = world.get(msg.noid)
-      if (!o) return
-      o.mod.activity = posture
-      world.emit('stateChanged', o)
-    },
-  },
   'SPEAK$':      { choreography: true, src: 'word balloons' },
   'OBJECTSPEAK_$': { choreography: true, src: 'object word balloons' },
   'PLAY_$':      { choreography: true, src: 'sound effects' },
