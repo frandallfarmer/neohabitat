@@ -152,6 +152,20 @@ header.titlebar .tag {
 }
 @keyframes blink { 50% { opacity: 0.25; } }
 
+/* Placeholder word balloon — one line of text, replaced on each SPEAK$/ctx.balloon. */
+.word-balloon {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
 /* Word balloon. Habitat balloons render in a text window at the TOP of the screen and
    hang downward, with a "quip" pointer (sprite) toward the speaker's x — see balloons.m.
    This is a faithful-in-spirit placement; the charset-glyph border and the speaker-tracking

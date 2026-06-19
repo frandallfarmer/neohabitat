@@ -45,6 +45,7 @@ async function main() {
   let dispatchClient = null
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
+  const balloonText = signal("")
   const refresh = () => { objects.value = worldToObjects(world) }
   for (const ev of ["added", "removed", "regionDescribed", "regionChanged",
                     "moved", "stateChanged", "fieldChanged", "containerChanged", "lighting"]) {
@@ -77,7 +78,10 @@ async function main() {
     if (typeof world.clear === "function") world.clear()
     avatarMotion.clear()
     objects.value = []
-    const presentation = buildPresentationClient({ hs, world, classes, avatarMotion, refresh })
+    balloonText.value = ""
+    const presentation = buildPresentationClient({
+      hs, world, classes, avatarMotion, refresh, balloonText,
+    })
     if (typeof world.setClient === "function") {
       world.setClient(presentation)
     } else {
@@ -140,6 +144,7 @@ async function main() {
     const [user, setUser] = useState(q("user", "randy"))
     const objs = objects.value
     const st = status.value
+    const balloon = balloonText.value
     const region = objs.find((o) => o.type === "context")
     avatarMotion.tick.value
     return html`
@@ -153,6 +158,7 @@ async function main() {
         <button onClick=${() => connect(ws, context, user)}>Connect</button>
       </div>
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
+      ${balloon ? html`<div class="word-balloon">${balloon}</div>` : null}
       <div style="background:#000; align-self:flex-start;">
         ${region
           ? html`<${regionView} objects=${objs} avatarMotion=${avatarMotion} />`

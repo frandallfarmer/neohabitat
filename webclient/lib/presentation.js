@@ -9,7 +9,7 @@ const CHORE_ACTIONS = {
   hand_back: "hand_back",
 }
 
-export function buildPresentationClient({ hs, world, classes, avatarMotion, refresh }) {
+export function buildPresentationClient({ hs, world, classes, avatarMotion, refresh, balloonText }) {
   const sound = hs ? soundClientCallbacks(hs, world, classes) : { sound() {}, beep() {}, boing() {} }
   return {
     ...sound,
@@ -34,6 +34,9 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
     newImage() {
       if (refresh) refresh()
     },
-    balloon() {},
+    balloon(text) {
+      if (!balloonText || text == null || text === "") return
+      balloonText.value = String(text)
+    },
   }
 }
