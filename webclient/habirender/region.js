@@ -653,7 +653,7 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
 }
 
 export const LayoutMap = createContext(null)
-export const regionLayout = ({ objects, avatarMotion, children }) => {
+export const regionLayout = ({ objects, avatarMotion, children, pickState = null }) => {
     const currentLayoutMap = useContext(LayoutMap)
     if (!avatarMotion && currentLayoutMap?.objects === objects) {
         return children
@@ -664,6 +664,10 @@ export const regionLayout = ({ objects, avatarMotion, children }) => {
     useSignalEffect(() => {
         avatarMotion?.tick?.value
         computeLayoutMap(sigObjects.value, layoutMap, avatarMotion)
+        if (pickState) {
+            pickState.layoutMap = layoutMap.value
+            pickState.objects = sigObjects.value
+        }
     })
     return html`<${LayoutMap.Provider} value=${({ objects, map: layoutMap, avatarMotion })}>${children}<//>`
 }
@@ -775,14 +779,36 @@ const sortObjects = (objects) => {
                                  .sort((o1, o2) => o2.mods[0].y - o1.mods[0].y)])
 }
 
-export const regionView = ({ filename, objects, avatarMotion, style = "", interaction = ({children}) => children }) => {
+export const regionView = ({
+    filename,
+    objects,
+    avatarMotion,
+    style = "",
+    interaction = ({ children }) => children,
+    pickState = null,
+    onRegionClick = null,
+}) => {
     const scale = useContext(Scale)
     objects = objects ?? useHabitatJson(filename)
 
+    const regionClick = onRegionClick
+        ? (e) => {
+            const rect = e.currentTarget.getBoundingClientRect()
+            onRegionClick({
+              canvasX: e.clientX - rect.left,
+              canvasY: e.clientY - rect.top,
+              scale,
+              event: e,
+            })
+          }
+        : null
+
     return html`
-        <${regionLayout} objects=${objects} avatarMotion=${avatarMotion}>
+        <${regionLayout} objects=${objects} avatarMotion=${avatarMotion} pickState=${pickState}>
             <${itemInteraction.Provider} value=${interaction}>
-                <div style="position: relative; line-height: 0px; width: ${320 * scale}px; height: ${128 * scale}px; overflow: hidden; ${style}">
+                <div
+                    style="position: relative; line-height: 0px; width: ${320 * scale}px; height: ${128 * scale}px; overflow: hidden; ${style}; ${onRegionClick ? "cursor: crosshair;" : ""}"
+                    onClick=${regionClick}>
                     ${sortObjects(objects).map(([obj, contents]) => html`
                         <${itemView} key=${obj.ref}
                                     viewer=${regionItemView} 

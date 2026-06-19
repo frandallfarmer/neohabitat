@@ -183,8 +183,8 @@ Each phase is independently demoable in the page shell.
   sound events to habisound. *Done when:* another avatar walking and acting updates live,
   with sound.
 - **Phase 4 — Output + basic input.** Word balloons over avatars from speech/ESP
-  (`balloons.m`); typing composes a SAY/ESP message (`text_handler.m`); click-to-walk
-  (`walkto.m` / `pointer.m`).
+  (`balloons.m`); typing composes a SAY/ESP message (`text_handler.m`); click-to-GO
+  (`pointer.m` pick → class verb table `ACTION_GO` via habiworld dispatch).
 - **Phase 5 — Pie-menu verbs.** Object under cursor (`pick.m`) → pie menu GO/GET/PUT/DO
   (`pointer.m`) → `target.verb` via the class verb table → request message (`actions.m`).
   The core C64 input port.

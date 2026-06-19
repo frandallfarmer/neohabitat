@@ -33,6 +33,7 @@ import {
   clearTextLine,
 } from "./text-input.js"
 import { Scale } from "../habirender/render.js"
+import { handleRegionGoClick } from "./go-click.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -60,12 +61,14 @@ async function main() {
   const { regionView } = await import("../habirender/region.js")
   const { errors } = await import("../habirender/view.js")
   const { HabitatWorld, classes, dispatch, constants } = await loadHabiworld()
-  const { ACTION_DO } = constants
+  const { ACTION_DO, ACTION_GO } = constants
 
   const world = new HabitatWorld()
   const avatarMotion = createAvatarMotion()
+  const pickState = { layoutMap: null, objects: null }
   let hs = null
   let dispatchClient = null
+  let goInFlight = false
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const playEspSound = (idx) => {
@@ -228,7 +231,35 @@ async function main() {
       if (!dispatchClient || !world.me) return { ok: false, reason: "not-ready" }
       return dispatch(world, ACTION_DO, noid, {}, dispatchClient)
     }
+    globalThis.habitatGo = async (noid, args) => {
+      if (!dispatchClient || !world.me) return { ok: false, reason: "not-ready" }
+      return dispatch(world, ACTION_GO, noid, args ?? {}, dispatchClient)
+    }
     transport.connect()
+  }
+
+  const onRegionGoClick = async ({ canvasX, canvasY, scale }) => {
+    if (goInFlight || !dispatchClient) return
+    goInFlight = true
+    try {
+      const result = await handleRegionGoClick({
+        world,
+        dispatch,
+        dispatchClient,
+        ACTION_GO,
+        pickState,
+        canvasX,
+        canvasY,
+        scale,
+      })
+      if (!result?.ok && result?.reason !== "not-ready") {
+        console.warn("[live] GO:", result?.reason ?? result)
+      }
+    } catch (e) {
+      console.warn("[live] GO failed:", e)
+    } finally {
+      goInFlight = false
+    }
   }
 
   const App = () => {
@@ -265,7 +296,11 @@ async function main() {
                 }
               : null}>
             ${region
-              ? html`<${regionView} objects=${objs} avatarMotion=${avatarMotion} />`
+              ? html`<${regionView}
+                  objects=${objs}
+                  avatarMotion=${avatarMotion}
+                  pickState=${pickState}
+                  onRegionClick=${onRegionGoClick} />`
               : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
           <//>
         <//>
