@@ -660,6 +660,96 @@ test('PLAY_$ resolves region sfx_number via from_noid', () => {
   assert.deepEqual(sounds, [{ name: 'teleport_arrival', noid: THE_REGION }])
 })
 
+test('OBJECTSPEAK_$ shows a word balloon', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const balloons = []
+  w.setClient({ balloon: (text) => balloons.push(text) })
+  w.apply({ op: 'OBJECTSPEAK_$', noid: THE_REGION, text: 'It is locked.', speaker: 1 })
+  assert.deepEqual(balloons, ['It is locked.'])
+})
+
+test('DIG$ bend_over/DIGGING/bend_back for a neighbor avatar', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  const sounds = []
+  w.setClient({
+    chore: (act, noid) => chores.push({ act, noid }),
+    sound: (name, noid) => sounds.push({ name, noid }),
+  })
+  w.apply({ op: 'DIG$', noid: 21 })
+  assert.deepEqual(chores, [
+    { act: 'bend_over', noid: 21 },
+    { act: 'bend_back', noid: 21 },
+  ])
+  assert.deepEqual(sounds, [{ name: 'DIGGING', noid: 21 }])
+})
+
+test('TAKE$ hand_out/hand_back for a neighbor taking a dose', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  w.apply({ op: 'TAKE$', noid: 21, count: 2 })
+  assert.deepEqual(chores, [
+    { act: 'hand_out', noid: 21 },
+    { act: 'hand_back', noid: 21 },
+  ])
+})
+
+test('BUGOUT$ plays ESCAPE_DEVICE_ACTIVATES for a neighbor', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-escape-1', name: 'Escape_device',
+      mods: [{ type: 'Escape_device', noid: 71, x: 0, y: HANDS, orientation: 0, gr_state: 0, charge: 1 }],
+    },
+  })
+  w._changeContainers(71, 21, 0, HANDS)
+  const sounds = []
+  w.setClient({ sound: (name, noid) => sounds.push({ name, noid }) })
+  w.apply({ op: 'BUGOUT$', noid: 21 })
+  assert.deepEqual(sounds, [{ name: 'ESCAPE_DEVICE_ACTIVATES', noid: 71 }])
+})
+
+test('WISH$ plays MAGIC and shows WISH_MESSAGE balloon', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-lamp-1', name: 'Magic_lamp',
+      mods: [{ type: 'Magic_lamp', noid: 72, x: 80, y: 140, orientation: 0, gr_state: 1 }],
+    },
+  })
+  const sounds = []
+  const balloons = []
+  w.setClient({
+    sound: (name, noid) => sounds.push({ name, noid }),
+    balloon: (text) => balloons.push(text),
+  })
+  w.apply({ op: 'WISH$', noid: 72, WISH_MESSAGE: 'Very well, I\'ll see what I can do.' })
+  assert.deepEqual(sounds, [{ name: 'MAGIC', noid: 72 }])
+  assert.deepEqual(balloons, ['Very well, I\'ll see what I can do.'])
+})
+
+test('APPEARING_$ and WAITFOR_$ are choreography no-ops', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  let calls = 0
+  w.setClient({
+    chore: () => { calls++ },
+    sound: () => { calls++ },
+    balloon: () => { calls++ },
+  })
+  w.apply({ op: 'APPEARING_$', noid: THE_REGION, appearing: 21 })
+  w.apply({ op: 'WAITFOR_$', noid: THE_REGION, who: 21 })
+  assert.equal(calls, 0)
+})
+
 test('GET$ bend_over/bend_back for ground pickup by a neighbor', () => {
   const w = new HabitatWorld()
   makeStorm(w)

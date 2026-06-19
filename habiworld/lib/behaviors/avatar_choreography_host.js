@@ -2,8 +2,8 @@
 
 'use strict'
 
-// Inbound choreography-only host messages: ATTACK$, BASH$, SPEAK$, PLAY_$.
-// No object-table state — presentation via ctx.chore / ctx.sound / ctx.balloon.
+// Inbound choreography-only host messages — no object-table state.
+// Presentation via ctx.chore / ctx.sound / ctx.balloon.
 
 const { byTypeName, classes: classTable } = require('../classes')
 const { THE_REGION } = require('../constants')
@@ -96,11 +96,60 @@ function generic_PLAY(ctx) {
   return { ok: true }
 }
 
+// generic_OBJECTSPEAK — object/oracle word balloons (region channel).
+function generic_OBJECTSPEAK(ctx) {
+  const text = ctx.args.text
+  if (text) ctx.balloon(text)
+  return { ok: true }
+}
+
+// shovel_DIG.m observer path — wire noid is the digging avatar, not the shovel.
+function avatar_DIG(ctx) {
+  const actor = ctx.args.noid ?? ctx.pointed.noid
+  ctx.chore('bend_over', actor)
+  ctx.sound('DIGGING', actor)
+  ctx.chore('bend_back', actor)
+  return { ok: true }
+}
+
+// avatar_TAKE.m — neighbor took a drug dose (effects arrive separately).
+function avatar_TAKE(ctx) {
+  const actor = ctx.args.noid ?? ctx.pointed.noid
+  ctx.chore('hand_out', actor)
+  ctx.chore('hand_back', actor)
+  return { ok: true }
+}
+
+// escape_device_BUGOUT.m observer path — wire noid is the escaping avatar.
+function avatar_BUGOUT(ctx) {
+  const actor = ctx.args.noid ?? ctx.pointed.noid
+  const dev = ctx.world.holding(actor)
+  const soundNoid = dev?.type === 'Escape_device' ? dev.noid : actor
+  ctx.sound('ESCAPE_DEVICE_ACTIVATES', soundNoid)
+  return { ok: true }
+}
+
+// Region.java APPEARING_$ — arrival notification; make follows separately.
+function region_APPEARING() {
+  return { ok: true }
+}
+
+// Avatar.java WAITFOR_$ — pre-departure notification; delete follows separately.
+function region_WAITFOR() {
+  return { ok: true }
+}
+
 module.exports = {
   avatar_ATTACK,
   avatar_BASH,
   generic_SPEAK,
   generic_PLAY,
+  generic_OBJECTSPEAK,
+  avatar_DIG,
+  avatar_TAKE,
+  avatar_BUGOUT,
+  region_APPEARING,
+  region_WAITFOR,
   soundKeysForSfx,
   soundSourceRecord,
 }

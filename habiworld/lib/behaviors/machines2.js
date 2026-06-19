@@ -322,8 +322,10 @@ async function magic_lamp_talk(ctx) {
 }
 
 // magic_lamp_WISH (host): wish theatrics; outcome arrives separately.
-async function magic_lamp_WISH(ctx) {
+function magic_lamp_WISH(ctx) {
   ctx.sound('MAGIC', ctx.pointed.noid)
+  const text = ctx.args.WISH_MESSAGE
+  if (text) ctx.balloon(text)
   return { ok: true }
 }
 

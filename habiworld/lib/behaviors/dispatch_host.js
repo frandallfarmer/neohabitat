@@ -44,11 +44,27 @@ const MIGRATED_OPS = new Set([
   'BASH$',
   'SPEAK$',
   'PLAY_$',
+  'OBJECTSPEAK_$',
+  'WISH$',
+  'DIG$',
+  'TAKE$',
+  'BUGOUT$',
+  'APPEARING_$',
+  'WAITFOR_$',
 ])
 
+// Ops whose wire noid does not match the class-table slot on that object (e.g. DIG$ on
+// the avatar noid, not shovel slot 8). Resolved to a fixed behavior name.
+const HOST_FIXED_BEHAVIORS = {
+  DIG$: 'avatar_DIG',
+  TAKE$: 'avatar_TAKE',
+  BUGOUT$: 'avatar_BUGOUT',
+  OBJECTSPEAK_$: 'generic_OBJECTSPEAK',
+  APPEARING_$: 'region_APPEARING',
+  WAITFOR_$: 'region_WAITFOR',
+}
+
 // Host message slot numbers (Constants.java) — class-table slot on msg.noid object.
-// Ops where the server puts an avatar noid on the wire (DIG$, TAKE$, BUGOUT$) stay in
-// deltas.js until pointed-object resolution is extended.
 const HOST_OP_SLOTS = {
   'WALK$': 8,
   'POSTURE$': 20,
@@ -80,6 +96,7 @@ const HOST_OP_SLOTS = {
   'ATTACK$': 9,
   'BASH$': 10,
   'SPEAK$': 14,
+  'WISH$': 8,
 }
 
 const noopPresentationClient = () => ({
@@ -94,6 +111,15 @@ function resolveHostDispatch(msg) {
     if (pointedNoid == null) return null
     return { pointedNoid, behavior: 'generic_PLAY' }
   }
+  const fixed = HOST_FIXED_BEHAVIORS[msg.op]
+  if (fixed) {
+    let pointedNoid = msg.noid
+    if (pointedNoid == null && (msg.op === 'OBJECTSPEAK_$' || msg.op === 'APPEARING_$' || msg.op === 'WAITFOR_$')) {
+      pointedNoid = THE_REGION
+    }
+    if (pointedNoid == null) return null
+    return { pointedNoid, behavior: fixed }
+  }
   const slot = HOST_OP_SLOTS[msg.op]
   if (slot == null || msg.noid == null) return null
   return { pointedNoid: msg.noid, slot }
@@ -102,7 +128,8 @@ function resolveHostDispatch(msg) {
 function pointedForHostDispatch(world, spec) {
   const rec = world.get(spec.pointedNoid)
   if (rec) return rec
-  if (spec.behavior === 'generic_PLAY') {
+  if (spec.behavior === 'generic_PLAY' || spec.behavior === 'generic_OBJECTSPEAK'
+      || spec.behavior === 'region_APPEARING' || spec.behavior === 'region_WAITFOR') {
     return soundSourceRecord(world, spec.pointedNoid)
   }
   if (spec.pointedNoid === THE_REGION) {

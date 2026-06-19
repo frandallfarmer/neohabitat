@@ -274,27 +274,7 @@ const DELTAS = {
 
   // SELL$ — migrated to lib/behaviors/machines.js vendo_SELL via dispatch_host.js
 
-  // ── choreography only (sound, animation, text) — deliberate no-ops ─
-
-  'OBJECTSPEAK_$': { choreography: true, src: 'object word balloons' },
-  // ATTACK$ / BASH$ / SPEAK$ / PLAY_$ — migrated to avatar_choreography_host.js
-  // FAKESHOOT$ / RUB$ — migrated to lib/behaviors/machines.js via dispatch_host.js
-  'WISH$':       { choreography: true, src: 'mods (wish text)' },
-  'WISH_MESSAGE':{ choreography: true, src: 'mods (wish text)' },
-  // Avatar uses a drug/escape-device — decrement count is client-predicted
-  // from the C64 but for observers the item count isn't visible; deletion
-  // (if count hits 0) arrives via GOAWAY_$.
-  'TAKE$':   { choreography: true, src: 'Behaviors/avatar_TAKE.m / Drugs.java' },
-  'BUGOUT$': { choreography: true, src: 'Behaviors/avatar_BUGOUT.m / Escape_device.java' },
-  // Animation-only ops: no object-table state changes.
-  'DIG$':     { choreography: true, src: 'Behaviors/shovel_DIG.m / Shovel.java' },
-  // MUNCH$ / FLUSH$ / ZAPTO$ / EXPLODE$ — migrated via dispatch_host.js
-  // APPEARING_$: broadcast when an avatar enters. Their object arrives via
-  // a separate make message; this is just an arrival notification.
-  'APPEARING_$': { choreography: true, src: 'mods/Region.java (avatar arrival notification)' },
-  // WAITFOR_$: the acting avatar is about to leave. Actual deletion arrives
-  // via a separate delete message.
-  'WAITFOR_$':   { choreography: true, src: 'mods/Avatar.java (pre-departure notification)' },
+  // Choreography-only ops — migrated to avatar_choreography_host.js / magic_lamp_WISH.
 }
 
 // Apply one delta op to the world. Unknown ops are emitted (by the
