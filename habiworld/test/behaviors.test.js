@@ -125,6 +125,22 @@ test('a standalone GO waits out the walk animation (post-GO waitWhile)', async (
   assert.ok(calls.waits[0] > 0, 'the wait is distance-scaled, not zero')
 })
 
+test('ctx.walkTo ports goXY: startWalk then position update and moved', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const walks = []
+  const moved = []
+  w.on('moved', (rec) => moved.push(rec.noid))
+  const { cb } = recorder()
+  cb.walkTo = async (x, y) => ({ x: 80, y: 130, how: 1 })
+  cb.startWalk = (noid, x, y, how) => walks.push({ noid, x, y, how })
+  await dispatch(w, ACTION_GO, 30, {}, cb)
+  assert.deepEqual(walks, [{ noid: 17, x: 80, y: 130, how: 1 }])
+  assert.equal(w.me.mod.x, 80)
+  assert.equal(w.me.mod.y, 130)
+  assert.deepEqual(moved, [17])
+})
+
 test('nested GO does not double-wait (goToAndGet waits exactly once)', async () => {
   // generic_goToAndGet does doAction(ACTION_GO) then waitWalkAnimation in one
   // chain; the top-level post-walk wait must NOT add a second wait.
@@ -553,15 +569,15 @@ test('OPENCONTAINER$ skips inbound sound when the actor is me', () => {
   assert.equal(sounds.length, 0)
 })
 
-test('WALK$ updates neighbor avatar position', () => {
+test('WALK$ dispatches avatar_WALK: startWalk then position update', () => {
   const w = new HabitatWorld()
   makeStorm(w)
-  const chores = []
-  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
+  const walks = []
+  w.setClient({ startWalk: (noid, x, y, how) => walks.push({ noid, x, y, how }) })
   w.apply({ op: 'WALK$', noid: 21, x: 40, y: 170, how: 1 })
+  assert.deepEqual(walks, [{ noid: 21, x: 40, y: 170, how: 1 }])
   assert.equal(w.get(21).mod.x, 40)
   assert.equal(w.get(21).mod.y, 170)
-  assert.equal(chores.length, 0) // walk replay is renderer-side, not ctx.chore
 })
 
 test('POSTURE$ STAND_FRONT updates neighbor activity without chore', () => {

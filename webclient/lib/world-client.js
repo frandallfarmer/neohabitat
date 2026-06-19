@@ -20,7 +20,7 @@ export function buildDispatchClient({ transport, presentation, world }) {
     walkTo: async (x, y) => {
       const how = x <= 80 ? 0 : 1
       const reply = await transport.sendForReply({ op: "WALK", to: avatarRef(), x, y, how })
-      return { x: reply.x ?? x, y: reply.y ?? y }
+      return { x: reply.x ?? x, y: reply.y ?? y, how: reply.how ?? how }
     },
     // Behaviors emit to: 'ME' (habibot resolves via names); web client uses avatar ref.
     send: (msg) => transport.sendForReply(resolveOutbound(msg, world)),

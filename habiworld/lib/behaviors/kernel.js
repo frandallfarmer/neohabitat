@@ -25,8 +25,10 @@
 //   walkTo(x, y) → Promise<{x,y}>   v_goXY / v_start_walk
 //   animationWait(ms)               waitWhile animation_wait_bit
 //   beep() / boing()                v_beep / v_boing failure terminators
-//   sound(n), chore(act), newImage(noid, state), balloon(text),
-//   face(dir), changeRegion(direction), changeLight(n)
+//   sound(n), chore(act), startWalk(noid,x,y,how), newImage(noid, state),
+//   balloon(text), face(dir), changeRegion(direction), changeLight(n)
+//   startWalk — Main/walkto.m:start_walk (v_start_walk); own walks from
+//   Main/actions.m:goXY after WALK reply; neighbor walks from avatar_WALK.m.
 
 const {
   HANDS, THE_REGION, SCREEN_WIDTH, OPEN_BIT, UNLOCKED_BIT,
@@ -176,16 +178,22 @@ function makeCtx(world, verb, pointed, args, client, parent) {
 
   ctx.send = (msg) => client.send(msg)
 
-  // v_goXY: walk, track our avatar's confirmed position, record how
-  // long the walk animation would play (consumed by waitWalkAnimation —
-  // the `doMyAction ACTION_GO / waitWhile animation_wait_bit` pair).
+  // Main/actions.m goXY — send WALK, wait reply, start_walk on success.
   ctx.walkTo = async (x, y) => {
     const from = (me && me.mod.x !== undefined) ? { x: me.mod.x, y: me.mod.y } : null
     const arrived = await client.walkTo(x, y)
-    const dest = (arrived && arrived.x !== undefined) ? arrived : { x, y }
+    const destX = arrived?.x ?? x
+    const destY = arrived?.y ?? y
+    const how = arrived?.how ?? (x <= 80 ? 0 : 1)
+    // goXY: response_data[1] == 0 → go_fail
+    if (destY === 0) return ctx.beep('walk-failed')
+    const dest = { x: destX, y: destY }
     if (me) {
-      me.mod.x = dest.x
-      me.mod.y = dest.y
+      // walkto.m:start_walk — animate from current record position.
+      if (client.startWalk) client.startWalk(me.noid, destX, destY, how)
+      me.mod.x = destX
+      me.mod.y = destY
+      world.emit('moved', me)
     }
     ctx._walkState.millis = walkWaitMillis(from, dest)
     return dest

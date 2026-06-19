@@ -46,17 +46,21 @@ function choreNameForPosture(avAct) {
   return (name === 'init' || name === 'nop') ? 'stand' : name
 }
 
-// avatar_WALK.m — WALK$ wire: { noid: actor, x, y, how }
-// v_start_walk animates locally; final x/y land in the object table.
+// avatar_WALK.m — async host WALK$ (comm_control.m phantom_request → GetAction slot 8).
+// getResponse WALK_TO_X/Y/HOW → chainTo v_start_walk; no instant position write on C64.
 function avatar_WALK(ctx) {
   const world = ctx.world
   const msg = ctx.args
   const o = world.get(msg.noid)
   if (!o) return { ok: false, reason: 'no-avatar' }
-  o.mod.x = msg.x
-  o.mod.y = msg.y
+  const x = msg.x
+  const y = msg.y
+  const how = msg.how
+  if (y === 0) return { ok: false, reason: 'walk-failed' }
+  if (ctx.client.startWalk) ctx.client.startWalk(msg.noid, x, y, how)
+  o.mod.x = x
+  o.mod.y = y
   world.emit('moved', o)
-  // Walk replay stays in the renderer (webclient beginWalk before world.apply).
   return { ok: true }
 }
 

@@ -183,6 +183,15 @@ async function main() {
     if (SOUND_TRACE) console.log("[sound-trace] Connect: world client registered (behavior sound/chore)")
     status.value = { kind: "", text: `connecting to ${ws}…` }
     let gotMsg = false
+    const applyInbound = (m) => {
+      world.apply(m)
+      const rec = world.get(m.noid)
+      if (m.op === "FIDDLE_$" && m.offset === 9) {
+        avatarMotion.noteServerFacing(m.noid)
+      } else {
+        avatarMotion.onOp(m, rec?.mod?.orientation ?? 0, rec?.mod?.activity ?? rec?.mod?.action ?? 129)
+      }
+    }
     transport = new Transport({
       url: ws,
       onMessage: (m) => {
@@ -199,14 +208,7 @@ async function main() {
             sfx_number: m.sfx_number,
           })
         }
-        if (m.op === "WALK$") avatarMotion.beginWalk(m.noid, world.get(m.noid), m)
-        world.apply(m)
-        const rec = world.get(m.noid)
-        if (m.op === "FIDDLE_$" && m.offset === 9) {
-          avatarMotion.noteServerFacing(m.noid)
-        } else {
-          avatarMotion.onOp(m, rec?.mod?.orientation ?? 0, rec?.mod?.activity ?? rec?.mod?.action ?? 129)
-        }
+        applyInbound(m)
       },
       onOpen: () => {
         status.value = { kind: "online", text: `connected — entering ${context} as user-${user}…` }

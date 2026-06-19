@@ -29,6 +29,13 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         rec?.mod?.activity ?? 129,
       )
     },
+    // Main/walkto.m:start_walk — called from goXY (own WALK reply) and avatar_WALK.m.
+    startWalk(noid, x, y, how) {
+      if (noid == null || !avatarMotion) return
+      const rec = world.get(noid)
+      if (!rec?.mod) return
+      avatarMotion.beginWalk(noid, rec, { x, y, how })
+    },
     // C64 newImage redraw hook. Background objects set background_render on
     // the C64; we have no backdrop cache yet, so refresh repaints everything.
     newImage() {
