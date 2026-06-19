@@ -152,18 +152,32 @@ header.titlebar .tag {
 }
 @keyframes blink { 50% { opacity: 0.25; } }
 
-/* Placeholder word balloon — one line of text, replaced on each SPEAK$/ctx.balloon. */
-.word-balloon {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: var(--ink);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 13px;
-    line-height: 1.4;
-    white-space: pre-wrap;
-    word-break: break-word;
+/* C64 word balloon panel (Main/balloons.m) — charset border above the graphics band. */
+.habitat-viewport {
+    position: relative;
+    line-height: 0;
+}
+.balloon-stage {
+    position: relative;
+    background: #000;
+}
+.balloon-panel {
+    position: relative;
+    z-index: 2;
+    background: #000;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.balloon-graphics-band {
+    position: relative;
+    z-index: 0;
+}
+.balloon-quip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    z-index: 1;
 }
 
 /* Word balloon. Habitat balloons render in a text window at the TOP of the screen and

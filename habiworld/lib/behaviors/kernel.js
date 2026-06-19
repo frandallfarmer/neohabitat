@@ -240,7 +240,14 @@ function makeCtx(world, verb, pointed, args, client, parent) {
     }
     if (client.newImage) client.newImage(noid, state)
   }
-  ctx.balloon = (text) => { if (client.balloon) client.balloon(text) }
+  ctx.balloon = (text, meta) => {
+    if (!client.balloon || text == null || text === "") return
+    const info = (meta && typeof meta === "object") ? { ...meta } : {}
+    if (info.speaker == null && info.speakerNoid == null && ctx.actor) {
+      info.speaker = ctx.actor.noid
+    }
+    client.balloon(String(text), info)
+  }
   ctx.face = (dir) => { if (client.face) client.face(dir) }
 
   ctx.changeLight = (n) => {

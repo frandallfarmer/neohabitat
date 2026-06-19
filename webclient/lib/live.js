@@ -19,6 +19,14 @@ import { createAvatarMotion } from "./avatar-chore.js"
 import { getSoundEngine, installFocusResume, SOUND_TRACE } from "./sound.js"
 import { buildPresentationClient } from "./presentation.js"
 import { buildDispatchClient } from "./world-client.js"
+import {
+  BalloonStage,
+  createBalloonState,
+  clearBalloonState,
+  pushBalloon,
+  trackAvatarsForBalloons,
+} from "./balloons.js"
+import { Scale } from "../habirender/render.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -29,6 +37,10 @@ globalThis.fetch = (input, init) => {
 
 const html = htm.bind(h)
 const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
+const qNum = (k, d) => {
+  const v = Number(q(k, d))
+  return Number.isFinite(v) && v > 0 ? v : d
+}
 
 async function main() {
   if (SOUND_TRACE) {
@@ -45,7 +57,17 @@ async function main() {
   let dispatchClient = null
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
-  const balloonText = signal("")
+  const balloonState = signal(createBalloonState({
+    maxDisplayLines: qNum("balloonLines", 7),
+    maxBalloonLines: qNum("balloonHeight", 4),
+  }))
+  const balloons = {
+    push(w, text, meta) {
+      pushBalloon(balloonState.value, w, text, meta)
+      balloonState.value = { ...balloonState.value }
+    },
+  }
+  let untrackBalloons = null
   const refresh = () => { objects.value = worldToObjects(world) }
   for (const ev of ["added", "removed", "regionDescribed", "regionChanged",
                     "moved", "stateChanged", "fieldChanged", "containerChanged", "lighting"]) {
@@ -78,9 +100,12 @@ async function main() {
     if (typeof world.clear === "function") world.clear()
     avatarMotion.clear()
     objects.value = []
-    balloonText.value = ""
+    clearBalloonState(balloonState.value)
+    balloonState.value = { ...balloonState.value }
+    if (untrackBalloons) untrackBalloons()
+    untrackBalloons = trackAvatarsForBalloons(balloonState.value, world)
     const presentation = buildPresentationClient({
-      hs, world, classes, avatarMotion, refresh, balloonText,
+      hs, world, classes, avatarMotion, refresh, balloons,
     })
     if (typeof world.setClient === "function") {
       world.setClient(presentation)
@@ -144,8 +169,8 @@ async function main() {
     const [user, setUser] = useState(q("user", "randy"))
     const objs = objects.value
     const st = status.value
-    const balloon = balloonText.value
     const region = objs.find((o) => o.type === "context")
+    balloonState.value.revision
     avatarMotion.tick.value
     return html`
       <div class="connect">
@@ -158,11 +183,14 @@ async function main() {
         <button onClick=${() => connect(ws, context, user)}>Connect</button>
       </div>
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
-      ${balloon ? html`<div class="word-balloon">${balloon}</div>` : null}
-      <div style="background:#000; align-self:flex-start;">
-        ${region
-          ? html`<${regionView} objects=${objs} avatarMotion=${avatarMotion} />`
-          : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
+      <div class="habitat-viewport" style="background:#000; align-self:flex-start;">
+        <${Scale.Provider} value=${3}>
+          <${BalloonStage} stateSignal=${balloonState}>
+            ${region
+              ? html`<${regionView} objects=${objs} avatarMotion=${avatarMotion} />`
+              : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
+          <//>
+        <//>
       </div>
       <${errors} />`
   }

@@ -81,7 +81,9 @@ function avatar_BASH(ctx) {
 // generic_SPEAK.m — word balloons (text on the wire).
 function generic_SPEAK(ctx) {
   const text = ctx.args.text
-  if (text) ctx.balloon(text)
+  if (text) {
+    ctx.balloon(text, { speaker: ctx.pointed.noid, op: "SPEAK$" })
+  }
   return { ok: true }
 }
 
@@ -98,8 +100,15 @@ function generic_PLAY(ctx) {
 
 // generic_OBJECTSPEAK — object/oracle word balloons (region channel).
 function generic_OBJECTSPEAK(ctx) {
-  const text = ctx.args.text
-  if (text) ctx.balloon(text)
+  const msg = ctx.args
+  const text = msg.text
+  if (text) {
+    ctx.balloon(text, {
+      speaker: msg.speaker,
+      op: "OBJECTSPEAK_$",
+      noQuip: msg.speaker == null,
+    })
+  }
   return { ok: true }
 }
 

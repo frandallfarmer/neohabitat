@@ -1,5 +1,5 @@
 export let makeCanvas
-export let getFile = fetch
+export let getFile
 
 if (typeof document === "undefined") {
     const canvas = await import("canvas")
@@ -26,6 +26,21 @@ if (typeof document === "undefined") {
         }
     }
 } else {
+    // Bare-relative URLs (charset.m, bodies/*.bin, beta.mud, db/…) resolve against this
+    // module's directory so habirender data loads regardless of which page imports us.
+    // Call globalThis.fetch at request time — do not alias fetch at module load, or a
+    // host page patch installed later (live.js) is bypassed.
+    const HABIRENDER_BASE = new URL("./", import.meta.url).href
+    const BARE_RELATIVE = /^(?![a-z][a-z0-9+.-]*:)(?![./])/
+
+    getFile = (input, init) => {
+        let url = input
+        if (typeof url === "string" && BARE_RELATIVE.test(url)) {
+            url = new URL(url, HABIRENDER_BASE).href
+        }
+        return globalThis.fetch(url, init)
+    }
+
     makeCanvas = (w, h) => {
         const canvas = document.createElement("canvas")
         canvas.width = w
