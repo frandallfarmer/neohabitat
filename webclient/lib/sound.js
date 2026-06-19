@@ -138,8 +138,19 @@ export function wireSoundToWorld(world, hs, classes) {
 export function soundClientCallbacks(hs, world, classes) {
   const classesByType = classIndexFromTable(classes)
   return {
+    // C64 `sound N` / `complexSound N`: class-relative index on the emitting object.
+    // Symbolic names (TELEPORT_ARRIVAL, …) resolve via habisound names.js.
     sound(name, noid) {
       const rec = world.get(noid)
+      if (typeof name === "number") {
+        const keys = soundKeysForPlay(classesByType, rec, name)
+        trace("sound index:", name, { noid, type: rec?.type, keys, ctx: hs.ctx?.state })
+        for (const key of keys) {
+          const ok = hs.playFile(key)
+          trace("sound:", key, "→", ok ? "queued" : "FAILED")
+        }
+        return
+      }
       hs.play(name, { classHint: classHintFromRecord(rec) })
     },
     beep() {

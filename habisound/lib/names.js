@@ -18,6 +18,12 @@ export const ALIASES = {
   COIN_DEPOSITED: 'coin_deposited_in_coinop',
   COIN_REJECTED: 'coin_rejected_by_coinop',
   DIGGING: 'digging',
+  // Avatar class indices 6–9 (action_head.i); class_avatar uses message_sent ×3 + message_received.
+  ESP_ACTIVATES: 'message_sent',
+  ESP_MESSAGE_SENT: 'message_sent',
+  ESP_MESSAGE_RECEIVED: 'message_received',
+  ESP_MESSAGE_RECIEVED: 'message_received', // C64 typo in action_head.i
+  ESP_DEACTIVATES: 'message_sent',
   ELEVATOR_ARRIVAL: 'teleport_arrival',
   ELEVATOR_CONF_WAIT: 'teleport_conf_wait',
   ELEVATOR_DEPARTING: 'teleport_departure',

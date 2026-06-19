@@ -42,6 +42,11 @@ globalThis.fetch = (input, init) => {
 }
 
 const html = htm.bind(h)
+// action_head.i — avatar class sound slots used by avatar_talk.m / generic_broadcast.m
+const ESP_ACTIVATES = 6
+const ESP_MESSAGE_SENT = 7
+const ESP_MESSAGE_RECEIVED = 8
+const ESP_DEACTIVATES = 9
 const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
 const qNum = (k, d) => {
   const v = Number(q(k, d))
@@ -63,6 +68,11 @@ async function main() {
   let dispatchClient = null
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
+  const playEspSound = (idx) => {
+    const noid = world.me?.noid
+    if (noid == null) return
+    world._client?.sound?.(idx, noid)
+  }
   const balloonState = signal(createBalloonState({
     maxDisplayLines: qNum("balloonLines", 7),
     maxBalloonLines: qNum("balloonHeight", 4),
@@ -70,8 +80,11 @@ async function main() {
   const textInputState = signal(createTextInputState())
   const balloons = {
     push(w, text, meta) {
-      pushBalloon(balloonState.value, w, text, meta)
-      balloonState.value = { ...balloonState.value }
+      const state = balloonState.value
+      const espReceive = state.espPending && !String(text ?? "").startsWith("ESP from ")
+      const shown = pushBalloon(state, w, text, meta)
+      if (shown && espReceive) playEspSound(ESP_MESSAGE_RECEIVED)
+      balloonState.value = { ...state }
     },
   }
   let untrackBalloons = null
@@ -104,6 +117,10 @@ async function main() {
     if (!transport.send(msg)) {
       console.warn("[live] text submit: transport not connected")
       return
+    }
+    // avatar_talk.m / generic_broadcast.m: sound ESP_MESSAGE_SENT after each v_ESP_talk.
+    if (payload.kind === "esp" || payload.kind === "esp-exit") {
+      playEspSound(ESP_MESSAGE_SENT)
     }
     // C64 talk:: clears the line after send_string; ESP reply handled via getResponse.
     clearTextLine(textInputState.value)
@@ -199,7 +216,11 @@ async function main() {
       if (!speakReplyPending || reply.esp === undefined) return
       speakReplyPending = false
       if (speakReplyTimer) clearTimeout(speakReplyTimer)
+      const wasEsp = textInputState.value.espMode
       applyEspReply(textInputState.value, reply.esp)
+      const nowEsp = textInputState.value.espMode
+      if (!wasEsp && nowEsp) playEspSound(ESP_ACTIVATES)
+      else if (wasEsp && !nowEsp) playEspSound(ESP_DEACTIVATES)
       textInputState.value = { ...textInputState.value }
     })
     dispatchClient = buildDispatchClient({ transport, presentation, world })
