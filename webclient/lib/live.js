@@ -34,6 +34,8 @@ import {
 } from "./text-input.js"
 import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick } from "./verb-dispatch.js"
+import { actionFromCommand } from "./cursor.mjs"
+import { RegionCursor } from "./cursor-view.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -271,7 +273,12 @@ async function main() {
     }
   }
 
-  const onRegionGoClick = (coords) => runRegionVerb(ACTION_GO, coords, "GO")
+  const onRegionCommand = async ({ command, label, canvasX, canvasY, scale, habitatX }) => {
+    if (verbInFlight || !dispatchClient) return
+    dispatchClient.faceCursor?.(habitatX)
+    const verb = actionFromCommand(command)
+    await runRegionVerb(verb, { canvasX, canvasY, scale }, label)
+  }
 
   const App = () => {
     const [ws, setWs] = useState(q("ws", "ws://localhost:1987"))
@@ -311,7 +318,11 @@ async function main() {
                   objects=${objs}
                   avatarMotion=${avatarMotion}
                   pickState=${pickState}
-                  onRegionClick=${onRegionGoClick} />`
+                  regionInput=${{
+                    Cursor: RegionCursor,
+                    enabled: !!dispatchClient,
+                    onCommand: onRegionCommand,
+                  }} />`
               : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
           <//>
         <//>

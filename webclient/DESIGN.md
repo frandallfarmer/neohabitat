@@ -93,6 +93,14 @@ cursor; execute `target.verb`, indirected to the object's actual handler through
 verb table.** Clicking GET on a flashlight runs the flashlight class's GET handler, which
 emits the corresponding request to the host.
 
+**Modal cursor (`cursor.m`)** — not a radial wedge menu. Hold the trigger and drag a
+direction; the cursor sprite swaps to DO/GO/GET/PUT/STOP icons from `sprites.m` while the
+cursor position stays fixed. Release with stick centered commits `state_to_command`. A quick
+tap without drag is STOP: `face_cursor` (`actions.m`) then `generic_cease`. Normal mode
+(button up) moves the crosshair sprite. Web mapping: `pointerdown` = trigger, drag delta =
+joystick nibble via `cursor_point_table`, `pointerup` = release → `execute_command` →
+`dispatchVerbAtPick`.
+
 Canonical sources to port from:
 
 | Concern | C64 source |
@@ -183,11 +191,15 @@ Each phase is independently demoable in the page shell.
   sound events to habisound. *Done when:* another avatar walking and acting updates live,
   with sound.
 - **Phase 4 — Output + basic input.** Word balloons over avatars from speech/ESP
-  (`balloons.m`); typing composes a SAY/ESP message (`text_handler.m`); click-to-GO
-  (`pointer.m` pick → class verb table `ACTION_GO` via habiworld dispatch).
-- **Phase 5 — Pie-menu verbs.** Object under cursor (`pick.m`) → pie menu GO/GET/PUT/DO
-  (`pointer.m`) → `target.verb` via the class verb table → request message (`actions.m`).
-  The core C64 input port.
+  (`balloons.m`); typing composes a SAY/ESP message (`text_handler.m`); unified verb
+  dispatch (`actions.m` / `habiworld` class table); C64-faithful walk reply handling
+  (`actions.m:goXY` → `walkto.m:start_walk`).
+- **Phase 5 — Modal cursor verbs.** Port `Main/cursor.m` + `sprites.m`: hold
+  pointer and drag to swap the cursor icon (DO/GO/GET/PUT/STOP); cursor **does not move**
+  while held. Release runs `execute_command` (`actions.m`): `pointer.m` pick →
+  `face_cursor` → class verb via `habiworld` dispatch. Quick tap (no drag) = STOP
+  (face cursor only, `generic_cease`). Not a wedge/radial menu — directional stick
+  table `cursor_point_table` exactly as on the C64.
 - **Phase 6 — Full controls.** Function/control keys, postures/emotes (`gestures.m`),
   inventory/pockets UI, get/drop (`getdrop.m`), throw (`throw.m`).
 

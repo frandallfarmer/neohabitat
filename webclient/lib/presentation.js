@@ -1,6 +1,7 @@
 // Client callbacks for habiworld behaviors (kernel.js ctx.sound / ctx.chore / …).
 
 import { soundClientCallbacks } from "./sound.js"
+import { FACE_LEFT, FACE_RIGHT } from "./avatar-chore.js"
 
 const CHORE_ACTIONS = {
   bend_over: "bend_over",
@@ -27,6 +28,18 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         action,
         rec?.mod?.orientation ?? 0,
         rec?.mod?.activity ?? 129,
+      )
+    },
+    // Main/actions.m face_cursor — turn toward cursor x before execute_command.
+    faceCursor(habitatX) {
+      const me = world.me
+      if (me == null || habitatX == null || !avatarMotion) return
+      const posture = me.mod.x < habitatX ? FACE_RIGHT : FACE_LEFT
+      avatarMotion.applyPersistentPosture(
+        me.noid,
+        posture,
+        me.mod.orientation ?? 0,
+        me.mod.activity ?? 129,
       )
     },
     // Main/walkto.m:start_walk — called from goXY (own WALK reply) and avatar_WALK.m.

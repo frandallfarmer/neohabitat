@@ -786,34 +786,30 @@ export const regionView = ({
     style = "",
     interaction = ({ children }) => children,
     pickState = null,
-    onRegionClick = null,
+    regionInput = null,
 }) => {
     const scale = useContext(Scale)
     objects = objects ?? useHabitatJson(filename)
-
-    const regionClick = onRegionClick
-        ? (e) => {
-            const rect = e.currentTarget.getBoundingClientRect()
-            onRegionClick({
-              canvasX: e.clientX - rect.left,
-              canvasY: e.clientY - rect.top,
-              scale,
-              event: e,
-            })
-          }
-        : null
 
     return html`
         <${regionLayout} objects=${objects} avatarMotion=${avatarMotion} pickState=${pickState}>
             <${itemInteraction.Provider} value=${interaction}>
                 <div
-                    style="position: relative; line-height: 0px; width: ${320 * scale}px; height: ${128 * scale}px; overflow: hidden; ${style}; ${onRegionClick ? "cursor: crosshair;" : ""}"
-                    onClick=${regionClick}>
-                    ${sortObjects(objects).map(([obj, contents]) => html`
-                        <${itemView} key=${obj.ref}
-                                    viewer=${regionItemView} 
-                                    object=${obj} 
-                                    contents=${contents}/>`)}
+                    style="position: relative; line-height: 0px; width: ${320 * scale}px; height: ${128 * scale}px; overflow: hidden; ${style};">
+                    <div style="position: relative; width: 100%; height: 100%; pointer-events: none;">
+                        ${sortObjects(objects).map(([obj, contents]) => html`
+                            <${itemView} key=${obj.ref}
+                                        viewer=${regionItemView}
+                                        object=${obj}
+                                        contents=${contents}/>`)}
+                    </div>
+                    ${regionInput
+                      ? html`<${regionInput.Cursor}
+                          width=${320}
+                          height=${128}
+                          enabled=${regionInput.enabled !== false}
+                          onCommand=${regionInput.onCommand} />`
+                      : null}
                 </div>
             <//>
         <//>`
