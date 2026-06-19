@@ -59,7 +59,10 @@ async function main() {
     try {
       if (!hs) {
         if (SOUND_TRACE) console.log("[sound-trace] Connect: initializing habisound…")
-        hs = await getSoundEngine()
+        // AudioContext must be constructed in the synchronous tail of the click handler.
+        const AC = globalThis.AudioContext || globalThis.webkitAudioContext
+        const gestureCtx = AC ? new AC() : null
+        hs = await getSoundEngine({ audioContext: gestureCtx })
         await hs.resume()
         if (SOUND_TRACE) console.log("[sound-trace] Connect: audioContext =", hs.ctx?.state)
       }

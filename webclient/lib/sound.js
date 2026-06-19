@@ -17,12 +17,13 @@ const trace = (...args) => { if (SOUND_TRACE) console.log("[sound-trace]", ...ar
 
 let _enginePromise = null
 
-export async function getSoundEngine() {
+export async function getSoundEngine(opts = {}) {
   if (!_enginePromise) {
     _enginePromise = (async () => {
       trace("init: loading HabiSound from", HABISOUND_URL)
       const { HabiSound } = await import(HABISOUND_URL)
       const hs = new HabiSound({
+        audioContext: opts.audioContext ?? null,
         dataUrl: new URL("../../habisound/data/sounds.json", import.meta.url).href,
         workletUrl: new URL("../../habisound/lib/synth-worklet.js", import.meta.url).href,
       })

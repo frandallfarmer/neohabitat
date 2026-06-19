@@ -35,14 +35,15 @@ export class HabiSound {
 
   async init() {
     if (this.ready) return this;
+    // Create the context before any await so a click-handler init keeps user activation.
+    if (!this.ctx) {
+      const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
+      this.ctx = new AC();
+    }
     if (!this.bank) {
       const res = await fetch(this.dataUrl);
       if (!res.ok) throw new Error(`habisound: failed to load ${this.dataUrl} (${res.status})`);
       this.bank = await res.json();
-    }
-    if (!this.ctx) {
-      const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
-      this.ctx = new AC();
     }
     await this.ctx.audioWorklet.addModule(this.workletUrl);
     this.node = new AudioWorkletNode(this.ctx, 'habisound', { outputChannelCount: [1] });
@@ -53,6 +54,11 @@ export class HabiSound {
 
   async resume() {
     if (this.ctx && this.ctx.state !== 'running') await this.ctx.resume();
+  }
+
+  async _playWhenRunning(fn) {
+    await this.resume();
+    fn();
   }
 
   // Play by symbolic name (TELEPORT_ARRIVAL) or by bank key (teleport_arrival).
@@ -78,8 +84,9 @@ export class HabiSound {
       console.warn(`habisound: no sound named "${key}"`);
       return false;
     }
-    this.resume();
-    this.node.port.postMessage({ type: 'play', voices: s.voices, pw: s.pw || null });
+    void this._playWhenRunning(() => {
+      this.node.port.postMessage({ type: 'play', voices: s.voices, pw: s.pw || null });
+    });
     return true;
   }
 
@@ -96,8 +103,9 @@ export class HabiSound {
       if (!s || !s.voices) console.warn(`habisound: no sound named "${k}"`);
       return { voices: s ? s.voices : null, pw: s ? s.pw || null : null };
     });
-    this.resume();
-    this.node.port.postMessage({ type: 'playPiece', parts });
+    void this._playWhenRunning(() => {
+      this.node.port.postMessage({ type: 'playPiece', parts });
+    });
     return true;
   }
 
