@@ -251,6 +251,17 @@ Each phase is independently demoable in the page shell.
     `TEXT_REPLY_BIT`. Reuse the charset renderer already powering balloons/signs/the speak
     line; run the page protocol over the same transport.
 
+    *Status:* reading done — `text-view.js` renders the page with the canonical charset
+    (black ink on C64 `color_pink`) and the `Book_Menu` (NEXT/BACK/PAGE #/QUIT) in the game
+    font on white; paging via the READ protocol (`Document.java`). The **pen cursor** caret
+    (typewriter-tip, snaps to a char cell, moves on arrows / advances on type) is drawn but
+    is currently an *independent* overlay. **Next:** (1) make the pen cursor **replace the
+    mouse cursor** (hide the OS pointer, the pen *is* the pointer) so it can also point at and
+    trigger the bottom menu commands — one cursor for both the page and the menu, like the
+    C64; (2) it should be **2× size** (the C64 pen sprite is double-height). Then **paper
+    editing**: type into the page buffer, `Paper_Menu` (ERASE/REPLY/MAIL IT/QUIT), and
+    `TRANSMIT_PAGE` send-as-mail.
+
   - **6c. Ghost mode (`actions.m:274`, `farmers_equates.m:41`).** A region change can
     **force-transform** the avatar into a ghost — entering a full region makes you a ghost
     (`ghost_noid = 255`; the avatar mod carries `amAGhost`). While a ghost the command cursor

@@ -143,6 +143,7 @@ function decodeRead(reply) {
 async function generic_read(ctx) {
   const inHand = ctx.inHand
   if (!inHand || inHand.noid !== ctx.pointed.noid) return ctx.depends()
+  if (ctx.readText) return ctx.readText(ctx.pointed.noid) // graphical: modal text display
   const reply = await ctx.send({ op: 'READ', to: ctx.pointed.ref })
   if (!reply) return ctx.beep('server-denied')
   const text = decodeRead(reply)
@@ -154,6 +155,7 @@ async function generic_read(ctx) {
 // in-hand check (plaques cannot be picked up).
 async function plaque_do(ctx) {
   const plaque = ctx.pointed
+  if (ctx.readText) return ctx.readText(plaque.noid) // graphical: modal text display
   const page = ctx.args.page !== undefined ? ctx.args.page
     : (plaque.mod.current_page !== undefined ? plaque.mod.current_page + 1 : 1)
   const reply = await ctx.send({ op: 'READ', to: plaque.ref, page })

@@ -268,6 +268,47 @@ header.titlebar .tag {
 .inv-name { font-size: 11px; color: var(--muted); text-align: center; }
 .inv-empty, .inv-loading { color: var(--muted); padding: 12px; }
 
+/* Text display (Main/text_handler.m) — the canonical charset on a C64-pink page, with the
+   Book_Menu prompt in the game font on white. Replaces the region graphics band. */
+.text-stage {
+    width: 960px;
+    background: #14141c;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+}
+.text-title { font-size: 13px; color: var(--muted); }
+.text-page { position: relative; image-rendering: pixelated; }
+.text-canvas { display: block; image-rendering: pixelated; }
+/* pen cursor (text_handler.m): typewriter-tip caret — upward triangle at a char cell's
+   bottom-center, pointing up at the character. */
+.text-caret {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 10px solid #1a1a1a;
+    pointer-events: none;
+}
+.text-menu { position: relative; image-rendering: pixelated; }
+/* Four 10-col zones over the rendered menu (NEXT BACK PAGE# QUIT) — pen-cursor targets. */
+.text-menu-zones {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+.text-menu-zones button {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+.text-menu-zones button:hover { background: rgba(109, 179, 242, 0.3); }
+
 /* Word balloon. Habitat balloons render in a text window at the TOP of the screen and
    hang downward, with a "quip" pointer (sprite) toward the speaker's x — see balloons.m.
    This is a faithful-in-spirit placement; the charset-glyph border and the speaker-tracking

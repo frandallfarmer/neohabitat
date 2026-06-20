@@ -1,5 +1,7 @@
 // Full habiworld client callback set: presentation + wire I/O for outbound dispatch.
 
+import { openTextUI } from "./modes.js"
+
 const resolveOutbound = (msg, world) => {
   if (!msg || msg.to !== "ME") return msg
   const ref = world?.me?.ref
@@ -25,5 +27,18 @@ export function buildDispatchClient({ transport, presentation, world }) {
     // Behaviors emit to: 'ME' (habibot resolves via names); web client uses avatar ref.
     send: (msg) => transport.sendForReply(resolveOutbound(msg, world)),
     animationWait: (ms) => new Promise((resolve) => setTimeout(resolve, ms ?? 1000)),
+    // text_handler.m read flow: open the modal text display over a document; it pages by
+    // sending READ {page} itself. Resolves when closed. (graphical capability — bots
+    // leave this unset and balloon the text instead.)
+    readText: (noid) => {
+      const o = world?.get?.(noid)
+      const ref = o?.ref
+      if (!ref) return Promise.resolve(null)
+      return openTextUI({
+        ref,
+        title: o.name,
+        readPage: (page) => transport.sendForReply({ op: "READ", to: ref, page }),
+      })
+    },
   }
 }

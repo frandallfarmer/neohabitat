@@ -30,6 +30,19 @@ export function pickFromContainerUI(containerNoid) {
   })
 }
 
+/**
+ * text_handler.m read flow: enter the text display over a document/paper/book.
+ * `text` = { ref, title, readPage(page) }, where readPage returns the server's
+ * READ reply { nextpage, ascii }. Resolves when the reader is closed.
+ */
+export function openTextUI(text) {
+  if (pendingResolve) resolveMode(null)
+  return new Promise((resolve) => {
+    pendingResolve = resolve
+    modeState.value = { mode: MODE_TEXT, containerNoid: null, text }
+  })
+}
+
 /** Resolve the current modal pick and return to the region. result = noid | null (abort). */
 export function resolveMode(result) {
   const resolve = pendingResolve

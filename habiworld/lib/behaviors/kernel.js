@@ -260,6 +260,12 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   if (client.pickFromContainer) {
     ctx.pickFromContainer = (containerNoid) => client.pickFromContainer(containerNoid)
   }
+  // text_handler.m read flow — a GRAPHICAL client opens the modal text display over a
+  // document/paper/book (it pages itself). Resolves when closed. Only defined when the
+  // client provides it; bots leave it undefined and balloon the text instead.
+  if (client.readText) {
+    ctx.readText = (noid) => client.readText(noid)
+  }
   // C64 newImage noid[, state]: optional state sets gr_state then redraws.
   // Background objects set background_render (full backdrop); the renderer
   // handles that via refresh on newImage / fieldChanged.

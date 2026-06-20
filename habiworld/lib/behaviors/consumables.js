@@ -91,6 +91,7 @@ function windup_toy_WIND(ctx) {
 async function book_do(ctx) {
   const book = ctx.pointed
   if (!ctx.inHand || ctx.inHand.noid !== book.noid) return ctx.depends()
+  if (ctx.readText) return ctx.readText(book.noid) // graphical: modal text display (paging)
   const page = ctx.args.page !== undefined ? ctx.args.page
     : (book.mod.current_page !== undefined ? book.mod.current_page + 1 : 1)
   const reply = await ctx.send({ op: 'READ', to: book.ref, page: page })

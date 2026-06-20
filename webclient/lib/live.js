@@ -36,8 +36,9 @@ import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick } from "./verb-dispatch.js"
 import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
-import { modeState, MODE_INVENTORY, resolveMode, pickFromContainerUI } from "./modes.js"
+import { modeState, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
+import { TextView } from "./text-view.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -312,7 +313,7 @@ async function main() {
         <${Scale.Provider} value=${3}>
           <${BalloonStage}
             stateSignal=${balloonState}
-            textInput=${region && mode.mode !== MODE_INVENTORY
+            textInput=${region && mode.mode !== MODE_INVENTORY && mode.mode !== MODE_TEXT
               ? {
                   Line: TextInputLine,
                   stateSignal: textInputState,
@@ -328,7 +329,9 @@ async function main() {
                     containerNoid=${mode.containerNoid}
                     onSelect=${(noid) => resolveMode(noid)}
                     onAbort=${() => resolveMode(null)} />`
-                : html`<${regionView}
+                : mode.mode === MODE_TEXT
+                  ? html`<${TextView} text=${mode.text} onExit=${() => resolveMode(null)} />`
+                  : html`<${regionView}
                     objects=${objs}
                     avatarMotion=${avatarMotion}
                     pickState=${pickState}
