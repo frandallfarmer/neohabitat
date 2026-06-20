@@ -18,6 +18,9 @@ import { cursorSpritePair, CURSOR_SPRITE_W, CURSOR_SPRITE_H } from "./cursor-spr
 
 const html = htm.bind(h)
 const DRAG_THRESHOLD = 10
+// After a verb, the cursor parks at the press point; small settling jitter keeps it there,
+// a deliberate move past this (raw px) lets it follow the pointer again.
+const UNPARK_THRESHOLD = 12
 // C64 draws cursor sprite after region objects (render.m); above layout.z (0–255).
 const CURSOR_Z_INDEX = 10000
 // sprites.m cursor crosshair hotspot: the pointing pixel is the sprite's center, row 10
@@ -35,6 +38,9 @@ export function RegionCursor({
   const [pos, setPos] = useState({ x: width / 2, y: height / 2 })
   const [cursorState, setCursorState] = useState(CURSOR_NORMAL)
   const holdRef = useRef(null)
+  // Set to the raw pointer position at release; while set, the cursor stays parked at the
+  // press point (C64: it doesn't move to where the drag ended) until a deliberate move.
+  const parkRef = useRef(null)
 
   const clamp = (x, y) => ({
     x: Math.max(0, Math.min(width * scale - 1, x)),
@@ -62,6 +68,16 @@ export function RegionCursor({
       e.preventDefault()
       return
     }
+    if (parkRef.current) {
+      // Parked at the press point after a verb: ignore the release-settling jitter; only a
+      // deliberate move unparks and resumes following the pointer.
+      if (Math.abs(p.x - parkRef.current.x) < UNPARK_THRESHOLD &&
+          Math.abs(p.y - parkRef.current.y) < UNPARK_THRESHOLD) {
+        e.preventDefault()
+        return
+      }
+      parkRef.current = null
+    }
     setPos(p)
     setCursorState(CURSOR_NORMAL)
   }, [enabled, scale, width, height])
@@ -69,6 +85,7 @@ export function RegionCursor({
   const onPointerDown = useCallback((e) => {
     if (!enabled || e.button !== 0) return
     const p = localFromEvent(e)
+    parkRef.current = null
     setPos(p)
     // C64: trigger down + centered stick → stop_cursor (options: four arrows + ?).
     setCursorState(CURSOR_STOP)
@@ -82,6 +99,11 @@ export function RegionCursor({
     const { anchorX, anchorY, state } = holdRef.current
     holdRef.current = null
     try { e.currentTarget.releasePointerCapture(e.pointerId) } catch (_) { /* */ }
+    // Cursor returns to / stays at the press point; park it there so the settling pointer
+    // move doesn't snap it to the drag-end.
+    const rel = localFromEvent(e)
+    parkRef.current = { x: rel.x, y: rel.y }
+    setPos({ x: anchorX, y: anchorY })
     const command = commandFromCursorState(state)
     const canvasX = anchorX / scale
     const canvasY = anchorY / scale
