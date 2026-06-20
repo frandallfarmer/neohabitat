@@ -42,6 +42,20 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         me.mod.activity ?? 129,
       )
     },
+    // avatar_go.m posture toggle (SIT/STAND on the floor). Our own POSTURE never
+    // echoes back as POSTURE$, so drive the persistent-posture override here — the
+    // same call onOp(POSTURE$) makes for neighbors, otherwise a stale walk-facing
+    // activityOverride shadows mod.activity and the avatar never visibly sits.
+    posture(noid, newPosture) {
+      if (noid == null || !avatarMotion) return
+      const rec = world.get(noid)
+      avatarMotion.applyPersistentPosture(
+        noid,
+        newPosture,
+        rec?.mod?.orientation ?? 0,
+        rec?.mod?.activity ?? 129,
+      )
+    },
     // Main/walkto.m:start_walk — called from goXY (own WALK reply) and avatar_WALK.m.
     startWalk(noid, x, y, how) {
       if (noid == null || !avatarMotion) return

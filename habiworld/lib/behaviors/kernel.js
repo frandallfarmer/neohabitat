@@ -246,6 +246,14 @@ function makeCtx(world, verb, pointed, args, client, parent) {
       : (pointed && pointed.type === 'Avatar' ? pointed.noid : (me ? me.noid : null))
     if (target != null) client.chore(act, target)
   }
+  // avatar_go.m set_actor_chore for a persistent posture: tell the client to reflect
+  // our OWN posture. Neighbors render via the inbound POSTURE$ broadcast, but the
+  // server never echoes our own POSTURE back to us, so we drive the client here.
+  ctx.posture = (newPosture, noid) => {
+    if (!client.posture) return
+    const target = noid != null ? noid : (me ? me.noid : null)
+    if (target != null) client.posture(target, newPosture)
+  }
   // C64 newImage noid[, state]: optional state sets gr_state then redraws.
   // Background objects set background_render (full backdrop); the renderer
   // handles that via refresh on newImage / fieldChanged.

@@ -141,6 +141,36 @@ test('ctx.walkTo ports goXY: startWalk then position update and moved', async ()
   assert.deepEqual(moved, [17])
 })
 
+test('GO on yourself toggles posture: stand→sit on floor, then sit→stand (avatar_go.m)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const stateChanged = []
+  w.on('stateChanged', (rec) => stateChanged.push(rec.mod.activity))
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }, { type: 'reply', err: 1 }])
+  // First self-GO: not seated → sit on the floor (SIT_GROUND = 132).
+  let result = await dispatch(w, ACTION_GO, 17, {}, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends[0], { op: 'POSTURE', to: w.get(17).ref, pose: 132 })
+  assert.equal(w.get(17).mod.activity, 132)
+  // Second self-GO: seated → stand (STAND = 129).
+  result = await dispatch(w, ACTION_GO, 17, {}, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.sends[1].pose, 129)
+  assert.equal(w.get(17).mod.activity, 129)
+  assert.deepEqual(stateChanged, [132, 129])
+})
+
+test('GO on yourself reverts posture when the server rejects POSTURE', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', err: 0 }]) // server denies
+  const result = await dispatch(w, ACTION_GO, 17, {}, cb)
+  assert.equal(result.ok, false)
+  assert.equal(calls.sends[0].op, 'POSTURE')
+  assert.equal(w.get(17).mod.activity, undefined) // reverted to original
+  assert.equal(calls.beeps, 1)
+})
+
 test('nested GO does not double-wait (goToAndGet waits exactly once)', async () => {
   // generic_goToAndGet does doAction(ACTION_GO) then waitWalkAnimation in one
   // chain; the top-level post-walk wait must NOT add a second wait.

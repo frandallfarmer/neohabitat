@@ -13,6 +13,13 @@
 // are defined here with their source cited.
 
 const { ACTION_GO, THE_REGION } = require('../constants')
+const { succeeded } = require('./kernel')
+
+// Avatar.java posture activity values (Constants.java). avatar_go.m toggles the
+// floor sit; the SIT set covers all seated postures so any of them toggles to STAND.
+const STAND = 129
+const SIT_GROUND = 132
+const SIT_POSTURES = new Set([132, 133, 157]) // SIT_GROUND, SIT_CHAIR, SIT_FRONT
 
 const B = {}
 
@@ -81,10 +88,20 @@ B.generic_goToOrPassThrough = async (ctx) => {
 }
 
 // Behaviors/avatar_go.m: GO at another avatar walks to them; GO at
-// myself toggles sit/stand posture (not ported — beep).
+// myself toggles my own posture (stand <-> sit on the floor).
 B.avatar_go = async (ctx) => {
-  if (ctx.actor && ctx.pointed.noid === ctx.actor.noid) {
-    return ctx.beep('unported:avatar_go-posture-toggle')
+  const me = ctx.actor
+  // avatar_go.m: GO on yourself toggles posture. Set the chore locally
+  // (optimistic, like the C64 set_actor_chore) and tell the host via POSTURE;
+  // revert if the server rejects it.
+  if (me && ctx.pointed.noid === me.noid) {
+    const newPosture = SIT_POSTURES.has(me.mod.activity) ? STAND : SIT_GROUND
+    const reply = await ctx.send({ op: 'POSTURE', to: me.ref, pose: newPosture })
+    if (!succeeded(reply)) return ctx.beep('server-denied')
+    me.mod.activity = newPosture
+    ctx.posture(newPosture) // reflect our own posture in the client (no POSTURE$ echo)
+    ctx.world.emit('stateChanged', me)
+    return { ok: true }
   }
   const spot = ctx.gotoCoords(ctx.pointed.noid)
   if (!spot) return ctx.beep('no-walk-target')
