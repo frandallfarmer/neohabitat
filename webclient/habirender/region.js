@@ -157,6 +157,13 @@ const LIMB_DRAW_ORDER = [0, 1, 2, 3, "head", 5]
 const AVATAR_HEAD_CEL = 4   // head_placeholder limb / neck cel (body.headCelNumber)
 const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is negated → +63
 
+// animate.m pattern_for_limb — maps each body cel (0–5) to its which_limb pattern
+// class (pointer.m: which_limb = pattern_for_limb[cel_number]). 0=LEG, 1=TORSO,
+// 2=ARM, 3=FACE (equates.m). The pick reads this back to tell SPRAY / avatar_get
+// (face-limb redirect) which body part the cursor touched.
+const AVATAR_FACE_LIMB = 3
+const PATTERN_FOR_LIMB = [0, 0, 2, 1, 3, 2]
+
 const actionView = (actionName) => {
     if (actionName === "stand_back" || actionName === "walk_back") return "back"
     if (actionName === "walk_front" || actionName === "stand_front" || actionName === "sit_front") return "front"
@@ -263,6 +270,7 @@ const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
 const flipComposedFrame = (frame, avatarMod, actionName) => {
     if (actionView(actionName) !== "side" || (avatarMod.orientation & 0x01) === 0) return frame
     frame.canvas = flipCanvas(frame.canvas)
+    if (frame.limbCanvas) frame.limbCanvas = flipCanvas(frame.limbCanvas) // keep limb buffer aligned
     const { minX, maxX } = frame
     frame.minX = -maxX + 1
     frame.maxX = -minX + 1
@@ -303,6 +311,31 @@ const heldGraphicStateAt = (prop, mod, frameIndex = 0) => {
 const isWalkAction = (actionName) =>
     actionName === "walk" || actionName === "walk_front" || actionName === "walk_back"
 
+// A limb-id twin of a composited cel layer: identical space/alpha shape, but every
+// opaque pixel is painted a solid id color encoding which_limb+1 in the red channel.
+// Run through the SAME compositeLayers + flip path as the visible layers, this yields
+// a buffer pixel-aligned with the avatar so the pick can recover which_limb (the
+// software analog of pointer.m fine_cel_point redrawing each cel). whichLimb === null
+// (held item — its own object, not a body limb) leaves the twin fully transparent so
+// it still contributes to the composite bounds without claiming a limb.
+const idLayerFrom = (layer, whichLimb) => {
+    if (!layer?.canvas) return null
+    const c = canvasForSpace(layer)
+    const ctx = c.getContext("2d", { willReadFrequently: true })
+    if (whichLimb != null) {
+        ctx.drawImage(layer.canvas, 0, 0)
+        const img = ctx.getImageData(0, 0, c.width, c.height)
+        const d = img.data
+        const id = (whichLimb + 1) & 0xff
+        for (let i = 0; i < d.length; i += 4) {
+            if (d[i + 3] > 0) { d[i] = id; d[i + 1] = 0; d[i + 2] = 0; d[i + 3] = 255 }
+            else { d[i] = 0; d[i + 1] = 0; d[i + 2] = 0; d[i + 3] = 0 }
+        }
+        ctx.putImageData(img, 0, 0)
+    }
+    return { ...layer, canvas: c }
+}
+
 const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMod, actionName, chain, limbPatterns,
     heldFrameIndex = 0) => {
     const { cx, cy, cels, handX, handY } = chain
@@ -330,11 +363,19 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
         }
     }
 
+    // layers (visible) and idLayers (which_limb twins) are pushed in lockstep so the
+    // composited limb buffer aligns pixel-for-pixel with the avatar (see idLayerFrom).
     const layers = []
+    const idLayers = []
+    const push = (layer, whichLimb) => {
+        if (!layer) return
+        layers.push(layer)
+        idLayers.push(idLayerFrom(layer, whichLimb))
+    }
     for (const key of drawOrderForAction(body, actionName)) {
         // animate.m AVATAR_HAND: draw_contained_object before paint_limb on limb 5.
         if (key === AVATAR_HAND && heldLayer) {
-            layers.push(heldLayer)
+            push(heldLayer, null) // held item is its own object, not a body limb
         }
         if (key === "head") {
             if (headProp?.celmasks?.length) {
@@ -343,24 +384,29 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
                 const headFrame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]),
                     { colors: headMod ? colorsFromMod(headMod) : { pattern: limbPatterns[3] }, firstCelOrigin: false })
                 if (headFrame) {
-                    layers.push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL],
-                        cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT + walkPaintY))
+                    push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL],
+                        cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT + walkPaintY), AVATAR_FACE_LIMB)
                 }
             }
             if (shouldPaintFacePlate(headProp, facing)) {
-                layers.push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL],
-                    cy[AVATAR_HEAD_CEL] + walkPaintY, facePattern))
+                push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL],
+                    cy[AVATAR_HEAD_CEL] + walkPaintY, facePattern), AVATAR_FACE_LIMB)
             }
         } else if (key !== 0) {
-            layers.push(layerFor(cels[key], cx[key], cy[key] + walkPaintY,
-                limbPatterns[body.limbs[key].pattern]))
+            push(layerFor(cels[key], cx[key], cy[key] + walkPaintY,
+                limbPatterns[body.limbs[key].pattern]), PATTERN_FOR_LIMB[key])
         } else {
-            layers.push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]))
+            push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]), PATTERN_FOR_LIMB[key])
         }
     }
     const drawn = layers.filter(Boolean)
     if (!drawn.length) return null
-    return flipComposedFrame(compositeLayers(drawn), avatarMod, actionName)
+    const composite = compositeLayers(drawn)
+    // idLayers share the visible layers' spaces, so the id composite lands in the same
+    // canvas space — keep it on the frame for the pick to read which_limb back.
+    const idDrawn = idLayers.filter(Boolean)
+    if (idDrawn.length) composite.limbCanvas = compositeLayers(idDrawn).canvas
+    return flipComposedFrame(composite, avatarMod, actionName)
 }
 
 const animationsAtStart = (animations) => animations.map((a) => ({ ...a, current: a.startState }))

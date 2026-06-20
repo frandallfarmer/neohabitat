@@ -2,6 +2,7 @@
 import {
   canvasPixelToMod,
   hitTestFrame,
+  limbAtFrame,
   pickAt,
   findGroundObject,
   REGION_CANVAS_W,
@@ -74,5 +75,42 @@ assert(groundPick?.noid === 1, "falls back to ground object")
 assert(findGroundObject(objects)?.ref === "item-ground", "findGroundObject")
 
 assert(REGION_CANVAS_W === 320, "region width")
+
+// ── which_limb buffer (pointer.m which_limb / region.js limb-id twin) ─────────
+// The avatar's limbCanvas stores which_limb+1 in the red channel of each opaque
+// pixel; limbAtFrame decodes it back to 0=LEG, 1=TORSO, 2=ARM, 3=FACE.
+const mockLimbCanvas = (w, h, idAt) => {
+  const data = new Uint8ClampedArray(w * h * 4)
+  for (const [x, y, id] of idAt) {
+    const i = (y * w + x) * 4
+    data[i] = id // red channel = which_limb + 1
+    data[i + 3] = 255
+  }
+  return {
+    width: w,
+    height: h,
+    getContext: () => ({
+      getImageData: (x, y) => ({ data: data.subarray((y * w + x) * 4, (y * w + x) * 4 + 4) }),
+    }),
+  }
+}
+
+const limbFrame = {
+  canvas: mockCanvas(16, 16, [[4, 4], [6, 6]]),
+  limbCanvas: mockLimbCanvas(16, 16, [[4, 4, 3], [6, 6, 1]]), // (4,4)→ARM(2), (6,6)→LEG(0)
+  minX: 0, maxX: 2, minY: -2, maxY: 0,
+}
+assert(limbAtFrame(limbFrame, 36, 117, 32, 113) === 2, "which_limb ARM at (4,4)")
+assert(limbAtFrame(limbFrame, 38, 119, 32, 113) === 0, "which_limb LEG at (6,6)")
+assert(limbAtFrame(limbFrame, 33, 114, 32, 113) === null, "transparent buffer pixel → no limb")
+assert(limbAtFrame(frame, 36, 117, 32, 113) === null, "frame without limbCanvas → null")
+
+const limbLayoutMap = {
+  "item-box": { layout: { x: 4, y: 14, z: 100, frames: [limbFrame] } },
+}
+const limbPick = pickAt(limbLayoutMap, objects, 36, 117)
+assert(limbPick?.noid === 42, "limb pick still resolves the object")
+assert(limbPick.whichLimb === 2, "pick carries which_limb (ARM) from the buffer")
+assert(pickAt(layoutMap, objects, 36, 117).whichLimb === null, "no buffer → whichLimb null")
 
 console.log("test-pick: ok")

@@ -76,6 +76,23 @@ export const hitTestFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
   return data[3] > 0
 }
 
+/**
+ * pointer.m which_limb: for an avatar frame carrying a limb-id buffer (region.js
+ * composeAvatarFrame), read which body part (0=LEG, 1=TORSO, 2=ARM, 3=FACE) covers
+ * the click. Returns null off any limb (non-avatars, gaps, held-item pixels).
+ */
+export const limbAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
+  const limb = frame?.limbCanvas
+  if (!limb) return null
+  const lx = Math.floor(canvasX - itemPx)
+  const ly = Math.floor(canvasY - itemPy)
+  if (lx < 0 || ly < 0 || lx >= limb.width || ly >= limb.height) return null
+  const ctx = limb.getContext("2d", { willReadFrequently: true })
+  const { data } = ctx.getImageData(lx, ly, 1, 1)
+  if (data[3] === 0 || data[0] === 0) return null
+  return data[0] - 1
+}
+
 export const regionTopLevelItems = (objects) => {
   const regionRef = objects.find((o) => o.type === "context")?.ref
   if (!regionRef) return []
@@ -111,6 +128,9 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
   const items = regionTopLevelItems(objects)
   const { x: habitatX, y: habitatY } = canvasPixelToMod(canvasX, canvasY)
   let hit = null
+  let hitFrame = null
+  let hitPx = 0
+  let hitPy = 0
   for (const obj of items) {
     const layout = layoutValue(layoutMap[obj.ref])
     const frame = layout && frameAt(layout)
@@ -119,11 +139,16 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
     const [px, py] = positionInRegion(space)
     if (hitTestFrame(frame, canvasX, canvasY, px, py)) {
       hit = obj
+      hitFrame = frame
+      hitPx = px
+      hitPy = py
     }
   }
   const picked = hit ?? findGroundObject(objects)
   if (!picked) return null
   const mod = picked.mods[0]
+  // pointer.m which_limb — only set when an actual avatar limb was touched.
+  const whichLimb = hit ? limbAtFrame(hitFrame, canvasX, canvasY, hitPx, hitPy) : null
   return {
     object: picked,
     noid: mod.noid,
@@ -132,5 +157,6 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
     habitatY,
     canvasX,
     canvasY,
+    whichLimb,
   }
 }

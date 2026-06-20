@@ -7,13 +7,18 @@
 
 import { pickAt } from "../habirender/pick.mjs"
 
-/** Merge habitat cursor coords from a pick into verb args (caller args win). */
+/** Merge habitat cursor coords + which_limb from a pick into verb args (caller args win). */
 export function cursorArgsFromPick(pick, args = {}) {
   if (!pick) return { ...args }
   return {
     ...args,
     ...(args.x === undefined ? { x: pick.habitatX } : {}),
     ...(args.y === undefined ? { y: pick.habitatY } : {}),
+    // pointer.m pointed_at_limb / which_limb — feeds SPRAY (args.limb) and the
+    // avatar_get face-limb redirect (args.pointedAtLimb).
+    ...(pick.whichLimb != null && args.limb === undefined ? { limb: pick.whichLimb } : {}),
+    ...(pick.whichLimb != null && args.pointedAtLimb === undefined
+      ? { pointedAtLimb: pick.whichLimb } : {}),
   }
 }
 
