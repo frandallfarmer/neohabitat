@@ -363,7 +363,10 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
             { colors: colorsFromMod(handMod), flipHorizontal: false, firstCelOrigin: false })
         if (held) {
             const handCel = cels[AVATAR_HAND]
-            const placeY = cy[AVATAR_HAND] - (handCel?.yRel ?? 0) // cy is Y-up now; yRel flips
+            // Held item = the chain end past the hand cel. In the negated (Y-up) cy,
+            // find_cel_xy's "- yRel" becomes "+ yRel": placeY = cy[hand] + handCel.yRel
+            // (a hypothetical limb 6 would land exactly here).
+            const placeY = cy[AVATAR_HAND] + (handCel?.yRel ?? 0)
             heldLayer = translateSpace(held, handX, placeY)
         }
     }

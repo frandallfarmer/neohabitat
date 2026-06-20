@@ -238,6 +238,26 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
         return true
     }
 
+    // chore.m inner_set_chore change_orient: a face_left/face_right command does NOT
+    // change posture. Walking → ignore; stand_front/back → turn to the side; ANY other
+    // posture (notably sitting) → just flip the orientation bit and KEEP the activity,
+    // so a seated avatar mirrors in place instead of standing up.
+    const SIT_POSTURES = new Set([132, 133, 157]) // SIT_GROUND, SIT_CHAIR, SIT_FRONT
+    const faceCursor = (noid, faceLeft, serverOrient = 0, serverActivity = 129) => {
+        if (noid == null) return
+        if (states.get(noid)?.type === "walk") return // C64: no facing change while walking
+        const activity = getActivity(noid, serverActivity)
+        if (SIT_POSTURES.has(activity)) {
+            const base = getOrient(noid, serverOrient)
+            orientOverrides.set(noid, faceLeft ? (base | 0x01) : (base & ~0x01))
+            bump()
+            return
+        }
+        // Standing (incl. stand_front/back): track facing as a persistent posture; this
+        // forces the orient bit via displayOrientForActivity and renders 'stand'.
+        applyPersistentPosture(noid, faceLeft ? FACE_LEFT : FACE_RIGHT, serverOrient, serverActivity)
+    }
+
     const beginGesture = (noid, action, serverOrient = 0, serverActivity = 129) => {
         if (noid == null || !action || action === "stand") return
         const item = { action, serverOrient, serverActivity }
@@ -276,6 +296,6 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
 
     return {
         tick, get, getOrient, getActivity, noteCycleLength, noteServerFacing,
-        beginWalk, beginGesture, applyPersistentPosture, onOp, clear, FRAME_MS: frameMs,
+        beginWalk, beginGesture, applyPersistentPosture, faceCursor, onOp, clear, FRAME_MS: frameMs,
     }
 }
