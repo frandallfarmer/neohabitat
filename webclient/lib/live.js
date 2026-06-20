@@ -1,4 +1,4 @@
-// Phase 2/3 harness: connect to the live server, enter a context, and render the region
+// Phase 2–5 harness: connect to the live server, enter a context, and render the region
 // from habiworld's make-storm — the real C64-model path:
 //
 //   websocketProxy ──▶ Transport ──▶ habiworld.apply (state + host behaviors) ──▶ regionView
