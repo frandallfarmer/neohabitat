@@ -251,11 +251,14 @@ const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
         const pos = findCelXY(x, y, xRel, yRel, false)
         const heightLift = body.limbs[i].affectedByHeight ? avatarHeight : 0
         cx[i] = pos.x
-        cy[i] = pos.y - heightLift
+        // The chain (x/y, findCelXY) stays in C64 Y-down; the composite space is Y-up, so
+        // NEGATE the stored cy. C64 cy_tab = cel_y + avatar_height → Y-up: −(cel_y + height).
+        // Invisible at stand (cy≈0) but it's what made the sit torso float ~⅓ region up.
+        cy[i] = -pos.y - heightLift
         cels[i] = cel
         if (i === AVATAR_HAND) {
             handTabX = pos.x
-            handTabY = pos.y - heightLift
+            handTabY = -pos.y - heightLift
             handRelX = cel.xRel ?? 0
             handRelY = cel.yRel ?? 0
         }
@@ -342,8 +345,9 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     const { cx, cy, cels, handX, handY } = chain
     const facing = headFacingFromAction(actionName)
     const facePattern = headPatternFromMod(headMod, limbPatterns[3])
-    // walk: legs_right yRel (−1) is the animating paint offset for upper-body cels (like held + hand yRel).
-    const walkPaintY = isWalkAction(actionName) ? (cels[0]?.yRel ?? 0) : 0
+    // walk: legs_right yRel is the animating paint offset for upper-body cels. cy is now
+    // Y-up (negated), so the bob offset flips sign to match.
+    const walkPaintY = isWalkAction(actionName) ? -(cels[0]?.yRel ?? 0) : 0
     const layerFor = (cel, x, y, pattern) =>
         cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
 
@@ -359,7 +363,7 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
             { colors: colorsFromMod(handMod), flipHorizontal: false, firstCelOrigin: false })
         if (held) {
             const handCel = cels[AVATAR_HAND]
-            const placeY = cy[AVATAR_HAND] + (handCel?.yRel ?? 0)
+            const placeY = cy[AVATAR_HAND] - (handCel?.yRel ?? 0) // cy is Y-up now; yRel flips
             heldLayer = translateSpace(held, handX, placeY)
         }
     }
