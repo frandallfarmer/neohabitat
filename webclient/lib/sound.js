@@ -12,7 +12,7 @@
 
 const HABISOUND_URL = new URL("../../habisound/lib/habisound.js", import.meta.url).href
 /** Set false once sound pipeline is diagnosed. */
-export const SOUND_TRACE = true
+export const SOUND_TRACE = false
 const trace = (...args) => { if (SOUND_TRACE) console.log("[sound-trace]", ...args) }
 
 let _enginePromise = null
