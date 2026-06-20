@@ -9,6 +9,7 @@ import { contextMap, betaMud, logError, promiseToSignal, until, useBinary, useHa
 import { translateSpace, topLeftCanvasOffset, Scale, framesFromPropAnimation, framesFromAction, frameFromCels, celsFromMask,
          compositeSpaces, compositeLayers, flipCanvas, animatedDiv, stringFromText, canvasForSpace, canvasImage } from "./render.js"
 import { signedByte } from "./codec.js"
+import { HELD_PICK_MARKER } from "./pick.mjs"
 import { colorsFromOrientation, javaTypeToMuddleClass } from "./neohabitat.js"
 import { getFile } from "./shim.js"
 
@@ -311,22 +312,22 @@ const heldGraphicStateAt = (prop, mod, frameIndex = 0) => {
 const isWalkAction = (actionName) =>
     actionName === "walk" || actionName === "walk_front" || actionName === "walk_back"
 
-// A limb-id twin of a composited cel layer: identical space/alpha shape, but every
-// opaque pixel is painted a solid id color encoding which_limb+1 in the red channel.
-// Run through the SAME compositeLayers + flip path as the visible layers, this yields
-// a buffer pixel-aligned with the avatar so the pick can recover which_limb (the
-// software analog of pointer.m fine_cel_point redrawing each cel). whichLimb === null
-// (held item — its own object, not a body limb) leaves the twin fully transparent so
-// it still contributes to the composite bounds without claiming a limb.
-const idLayerFrom = (layer, whichLimb) => {
+// A pick-id twin of a composited cel layer: identical space/alpha shape, but every
+// opaque pixel is painted a solid id in the red channel (which_limb+1 for body cels,
+// HELD_PICK_MARKER for the held item — the C64 sets drawing_which_object to the held
+// object while drawing it, mix.m:568). Run through the SAME compositeLayers + flip path
+// as the visible layers, this yields a buffer pixel-aligned with the avatar so the pick
+// can recover the limb / held object (software analog of pointer.m fine_cel_point).
+// idValue 0/null leaves the twin transparent (still contributes to composite bounds).
+const idLayerFrom = (layer, idValue) => {
     if (!layer?.canvas) return null
     const c = canvasForSpace(layer)
     const ctx = c.getContext("2d", { willReadFrequently: true })
-    if (whichLimb != null) {
+    if (idValue) {
         ctx.drawImage(layer.canvas, 0, 0)
         const img = ctx.getImageData(0, 0, c.width, c.height)
         const d = img.data
-        const id = (whichLimb + 1) & 0xff
+        const id = idValue & 0xff
         for (let i = 0; i < d.length; i += 4) {
             if (d[i + 3] > 0) { d[i] = id; d[i + 1] = 0; d[i + 2] = 0; d[i + 3] = 255 }
             else { d[i] = 0; d[i + 1] = 0; d[i + 2] = 0; d[i + 3] = 0 }
@@ -367,15 +368,17 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     // composited limb buffer aligns pixel-for-pixel with the avatar (see idLayerFrom).
     const layers = []
     const idLayers = []
-    const push = (layer, whichLimb) => {
+    // idValue: pick-buffer red-channel id — which_limb+1 for body cels, HELD_PICK_MARKER
+    // for the held item (its own object, mix.m draw_contained_object), 0 for none.
+    const push = (layer, idValue) => {
         if (!layer) return
         layers.push(layer)
-        idLayers.push(idLayerFrom(layer, whichLimb))
+        idLayers.push(idLayerFrom(layer, idValue))
     }
     for (const key of drawOrderForAction(body, actionName)) {
         // animate.m AVATAR_HAND: draw_contained_object before paint_limb on limb 5.
         if (key === AVATAR_HAND && heldLayer) {
-            push(heldLayer, null) // held item is its own object, not a body limb
+            push(heldLayer, HELD_PICK_MARKER) // held item is pickable as its own object
         }
         if (key === "head") {
             if (headProp?.celmasks?.length) {
@@ -385,18 +388,18 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
                     { colors: headMod ? colorsFromMod(headMod) : { pattern: limbPatterns[3] }, firstCelOrigin: false })
                 if (headFrame) {
                     push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL],
-                        cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT + walkPaintY), AVATAR_FACE_LIMB)
+                        cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT + walkPaintY), AVATAR_FACE_LIMB + 1)
                 }
             }
             if (shouldPaintFacePlate(headProp, facing)) {
                 push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL],
-                    cy[AVATAR_HEAD_CEL] + walkPaintY, facePattern), AVATAR_FACE_LIMB)
+                    cy[AVATAR_HEAD_CEL] + walkPaintY, facePattern), AVATAR_FACE_LIMB + 1)
             }
         } else if (key !== 0) {
             push(layerFor(cels[key], cx[key], cy[key] + walkPaintY,
-                limbPatterns[body.limbs[key].pattern]), PATTERN_FOR_LIMB[key])
+                limbPatterns[body.limbs[key].pattern]), PATTERN_FOR_LIMB[key] + 1)
         } else {
-            push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]), PATTERN_FOR_LIMB[key])
+            push(layerFor(cels[key], cx[key], cy[key], limbPatterns[body.limbs[key].pattern]), PATTERN_FOR_LIMB[key] + 1)
         }
     }
     const drawn = layers.filter(Boolean)

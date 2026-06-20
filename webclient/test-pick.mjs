@@ -5,6 +5,7 @@ import {
   limbAtFrame,
   pickAt,
   findGroundObject,
+  HELD_PICK_MARKER,
   REGION_CANVAS_W,
 } from "./habirender/pick.mjs"
 
@@ -140,5 +141,25 @@ const limbPick = pickAt(limbLayoutMap, objects, 36, 117)
 assert(limbPick?.noid === 42, "limb pick still resolves the object")
 assert(limbPick.whichLimb === 2, "pick carries which_limb (ARM) from the buffer")
 assert(pickAt(layoutMap, objects, 36, 117).whichLimb === null, "no buffer → whichLimb null")
+
+// ── held-item picking (mix.m drawing_which_object) ───────────────────────────
+// Held-item pixels carry HELD_PICK_MARKER in the pick buffer; a click there targets the
+// held object (the avatar's HANDS-slot item, mod.y === 5), not the avatar or a limb.
+const avatarObjects = [
+  { ref: regionRef, type: "context", mods: [{ type: "Region" }] },
+  { ref: "user-av", type: "item", in: regionRef, mods: [{ type: "Avatar", noid: 80, x: 40, y: 140 }] },
+  { ref: "item-held", type: "item", in: "user-av", mods: [{ type: "Wand", noid: 81, x: 0, y: 5 }] },
+]
+const avatarFrame = {
+  canvas: mockCanvas(16, 16, [[4, 4], [6, 6]]),
+  limbCanvas: mockLimbCanvas(16, 16, [[4, 4, 3], [6, 6, HELD_PICK_MARKER]]), // (4,4)→ARM, (6,6)→held
+  minX: 0, maxX: 2, minY: -2, maxY: 0,
+}
+const avatarLayoutMap = { "user-av": { layout: { x: 4, y: 14, z: 100, frames: [avatarFrame] } } }
+const avLimbHit = pickAt(avatarLayoutMap, avatarObjects, 36, 117)
+assert(avLimbHit?.noid === 80 && avLimbHit.whichLimb === 2, "avatar limb pixel → avatar + which_limb")
+const heldHit = pickAt(avatarLayoutMap, avatarObjects, 38, 119)
+assert(heldHit?.noid === 81, "held-item pixel targets the held object's noid")
+assert(heldHit.whichLimb === null, "held-item pick reports no limb")
 
 console.log("test-pick: ok")

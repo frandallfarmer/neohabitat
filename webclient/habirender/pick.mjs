@@ -77,22 +77,39 @@ export const hitTestFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
   return data[3] > 0
 }
 
-/**
- * pointer.m which_limb: for an avatar frame carrying a limb-id buffer (region.js
- * composeAvatarFrame), read which body part (0=LEG, 1=TORSO, 2=ARM, 3=FACE) covers
- * the click. Returns null off any limb (non-avatars, gaps, held-item pixels).
- */
-export const limbAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
-  const limb = frame?.limbCanvas
-  if (!limb) return null
+// region.js composeAvatarFrame paints the held item's pixels with this id in the avatar
+// pick buffer (the rest hold which_limb+1, i.e. 1–4). The C64 sets drawing_which_object
+// to the held object while drawing it (mix.m:568), making it pickable as its own object;
+// the pick resolves this marker to the avatar's HANDS-slot item.
+export const HELD_PICK_MARKER = 0x80
+const AVATAR_HAND_SLOT = 5 // dataequates.m AVATAR_HAND
+
+/** Raw pick-buffer id (red channel) at the click, or 0 for none/non-avatar. */
+const markerAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
+  const buf = frame?.limbCanvas
+  if (!buf) return 0
   const lx = Math.floor(canvasX - itemPx)
   const ly = Math.floor(canvasY - itemPy)
-  if (lx < 0 || ly < 0 || lx >= limb.width || ly >= limb.height) return null
-  const ctx = limb.getContext("2d", { willReadFrequently: true })
+  if (lx < 0 || ly < 0 || lx >= buf.width || ly >= buf.height) return 0
+  const ctx = buf.getContext("2d", { willReadFrequently: true })
   const { data } = ctx.getImageData(lx, ly, 1, 1)
-  if (data[3] === 0 || data[0] === 0) return null
-  return data[0] - 1
+  return data[3] === 0 ? 0 : data[0]
 }
+
+/**
+ * pointer.m which_limb: for an avatar frame carrying a pick buffer, read which body part
+ * (0=LEG, 1=TORSO, 2=ARM, 3=FACE) covers the click. Returns null off any limb (non-avatars,
+ * gaps, and the held item — that resolves to its own object in pickAt).
+ */
+export const limbAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
+  const m = markerAtFrame(frame, canvasX, canvasY, itemPx, itemPy)
+  return m >= 1 && m <= 4 ? m - 1 : null
+}
+
+/** The item an avatar holds (its HANDS-slot contents), for held-item picking. */
+const heldItemOf = (objects, avatarRef) =>
+  objects.find((o) => o.type === "item" && o.in === avatarRef
+    && o.mods?.[0]?.y === AVATAR_HAND_SLOT) ?? null
 
 export const regionTopLevelItems = (objects) => {
   const regionRef = objects.find((o) => o.type === "context")?.ref
@@ -180,13 +197,22 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
       hitPy = py
     }
   }
-  const picked = hit ?? findGroundObject(objects)
-  if (!picked) return null
-  const mod = picked.mods[0]
-  // pointer.m which_limb — only set when an actual avatar limb was touched.
-  const whichLimb = hit ? limbAtFrame(hitFrame, canvasX, canvasY, hitPx, hitPy) : null
+  let target = hit ?? findGroundObject(objects)
+  if (!target) return null
+  // pointer.m: the held item carries its own drawing_which_object, so a click on it
+  // targets the held object, not the avatar; otherwise report which_limb for SPRAY.
+  let whichLimb = null
+  if (hit) {
+    const marker = markerAtFrame(hitFrame, canvasX, canvasY, hitPx, hitPy)
+    if (marker === HELD_PICK_MARKER) {
+      target = heldItemOf(objects, hit.ref) ?? target
+    } else if (marker >= 1 && marker <= 4) {
+      whichLimb = marker - 1
+    }
+  }
+  const mod = target.mods[0]
   return {
-    object: picked,
+    object: target,
     noid: mod.noid,
     mod,
     habitatX,
