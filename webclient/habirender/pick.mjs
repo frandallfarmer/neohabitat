@@ -46,6 +46,7 @@ export const canvasPixelToMod = (canvasX, canvasY) => {
 }
 
 const layoutValue = (entry) => entry?.layout?.value ?? entry?.layout ?? null
+const propValue = (entry) => entry?.prop?.value ?? entry?.prop ?? null
 
 const objectSpaceFromLayout = ({ x, y, frames }) =>
   translateSpace(compositeSpaces(frames), x, y)
@@ -101,6 +102,41 @@ export const regionTopLevelItems = (objects) => {
     .sort((a, b) => zIndexFromObjectY(a.mods[0].y) - zIndexFromObjectY(b.mods[0].y))
 }
 
+/**
+ * Contents a non-opaque container displays on itself — e.g. items on a Table.
+ * Mirrors regionItemView: a container shows its contents when prop.contentsXY is
+ * non-empty (avatars composite their contents into the body frame, so they are
+ * excluded via isBody). Order matches the renderer (contents sorted by slot/y
+ * descending; last drawn is frontmost), and inFront says whether they draw on top
+ * of (Table) or behind the container.
+ */
+const displayedContents = (objects, layoutMap, containerRef) => {
+  const prop = propValue(layoutMap[containerRef])
+  if (!prop || prop.isBody || !(prop.contentsXY?.length > 0)) {
+    return { contents: [], inFront: true }
+  }
+  const contents = objects
+    .filter((o) => o.type === "item" && o.in === containerRef)
+    .sort((a, b) => b.mods[0].y - a.mods[0].y)
+  return { contents, inFront: prop.contentsInFront !== false }
+}
+
+/**
+ * The full back-to-front draw order the renderer produces: each region item, with
+ * any displayed container contents placed in front of (Table) or behind it. The pick
+ * walks this and keeps the last (frontmost) hit — the software twin of pointer.m
+ * running boundary_check over the create_sort_table draw list.
+ */
+export const pickDrawOrder = (objects, layoutMap) => {
+  const order = []
+  for (const container of regionTopLevelItems(objects)) {
+    const { contents, inFront } = displayedContents(objects, layoutMap, container.ref)
+    if (inFront) order.push(container, ...contents)
+    else order.push(...contents, container)
+  }
+  return order
+}
+
 /** Ground / street surface for cursor GO when nothing else is hit (kernel findGround). */
 export const findGroundObject = (objects) => {
   const regionRef = objects.find((o) => o.type === "context")?.ref
@@ -125,7 +161,7 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
   if (canvasX < 0 || canvasY < 0 || canvasX >= REGION_CANVAS_W || canvasY >= REGION_CANVAS_H) {
     return null
   }
-  const items = regionTopLevelItems(objects)
+  const items = pickDrawOrder(objects, layoutMap)
   const { x: habitatX, y: habitatY } = canvasPixelToMod(canvasX, canvasY)
   let hit = null
   let hitFrame = null

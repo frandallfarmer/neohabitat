@@ -76,6 +76,34 @@ assert(findGroundObject(objects)?.ref === "item-ground", "findGroundObject")
 
 assert(REGION_CANVAS_W === 320, "region width")
 
+// ── Table (non-opaque container) — items on it are directly pickable ─────────
+// A Table displays its contents (prop.contentsXY non-empty, contentsInFront), so the
+// pick must walk those contents and let them win over the table they sit on.
+const tableObjects = [
+  { ref: regionRef, type: "context", mods: [{ type: "Region" }] },
+  { ref: "item-table", type: "item", in: regionRef, mods: [{ type: "Table", noid: 50, x: 40, y: 140 }] },
+  { ref: "item-on-table", type: "item", in: "item-table", mods: [{ type: "Box", noid: 51, x: 0, y: 0 }] },
+]
+const onTableFrame = { canvas: mockCanvas(16, 16, [[4, 4]]), minX: 0, maxX: 2, minY: -2, maxY: 0 }
+const tableFrame = { canvas: mockCanvas(16, 16, [[4, 4]]), minX: 0, maxX: 2, minY: -2, maxY: 0 }
+const tableLayoutMap = {
+  "item-table": {
+    prop: { contentsXY: [{ x: 0, y: 0 }], contentsInFront: true },
+    layout: { x: 4, y: 14, z: 100, frames: [tableFrame] },
+  },
+  "item-on-table": { layout: { x: 4, y: 14, z: 100, frames: [onTableFrame] } },
+}
+assert(pickAt(tableLayoutMap, tableObjects, 36, 117)?.noid === 51,
+  "item on the table is picked over the table")
+
+// An opaque container (no contentsXY) hides its contents — the container itself wins.
+const opaqueLayoutMap = {
+  "item-table": { prop: { contentsXY: [] }, layout: { x: 4, y: 14, z: 100, frames: [tableFrame] } },
+  "item-on-table": { layout: { x: 4, y: 14, z: 100, frames: [onTableFrame] } },
+}
+assert(pickAt(opaqueLayoutMap, tableObjects, 36, 117)?.noid === 50,
+  "contents of an opaque container are not pickable")
+
 // ── which_limb buffer (pointer.m which_limb / region.js limb-id twin) ─────────
 // The avatar's limbCanvas stores which_limb+1 in the red channel of each opaque
 // pixel; limbAtFrame decodes it back to 0=LEG, 1=TORSO, 2=ARM, 3=FACE.
