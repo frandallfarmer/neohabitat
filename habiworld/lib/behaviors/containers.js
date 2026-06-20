@@ -22,13 +22,19 @@ const {
 const { setOpenFlags } = require('../openable')
 const { succeeded } = require('./kernel')
 
-// v_pick_from_container, bot style: resolve which contained item is
-// meant. Returns the record or null.
-function pickFromContainer(ctx) {
+// v_pick_from_container: resolve which contained item is meant. A bot names it
+// (args.itemNoid) or takes the first; a GRAPHICAL client pops the contents picker
+// (ctx.pickFromContainer) and the user chooses (null noid = abort). Returns the
+// record, or null (empty / not found / aborted).
+async function pickFromContainer(ctx) {
   const contents = ctx.world.contentsOf(ctx.pointed.noid)
   if (!contents.length) return null
   if (ctx.args.itemNoid !== undefined) {
     return contents.find((o) => o.noid === ctx.args.itemNoid) || null
+  }
+  if (ctx.pickFromContainer) {
+    const noid = await ctx.pickFromContainer(ctx.pointed.noid)
+    return noid == null ? null : (contents.find((o) => o.noid === noid) || null)
   }
   return contents[0]
 }
@@ -49,10 +55,13 @@ async function pickFrom(ctx, { requireOpen, orGet }) {
   let target = ctx.pointed // orGet: closed container → GET the container
   if (!orGet || open) {
     ctx.chore('bend_over')
-    const item = pickFromContainer(ctx)
+    const item = await pickFromContainer(ctx)
     if (!item) {
       ctx.chore('bend_back')
-      return ctx.beep('container-empty')
+      // Empty container beeps; a user cancel of the contents picker is a quiet abort.
+      return ctx.world.contentsOf(ctx.pointed.noid).length
+        ? { ok: false, reason: 'cancelled' }
+        : ctx.beep('container-empty')
     }
     target = item
   } else {

@@ -45,7 +45,14 @@ module.exports = async function avatar_get(ctx) {
       if (wornHead) return ctx.doActionOn(ACTION_GET, wornHead)
     }
 
-    const item = ctx.args.item != null ? ctx.world.get(ctx.args.item) : null
+    // avatar_get.m its_me: rjsr v_pick_from_container on the avatar — a bot names the
+    // pocket item (args.item); a graphical client pops the pocket grid (null = cancel).
+    let item = ctx.args.item != null ? ctx.world.get(ctx.args.item) : null
+    if (!item && ctx.pickFromContainer) {
+      const noid = await ctx.pickFromContainer(me.noid)
+      if (noid == null) return { ok: false, reason: 'cancelled' }
+      item = ctx.world.get(noid)
+    }
     if (!item) return ctx.beep('no-such-pocket-item')
     // Must actually be in MY pocket: contained by me, and not the item
     // already in my hands (a worn head is doffed via head_get, not here).

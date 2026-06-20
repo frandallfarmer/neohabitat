@@ -206,6 +206,68 @@ header.titlebar .tag {
     image-rendering: pixelated;
 }
 
+/* Inventory mode (Main/pick.m display_contents_screen) — replaces the region graphics
+   band while a GET picks a noun from a container. 960×384 = 320×128 at scale 3. */
+.inventory-stage {
+    width: 960px;
+    height: 384px;
+    background: #14141c;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+}
+.inventory-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+.inv-abort {
+    background: var(--accent);
+    color: #08263f;
+    border: 0;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+.inventory-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(var(--inv-cols, 4), 1fr);
+    gap: 8px;
+    padding: 12px;
+    overflow: auto;
+    align-content: start;
+}
+.inv-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+}
+.inv-cell:hover { border-color: var(--accent); background: #2e2e38; }
+.inv-icon {
+    display: grid;
+    place-items: center;
+    min-height: 56px;
+    image-rendering: pixelated;
+}
+.inv-name { font-size: 11px; color: var(--muted); text-align: center; }
+.inv-empty, .inv-loading { color: var(--muted); padding: 12px; }
+
 /* Word balloon. Habitat balloons render in a text window at the TOP of the screen and
    hang downward, with a "quip" pointer (sprite) toward the speaker's x — see balloons.m.
    This is a faithful-in-spirit placement; the charset-glyph border and the speaker-tracking

@@ -1,7 +1,7 @@
 // Client callbacks for habiworld behaviors (kernel.js ctx.sound / ctx.chore / …).
 
 import { soundClientCallbacks } from "./sound.js"
-import { FACE_LEFT, FACE_RIGHT } from "./avatar-chore.js"
+import { pickFromContainerUI } from "./modes.js"
 
 const CHORE_ACTIONS = {
   bend_over: "bend_over",
@@ -30,14 +30,15 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         rec?.mod?.activity ?? 129,
       )
     },
-    // Main/actions.m face_cursor — turn toward cursor x before execute_command.
+    // Main/actions.m face_cursor → chore.m change_orient — turn toward cursor x before
+    // execute_command. A seated avatar just mirrors (keeps the sit); only standing turns.
     faceCursor(habitatX) {
       const me = world.me
       if (me == null || habitatX == null || !avatarMotion) return
-      const posture = me.mod.x < habitatX ? FACE_RIGHT : FACE_LEFT
-      avatarMotion.applyPersistentPosture(
+      const faceLeft = me.mod.x >= habitatX // cursor to the left → face left
+      avatarMotion.faceCursor(
         me.noid,
-        posture,
+        faceLeft,
         me.mod.orientation ?? 0,
         me.mod.activity ?? 129,
       )
@@ -55,6 +56,11 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         rec?.mod?.orientation ?? 0,
         rec?.mod?.activity ?? 129,
       )
+    },
+    // Main/pick.m pick_from_container — pop the contents grid and resolve with the
+    // chosen item noid (or null = abort). The GET-from-container behavior awaits this.
+    pickFromContainer(containerNoid) {
+      return pickFromContainerUI(containerNoid)
     },
     // Main/walkto.m:start_walk — called from goXY (own WALK reply) and avatar_WALK.m.
     startWalk(noid, x, y, how) {

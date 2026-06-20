@@ -254,6 +254,12 @@ function makeCtx(world, verb, pointed, args, client, parent) {
     const target = noid != null ? noid : (me ? me.noid : null)
     if (target != null) client.posture(target, newPosture)
   }
+  // pick.m pick_from_container — a GRAPHICAL client pops a contents picker and
+  // resolves with the chosen item noid (or null = abort). Only defined when the
+  // client provides it; bots leave it undefined and fall back to the first item.
+  if (client.pickFromContainer) {
+    ctx.pickFromContainer = (containerNoid) => client.pickFromContainer(containerNoid)
+  }
   // C64 newImage noid[, state]: optional state sets gr_state then redraws.
   // Background objects set background_render (full backdrop); the renderer
   // handles that via refresh on newImage / fieldChanged.

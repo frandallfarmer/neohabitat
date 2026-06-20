@@ -36,6 +36,8 @@ import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick } from "./verb-dispatch.js"
 import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
+import { modeState, MODE_INVENTORY, resolveMode, pickFromContainerUI } from "./modes.js"
+import { InventoryView } from "./inventory-view.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -253,6 +255,10 @@ async function main() {
         world, dispatch, dispatchClient, verb, pickState,
         canvasX, canvasY, scale, args: args ?? {},
       })
+    // Test hook: pop the inventory grid for any container noid (the real flow is GET on
+    // an open container, which the behavior routes through ctx.pickFromContainer).
+    globalThis.habitatInventory = (noid) =>
+      pickFromContainerUI(noid).then((picked) => (console.log("[inventory] picked:", picked), picked))
     transport.connect()
   }
 
@@ -287,6 +293,7 @@ async function main() {
     const objs = objects.value
     const st = status.value
     const region = objs.find((o) => o.type === "context")
+    const mode = modeState.value
     balloonState.value.revision
     textInputState.value.revision
     avatarMotion.tick.value
@@ -305,7 +312,7 @@ async function main() {
         <${Scale.Provider} value=${3}>
           <${BalloonStage}
             stateSignal=${balloonState}
-            textInput=${region
+            textInput=${region && mode.mode !== MODE_INVENTORY
               ? {
                   Line: TextInputLine,
                   stateSignal: textInputState,
@@ -313,17 +320,23 @@ async function main() {
                   enabled: true,
                 }
               : null}>
-            ${region
-              ? html`<${regionView}
-                  objects=${objs}
-                  avatarMotion=${avatarMotion}
-                  pickState=${pickState}
-                  regionInput=${{
-                    Cursor: RegionCursor,
-                    enabled: !!dispatchClient,
-                    onCommand: onRegionCommand,
-                  }} />`
-              : html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`}
+            ${!region
+              ? html`<div style="color:#9a9aa6; padding:8px;">${transport ? "waiting for make-storm…" : "not connected"}</div>`
+              : mode.mode === MODE_INVENTORY
+                ? html`<${InventoryView}
+                    objects=${objs}
+                    containerNoid=${mode.containerNoid}
+                    onSelect=${(noid) => resolveMode(noid)}
+                    onAbort=${() => resolveMode(null)} />`
+                : html`<${regionView}
+                    objects=${objs}
+                    avatarMotion=${avatarMotion}
+                    pickState=${pickState}
+                    regionInput=${{
+                      Cursor: RegionCursor,
+                      enabled: !!dispatchClient,
+                      onCommand: onRegionCommand,
+                    }} />`}
           <//>
         <//>
       </div>
