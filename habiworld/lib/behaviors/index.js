@@ -60,8 +60,7 @@ B.generic_goTo = async (ctx) => {
 // args x/y). Used as the 'go' of ground and street — which makes it the
 // walk step of every drop-at choreography.
 B.generic_goToCursor = async (ctx) => {
-  const x = ctx.args.x !== undefined ? ctx.args.x : (ctx.pointed ? ctx.pointed.mod.x : 80)
-  const y = ctx.args.y !== undefined ? ctx.args.y : (ctx.pointed ? ctx.pointed.mod.y : 144)
+  const { x, y } = ctx.cursorCoords()
   await ctx.walkTo(x, y)
   return { ok: true }
 }
@@ -96,10 +95,8 @@ B.avatar_go = async (ctx) => {
 // Behaviors/sky_go.m: goXY to the cursor, then leave the region upward
 // (region transit is a client capability).
 B.sky_go = async (ctx) => {
-  const me = ctx.actor
-  await ctx.walkTo(
-    ctx.args.x !== undefined ? ctx.args.x : (me ? me.mod.x : 80),
-    ctx.args.y !== undefined ? ctx.args.y : (me ? me.mod.y : 144))
+  const { x, y } = ctx.cursorCoords()
+  await ctx.walkTo(x, y)
   return ctx.changeRegion('up')
 }
 
@@ -129,8 +126,7 @@ B.trap_put = async (ctx) => {
   await ctx.waitWalkAnimation()
   ctx.face()
   ctx.chore('bend_over')
-  const x = ctx.args.x !== undefined ? ctx.args.x : (ctx.actor ? ctx.actor.mod.x : 80)
-  const y = ctx.args.y !== undefined ? ctx.args.y : 144
+  const { x, y } = ctx.cursorCoords()
   const result = await ctx.putInto(THE_REGION, x, y)
   ctx.chore('bend_back')
   return result

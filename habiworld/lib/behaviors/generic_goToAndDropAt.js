@@ -29,8 +29,7 @@ module.exports = async function generic_goToAndDropAt(ctx) {
 
   ctx.face()
   ctx.chore('bend_over')
-  const x = ctx.args.x !== undefined ? ctx.args.x : (ctx.actor ? ctx.actor.mod.x : 80)
-  const y = ctx.args.y !== undefined ? ctx.args.y : 144
+  const { x, y } = ctx.cursorCoords()
   const result = await ctx.putInto(THE_REGION, x, y)
   ctx.chore('bend_back')
   return result

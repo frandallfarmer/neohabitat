@@ -168,6 +168,18 @@ function withHeldSprayCan(w) {
   })
 }
 
+test('spray_can DO via avatar_do passes pointedAtLimb as limb (pointer.m which_limb)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldSprayCan(w)
+  const { calls, cb } = recorder([
+    { type: 'reply', noid: 95, SPRAY_SUCCESS: 1, SPRAY_CUSTOMIZE_0: 7, SPRAY_CUSTOMIZE_1: 8 },
+  ])
+  const result = await dispatch(w, ACTION_DO, 17, { limb: 2 }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'SPRAY', to: 'item-spray-1', limb: 2 }])
+})
+
 test('spray_can DO success path: SPRAY_SUCCESS + SPRAY_CUSTOMIZE_* repaint the avatar', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
@@ -331,6 +343,25 @@ test('PUT a held head at MYSELF wears it when the HEAD slot is free', async () =
   assert.equal(w.get(60).mod.y, HEAD) // moved into the HEAD slot
 })
 
+test('PUT on street with held head uses goXY cursor depth (y|0x80) for walk and drop', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-randy', name: 'Randy head',
+      mods: [{ type: 'Head', noid: 70, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(70, 17, 0, HANDS)
+  const { calls, cb } = recorder([{ type: 'reply', err: 1, pos: 11 }])
+  cb.walkTo = async (x, y) => { calls.walks.push({ x, y }); return { x, y } }
+  const result = await dispatch(w, ACTION_PUT, 50, { x: 116, y: 11 }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.walks, [{ x: 116, y: 139 }])
+  assert.equal(calls.sends[0].op, 'PUT')
+  assert.equal(calls.sends[0].containerNoid, THE_REGION)
+  assert.equal(calls.sends[0].x, 116)
+  assert.equal(calls.sends[0].y, 139)
+  assert.equal(w.holding(17), null)
+})
+
 test('PUT a 2nd head at MYSELF pockets it when already wearing one', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
@@ -391,6 +422,34 @@ test('DO on a die rolls it: die_do sends ROLL, relays the value, sets gr_state',
   // and it changed from the die's initial face (6).
   assert.equal(w.get(40).mod.gr_state, result.value)
   assert.notEqual(result.value, 6)
+})
+
+test('GET on own worn head dispatches REMOVE via head_get', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-cat', name: 'cat head',
+      mods: [{ type: 'Head', noid: 60, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(60, 17, 0, HEAD)
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  const result = await dispatch(w, ACTION_GET, 60, {}, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'REMOVE', to: 'item-head-cat' }])
+  assert.equal(w.holding(17).noid, 60)
+})
+
+test('GET at MYSELF with face limb redirects to head_get REMOVE', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-head-cat', name: 'cat head',
+      mods: [{ type: 'Head', noid: 60, x: 0, y: 0, orientation: 0, gr_state: 0 }] } })
+  w._changeContainers(60, 17, 0, HEAD)
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  const result = await dispatch(w, ACTION_GET, 17, { pointedAtLimb: 3 }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'REMOVE', to: 'item-head-cat' }])
+  assert.equal(w.holding(17).noid, 60)
 })
 
 test('GET at MYSELF unpockets the named item (avatar_get its_me) — GET on the item, no REMOVE', async () => {

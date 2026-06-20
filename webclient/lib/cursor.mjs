@@ -21,12 +21,13 @@ export const COMMAND_GO = 2
 export const COMMAND_GET = 4
 export const COMMAND_PUT = 5
 
-/** cursor.m cursor_point_table — indexed by joystick_state & 0xf. */
+/** cursor.m cursor_point_table — pure cardinals only; diagonals -1.
+ *  right=GO, up=GET, down=PUT, left=DO (Avatar Handbook pie menu). */
 export const CURSOR_POINT_TABLE = Int8Array.from([
   -1, -1, -1, -1,
-  -1, CURSOR_DO, CURSOR_GO, CURSOR_GET,
-  -1, CURSOR_DO, CURSOR_GO, CURSOR_PUT,
-  -1, CURSOR_DO, CURSOR_GO, CURSOR_STOP,
+  -1, -1, -1, CURSOR_GO,
+  -1, -1, -1, CURSOR_DO,
+  -1, CURSOR_PUT, CURSOR_GET, CURSOR_STOP,
 ])
 
 /** cursor.m state_to_command — indexed by cursor_state. */
@@ -63,7 +64,10 @@ export function stickIndexFromDrag(dx, dy, threshold = 10) {
 
 export function cursorStateFromStick(stickIndex) {
   const next = CURSOR_POINT_TABLE[stickIndex & 0xf]
-  return next < 0 ? null : next
+  // Centered stick (1111 → stop_cursor) is the ? menu, not a direction pick.
+  // C64 sticky-holds the latched verb here; don't overwrite with STOP on re-center.
+  if (next < 0 || next === CURSOR_STOP) return null
+  return next
 }
 
 export function commandFromCursorState(cursorState) {

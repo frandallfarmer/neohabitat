@@ -58,6 +58,17 @@ const FOREGROUND_BIT = 0x80
 // (matches a full-height walkable band; avatars at y≈160).
 const DEFAULT_REGION_DEPTH = 32
 
+// Port of Main/actions.m:goXY — cursor (x, y) from the pointer into walk/put
+// coordinates. Depth is the low 7 bits of y, clamped to the region band, then
+// raised into the foreground layer; x snaps to the 4px grid.
+function cursorGoXY(world, x, y) {
+  const regionDepth = world.region?.depth || DEFAULT_REGION_DEPTH
+  let depth = y & 0x7f
+  if (depth < 0) depth = 0
+  else if (depth > regionDepth) depth = regionDepth
+  return { x: x & 0xFC, y: FOREGROUND_BIT + depth }
+}
+
 // Port of get_object_walk_xy (Main/walkto.m:212). Given an object that is
 // physically present in the region, return the (x, y) an avatar must stand
 // at to be adjacent to it. CANONICAL — mirror the .m, do not approximate.
@@ -287,6 +298,15 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   ctx.gotoCoords = (noid) => gotoCoords(world, noid)
   ctx.adjacentCoords = (noid) => adjacentCoords(world, noid)
 
+  // Cursor coords from args (or pointed-object fallback), via goXY.
+  ctx.cursorCoords = () => {
+    const rawX = ctx.args.x !== undefined ? ctx.args.x
+      : (pointed && pointed.mod.x !== undefined ? pointed.mod.x : 80)
+    const rawY = ctx.args.y !== undefined ? ctx.args.y
+      : (pointed && pointed.mod.y !== undefined ? pointed.mod.y : 144)
+    return cursorGoXY(world, rawX, rawY)
+  }
+
   // v_adjacency_check (Main/actions.m:1209). The C64 compared the
   // avatar's position with find_goto_coords output for exact equality —
   // safe when its own walker landed pixel-perfect. Our walks go through
@@ -332,6 +352,7 @@ function makeCtx(world, verb, pointed, args, client, parent) {
 module.exports = {
   makeCtx,
   walkWaitMillis,
+  cursorGoXY,
   gotoCoords,
   adjacentCoords,
   findThrowSurface,

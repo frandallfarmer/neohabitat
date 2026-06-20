@@ -25,8 +25,11 @@
 // avatar.noid. The "pocket" is the avatar, so retrieving ANYTHING from it
 // — heads included — is an avatar_get, not a head_get.
 
-const { HANDS, HEAD, ACTION_GO } = require('../constants')
+const { HANDS, HEAD, ACTION_GO, ACTION_GET } = require('../constants')
 const { succeeded } = require('./kernel')
+
+// animate.m / pointer.m — avatar_get.m redirects face-limb picks to head_get.
+const AVATAR_FACE_LIMB = 3
 
 module.exports = async function avatar_get(ctx) {
   const victim = ctx.pointed
@@ -35,6 +38,13 @@ module.exports = async function avatar_get(ctx) {
   // ── Self: unpocket the named item (avatar_get its_me). ─────────────
   if (me && victim.noid === me.noid) {
     if (ctx.inHand) return ctx.beep('hands-full') // must be empty-handed
+
+    // avatar_get.m its_me: pointed_at_limb == AVATAR_FACE_LIMB → nested GET on worn head.
+    if (ctx.args.pointedAtLimb === AVATAR_FACE_LIMB) {
+      const wornHead = ctx.world.inventory(me.noid).find((o) => o.mod.y === HEAD)
+      if (wornHead) return ctx.doActionOn(ACTION_GET, wornHead)
+    }
+
     const item = ctx.args.item != null ? ctx.world.get(ctx.args.item) : null
     if (!item) return ctx.beep('no-such-pocket-item')
     // Must actually be in MY pocket: contained by me, and not the item
