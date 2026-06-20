@@ -8,6 +8,7 @@ import { Scale } from "../habirender/render.js"
 import { canvasPixelToMod } from "../habirender/pick.mjs"
 import {
   CURSOR_NORMAL,
+  CURSOR_STOP,
   stickIndexFromDrag,
   cursorStateFromStick,
   commandFromCursorState,
@@ -65,8 +66,9 @@ export function RegionCursor({
     if (!enabled || e.button !== 0) return
     const p = localFromEvent(e)
     setPos(p)
-    setCursorState(CURSOR_NORMAL)
-    holdRef.current = { anchorX: p.x, anchorY: p.y, state: CURSOR_NORMAL }
+    // C64: trigger down + centered stick → stop_cursor (options: four arrows + ?).
+    setCursorState(CURSOR_STOP)
+    holdRef.current = { anchorX: p.x, anchorY: p.y, state: CURSOR_STOP }
     e.currentTarget.setPointerCapture(e.pointerId)
     e.preventDefault()
   }, [enabled, scale, width, height])

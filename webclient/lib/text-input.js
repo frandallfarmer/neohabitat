@@ -75,7 +75,7 @@ function useCharset() {
   return charsetData
 }
 
-export function TextInputLine({ stateSignal, onSubmit, enabled = true }) {
+export function TextInputLine({ stateSignal, onSubmit, enabled = true, routeKeys = false }) {
   const scale = useContext(Scale)
   const charsetData = useCharset()
   const rootRef = useRef(null)
@@ -92,10 +92,13 @@ export function TextInputLine({ stateSignal, onSubmit, enabled = true }) {
   }, [enabled])
 
   useEffect(() => {
-    const root = rootRef.current
-    if (!enabled || !root) return undefined
+    if (!enabled) return undefined
     const onKey = (e) => {
-      if (e.target.closest("input, textarea, select")) return
+      const root = rootRef.current
+      const focused = root
+        && (document.activeElement === root || root.contains(document.activeElement))
+      if (!routeKeys && !focused) return
+      if (!routeKeys && e.target.closest("input, textarea, select")) return
       const st = stateSignal.value
       const result = handleKey(st, e.key, { ctrlKey: e.ctrlKey })
       if (result.action === "noop") return
@@ -106,9 +109,9 @@ export function TextInputLine({ stateSignal, onSubmit, enabled = true }) {
         onSubmit(result.payload)
       }
     }
-    root.addEventListener("keydown", onKey)
-    return () => root.removeEventListener("keydown", onKey)
-  }, [enabled, state.revision, onSubmit, stateSignal])
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [enabled, routeKeys, state.revision, onSubmit, stateSignal])
 
   const bytes = useMemo(
     () => displayBytes(state, { showCursor: cursorOn }),

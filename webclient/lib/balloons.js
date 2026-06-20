@@ -270,6 +270,7 @@ export function BalloonStage({ stateSignal, children, textInput = null }) {
   const panelW = LAYOUT_PANEL_PX_W * scale
   const panelH = balloonPanelHeightPx(state.maxDisplayLines) * scale
   const TextInputLine = textInput?.Line
+  const [pointerInGraphics, setPointerInGraphics] = useState(false)
 
   return html`
     <div class="balloon-stage" style="width: ${panelW}px;">
@@ -282,7 +283,10 @@ export function BalloonStage({ stateSignal, children, textInput = null }) {
               alt="" />
           </div>`
         : null}
-      <div class="balloon-graphics-band">
+      <div
+        class="balloon-graphics-band"
+        onPointerEnter=${() => setPointerInGraphics(true)}
+        onPointerLeave=${() => setPointerInGraphics(false)}>
         <${QuipSprite} quip=${state.quip} />
         ${children}
       </div>
@@ -290,7 +294,8 @@ export function BalloonStage({ stateSignal, children, textInput = null }) {
         ? html`<${TextInputLine}
             stateSignal=${textInput.stateSignal}
             onSubmit=${textInput.onSubmit}
-            enabled=${textInput.enabled} />`
+            enabled=${textInput.enabled}
+            routeKeys=${pointerInGraphics} />`
         : null}
     </div>`
 }
