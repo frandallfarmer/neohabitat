@@ -21,13 +21,16 @@ export const COMMAND_GO = 2
 export const COMMAND_GET = 4
 export const COMMAND_PUT = 5
 
-/** cursor.m cursor_point_table — pure cardinals only; diagonals -1.
- *  right=GO, up=GET, down=PUT, left=DO (Avatar Handbook pie menu). */
+/** cursor.m cursor_point_table (Main/cursor.m:239) — byte-exact C64 port.
+ *  Indexed by the joystick nibble (keys.m: bit0=up, bit1=down, bit2=left,
+ *  bit3=right; 0=pressed). Cardinals: UP=GO, DOWN=DO, LEFT=PUT, RIGHT=GET.
+ *  Diagonals resolve (any up-component→GO, any down-component→DO); the
+ *  centered nibble (0xf)=STOP. */
 export const CURSOR_POINT_TABLE = Int8Array.from([
-  -1, -1, -1, -1,
-  -1, -1, -1, CURSOR_GO,
-  -1, -1, -1, CURSOR_DO,
-  -1, CURSOR_PUT, CURSOR_GET, CURSOR_STOP,
+  -1, -1,        -1,        -1,
+  -1, CURSOR_DO, CURSOR_GO, CURSOR_GET,
+  -1, CURSOR_DO, CURSOR_GO, CURSOR_PUT,
+  -1, CURSOR_DO, CURSOR_GO, CURSOR_STOP,
 ])
 
 /** cursor.m state_to_command — indexed by cursor_state. */

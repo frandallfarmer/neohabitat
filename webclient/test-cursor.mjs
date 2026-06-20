@@ -22,10 +22,12 @@ assert(stickIndexFromDrag(-20, 0) === 0b1011, "left")
 assert(stickIndexFromDrag(0, 20) === 0b1101, "down")
 assert(stickIndexFromDrag(20, 20) === 0b0101, "down+right")
 
-assert(cursorStateFromStick(0b1110) === CURSOR_GET, "up → GET")
-assert(cursorStateFromStick(0b0111) === CURSOR_GO, "right → GO")
-assert(cursorStateFromStick(0b1011) === CURSOR_DO, "left → DO")
-assert(cursorStateFromStick(0b1101) === CURSOR_PUT, "down → PUT")
+// cursor.m cursor_point_table: UP=GO, DOWN=DO, LEFT=PUT, RIGHT=GET.
+assert(cursorStateFromStick(0b1110) === CURSOR_GO, "up → GO")
+assert(cursorStateFromStick(0b0111) === CURSOR_GET, "right → GET")
+assert(cursorStateFromStick(0b1011) === CURSOR_PUT, "left → PUT")
+assert(cursorStateFromStick(0b1101) === CURSOR_DO, "down → DO")
+assert(cursorStateFromStick(0b0101) === CURSOR_DO, "down+right diagonal → DO")
 
 assert(commandFromCursorState(0) === COMMAND_STOP, "normal → STOP")
 assert(commandFromCursorState(CURSOR_GO) === COMMAND_GO, "go cursor → GO cmd")
