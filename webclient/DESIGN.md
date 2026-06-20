@@ -200,8 +200,89 @@ Each phase is independently demoable in the page shell.
   `face_cursor` → class verb via `habiworld` dispatch. Quick tap (no drag) = STOP
   (face cursor only, `generic_cease`). Not a wedge/radial menu — directional stick
   table `cursor_point_table` exactly as on the C64.
-- **Phase 6 — Full controls.** Function/control keys, postures/emotes (`gestures.m`),
-  inventory/pockets UI, get/drop (`getdrop.m`), throw (`throw.m`).
+
+  - **TODO — return-to-center backs out (virtual joystick).** On the C64 the stick could
+    return to center *while the button is still down*, sending the cursor back to STOP so the
+    user could abort a half-formed command. Reproduce this with the mouse: treat the press
+    point as the center of a virtual joystick with **STOP at center**, and resolve the cursor
+    state from the *current* offset (not a one-way latch). So a drag up (GO) that comes back
+    down passes **through STOP** on its way to DO — center is always reachable as the
+    back-out. Replaces the current `cursorStateFromStick` latch (which returns null on
+    re-center). Do this *after* the floating-avatar (sit/height) render fix.
+- **Phase 6 — Full controls + modal displays.** Function/control keys, postures/emotes
+  (`gestures.m`), get/drop (`getdrop.m`), throw (`throw.m`) — plus the two **modal display
+  modes** that replace the region renderer while active. The C64 is authoritative here and
+  ports nearly 1:1; the architecture is a single top-level display-mode state, with the same
+  cursor/keyboard input *repurposed* per mode (read the `.m`, per RULE #1).
+
+  - **The modal switch (`Main/main.m:75` `maintain_frame`).** Dispatch on two variables:
+    `graphics_mode` (`0` = bitmap region, `0xff` = text, `1` = special) and
+    `display_contents_noid` (nonzero → draw the inventory grid *instead of* the region).
+    Three modes — **region / inventory-grid / text** — selected by state; the region is
+    simply not drawn in the other two, and region objects are not selectable there. Port as
+    one top-level signal (`region | inventory | text`) gating which view `live.js` mounts,
+    mirroring `graphics_mode` + `display_contents_noid`. Exiting a mode force-redraws the
+    region (`forced_render_region`).
+
+  - **6a. Inventory picker — get-from-container (`Main/pick.m` + `actions.m:912`
+    `pick_from_container`).** A GET that needs a noun from an opaque/pocket container sets
+    `display_contents_noid = container`, fetches the contents' images, and loops
+    `maintain_frame` until the trigger fires (`let_user_pick:`). `pick.m` lays the contents
+    out in a **4-column grid** (`cont_x_pos`/`cont_y_pos`), skipping avatars. The **same
+    `pointer.m`** does selection (it gates on `display_contents_noid` at `:34`). Paging: if
+    nothing was pointed at and more remain (`lowest_to_display`), show the next page.
+    Exit/abort clears `display_contents_noid`, restores the saved cursor, and returns
+    `pointed_noid` — the GET target, or `0` = abort. Reuse the prop/cel renderer +
+    `containedItemLayout` at grid coords and the existing cursor/`pickAt` to select; feed the
+    result into the GET dispatch. This is the modal cousin of the in-region table-contents
+    pick (`pick.mjs pickDrawOrder`): opaque/pocket containers use the grid, non-opaque ones
+    (tables) show contents in-region.
+
+  - **6b. Text mode — read documents / edit paper / send mail (`Main/text_handler.m`).**
+    Host-driven via a command byte; bit flags carry the variant. `ENTER (0x00, :142)`: clear
+    sheet, `graphics_mode=-1`, freeze cursor (`detach_from_stick`), `pen_cursor`.
+    `RECEIVE_PAGE (0x02, :215)`: stream a page from the host, `print_to_page` each char
+    (`page_line_delimiter` → return) — **reading**, with `IS_A_BOOK`/`TEXT_MULTIPAGE_MODE`
+    paging (`BOOK_NEXT/BACK/RANDOM_ACCESS` bits). `TRANSMIT_PAGE (0x03, :170)`: walk the page
+    buffer (`paper_window_size` × 40), trim trailing spaces, send each line via
+    `MESSAGE_WRITE` to `pointed_noid` — **editing & sending**, → Habitat mail when
+    `TEXT_MAIL_BIT`. `EXIT (0x01, :157)`: restore cursor, `forced_render_region`. The editor
+    (`write_to_page`/`print_to_page`, `:41`) handles char/return/delete/clear + page-cursor
+    movement; mode bits: `TEXT_WRITEABLE` (paper vs read-only doc), `TEXT_MAIL_BIT`,
+    `TEXT_REPLY_BIT`. Reuse the charset renderer already powering balloons/signs/the speak
+    line; run the page protocol over the same transport.
+
+  - **6c. Ghost mode (`actions.m:274`, `farmers_equates.m:41`).** A region change can
+    **force-transform** the avatar into a ghost — entering a full region makes you a ghost
+    (`ghost_noid = 255`; the avatar mod carries `amAGhost`). While a ghost the command cursor
+    is restricted to **GO only** — every other verb is blocked (`actions.m:276` "ghosts can
+    ONLY go!") — and a region-level GO with verb slot **9 = deghost** re-materializes you when
+    space frees (region-edge GO still transits). Port: gate verb dispatch on the ghost flag,
+    render the avatar in its ghost form, and surface the deghost GO. Pairs with region transit
+    (the `changeRegion` client capability), since transit is what can drop you into ghost
+    state.
+
+  - **6d. Region transit (`GoToNewRegion`/`sky_go`/`transit_region` → `changeRegion`).**
+    Sequenced **last in Phase 6**, after the in-region UI (6a inventory + 6b documents) is
+    done. The world side is already complete in habiworld — `sky_go`, `GoToNewRegion` ("the
+    region's `go` — leave through an edge"), and `transit_region` (region slot 8) all call
+    `ctx.changeRegion(direction)`. The missing piece is the **client capability**:
+    `ctx.changeRegion` (`kernel.js:280`) delegates to `client.changeRegion(direction)` and
+    today returns `needs-client-capability:changeRegion` because the webclient provides none.
+    Implement it as: on walk-off-edge (or `changeRegion`), tear down the current region state
+    and `transport.enterContext(world.region.neighbors[direction])`, then render the new
+    make-storm. Goes after the modal UIs because it changes the top-level region state those
+    modes assume, and it feeds **6c** — arriving in a full region force-transforms you to a
+    ghost.
+
+    *Open question — the off-edge trigger (explore when we build 6d).* On the C64, walking
+    **off-screen** left / right / down was triggered by the **game-window boundary itself**:
+    the hardware clamped the cursor at the playfield edge, so pushing into that edge was a
+    free, obvious, always-accessible "GO off the edge in this direction" affordance. The
+    browser playfield has **no such hard cursor boundary**, so we must invent an explicit
+    target/affordance for edge transit (candidates: edge hot-zones, an off-edge GO target, or
+    a directional control). Left, right, and down map to the three walkable edges. Decide the
+    mechanism at this stage.
 
 ## Running (Phase 0–1)
 
