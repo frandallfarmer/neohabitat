@@ -8,6 +8,7 @@ import {
   CURSOR_PUT,
   CURSOR_GET,
   CURSOR_DO,
+  CURSOR_STOP,
   COMMAND_STOP,
   COMMAND_GO,
   COMMAND_PUT,
@@ -33,6 +34,8 @@ assert(commandFromCursorState(0) === COMMAND_STOP, "normal → STOP")
 assert(commandFromCursorState(CURSOR_GO) === COMMAND_GO, "go cursor → GO cmd")
 assert(actionFromCommand(COMMAND_PUT) === 5, "PUT → ACTION_PUT")
 
-assert(cursorStateFromStick(0b1111) === null, "centered stick must not latch STOP")
+// Virtual joystick: center resolves to STOP (back-out), not a latch.
+assert(cursorStateFromStick(0b1111) === CURSOR_STOP, "centered stick returns STOP (back-out)")
+assert(cursorStateFromStick(0b1110) === CURSOR_GO, "up still GO after re-center support")
 
 console.log("test-cursor: ok")

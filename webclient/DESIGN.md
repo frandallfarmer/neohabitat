@@ -201,14 +201,13 @@ Each phase is independently demoable in the page shell.
   (face cursor only, `generic_cease`). Not a wedge/radial menu — directional stick
   table `cursor_point_table` exactly as on the C64.
 
-  - **TODO — return-to-center backs out (virtual joystick).** On the C64 the stick could
-    return to center *while the button is still down*, sending the cursor back to STOP so the
-    user could abort a half-formed command. Reproduce this with the mouse: treat the press
-    point as the center of a virtual joystick with **STOP at center**, and resolve the cursor
-    state from the *current* offset (not a one-way latch). So a drag up (GO) that comes back
-    down passes **through STOP** on its way to DO — center is always reachable as the
-    back-out. Replaces the current `cursorStateFromStick` latch (which returns null on
-    re-center). Do this *after* the floating-avatar (sit/height) render fix.
+  - **Return-to-center backs out (virtual joystick) — implemented.** On the C64 the stick
+    could return to center *while the button is still down*, sending the cursor back to STOP
+    so the user could abort a half-formed command. The mouse analog treats the press point as
+    the center of a virtual joystick with **STOP at center**: `cursorStateFromStick` resolves
+    to the *current* offset (no one-way latch), so a drag up (GO) that comes back down passes
+    **through STOP** on its way to DO, and releasing at center backs out. The deadzone is
+    `DRAG_THRESHOLD` (the STOP center).
 - **Phase 6 — Full controls + modal displays.** Function/control keys, postures/emotes
   (`gestures.m`), get/drop (`getdrop.m`), throw (`throw.m`) — plus the two **modal display
   modes** that replace the region renderer while active. The C64 is authoritative here and

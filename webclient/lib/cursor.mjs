@@ -67,9 +67,11 @@ export function stickIndexFromDrag(dx, dy, threshold = 10) {
 
 export function cursorStateFromStick(stickIndex) {
   const next = CURSOR_POINT_TABLE[stickIndex & 0xf]
-  // Centered stick (1111 → stop_cursor) is the ? menu, not a direction pick.
-  // C64 sticky-holds the latched verb here; don't overwrite with STOP on re-center.
-  if (next < 0 || next === CURSOR_STOP) return null
+  // Virtual joystick with STOP at center: resolve to the CURRENT offset, not a one-way
+  // latch. Centered (1111 → STOP) is the back-out, so dragging up (GO) then back down
+  // passes THROUGH STOP on the way to DO — like the C64 stick returning to center while
+  // the button is still down. -1 (impossible diagonals) keeps the current state.
+  if (next < 0) return null
   return next
 }
 
