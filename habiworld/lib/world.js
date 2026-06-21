@@ -72,10 +72,13 @@ class HabitatWorld extends EventEmitter {
     }
 
     if (op === 'make' || op === 'HEREIS_$') {
-      // HEREIS_$ carries the object under `object` instead of `obj`
-      // (legacy wire quirk; see habibot.js's identical special case).
+      // HEREIS_$ carries the object under `object` (not `obj`) and the destination
+      // container under `container` (not `to`) — e.g. the Paper.GET pocket "infinite pad"
+      // mints a fresh sheet via HEREIS_$ into the avatar. Using `to` would drop it into
+      // the wrong container and the pad would never refill.
       const obj = op === 'make' ? msg.obj : msg.object
-      if (obj) this._makeObject(obj, msg.to, !!msg.you)
+      const container = op === 'make' ? msg.to : (msg.container ?? msg.to)
+      if (obj) this._makeObject(obj, container, !!msg.you)
       this.emit('op', msg)
       return
     }

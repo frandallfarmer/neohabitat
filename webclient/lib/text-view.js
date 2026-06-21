@@ -180,7 +180,10 @@ export const TextView = ({ text, onExit }) => {
       row: Math.max(0, Math.min(MENU_ROW, Math.floor((e.clientY - r.top) / CELL))),
     }
   }
-  const onFieldMove = (e) => setPen(cellFromEvent(e))
+  // Reading: the pen IS the pointer and follows the mouse. Editing: the pen is the typing
+  // caret, driven by the keyboard — the mouse must not drag it off the insert point, so it
+  // only moves on click (reposition) and the OS pointer stays visible for aiming.
+  const onFieldMove = (e) => { if (!editable) setPen(cellFromEvent(e)) }
   const onFieldClick = (e) => {
     const { col, row } = cellFromEvent(e)
     setPen({ col, row })
@@ -247,7 +250,7 @@ export const TextView = ({ text, onExit }) => {
       </div>
       <div
         class="text-field"
-        style=${`width:${px(COLS)}; cursor:none`}
+        style=${`width:${px(COLS)}; cursor:${editable ? "default" : "none"}`}
         onPointerMove=${onFieldMove}
         onClick=${onFieldClick}>
         <div class="text-page" style=${`width:${px(COLS)}; height:${px(PAGE_ROWS)}; background:${PINK}`}>
