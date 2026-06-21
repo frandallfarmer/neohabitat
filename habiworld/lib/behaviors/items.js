@@ -53,7 +53,8 @@ async function tokens_do(ctx) {
 async function paper_do(ctx) {
   const inHand = ctx.inHand
   if (!inHand || inHand.noid !== ctx.pointed.noid) return ctx.depends()
-  if (ctx.readText) return ctx.readText(ctx.pointed.noid) // graphical: modal text display
+  // graphical: modal text display — paper is editable (WRITE / PSENDMAIL); books/docs aren't.
+  if (ctx.readText) return ctx.readText(ctx.pointed.noid, { editable: true })
   const reply = await ctx.send({ op: 'READ', to: ctx.pointed.ref, page: 0 })
   if (!reply) return ctx.beep('server-denied')
   const text = reply.text !== undefined

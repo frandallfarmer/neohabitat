@@ -30,14 +30,19 @@ export function buildDispatchClient({ transport, presentation, world }) {
     // text_handler.m read flow: open the modal text display over a document; it pages by
     // sending READ {page} itself. Resolves when closed. (graphical capability — bots
     // leave this unset and balloon the text instead.)
-    readText: (noid) => {
+    readText: (noid, opts = {}) => {
       const o = world?.get?.(noid)
       const ref = o?.ref
       if (!ref) return Promise.resolve(null)
       return openTextUI({
         ref,
         title: o.name,
+        editable: !!opts.editable,
         readPage: (page) => transport.sendForReply({ op: "READ", to: ref, page }),
+        // Paper.java WRITE: request_ascii (length 16 / null = clear) saves the sheet.
+        writePage: (request_ascii) => transport.sendForReply({ op: "WRITE", to: ref, request_ascii }),
+        // Paper.java PSENDMAIL: post the sheet to the addressee written on it ("To: name").
+        sendMail: () => transport.sendForReply({ op: "PSENDMAIL", to: ref }),
       })
     },
   }

@@ -264,7 +264,7 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   // document/paper/book (it pages itself). Resolves when closed. Only defined when the
   // client provides it; bots leave it undefined and balloon the text instead.
   if (client.readText) {
-    ctx.readText = (noid) => client.readText(noid)
+    ctx.readText = (noid, opts) => client.readText(noid, opts)
   }
   // C64 newImage noid[, state]: optional state sets gr_state then redraws.
   // Background objects set background_render (full backdrop); the renderer

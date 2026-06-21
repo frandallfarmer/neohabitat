@@ -1,12 +1,12 @@
-// Text display — port of Main/text_handler.m read flow (RECEIVE_PAGE + display_menu).
-// Replaces the region while reading a document/paper/book. Rendered with the canonical
-// Habitat charset (same renderer as the word balloons / speak line): black ink on the
-// C64 pink page (color_pink = 0x0a), with the Book_Menu prompt — NEXT BACK PAGE # QUIT —
-// in the game font on a white strip at the bottom (display_menu).
+// Text display — port of Main/text_handler.m (read + edit). Replaces the region while
+// reading a document/book or editing a sheet of paper. Rendered with the canonical Habitat
+// charset (the balloon/speak-line frameFromText engine): black ink on the C64 pink page
+// (color_pink = 0x0a), with the menu in the game font on a white strip. The pen cursor IS
+// the pointer (OS cursor hidden), snapping to a character cell over the page or a menu zone.
 //
-// Paging follows the neohabitat READ protocol (Document.java): page 0 = next, 254 = back;
-// the reply carries `nextpage` and `ascii` (up to 16×40 bytes, trimmed at the first 0).
-// Read-only for now; editing paper + send-as-mail (TRANSMIT_PAGE / TEXT_MAIL_BIT) is next.
+// Reading: paging via the neohabitat READ protocol (Document.java): page 0 = next, 254 =
+// back; reply { nextpage, ascii }. Editing (paper): type into the page grid; Paper_Menu
+// ERASE / REPLY / MAIL IT / QUIT; WRITE saves the sheet, PSENDMAIL posts it as mail.
 
 import { h } from "preact"
 import htm from "htm"
@@ -19,19 +19,24 @@ const html = htm.bind(h)
 
 const COLS = 40
 const PAGE_ROWS = 16        // Document.java LINES_PER_PAGE
-// Same scale model as the word balloons (balloons.js): frameFromText full-size glyphs are
-// 16px wide native (2 cells × 8) and 8px tall, then the browser scales the bitmap to the
-// 8px-layout footprint. Native canvas = COLS×16 × ROWS×8; display = layout(8px) × SCALE.
+// Same scale model as the word balloons (balloons.js): full glyphs are 16px wide native
+// (2 cells × 8) and 8px tall, then scaled to the 8px-layout footprint. display = layout × SCALE.
 const NATIVE_CW = 16
 const NATIVE_RH = 8
-const SCALE = 3            // display scale (matches the region stage)
-const TXTCMD_HALF_SIZE = 128 + 5 // full glyphs (speak-line / balloon recipe)
+const SCALE = 3
+const CELL = 8 * SCALE       // display px per character cell
+const MENU_ROW = PAGE_ROWS   // row index of the menu line (just below the page)
+const TXTCMD_HALF_SIZE = 128 + 5
 const BITMAP_PATTERN = 0xff
 const INK = { pattern: 15, wildcard: 0, skin: 0 } // black ink on a solid field
 const PINK = `#${c64Colors[0x0a].toString(16).padStart(6, "0")}` // color_pink (light_red)
+const SPACE = 32
 
-// text_handler.m Book_Menu (the read menu): four 10-col zones.
-const MENU_TEXT = "NEXT      BACK      PAGE #    QUIT      "
+// text_handler.m menus + their cursor-zone command order (4 × 10-col quarters).
+const BOOK_MENU = "NEXT      BACK      PAGE #    QUIT      "
+const PAPER_MENU = "ERASE     REPLY     MAIL IT   QUIT      "
+const BOOK_ZONES = ["next", "back", "page", "quit"]
+const PAPER_ZONES = ["erase", "reply", "mail", "quit"]
 const READ_NEXT = 0
 const READ_BACK = 254
 
@@ -52,32 +57,58 @@ function pageRows(reply) {
   return rows.slice(0, PAGE_ROWS)
 }
 
+const blankGrid = () => Array.from({ length: PAGE_ROWS }, () => new Array(COLS).fill(SPACE))
+
+function gridFromReply(reply) {
+  const grid = blankGrid()
+  pageRows(reply).forEach((row, r) => {
+    if (r < PAGE_ROWS) row.forEach((b, c) => { if (c < COLS) grid[r][c] = b })
+  })
+  return grid
+}
+
+// Grid → request_ascii for Paper.java WRITE: trim trailing blanks, rows joined by 10.
+// Empty page → a length-16 array (the server's "clear" sentinel).
+function gridToAscii(grid) {
+  let lastRow = -1
+  for (let r = 0; r < PAGE_ROWS; r++) if (grid[r].some((b) => b !== SPACE && b !== 0)) lastRow = r
+  if (lastRow < 0) return new Array(16).fill(0)
+  const out = []
+  for (let r = 0; r <= lastRow; r++) {
+    let lastCol = -1
+    for (let c = 0; c < COLS; c++) if (grid[r][c] !== SPACE && grid[r][c] !== 0) lastCol = c
+    for (let c = 0; c <= lastCol; c++) out.push(grid[r][c] || SPACE)
+    if (r < lastRow) out.push(10)
+  }
+  if (out.length === 16) out.push(SPACE) // never collide with the clear sentinel
+  return out
+}
+
 // Render one charset line (full glyphs) onto ctx at (0, y) — caller pre-fills the field.
-// A blank / all-spaces line yields no glyph layers (0×0 composite), which drawImage
-// rejects — skip those.
+// A blank / all-spaces line yields no glyph layers (0×0 composite), which drawImage rejects.
 function drawLine(ctx, bytes, y, charsetData) {
   if (!bytes.length || !charsetData) return
   const frame = frameFromText(0, 8, [TXTCMD_HALF_SIZE, ...bytes], charsetData, BITMAP_PATTERN, 0, INK)
   if (frame?.canvas?.width > 0 && frame.canvas.height > 0) ctx.drawImage(frame.canvas, 0, y)
 }
 
-function renderPage(reply, charsetData) {
+function renderPage(rows, charsetData) {
   const w = COLS * NATIVE_CW, h = PAGE_ROWS * NATIVE_RH
   const canvas = makeCanvas(w, h)
   const ctx = canvas.getContext("2d")
   ctx.fillStyle = PINK
   ctx.fillRect(0, 0, w, h)
-  pageRows(reply).forEach((row, i) => drawLine(ctx, row, i * NATIVE_RH, charsetData))
+  rows.forEach((row, i) => { if (i < PAGE_ROWS) drawLine(ctx, row, i * NATIVE_RH, charsetData) })
   return canvas
 }
 
-function renderMenu(charsetData) {
+function renderMenu(menuText, charsetData) {
   const w = COLS * NATIVE_CW, h = NATIVE_RH
   const canvas = makeCanvas(w, h)
   const ctx = canvas.getContext("2d")
   ctx.fillStyle = "#ffffff"
   ctx.fillRect(0, 0, w, h)
-  drawLine(ctx, [...MENU_TEXT].map((c) => c.charCodeAt(0) & 0xff), 0, charsetData)
+  drawLine(ctx, [...menuText].map((c) => c.charCodeAt(0) & 0xff), 0, charsetData)
   return canvas
 }
 
@@ -91,26 +122,29 @@ const useCharset = () => {
   return cs
 }
 
-const CELL = 8 * SCALE       // display px per character cell
-const MENU_ROW = PAGE_ROWS   // row index of the menu line (just below the page)
-const MENU_ZONES = ["next", "back", "page", "quit"] // Book_Menu_List quarters
-
 export const TextView = ({ text, onExit }) => {
+  const editable = !!text.editable
+  const menuText = editable ? PAPER_MENU : BOOK_MENU
+  const zones = editable ? PAPER_ZONES : BOOK_ZONES
+
   const charsetData = useCharset()
   const [reply, setReply] = useState(null)
   const [loading, setLoading] = useState(true)
-  // The pen cursor IS the pointer in text mode (the OS cursor is hidden): a typewriter-tip
-  // that snaps to a character cell over the page, or to a menu zone to pick a command.
+  const [grid, setGrid] = useState(blankGrid)        // editable page buffer
+  // The pen cursor IS the pointer (OS cursor hidden): a typewriter tip snapping to a cell.
   const [pen, setPenState] = useState({ col: 0, row: 0 })
   const penRef = useRef(pen)
   const setPen = (p) => { penRef.current = p; setPenState(p) }
 
   const read = useCallback(async (page) => {
     setLoading(true)
-    setPen({ col: 0, row: 0 }) // home the pen on each new page (clear_sheet)
-    try { setReply((await text.readPage(page)) ?? null) }
-    finally { setLoading(false) }
-  }, [text])
+    setPen({ col: 0, row: 0 })
+    try {
+      const r = (await text.readPage(page)) ?? null
+      setReply(r)
+      if (editable) setGrid(gridFromReply(r))
+    } finally { setLoading(false) }
+  }, [text, editable])
 
   useEffect(() => { read(READ_NEXT) }, [read]) // text_handler.m ENTER → first RECEIVE_PAGE
 
@@ -120,14 +154,25 @@ export const TextView = ({ text, onExit }) => {
     else if (id === "page") {
       const n = parseInt(globalThis.prompt?.("Page number?") ?? "", 10)
       if (Number.isFinite(n) && n >= 1) read(n)
-    } else if (id === "quit") onExit()
+    } else if (id === "erase") { setGrid(blankGrid()); setPen({ col: 0, row: 0 }) }
+    else if (id === "reply") {
+      setGrid((g) => { const ng = g.map((r) => r.slice()); "To: ".split("").forEach((ch, c) => { ng[0][c] = ch.charCodeAt(0) }); return ng })
+      setPen({ col: 4, row: 0 })
+    } else if (id === "mail") {
+      // Save the sheet, then post it to the addressee written on it ("To: name").
+      Promise.resolve(text.writePage?.(gridToAscii(grid)))
+        .then(() => text.sendMail?.()).finally(onExit)
+    } else if (id === "quit") {
+      if (editable && text.writePage) Promise.resolve(text.writePage(gridToAscii(grid))).finally(onExit)
+      else onExit()
+    }
   }
-  const triggerMenu = (col) => onMenu(MENU_ZONES[Math.min(3, Math.floor(col / 10))])
+  const triggerMenu = (col) => onMenu(zones[Math.min(3, Math.floor(col / 10))])
   // Latest actions for the keyboard listener (registered once on mount).
   const act = useRef({})
-  act.current = { triggerMenu, onExit }
+  act.current = { triggerMenu, onExit, editable }
 
-  // The pen follows the mouse, snapping to the cell under it (page rows 0..15, menu = 16).
+  // Pen follows the mouse, snapping to the cell under it (page rows 0..15, menu = 16).
   const cellFromEvent = (e) => {
     const r = e.currentTarget.getBoundingClientRect()
     return {
@@ -139,18 +184,19 @@ export const TextView = ({ text, onExit }) => {
   const onFieldClick = (e) => {
     const { col, row } = cellFromEvent(e)
     setPen({ col, row })
-    if (row >= MENU_ROW) triggerMenu(col) // trigger the menu command under the pen
+    if (row >= MENU_ROW) triggerMenu(col)
   }
 
-  // Keyboard alternative: arrows move the pen; Enter on the menu triggers; a char/space
-  // advances it (the typewriter caret); Escape closes.
+  // Keyboard: arrows move the pen; Enter on the menu triggers; a char/space advances it
+  // (and, editing, writes it into the page grid); backspace clears back; Escape closes.
   useEffect(() => {
     const onKey = (e) => {
       const k = e.key
       if (k === "Escape") { e.preventDefault(); act.current.onExit(); return }
       const isMove = k === "ArrowLeft" || k === "ArrowRight" || k === "ArrowUp" ||
         k === "ArrowDown" || k === "Enter" || k === "Backspace"
-      if (!isMove && !(k.length === 1 && k >= " ")) return
+      const isType = k.length === 1 && k >= " "
+      if (!isMove && !isType) return
       e.preventDefault()
       let { col, row } = penRef.current
       if (k === "ArrowLeft") col = Math.max(0, col - 1)
@@ -160,25 +206,45 @@ export const TextView = ({ text, onExit }) => {
       else if (k === "Enter") {
         if (row >= MENU_ROW) { act.current.triggerMenu(col); return }
         row = Math.min(PAGE_ROWS - 1, row + 1); col = 0
-      } else if (k === "Backspace") col = Math.max(0, col - 1)
-      else { col += 1; if (col >= COLS) { col = 0; row = Math.min(PAGE_ROWS - 1, row + 1) } }
+      } else if (k === "Backspace") {
+        col = Math.max(0, col - 1)
+        if (act.current.editable && row < PAGE_ROWS) {
+          const wc = col
+          setGrid((g) => { const ng = g.map((r) => r.slice()); ng[row][wc] = SPACE; return ng })
+        }
+      } else { // character / space
+        if (act.current.editable && row < PAGE_ROWS) {
+          const wc = col, wr = row, code = k.charCodeAt(0) & 0xff
+          setGrid((g) => { const ng = g.map((r) => r.slice()); ng[wr][wc] = code; return ng })
+        }
+        col += 1
+        if (col >= COLS) { col = 0; row = Math.min(PAGE_ROWS - 1, row + 1) }
+      }
       setPen({ col, row })
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
-  const pageImg = useMemo(() => (charsetData ? renderPage(reply, charsetData).toDataURL() : null), [reply, charsetData])
-  const menuImg = useMemo(() => (charsetData ? renderMenu(charsetData).toDataURL() : null), [charsetData])
+  const rows = editable ? grid : pageRows(reply)
+  const pageImg = useMemo(
+    () => (charsetData ? renderPage(rows, charsetData).toDataURL() : null),
+    [editable ? grid : reply, charsetData],
+  )
+  const menuImg = useMemo(
+    () => (charsetData ? renderMenu(menuText, charsetData).toDataURL() : null),
+    [menuText, charsetData],
+  )
   const curPage = reply?.nextpage != null ? Math.max(1, reply.nextpage - 1) : 1
   const px = (cells) => `${cells * CELL}px`
-  // pen tip: bottom-center of the cell, pointing up (2× the C64 pen_icon footprint).
   const caretLeft = pen.col * CELL + CELL / 2 - 8
   const caretTop = (pen.row + 1) * CELL - 16 // 2px lower than flush-to-cell-bottom
 
   return html`
     <div class="text-stage" onContextMenu=${(e) => e.preventDefault()}>
-      <div class="text-title">${text.title ?? "Document"} — page ${curPage}${loading ? " …" : ""}</div>
+      <div class="text-title">
+        ${text.title ?? "Document"}${editable ? " — editing" : ` — page ${curPage}`}${loading ? " …" : ""}
+      </div>
       <div
         class="text-field"
         style=${`width:${px(COLS)}; cursor:none`}
