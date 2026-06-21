@@ -240,11 +240,14 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   ctx.sound = (n, noid) => { if (client.sound) client.sound(n, noid) }
   // Avatar chores always run on an Avatar noid (actor_noid on the C64).
   // Host OPEN$ points at the neighbor actor; DO on a door points at the door.
-  ctx.chore = (act, noid) => {
+  // holdActivity (optional): for a Ctrl-# gesture the animation settles into this activity
+  // (chore.m background_activity holds the pose); normal action chores leave it undefined
+  // and revert to the prior pose.
+  ctx.chore = (act, noid, holdActivity) => {
     if (!client.chore) return
     const target = noid != null ? noid
       : (pointed && pointed.type === 'Avatar' ? pointed.noid : (me ? me.noid : null))
-    if (target != null) client.chore(act, target)
+    if (target != null) client.chore(act, target, holdActivity)
   }
   // avatar_go.m set_actor_chore for a persistent posture: tell the client to reflect
   // our OWN posture. Neighbors render via the inbound POSTURE$ broadcast, but the

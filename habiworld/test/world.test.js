@@ -291,15 +291,14 @@ test('SEXCHANGE$ toggles avatar body-type bit', () => {
   assert.equal(w.get(21).mod.orientation, before) // toggle back
 })
 
-test('POSTURE$ STAND_FRONT updates activity (Avatar.java POSTURE)', () => {
+test('POSTURE$ updates activity for facings and held gestures (Avatar.java POSTURE)', () => {
   const w = new HabitatWorld()
   makeStorm(w)
   w.apply({ op: 'POSTURE$', noid: 17, new_posture: 146 })
   assert.equal(w.get(17).mod.activity, 146)
-  // Wave is choreography-only — activity unchanged.
-  w.get(17).mod.activity = 254
+  // A Ctrl-# gesture (wave) holds too — set_actor_chore sets background_activity.
   w.apply({ op: 'POSTURE$', noid: 17, new_posture: 141 })
-  assert.equal(w.get(17).mod.activity, 254)
+  assert.equal(w.get(17).mod.activity, 141)
 })
 
 test('deleting an avatar cascades to its pocket contents (no ghost items)', () => {

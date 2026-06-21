@@ -124,4 +124,15 @@ async function dispatch(world, verb, noid, args, client) {
   return run(world, verb, pointed, args, client, null)
 }
 
-module.exports = { dispatch, behaviorNameFor, DEFAULT_ITEM_ACTIONS }
+// keyboard.m que_gesture: a Ctrl+# gesture is do_a_gesture on the actor (self), not a
+// class verb slot — run it directly with the AV_ACT value in args.gesture.
+async function performGesture(world, gestureValue, client) {
+  if (!world.me) return { ok: false, reason: 'not-in-region' }
+  if (!client || typeof client.send !== 'function') {
+    throw new Error('habiworld performGesture: client.send is required')
+  }
+  const ctx = makeCtx(world, null, world.me, { gesture: gestureValue }, client, null)
+  return behaviors.do_gesture(ctx)
+}
+
+module.exports = { dispatch, performGesture, behaviorNameFor, DEFAULT_ITEM_ACTIONS }

@@ -14,7 +14,7 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
   const sound = hs ? soundClientCallbacks(hs, world, classes) : { sound() {}, beep() {}, boing() {} }
   return {
     ...sound,
-    chore(act, noid) {
+    chore(act, noid, holdActivity) {
       let target = noid ?? world.me?.noid
       let rec = target != null ? world.get(target) : null
       if (!rec || rec.type !== "Avatar") {
@@ -28,6 +28,7 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         action,
         rec?.mod?.orientation ?? 0,
         rec?.mod?.activity ?? 129,
+        holdActivity, // Ctrl-# gestures: hold this activity after the cycle (else revert)
       )
     },
     // Main/actions.m face_cursor → chore.m change_orient — turn toward cursor x before

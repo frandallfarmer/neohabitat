@@ -1,0 +1,10 @@
+{
+  "name": "neohabitat-webclient",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "All-JS browser graphical Habitat client (C64 model). No build step; native ESM.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

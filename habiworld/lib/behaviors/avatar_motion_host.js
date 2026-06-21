@@ -64,21 +64,21 @@ function avatar_WALK(ctx) {
   return { ok: true }
 }
 
-// avatar_POSTURE.m — POSTURE$ wire: { noid: actor, new_posture }
+// avatar_POSTURE.m — POSTURE$ wire: { noid: actor, new_posture }. Facings, stances, and
+// Ctrl-# gestures all set AVATAR_background_activity (chore.m set_chore), so the pose HOLDS
+// until the next action. Facings just set activity; an animated gesture also plays its
+// chore and settles into the held pose (holdActivity = posture).
 function avatar_POSTURE(ctx) {
-  const world = ctx.world
-  const msg = ctx.args
-  const posture = msg.new_posture
+  const o = ctx.world.get(ctx.args.noid)
+  if (!o) return { ok: false, reason: 'no-avatar' }
+  const posture = ctx.args.new_posture
   if (posture == null) return { ok: false, reason: 'no-posture' }
-  if (PERSISTENT_POSTURES.has(posture)) {
-    const o = world.get(msg.noid)
-    if (!o) return { ok: false, reason: 'no-avatar' }
-    o.mod.activity = posture
-    world.emit('stateChanged', o)
-  } else {
+  o.mod.activity = posture
+  if (!PERSISTENT_POSTURES.has(posture)) {
     const chore = choreNameForPosture(posture)
-    if (chore && chore !== 'stand') ctx.chore(chore, msg.noid)
+    if (chore && chore !== 'stand') ctx.chore(chore, ctx.args.noid, posture) // animate + hold
   }
+  ctx.world.emit('stateChanged', o)
   return { ok: true }
 }
 

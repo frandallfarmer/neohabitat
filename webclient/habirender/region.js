@@ -1,4 +1,5 @@
 import { decodeProp, decodeBody } from "./codec.js"
+import { animationsAtStart, advanceAnimations, animationsAtEnd } from "./chore-frames.js"
 import { choreographyNameFromMod, headFacingFromAction, displayOrientForActivity } from "../lib/avatar-chore.js"
 import { shouldPaintFacePlate } from "./face-plate.js"
 import { html, catcher } from "./view.js"
@@ -419,20 +420,8 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     return flipComposedFrame(composite, avatarMod, actionName)
 }
 
-const animationsAtStart = (animations) => animations.map((a) => ({ ...a, current: a.startState }))
-
-// C64 animate.m / mix.m: inc graphic frame; if the result equals end → restart at start (end is not shown).
-const advanceAnimations = (animations) => {
-    let restartedCount = 0
-    for (const anim of animations) {
-        anim.current++
-        if (anim.current >= anim.endState) {
-            anim.current = anim.startState
-            restartedCount++
-        }
-    }
-    return restartedCount
-}
+// animationsAtStart / advanceAnimations / animationsAtEnd live in chore-frames.js (pure,
+// node-testable). The looping cycle skips the endState cel; a held gesture freezes on it.
 
 const choreographyCycleLength = (body, actionName, handProp) => {
     const animations = initAnimationsForAction(body, actionName, handProp)
@@ -464,16 +453,23 @@ export const composeAvatarFrames = (body, avatarMod, headProp, headMod, handProp
 
 // One choreography frame at a given index (live motion advances index each FRAME_MS).
 export const composeAvatarFrameAt = (body, avatarMod, headProp, headMod, handProp, handMod, actionName,
-    frameIndex, heldFrameIndex = frameIndex) => {
+    frameIndex, heldFrameIndex = frameIndex, atEnd = false) => {
     actionName = actionName ?? choreographyNameFromMod(avatarMod)
     const animations = initAnimationsForAction(body, actionName, handProp)
     if (!animations) return null
     const limbPatterns = limbPatternsFromMod(avatarMod)
     const cycleLen = choreographyCycleLength(body, actionName, handProp)
     if (!cycleLen) return null
-    const idx = ((frameIndex ?? 0) % cycleLen + cycleLen) % cycleLen
-    const scratch = animationsAtStart(animations)
-    for (let i = 0; i < idx; i++) advanceAnimations(scratch)
+    // atEnd: a held gesture freezes on its stop-bit cel (endState) — the final pose the
+    // looping cycle skips (jump landed, fully bent over). Otherwise step to the loop frame.
+    let scratch
+    if (atEnd) {
+        scratch = animationsAtEnd(animations)
+    } else {
+        const idx = ((frameIndex ?? 0) % cycleLen + cycleLen) % cycleLen
+        scratch = animationsAtStart(animations)
+        for (let i = 0; i < idx; i++) advanceAnimations(scratch)
+    }
     return composeAvatarFrame(body, avatarMod, headProp, headMod, handProp, handMod, actionName,
         avatarLimbChainAt(body, scratch, avatarMod, actionName), limbPatterns, heldFrameIndex)
 }
@@ -674,8 +670,10 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                             if (motion) {
                                 const heldIdx = heldCycleLen > 1
                                     ? ((motion.animFrame % heldCycleLen) + heldCycleLen) % heldCycleLen : 0
+                                // A frozen gesture holds its final (endState) cel — the pose the loop skips.
+                                const atEnd = motion.type === "gesture" && motion.frozen === true
                                 const frame = composeAvatarFrameAt(prop.value, displayMod, headProp, headMod, handProp, handMod,
-                                    actionName, motion.animFrame, heldIdx)
+                                    actionName, motion.animFrame, heldIdx, atEnd)
                                 frames = frame ? [frame] : []
                                 if (motion.type === "gesture") {
                                     const cycleLen = choreographyCycleLength(prop.value, actionName, handProp)

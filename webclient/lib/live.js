@@ -36,7 +36,7 @@ import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick } from "./verb-dispatch.js"
 import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
-import { modeState, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
+import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
 import { TextView } from "./text-view.js"
 
@@ -65,7 +65,7 @@ async function main() {
   }
   const { regionView } = await import("../habirender/region.js")
   const { errors } = await import("../habirender/view.js")
-  const { HabitatWorld, classes, dispatch, constants } = await loadHabiworld()
+  const { HabitatWorld, classes, dispatch, performGesture, constants } = await loadHabiworld()
   const {
     ACTION_DO,
     ACTION_RDO,
@@ -81,6 +81,24 @@ async function main() {
   let hs = null
   let dispatchClient = null
   let verbInFlight = false
+
+  // keyboard.m que_gesture → do_a_gesture.m: Ctrl+1..0 trigger avatar gestures (the value
+  // is the AV_ACT the host expects in POSTURE). Only while standing in the region — text /
+  // inventory modes own the keyboard. Ctrl+digit isn't a typing key, so it never collides
+  // with the speak line.
+  const GESTURE_KEYS = {
+    "1": 141, "2": 136, "3": 148, "4": 139, "5": 146, // wave point gimme jump stand_front
+    "6": 143, "7": 134, "8": 135, "9": 140, "0": 142, // stand_back bend_over bend_back punch frown
+  }
+  window.addEventListener("keydown", (e) => {
+    if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
+    const gesture = GESTURE_KEYS[e.key]
+    if (gesture === undefined) return
+    if (modeState.value.mode !== MODE_REGION || !dispatchClient || !world.me) return
+    e.preventDefault()
+    e.stopImmediatePropagation() // own Ctrl+digit — keep it out of the speak line
+    performGesture(world, gesture, dispatchClient)
+  }, true) // capture: intercept before the text-input keydown handler runs
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const playEspSound = (idx) => {

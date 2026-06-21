@@ -4,7 +4,7 @@
 
 const { test } = require('node:test')
 const assert = require('node:assert')
-const { HabitatWorld, constants, dispatch, behaviors, classes } = require('../index')
+const { HabitatWorld, constants, dispatch, performGesture, behaviors, classes } = require('../index')
 const { adjacentCoords } = require('../lib/behaviors/kernel')
 const {
   HANDS, HEAD, THE_REGION, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
@@ -158,6 +158,26 @@ test('GO on yourself toggles posture: stand→sit on floor, then sit→stand (av
   assert.equal(calls.sends[1].pose, 129)
   assert.equal(w.get(17).mod.activity, 129)
   assert.deepEqual(stateChanged, [132, 129])
+})
+
+test('Ctrl-# gesture: wave holds the pose and broadcasts POSTURE (do_a_gesture.m)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  const result = await performGesture(w, 141, cb) // Ctrl+1 = wave (AV_ACT_wave)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends[0], { op: 'POSTURE', to: w.get(17).ref, pose: 141 })
+  assert.equal(w.get(17).mod.activity, 141) // holds (background_activity), no auto-revert
+})
+
+test('Ctrl-# gesture: stand_front is a persistent facing (sets activity, no chore)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  const result = await performGesture(w, 146, cb) // Ctrl+5 = stand_front
+  assert.ok(result.ok)
+  assert.equal(calls.sends[0].pose, 146)
+  assert.equal(w.get(17).mod.activity, 146)
 })
 
 test('GO on yourself reverts posture when the server rejects POSTURE', async () => {
@@ -679,15 +699,12 @@ test('POSTURE$ STAND_FRONT updates neighbor activity without chore', () => {
   assert.equal(chores.length, 0)
 })
 
-test('POSTURE$ wave plays transient chore for a neighbor', () => {
+test('POSTURE$ wave holds as the neighbor activity (set_actor_chore background_activity)', () => {
   const w = new HabitatWorld()
   makeStorm(w)
   w.get(21).mod.activity = 254
-  const chores = []
-  w.setClient({ chore: (act, noid) => chores.push({ act, noid }) })
   w.apply({ op: 'POSTURE$', noid: 21, new_posture: 141 })
-  assert.equal(w.get(21).mod.activity, 254) // unchanged — wave is choreography-only
-  assert.deepEqual(chores, [{ act: 'wave', noid: 21 }])
+  assert.equal(w.get(21).mod.activity, 141) // wave holds until the next action, not transient
 })
 
 function withHeldGun(w, avatarNoid = 21) {

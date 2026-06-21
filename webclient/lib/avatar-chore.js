@@ -136,11 +136,12 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
 
     const bump = () => { tick.value++ }
 
-    const startGestureNow = (noid, action, serverOrient, serverActivity) => {
+    const startGestureNow = (noid, action, serverOrient, serverActivity, holdActivity = null) => {
         const startOrient = getOrient(noid, serverOrient)
         const startActivity = getActivity(noid, serverActivity)
         states.set(noid, {
-            type: "gesture", action, startOrient, startActivity, animFrame: 0, cycleLen: null,
+            type: "gesture", action, startOrient, startActivity, holdActivity,
+            animFrame: 0, cycleLen: null,
         })
         startTimer()
         bump()
@@ -153,7 +154,7 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
             return
         }
         const next = q.shift()
-        startGestureNow(noid, next.action, next.serverOrient, next.serverActivity)
+        startGestureNow(noid, next.action, next.serverOrient, next.serverActivity, next.holdActivity)
     }
 
     const getOrient = (noid, serverOrient = 0) => orientOverrides.get(noid) ?? serverOrient
@@ -180,13 +181,23 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
                         drainGestureQueue(noid)
                     }
                     changed = true
-                } else if (s.type === "gesture") {
+                } else if (s.type === "gesture" && !s.frozen) {
                     s.animFrame++
                     if (s.cycleLen != null && s.animFrame >= s.cycleLen) {
                         orientOverrides.set(noid, s.startOrient)
-                        if (s.startActivity != null) activityOverrides.set(noid, s.startActivity)
-                        states.delete(noid)
-                        drainGestureQueue(noid)
+                        if (s.holdActivity != null) {
+                            // Ctrl-# gesture: hold the FINAL animation frame
+                            // (background_activity) until the next action, rather than
+                            // reverting or snapping to the chore's resting frame.
+                            s.frozen = true
+                            s.animFrame = s.cycleLen - 1
+                            activityOverrides.set(noid, s.holdActivity)
+                        } else {
+                            // a normal action chore reverts to the pose it started from
+                            if (s.startActivity != null) activityOverrides.set(noid, s.startActivity)
+                            states.delete(noid)
+                            drainGestureQueue(noid)
+                        }
                     }
                     changed = true
                 }
@@ -258,16 +269,16 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
         applyPersistentPosture(noid, faceLeft ? FACE_LEFT : FACE_RIGHT, serverOrient, serverActivity)
     }
 
-    const beginGesture = (noid, action, serverOrient = 0, serverActivity = 129) => {
+    const beginGesture = (noid, action, serverOrient = 0, serverActivity = 129, holdActivity = null) => {
         if (noid == null || !action || action === "stand") return
-        const item = { action, serverOrient, serverActivity }
+        const item = { action, serverOrient, serverActivity, holdActivity }
         const active = states.get(noid)
-        if (active) {
+        if (active && !active.frozen) {
             if (!gestureQueues.has(noid)) gestureQueues.set(noid, [])
             gestureQueues.get(noid).push(item)
             return
         }
-        startGestureNow(noid, action, serverOrient, serverActivity)
+        startGestureNow(noid, action, serverOrient, serverActivity, holdActivity) // replaces a held (frozen) gesture
     }
 
     const noteServerFacing = (noid) => {

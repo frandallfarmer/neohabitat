@@ -21,6 +21,16 @@ const STAND = 129
 const SIT_GROUND = 132
 const SIT_POSTURES = new Set([132, 133, 157]) // SIT_GROUND, SIT_CHAIR, SIT_FRONT
 
+// keyboard.m do_a_gesture.m — Ctrl+1..0 gestures. Value = AV_ACT (0x80 + choreography
+// index). stand_front / stand_back are persistent facings (no animation); the rest are
+// animated chores that hold their final pose (set_actor_chore → background_activity).
+const GESTURE_CHORE = {
+  141: 'wave', 136: 'point', 148: 'gimme', 139: 'jump',
+  146: 'stand_front', 143: 'stand_back', 134: 'bend_over', 135: 'bend_back',
+  140: 'punch', 142: 'frown',
+}
+const GESTURE_PERSISTENT = new Set([146, 143]) // stand_front, stand_back
+
 const B = {}
 
 // ── failure terminators ─────────────────────────────────────────────
@@ -107,6 +117,23 @@ B.avatar_go = async (ctx) => {
   if (!spot) return ctx.beep('no-walk-target')
   await ctx.walkTo(spot.x, spot.y)
   return { ok: true }
+}
+
+// do_a_gesture.m: a Ctrl+# gesture on the actor. set_actor_chore sets the avatar's
+// AVATAR_background_activity (chore.m set_chore), so the gesture HOLDS until the next
+// action. Facings (stand_front/back) just set the posture; the rest animate their chore
+// and settle into the held pose (holdActivity = g). Broadcasts MSG_POSTURE either way.
+// Invoked through performGesture (dispatch.js), not a class verb slot.
+B.do_gesture = async (ctx) => {
+  const me = ctx.actor
+  if (!me) return { ok: false, reason: 'no-actor' }
+  const g = ctx.args.gesture
+  me.mod.activity = g
+  if (GESTURE_PERSISTENT.has(g)) ctx.posture(g)
+  else ctx.chore(GESTURE_CHORE[g], me.noid, g) // animate, then hold the gesture pose
+  ctx.world.emit('stateChanged', me)
+  const reply = await ctx.send({ op: 'POSTURE', to: me.ref, pose: g })
+  return succeeded(reply) ? { ok: true } : ctx.beep('server-denied')
 }
 
 // Behaviors/sky_go.m: goXY to the cursor, then leave the region upward
