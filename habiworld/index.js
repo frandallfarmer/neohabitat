@@ -6,11 +6,11 @@ const { HabitatWorld } = require('./lib/world')
 const constants = require('./lib/constants')
 const actions = require('./lib/actions')
 const behaviors = require('./lib/behaviors')
-const { dispatch, performGesture } = require('./lib/behaviors/dispatch')
+const { dispatch, performGesture, performFnKey } = require('./lib/behaviors/dispatch')
 const { dispatchHostSync, MIGRATED_OPS } = require('./lib/behaviors/dispatch_host')
 const classes = require('./lib/classes')
 
 module.exports = {
-  HabitatWorld, constants, actions, behaviors, dispatch, performGesture,
+  HabitatWorld, constants, actions, behaviors, dispatch, performGesture, performFnKey,
   dispatchHostSync, MIGRATED_OPS, classes,
 }

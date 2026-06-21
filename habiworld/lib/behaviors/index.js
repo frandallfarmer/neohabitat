@@ -136,6 +136,32 @@ B.do_gesture = async (ctx) => {
   return succeeded(reply) ? { ok: true } : ctx.beep('server-denied')
 }
 
+// keyboard.m que_gesture → Region action slots 11/12/13/16 (F3/F4/F5/F8). fn_key_pressed.m
+// sends MSG_FnKey {WHAT_KEY_PRESSED: select_value, WHERE_POINTING: pointed_noid} to the
+// actor (me). The host (Avatar.FNKEY) replies success/failure and broadcasts the result as
+// OBJECTSPEAK_$ balloons (F3 user list, F5 server identity, F8 cycling tips; F4 is a stub).
+// A non-success reply boings (chainto v_beep_or_boing). Invoked via performFnKey, not a
+// class verb slot. NOTE: the C64 beta.mud Region table is ground truth here — the generated
+// new.mud table maps these slots differently and is stale.
+B.fn_key_pressed = async (ctx) => {
+  const me = ctx.actor
+  if (!me) return { ok: false, reason: 'no-actor' }
+  const reply = await ctx.send({ op: 'FNKEY', to: me.ref, key: ctx.args.key, target: ctx.args.target ?? 0 })
+  return succeeded(reply) ? { ok: true } : ctx.boing('fnkey-failed')
+}
+
+// keyboard.m que_gesture → Region action slot 15 (F7). ask_for_help.m: point at the object
+// under the cursor and sendMsg pointed_noid MSG_help; the reply's `text` is ballooned over
+// that object (v_balloonMessage). Pointing at nothing (the region) just rts. Invoked via
+// performFnKey, not a class verb slot.
+B.ask_for_help = async (ctx) => {
+  const target = ctx.pointed
+  if (!target) return { ok: false, reason: 'no-target' } // ask_for_help.m: pointed==0 → rts
+  const reply = await ctx.send({ op: 'HELP', to: target.ref })
+  if (reply && reply.text) ctx.balloon(reply.text, { speaker: target.noid, op: 'OBJECTSPEAK_$' })
+  return { ok: true }
+}
+
 // Behaviors/sky_go.m: goXY to the cursor, then leave the region upward
 // (region transit is a client capability).
 B.sky_go = async (ctx) => {

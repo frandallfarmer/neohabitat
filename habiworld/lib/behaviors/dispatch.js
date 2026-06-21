@@ -135,4 +135,29 @@ async function performGesture(world, gestureValue, client) {
   return behaviors.do_gesture(ctx)
 }
 
-module.exports = { dispatch, performGesture, behaviorNameFor, DEFAULT_ITEM_ACTIONS }
+// keyboard.m que_gesture → Region action slots 9–16 (the F-keys). beta.mud's Region table
+// is C64 ground truth (the generated new.mud table is stale and disagrees), so route the
+// F-key directly rather than through the class verb slots:
+//   F1(9) toggle_ghost_mode        — Phase 6c (corporeality); not wired here
+//   F2(10) toggle_walking_music    — local-only client feature; skipped
+//   F3(11) F4(12) F5(13) F8(16) fn_key_pressed → FNKEY to me (host balloons the result)
+//   F6(14) change_player_color     — local-only palette; skipped
+//   F7(15) ask_for_help → HELP to the object under the cursor (pointedNoid)
+async function performFnKey(world, slot, pointedNoid, client) {
+  if (!world.me) return { ok: false, reason: 'not-in-region' }
+  if (!client || typeof client.send !== 'function') {
+    throw new Error('habiworld performFnKey: client.send is required')
+  }
+  if (slot === 15) {
+    const pointed = pointedNoid != null ? world.get(pointedNoid) : null
+    const ctx = makeCtx(world, null, pointed, {}, client, null)
+    return behaviors.ask_for_help(ctx)
+  }
+  if (slot === 11 || slot === 12 || slot === 13 || slot === 16) {
+    const ctx = makeCtx(world, null, world.me, { key: slot, target: pointedNoid ?? 0 }, client, null)
+    return behaviors.fn_key_pressed(ctx)
+  }
+  return { ok: false, reason: `fnkey-unhandled:${slot}` } // F1 ghost / F2 / F6 not wired
+}
+
+module.exports = { dispatch, performGesture, performFnKey, behaviorNameFor, DEFAULT_ITEM_ACTIONS }

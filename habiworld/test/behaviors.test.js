@@ -4,7 +4,7 @@
 
 const { test } = require('node:test')
 const assert = require('node:assert')
-const { HabitatWorld, constants, dispatch, performGesture, behaviors, classes } = require('../index')
+const { HabitatWorld, constants, dispatch, performGesture, performFnKey, behaviors, classes } = require('../index')
 const { adjacentCoords } = require('../lib/behaviors/kernel')
 const {
   HANDS, HEAD, THE_REGION, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
@@ -53,7 +53,7 @@ function makeStorm(world) {
 }
 
 function recorder(replies) {
-  const calls = { walks: [], sends: [], waits: [], beeps: 0, boings: 0 }
+  const calls = { walks: [], sends: [], waits: [], beeps: 0, boings: 0, balloons: [] }
   const queue = replies ? [...replies] : null
   return {
     calls,
@@ -66,6 +66,7 @@ function recorder(replies) {
       animationWait: async (ms) => { calls.waits.push(ms) },
       beep: () => { calls.beeps++ },
       boing: () => { calls.boings++ },
+      balloon: (text, meta) => { calls.balloons.push({ text, meta }) },
     },
   }
 }
@@ -178,6 +179,62 @@ test('Ctrl-# gesture: stand_front is a persistent facing (sets activity, no chor
   assert.ok(result.ok)
   assert.equal(calls.sends[0].pose, 146)
   assert.equal(w.get(17).mod.activity, 146)
+})
+
+// ── F-keys (keyboard.m que_gesture → Region action slots 9–16) ──────
+
+test('F-key fn_key_pressed (F3) sends FNKEY to me; success → ok (fn_key_pressed.m)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', err: 1 }])
+  const result = await performFnKey(w, 11, 0, cb) // F3 = region slot 11
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends[0], { op: 'FNKEY', to: w.get(17).ref, key: 11, target: 0 })
+  assert.equal(calls.boings, 0)
+})
+
+test('F-key fn_key_pressed (F4) boings on a non-success reply (chainto v_beep_or_boing)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', err: 0 }]) // F4 = host stub → failure
+  const result = await performFnKey(w, 12, 0, cb)
+  assert.equal(result.ok, false)
+  assert.equal(calls.sends[0].key, 12)
+  assert.equal(calls.boings, 1)
+})
+
+test('F-key ask_for_help (F7) sends HELP to the pointed object and balloons the reply (ask_for_help.m)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', text: 'Recommended for ages 3 through adult.' }])
+  const result = await performFnKey(w, 15, 30, cb) // F7, pointing at the frisbee (noid 30)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends[0], { op: 'HELP', to: 'item-frisbee-1' })
+  assert.equal(calls.balloons.length, 1)
+  assert.equal(calls.balloons[0].text, 'Recommended for ages 3 through adult.')
+  assert.equal(calls.balloons[0].meta.speaker, 30) // ballooned over the pointed object
+})
+
+test('F-key ask_for_help (F7) pointing at nothing does nothing (pointed==0 → rts)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder()
+  const result = await performFnKey(w, 15, null, cb)
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'no-target')
+  assert.equal(calls.sends.length, 0) // no HELP sent
+})
+
+test('F-key performFnKey leaves F1 ghost / F2 / F6 unwired (beta.mud slots 9/10/14)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { calls, cb } = recorder()
+  for (const slot of [9, 10, 14]) {
+    const result = await performFnKey(w, slot, 0, cb)
+    assert.equal(result.ok, false)
+    assert.equal(result.reason, `fnkey-unhandled:${slot}`)
+  }
+  assert.equal(calls.sends.length, 0)
 })
 
 test('GO on yourself reverts posture when the server rejects POSTURE', async () => {

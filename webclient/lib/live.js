@@ -33,7 +33,7 @@ import {
   clearTextLine,
 } from "./text-input.js"
 import { Scale } from "../habirender/render.js"
-import { dispatchVerb, dispatchVerbAtPick } from "./verb-dispatch.js"
+import { dispatchVerb, dispatchVerbAtPick, pickRegionTarget } from "./verb-dispatch.js"
 import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
@@ -65,7 +65,7 @@ async function main() {
   }
   const { regionView } = await import("../habirender/region.js")
   const { errors } = await import("../habirender/view.js")
-  const { HabitatWorld, classes, dispatch, performGesture, constants } = await loadHabiworld()
+  const { HabitatWorld, classes, dispatch, performGesture, performFnKey, constants } = await loadHabiworld()
   const {
     ACTION_DO,
     ACTION_RDO,
@@ -99,6 +99,29 @@ async function main() {
     e.stopImmediatePropagation() // own Ctrl+digit — keep it out of the speak line
     performGesture(world, gesture, dispatchClient)
   }, true) // capture: intercept before the text-input keydown handler runs
+
+  // keyboard.m que_gesture → Region action slots 9–16: the F-keys. beta.mud's Region table
+  // (C64 ground truth) drives which behavior each fires; we wire the host-backed subset.
+  // F1 ghost is Phase 6c; F2 walking-music / F6 color are local-only client features.
+  const FKEY_SLOT = { F1: 9, F2: 10, F3: 11, F4: 12, F5: 13, F6: 14, F7: 15, F8: 16 }
+  // The cursor's last canvas position, so an F-key picks whatever the cursor is over
+  // (que_gesture → update_cursor → pointed_noid). Only F7 ask_for_help needs the target.
+  let lastCursor = null
+  window.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
+    const slot = FKEY_SLOT[e.key]
+    if (slot === undefined) return
+    if (modeState.value.mode !== MODE_REGION || !dispatchClient || !world.me) return
+    e.preventDefault() // suppress browser F-key defaults (F5 reload, F3 find, …)
+    e.stopImmediatePropagation()
+    let pointedNoid = null
+    if (slot === 15 && lastCursor) { // F7 ask_for_help points at the cursor object
+      const pick = pickRegionTarget(pickState, lastCursor.canvasX, lastCursor.canvasY, lastCursor.scale)
+      pointedNoid = pick?.noid ?? null
+    }
+    performFnKey(world, slot, pointedNoid, dispatchClient)
+  }, true)
+
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
   const playEspSound = (idx) => {
@@ -357,6 +380,7 @@ async function main() {
                       Cursor: RegionCursor,
                       enabled: !!dispatchClient,
                       onCommand: onRegionCommand,
+                      onMove: (c) => { lastCursor = c },
                     }} />`}
           <//>
         <//>

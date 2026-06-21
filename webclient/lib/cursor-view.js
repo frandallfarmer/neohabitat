@@ -18,8 +18,9 @@ import { cursorSpritePair, CURSOR_SPRITE_W, CURSOR_SPRITE_H } from "./cursor-spr
 
 const html = htm.bind(h)
 const DRAG_THRESHOLD = 10
-// After a verb, the cursor parks at the press point; small settling jitter keeps it there,
-// a deliberate move past this (raw px) lets it follow the pointer again.
+// After a verb, the cursor freezes at the press point — where the next click must originate
+// (the mouse "returns" to it); settling jitter keeps it there, a deliberate move past this
+// (raw px, measured against the physical release point) lets it follow the pointer again.
 const UNPARK_THRESHOLD = 12
 // C64 draws cursor sprite after region objects (render.m); above layout.z (0–255).
 const CURSOR_Z_INDEX = 10000
@@ -32,14 +33,18 @@ export function RegionCursor({
   width = 320,
   height = 128,
   onCommand,
+  onMove,
   enabled = true,
 }) {
   const scale = useContext(Scale)
   const [pos, setPos] = useState({ x: width / 2, y: height / 2 })
   const [cursorState, setCursorState] = useState(CURSOR_NORMAL)
   const holdRef = useRef(null)
-  // Set to the raw pointer position at release; while set, the cursor stays parked at the
-  // press point (C64: it doesn't move to where the drag ended) until a deliberate move.
+  // While set after a verb, the cursor stays frozen at the press point (C64: it doesn't move
+  // to where the drag ended) and the next click anchors there. Holds { freezeX, freezeY }
+  // (the frozen display / next-press point) and { physX, physY } (the physical release point,
+  // used only to distinguish settling jitter from a deliberate move). Cleared on a deliberate
+  // move or the next press.
   const parkRef = useRef(null)
 
   const clamp = (x, y) => ({
@@ -69,10 +74,11 @@ export function RegionCursor({
       return
     }
     if (parkRef.current) {
-      // Parked at the press point after a verb: ignore the release-settling jitter; only a
-      // deliberate move unparks and resumes following the pointer.
-      if (Math.abs(p.x - parkRef.current.x) < UNPARK_THRESHOLD &&
-          Math.abs(p.y - parkRef.current.y) < UNPARK_THRESHOLD) {
+      // Frozen at the press point after a verb. Compare the PHYSICAL pointer to the physical
+      // release point: settling jitter near it keeps the cursor frozen at the freeze point;
+      // a deliberate move past the threshold unfreezes and resumes following the pointer.
+      if (Math.abs(p.x - parkRef.current.physX) < UNPARK_THRESHOLD &&
+          Math.abs(p.y - parkRef.current.physY) < UNPARK_THRESHOLD) {
         e.preventDefault()
         return
       }
@@ -80,11 +86,22 @@ export function RegionCursor({
     }
     setPos(p)
     setCursorState(CURSOR_NORMAL)
-  }, [enabled, scale, width, height])
+    // Report the live cursor position so keyboard-driven commands (F-keys) can pick
+    // whatever the cursor is over — the C64 fires F-keys at the current pointer (que_gesture
+    // → update_cursor → pointed_noid).
+    if (onMove) {
+      const { x: habitatX } = canvasPixelToMod(p.x / scale, p.y / scale)
+      onMove({ canvasX: p.x, canvasY: p.y, scale, habitatX })
+    }
+  }, [enabled, scale, width, height, onMove])
 
   const onPointerDown = useCallback((e) => {
     if (!enabled || e.button !== 0) return
-    const p = localFromEvent(e)
+    const phys = localFromEvent(e)
+    // While frozen after a verb, a click without a deliberate move begins at the FREEZE point
+    // (the press point of the last command) — the mouse "returns" there — instead of warping
+    // to wherever the OS pointer physically sits (the drag-end of that command).
+    const p = parkRef.current ? { x: parkRef.current.freezeX, y: parkRef.current.freezeY } : phys
     parkRef.current = null
     setPos(p)
     // C64: trigger down + centered stick → stop_cursor (options: four arrows + ?).
@@ -99,10 +116,13 @@ export function RegionCursor({
     const { anchorX, anchorY, state } = holdRef.current
     holdRef.current = null
     try { e.currentTarget.releasePointerCapture(e.pointerId) } catch (_) { /* */ }
-    // Cursor returns to / stays at the press point; park it there so the settling pointer
-    // move doesn't snap it to the drag-end.
+    // The verb runs at the press point (anchorX/anchorY below) and the cursor stays FROZEN
+    // there — that freeze point is where the next click must originate (the mouse "returns"
+    // to it). We can't move the OS pointer, so remember both the freeze point (where the
+    // cursor is drawn / where the next press anchors) and the physical release point (used
+    // only to tell settling jitter from a deliberate move).
     const rel = localFromEvent(e)
-    parkRef.current = { x: rel.x, y: rel.y }
+    parkRef.current = { freezeX: anchorX, freezeY: anchorY, physX: rel.x, physY: rel.y }
     setPos({ x: anchorX, y: anchorY })
     const command = commandFromCursorState(state)
     const canvasX = anchorX / scale

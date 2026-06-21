@@ -294,6 +294,80 @@ Each phase is independently demoable in the page shell.
     a directional control). Left, right, and down map to the three walkable edges. Decide the
     mechanism at this stage.
 
+- **Phase 7 — Polish: load experience, performance, cleanup.** Everything that makes the
+  client shippable rather than merely functional. None of it is new C64 behavior; it is the
+  production wrapper around the working client.
+
+  - **7a. Full load experience — login + launch screen as a loading cover.** Today the page
+    shows a bare WebSocket/context/avatar form and connects on a button. Replace it with the
+    real arrival flow: (1) gather the **user name** (and the context/realm to enter) up front
+    in a styled login screen, then (2) play the **title/launch sequence** (`lib/title.js` —
+    the Phase 0 comet + 3-part tune, already built) as the *cover* while the heavy lifting
+    happens behind it: the large all-JS client modules load, habiworld instantiates, art
+    decodes, and the transport connects + drains the make-storm. The title is the C64-faithful
+    "loading from disk" moment — repurpose it from a one-shot capstone into a **progress-gated
+    curtain** that lifts only once the region's first frame is ready (and the "press any key"
+    affordance gates entry). *Done when:* a first-time visitor types a name, watches the launch
+    screen, and lands in a fully-rendered region with no blank/half-loaded intermediate state.
+
+  - **7b. Performance — load time, render cadence, and steady-state memory.** This is a
+    no-build, native-ESM client that fetches habiworld's ~27 CommonJS modules over http and
+    decodes original C64 art in the browser; measure and tighten the cost.
+    - **Load time.** Bundle/concatenate or precompute the habiworld module graph so first
+      paint isn't gated on a waterfall of `fetch`es (`lib/habiworld.js` currently crawls +
+      fetches each module); cache/memoize decoded cels and charset glyphs; confirm the audio
+      worklet and image decode aren't blocking first frame.
+    - **Background/foreground render split (C64 hack).** The C64 client did **not** recompose
+      the whole scene each frame: the region backdrop + static/background objects were rendered
+      **once** (`background_render`; `forced_render_region` on mode exit), and only the
+      **foreground** objects — the avatars and other moving/animating items — were redrawn per
+      frame over that fixed background. Port the same split: composite the static background
+      to a cached layer once per region (and on background-object change), and per delta/tick
+      only recompose the FG objects. Today `worldToObjects` + a full region recompose runs on
+      **every** delta, which is both the frame-cost and a likely source of churn — replace it
+      with FG-only recomposition against the cached BG.
+    - **Steady-state memory / degradation over time.** We see **rendering performance
+      degrading the longer you stay in a region**, possibly tied to **modal display** use
+      (inventory grid / text mode entering and exiting). Investigate as a leak/accumulation
+      bug: decoded-cel or offscreen-canvas caches that grow without bound, balloon/animation
+      timers or world event listeners not torn down on mode switch or region change (e.g.
+      `trackAvatarsForBalloons`, `avatarMotion` intervals, the per-event `refresh`
+      subscriptions), and modal views (`text-view.js` / `inventory-view.js`) not releasing
+      their canvases/handlers on exit. Profile heap + listener counts across repeated
+      mode-enter/exit and a long region dwell; fix whatever grows unbounded.
+    - Drive all of the above with **real numbers** — time-to-first-region, per-frame cost in a
+      crowded region, and a heap/listener trend over a multi-minute session with repeated
+      modal entry/exit — rather than guesses.
+
+  - **7c. Cleanup — repo hygiene and ground-truth debts.**
+    - **`classes.js` → beta.mud ground truth.** The committed `habiworld/lib/classes.js` was
+      generated from the **older `new.mud`**, which disagrees with the canonical
+      `~/habitat-orig/habitat/Beta/Bak/beta.mud` (see `lib/tools/parse_mud.js`). Known-wrong
+      rows include **Region** F-key slots 9–16 (the webclient currently bypasses them via
+      `performFnKey` — see memory `fkey-region-table-stale`), **Flag** GET
+      (`generic_goToAndGet` vs the correct mass-gated `generic_getMass`), and **Mailbox**
+      (obsolete `mailbox_get`/`generic_sendMail` vs inert `noEffect`). The fix is to point
+      `parse_mud.js` at beta.mud and regenerate; this surfaces ~21 beta-only behaviors that
+      must be **ported or left as loud `unported` stubs**. Because `classes.js` is shared with
+      sagebot/habibots, this requires an explicit **sagebot/habibots compatibility check**
+      before landing (memory: `textclient-no-habibots-changes`). Once done, `performFnKey` can
+      optionally route region F-keys through the class table instead of its direct mapping.
+    - **Diagnostic test debris.** The untracked `webclient/test-*.mjs` live diagnostics
+      (`test-habiworld-load`, `test-speak-trace`, `test-speak-ws-trace`, `test-live-connect`,
+      …) need fetch/WebSocket and fail under `node --test`; either gate them out of the test
+      run or move them under a `diagnostics/` dir so the suite is green. Remove the
+      `webclient.stash-*` working-tree backup dirs once their changes are confirmed landed.
+
+  - **7d. Emulate C64 traffic speeds — don't overflow real C64 clients.** A real C64 client
+    is on a slow modem with a tiny serial input buffer; it consumes host traffic at ~300-baud
+    pace. The webclient can emit requests (and the server can fan out the resulting broadcasts)
+    far faster than a C64 can drain them, overflowing its buffer and desyncing/crashing it when
+    a webclient and a C64 share a region. Pace outbound interaction to a C64-safe rate:
+    rate-limit/coalesce bursty user actions (rapid walks, gestures, speak) and throttle to the
+    original on-wire cadence so co-present C64 clients stay within buffer. Establish the target
+    rate from the C64 comms (`Main/comm_control.m` / `protocol.m` / `mikes_protocol.m` — the
+    modem/serial timing) and verify against an actual C64 client (VICE) sharing a region.
+
 ## Running (Phase 0–1)
 
 Native ES modules, importmaps, `fetch`, and the habisound `AudioWorklet` require http(s),

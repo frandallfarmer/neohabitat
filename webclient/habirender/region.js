@@ -862,7 +862,8 @@ export const regionView = ({
                           width=${320}
                           height=${128}
                           enabled=${regionInput.enabled !== false}
-                          onCommand=${regionInput.onCommand} />`
+                          onCommand=${regionInput.onCommand}
+                          onMove=${regionInput.onMove} />`
                       : null}
                 </div>
             <//>
