@@ -157,6 +157,33 @@ header.titlebar .tag {
     position: relative;
     line-height: 0;
 }
+/* Edge-transit frame: chevrons sit OUTSIDE the region canvas (left/right columns, bottom row)
+   so they use the normal OS pointer and never steal an in-region GO/walk coordinate. */
+.region-frame {
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto;
+}
+.region-frame .habitat-viewport { grid-column: 2; grid-row: 1; }
+.edge-chevron {
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #15151c;
+    color: #6cc0ff;
+    border: none;
+    padding: 0;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+}
+.edge-chevron:hover { background: #24243a; color: #a9deff; }
+.edge-chevron:active { background: #30304a; }
+.edge-chevron.left  { grid-column: 1; width: 34px; }
+.edge-chevron.right { grid-column: 3; width: 34px; }
+.edge-chevron.down  { grid-column: 2; grid-row: 2; width: 100%; height: 34px; }
 .balloon-stage {
     position: relative;
     background: #000;

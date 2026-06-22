@@ -19,6 +19,9 @@ export function cursorArgsFromPick(pick, args = {}) {
     ...(pick.whichLimb != null && args.limb === undefined ? { limb: pick.whichLimb } : {}),
     ...(pick.whichLimb != null && args.pointedAtLimb === undefined
       ? { pointedAtLimb: pick.whichLimb } : {}),
+    // generic_goToOrPassThrough.m: pointed_at_cel_number == 2 is the door's black opening —
+    // GO walks *through* (region change) instead of up to the door. Any other cel walks to it.
+    ...(pick.celNumber === 2 && args.passThrough === undefined ? { passThrough: true } : {}),
   }
 }
 

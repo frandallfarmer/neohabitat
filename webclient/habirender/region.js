@@ -67,6 +67,11 @@ export const dataEqual = (data1, data2) => {
     return true
 }
 export const trapCache = {}
+// trapCache is keyed by elko object ref and lives for the module's lifetime; refs are unique
+// per object instance, so without pruning every custom-art object from every region ever
+// visited stays decoded in memory. C64 wait_for_region purges all region state on transit
+// (purge_contents + clear_cache); the web client calls this from its regionChanged teardown.
+export const clearTrapCache = () => { for (const k in trapCache) delete trapCache[k] }
 const decodeTrap = (rawData, fnAugment) => {
     const augmentedData = fnAugment(structuredClone(rawData))
     const prop = decodeProp(augmentedData)

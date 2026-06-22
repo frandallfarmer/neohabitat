@@ -34,6 +34,7 @@ import {
 } from "./text-input.js"
 import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick, pickRegionTarget } from "./verb-dispatch.js"
+import { REGION_CANVAS_W, REGION_CANVAS_H } from "../habirender/pick.mjs"
 import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
@@ -63,7 +64,7 @@ async function main() {
   if (SOUND_TRACE) {
     console.log("[sound-trace] enabled — filter console on 'sound-trace'; remove via SOUND_TRACE=false in lib/sound.js")
   }
-  const { regionView } = await import("../habirender/region.js")
+  const { regionView, clearTrapCache } = await import("../habirender/region.js")
   const { errors } = await import("../habirender/view.js")
   const { HabitatWorld, classes, dispatch, performGesture, performFnKey, constants } = await loadHabiworld()
   const {
@@ -80,6 +81,10 @@ async function main() {
   const pickState = { layoutMap: null, objects: null }
   let hs = null
   let dispatchClient = null
+  // The habiworld presentation client (sound/chore/balloon hooks). Held at this scope because
+  // world.clear() (fired on every changeContext) nulls world._client, so it must be re-registered
+  // after a region transition — see resetForRegion.
+  let presentation = null
   let verbInFlight = false
 
   // keyboard.m que_gesture → do_a_gesture.m: Ctrl+1..0 trigger avatar gestures (the value
@@ -159,6 +164,45 @@ async function main() {
     if (speakReplyTimer) clearTimeout(speakReplyTimer)
     speakReplyTimer = setTimeout(() => { speakReplyPending = false }, 5000)
   }
+  // C64 wait_for_region (comm_control.m): on every region transit the firmware purges ALL
+  // region-local state (kill_quip, sprites_off, clear_text_line, command_selected=0xff,
+  // purge_contents, clear_cache) before the new make storm renders. habiworld already cleared
+  // its object table (changeContext → world.clear), and regionView fully unmounts while objects
+  // is empty (so RegionCursor park/hold + the live pickState reset on remount). This tears down
+  // the presentation-side state that outlives that unmount, so a long session of region hops
+  // can't leak memory or leak stale state from the previous region.
+  const resetForRegion = () => {
+    // world.clear() (already run for this changeContext) nulled world._client — re-register the
+    // presentation client so the new region's behavior-driven sound/chore/balloon hooks fire.
+    // Without this, speech in the new region never produces a balloon (the panel only renders
+    // with content, so it also looks like the whole balloon frame vanished).
+    if (presentation) {
+      if (typeof world.setClient === "function") world.setClient(presentation)
+      else world._client = presentation
+    }
+    avatarMotion.clear()                                 // sprites_off + per-avatar animation
+    clearTrapCache()                                     // clear_cache: drop decoded region art (keyed by ref → leaks otherwise)
+    // Word balloons are persistent UI chrome, not a per-region chatroom — keep the scrollback
+    // across the transition (it "does not go away"). Only the transient quip (the bubble pinned
+    // over a now-departed speaker) and the half-open ESP header are region-specific; clear those.
+    balloonState.value.quip = null
+    balloonState.value.espPending = null
+    balloonState.value.espAt = 0
+    balloonState.value.revision++
+    balloonState.value = { ...balloonState.value }
+    if (untrackBalloons) untrackBalloons()               // re-seat balloon talker slots for the new region's avatars
+    untrackBalloons = trackAvatarsForBalloons(balloonState.value, world)
+    clearTextLine(textInputState.value)                  // clear_text_line: drop any half-typed line
+    textInputState.value = { ...textInputState.value }
+    pickState.layoutMap = null                           // stale region geometry (rebuilt on remount)
+    pickState.objects = null
+    lastCursor = null
+    verbInFlight = false                                 // command_selected = 0xff: cancel any pending verb
+    speakReplyPending = false
+    if (speakReplyTimer) { clearTimeout(speakReplyTimer); speakReplyTimer = null }
+    if (modeState.value.mode !== MODE_REGION) resolveMode(null) // close any open paper/book/inventory modal
+  }
+  world.on("regionChanged", resetForRegion)
   const onTextSubmit = async (payload) => {
     if (!transport || !payload) return
     // C64 talk:: / ESP_talk:: send MESSAGE_speak to actor_noid; JSON uses the avatar ref.
@@ -234,7 +278,7 @@ async function main() {
     textInputState.value = { ...textInputState.value }
     if (untrackBalloons) untrackBalloons()
     untrackBalloons = trackAvatarsForBalloons(balloonState.value, world)
-    const presentation = buildPresentationClient({
+    presentation = buildPresentationClient({
       hs, world, classes, avatarMotion, refresh, balloons,
     })
     if (typeof world.setClient === "function") {
@@ -247,6 +291,16 @@ async function main() {
     status.value = { kind: "", text: `connecting to ${ws}…` }
     let gotMsg = false
     const applyInbound = (m) => {
+      // AUTO_TELEPORT_$: elko's "you've been teleported, finish the move" notice for
+      // server-initiated transits (accept-invite, magic items, turfsetting). The C64 firmware
+      // replies NEWREGION direction=AUTO_TELEPORT_DIR (4); elko then reads the pre-saved
+      // to_region and emits the real changeContext, kicking off the normal transit cycle.
+      // Region transit is a client capability (habiworld leaves it to us, like changeRegion);
+      // mirrors habibot.js. passage_id=0 — no door involved.
+      if (m.op === "AUTO_TELEPORT_$") {
+        if (world.me?.ref) transport.send({ op: "NEWREGION", to: world.me.ref, direction: 4 })
+        return
+      }
       world.apply(m)
       const rec = world.get(m.noid)
       if (m.op === "FIDDLE_$" && m.offset === 9) {
@@ -345,6 +399,42 @@ async function main() {
     await runRegionVerb(verb, { canvasX, canvasY, scale }, label)
   }
 
+  // Walk-off-edge transit. The C64 clamped the joystick cursor at the playfield boundary; a GO
+  // there ran region_change (actions.m:841), which derived the transit direction purely from
+  // WHICH screen edge the cursor sat on and let the server apply the region's orientation. We
+  // reproduce that with chevrons running the full length of each frame side (outside the region
+  // canvas, so they use the OS pointer and never steal an in-region GO coordinate): a click maps
+  // to a point along that edge, clamps the cross-axis to the in-game boundary, and dispatches GO
+  // there exactly as if that spot had been clicked in-region. Direction then falls out of the
+  // edge + the object's own GO behavior — no cardinal-vs-region-relative math here. 'up' is the
+  // sky (clicked in-region).
+  const SCALE = 3
+  const onEdgeClick = (edge) => async (e) => {
+    if (verbInFlight || !dispatchClient || !world.me) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    let cx, cy // region-canvas coords, clamped to the in-game edge
+    if (edge === "left" || edge === "right") {
+      cx = edge === "left" ? 0 : REGION_CANVAS_W - 1
+      // The side chevron only spans the walkable band (bottom corner up to the region depth), so
+      // a click maps into habitat y ∈ [0, depth] — always the ground edge, never the sky band.
+      // canvasY is inverted habitat y (y = maxY - canvasY), so the band is the bottom `depth` px.
+      const depth = world.region?.depth ?? 0
+      const bandTop = (REGION_CANVAS_H - 1) - depth
+      const frac = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height))
+      cy = Math.round(bandTop + frac * depth)
+    } else { // bottom
+      cy = REGION_CANVAS_H - 1
+      cx = Math.round(((e.clientX - rect.left) / rect.width) * (REGION_CANVAS_W - 1))
+    }
+    // region_change (actions.m:841): at the edge the cursor points at the REGION (pointer.m
+    // update_cursor skips the object pick for desired_x==0/160), so GO runs the region's
+    // GoToNewRegion — which walks to the edge (nested GO on the ground) and THEN transits with
+    // the screen-edge direction. We reproduce both steps: first the GO/walk at the clamped edge
+    // coordinate, then the transit via changeRegion using the C64 direction code.
+    await runRegionVerb(ACTION_GO, { canvasX: cx * SCALE, canvasY: cy * SCALE, scale: SCALE }, `edge-${edge}`)
+    await dispatchClient.changeRegion(edge)
+  }
+
   const App = () => {
     const [ws, setWs] = useState(q("ws", "ws://localhost:1987"))
     const [context, setContext] = useState(q("context", "context-Downtown_5f"))
@@ -353,6 +443,14 @@ async function main() {
     const st = status.value
     const region = objs.find((o) => o.type === "context")
     const mode = modeState.value
+    // Edge-transit chevrons show only when standing in a region (not over a modal display).
+    const showEdges = region && dispatchClient && mode.mode === MODE_REGION
+    // Side chevrons span only the walkable band — from the region's bottom edge up by `depth` —
+    // so they read as "walk off the ground edge", not the sky. canvasY is 1:1 with habitat y, so
+    // the band is `depth` px tall (×scale). The region render sits one text-input line (8px×scale)
+    // above the viewport bottom, so bottom-align with that margin to track the graphics band.
+    const depth = region?.mods?.[0]?.depth ?? 0
+    const sideChevStyle = `height:${depth * 3}px; align-self:end; margin-bottom:${8 * 3}px;`
     balloonState.value.revision
     textInputState.value.revision
     avatarMotion.tick.value
@@ -367,7 +465,9 @@ async function main() {
         <button onClick=${() => connect(ws, context, user)}>Connect</button>
       </div>
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
-      <div class="habitat-viewport" style="background:#000; align-self:flex-start;">
+      <div class="region-frame" style="align-self:flex-start;">
+        ${showEdges ? html`<button class="edge-chevron left" style=${sideChevStyle} title="Walk off the left edge" onClick=${onEdgeClick("left")}>◀</button>` : null}
+        <div class="habitat-viewport" style="background:#000;">
         <${Scale.Provider} value=${3}>
           <${BalloonStage}
             stateSignal=${balloonState}
@@ -401,6 +501,9 @@ async function main() {
                     }} />`}
           <//>
         <//>
+        </div>
+        ${showEdges ? html`<button class="edge-chevron right" style=${sideChevStyle} title="Walk off the right edge" onClick=${onEdgeClick("right")}>▶</button>` : null}
+        ${showEdges ? html`<button class="edge-chevron down" title="Walk off the bottom edge" onClick=${onEdgeClick("down")}>▼</button>` : null}
       </div>
       <${errors} />`
   }

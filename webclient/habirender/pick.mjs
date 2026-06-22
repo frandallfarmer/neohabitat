@@ -66,6 +66,28 @@ const frameAt = (layout) => {
   return frames[0]
 }
 
+/**
+ * pointer.m pointed_at_cel_number: which cel of a multi-cel object the click lands on.
+ * Walks the frame's per-cel layers in draw order (last drawn = frontmost) and returns the
+ * frontmost hit's 1-based cel number (mix.m numbers cels from 1), or null off every cel.
+ * Used by generic_goToOrPassThrough.m (cel 2 = a door's black opening → walk through).
+ */
+export const celNumberAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
+  const layers = frame?.celLayers
+  if (!layers?.length) return null
+  const lx = Math.floor(canvasX - itemPx)
+  const ly = Math.floor(canvasY - itemPy)
+  let celNumber = null
+  for (const cl of layers) {
+    const cx = lx - cl.offsetX
+    const cy = ly - cl.offsetY
+    if (cx < 0 || cy < 0 || cx >= cl.canvas.width || cy >= cl.canvas.height) continue
+    const ctx = cl.canvas.getContext("2d", { willReadFrequently: true })
+    if (ctx.getImageData(cx, cy, 1, 1).data[3] > 0) celNumber = cl.celIndex + 1
+  }
+  return celNumber
+}
+
 /** C64 fine_cel_point: non-transparent bitmap pixel at the click. */
 export const hitTestFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
   if (!frame?.canvas) return false
@@ -202,7 +224,12 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
   // pointer.m: the held item carries its own drawing_which_object, so a click on it
   // targets the held object, not the avatar; otherwise report which_limb for SPRAY.
   let whichLimb = null
+  // pointer.m pointed_at_cel_number — which cel of the hit object the click landed on (1-based;
+  // null off any cel or when nothing was hit and we fell back to the ground). generic_goToOrPassThrough
+  // reads this: cel 2 is a door's black opening → walk through instead of up to the door.
+  let celNumber = null
   if (hit) {
+    celNumber = celNumberAtFrame(hitFrame, canvasX, canvasY, hitPx, hitPy)
     const marker = markerAtFrame(hitFrame, canvasX, canvasY, hitPx, hitPy)
     if (marker === HELD_PICK_MARKER) {
       target = heldItemOf(objects, hit.ref) ?? target
@@ -220,5 +247,6 @@ export const pickAt = (layoutMap, objects, canvasX, canvasY) => {
     canvasX,
     canvasY,
     whichLimb,
+    celNumber,
   }
 }

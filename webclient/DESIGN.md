@@ -273,27 +273,85 @@ Each phase is independently demoable in the page shell.
     (the `changeRegion` client capability), since transit is what can drop you into ghost
     state.
 
-  - **6d. Region transit (`GoToNewRegion`/`sky_go`/`transit_region` → `changeRegion`).**
-    Sequenced **last in Phase 6**, after the in-region UI (6a inventory + 6b documents) is
-    done. The world side is already complete in habiworld — `sky_go`, `GoToNewRegion` ("the
-    region's `go` — leave through an edge"), and `transit_region` (region slot 8) all call
-    `ctx.changeRegion(direction)`. The missing piece is the **client capability**:
-    `ctx.changeRegion` (`kernel.js:280`) delegates to `client.changeRegion(direction)` and
-    today returns `needs-client-capability:changeRegion` because the webclient provides none.
-    Implement it as: on walk-off-edge (or `changeRegion`), tear down the current region state
-    and `transport.enterContext(world.region.neighbors[direction])`, then render the new
-    make-storm. Goes after the modal UIs because it changes the top-level region state those
-    modes assume, and it feeds **6c** — arriving in a full region force-transforms you to a
-    ghost.
+  - **6d. Region transit (`GoToNewRegion`/`sky_go`/`transit_region` → `changeRegion`). DONE
+    (the explicit-target subset).** Sequenced **last in Phase 6**, after the in-region UI (6a
+    inventory + 6b documents). The world side was already complete in habiworld — `sky_go`,
+    `GoToNewRegion`, and `transit_region` all call `ctx.changeRegion(direction)`. The flow,
+    traced against the C64 (`actions.m region_change`/`GoToNewRegion`, `comm_control.m
+    wait_for_region`) and the modern elko/bridge path:
 
-    *Open question — the off-edge trigger (explore when we build 6d).* On the C64, walking
-    **off-screen** left / right / down was triggered by the **game-window boundary itself**:
-    the hardware clamped the cursor at the playfield edge, so pushing into that edge was a
-    free, obvious, always-accessible "GO off the edge in this direction" affordance. The
-    browser playfield has **no such hard cursor boundary**, so we must invent an explicit
-    target/affordance for edge transit (candidates: edge hot-zones, an off-edge GO target, or
-    a directional control). Left, right, and down map to the three walkable edges. Decide the
-    mechanism at this stage.
+    - **Outbound.** The client capability is now provided (`world-client.js changeRegion`),
+      mirroring `habibot.js`: `direction` is a screen word (`up/right/down/left`), mapped to
+      the orientation-adjusted neighbor index `(k − 2·orientation + 9) % 4` and sent as
+      `{op:"NEWREGION", to: avatarRef, direction}`. elko (`Avatar.NEWREGION`) replies err/ok,
+      then pushes **`changeContext {context}`**; the bridge/pushserver cycles the elko-side TCP
+      and streams a fresh make storm. This covers **sky / wall edges, neighbor-doors, and ghost
+      drift** (ghost GO is transit-only).
+    - **Teleports.** Server-initiated: elko sends **`AUTO_TELEPORT_$`**, and the client replies
+      `NEWREGION direction=4` (`AUTO_TELEPORT_DIR`), which makes elko emit the real
+      `changeContext`. Handled in `live.js applyInbound` (a client capability, like
+      `changeRegion`; habiworld leaves it to us). User-initiated teleports/elevators ride the
+      **TALK→`ZAPTO`** flow (6-TALK routing) and the server drives `changeContext` from there —
+      already working.
+    - **Inbound teardown (the C64 `wait_for_region` discipline).** habiworld already purges its
+      object table (`changeContext → world.clear`, which also resets `meNoid`), and `regionView`
+      fully unmounts while `objects` is empty (so `RegionCursor` park/hold + the live
+      `pickState` reset on remount). `live.js resetForRegion` (on `regionChanged`) tears down
+      the presentation state that outlives that unmount: **`clearTrapCache()`** (the one
+      confirmed leak — decoded region art keyed by ref), word balloons (`kill_quip`), the typed
+      text line, balloon talker slots (re-seated), `lastCursor`, any pending verb / speak-reply
+      timer, and any open modal (paper/book/inventory). So a long session of region hops can't
+      leak memory or bleed stale state between regions.
+
+    **Doors (connection / building) — DONE.** Two pieces, both ported from the C64:
+    - *Pass-through is gated on the cel under the cursor.* `generic_goToOrPassThrough.m` only
+      transits when `pointed_at_cel_number == 2` — the door's **black-opening cel**; any other
+      cel just walks up to the door. The web pick now resolves cel-level hits: props tag each
+      decoded cel with its absolute index (`codec.js`), `frameFromCels` keeps per-cel hit
+      regions on the frame (`render.js frame.celLayers`), and `pick.mjs celNumberAtFrame` walks
+      them front-to-back to return the 1-based `cel_number` (`mix.m` numbers cels from 1, so the
+      black opening = `prop.cels[1]` = `cel_number 2`). `verb-dispatch.js` maps `celNumber === 2`
+      → `args.passThrough`, which the behavior reads.
+    - *`passage_id`.* elko's `avatar_NEWREGION` uses `region.neighbors[direction]` when
+      `passage_id == 0`; a door/building whose connection is **not** a map neighbor (a building
+      interior) needs the door's noid. The C64 sends `pointed_noid`; habiworld's
+      `kernel.js ctx.changeRegion` now forwards the pointed passage —
+      `client.changeRegion(direction, pointed ? pointed.noid : 0)` — and `world-client.js`
+      sends it as `passage_id`. The extra arg is additive and sagebot-safe (the bot's
+      `changeRegion` takes only direction); verified by the full habiworld suite (135 green) +
+      habibots/habiworld load. Sky/wall/region edges forward a non-passage noid (or 0) the
+      server ignores, so they still fall back to `neighbors[direction]`.
+
+    **Open-terrain edge walk — frame chevrons.** On the C64 the hardware clamped the joystick
+    cursor at the playfield edge, so a GO there ran `region_change` (`actions.m:841`), which
+    derived the transit direction purely from *which screen edge* the cursor sat on (left / right
+    / bottom) and let the **server** apply the region's orientation — there is no client-side
+    cardinal-direction math. The browser has no hard cursor boundary, and clamping an absolute
+    mouse would also steal the edge coordinate from ordinary GO/walk. So the edge directions live
+    as **chevrons running the full length of each frame side, outside the region canvas** (`◀`
+    left column, `▶` right column, `▼` bottom row — `live.js region-frame` + `style.css`): they
+    use the normal OS pointer (outside the `cursor:none` play area), and an in-region click keeps
+    its true coordinate for GO/walk. `up` is the sky (clicked in-region); chevrons show only while
+    standing in a region (`MODE_REGION`).
+
+    A chevron reproduces what `region_change` does. The C64 detail: at the screen edge
+    `update_cursor` (`pointer.m`) **skips the object pick** (`desired_x==0/160 → beq pexit`), so
+    `pointed` is the **region (0)**, not the ground — and the region's GO is `GoToNewRegion` →
+    `region_change`, which walks to the edge (nested GO on the ground) and *then* transits. The
+    ground's own GO (`generic_goToCursor`) never transits, which is why aiming a plain GO at the
+    floor only walks. So `onEdgeClick` does both steps: a GO/walk at the clamped edge coordinate
+    (the click's cross-axis position along the chevron), then `dispatchClient.changeRegion(edge)`.
+    Direction uses the **C64 screen-edge encoding** (`left=0, up=1, right=2, down=3`) sent raw;
+    the server applies the region's orientation (`Avatar.NEWREGION: (direction+orientation+2)%4`)
+    — there is no client-side cardinal/orientation math (the earlier `(k−2·orientation+9)%4` was
+    the bot's formula and produced wrong neighbors at non-zero orientation). The **side chevrons
+    span only the walkable band** — from the region's bottom edge up by `region.depth` (canvasY is
+    1:1 with habitat y, so the band is the bottom `depth` px; bottom-aligned past the one
+    text-input line below the graphics band) — so a click always maps into habitat y ∈ [0, depth]
+    (ground), never the sky; the sky is reached by clicking it in-region (`up`).
+    *Polish left for later:* dimming a chevron when that direction has no neighbor; the bottom/down
+    edge (C64 reaches `region_change` for `down` by a different path than the x-edge pick-skip —
+    verify it transits).
 
 - **Phase 7 — Polish: load experience, performance, cleanup.** Everything that makes the
   client shippable rather than merely functional. None of it is new C64 behavior; it is the
@@ -383,6 +441,14 @@ Each phase is independently demoable in the page shell.
     menu** that doesn't need the cursor to return to a point — e.g. press opens a radial menu
     anchored at the press point, the cursor roams freely to a wedge, release selects, and the
     target stays the press point. Decide between (a) and (b) here; both are legitimate.
+  - **7f. Hatchery — new-avatar onboarding (LATE in Phase 7).** The Hatchery is the original
+    Habitat first-connection flow: a brand-new user has no turf/avatar customization and is
+    routed through the hatchery region to be "hatched" (avatar created, turf assigned) before
+    normal play. The dev stack already exposes `NEOHABITAT_ORIGINAL_HATCHERY` (bridge_v2). The
+    webclient needs to recognize and survive the hatchery context — including any prompts /
+    custom region flow it drives — so a first-time login doesn't dead-end. Scope the exact
+    server-driven sequence (PROMPT_USER, customize, the hatchery region's behaviors) when we
+    pick this up; treat it as its own onboarding sub-mode rather than a normal region.
 
 ## Running (Phase 0–1)
 

@@ -372,7 +372,13 @@ export const decodeProp = (data) => {
         const celbit = 0x80 >> icel
         const celOff = data.getUint16(celOffsetOff, LE)
         firstCelOff = Math.min(celOff, firstCelOff)
-        prop.cels.push(decodeCel(new DataView(data.buffer, celOff), (prop.colorBitmask & celbit) != 0))
+        const decoded = decodeCel(new DataView(data.buffer, celOff), (prop.colorBitmask & celbit) != 0)
+        // Absolute cel index (bit position in the celmask), preserved for the pointer.m
+        // pointed_at_cel_number test — e.g. generic_goToOrPassThrough.m keys "walk through"
+        // on cel_number==2 (the door's black-opening cel). mix.m numbers cels from 1, so the
+        // 1-based pick value is celIndex+1.
+        decoded.celIndex = icel
+        prop.cels.push(decoded)
         allCelsMask = (allCelsMask << 1) & 0xff
     }
     const contentsXYOff = data.getUint8(3) & 0x7f

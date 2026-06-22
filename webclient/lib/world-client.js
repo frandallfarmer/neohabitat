@@ -26,6 +26,21 @@ export function buildDispatchClient({ transport, presentation, world }) {
     },
     // Behaviors emit to: 'ME' (habibot resolves via names); web client uses avatar ref.
     send: (msg) => transport.sendForReply(resolveOutbound(msg, world)),
+    // Behaviors/GoToNewRegion.m → region transit. `direction` is a screen-relative word.
+    // The C64 (region_change / sky_go) encodes the transit direction as left=0, up=1, right=2,
+    // down=3 (frf_equates) and sends it RAW in MESSAGE_newregion; the SERVER applies the region's
+    // orientation (Avatar.NEWREGION: (direction + orientation + 2) % 4 → neighbors[]). So no
+    // client-side orientation math here — just the C64 code. Covers sky/wall edges, the chevron
+    // edge-walk, and ghost drift. `passageNoid` (a door/building) rides as passage_id; when set
+    // the server follows the door's connection and ignores `direction`.
+    changeRegion: (direction, passageNoid) => {
+      const C64_DIR = { left: 0, up: 1, right: 2, down: 3 }
+      const code = C64_DIR[String(direction).toLowerCase()]
+      if (code === undefined) return Promise.resolve({ ok: false, reason: "unknown-direction" })
+      const msg = { op: "NEWREGION", to: avatarRef(), direction: code }
+      if (passageNoid) msg.passage_id = passageNoid
+      return transport.sendForReply(msg).then(() => ({ ok: true }))
+    },
     animationWait: (ms) => new Promise((resolve) => setTimeout(resolve, ms ?? 1000)),
     // text_handler.m read flow: open the modal text display over a document; it pages by
     // sending READ {page} itself. Resolves when closed. (graphical capability — bots

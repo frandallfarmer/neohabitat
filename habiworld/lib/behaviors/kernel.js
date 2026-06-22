@@ -26,7 +26,7 @@
 //   animationWait(ms)               waitWhile animation_wait_bit
 //   beep() / boing()                v_beep / v_boing failure terminators
 //   sound(n), chore(act), startWalk(noid,x,y,how), newImage(noid, state),
-//   balloon(text), face(dir), changeRegion(direction), changeLight(n)
+//   balloon(text), face(dir), changeRegion(direction, passageNoid), changeLight(n)
 //   startWalk — Main/walkto.m:start_walk (v_start_walk); own walks from
 //   Main/actions.m:goXY after WALK reply; neighbor walks from avatar_WALK.m.
 
@@ -302,9 +302,15 @@ function makeCtx(world, verb, pointed, args, client, parent) {
 
   // v_go_to_new_region — region transit is a client capability (the
   // bridge owns it for bots). Behaviors request it and report honestly
-  // when the client can't.
+  // when the client can't. The C64 GoToNewRegion sends pointed_noid as
+  // the passage_id (MESSAGE_newregion): for a door/building that's the
+  // passage object the server follows; for sky/wall/region edges it's a
+  // non-passage object (or the region) the server ignores, falling back
+  // to neighbors[direction]. Forward it so the client can route
+  // connection-doors. The extra arg is backward-compatible — sagebot's
+  // client.changeRegion takes only direction and ignores it.
   ctx.changeRegion = (direction) => {
-    if (client.changeRegion) return client.changeRegion(direction)
+    if (client.changeRegion) return client.changeRegion(direction, pointed ? pointed.noid : 0)
     return { ok: false, reason: 'needs-client-capability:changeRegion' }
   }
 

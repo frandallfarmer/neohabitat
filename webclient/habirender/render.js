@@ -409,8 +409,10 @@ export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOri
             const x = cel.xOffset + xRel
             const y = cel.yOffset + yRel
             const colors = (Array.isArray(celColors) ? celColors[icel] : celColors) ?? {}
-            layers.push((celLayerRenderer[cel.type] ?? celLayerRenderer.default)(cel, colors, x, y))
-            xRel += cel.xRel 
+            const layer = (celLayerRenderer[cel.type] ?? celLayerRenderer.default)(cel, colors, x, y)
+            if (layer) layer.celIndex = cel.celIndex // carry the absolute cel index for cel-level picking
+            layers.push(layer)
+            xRel += cel.xRel
             yRel += cel.yRel
         } else {
             layers.push(null)
@@ -432,9 +434,21 @@ export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOri
         frame.minX = -maxX + 1
         frame.maxX = -minX + 1
     }
+    // Per-cel hit regions for pointer.m cel-level picking (pointed_at_cel_number). compositeLayers
+    // drew each layer into frame.canvas at topLeftCanvasOffset(space, layer); record that exact
+    // pixel offset so the pick can resolve which cel a click lands on (a door's black opening is a
+    // distinct cel). flipHorizontal mirrors the canvas, so mirror the offset too.
+    const celSpace = compositeSpaces(layers)
+    frame.celLayers = []
+    for (const layer of layers) {
+        if (!layer || !layer.canvas || layer.celIndex == null) continue
+        const [ox, oy] = topLeftCanvasOffset(celSpace, layer)
+        const offsetX = flipHorizontal ? frame.canvas.width - ox - layer.canvas.width : ox
+        frame.celLayers.push({ canvas: layer.canvas, offsetX, offsetY: oy, celIndex: layer.celIndex })
+    }
     frame.xOrigin = xCorrect
     frame.yOrigin = yCorrect
-    return translateSpace(frame, -xCorrect, -yCorrect) 
+    return translateSpace(frame, -xCorrect, -yCorrect)
 }
 
 const framesFromAnimation = (animation, frameFromState) => {
