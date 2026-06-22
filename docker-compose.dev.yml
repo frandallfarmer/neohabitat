@@ -24,10 +24,10 @@ services:
     ports:
       - "2026:2026"
       - "2027:2027"
-    cap_add:
-      - NET_ADMIN
-    security_opt:
-      - seccomp:unconfined
+    # cap_add: [NET_ADMIN] and security_opt: [seccomp:unconfined] come from
+    # docker-compose.override.yml's bridge_v2 (always merged into the dev project). Compose
+    # concatenates list fields across files, and duplicate security_opt items are now a hard
+    # validation error ("items at 0 and 1 are equal"), so they must NOT be repeated here.
     networks:
       - neohabitat
     depends_on:

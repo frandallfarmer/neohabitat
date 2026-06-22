@@ -369,6 +369,21 @@ Each phase is independently demoable in the page shell.
     rate from the C64 comms (`Main/comm_control.m` / `protocol.m` / `mikes_protocol.m` — the
     modem/serial timing) and verify against an actual C64 client (VICE) sharing a region.
 
+  - **7e. Cursor model — pie-menu input on an absolute mouse (LATE in Phase 7).** The C64
+    cursor was a **joystick** — a *relative* device: after a verb the cursor freezes at the
+    target and "returns" there for the next command, with no notion of an absolute pointer
+    position. The browser has **no API to move the OS pointer**, so on an absolute mouse a
+    frozen sprite and the real pointer inevitably diverge — resuming must either **warp** (snap
+    the sprite to the mouse) or **drift** (a relative offset that accumulates and makes pointing
+    impossible). The committed cursor (`cursor-view.js`) takes the warp tradeoff: it freezes at
+    the press point and the next press re-anchors there — **good enough for now**. The real fix
+    is one of: (a) **Pointer Lock** — relative motion (`movementX/Y`), OS cursor hidden, the game
+    cursor is the sole pointer = a faithful port of the joystick (freeze/return work with no
+    warp/drift); cost is click-to-engage + Esc-to-release UX. (b) A **redesigned absolute pie
+    menu** that doesn't need the cursor to return to a point — e.g. press opens a radial menu
+    anchored at the press point, the cursor roams freely to a wedge, release selects, and the
+    target stays the press point. Decide between (a) and (b) here; both are legitimate.
+
 ## Running (Phase 0–1)
 
 Native ES modules, importmaps, `fetch`, and the habisound `AudioWorklet` require http(s),
