@@ -59,10 +59,12 @@ const COMET = {
   ms: 2400,
 }
 
-const TITLE_SRC = "./assets/title.png"
-// Luminance below this counts as "black" art (or letterbox) that occludes the comet;
-// brighter banner pixels reveal it. Tune if the comet shows too much / too little.
-const DARK_THRESHOLD = 64
+// The original C64 title "silhouette" (hab + sill), decoded from Main/habsill3.m by
+// tools/decode-habsill.mjs — the genuine 320×128 multicolor bits the comet flew over. It is the
+// bottom band of the 320×200 screen; the top 9 char rows (72px) held the "(c) 1987 Lucasfilm
+// Ltd." text. habsill3.m is linked into Bitmap_screen_1 ($4b40) by Main/Makefile's slinky call.
+const TITLE_SRC = "./assets/habsill.png"
+const BITMAP_Y = 72 // 9 text rows × 8 — where the bitmap band begins on the C64 screen
 
 // Lazy, shared sound engine. Imported dynamically so a failure to load/init audio
 // (or its AudioWorklet) degrades to a silent-but-working title — the visuals and the
@@ -82,39 +84,11 @@ async function getSound() {
 
 const Comet = ({ playing, onDone }) => {
   const canvasRef = useRef(null)
-  const maskRef = useRef(null) // offscreen: opaque black except the bright banner pixels
 
-  // Build the occlusion mask once, from the same object-fit:contain rect the <img>
-  // behind us uses. The C64 comet sprite had priority *behind* the foreground; this
-  // reproduces that: black art, the dark gaps, and the letterbox cover the comet, so it
-  // only shows over the lit/blue title pixels.
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const W = canvas.width, H = canvas.height
-    const img = new Image()
-    img.onload = () => {
-      const s = Math.min(W / img.naturalWidth, H / img.naturalHeight) // contain
-      const rw = img.naturalWidth * s, rh = img.naturalHeight * s
-      const rx = (W - rw) / 2, ry = (H - rh) / 2
-      const off = document.createElement("canvas")
-      off.width = W; off.height = H
-      const octx = off.getContext("2d")
-      octx.drawImage(img, rx, ry, rw, rh)
-      const id = octx.getImageData(0, 0, W, H), p = id.data
-      for (let i = 0; i < p.length; i += 4) {
-        const lum = 0.3 * p[i] + 0.59 * p[i + 1] + 0.11 * p[i + 2]
-        if (p[i + 3] > 0 && lum >= DARK_THRESHOLD) {
-          p[i + 3] = 0                                   // bright → reveal comet
-        } else {
-          p[i] = p[i + 1] = p[i + 2] = 0; p[i + 3] = 255 // dark/letterbox → occlude
-        }
-      }
-      octx.putImageData(id, 0, 0)
-      maskRef.current = off
-    }
-    img.src = TITLE_SRC
-  }, [])
-
+  // The comet sits in its own layer BEHIND the silhouette <img> (whose sky pixels are
+  // transparent) and IN FRONT of the blue sky background — so it shoots across the sky and is
+  // naturally occluded by the foreground art, reproducing the C64's sprite-behind-bitmap
+  // priority without any luminance mask (which used to paint black over the art = "colors break").
   useEffect(() => {
     if (!playing) return
     const canvas = canvasRef.current
@@ -139,7 +113,6 @@ const Comet = ({ playing, onDone }) => {
         }
       })
       ctx.globalAlpha = 1
-      if (maskRef.current) ctx.drawImage(maskRef.current, 0, 0) // clip behind the art
 
       if (t < 1) { raf = requestAnimationFrame(draw) }
       else { ctx.clearRect(0, 0, W, H); onDone() }
@@ -152,8 +125,10 @@ const Comet = ({ playing, onDone }) => {
                 width=${320 * SCALE} height=${200 * SCALE}></canvas>`
 }
 
-export const TitleScreen = ({ onProceed }) => {
-  // idle → (click: gesture + music + comet) → playing → (comet done) → ready
+export const TitleScreen = ({ onProceed, ready = true }) => {
+  // idle → (click: gesture + music + comet) → playing → (comet done) → ready.
+  // `ready` gates the final "press any key": when the heavy client is still loading behind the
+  // title (live.js boot), the comet can finish first — hold at "Loading…" until it's ready.
   const [phase, setPhase] = useState("idle")
 
   const begin = async () => {
@@ -162,24 +137,25 @@ export const TitleScreen = ({ onProceed }) => {
     try {
       const hs = await getSound()
       await hs.resume()       // must be inside the click for autoplay policy
-      hs.playTune("title")
+      hs.playTune("title")    // opening-notes warm-up still TODO (see task: title music)
     } catch (e) {
       console.warn("title music unavailable:", e)
     }
   }
 
   const proceed = async () => {
+    if (!ready) return // client still loading behind the title — hold
     try { (await getSound()).stop() } catch (e) { /* fine */ }
     onProceed()
   }
 
-  // In 'ready', any key proceeds — the literal "press any key".
+  // In 'ready' (and once the client has loaded), any key proceeds — the literal "press any key".
   useEffect(() => {
-    if (phase !== "ready") return
+    if (phase !== "ready" || !ready) return
     const onKey = () => proceed()
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [phase])
+  }, [phase, ready])
 
   const onStageClick = () => {
     if (phase === "idle") begin()
@@ -189,11 +165,14 @@ export const TitleScreen = ({ onProceed }) => {
   return html`
     <div class="title-stage" style=${`width:${320 * SCALE}px;height:${200 * SCALE}px`}
          onClick=${onStageClick}>
-      <img class="title-logo" src="./assets/title.png" alt="Lucasfilm's Habitat" />
+      <div class="title-sky"></div>
       <${Comet} playing=${phase === "playing"} onDone=${() => setPhase("ready")} />
+      <img class="title-logo" src=${TITLE_SRC} alt="Lucasfilm's Habitat" />
+      <div class="title-copyright">(c) 1987 Lucasfilm Ltd.</div>
       ${phase === "idle" && html`
         <div class="title-prompt">▶ Click to begin</div>`}
-      ${phase === "ready" && html`
-        <div class="balloon">Press any key to proceed<span class="balloon-tail"></span></div>`}
+      ${phase === "ready" && (ready
+        ? html`<div class="balloon">Press any key to proceed<span class="balloon-tail"></span></div>`
+        : html`<div class="balloon">Loading…<span class="balloon-tail"></span></div>`)}
     </div>`
 }

@@ -127,11 +127,27 @@ header.titlebar .tag {
     image-rendering: pixelated;
 }
 .title-logo {
+    /* The original C64 title silhouette (habsill3.m → assets/habsill.png) is the 320×128 bitmap
+       band, which sat below the 9 text rows. Its sky pixels are transparent, so the .title-sky
+       layer (and the comet between them) show through; the opaque silhouette occludes the comet.
+       Place it in that band and upscale crisply (2× exact, so pixelated keeps the bits sharp). */
     position: absolute;
-    inset: 0;
+    left: 0;
+    top: 36%;                 /* 72/200 — after the text rows */
     width: 100%;
-    height: 100%;
-    object-fit: contain;      /* logo banner letterboxed on black, like the C64 screen */
+    height: 64%;              /* 128/200 — the bitmap band */
+    object-fit: fill;
+    image-rendering: pixelated;
+}
+/* The sky: a solid fill behind the comet and the (sky-transparent) silhouette, filling the same
+   bitmap band. C64 blue (color 6) — the "00" background the comet streaks across. */
+.title-sky {
+    position: absolute;
+    left: 0;
+    top: 36%;
+    width: 100%;
+    height: 64%;
+    background: #2e2c9b;
 }
 .title-comet {
     position: absolute;
@@ -139,6 +155,19 @@ header.titlebar .tag {
     width: 100%;
     height: 100%;
     pointer-events: none;     /* comet drawn in front of the backdrop (see title.js) */
+}
+/* "(c) 1987 Lucasfilm Ltd." — the C64 wrote this into the text rows above the bitmap band. */
+.title-copyright {
+    position: absolute;
+    left: 0; right: 0;
+    top: 18%;                 /* within the top text rows, above the silhouette band */
+    text-align: center;
+    color: #fff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px #000;
+    pointer-events: none;
 }
 .title-prompt {
     position: absolute;

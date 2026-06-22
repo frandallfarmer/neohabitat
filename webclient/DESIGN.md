@@ -357,17 +357,18 @@ Each phase is independently demoable in the page shell.
   client shippable rather than merely functional. None of it is new C64 behavior; it is the
   production wrapper around the working client.
 
-  - **7a. Full load experience — login + launch screen as a loading cover.** Today the page
-    shows a bare WebSocket/context/avatar form and connects on a button. Replace it with the
-    real arrival flow: (1) gather the **user name** (and the context/realm to enter) up front
-    in a styled login screen, then (2) play the **title/launch sequence** (`lib/title.js` —
-    the Phase 0 comet + 3-part tune, already built) as the *cover* while the heavy lifting
-    happens behind it: the large all-JS client modules load, habiworld instantiates, art
-    decodes, and the transport connects + drains the make-storm. The title is the C64-faithful
-    "loading from disk" moment — repurpose it from a one-shot capstone into a **progress-gated
-    curtain** that lifts only once the region's first frame is ready (and the "press any key"
-    affordance gates entry). *Done when:* a first-time visitor types a name, watches the launch
-    screen, and lands in a fully-rendered region with no blank/half-loaded intermediate state.
+  - **7a. Full load experience — launch screen as a loading cover. DONE (the curtain).**
+    `live.js boot()` now shows the **title/launch sequence** (`lib/title.js` — the Phase 0 comet
+    + 3-part tune) immediately, while `main()` loads the heavy all-JS client (habiworld, the
+    renderer, art decoders) in the background. The title is the C64-faithful "loading from disk"
+    moment: load the screen, the first click starts the music (and supplies the gesture audio
+    needs), the comet shoots across, and the "press any key" affordance is **gated on the load
+    finishing** (`TitleScreen ready` prop — holds at "Loading…" until `main()` resolves, then a
+    key/click launches the client). `live.html` was trimmed to a clean shell so the title reads
+    as a real launch screen. *Still open (the login half):* gather the **user name / context** up
+    front instead of the dev connect form, and auto-connect so the curtain lifts straight into a
+    fully-rendered region (today it lifts into the connect form). Also: the title and the client
+    each spin up their own habisound engine — share one (a 7b concern).
 
   - **7b. Performance — load time, render cadence, and steady-state memory.** This is a
     no-build, native-ESM client that fetches habiworld's ~27 CommonJS modules over http and

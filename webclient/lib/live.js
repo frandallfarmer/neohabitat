@@ -40,6 +40,7 @@ import { RegionCursor } from "./cursor-view.js"
 import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
 import { TextView } from "./text-view.js"
+import { TitleScreen } from "./title.js"
 
 const RENDER_BASE = "./habirender/"
 const _fetch = globalThis.fetch.bind(globalThis)
@@ -508,10 +509,36 @@ async function main() {
       <${errors} />`
   }
 
-  render(html`<${App} />`, document.getElementById("app"))
+  return App
 }
 
-main().catch((e) => {
-  document.getElementById("app").textContent = "error: " + e.message
-  console.error(e)
-})
+// Boot: show the C64 title sequence (lib/title.js) immediately — it loads instantly (title.png
+// + comet + tune) and supplies the click gesture audio needs — while main() loads the heavy
+// client (habiworld, the renderer, art decoders) in the background. The title's "press any key"
+// is gated on the load finishing, so a key (or click) launches the client exactly when ready —
+// the same load-the-screen / start-the-music / wait-for-ready flow as the original C64 boot.
+function boot() {
+  const root = document.getElementById("app")
+  const loadedApp = signal(null)
+  const loadError = signal(null)
+  const proceeded = signal(false)
+  main().then((App) => { loadedApp.value = App })
+        .catch((e) => { loadError.value = e; console.error(e) })
+
+  const Boot = () => {
+    if (loadError.value) {
+      return html`<div style="color:#d8604a; padding:12px;">error: ${loadError.value.message}</div>`
+    }
+    if (proceeded.value && loadedApp.value) {
+      const App = loadedApp.value
+      return html`<${App} />`
+    }
+    return html`<${TitleScreen}
+      ready=${!!loadedApp.value}
+      onProceed=${() => { proceeded.value = true }} />`
+  }
+
+  render(html`<${Boot} />`, root)
+}
+
+boot()

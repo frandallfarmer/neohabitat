@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>NeoHabitat — Phase 5 modal cursor verbs (GO/GET/PUT/DO)</title>
+    <title>NeoHabitat</title>
     <link rel="stylesheet" href="style.css" />
     <script type="importmap">
         {
@@ -18,14 +18,8 @@
     <script type="module" src="./lib/live.js"></script>
 </head>
 <body>
-    <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
-        <h1 style="font-size: 16px; margin: 0;">Phase 5 — modal cursor verbs: click-drag GO/GET/PUT/DO, object · avatar-limb · table-contents picking</h1>
-        <div id="app" style="display: flex; flex-direction: column; gap: 10px;"></div>
-        <p style="color:#9a9aa6; font-size:16px; margin:0; max-width:70ch;">
-            Set the WebSocket proxy, context, and avatar above, then Connect. Defaults seed from
-            query params (<code>?ws=…&amp;context=context-…&amp;user=name</code>). Requires elko +
-            bridge_v2 + pushserver up (docker-compose.dev.yml).
-        </p>
-    </div>
+    <!-- The C64 title sequence (lib/title.js) shows here first while the heavy client loads in
+         the background; "press any key" swaps it for the live client. See lib/live.js boot(). -->
+    <div id="app" style="display: flex; flex-direction: column; gap: 10px; padding: 12px;"></div>
 </body>
 </html>
