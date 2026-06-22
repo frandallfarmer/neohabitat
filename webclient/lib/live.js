@@ -152,6 +152,13 @@ async function main() {
   let transport = null
   let speakReplyPending = false
   let speakReplyTimer = null
+  // ESP-mode toggles ride back on the reply; transport fires onReply for every reply (even
+  // ones a dispatch consumed via sendForReply), so arming this before the send is enough.
+  const armSpeakReply = () => {
+    speakReplyPending = true
+    if (speakReplyTimer) clearTimeout(speakReplyTimer)
+    speakReplyTimer = setTimeout(() => { speakReplyPending = false }, 5000)
+  }
   const onTextSubmit = async (payload) => {
     if (!transport || !payload) return
     // C64 talk:: / ESP_talk:: send MESSAGE_speak to actor_noid; JSON uses the avatar ref.
@@ -160,30 +167,40 @@ async function main() {
       console.warn("[live] text submit: avatar not in region yet")
       return
     }
-    let msg
-    if (payload.kind === "esp-exit") {
-      msg = { op: "ESP", to: avatarRef, esp: 1, text: "" }
-    } else if (payload.kind === "esp") {
-      msg = { op: "ESP", to: avatarRef, esp: 1, text: payload.text }
-    } else if (payload.kind === "speak") {
-      msg = { op: "SPEAK", to: avatarRef, esp: 0, text: payload.text }
-    } else {
+    // C64 talk:: clears the line after send_string; ESP reply handled via getResponse.
+    clearTextLine(textInputState.value)
+    textInputState.value = { ...textInputState.value }
+    armSpeakReply()
+
+    if (payload.kind === "speak") {
+      // keyboard.m get_key: ENTER (return_key, not awaiting input) sets command_selected = 6
+      // (TALK) and flashes the cursor — the typed line is dispatched as the TALK verb on the
+      // object UNDER THE CURSOR, not an unconditional SPEAK-to-self. Talking at a teleport /
+      // elevator / vendo / bureaucrat / Oracle hits its own talk handler; region / ground /
+      // avatar resolve to generic_broadcast (the near-universal default = a plain SPEAK).
+      const pick = (lastCursor && dispatchClient)
+        ? pickRegionTarget(pickState, lastCursor.canvasX, lastCursor.canvasY, lastCursor.scale)
+        : null
+      if (pick?.noid != null) {
+        dispatchVerb({ world, dispatch, dispatchClient, verb: ACTION_TALK, noid: pick.noid, args: { text: payload.text }, pick })
+      } else {
+        // Nothing under the cursor (pointer never placed in-region) → broadcast to the room.
+        transport.send({ op: "SPEAK", to: avatarRef, esp: 0, text: payload.text })
+      }
       return
     }
+
+    // ESP continuation / exit — private channel, sent to our own avatar (text_handler ESP_talk).
+    const msg = payload.kind === "esp-exit"
+      ? { op: "ESP", to: avatarRef, esp: 1, text: "" }
+      : payload.kind === "esp" ? { op: "ESP", to: avatarRef, esp: 1, text: payload.text } : null
+    if (!msg) return
     if (!transport.send(msg)) {
       console.warn("[live] text submit: transport not connected")
       return
     }
     // avatar_talk.m / generic_broadcast.m: sound ESP_MESSAGE_SENT after each v_ESP_talk.
-    if (payload.kind === "esp" || payload.kind === "esp-exit") {
-      playEspSound(ESP_MESSAGE_SENT)
-    }
-    // C64 talk:: clears the line after send_string; ESP reply handled via getResponse.
-    clearTextLine(textInputState.value)
-    textInputState.value = { ...textInputState.value }
-    speakReplyPending = true
-    if (speakReplyTimer) clearTimeout(speakReplyTimer)
-    speakReplyTimer = setTimeout(() => { speakReplyPending = false }, 5000)
+    playEspSound(ESP_MESSAGE_SENT)
   }
   const connect = async (ws, context, user) => {
     if (!ws || !context || !user) {
