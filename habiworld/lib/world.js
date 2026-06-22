@@ -20,7 +20,7 @@
 
 const EventEmitter = require('events')
 const { MIGRATED_OPS, dispatchHostSync } = require('./behaviors/dispatch_host')
-const { MAIL_SLOT, HANDS, HEAD, THE_REGION } = require('./constants')
+const { MAIL_SLOT, HANDS, HEAD, THE_REGION, GHOST_NOID } = require('./constants')
 
 class HabitatWorld extends EventEmitter {
   constructor() {
@@ -46,7 +46,12 @@ class HabitatWorld extends EventEmitter {
       // into [0, depth]. Drives wall-vs-floor adjacency math.
       depth: 0,
     }
-    this.me = null // record of our own avatar (make arrives with you:true)
+    // Our own identity is a NOID (the C64 me_noid), not a record — region (0) and ghost (255)
+    // are "irregular" sentinel noids, and the object for our noid can arrive LATE (the server
+    // sends the corporeality reply before the new body's make: the deghost avatar make follows
+    // its reply, and a freshly-created ghost is announced ~1s later via announceGhostLater).
+    // `me` is a getter over this noid so a late make is adopted automatically once it lands.
+    this.meNoid = null
     this._client = null // presentation + I/O callbacks (sound, chore, send, walkTo)
   }
 
@@ -96,6 +101,45 @@ class HabitatWorld extends EventEmitter {
   }
 
   // ── queries ──────────────────────────────────────────────────────
+
+  // Our own object, resolved from meNoid. Null during the brief window after a corporeality
+  // change when meNoid is set but the new body's make hasn't arrived yet (see meNoid above).
+  get me() {
+    return this.meNoid != null ? (this.objects.get(this.meNoid) || null) : null
+  }
+
+  // Am I an observer (a ghost)? On the C64 a ghosted user IS ghost_noid (255) — there is one
+  // singleton Ghost per region representing all observers, and the user's own avatar is
+  // "forgotten" client-side (Ghost.java). meNoid is authoritative even before the eye's make
+  // lands; the record check is a belt-and-suspenders fallback.
+  get amGhost() {
+    if (this.meNoid === GHOST_NOID) return true
+    const me = this.me
+    return !!me && (me.type === 'Ghost' || !!(me.mod && me.mod.amAGhost))
+  }
+
+  // The region's singleton ghost record (noid 255), or null. CORPORATE (deghost) is sent to
+  // this object's ref.
+  ghost() {
+    return this.objects.get(GHOST_NOID) || null
+  }
+
+  // Remove an object (and cascade its contents) by noid. toggle_ghost_mode deletes its OWN
+  // stale body locally: the server's GOAWAY_$ for it is a *neighbor* message (never sent to
+  // the actor), exactly as the C64 toggle_ghost_mode.m calls v_delete_object on me_noid.
+  removeNoid(noid) {
+    this._deleteByNoid(noid)
+  }
+
+  // Re-point identity at a noid (toggle_ghost_mode: me_noid ← newNoid after corporeality
+  // change). The new body / removed body arrive via the normal make / GOAWAY broadcast, so
+  // this only swaps which record we consider "me". No-op (returns null) if not yet present.
+  setMeByNoid(noid) {
+    this.meNoid = noid // authoritative now; the body's make may still be in flight
+    const rec = this.objects.get(noid) || null
+    if (rec) this.emit('stateChanged', rec)
+    return rec
+  }
 
   get(noid) {
     return this.objects.get(noid) || null
@@ -171,8 +215,12 @@ class HabitatWorld extends EventEmitter {
     }
     this.objects.set(mod.noid, record)
     this.refs.set(obj.ref, mod.noid)
-    if (isMe) this.me = record
+    if (isMe) this.meNoid = mod.noid
+    // A make whose noid is the identity we're already waiting on (a late deghost body or the
+    // ~1s-delayed ghost eye) resolves `me` automatically via the getter; emit so the client
+    // re-renders now that our body exists.
     this.emit('added', record)
+    if (mod.noid === this.meNoid) this.emit('stateChanged', record)
   }
 
   _deleteByRef(ref) {

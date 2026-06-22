@@ -35,6 +35,9 @@ export function worldToObjects(world) {
   }
 
   for (const rec of world.objects.values()) {
+    // The singleton Ghost (noid 255) renders as the floating EYE icon (class_ghost image
+    // ghost_image = Images/eye0.bin) — it represents all observers and IS shown (to ghosts and
+    // avatars alike) whenever ghosts are present. It is NOT filtered. See GHOST_MODE.md.
     out.push({
       ref: rec.ref,
       type: "item",          // elko top-level type; class lives in mods[0].type

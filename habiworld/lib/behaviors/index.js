@@ -12,7 +12,7 @@
 // Substantial behaviors get their own file; one-to-three-line .m files
 // are defined here with their source cited.
 
-const { ACTION_GO, THE_REGION } = require('../constants')
+const { ACTION_GO, THE_REGION, GHOST_NOID } = require('../constants')
 const { succeeded } = require('./kernel')
 
 // Avatar.java posture activity values (Constants.java). avatar_go.m toggles the
@@ -159,6 +159,45 @@ B.ask_for_help = async (ctx) => {
   if (!target) return { ok: false, reason: 'no-target' } // ask_for_help.m: pointed==0 → rts
   const reply = await ctx.send({ op: 'HELP', to: target.ref })
   if (reply && reply.text) ctx.balloon(reply.text, { speaker: target.noid, op: 'OBJECTSPEAK_$' })
+  return { ok: true }
+}
+
+// toggle_ghost_mode.m (F1 / Region action slot 9): toggle corporeality. The C64 sends one
+// MSG_CHANGE_CORPOREALITY to me_noid; because me_noid is the avatar when corporeal and the
+// ghost (255) when observing, NeoHabitat splits it into DISCORPORATE (to my avatar → become
+// a ghost) and CORPORATE (to the ghost noid 255 → become an avatar). The server announces the
+// new body / removes the old one via the normal make / GOAWAY broadcast (world.apply handles
+// those); here we read the reply's success code and re-point identity at newNoid.
+//   reply.success: 0 fail · 1 success · 2 already-there · 3 last-ghost (server deletes the
+//   ghost object itself). DISCORPORATE failure (holding the Genie / a restricted item) comes
+//   back as a reply error (no success). Invoked via performFnKey slot 9, not a class verb.
+const COPOREAL_LAST_GHOST = 3 // Avatar.java / toggle_ghost_mode.m: I was the last ghost
+B.toggle_ghost_mode = async (ctx) => {
+  const me = ctx.actor
+  if (!me) return { ok: false, reason: 'no-actor' }
+  const oldNoid = me.noid
+  let reply
+  if (ctx.world.amGhost) {
+    const ghost = ctx.world.ghost()
+    if (!ghost) return ctx.boing('no-ghost-object')
+    reply = await ctx.send({ op: 'CORPORATE', to: ghost.ref }) // ghost → avatar
+  } else {
+    reply = await ctx.send({ op: 'DISCORPORATE', to: me.ref }) // avatar → ghost
+  }
+  const success = reply ? (reply.success ?? 0) : 0
+  if (!success) return ctx.boing('corporeality-denied') // code 0 or reply error
+  const newNoid = reply.newNoid
+  // toggle_ghost_mode.m v_delete_object: the GOAWAY_$ for my OWN old body is a neighbor
+  // message (never sent to me), so I drop the stale body myself.
+  if (newNoid === GHOST_NOID) {
+    ctx.world.removeNoid(oldNoid)              // became a ghost → remove my old avatar
+  } else if (success === COPOREAL_LAST_GHOST) {
+    ctx.world.removeNoid(GHOST_NOID)           // last ghost reincarnated → the eye is gone
+  }
+  // The new body (avatar make) / removed ghost arrive on the normal broadcast path; re-point
+  // identity at newNoid (present by now — its make precedes this reply on the wire).
+  if (newNoid != null) ctx.world.setMeByNoid(newNoid)
+  if (reply.balance != null && ctx.world.me) ctx.world.me.mod.bankBalance = reply.balance
   return { ok: true }
 }
 

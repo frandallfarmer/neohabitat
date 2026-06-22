@@ -52,6 +52,32 @@ function makeStorm(world) {
   })
 }
 
+// A make-storm where YOU arrive as the singleton ghost (noid 255) — the C64 "full region"
+// observer state. A frisbee is present to GET-fail on.
+function makeGhostStorm(world) {
+  world.apply({
+    to: 'session', op: 'make',
+    obj: {
+      type: 'context', ref: REGION_REF, name: '113 Lori Ln',
+      mods: [{ type: 'Region', orientation: 1, neighbors: ['context-a', 'context-b', '', 'context-d'], realm: 'Streets', lighting: 0, depth: 32 }],
+    },
+  })
+  world.apply({
+    to: REGION_REF, op: 'make', you: true,
+    obj: {
+      type: 'item', ref: 'ghost-1', name: 'Ghost',
+      mods: [{ type: 'Ghost', noid: 255, x: 4, y: 240, orientation: 0, gr_state: 0 }],
+    },
+  })
+  world.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-frisbee-1', name: 'Frisbee',
+      mods: [{ type: 'Frisbee', noid: 30, x: 60, y: 140, orientation: 0, gr_state: 0 }],
+    },
+  })
+}
+
 function recorder(replies) {
   const calls = { walks: [], sends: [], waits: [], beeps: 0, boings: 0, balloons: [] }
   const queue = replies ? [...replies] : null
@@ -225,16 +251,120 @@ test('F-key ask_for_help (F7) pointing at nothing does nothing (pointed==0 → r
   assert.equal(calls.sends.length, 0) // no HELP sent
 })
 
-test('F-key performFnKey leaves F1 ghost / F2 / F6 unwired (beta.mud slots 9/10/14)', async () => {
+test('F-key performFnKey leaves F2 / F6 unwired (beta.mud local-only slots 10/14)', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
   const { calls, cb } = recorder()
-  for (const slot of [9, 10, 14]) {
+  for (const slot of [10, 14]) { // F1(9) is now the corporeality toggle; F2/F6 stay local-only
     const result = await performFnKey(w, slot, 0, cb)
     assert.equal(result.ok, false)
     assert.equal(result.reason, `fnkey-unhandled:${slot}`)
   }
   assert.equal(calls.sends.length, 0)
+})
+
+// ── ghost mode (Phase 6c — actions.m:272-294; see webclient/GHOST_MODE.md) ──
+
+test('a ghost is detected as world.amGhost (me is the singleton ghost, noid 255)', () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  assert.equal(w.amGhost, true)
+  assert.equal(w.me.noid, 255)
+  assert.equal(w.ghost().ref, 'ghost-1')
+})
+
+test('a ghost may not issue object verbs — GET beeps locally, no server round-trip', async () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  const { calls, cb } = recorder()
+  const result = await dispatch(w, ACTION_GET, 30, {}, cb)
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'ghost-no-verb')
+  assert.equal(calls.beeps, 1)
+  assert.equal(calls.sends.length, 0) // never reaches the server
+})
+
+test('a ghost GO is a no-op — walkTo rts early, no WALK sent (goXY ghost rts)', async () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  const { calls, cb } = recorder()
+  const result = await dispatch(w, ACTION_GO, 30, {}, cb) // GO is the one allowed verb
+  assert.ok(result.ok)                 // succeeds (ghosts can GO) ...
+  assert.equal(calls.walks.length, 0)  // ... but the in-region walk is suppressed
+  assert.equal(calls.sends.length, 0)
+})
+
+test('performGesture is blocked for a ghost (no body to pose)', async () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  const { calls, cb } = recorder()
+  const result = await performGesture(w, 141, cb)
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'ghost-no-gesture')
+  assert.equal(calls.sends.length, 0)
+})
+
+test('performFnKey blocks avatar F-keys for a ghost (only F1 deghost is allowed)', async () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  const { calls, cb } = recorder()
+  const result = await performFnKey(w, 11, 0, cb) // F3 user list — blocked
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'ghost-no-fnkey')
+  assert.equal(calls.sends.length, 0)
+})
+
+test('F1 deghost: a ghost sends CORPORATE to noid 255 and adopts the new avatar identity', async () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  // The server announces the reincarnated avatar via the normal make before the reply lands.
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'user', ref: ME_REF, name: 'SageBot', mods: [{ type: 'Avatar', noid: 17, x: 80, y: 160, orientation: 0, gr_state: 0 }] },
+  })
+  const { calls, cb } = recorder([{ type: 'reply', success: 3, newNoid: 17, balance: 250 }])
+  const result = await performFnKey(w, 9, null, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends[0], { op: 'CORPORATE', to: 'ghost-1' })
+  assert.equal(w.me.noid, 17)        // identity swapped to the new avatar
+  assert.equal(w.amGhost, false)
+  assert.equal(w.me.mod.bankBalance, 250)
+})
+
+test('F1 become ghost: DISCORPORATE, drop my own body, become noid 255 before the eye lands', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w) // me = avatar 17; no eye yet (server announces it ~1s later)
+  const { calls, cb } = recorder([{ type: 'reply', success: 2, newNoid: 255, balance: 100 }])
+  const result = await performFnKey(w, 9, null, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends[0], { op: 'DISCORPORATE', to: ME_REF })
+  assert.equal(w.get(17), null)   // my old avatar removed locally (GOAWAY went to neighbors)
+  assert.equal(w.amGhost, true)   // identity is noid 255 even though the eye hasn't arrived
+  assert.equal(w.me, null)        // ... so `me` resolves to nothing until the eye's make lands
+})
+
+test('the ~1s-late ghost eye make is adopted as me once it arrives (announceGhostLater)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const { cb } = recorder([{ type: 'reply', success: 2, newNoid: 255, balance: 100 }])
+  await performFnKey(w, 9, null, cb)
+  assert.equal(w.me, null) // eye not here yet
+  // The delayed HEREIS_$ for the singleton eye finally arrives.
+  w.apply({
+    to: REGION_REF, op: 'HEREIS_$', container: REGION_REF,
+    object: { type: 'item', ref: 'ghost-1', name: 'Ghost', mods: [{ type: 'Ghost', noid: 255, x: 4, y: 240, orientation: 0, gr_state: 0 }] },
+  })
+  assert.equal(w.me?.noid, 255)   // adopted automatically via the meNoid getter
+  assert.equal(w.amGhost, true)
+})
+
+test('F1 toggle boings when the server denies the corporeality change', async () => {
+  const w = new HabitatWorld()
+  makeGhostStorm(w)
+  const { calls, cb } = recorder([{ type: 'reply', err: 0 }]) // no success field → failure
+  const result = await performFnKey(w, 9, null, cb)
+  assert.equal(result.ok, false)
+  assert.equal(calls.boings, 1)
 })
 
 test('GO on yourself reverts posture when the server rejects POSTURE', async () => {

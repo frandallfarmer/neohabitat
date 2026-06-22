@@ -16,7 +16,7 @@
 
 const behaviors = require('./index')
 const { makeCtx } = require('./kernel')
-const { ACTION_RDO } = require('../constants')
+const { ACTION_RDO, ACTION_GO } = require('../constants')
 
 // Lazily required: classes.js is generated (lib/tools/parse_mud.js) and
 // re-generated in place; the lazy require also keeps unit tests able to
@@ -116,6 +116,14 @@ async function run(world, slot, pointed, args, client, parent) {
 // Public entry point: run a verb against an object in the world.
 async function dispatch(world, verb, noid, args, client) {
   if (!world.me) return { ok: false, reason: 'not-in-region' }
+  // actions.m:272-294 — a ghost has no avatar and may issue ONLY GO (which, in-region, is a
+  // no-op: ctx.walkTo rts early; only region-edge transit actually moves a ghost). Every other
+  // verb beeps locally — no server round-trip. Deghost (F1) is a separate path (performFnKey
+  // slot 9), not a class verb. See GHOST_MODE.md.
+  if (world.amGhost && verb !== ACTION_GO) {
+    if (client && client.beep) client.beep('ghost-cant')
+    return { ok: false, reason: 'ghost-no-verb' }
+  }
   const pointed = world.get(noid)
   if (!pointed) return { ok: false, reason: 'no-such-object' }
   if (!client || typeof client.send !== 'function' || typeof client.walkTo !== 'function') {
@@ -131,6 +139,11 @@ async function performGesture(world, gestureValue, client) {
   if (!client || typeof client.send !== 'function') {
     throw new Error('habiworld performGesture: client.send is required')
   }
+  // A ghost has no body to pose (server POSTURE is illegal when amAGhost) — beep, don't send.
+  if (world.amGhost) {
+    if (client.beep) client.beep('ghost-cant')
+    return { ok: false, reason: 'ghost-no-gesture' }
+  }
   const ctx = makeCtx(world, null, world.me, { gesture: gestureValue }, client, null)
   return behaviors.do_gesture(ctx)
 }
@@ -138,7 +151,7 @@ async function performGesture(world, gestureValue, client) {
 // keyboard.m que_gesture → Region action slots 9–16 (the F-keys). beta.mud's Region table
 // is C64 ground truth (the generated new.mud table is stale and disagrees), so route the
 // F-key directly rather than through the class verb slots:
-//   F1(9) toggle_ghost_mode        — Phase 6c (corporeality); not wired here
+//   F1(9) toggle_ghost_mode        — corporeality toggle (DISCORPORATE / CORPORATE)
 //   F2(10) toggle_walking_music    — local-only client feature; skipped
 //   F3(11) F4(12) F5(13) F8(16) fn_key_pressed → FNKEY to me (host balloons the result)
 //   F6(14) change_player_color     — local-only palette; skipped
@@ -147,6 +160,17 @@ async function performFnKey(world, slot, pointedNoid, client) {
   if (!world.me) return { ok: false, reason: 'not-in-region' }
   if (!client || typeof client.send !== 'function') {
     throw new Error('habiworld performFnKey: client.send is required')
+  }
+  // F1 toggle_ghost_mode is the ONE F-key a ghost may use (it's how you come back to life).
+  if (slot === 9) {
+    const ctx = makeCtx(world, null, world.me, {}, client, null)
+    return behaviors.toggle_ghost_mode(ctx)
+  }
+  // Every other F-key acts through the avatar — the server rejects FNKEY / HELP while a ghost,
+  // so beep locally instead of round-tripping (GHOST_MODE.md).
+  if (world.amGhost) {
+    if (client.beep) client.beep('ghost-cant')
+    return { ok: false, reason: 'ghost-no-fnkey' }
   }
   if (slot === 15) {
     const pointed = pointedNoid != null ? world.get(pointedNoid) : null
@@ -157,7 +181,7 @@ async function performFnKey(world, slot, pointedNoid, client) {
     const ctx = makeCtx(world, null, world.me, { key: slot, target: pointedNoid ?? 0 }, client, null)
     return behaviors.fn_key_pressed(ctx)
   }
-  return { ok: false, reason: `fnkey-unhandled:${slot}` } // F1 ghost / F2 / F6 not wired
+  return { ok: false, reason: `fnkey-unhandled:${slot}` } // F2 / F6 not wired
 }
 
 module.exports = { dispatch, performGesture, performFnKey, behaviorNameFor, DEFAULT_ITEM_ACTIONS }

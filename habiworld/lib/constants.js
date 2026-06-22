@@ -14,6 +14,11 @@ const HEAD = 6
 // Container noid 0 = the region itself (Main/actions.m:768).
 const THE_REGION = 0
 
+// The singleton ghost object's noid (Main/farmers_equates.m:41, Constants.GHOST_NOID).
+// When you are an observer you ARE this noid — there is one Ghost per region representing
+// all ghosted users. me.noid === GHOST_NOID is the "am I a ghost" test.
+const GHOST_NOID = 255
+
 // User-verb slots in every class's action table (action_head.i:178-185).
 // Slots 8+ are class-specific: host-message handlers for avatar/region
 // (slot number == host message number), internal chain targets elsewhere.
@@ -56,6 +61,7 @@ module.exports = {
   HANDS,
   HEAD,
   THE_REGION,
+  GHOST_NOID,
   ACTION_DO,
   ACTION_RDO,
   ACTION_GO,

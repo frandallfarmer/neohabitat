@@ -262,7 +262,8 @@ Each phase is independently demoable in the page shell.
     editing**: type into the page buffer, `Paper_Menu` (ERASE/REPLY/MAIL IT/QUIT), and
     `TRANSMIT_PAGE` send-as-mail.
 
-  - **6c. Ghost mode (`actions.m:274`, `farmers_equates.m:41`).** A region change can
+  - **6c. Ghost mode (`actions.m:274`, `farmers_equates.m:41`).** See **`GHOST_MODE.md`** for
+    the full behavior guide (limits gathered from C64 + server ground truth). A region change can
     **force-transform** the avatar into a ghost — entering a full region makes you a ghost
     (`ghost_noid = 255`; the avatar mod carries `amAGhost`). While a ghost the command cursor
     is restricted to **GO only** — every other verb is blocked (`actions.m:276` "ghosts can

@@ -191,6 +191,9 @@ function makeCtx(world, verb, pointed, args, client, parent) {
 
   // Main/actions.m goXY — send WALK, wait reply, start_walk on success.
   ctx.walkTo = async (x, y) => {
+    // goXY (actions.m:462-466): a ghost rts early — no WALK, no movement. A ghost has no body
+    // to walk; only region-edge transit (changeRegion) moves it. Treat as a no-op success.
+    if (world.amGhost) return { x, y }
     const from = (me && me.mod.x !== undefined) ? { x: me.mod.x, y: me.mod.y } : null
     const arrived = await client.walkTo(x, y)
     const destX = arrived?.x ?? x
