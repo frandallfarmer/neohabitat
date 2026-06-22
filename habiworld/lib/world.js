@@ -213,6 +213,16 @@ class HabitatWorld extends EventEmitter {
       mod: mod, // live field store: x, y, orientation, gr_state, ...
       containerRef: to || '',
     }
+    // Entering already a ghost (persisted, or forced on a full-region arrival): our own make
+    // is the Avatar carrying amAGhost (elko marks the User object "you"), but its noid is
+    // UNASSIGNED — the avatar isn't in the region — and the C64 identity of a ghost is the
+    // singleton eye (ghost_noid 255), NOT the avatar. Adopt 255 and DON'T add the stray body
+    // (otherwise it renders and the client looks corporeal). The eye arrives as a normal region
+    // make (or ~1s later when we're the first ghost) and `me` resolves to it. See GHOST_MODE.md.
+    if (isMe && mod.type === 'Avatar' && mod.amAGhost) {
+      this.meNoid = GHOST_NOID
+      return
+    }
     this.objects.set(mod.noid, record)
     this.refs.set(obj.ref, mod.noid)
     if (isMe) this.meNoid = mod.noid

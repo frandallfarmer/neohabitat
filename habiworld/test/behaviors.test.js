@@ -273,6 +273,30 @@ test('a ghost is detected as world.amGhost (me is the singleton ghost, noid 255)
   assert.equal(w.ghost().ref, 'ghost-1')
 })
 
+test('entering already a ghost: the you:true amAGhost avatar make becomes noid 255, no stray body', () => {
+  const w = new HabitatWorld()
+  w.apply({
+    to: 'session', op: 'make',
+    obj: { type: 'context', ref: REGION_REF, name: '113 Lori Ln', mods: [{ type: 'Region', orientation: 1, neighbors: ['', '', '', ''], realm: 'Streets', lighting: 0, depth: 32 }] },
+  })
+  // elko marks the User object "you"; for a ghost it carries amAGhost and an UNASSIGNED noid.
+  w.apply({
+    to: REGION_REF, op: 'make', you: true,
+    obj: { type: 'user', ref: ME_REF, name: 'SageBot', mods: [{ type: 'Avatar', noid: 256, x: 0, y: 0, orientation: 0, gr_state: 0, amAGhost: true }] },
+  })
+  assert.equal(w.amGhost, true)        // ghost from the moment we enter
+  assert.equal(w.meNoid, 255)          // identity is the eye, not the unassigned avatar
+  assert.equal(w.get(256), null)       // the stray ghosted body is NOT added (would render)
+  assert.equal(w.me, null)             // ... and `me` waits for the eye's make
+  // The singleton eye arrives (already present, or ~1s later if we're the first ghost).
+  w.apply({
+    to: REGION_REF, op: 'HEREIS_$', container: REGION_REF,
+    object: { type: 'item', ref: 'ghost-1', name: 'Ghost', mods: [{ type: 'Ghost', noid: 255, x: 4, y: 240, orientation: 0, gr_state: 0 }] },
+  })
+  assert.equal(w.me?.noid, 255)
+  assert.equal(w.amGhost, true)
+})
+
 test('a ghost may not issue object verbs — GET beeps locally, no server round-trip', async () => {
   const w = new HabitatWorld()
   makeGhostStorm(w)

@@ -46,6 +46,16 @@ delivered out of band — you cannot assume it is in the table when you need it:
   *neighbors*. The acting client never gets those — it must delete its own stale body, exactly
   as `toggle_ghost_mode.m` does with `v_delete_object me_noid`.
 
+**Entering already a ghost (persisted DB state, or forced on a full-region arrival).** elko
+marks your own User object `you:true`, but for a ghost that object is your **Avatar carrying
+`amAGhost:true`** with an **UNASSIGNED noid** (the avatar isn't in the region;
+`objectIsComplete` returns early at `Avatar.java:391`, `removeFromObjList` sets noid 256). The
+client must NOT treat that as a normal avatar — it would add/render a stray body and look
+corporeal. Instead, a `you:true` Avatar make with `amAGhost` ⇒ adopt **meNoid = 255** and drop
+the stray body; the eye arrives as a normal region make (or ~1s late as the first ghost) and
+`me` resolves to it. This is the fix for "connect as a ghost but the client isn't in ghost
+state." (`world._makeObject`.)
+
 **Consequence for the client model:** identity must be a **noid number** (`me_noid`), not a
 record. habiworld tracks `world.meNoid`; `world.me` is a getter that resolves it (null until the
 body's make lands); `world.amGhost` is `meNoid === GHOST_NOID`. `setMeByNoid(newNoid)` sets the
