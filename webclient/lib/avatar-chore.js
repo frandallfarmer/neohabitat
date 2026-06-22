@@ -208,6 +208,28 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
 
     const get = (noid) => states.get(noid) ?? null
 
+    // animate.m clear_wait: the C64 blocks on animation_wait_bit until the chore/walk reaches its
+    // end. We have the real engine, so resolve when the avatar has no active (non-frozen)
+    // animation — the faithful replacement for habiworld's distance→time estimate (walkWaitMillis),
+    // which is a headless-bot approximation. A held Ctrl-# gesture is `frozen` (done, holding its
+    // final frame), so it counts as idle. fallbackMs is a safety net so a dropped frame can never
+    // hang a behavior on the wait.
+    const isAnimating = (noid) => { const s = states.get(noid); return !!s && !s.frozen }
+    const whenIdle = (noid, { fallbackMs = 15000 } = {}) => {
+        if (noid == null || !isAnimating(noid)) return Promise.resolve()
+        return new Promise((resolve) => {
+            let timer = null
+            let unsub = null
+            const finish = () => {
+                if (timer) clearTimeout(timer)
+                if (unsub) unsub()
+                resolve()
+            }
+            timer = setTimeout(finish, fallbackMs)
+            unsub = tick.subscribe(() => { if (!isAnimating(noid)) finish() })
+        })
+    }
+
     const noteCycleLength = (noid, len) => {
         const s = states.get(noid)
         if (s?.type === "gesture" && s.cycleLen == null && len > 0) s.cycleLen = len
@@ -308,5 +330,6 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
     return {
         tick, get, getOrient, getActivity, noteCycleLength, noteServerFacing,
         beginWalk, beginGesture, applyPersistentPosture, faceCursor, onOp, clear, FRAME_MS: frameMs,
+        isAnimating, whenIdle,
     }
 }

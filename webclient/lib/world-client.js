@@ -41,7 +41,9 @@ export function buildDispatchClient({ transport, presentation, world }) {
       if (passageNoid) msg.passage_id = passageNoid
       return transport.sendForReply(msg).then(() => ({ ok: true }))
     },
-    animationWait: (ms) => new Promise((resolve) => setTimeout(resolve, ms ?? 1000)),
+    // animationWait is provided by the presentation client (it owns avatarMotion) and waits for
+    // the REAL on-screen animation to finish, not a time estimate — see presentation.js. The
+    // `...presentation` spread above supplies it; do not re-add a setTimeout hack here.
     // text_handler.m read flow: open the modal text display over a document; it pages by
     // sending READ {page} itself. Resolves when closed. (graphical capability — bots
     // leave this unset and balloon the text instead.)

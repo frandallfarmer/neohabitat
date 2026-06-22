@@ -79,5 +79,11 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
       if (!balloons || text == null || text === "") return
       balloons.push(world, text, meta)
     },
+    // kernel.js waitWalkAnimation → animation_wait_bit. habiworld passes a distance→time
+    // estimate (walkWaitMillis) for headless bots; we have the real engine, so block until the
+    // acting avatar's on-screen walk/chore actually finishes (animate.m clear_wait). The `ms`
+    // estimate is ignored except as a floor on the safety fallback.
+    animationWait: (ms) =>
+      avatarMotion.whenIdle(world.me?.noid, { fallbackMs: Math.max(15000, (ms ?? 0) + 2000) }),
   }
 }
