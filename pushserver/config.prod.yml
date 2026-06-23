@@ -1,6 +1,10 @@
 ---
 viceJsUrl: https://sgeo.github.io/experimental/neohabitat-joystick/x64.js
 
+# Shared password gating the Alpha web client (/webclient, /habisound, /habiworld). It's a
+# developer build that can overflow co-present C64 clients, so it's locked. Unset = open (dev).
+alphaPassword: oracle
+
 websocketProxy:
   clientAddr: habitat.themade.org:1987
   listenAddr: 0.0.0.0:1987

@@ -47,6 +47,23 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Alpha web client (developer build). It can overflow co-present C64 clients (Phase 7d traffic
+// pacing not done yet), so it's locked behind a shared password. An unset config.alphaPassword
+// leaves it open (dev). Served here because the page needs its sibling libs as siblings under
+// the host root: webclient/, habisound/, habiworld/ live next to pushserver/ in the repo/image.
+var ALPHA_PW = config.alphaPassword;
+function alphaGate(req, res, next) {
+  if (!ALPHA_PW) return next();
+  var parts = (req.headers.authorization || '').split(' ');
+  var creds = Buffer.from(parts[1] || '', 'base64').toString().split(':');
+  if (creds[1] === ALPHA_PW) return next();
+  res.set('WWW-Authenticate', 'Basic realm="Neohabitat Alpha"').status(401).end('Authentication required.');
+}
+var repoRoot = path.join(__dirname, '..');
+['webclient', 'habisound', 'habiworld'].forEach(function (dir) {
+  app.use('/' + dir, alphaGate, express.static(path.join(repoRoot, dir)));
+});
+
 app.use(cookieSession({
   name: 'session',
   keys: config.cookieSessionKeys,
