@@ -4,7 +4,7 @@ import { choreographyNameFromMod, headFacingFromAction, displayOrientForActivity
 import { shouldPaintFacePlate } from "./face-plate.js"
 import { html, catcher } from "./view.js"
 import { createContext } from "preact"
-import { useContext, useMemo } from "preact/hooks"
+import { useContext, useMemo, useEffect } from "preact/hooks"
 import { signal, computed, effect, useSignal, useSignalEffect } from "@preact/signals"
 import { contextMap, betaMud, logError, promiseToSignal, until, useBinary, useHabitatJson, charset } from './data.js'
 import { translateSpace, topLeftCanvasOffset, Scale, framesFromPropAnimation, framesFromAction, frameFromCels, celsFromMask,
@@ -619,17 +619,25 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
         layoutMap[ref] = layoutItem
         layoutItem.obj.value = obj
         if (!layoutItem.layout) {
+            // Capture each root effect's disposer. A bare effect() is a ROOT effect: it lives
+            // forever unless its returned disposer is called, holding its signal subscriptions
+            // (notably avatarMotion.tick, for avatars) and closure alive. Without disposal, every
+            // region you pass through permanently leaves dead-object effects that keep firing on
+            // every animation frame — INP climbs monotonically across town and never recovers when
+            // you leave a heavy region. Disposed when the object leaves the map (departed / region
+            // hop, below) or the layout unmounts (regionLayout cleanup).
+            layoutItem.disposers = []
             layoutItem.prop = signal(null)
-            effect(() => {
+            layoutItem.disposers.push(effect(() => {
                 try {
                     layoutItem.prop.value = propFromMod(layoutItem.obj.value.mods[0], ref)
                 } catch(e) {
                     console.error(e)
                 }
-            })
+            }))
             layoutItem.container = computed(() => sig.value[layoutItem.obj.value.in])
             layoutItem.layout = signal(null)
-            effect(() => {
+            layoutItem.disposers.push(effect(() => {
                 const { obj, prop, container, layout } = layoutItem
                 var newLayout = null
                 if (prop.value) {
@@ -713,7 +721,18 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                     }
                 }
                 layout.value = newLayout
-            })
+            }))
+        }
+    }
+    // Dispose effects for objects that were in the previous map but are gone now (departed
+    // avatars, or the empty-objects step that precedes a region's make-storm). Frees their
+    // tick/signal subscriptions and closures so they stop running every frame and become
+    // GC-able — the across-region INP-creep fix.
+    const prev = sig.peek()
+    for (const oldRef in prev) {
+        if (!layoutMap[oldRef] && prev[oldRef]?.disposers) {
+            for (const dispose of prev[oldRef].disposers) dispose()
+            prev[oldRef].disposers = null
         }
     }
     sig.value = layoutMap
@@ -741,6 +760,20 @@ export const regionLayout = ({ objects, avatarMotion, children, pickState = null
             pickState.objects = sigObjects.value
         }
     })
+    // regionView fully unmounts on a region hop (objects → empty between contexts). The
+    // per-rebuild disposal in computeLayoutMap only runs while this component is mounted, so
+    // dispose every remaining layout item's effects on unmount — otherwise the just-departed
+    // region's per-object root effects outlive the component, orphaned but still subscribed to
+    // tick, and pile up region after region (the INP creep). Empty deps: runs only on unmount.
+    useEffect(() => () => {
+        const map = layoutMap.peek()
+        for (const ref in map) {
+            if (map[ref]?.disposers) {
+                for (const dispose of map[ref].disposers) dispose()
+                map[ref].disposers = null
+            }
+        }
+    }, [])
     return html`<${LayoutMap.Provider} value=${({ objects, map: layoutMap, avatarMotion })}>${children}<//>`
 }
 
