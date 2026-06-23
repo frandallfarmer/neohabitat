@@ -371,7 +371,8 @@ Each phase is independently demoable in the page shell.
     **synthesized from `location`** (same origin as the page, ws/wss to match; `?ws=` overrides
     for dev where the proxy is a separate port). `live.html` is a clean shell.
     *Open:* the title and client each spin up their own habisound engine — share one (a 7b
-    concern); and the title-music opening ~1s is still swallowed (task: title music warm-up).
+    concern). (The title-music opening ~1s swallow is **resolved** — it has played correctly
+    since at least the Alpha release, locally; no warm-up workaround needed.)
 
   - **7b. Performance — load time, render cadence, and steady-state memory.** This is a
     no-build, native-ESM client that fetches habiworld's ~27 CommonJS modules over http and

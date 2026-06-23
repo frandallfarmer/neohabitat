@@ -203,6 +203,10 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
                 }
             }
             if (changed) bump()
+            // animate.m: the C64 sprite mover only ran while something was in motion.
+            // Stop the interval once no avatar is animating, so an idle region doesn't
+            // wake the tab every frame forever. beginWalk/beginGesture restart it.
+            if (states.size === 0) { clearInterval(timer); timer = null }
         }, frameMs)
     }
 
@@ -324,6 +328,7 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
         gestureQueues.clear()
         orientOverrides.clear()
         activityOverrides.clear()
+        if (timer) { clearInterval(timer); timer = null }   // stop the sprite mover on region hop / disconnect
         bump()
     }
 
