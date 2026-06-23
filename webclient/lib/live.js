@@ -31,6 +31,8 @@ import {
   createTextInputState,
   applyEspReply,
   clearTextLine,
+  setPromptLine,
+  endPrompt,
 } from "./text-input.js"
 import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick, pickRegionTarget } from "./verb-dispatch.js"
@@ -219,6 +221,17 @@ async function main() {
       console.warn("[live] text submit: avatar not in region yet")
       return
     }
+    if (payload.kind === "prompt") {
+      // god-tool / server prompt REPL (Region.PROMPT_REPLY): send the FULL line back —
+      // including the prompt prefix the server matches on (e.g. "Edit: ") — then leave
+      // prompt mode. The server re-sends PROMPT_USER_$ for the next command; an empty line
+      // (prefix only) tells it to exit. One-shot per prompt, mirroring the C64 path.
+      const regionRef = world.region?.ref
+      if (regionRef) transport.send({ op: "PROMPT_REPLY", to: regionRef, text: payload.text })
+      endPrompt(textInputState.value)
+      textInputState.value = { ...textInputState.value }
+      return
+    }
     // C64 talk:: clears the line after send_string; ESP reply handled via getResponse.
     clearTextLine(textInputState.value)
     textInputState.value = { ...textInputState.value }
@@ -308,6 +321,22 @@ async function main() {
       // mirrors habibot.js. passage_id=0 — no door involved.
       if (m.op === "AUTO_TELEPORT_$") {
         if (world.me?.ref) transport.send({ op: "NEWREGION", to: world.me.ref, direction: 4 })
+        return
+      }
+      // PROMPT_USER_$ (C64 MESSAGE_PROMPT_USER): server-driven text prompt — the god tool's
+      // "Edit:" REPL, hatchery onboarding, sign editing, etc. Show the prompt in the input
+      // line (setPromptLine locks the prefix via leftBound; the user types after it); the
+      // submitted line goes back via PROMPT_REPLY (onTextSubmit). Not a world-state op.
+      if (m.op === "PROMPT_USER_$") {
+        // The server sends "<PROMPT> " — GOD_TOOL_PROMPT + a DISPLAY space (Magical.java).
+        // The reply must echo back exactly "<PROMPT><input>": Region.PROMPT_REPLY strips
+        // GOD_TOOL_PROMPT.length() ("Edit:" = 5) and treats an empty remainder as "exit".
+        // The C64 lets the first typed char OVERWRITE that trailing space (wait_for_text_string),
+        // so it transmits "Edit:" + input, never "Edit: " + input. Drop the one trailing space
+        // here to match — otherwise the server sees a leading space and no command (or exit,
+        // on an empty line) ever matches.
+        setPromptLine(textInputState.value, String(m.text ?? "").replace(/ $/, ""))
+        textInputState.value = { ...textInputState.value }
         return
       }
       world.apply(m)
