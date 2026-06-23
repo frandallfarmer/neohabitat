@@ -631,7 +631,6 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
             layoutItem.layout = signal(null)
             effect(() => {
                 const { obj, prop, container, layout } = layoutItem
-                avatarMotion?.tick?.value
                 var newLayout = null
                 if (prop.value) {
                     if (container.value?.layout?.value) {
@@ -644,6 +643,16 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                         )
                     } else if (!container.value) {
                         if (prop.value.isBody) {
+                            // FG/BG split (C64 Main/render.m): foreground objects — avatars,
+                            // always flagged 0x80 (walkto.m: `ora #0x80`) — are the only ones
+                            // recomposited every animation frame. Read avatarMotion.tick HERE,
+                            // inside the body branch, instead of at the top of the effect: a
+                            // static background prop's layout effect then has NO tick dependency,
+                            // so it re-runs only when its own obj/prop/container signals change
+                            // (the C64 `background_render` "only on change" rule), not 30×/sec.
+                            // Held items read their container's (avatar's) tick-reactive layout
+                            // below, so they stay in sync with their carrier without a direct dep.
+                            avatarMotion?.tick?.value
                             const serverMod = obj.value.mods[0]
                             const motion = avatarMotion?.get?.(serverMod.noid) ?? null
                             const findSlot = (slot) => Object.values(sig.value).find((li) =>
@@ -721,7 +730,11 @@ export const regionLayout = ({ objects, avatarMotion, children, pickState = null
     const sigObjects = useSignal(objects)
     sigObjects.value = objects
     useSignalEffect(() => {
-        avatarMotion?.tick?.value
+        // No tick read here (FG/BG split): computeLayoutMap rebuilds the whole layoutMap signal,
+        // so running it every animation frame churned every item's container/layout subscribers.
+        // It only needs to run when the OBJECT SET changes (added/removed refs, new server mods).
+        // The per-item layout effects it creates self-subscribe to avatarMotion.tick for the
+        // avatars that animate per-frame, so foreground motion still updates without this re-loop.
         computeLayoutMap(sigObjects.value, layoutMap, avatarMotion)
         if (pickState) {
             pickState.layoutMap = layoutMap.value
