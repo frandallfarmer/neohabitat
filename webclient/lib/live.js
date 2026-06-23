@@ -322,8 +322,8 @@ async function main() {
       url: ws,
       onMessage: (m) => {
         gotMsg = true
-        const traceChore = m.op === "PLAY_$"
-          || (m.op?.endsWith?.("$") && m.op !== "WALK$" && m.op !== "FIDDLE_$")
+        const traceChore = SOUND_TRACE && (m.op === "PLAY_$"
+          || (m.op?.endsWith?.("$") && m.op !== "WALK$" && m.op !== "FIDDLE_$"))
         if (traceChore) {
           const fromRec = m.from_noid != null ? world.get(m.from_noid) : null
           console.log("[sound-trace] ws inbound:", m.op, {

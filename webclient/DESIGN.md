@@ -371,36 +371,46 @@ Each phase is independently demoable in the page shell.
     **synthesized from `location`** (same origin as the page, ws/wss to match; `?ws=` overrides
     for dev where the proxy is a separate port). `live.html` is a clean shell.
     *Open:* the title and client each spin up their own habisound engine — share one (a 7b
-    concern); and the title-music opening ~1s is still swallowed (task: title music warm-up).
+    concern). (The title-music opening ~1s swallow is **resolved** — it has played correctly
+    since at least the Alpha release, locally; no warm-up workaround needed.)
 
-  - **7b. Performance — load time, render cadence, and steady-state memory.** This is a
-    no-build, native-ESM client that fetches habiworld's ~27 CommonJS modules over http and
-    decodes original C64 art in the browser; measure and tighten the cost.
-    - **Load time.** Bundle/concatenate or precompute the habiworld module graph so first
-      paint isn't gated on a waterfall of `fetch`es (`lib/habiworld.js` currently crawls +
-      fetches each module); cache/memoize decoded cels and charset glyphs; confirm the audio
-      worklet and image decode aren't blocking first frame.
-    - **Background/foreground render split (C64 hack).** The C64 client did **not** recompose
-      the whole scene each frame: the region backdrop + static/background objects were rendered
-      **once** (`background_render`; `forced_render_region` on mode exit), and only the
-      **foreground** objects — the avatars and other moving/animating items — were redrawn per
-      frame over that fixed background. Port the same split: composite the static background
-      to a cached layer once per region (and on background-object change), and per delta/tick
-      only recompose the FG objects. Today `worldToObjects` + a full region recompose runs on
-      **every** delta, which is both the frame-cost and a likely source of churn — replace it
-      with FG-only recomposition against the cached BG.
-    - **Steady-state memory / degradation over time.** We see **rendering performance
-      degrading the longer you stay in a region**, possibly tied to **modal display** use
-      (inventory grid / text mode entering and exiting). Investigate as a leak/accumulation
-      bug: decoded-cel or offscreen-canvas caches that grow without bound, balloon/animation
-      timers or world event listeners not torn down on mode switch or region change (e.g.
-      `trackAvatarsForBalloons`, `avatarMotion` intervals, the per-event `refresh`
-      subscriptions), and modal views (`text-view.js` / `inventory-view.js`) not releasing
-      their canvases/handlers on exit. Profile heap + listener counts across repeated
-      mode-enter/exit and a long region dwell; fix whatever grows unbounded.
-    - Drive all of the above with **real numbers** — time-to-first-region, per-frame cost in a
-      crowded region, and a heap/listener trend over a multi-minute session with repeated
-      modal entry/exit — rather than guesses.
+  - **7b. Performance — render cadence + steady-state memory. DONE (load-time deferred).**
+    A no-build, native-ESM client that decodes original C64 art in the browser. The render
+    cadence and the across-region memory creep are fixed; first-paint load time is deferred
+    (see below). Verified in-browser with real numbers: INP warms from ~72ms to ~144ms over
+    the first few regions (decoded-art cache filling — `imageFileMapSignal`, bounded/intended)
+    then stays **flat** walking across town, instead of doubling region-over-region.
+    - **Background/foreground render split (C64 `Main/render.m`). DONE.** On the C64, the
+      foreground objects — avatars, always flagged `0x80` (`walkto.m: ora #0x80`) — are the
+      only ones redrawn every frame; background objects are re-rendered only when
+      `background_render` is set (region load, `forced_render_region` on mode exit, a BG-object
+      change). The webclient renders one Preact component per object, each with a `layout`
+      signal computed in an effect that read `avatarMotion.tick` **unconditionally** — so every
+      static prop re-decoded on every frame. Fixed by reading tick only in the avatar (body)
+      branch: avatars recompose per frame, BG props recompute only on their own obj/prop/
+      container change, held items ride their carrier's tick-reactive layout. `computeLayoutMap`
+      no longer re-runs per frame either.
+    - **Steady-state memory / across-region INP creep. DONE (this was the real degradation).**
+      `computeLayoutMap` created two root `effect()`s per object and never disposed them. A bare
+      effect lives until its disposer is called, holding its signal subscriptions (notably
+      `avatarMotion.tick`) and closure — so every region walked through permanently left its
+      objects' effects alive and **still firing every animation frame**, making per-frame work
+      and INP climb monotonically and never recover on leaving a heavy region. Fixed by
+      capturing each effect's disposer and tearing them down when an object leaves the map
+      (departed / region hop) and on `regionView` unmount. (Ruled out as non-leaks first:
+      modal keydown listeners are paired; balloon scrollback is capped; the avatar override
+      maps are 256-noid-bounded; `trapCache` is cleared on region hop.) Also: the avatar
+      sprite-mover `setInterval` now stops when nothing is animating.
+    - **Load time — DEFERRED (not blocking).** `lib/habiworld.js` still crawls + fetches
+      habiworld's ~27 modules in a waterfall; bundling/precomputing the module graph and
+      memoizing decoded cels/charset glyphs would cut time-to-first-region. Not done — the
+      interactive/steady-state cost (above) was the priority and is resolved.
+    - **Pick-path readback — DEFERRED (not blocking).** Picks read composite-layer canvases
+      via `getImageData` (`pick.mjs:85/97/116`) whose contexts were created during compositing
+      **without** `willReadFrequently` (so the pick-time flag is ignored — context attributes
+      are fixed at first `getContext`); this is the `pointerup took NNNms` jank. Fix is to
+      create the read-back canvases with the flag in `render.js`; a measurable interaction-
+      latency win when picked up.
 
   - **7c. Cleanup — repo hygiene and ground-truth debts.**
     - **`classes.js` → beta.mud ground truth.** The committed `habiworld/lib/classes.js` was
