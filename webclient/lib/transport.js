@@ -88,9 +88,12 @@ export class Transport {
   }
 
   // The whole login handshake: a single entercontext (no prior auth in dev). The avatar
-  // make (with you:true) arrives in the make-storm that follows.
+  // make (with you:true) arrives in the make-storm that follows. `context` is optional — omit
+  // it and the server drops the user into wherever they last were (their saved region / turf).
   enterContext(context, username) {
-    return this.send({ op: "entercontext", to: "session", context, user: `user-${username}` })
+    const msg = { op: "entercontext", to: "session", user: `user-${username}` }
+    if (context) msg.context = context
+    return this.send(msg)
   }
 
   close() {

@@ -143,24 +143,24 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
     }
   }
 
-  const proceed = async () => {
-    if (!ready) return // client still loading behind the title — hold
-    try { (await getSound()).stop() } catch (e) { /* fine */ }
-    onProceed()
+  // Once loaded, the player names their Avatar; submitting it dismisses the curtain and starts
+  // the client (no region is asked — the server lands them wherever they last were).
+  const [name, setName] = useState(() => new URLSearchParams(location.search).get("user") || "")
+  const inputRef = useRef(null)
+  const submit = async (e) => {
+    e?.preventDefault?.()
+    const n = name.trim()
+    if (!ready || !n) return
+    try { (await getSound()).stop() } catch (_) { /* fine */ }
+    onProceed(n)
   }
 
-  // In 'ready' (and once the client has loaded), any key proceeds — the literal "press any key".
+  // Focus the name field as soon as it appears.
   useEffect(() => {
-    if (phase !== "ready" || !ready) return
-    const onKey = () => proceed()
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    if (phase === "ready" && ready) inputRef.current?.focus()
   }, [phase, ready])
 
-  const onStageClick = () => {
-    if (phase === "idle") begin()
-    else if (phase === "ready") proceed()
-  }
+  const onStageClick = () => { if (phase === "idle") begin() }
 
   return html`
     <div class="title-stage" style=${`width:${320 * SCALE}px;height:${200 * SCALE}px`}
@@ -172,7 +172,13 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
       ${phase === "idle" && html`
         <div class="title-prompt">▶ Click to begin</div>`}
       ${phase === "ready" && (ready
-        ? html`<div class="balloon">Press any key to proceed<span class="balloon-tail"></span></div>`
+        ? html`<form class="title-login" onSubmit=${submit}>
+            <span class="title-login-label">Avatar name</span>
+            <input ref=${inputRef} class="title-login-input" value=${name} maxlength="20"
+                   autocomplete="off" spellcheck="false"
+                   onInput=${(e) => setName(e.target.value)} />
+            <button class="title-login-go" type="submit" disabled=${!name.trim()}>Enter Habitat</button>
+          </form>`
         : html`<div class="balloon">Loading…<span class="balloon-tail"></span></div>`)}
     </div>`
 }

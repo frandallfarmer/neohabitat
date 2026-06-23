@@ -10,7 +10,7 @@
 
 import { h, render } from "preact"
 import htm from "htm"
-import { useState } from "preact/hooks"
+import { useEffect } from "preact/hooks"
 import { signal } from "@preact/signals"
 import { Transport } from "./transport.js"
 import { loadHabiworld } from "./habiworld.js"
@@ -56,6 +56,13 @@ const ESP_MESSAGE_SENT = 7
 const ESP_MESSAGE_RECEIVED = 8
 const ESP_DEACTIVATES = 9
 const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
+// The websocketProxy runs at the page's HOST on a fixed port (pushserver config listenAddr
+// 0.0.0.0:1987; prod clientAddr habitat.themade.org:1987). Synthesize from location.hostname —
+// NOT location.host, which carries the page's own port — plus the proxy port, with the scheme
+// matched to the page (https page → wss, avoiding mixed-content blocks). A ?ws= param overrides.
+const WS_PROXY_PORT = 1987
+const wsDefault = () =>
+  q("ws", `${location.protocol === "https:" ? "wss:" : "ws:"}//${location.hostname}:${WS_PROXY_PORT}`)
 const qNum = (k, d) => {
   const v = Number(q(k, d))
   return Number.isFinite(v) && v > 0 ? v : d
@@ -247,9 +254,10 @@ async function main() {
     // avatar_talk.m / generic_broadcast.m: sound ESP_MESSAGE_SENT after each v_ESP_talk.
     playEspSound(ESP_MESSAGE_SENT)
   }
+  // context is optional — omitted, the server lands the avatar wherever they last were.
   const connect = async (ws, context, user) => {
-    if (!ws || !context || !user) {
-      status.value = { kind: "error", text: "set WebSocket proxy, context, and avatar first" }
+    if (!ws || !user) {
+      status.value = { kind: "error", text: "missing avatar name" }
       return
     }
     try {
@@ -329,8 +337,8 @@ async function main() {
         applyInbound(m)
       },
       onOpen: () => {
-        status.value = { kind: "online", text: `connected — entering ${context} as user-${user}…` }
-        transport.enterContext(context, user)
+        status.value = { kind: "online", text: `connected — entering as ${user}…` }
+        transport.enterContext(context, user) // context may be null → server uses last region
       },
       onClose: () => {
         status.value = {
@@ -436,10 +444,10 @@ async function main() {
     await dispatchClient.changeRegion(edge)
   }
 
-  const App = () => {
-    const [ws, setWs] = useState(q("ws", "ws://localhost:1987"))
-    const [context, setContext] = useState(q("context", "context-Downtown_5f"))
-    const [user, setUser] = useState(q("user", "randy"))
+  // The whole client: no connect form. The avatar name comes from the launch screen; we connect
+  // once on mount with no context, so the server places the avatar at its last region.
+  const App = ({ avatarName }) => {
+    useEffect(() => { connect(wsDefault(), null, avatarName) }, [])
     const objs = objects.value
     const st = status.value
     const region = objs.find((o) => o.type === "context")
@@ -456,15 +464,6 @@ async function main() {
     textInputState.value.revision
     avatarMotion.tick.value
     return html`
-      <div class="connect">
-        <label>WebSocket proxy
-          <input class="wide" value=${ws} onInput=${(e) => setWs(e.target.value)} /></label>
-        <label>Context
-          <input class="wide" value=${context} onInput=${(e) => setContext(e.target.value)} /></label>
-        <label>Avatar
-          <input value=${user} onInput=${(e) => setUser(e.target.value)} /></label>
-        <button onClick=${() => connect(ws, context, user)}>Connect</button>
-      </div>
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
       <div class="region-frame" style="align-self:flex-start;">
         ${showEdges ? html`<button class="edge-chevron left" style=${sideChevStyle} title="Walk off the left edge" onClick=${onEdgeClick("left")}>◀</button>` : null}
@@ -521,7 +520,7 @@ function boot() {
   const root = document.getElementById("app")
   const loadedApp = signal(null)
   const loadError = signal(null)
-  const proceeded = signal(false)
+  const avatarName = signal(null) // set when the player enters their name on the launch screen
   main().then((App) => { loadedApp.value = App })
         .catch((e) => { loadError.value = e; console.error(e) })
 
@@ -529,13 +528,15 @@ function boot() {
     if (loadError.value) {
       return html`<div style="color:#d8604a; padding:12px;">error: ${loadError.value.message}</div>`
     }
-    if (proceeded.value && loadedApp.value) {
+    if (avatarName.value && loadedApp.value) {
       const App = loadedApp.value
-      return html`<${App} />`
+      return html`<${App} avatarName=${avatarName.value} />`
     }
+    // The title gates on the load (ready), then prompts for the avatar name; entering it both
+    // dismisses the curtain and starts the client (App auto-connects with that name).
     return html`<${TitleScreen}
       ready=${!!loadedApp.value}
-      onProceed=${() => { proceeded.value = true }} />`
+      onProceed=${(name) => { avatarName.value = name }} />`
   }
 
   render(html`<${Boot} />`, root)

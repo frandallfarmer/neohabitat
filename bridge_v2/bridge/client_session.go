@@ -1643,6 +1643,34 @@ func (c *ClientSession) runJsonPassthrough() {
 				// genuinely wants to enter a context — clear any
 				// stale auto-enter tracking from a prior transit.
 				c.bridgeAutoEnteredContext = ""
+				// The C64 never sends a context: the pre-loader identifies the user, then
+				// IM_ALIVE→DESCRIBE lets the bridge pick the entry region (lastArrivedIn, else
+				// default — see the binary DESCRIBE handler ~line 2001). The JSON web client does
+				// the same: it omits `context`, so resolve it here the same way. ensureUserCreated
+				// above already cached c.user; load it if a returning (non-first) connection
+				// skipped that. Elko requires a context, so inject the resolved one before relaying.
+				if msg.Context == nil || *msg.Context == "" {
+					if c.user == nil && c.userRef != "" {
+						if u, uerr := c.findHabitatObj(c.userRef); uerr == nil && u != nil {
+							c.user = u
+						}
+					}
+					context := c.bridge.Context
+					if c.user != nil && len(c.user.Mods) > 0 &&
+						c.user.Mods[0].LastArrivedIn != nil && *c.user.Mods[0].LastArrivedIn != "" {
+						context = *c.user.Mods[0].LastArrivedIn
+					}
+					if context != "" {
+						if rewritten, rerr := rewriteJsonField(line, "context", context); rerr == nil {
+							line = rewritten
+							c.log.Debug().Str("context", context).
+								Msg("Resolved entry context for context-less entercontext (web client)")
+						} else {
+							c.log.Warn().Err(rerr).Str("context", context).
+								Msg("Could not inject entry context; forwarding without")
+						}
+					}
+				}
 				c.stateMu.Unlock()
 			}
 		}

@@ -357,18 +357,21 @@ Each phase is independently demoable in the page shell.
   client shippable rather than merely functional. None of it is new C64 behavior; it is the
   production wrapper around the working client.
 
-  - **7a. Full load experience — launch screen as a loading cover. DONE (the curtain).**
-    `live.js boot()` now shows the **title/launch sequence** (`lib/title.js` — the Phase 0 comet
-    + 3-part tune) immediately, while `main()` loads the heavy all-JS client (habiworld, the
-    renderer, art decoders) in the background. The title is the C64-faithful "loading from disk"
-    moment: load the screen, the first click starts the music (and supplies the gesture audio
-    needs), the comet shoots across, and the "press any key" affordance is **gated on the load
-    finishing** (`TitleScreen ready` prop — holds at "Loading…" until `main()` resolves, then a
-    key/click launches the client). `live.html` was trimmed to a clean shell so the title reads
-    as a real launch screen. *Still open (the login half):* gather the **user name / context** up
-    front instead of the dev connect form, and auto-connect so the curtain lifts straight into a
-    fully-rendered region (today it lifts into the connect form). Also: the title and the client
-    each spin up their own habisound engine — share one (a 7b concern).
+  - **7a. Full load experience — launch screen + login. DONE.**
+    `live.js boot()` shows the **title/launch sequence** (`lib/title.js` — the Phase 0 comet +
+    3-part tune, over the original `habsill3.m` art) immediately, while `main()` loads the heavy
+    all-JS client (habiworld, the renderer, art decoders) in the background. The title is the
+    C64-faithful "loading from disk" moment: load the screen, the first click starts the music
+    (and supplies the gesture audio needs), the comet shoots across, and the final prompt is
+    **gated on the load finishing** (`TitleScreen ready` — holds at "Loading…" until `main()`
+    resolves). When ready it asks **only for the Avatar name** (no region prompt); entering it
+    dismisses the curtain and starts the client. `App` carries no connect form — it auto-connects
+    once on mount via `connect(wsDefault(), null, name)`: **no context**, so the server lands the
+    avatar wherever they last were (`transport.enterContext` omits `context`). The proxy URL is
+    **synthesized from `location`** (same origin as the page, ws/wss to match; `?ws=` overrides
+    for dev where the proxy is a separate port). `live.html` is a clean shell.
+    *Open:* the title and client each spin up their own habisound engine — share one (a 7b
+    concern); and the title-music opening ~1s is still swallowed (task: title music warm-up).
 
   - **7b. Performance — load time, render cadence, and steady-state memory.** This is a
     no-build, native-ESM client that fetches habiworld's ~27 CommonJS modules over http and
