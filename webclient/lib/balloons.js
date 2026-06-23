@@ -154,11 +154,17 @@ export function pushBalloon(state, world, text, meta = {}) {
   if (op === "OBJECTSPEAK_$" || body.startsWith("ESP from ")) {
     const header = body.match(ESP_HEADER_RE)
     if (header) {
+      // ESP attribution header ("ESP from X: "). The C64 draws this as its own balloon
+      // line; previously we returned false here and dropped it, so the recipient saw the
+      // body with no idea who sent it. Show it — and arm espPending so the body message
+      // that follows is recognized as the ESP it completes. Render over the RECIPIENT
+      // (ESP is telepathic — it appears over you, not the sender, who may not even be in
+      // the region), with no quip tail.
       state.espPending = header[1]
       state.espAt = Date.now()
-      return false
-    }
-    if (state.espPending && Date.now() - state.espAt < ESP_TTL_MS) {
+      speaker = meNoid
+      showQuip = false
+    } else if (state.espPending && Date.now() - state.espAt < ESP_TTL_MS) {
       speaker = speaker ?? meNoid
       showQuip = false
       state.espPending = null
