@@ -147,6 +147,17 @@ type ClientSession struct {
 	// closeMutex held for cheap reuse of an existing mutex.
 	elkoRecovering bool
 
+	// elkoForcedExit is set when Elko sends a session `exit` (e.g.
+	// whycode:"badcontext" when a bot wanders through a dangling region
+	// exit whose target context isn't in the object DB). It makes the
+	// elko-side EOF that follows the exit TERMINAL: recoverElkoConnection
+	// must NOT silently redial and re-enter the context, or the bridge
+	// hot-loops entercontext → badcontext → EOF → reconnect → entercontext
+	// forever (~10/sec), hammering Elko. Mirrors the binary path, which
+	// already Close()s on a forced exit (handleElkoMessage). Accessed with
+	// closeMutex held, like doneClosed / elkoRecovering.
+	elkoForcedExit bool
+
 	// restoredSession is true after RestoreSession has rebuilt this
 	// ClientSession from a snapshot — i.e. we are about to re-enter the
 	// region's elko context on a FRESH elko TCP, and the client already
@@ -258,10 +269,18 @@ func (c *ClientSession) elkoReader(ready chan<- struct{}) {
 		// buffered Elko data draining after the client has gone away.
 		c.closeMutex.Lock()
 		closing := c.doneClosed
+		forcedExit := c.elkoForcedExit
 		c.closeMutex.Unlock()
 		if err != nil {
 			if closing {
 				c.log.Debug().Err(err).Msg("Elko reader exiting (teardown)")
+				return
+			}
+			// Elko forced this session out (handleElkoMessageJson saw an
+			// `exit` op and is tearing us down). The EOF here is expected;
+			// do NOT silent-reconnect or we'd re-enter the bad context.
+			if forcedExit {
+				c.log.Debug().Err(err).Msg("Elko reader exiting (forced exit)")
 				return
 			}
 			// Unplanned elko-side disconnect. The common cause is NOT
@@ -1307,7 +1326,7 @@ func (c *ClientSession) reconnectToElko(immediate bool, context string) {
 // with two live writer goroutines pulling from one elkoSendChan.
 func (c *ClientSession) recoverElkoConnection() {
 	c.closeMutex.Lock()
-	if c.doneClosed || c.elkoRecovering {
+	if c.doneClosed || c.elkoRecovering || c.elkoForcedExit {
 		c.closeMutex.Unlock()
 		return
 	}
@@ -1770,6 +1789,34 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 
 	// "you:true" on an avatar make → track so we can synthesize the
 	// arrival handshake on the next "ready".
+	// Server-forced session exit (kicked, full, or — the common case
+	// for wandering bots — whycode:"badcontext" when the target region
+	// isn't in the object DB). The binary path Close()s on this (see
+	// handleElkoMessage); the JSON path must too, otherwise the EOF that
+	// Elko sends right after the exit trips recoverElkoConnection, which
+	// re-enters the same dead context and hot-loops. Set elkoForcedExit
+	// synchronously (this runs in the elkoReader goroutine, before that
+	// same goroutine reads the following EOF) so the reconnect path is
+	// suppressed deterministically, relay the exit so the bot learns why,
+	// then tear the session down for HabiBot's reconnect loop.
+	if msg.Op != nil && *msg.Op == "exit" && msg.To != nil && *msg.To == "session" {
+		whyCode, why := "", ""
+		if msg.WhyCode != nil {
+			whyCode = *msg.WhyCode
+		}
+		if msg.Why != nil {
+			why = *msg.Why
+		}
+		c.log.Warn().Str("whycode", whyCode).Str("why", why).
+			Msg("Elko forced session exit; tearing down (no silent reconnect)")
+		c.writeJsonToClient(raw)
+		c.closeMutex.Lock()
+		c.elkoForcedExit = true
+		c.closeMutex.Unlock()
+		go c.Close()
+		return
+	}
+
 	if msg.Op != nil && *msg.Op == "make" && msg.You != nil && *msg.You {
 		c.waitingForAvatarContents = true
 		c.regionRef = ""

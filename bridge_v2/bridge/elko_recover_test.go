@@ -251,6 +251,63 @@ func TestRecover_PrefersBridgeAutoEnteredContextOverRegionRef(t *testing.T) {
 	sess.Close()
 }
 
+func TestRecover_ForcedExitIsTerminal(t *testing.T) {
+	// Regression for the Sage infinite-reconnect loop: a wandering bot
+	// walked through a dangling region exit (context-region_10382, which
+	// isn't in the object DB). Elko replied
+	//   {to:session, op:exit, whycode:badcontext}
+	// then closed the socket. Pre-fix, the JSON path relayed the exit but
+	// did nothing else, so the EOF that followed tripped silent reconnect,
+	// which faithfully re-entered the same dead context — entercontext →
+	// badcontext → EOF → reconnect, ~10/sec forever, hammering Elko. A
+	// server-forced exit must be terminal (matching the binary path).
+	elko := newFakeElkoListener(t)
+	sess, clientRC := recoverTestSession(t, elko.addr(), "context-rent_front1")
+	// The in-flight transit target is the dead region — exactly what
+	// bridgeAutoEnteredContext holds after the walkToExit, and what
+	// recovery would otherwise re-enter.
+	sess.stateMu.Lock()
+	sess.bridgeAutoEnteredContext = "context-region_10382"
+	sess.stateMu.Unlock()
+	waitForRecoveryCondition(t, 2*time.Second, "initial dial", func() bool {
+		return elko.acceptedCount() >= 1
+	})
+
+	// Deliver Elko's forced exit on the JSON-passthrough path.
+	op, to := "exit", "session"
+	why, whycode := "invalid context context-region_10382", "badcontext"
+	raw := []byte(`{"to":"session","op":"exit","why":"invalid context context-region_10382","whycode":"badcontext"}`)
+	sess.handleElkoMessageJson(raw, &ElkoMessage{Op: &op, To: &to, Why: &why, WhyCode: &whycode})
+
+	// The forced-exit flag must latch, and the session must be torn down
+	// (go c.Close) so HabiBot reconnects cleanly into its home region.
+	waitForRecoveryCondition(t, 2*time.Second, "elkoForcedExit latched", func() bool {
+		sess.closeMutex.Lock()
+		defer sess.closeMutex.Unlock()
+		return sess.elkoForcedExit
+	})
+	waitForRecoveryCondition(t, 2*time.Second, "session removed after forced exit", func() bool {
+		sess.bridge.sessionsMutex.Lock()
+		defer sess.bridge.sessionsMutex.Unlock()
+		_, present := sess.bridge.Sessions[sess.TableKey()]
+		return !present
+	})
+	waitForRecoveryCondition(t, 2*time.Second, "client closed after forced exit", func() bool {
+		clientRC.mu.Lock()
+		defer clientRC.mu.Unlock()
+		return clientRC.closed
+	})
+
+	// Smoking gun: recovery must be a no-op now — no fresh dial, no
+	// re-enter of the dead context. (No loop.)
+	elko.closeAllAccepted()
+	sess.recoverElkoConnection()
+	time.Sleep(300 * time.Millisecond)
+	if got := elko.acceptedCount(); got != 0 {
+		t.Errorf("recovery re-dialed after forced exit (accepts: %d) — must be terminal", got)
+	}
+}
+
 func TestRecover_PlannedCloseDoesNotTriggerRecovery(t *testing.T) {
 	// When Close() is what flipped doneClosed, the elkoReader EOF
 	// must NOT spin up a doomed recovery goroutine that races the
