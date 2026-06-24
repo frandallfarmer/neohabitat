@@ -33,11 +33,14 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
     },
     // Main/actions.m face_cursor → chore.m change_orient — turn toward cursor x before
     // execute_command. A seated avatar just mirrors (keeps the sit); only standing turns.
+    // Returns the POSTURE `pose` (FACE_LEFT/FACE_RIGHT) when the facing actually changed, so the
+    // caller (live.js) forwards it to the server like the C64's change_facing → MESSAGE_posture;
+    // null when nothing changed.
     faceCursor(habitatX) {
       const me = world.me
-      if (me == null || habitatX == null || !avatarMotion) return
+      if (me == null || habitatX == null || !avatarMotion) return null
       const faceLeft = me.mod.x >= habitatX // cursor to the left → face left
-      avatarMotion.faceCursor(
+      return avatarMotion.faceCursor(
         me.noid,
         faceLeft,
         me.mod.orientation ?? 0,

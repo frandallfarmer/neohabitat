@@ -443,7 +443,13 @@ async function main() {
 
   const onRegionCommand = async ({ command, label, canvasX, canvasY, scale, habitatX }) => {
     if (verbInFlight || !dispatchClient) return
-    dispatchClient.faceCursor?.(habitatX)
+    // C64 actions.m face_cursor → change_facing (gestures.m): turn toward the cursor BEFORE the
+    // command. That isn't just local — change_facing also sends MESSAGE_posture so neighbors see
+    // the new facing. faceCursor returns the POSTURE pose iff the facing actually changed.
+    const facePose = dispatchClient.faceCursor?.(habitatX)
+    if (facePose != null && world.me?.ref) {
+      transport.send({ op: "POSTURE", to: world.me.ref, pose: facePose })
+    }
     const verb = actionFromCommand(command)
     await runRegionVerb(verb, { canvasX, canvasY, scale }, label)
   }
