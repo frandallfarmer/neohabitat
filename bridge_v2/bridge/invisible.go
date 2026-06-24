@@ -80,6 +80,25 @@ func avatarShortRef(ref string) string {
 	return ref
 }
 
+// modIsGhost reports whether an own-avatar (you:true) make represents a GHOST — by class
+// ("Ghost"), by the UNASSIGNED_NOID (256) / GHOST_NOID (255) sentinel elko uses for a ghost, or by
+// the amAGhost flag. Covers both a deliberate ghost transit and an auto-ghost forced by a full
+// region (elko sends the own avatar with noid 256, narrowed to GHOST_NOID). Ghosts skip the
+// I_AM_HERE→APPEARING_$ handshake, so their transit latch must be cleared on arrival rather than
+// waiting for an APPEARING_$ that never comes.
+func modIsGhost(mod *HabitatMod) bool {
+	if mod == nil {
+		return false
+	}
+	if mod.Type != nil && *mod.Type == "Ghost" {
+		return true
+	}
+	if mod.Noid != nil && (*mod.Noid == UNASSIGNED_NOID || *mod.Noid == uint16(GHOST_NOID)) {
+		return true
+	}
+	return mod.AmAGhost != nil && *mod.AmAGhost
+}
+
 // holdAvatarMod sets the on-hold bit on a parsed avatar mod. The C64/binary path re-encodes the
 // make from this mod (EncodeElkoModState), so mutating it here is sufficient. nil-safe.
 func holdAvatarMod(mod *HabitatMod) {

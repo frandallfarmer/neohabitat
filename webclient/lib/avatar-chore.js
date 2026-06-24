@@ -280,19 +280,27 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
     // posture (notably sitting) → just flip the orientation bit and KEEP the activity,
     // so a seated avatar mirrors in place instead of standing up.
     const SIT_POSTURES = new Set([132, 133, 157]) // SIT_GROUND, SIT_CHAIR, SIT_FRONT
+    // Returns the POSTURE `pose` (FACE_LEFT/FACE_RIGHT) when the facing actually CHANGED, so the
+    // caller can forward it to the server — C64 change_facing (gestures.m) does inner_set_chore
+    // AND sends MESSAGE_posture. Returns null when nothing changed (already facing that way, or
+    // mid-walk) so we don't spam POSTURE, matching actions.m's `cpx #right_facing; if (!equal)`.
     const faceCursor = (noid, faceLeft, serverOrient = 0, serverActivity = 129) => {
-        if (noid == null) return
-        if (states.get(noid)?.type === "walk") return // C64: no facing change while walking
+        if (noid == null) return null
+        if (states.get(noid)?.type === "walk") return null // C64: no facing change while walking
+        const base = getOrient(noid, serverOrient)
+        if (((base & 0x01) === 1) === faceLeft) return null // already facing that way → no change
+        const pose = faceLeft ? FACE_LEFT : FACE_RIGHT
         const activity = getActivity(noid, serverActivity)
         if (SIT_POSTURES.has(activity)) {
-            const base = getOrient(noid, serverOrient)
+            // Seated: just flip the orientation bit and KEEP the activity — mirror in place.
             orientOverrides.set(noid, faceLeft ? (base | 0x01) : (base & ~0x01))
             bump()
-            return
+        } else {
+            // Standing (incl. stand_front/back): track facing as a persistent posture; this
+            // forces the orient bit via displayOrientForActivity and renders 'stand'.
+            applyPersistentPosture(noid, pose, serverOrient, serverActivity)
         }
-        // Standing (incl. stand_front/back): track facing as a persistent posture; this
-        // forces the orient bit via displayOrientForActivity and renders 'stand'.
-        applyPersistentPosture(noid, faceLeft ? FACE_LEFT : FACE_RIGHT, serverOrient, serverActivity)
+        return pose
     }
 
     const beginGesture = (noid, action, serverOrient = 0, serverActivity = 129, holdActivity = null) => {
