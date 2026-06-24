@@ -466,6 +466,14 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		name := msg.Obj.Name
 		mod := msg.Obj.Mods[0]
 
+		// Arriving AS a ghost: a ghost skips the I_AM_HERE→APPEARING_$ handshake (it's visible
+		// at once — Stratus exempts GHOST from the hold), so our own APPEARING_$ clear never
+		// fires. Clear the transit latch now, or it goes stale and a later in-region deghost is
+		// wrongly held.
+		if mod.Type != nil && *mod.Type == "Ghost" {
+			c.bridge.transit.clear(c.userRef)
+		}
+
 		c.log.Debug().Str("name", name).Msg("Avatar arrived")
 		c.bindAvatar(name)
 
@@ -656,6 +664,13 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 			return
 		}
 		if msg.className == "Avatar" {
+			// Catch-up interlock: hold the make INVISIBLE iff this avatar is currently
+			// transiting (global latch) — covers our own avatar entering and any neighbor
+			// arriving. A deghost (CORPORATE) isn't transiting, so it stays visible. The C64
+			// re-encodes the make from this mod downstream, so mutating gr_state here is enough.
+			if c.bridge.transit.isTransiting(msg.Obj.Ref) {
+				holdAvatarMod(mod)
+			}
 			// msg.You is *bool and may be absent from Elko messages for
 			// re-make events such as corporate/discorporate, where the
 			// server sends a fresh Avatar "make" without re-asserting
@@ -1834,6 +1849,28 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 		if msg.To != nil {
 			c.regionRef = *msg.To
 		}
+		// Remember our own noid in this region so we can recognize our own APPEARING_$ below.
+		if msg.Obj != nil && len(msg.Obj.Mods) > 0 {
+			mod := msg.Obj.Mods[0]
+			if mod.Noid != nil {
+				n := uint8(*mod.Noid)
+				c.avatarNoid = &n
+			}
+			// Arriving AS a ghost: ghosts skip the I_AM_HERE→APPEARING_$ handshake (visible at
+			// once — Stratus exempts GHOST), so clear the transit latch now rather than waiting
+			// for an APPEARING_$ that never comes; otherwise a later in-region deghost is held.
+			if mod.Type != nil && *mod.Type == "Ghost" {
+				c.bridge.transit.clear(c.userRef)
+			}
+		}
+	}
+
+	// Transit complete for our own avatar: clear our global transit latch on our own APPEARING_$
+	// (not on `ready`, which fires too early for other sessions to see the latch while they
+	// forward our arrival make to them).
+	if msg.Op != nil && *msg.Op == "APPEARING_$" && msg.Appearing != nil &&
+		c.avatarNoid != nil && uint16(*c.avatarNoid) == *msg.Appearing {
+		c.bridge.transit.clear(c.userRef)
 	}
 
 	if msg.Type == "changeContext" {
@@ -1894,6 +1931,20 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 		return
 	}
 
+	// Catch-up interlock: hold an arriving avatar on the wire so the client neither draws nor
+	// interacts with it until APPEARING_$ (mirrors Stratus regionproc set_bit; cleared
+	// client-side). Hold the transiting avatar itself (you:true) and any avatar that arrives
+	// after our make-storm (steady state); occupants present during the make-storm stay visible.
+	if msg.Op != nil && *msg.Op == "make" && msg.Obj != nil && len(msg.Obj.Mods) > 0 {
+		mod := msg.Obj.Mods[0]
+		// Catch-up interlock: hold an avatar make INVISIBLE iff that avatar is currently
+		// transiting (global latch) — covers our own region entry and any neighbor arrival. A
+		// deghost (CORPORATE) is not a transit, so its corporeal re-make stays visible. The JSON
+		// path forwards the raw elko bytes, so patch gr_state in place.
+		if mod.Type != nil && *mod.Type == "Avatar" && c.bridge.transit.isTransiting(msg.Obj.Ref) {
+			raw = holdAvatarRaw(raw, mod)
+		}
+	}
 	c.writeJsonToClient(raw)
 }
 
@@ -2169,6 +2220,10 @@ func (c *ClientSession) handleClientMessage(data []byte) {
 
 func (c *ClientSession) enterContext(context string) {
 	c.log.Debug().Str("context", context).Msg("Entering context")
+	// This avatar is now TRANSITING into a region. Mark its global latch so every session holds
+	// its makes INVISIBLE until it appears. Cleared on the region's `ready` (above). A deghost
+	// (CORPORATE) does not call enterContext, so it is never marked — it stays visible.
+	c.bridge.transit.mark(c.userRef)
 	enterContextMsg := &ElkoMessage{
 		To:      StringP("session"),
 		Op:      StringP("entercontext"),
@@ -2325,6 +2380,11 @@ func (c *ClientSession) Start() {
 }
 
 func (c *ClientSession) Close() {
+	// Defensive: if this session dies mid-transit (before its APPEARING_$ cleared the latch),
+	// release its global transit entry so the avatar isn't held invisible to others forever.
+	if c.bridge != nil && c.bridge.transit != nil {
+		c.bridge.transit.clear(c.userRef)
+	}
 	// Flip the done flags first so other goroutines (notably
 	// writeJsonToClient) can distinguish a teardown-time write failure
 	// from a mid-session one. closeChannels also signals elkoWriter via
