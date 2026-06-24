@@ -94,6 +94,19 @@ export const hitTestFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
   const lx = Math.floor(canvasX - itemPx)
   const ly = Math.floor(canvasY - itemPy)
   if (lx < 0 || ly < 0 || lx >= frame.canvas.width || ly >= frame.canvas.height) return false
+  // pointer.m boundary_check: a trapezoid (cel_trap) is hit-tested GEOMETRICALLY (trap.m —
+  // is the cursor inside the slanted quad), NOT by cel-pixel opacity. A textured ground
+  // trapezoid has transparent gaps in its fill; without this, clicks landing in a gap miss
+  // the ground and fall through to the sky Flat behind it → wrongful sky_go. Check the quad
+  // coverage spans first; everything else falls through to the cel-pixel test below.
+  if (frame.trapLayers) {
+    for (const tl of frame.trapLayers) {
+      const ty = ly - tl.offsetY
+      if (ty < 0 || ty >= tl.spans.length) continue
+      const span = tl.spans[ty]
+      if (span && lx >= span[0] + tl.offsetX && lx <= span[1] + tl.offsetX) return true
+    }
+  }
   const ctx = frame.canvas.getContext("2d", { willReadFrequently: true })
   const { data } = ctx.getImageData(lx, ly, 1, 1)
   return data[3] > 0
