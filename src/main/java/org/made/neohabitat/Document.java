@@ -167,7 +167,14 @@ public abstract class Document extends HabitatMod {
     public void READ(User from, OptInteger page) {
         int page_to_read = page.value(0);
         if (page_to_read == 254) { // aka -1: BACK pressed on UI.
-            page_to_read = Math.max(1, next_page - 2);
+            // BACK is circular, symmetric with NEXT's forward wrap below: going back
+            // from page 1 wraps to the last page. Previously this clamped to page 1
+            // (Math.max(1, ...)), so back never left the first page — you could page
+            // forward all the way around but not backward off page 1.
+            page_to_read = next_page - 2;
+            if (page_to_read < 1) {
+                page_to_read = last_page;
+            }
         } else if (page_to_read == 0) {
             page_to_read = next_page;
         }

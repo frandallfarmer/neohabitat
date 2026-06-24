@@ -218,6 +218,23 @@ header.titlebar .tag {
     display: block;
     image-rendering: pixelated;
 }
+/* Webclient-only word-balloon scrollback bar — sits over the right edge / right chevron,
+   in the C64 palette (set inline from c64Colors). Sharp, pixelated, no rounded corners. */
+.balloon-scrollbar {
+    position: absolute;
+    top: 0;
+    z-index: 3;
+    image-rendering: pixelated;
+    box-shadow: inset 1px 0 0 #000;
+}
+.balloon-scrollbar-thumb {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    cursor: grab;
+    touch-action: none;
+}
+.balloon-scrollbar-thumb:active { cursor: grabbing; }
 .balloon-graphics-band {
     position: relative;
     z-index: 0;

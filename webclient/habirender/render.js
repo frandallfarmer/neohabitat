@@ -263,6 +263,18 @@ celLayerRenderer.default = (cel, colors, x, y) => {
         return null
     }
 }
+// cel_box: pointer.m boundary_check box-picks a box cel by its full rect (no fine_cel_point /
+// pixel test), so a CLEAR box — e.g. a vending machine's glass front — still BLOCKS selection
+// of the items behind it. The webclient otherwise pixel-tests, letting clicks pass through a
+// transparent box. Reuse the trapezoid quad-span pick path: every scanline spans the whole box.
+celLayerRenderer.box = (cel, colors, x, y) => {
+    const layer = celLayerRenderer.default(cel, colors, x, y)
+    if (layer?.canvas) {
+        const w = layer.canvas.width, h = layer.canvas.height
+        layer.trapSpans = Array.from({ length: h }, () => [0, w - 1])
+    }
+    return layer
+}
 
 celLayerRenderer.text = (cel, colors, x, y) => {
     const textColors = {...colors}
@@ -334,8 +346,14 @@ celLayerRenderer.trap = (cel, colors, x, y) => {
         throw new Error("Trapezoids with height 1 will cause an infinite loop in the C64 renderer")
     }
 
+    // Per-scanline quad coverage [xaStart, xbEnd] — the exact span the rasterizer fills below.
+    // The pick uses this for GEOMETRIC trapezoid containment (C64 pointer.m boundary_check →
+    // trap.m): a textured ground trapezoid with transparent gaps still catches clicks anywhere
+    // inside its shape, instead of letting them fall through to the sky behind → wrongful sky_go.
+    cel.trapSpans = []
     for (let y = 0; y < cel.height; y ++) {
         const line = cel.bitmap[y]
+        cel.trapSpans[y] = [xa, xb]
         if (cel.border && (y == 0 || y == (cel.height - 1))) {
             // top and bottom border line
             horizontalLine(cel.bitmap, xa, xb, y, 0xaa, true)
@@ -384,7 +402,7 @@ celLayerRenderer.trap = (cel, colors, x, y) => {
         celColors.pattern = 15
     }
     const canvas = canvasFromBitmap(cel.bitmap, celColors)
-    return { canvas, minX: cel.xCorrection - xOrigin, minY: y - cel.height, maxX: cel.xCorrection - xOrigin + cel.width, maxY: y }
+    return { canvas, trapSpans: cel.trapSpans, minX: cel.xCorrection - xOrigin, minY: y - cel.height, maxX: cel.xCorrection - xOrigin + cel.width, maxY: y }
 }
 
 // We try to consistently model Habitat's coordinate space in our rendering code as y=0 for the bottom, with increasing y meaning going up.
@@ -445,6 +463,17 @@ export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOri
         const [ox, oy] = topLeftCanvasOffset(celSpace, layer)
         const offsetX = flipHorizontal ? frame.canvas.width - ox - layer.canvas.width : ox
         frame.celLayers.push({ canvas: layer.canvas, offsetX, offsetY: oy, celIndex: layer.celIndex })
+    }
+    // Trapezoid quad coverage, in frame-canvas coords, for geometric picking (see celLayerRenderer
+    // .trap). Skipped when flipHorizontal (region ground/sky flats are never mirrored, so the
+    // un-mirrored spans would be wrong — those frames fall back to cel-pixel picking).
+    frame.trapLayers = []
+    if (!flipHorizontal) {
+        for (const layer of layers) {
+            if (!layer || !layer.trapSpans) continue
+            const [ox, oy] = topLeftCanvasOffset(celSpace, layer)
+            frame.trapLayers.push({ offsetX: ox, offsetY: oy, spans: layer.trapSpans })
+        }
     }
     frame.xOrigin = xCorrect
     frame.yOrigin = yCorrect

@@ -392,7 +392,11 @@ type HabitatMod struct {
 	WhoAmI          *uint8    `json:"Who_am_I,omitempty" bson:"Who_am_I,omitempty"`
 	Width           *uint8    `json:"width,omitempty" bson:"width,omitempty"`
 	WindLevel       *uint8    `json:"wind_level,omitempty" bson:"wind_level,omitempty"`
-	Wisher          *uint8    `json:"wisher,omitempty" bson:"wisher,omitempty"`
+	// *uint16 (not *uint8): Magic_lamp's wisher is UNASSIGNED_NOID (256) when no wish is
+	// in flight (Magic_lamp.java), which overflows uint8 — json.Unmarshal then dropped the
+	// whole `make` message ("cannot unmarshal number 256 into ... uint8"). Same convention
+	// as Appearing/Speaker; narrowed back to a byte at binary-encode time via noidU8.
+	Wisher          *uint16   `json:"wisher,omitempty" bson:"wisher,omitempty"`
 	X               *uint8    `json:"x,omitempty" bson:"x,omitempty"`
 	XOffset1        *uint8    `json:"x_offset_1,omitempty" bson:"x_offset_1,omitempty"`
 	XOffset2        *uint8    `json:"x_offset_2,omitempty" bson:"x_offset_2,omitempty"`

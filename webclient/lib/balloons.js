@@ -4,7 +4,7 @@
 
 import { h } from "preact"
 import htm from "htm"
-import { useContext, useEffect, useMemo, useState } from "preact/hooks"
+import { useContext, useEffect, useMemo, useState, useRef } from "preact/hooks"
 import { Scale, canvasImage, c64Colors, frameFromText } from "../habirender/render.js"
 import { charset, until } from "../habirender/data.js"
 import { makeCanvas } from "../habirender/shim.js"
@@ -99,9 +99,16 @@ export function balloonPanelHeightPx(maxDisplayLines) {
   return maxDisplayLines * LINE_PX_H
 }
 
-function composePanel(lines, charsetData, maxDisplayLines) {
+function composePanel(lines, charsetData, maxDisplayLines, scrollOffset = 0) {
   if (!lines.length || !charsetData) return null
-  const rendered = lines.map((row) => renderLineCanvas(row.bytes, row.vicColor, charsetData)).filter(Boolean)
+  // Show a window of maxDisplayLines, scrolled up from the bottom by scrollOffset lines
+  // (0 = newest at the bottom). The history can be much longer (maxHistoryLines).
+  const maxOffset = Math.max(0, lines.length - maxDisplayLines)
+  const off = Math.max(0, Math.min(scrollOffset, maxOffset))
+  const end = lines.length - off
+  const start = Math.max(0, end - maxDisplayLines)
+  const visible = lines.slice(start, end)
+  const rendered = visible.map((row) => renderLineCanvas(row.bytes, row.vicColor, charsetData)).filter(Boolean)
   if (!rendered.length) return null
   const panelH = balloonPanelHeightPx(maxDisplayLines)
   const nativePanelW = LAYOUT_PANEL_PX_W * NATIVE_FONT_SCALE
@@ -122,11 +129,14 @@ function composePanel(lines, charsetData, maxDisplayLines) {
 export function createBalloonState({
   maxDisplayLines = 10,
   maxBalloonLines = C64_MAX_BALLOON_LINES,
+  maxHistoryLines = 100,
 } = {}) {
   return {
     maxDisplayLines,
     maxBalloonLines,
+    maxHistoryLines,
     lines: [],
+    scrollOffset: 0, // lines scrolled up from the bottom (0 = newest visible)
     talkerSlots: [0, 0, 0, 0, 0, 0],
     quip: null,
     espPending: null,
@@ -137,10 +147,32 @@ export function createBalloonState({
 
 export function clearBalloonState(state) {
   state.lines = []
+  state.scrollOffset = 0
   state.quip = null
   state.espPending = null
   state.espAt = 0
   state.revision++
+}
+
+// Scroll the balloon scrollback by `delta` lines (positive = toward older / up). Clamped to
+// [0, history-window]. Returns true if the offset changed.
+export function scrollBalloons(state, delta) {
+  const maxOffset = Math.max(0, state.lines.length - state.maxDisplayLines)
+  const next = Math.max(0, Math.min(state.scrollOffset + delta, maxOffset))
+  if (next === state.scrollOffset) return false
+  state.scrollOffset = next
+  state.revision++
+  return true
+}
+
+// Set the scroll offset directly (for the scrollbar thumb). Clamped.
+export function setBalloonScroll(state, offset) {
+  const maxOffset = Math.max(0, state.lines.length - state.maxDisplayLines)
+  const next = Math.max(0, Math.min(Math.round(offset), maxOffset))
+  if (next === state.scrollOffset) return false
+  state.scrollOffset = next
+  state.revision++
+  return true
 }
 
 export function pushBalloon(state, world, text, meta = {}) {
@@ -154,11 +186,17 @@ export function pushBalloon(state, world, text, meta = {}) {
   if (op === "OBJECTSPEAK_$" || body.startsWith("ESP from ")) {
     const header = body.match(ESP_HEADER_RE)
     if (header) {
+      // ESP attribution header ("ESP from X: "). The C64 draws this as its own balloon
+      // line; previously we returned false here and dropped it, so the recipient saw the
+      // body with no idea who sent it. Show it — and arm espPending so the body message
+      // that follows is recognized as the ESP it completes. Render over the RECIPIENT
+      // (ESP is telepathic — it appears over you, not the sender, who may not even be in
+      // the region), with no quip tail.
       state.espPending = header[1]
       state.espAt = Date.now()
-      return false
-    }
-    if (state.espPending && Date.now() - state.espAt < ESP_TTL_MS) {
+      speaker = meNoid
+      showQuip = false
+    } else if (state.espPending && Date.now() - state.espAt < ESP_TTL_MS) {
       speaker = speaker ?? meNoid
       showQuip = false
       state.espPending = null
@@ -183,7 +221,11 @@ export function pushBalloon(state, world, text, meta = {}) {
   for (const bytes of formatted) {
     state.lines.push({ bytes, vicColor })
   }
-  while (state.lines.length > state.maxDisplayLines) state.lines.shift()
+  // Webclient-only bounded scrollback. The C64's slow modem made bursts (e.g. the god-tool
+  // `d`ump's noid list) readable as they arrived; instant web comms scroll them off in <1s,
+  // so we retain up to maxHistoryLines and let the user scroll back. Snap to newest on push.
+  while (state.lines.length > state.maxHistoryLines) state.lines.shift()
+  state.scrollOffset = 0
 
   const anchorPx = speakerX > 0 ? speakerAnchorForRecord(world?.get?.(speaker)) : 0
   if (showQuip && quipX > 0 && anchorPx > 0) {
@@ -255,6 +297,10 @@ function useQuipExpiry(stateSignal, state) {
   }, [state?.quip?.until, state?.revision])
 }
 
+// C64 VIC palette → CSS hex (c64Colors entries are 0xRRGGBB integers).
+const c64css = (idx) => `#${c64Colors[idx].toString(16).padStart(6, "0")}`
+const SCROLLBAR_W = 16 // px, sits over the right edge / right chevron
+
 export function BalloonStage({ stateSignal, children, textInput = null }) {
   const scale = useContext(Scale)
   const state = stateSignal.value
@@ -263,24 +309,71 @@ export function BalloonStage({ stateSignal, children, textInput = null }) {
 
   const panelCanvas = useMemo(
     () => (charsetData && state.lines.length
-      ? composePanel(state.lines, charsetData, state.maxDisplayLines)
+      ? composePanel(state.lines, charsetData, state.maxDisplayLines, state.scrollOffset)
       : null),
-    [charsetData, state.revision, state.lines.length, state.maxDisplayLines],
+    [charsetData, state.revision, state.lines.length, state.maxDisplayLines, state.scrollOffset],
   )
   const panelW = LAYOUT_PANEL_PX_W * scale
   const panelH = balloonPanelHeightPx(state.maxDisplayLines) * scale
   const TextInputLine = textInput?.Line
   const [pointerInGraphics, setPointerInGraphics] = useState(false)
+  const dragRef = useRef(null)
+
+  // Scrollback metrics. Offset 0 = newest at the bottom; maxOffset = oldest line at the top.
+  const total = state.lines.length
+  const maxOffset = Math.max(0, total - state.maxDisplayLines)
+  const hasScroll = maxOffset > 0
+  const off = Math.max(0, Math.min(state.scrollOffset, maxOffset))
+  const thumbH = hasScroll ? Math.max(18, panelH * (state.maxDisplayLines / total)) : 0
+  const thumbTop = (1 - (maxOffset > 0 ? off / maxOffset : 0)) * (panelH - thumbH)
+  const dragging = !!dragRef.current
+
+  const onWheel = (e) => {
+    if (!hasScroll) return
+    e.preventDefault()
+    if (scrollBalloons(state, e.deltaY < 0 ? 3 : -3)) stateSignal.value = { ...state }
+  }
+  const onThumbDown = (e) => {
+    e.preventDefault(); e.stopPropagation()
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+    dragRef.current = { startY: e.clientY, startOff: off }
+    stateSignal.value = { ...state }
+  }
+  const onThumbMove = (e) => {
+    const d = dragRef.current
+    if (!d) return
+    const span = panelH - thumbH
+    if (span <= 0) return
+    // Drag the thumb DOWN (dy>0) → toward the newest line → smaller offset.
+    const newOff = d.startOff - ((e.clientY - d.startY) / span) * maxOffset
+    if (setBalloonScroll(state, newOff)) stateSignal.value = { ...state }
+  }
+  const onThumbUp = (e) => {
+    dragRef.current = null
+    e.currentTarget.releasePointerCapture?.(e.pointerId)
+    stateSignal.value = { ...state }
+  }
 
   return html`
     <div class="balloon-stage" style="width: ${panelW}px;">
       ${panelCanvas
-        ? html`<div class="balloon-panel" style="width: ${panelW}px; height: ${panelH}px; overflow: hidden;">
+        ? html`<div class="balloon-panel" style="width: ${panelW}px; height: ${panelH}px; overflow: hidden;" onWheel=${onWheel}>
             <img
               class="balloon-panel-canvas"
               style=${`width: ${panelW}px; height: ${panelH}px;`}
               src=${panelCanvas.toDataURL()}
               alt="" />
+          </div>`
+        : null}
+      ${hasScroll
+        ? html`<div class="balloon-scrollbar"
+            style=${`width:${SCROLLBAR_W}px; height:${panelH}px; left:${panelW}px; background:${c64css(11)};`}
+            title="Scroll word-balloon history">
+            <div class="balloon-scrollbar-thumb"
+              style=${`height:${thumbH}px; top:${thumbTop}px; background:${dragging ? c64css(1) : c64css(15)};`}
+              onPointerDown=${onThumbDown}
+              onPointerMove=${onThumbMove}
+              onPointerUp=${onThumbUp} />
           </div>`
         : null}
       <div

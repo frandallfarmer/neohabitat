@@ -127,8 +127,11 @@ export function displayBytes(state, { showCursor = true, cursorChar = BLANK_CHAR
 
 export function submitPayload(state) {
   if (state.awaitingPrompt) {
+    // Always submit in prompt mode, even with nothing typed past the prefix: the server
+    // (god tool) treats an empty command — the prompt prefix alone — as "exit god mode".
+    // Only suppress if there's no prompt at all (empty buffer).
     const text = state.buffer
-    if (!text || text.length <= effectiveLeftBound(state)) return null
+    if (!text) return null
     return { kind: "prompt", text }
   }
 
@@ -146,10 +149,24 @@ export function submitPayload(state) {
   return { kind: "speak", text }
 }
 
+// God-tool "Edit:" nudge — in a server prompt, the arrow keys are command codes 124–127
+// (ARROW_U/D/L/R in Magical.java's god_tool_revisited), each moving the target object 1px.
+const PROMPT_ARROW_CODE = { ArrowUp: 124, ArrowDown: 125, ArrowLeft: 126, ArrowRight: 127 }
+
 export function handleKey(state, key, { ctrlKey = false } = {}) {
   if (key === "Enter") {
     const payload = submitPayload(state)
     return { state, action: payload ? "submit" : "noop", payload }
+  }
+  // Arrow nudge: only while a prompt is active. Submit immediately (one press = one 1px
+  // move) so the object slides live; the prompt prefix is already in the buffer, so append
+  // the arrow's command code. Normal-mode arrows are untouched (fall through to noop).
+  if (state.awaitingPrompt && PROMPT_ARROW_CODE[key] !== undefined) {
+    return {
+      state,
+      action: "submit",
+      payload: { kind: "prompt", text: state.buffer + String.fromCharCode(PROMPT_ARROW_CODE[key]) },
+    }
   }
   if (key === "Backspace") {
     deleteChar(state)
