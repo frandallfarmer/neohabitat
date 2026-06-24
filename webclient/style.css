@@ -235,6 +235,86 @@ header.titlebar .tag {
     touch-action: none;
 }
 .balloon-scrollbar-thumb:active { cursor: grabbing; }
+
+/* The original Habitat C64 character ROM as a web font (db/Text/charset). */
+@font-face {
+    font-family: "Habitat Charset";
+    src: url("vendor/charset.woff2") format("woff2");
+    font-display: swap;
+}
+
+/* Optional on-screen C64-style keyboard (onscreen-keyboard.mjs) for touch / kiosk clients.
+   Synthesizes keydown events, so it's just a pad of buttons. Beige case + dark legends, chunky
+   and pixelated to match the C64; modifier keys darker; an armed sticky modifier glows. */
+/* Dock: spans the habitat window's width and left-aligns to it (like the region frame), so the
+   keyboard inside centers UNDER the window rather than the whole viewport. */
+.osk-dock {
+    align-self: flex-start;
+    width: calc(320px * 3);   /* the region viewport width (REGION_CANVAS_W * Scale) */
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.osk {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+    background: #2a2a36;
+    border: 2px solid #15151c;
+    border-radius: 4px;
+    user-select: none;
+    touch-action: none;
+    width: 100%;
+    max-width: 560px;
+}
+.osk-row { display: flex; gap: 4px; justify-content: center; }
+.osk-key {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 38px;
+    padding: 4px 2px;
+    font-family: "Habitat Charset", "Courier New", monospace;
+    font-size: 17px;
+    color: #2c2410;
+    background: #c2b690;
+    border: 1px solid #6f6450;
+    border-top-color: #e6dcbd;
+    border-left-color: #e6dcbd;
+    border-radius: 3px;
+    cursor: pointer;
+    image-rendering: pixelated;
+}
+.osk-key:active { background: #a89c78; transform: translateY(1px); }
+.osk-mod {
+    background: #8a7c5c;
+    color: #f0e8d2;
+    flex-grow: 1.4;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+.osk-fkey { background: #9a6a4a; color: #f4e6da; font-size: 13px; }
+.osk-active {  /* an armed single-use sticky modifier */
+    background: #d9a521;
+    color: #2c2410;
+    box-shadow: 0 0 0 2px #ffe27a inset;
+}
+.osk-space { flex-grow: 6; }
+.osk-return { flex-grow: 2.2; }
+.osk-close { flex-grow: 0.8; }
+.osk-arrows .osk-key { flex-grow: 0.6; }
+.osk-toggle {
+    align-self: flex-start;
+    background: #15151c;
+    color: #c2b690;
+    border: 1px solid #3a3a4a;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.osk-toggle:hover { background: #24243a; }
 .balloon-graphics-band {
     position: relative;
     z-index: 0;

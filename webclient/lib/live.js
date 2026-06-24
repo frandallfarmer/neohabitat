@@ -41,6 +41,7 @@ import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
+import { OnScreenKeyboard } from "./onscreen-keyboard.mjs"
 import { TextView } from "./text-view.js"
 import { TitleScreen } from "./title.js"
 
@@ -149,6 +150,13 @@ async function main() {
     maxBalloonLines: qNum("balloonHeight", 4),
   }))
   const textInputState = signal(createTextInputState())
+  // Optional on-screen keyboard — default ON for mobile browsers / touch devices (no physical
+  // keyboard), OFF on desktop. `?osk=1`/`0` forces it. Never required; the toggle flips it.
+  // The UA regex catches phones; coarse-pointer catches tablets / touch screens (incl. iPadOS,
+  // which reports a desktop UA but a coarse primary pointer).
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "")
+    || (typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches)
+  const showKeyboard = signal(q("osk", null) != null ? q("osk") === "1" : isMobile)
   const balloons = {
     push(w, text, meta) {
       const state = balloonState.value
@@ -534,6 +542,14 @@ async function main() {
         ${showEdges ? html`<button class="edge-chevron right" style=${sideChevStyle} title="Walk off the right edge" onClick=${onEdgeClick("right")}>▶</button>` : null}
         ${showEdges ? html`<button class="edge-chevron down" title="Walk off the bottom edge" onClick=${onEdgeClick("down")}>▼</button>` : null}
       </div>
+      ${region
+        ? html`<div class="osk-dock">
+            ${showKeyboard.value
+              ? html`<${OnScreenKeyboard} onClose=${() => { showKeyboard.value = false }} />`
+              : html`<button class="osk-toggle" title="Show on-screen keyboard"
+                  onClick=${() => { showKeyboard.value = true }}>⌨</button>`}
+          </div>`
+        : null}
       <${errors} />`
   }
 
