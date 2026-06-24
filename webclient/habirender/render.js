@@ -174,6 +174,10 @@ export const bitmapFromChar = (charset, byte, colors = {}) => {
     }
     const char = charset[byte]
     const bitmap = emptyBitmap(charWidth / 4, charHeight)
+    // Unknown / out-of-range glyph (e.g. a non-charset byte in a god-tool `d`ump's JSON, now
+    // retained by the bounded balloon scrollback) — render BLANK rather than crashing the whole
+    // balloon panel with "char is not iterable". The cell still advances, leaving a space.
+    if (!char) return bitmap
     let x = 0
     let y = 0
     for (const rawrow of char) {
