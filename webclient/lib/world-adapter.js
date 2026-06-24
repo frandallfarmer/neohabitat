@@ -35,6 +35,15 @@ export function worldToObjects(world) {
   }
 
   for (const rec of world.objects.values()) {
+    // Catch-up interlock (7d): an ARRIVING avatar's make carries gr_state INVISIBLE (0x40, == the
+    // C64 avatar_on_hold) — it is held (not drawn, and not in the pick list since pick reads this
+    // same array) until its APPEARING_$ clears the bit (habiworld region_APPEARING). Only avatars
+    // are ever held; the Ghost and all props always render. This keeps us from drawing or
+    // interacting with an avatar that hasn't finished loading — important when a slow C64 client
+    // is co-present and still catching up. (render.m skips avatar_on_hold the same way.)
+    if (rec.mod && rec.mod.type === "Avatar" && !rec.mod.amAGhost && (rec.mod.gr_state & 0x40)) {
+      continue
+    }
     // The singleton Ghost (noid 255) renders as the floating EYE icon (class_ghost image
     // ghost_image = Images/eye0.bin) — it represents all observers and IS shown (to ghosts and
     // avatars alike) whenever ghosts are present. It is NOT filtered. See GHOST_MODE.md.
