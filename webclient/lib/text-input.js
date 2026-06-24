@@ -97,8 +97,11 @@ export function TextInputLine({ stateSignal, onSubmit, enabled = true, routeKeys
       const root = rootRef.current
       const focused = root
         && (document.activeElement === root || root.contains(document.activeElement))
-      if (!routeKeys && !focused) return
-      if (!routeKeys && e.target.closest("input, textarea, select")) return
+      // `e.synthetic` = a key from the on-screen keyboard (onscreen-keyboard.mjs). It's dispatched
+      // while a keyboard BUTTON — not the text line — is the focus target, so accept it past the
+      // focus gate (the keyboard is a deliberate input source, same as a physical key).
+      if (!routeKeys && !focused && !e.synthetic) return
+      if (!routeKeys && !e.synthetic && e.target.closest?.("input, textarea, select")) return
       const st = stateSignal.value
       const result = handleKey(st, e.key, { ctrlKey: e.ctrlKey })
       if (result.action === "noop") return
