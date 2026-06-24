@@ -263,6 +263,18 @@ celLayerRenderer.default = (cel, colors, x, y) => {
         return null
     }
 }
+// cel_box: pointer.m boundary_check box-picks a box cel by its full rect (no fine_cel_point /
+// pixel test), so a CLEAR box — e.g. a vending machine's glass front — still BLOCKS selection
+// of the items behind it. The webclient otherwise pixel-tests, letting clicks pass through a
+// transparent box. Reuse the trapezoid quad-span pick path: every scanline spans the whole box.
+celLayerRenderer.box = (cel, colors, x, y) => {
+    const layer = celLayerRenderer.default(cel, colors, x, y)
+    if (layer?.canvas) {
+        const w = layer.canvas.width, h = layer.canvas.height
+        layer.trapSpans = Array.from({ length: h }, () => [0, w - 1])
+    }
+    return layer
+}
 
 celLayerRenderer.text = (cel, colors, x, y) => {
     const textColors = {...colors}
