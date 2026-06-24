@@ -138,8 +138,23 @@ function avatar_BUGOUT(ctx) {
   return { ok: true }
 }
 
-// Region.java APPEARING_$ — arrival notification; make follows separately.
-function region_APPEARING() {
+// gr_state bit the server sets on an ARRIVING avatar's make (Region.I_AM_HERE clears it server-
+// side and broadcasts APPEARING_$). Identical value to the C64's avatar_on_hold (equates.m 0x40),
+// which render.m render-skips until APPEARING. Render-only: headless consumers (sagebot) ignore it.
+const AVATAR_INVISIBLE = 0x40
+
+// Region.java APPEARING_$ — the avatar (args.appearing) has caught up loading the region's
+// contents vector. Clear its INVISIBLE / on-hold bit (C64 actions.m "OK!!! DRAW ME!") and notify
+// so renderers repaint it — until now it was held (the make set the bit). The arriving avatar is
+// the only one held; avatars already present in your make-storm never had the bit, so they drew
+// immediately. (No-op for everything except the held avatar.)
+function region_APPEARING(ctx) {
+  const noid = ctx.args && ctx.args.appearing
+  const av = noid != null ? ctx.world.get(noid) : null
+  if (av && av.mod && (av.mod.gr_state & AVATAR_INVISIBLE)) {
+    av.mod.gr_state &= ~AVATAR_INVISIBLE
+    ctx.world.emit('stateChanged', av)
+  }
   return { ok: true }
 }
 

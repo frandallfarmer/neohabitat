@@ -10,7 +10,7 @@
 // both binary and text and buffer partial lines across frames.
 
 export class Transport {
-  constructor({ url, onMessage, onOpen, onClose, onError } = {}) {
+  constructor({ url, onMessage, onOpen, onClose, onError, baud = 600 } = {}) {
     this.url = url
     this.onMessage = onMessage || (() => {})
     this.onOpen = onOpen || (() => {})
@@ -21,6 +21,11 @@ export class Transport {
     this._decoder = new TextDecoder()
     this._pendingReply = null
     this._replyListeners = new Set()
+    // 7d outbound pacer (see send()): cap the effective OUTBOUND rate to `baud` bits/sec so a
+    // burst of webclient requests can't outrun a co-present C64's serial buffer. 0 disables.
+    this._baud = baud > 0 ? baud : 0
+    this._wireFreeAt = 0          // ms timestamp the (virtual) wire next becomes idle
+    this._paceTimers = new Set()  // outstanding scheduled sends, cleared on connect/close
   }
 
   onReply(fn) {
@@ -58,6 +63,7 @@ export class Transport {
   }
 
   connect() {
+    this._resetPacer()
     const ws = new WebSocket(this.url)
     ws.binaryType = "arraybuffer"
     this.ws = ws
@@ -83,8 +89,34 @@ export class Transport {
 
   send(obj) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false
-    this.ws.send(JSON.stringify(obj) + "\n\n")
+    const data = JSON.stringify(obj) + "\n\n"
+    if (this._baud <= 0) { this.ws.send(data); return true }
+    // 7d traffic pacing — a leaky bucket at `baud` bits/sec (8N1 → 10 bits/byte, so
+    // bytes/sec = baud/10). Isolated messages go IMMEDIATELY (the wire is idle), keeping the
+    // client responsive when solo; only back-to-back bursts queue and drain at the wire rate,
+    // which is the case that would overflow a co-present C64. Per-message delay, not per-char.
+    // (JSON length over-estimates the smaller binary the C64 actually receives — conservative.)
+    const transmitMs = (data.length * 10 / this._baud) * 1000
+    const now = Date.now()
+    if (now >= this._wireFreeAt) {
+      this._wireFreeAt = now + transmitMs
+      this.ws.send(data)
+    } else {
+      const sendAt = this._wireFreeAt
+      this._wireFreeAt += transmitMs
+      const t = setTimeout(() => {
+        this._paceTimers.delete(t)
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) this.ws.send(data)
+      }, sendAt - now)
+      this._paceTimers.add(t)
+    }
     return true
+  }
+
+  _resetPacer() {
+    for (const t of this._paceTimers) clearTimeout(t)
+    this._paceTimers.clear()
+    this._wireFreeAt = 0
   }
 
   // The whole login handshake: a single entercontext (no prior auth in dev). The avatar
@@ -97,6 +129,7 @@ export class Transport {
   }
 
   close() {
+    this._resetPacer()
     if (this.ws) this.ws.close()
   }
 }

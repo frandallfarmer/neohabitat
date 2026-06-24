@@ -27,6 +27,10 @@ type Bridge struct {
 	QLinkMode        bool
 	Sessions         map[string]*ClientSession
 
+	// transit is the global per-avatar transiting latch (see invisible.go). Shared across all
+	// sessions because transiting is a property of the avatar, not of any single connection.
+	transit *transitRegistry
+
 	// listeners and listenAddrs are 1:1 by index. Multiple listeners
 	// let one stateful bridge process serve multiple host ports
 	// (1337/1986/2026 historically) without splitting session state
@@ -438,6 +442,7 @@ func NewBridge(
 		OriginalHatchery: originalHatcheryEnabled(),
 		QLinkMode:        qlinkMode,
 		Sessions:         make(map[string]*ClientSession),
+		transit:          newTransitRegistry(),
 		acceptDone:       make(chan struct{}),
 		listenAddrs:      addrs,
 		elkoHost:         elkoHost,

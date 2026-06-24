@@ -357,6 +357,9 @@ async function main() {
     }
     transport = new Transport({
       url: ws,
+      // 7d: pace outbound to an effective C64 line rate (default 600 baud) so request bursts
+      // can't overflow a co-present C64's serial buffer. ?baud=0 disables; ?baud=N overrides.
+      baud: qNum("baud", 600),
       onMessage: (m) => {
         gotMsg = true
         const traceChore = SOUND_TRACE && (m.op === "PLAY_$"

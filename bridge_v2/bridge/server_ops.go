@@ -13,6 +13,13 @@ func init() {
 	ServerOps["APPEARING_$"] = &ServerOp{
 		Reqno: 18,
 		ToClient: func(o *ElkoMessage, buf *HabBuf, s *ClientSession) bool {
+			// Transit complete: if this is OUR OWN appearance, clear our global transit latch
+			// (the avatar has finished arriving). Clearing here — not on `ready` — keeps the
+			// latch set long enough that other sessions reliably see it while forwarding our
+			// arrival make to them.
+			if s.avatarNoid != nil && o.Appearing != nil && uint16(*s.avatarNoid) == *o.Appearing {
+				s.bridge.transit.clear(s.userRef)
+			}
 			// noidU8 narrows uint16 → uint8, mapping UNASSIGNED_NOID
 			// (256) → GHOST_NOID (255) so the C64 client sees a valid
 			// noid byte instead of a silent truncation to 0.
