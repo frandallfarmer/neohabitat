@@ -849,9 +849,20 @@ func (c *ClientSession) unpackHabitatObject(o *ElkoMessage, containerRef string)
 				*field = &newVal
 			}
 		}
+		// Wisher is *uint16 (it can be UNASSIGNED_NOID = 256 when no wish is in flight).
+		// Only real avatar noids (0–255) are remappable; skip the 256 sentinel.
+		rewriteNestedNoid16 := func(field **uint16) {
+			if field == nil || *field == nil || **field > 255 {
+				return
+			}
+			if saved, found := c.restoreElkoToSaved[uint8(**field)]; found && saved != uint8(**field) {
+				newVal := uint16(saved)
+				*field = &newVal
+			}
+		}
 		rewriteNestedNoid(&mod.SittingIn)
 		rewriteNestedNoid(&mod.Restrainer)
-		rewriteNestedNoid(&mod.Wisher)
+		rewriteNestedNoid16(&mod.Wisher)
 	}
 
 	if clientMessages, found := ObjectClientMessages[*mod.Type]; found {

@@ -177,7 +177,7 @@ func TestRestore_RewritesWisherUsingPriorMapping(t *testing.T) {
 	}
 
 	lampMsg := makeMsg("Magic_lamp", "item-lamp-1", 60)
-	wisher := uint8(31) // elko's noid for randy
+	wisher := uint16(31) // elko's noid for randy
 	lampMsg.Obj.Mods[0].Wisher = &wisher
 	if err := sess.unpackHabitatObject(lampMsg, "context-Downtown_5c"); err != nil {
 		t.Fatalf("lamp unpack: %v", err)

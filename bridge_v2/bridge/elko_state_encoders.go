@@ -249,7 +249,7 @@ func init() {
 	ElkoStateEncoders["Magic_lamp"] = func(state *HabitatMod, container uint8, buf *HabBuf) *HabBuf {
 		buf = ElkoStateEncoders["common"](state, container, buf)
 		buf.AddInt(u8or(state.LampState, 0))
-		buf.AddInt(u8or(state.Wisher, 0))
+		buf.AddInt(noidU8(state.Wisher)) // *uint16 → byte (UNASSIGNED_NOID 256 → GHOST_NOID)
 		return buf
 	}
 
