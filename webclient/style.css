@@ -267,16 +267,16 @@ header.titlebar .tag {
     user-select: none;
     touch-action: none;
     width: 100%;
-    max-width: 560px;
+    max-width: 760px;
 }
 .osk-row { display: flex; gap: 4px; justify-content: center; }
 .osk-key {
     flex: 1 1 0;
     min-width: 0;
-    min-height: 38px;
-    padding: 4px 2px;
+    min-height: 50px;
+    padding: 6px 3px;
     font-family: "Habitat Charset", "Courier New", monospace;
-    font-size: 17px;
+    font-size: 26px;
     color: #2c2410;
     background: #c2b690;
     border: 1px solid #6f6450;
@@ -291,10 +291,10 @@ header.titlebar .tag {
     background: #8a7c5c;
     color: #f0e8d2;
     flex-grow: 1.4;
-    font-size: 12px;
+    font-size: 15px;
     letter-spacing: 0.04em;
 }
-.osk-fkey { background: #9a6a4a; color: #f4e6da; font-size: 13px; }
+.osk-fkey { background: #9a6a4a; color: #f4e6da; font-size: 16px; }
 .osk-active {  /* an armed single-use sticky modifier */
     background: #d9a521;
     color: #2c2410;
