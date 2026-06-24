@@ -466,14 +466,6 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		name := msg.Obj.Name
 		mod := msg.Obj.Mods[0]
 
-		// Arriving AS a ghost: a ghost skips the I_AM_HERE→APPEARING_$ handshake (it's visible
-		// at once — Stratus exempts GHOST from the hold), so our own APPEARING_$ clear never
-		// fires. Clear the transit latch now, or it goes stale and a later in-region deghost is
-		// wrongly held.
-		if mod.Type != nil && *mod.Type == "Ghost" {
-			c.bridge.transit.clear(c.userRef)
-		}
-
 		c.log.Debug().Str("name", name).Msg("Avatar arrived")
 		c.bindAvatar(name)
 
@@ -500,6 +492,14 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 			c.avatarNoid = &n
 		}
 		c.waitingForAvatarContents = true
+
+		// Arriving AS a ghost (incl. auto-ghost into a full region: elko sends our avatar with
+		// noid 256 → GHOST_NOID above): a ghost skips the I_AM_HERE→APPEARING_$ handshake, so our
+		// own APPEARING_$ clear never fires. Clear the transit latch now (userRef is set above),
+		// or it goes stale and a later in-region deghost is wrongly held invisible.
+		if modIsGhost(mod) {
+			c.bridge.transit.clear(c.userRef)
+		}
 	}
 
 	if msg.Type == "changeContext" {
@@ -1856,10 +1856,10 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 				n := uint8(*mod.Noid)
 				c.avatarNoid = &n
 			}
-			// Arriving AS a ghost: ghosts skip the I_AM_HERE→APPEARING_$ handshake (visible at
-			// once — Stratus exempts GHOST), so clear the transit latch now rather than waiting
+			// Arriving AS a ghost (incl. auto-ghost into a full region): ghosts skip the
+			// I_AM_HERE→APPEARING_$ handshake, so clear the transit latch now rather than waiting
 			// for an APPEARING_$ that never comes; otherwise a later in-region deghost is held.
-			if mod.Type != nil && *mod.Type == "Ghost" {
+			if modIsGhost(mod) {
 				c.bridge.transit.clear(c.userRef)
 			}
 		}
