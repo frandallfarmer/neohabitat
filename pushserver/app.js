@@ -60,6 +60,22 @@ function alphaGate(req, res, next) {
   res.set('WWW-Authenticate', 'Basic realm="Neohabitat Alpha"').status(401).end('Authentication required.');
 }
 var repoRoot = path.join(__dirname, '..');
+
+// The Alpha client needs a secure context (habisound AudioWorklet) and a wss game socket, so it
+// must run over HTTPS. In prod the Caddy front terminates TLS on :443 and proxies to us with
+// X-Forwarded-Proto: https; a request without that header arrived over plain HTTP on :80, so bounce
+// it up to the HTTPS URL. Only /webclient is forced — /habisound and /habiworld are shared libs that
+// other plain-HTTP pages may embed, and the HTTPS client already fetches them over https via Caddy.
+// Gated on config.requireHttps so local dev (no TLS) is unaffected.
+function forceHttps(req, res, next) {
+  if (config.requireHttps && req.headers['x-forwarded-proto'] !== 'https') {
+    var host = (req.headers.host || 'habitat.themade.org').replace(/:\d+$/, '');
+    return res.redirect(302, 'https://' + host + req.originalUrl);
+  }
+  next();
+}
+app.use('/webclient', forceHttps);
+
 ['webclient', 'habisound', 'habiworld'].forEach(function (dir) {
   app.use('/' + dir, alphaGate, express.static(path.join(repoRoot, dir)));
 });

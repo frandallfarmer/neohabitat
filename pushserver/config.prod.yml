@@ -5,6 +5,11 @@ viceJsUrl: https://sgeo.github.io/experimental/neohabitat-joystick/x64.js
 # developer build that can overflow co-present C64 clients, so it's locked. Unset = open (dev).
 alphaPassword: oracle
 
+# Force /webclient onto HTTPS (the Caddy front on :443). A plain-HTTP hit to /webclient 302s to the
+# https URL so the client always runs in a secure context (habisound + wss). Prod-only — left unset
+# in dev so local http://localhost serving isn't redirected. See pushserver/app.js forceHttps.
+requireHttps: true
+
 websocketProxy:
   clientAddr: habitat.themade.org:1987
   listenAddr: 0.0.0.0:1987
