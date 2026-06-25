@@ -6,16 +6,15 @@
          (320 * Scale 3 — the in-game region width, matched by the SCALE=3 title), so declaring the
          viewport width AS 960 makes mobile browsers scale the page to fit the device width: the
          whole thing fits on load, no pinch and no fragile zoom-to-focused-field. Desktop browsers
-         ignore viewport width and render the 960px layout normally. The full-width avatar-name
-         input additionally keeps focusing it from zooming in past this fit. -->
+         ignore viewport width and render the 960px layout normally. -->
     <meta name="viewport" content="width=960" />
-    <title>NeoHabitat — Web Client</title>
+    <title>NeoHabitat</title>
     <link rel="stylesheet" href="style.css" />
     <!--
       No build step. Native ES modules + importmap + vendored deps, served static —
       the same shape as neohabitat-doc/inspector and habisound. See DESIGN.md.
-      The vendored Preact/htm/signals are copied from the inspector so the Phase 1
-      renderer (region.js/render.js) imports the exact same module instances.
+      index.html and live.html are the same live-client entry, so both ./ and
+      ./live.html run the client.
     -->
     <script type="importmap">
         {
@@ -28,9 +27,11 @@
             }
         }
     </script>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./lib/live.js"></script>
 </head>
 <body>
-    <div id="app"><noscript>This client requires JavaScript.</noscript></div>
+    <!-- The C64 title sequence (lib/title.js) shows here first while the heavy client loads in
+         the background; entering an avatar name swaps it for the live client. See lib/live.js boot(). -->
+    <div id="app" style="display: flex; flex-direction: column; gap: 10px; padding: 12px;"><noscript>This client requires JavaScript.</noscript></div>
 </body>
 </html>
