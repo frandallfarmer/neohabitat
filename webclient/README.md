@@ -13,20 +13,29 @@ architecture and phase roadmap.
 ## Running
 
 No build step. Native ES modules + importmap + vendored Preact/htm/signals, served static.
-Serve from the **repo root** (`~/neohabitat`) so the client can reach sibling libraries
-(`habiworld`, `habirender`, `habisound`). Native ESM, importmaps, `fetch`, and the
-habisound `AudioWorklet` all require http(s) — not `file://`.
+The client reaches sibling libraries (`habiworld`, `habirender`, `habisound`) as paths under
+the host root. Native ESM, importmaps, `fetch`, and the habisound `AudioWorklet` all require
+http(s) — not `file://`.
+
+**Preferred (dev compose):** the Express pushserver already serves the client, and the dev
+overlay bind-mounts the working tree so edits show up live — no separate server, no rebuild:
 
 ```sh
-cd ~/neohabitat
-python3 -m http.server 8000
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up   # or ./dev.sh
+# → http://localhost:1701/webclient/   (mirrors prod, where Caddy/Express serve the same paths)
 ```
 
-| URL | Purpose |
+**Standalone (no stack):** serve the **repo root** statically — the original quick option:
+
+```sh
+cd ~/neohabitat && python3 -m http.server 8000   # → http://localhost:8000/webclient/
+```
+
+| URL (dev compose) | Purpose |
 |-----|---------|
-| [http://localhost:8000/webclient/](http://localhost:8000/webclient/) | **The live client** (same as live.html — both are the entry) |
-| [http://localhost:8000/webclient/live.html](http://localhost:8000/webclient/live.html) | **The live client** (WebSocket → habiworld → habirender) |
-| [http://localhost:8000/webclient/region.html](http://localhost:8000/webclient/region.html) | Static region JSON demo |
+| [http://localhost:1701/webclient/](http://localhost:1701/webclient/) | **The live client** (same as live.html — both are the entry) |
+| [http://localhost:1701/webclient/live.html](http://localhost:1701/webclient/live.html) | **The live client** (WebSocket → habiworld → habirender) |
+| [http://localhost:1701/webclient/region.html](http://localhost:1701/webclient/region.html) | Static region JSON demo |
 
 ### Live viewer
 
