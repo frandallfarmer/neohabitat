@@ -156,7 +156,10 @@ header.titlebar .tag {
 }
 .title-login-label { color: #fff; font-size: 13px; text-shadow: 0 1px 3px #000; }
 .title-login-input {
-    font: inherit; font-size: 14px;
+    /* 16px is the threshold below which iOS Safari auto-zooms on focus — and since this input is
+       auto-focused on the load screen (title.js), a smaller size zoomed the whole page in and
+       never zoomed back out to fit the game area. Keep it at 16px so focus never triggers zoom. */
+    font: inherit; font-size: 16px;
     width: 14ch; padding: 4px 8px;
     color: #fff; background: #0a0a18;
     border: 1px solid #706deb; border-radius: 3px;
@@ -267,16 +270,18 @@ header.titlebar .tag {
     user-select: none;
     touch-action: none;
     width: 100%;
-    max-width: 760px;
+    /* No max-width cap: fill the .osk-dock, which is the region-viewport (client frame) width
+       (320px * Scale). The keys are flex:1 1 0, so they stretch to span the whole frame; the
+       larger key font below keeps the legends proportional to the now-frame-wide keys. */
 }
 .osk-row { display: flex; gap: 4px; justify-content: center; }
 .osk-key {
     flex: 1 1 0;
     min-width: 0;
-    min-height: 50px;
-    padding: 6px 3px;
+    min-height: 62px;
+    padding: 8px 4px;
     font-family: "Habitat Charset", "Courier New", monospace;
-    font-size: 26px;
+    font-size: 33px;
     color: #2c2410;
     background: #c2b690;
     border: 1px solid #6f6450;
@@ -291,10 +296,10 @@ header.titlebar .tag {
     background: #8a7c5c;
     color: #f0e8d2;
     flex-grow: 1.4;
-    font-size: 15px;
+    font-size: 19px;
     letter-spacing: 0.04em;
 }
-.osk-fkey { background: #9a6a4a; color: #f4e6da; font-size: 16px; }
+.osk-fkey { background: #9a6a4a; color: #f4e6da; font-size: 20px; }
 .osk-active {  /* an armed single-use sticky modifier */
     background: #d9a521;
     color: #2c2410;
@@ -317,14 +322,22 @@ header.titlebar .tag {
 .osk-toggle:hover { background: #24243a; }
 .balloon-graphics-band {
     position: relative;
-    z-index: 0;
+    /* Above the balloon panel (2) and scrollbar (3). The quip sprite pokes UP out of this band
+       into the panel's bottom edge (top: -QUIP_PANEL_OVERLAP_PX) and must paint over it, but a
+       z-index:0 here would cap everything inside the band below the panel. Only the quip actually
+       overlaps the panel — region graphics sit entirely below it — so lifting the whole band is
+       safe and lets the quip win the overlap. */
+    z-index: 4;
 }
 .balloon-quip {
     position: absolute;
     left: 0;
     top: 0;
     pointer-events: none;
-    z-index: 1;
+    /* The quip tail points from the panel border at the speaker and must never be occluded — not
+       by the panel above (handled by the band's z-index) nor by region object sprites within the
+       band (z up to ~256, region.js). Sit above them, just below the cursor overlay (10000). */
+    z-index: 9000;
 }
 
 /* C64 speak line (keyboard.m display_text_line) — below the 128px graphics band. */
