@@ -65,6 +65,7 @@ const COMET = {
 // Ltd." text. habsill3.m is linked into Bitmap_screen_1 ($4b40) by Main/Makefile's slinky call.
 const TITLE_SRC = "./assets/habsill.png"
 const BITMAP_Y = 72 // 9 text rows × 8 — where the bitmap band begins on the C64 screen
+const MAX_NAME_LEN = 14 // Habitat avatar-name limit; enforced on submit (the input is full-width)
 
 // Lazy, shared sound engine. Imported dynamically so a failure to load/init audio
 // (or its AudioWorklet) degrades to a silent-but-working title — the visuals and the
@@ -146,14 +147,19 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
   // Once loaded, the player names their Avatar; submitting it dismisses the curtain and starts
   // the client (no region is asked — the server lands them wherever they last were).
   const [name, setName] = useState(() => new URLSearchParams(location.search).get("user") || "")
+  const [err, setErr] = useState("")
   const inputRef = useRef(null)
   const submit = async (e) => {
     e?.preventDefault?.()
     const n = name.trim()
     if (!ready || !n) return
-    // The mobile zoom-stick (Chrome zooming IN to the focused name field and not snapping back) is
-    // prevented up front by maximum-scale=1 in index.html's viewport meta, so there's nothing to
-    // undo here. Blur the field so the on-screen keyboard dismisses as the client takes over.
+    // The input is full region width (so a phone's zoom-to-focused-field lands at the whole-region
+    // fit scale), which drops the old 14ch visual length cue — so enforce the name limit here.
+    if (n.length > MAX_NAME_LEN) {
+      setErr(`Avatar names are ${MAX_NAME_LEN} characters or fewer.`)
+      return
+    }
+    // Blur the field so the on-screen keyboard dismisses as the client takes over.
     inputRef.current?.blur?.()
     try { (await getSound()).stop() } catch (_) { /* fine */ }
     onProceed(n)
@@ -178,9 +184,10 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
       ${phase === "ready" && (ready
         ? html`<form class="title-login" onSubmit=${submit}>
             <span class="title-login-label">Avatar name</span>
-            <input ref=${inputRef} class="title-login-input" value=${name} maxlength="20"
+            <input ref=${inputRef} class="title-login-input" value=${name} maxlength="32"
                    autocomplete="off" spellcheck="false"
-                   onInput=${(e) => setName(e.target.value)} />
+                   onInput=${(e) => { setName(e.target.value); if (err) setErr("") }} />
+            ${err && html`<div class="title-login-error">${err}</div>`}
             <button class="title-login-go" type="submit" disabled=${!name.trim()}>Enter Habitat</button>
           </form>`
         : html`<div class="balloon">Loading…<span class="balloon-tail"></span></div>`)}

@@ -148,26 +148,34 @@ header.titlebar .tag {
     position: absolute;
     left: 0; right: 0; bottom: 14px;
     z-index: 3;
+    /* Stack full-width so the input spans the whole region; see the input rule for why. */
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
+    padding: 0 16px;
+    box-sizing: border-box;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
-.title-login-label { color: #fff; font-size: 13px; text-shadow: 0 1px 3px #000; }
+.title-login-label { color: #fff; font-size: 15px; text-shadow: 0 1px 3px #000; text-align: center; }
 .title-login-input {
-    /* 16px is the threshold below which iOS Safari auto-zooms on focus — and since this input is
-       auto-focused on the load screen (title.js), a smaller size zoomed the whole page in and
-       never zoomed back out to fit the game area. Keep it at 16px so focus never triggers zoom. */
+    /* Full region width on purpose: mobile browsers zoom to fit the focused field, so a field that
+       is ~the region width makes that zoom land at the scale where the whole 960px region fits —
+       instead of zooming into a tiny field and sticking there (the bug we kept chasing). The 14ch
+       visual length cue is gone, so title.js enforces the 14-char name limit by rejecting on
+       submit. 16px also keeps iOS from its own sub-16px focus zoom. */
     font: inherit; font-size: 16px;
-    width: 14ch; padding: 4px 8px;
+    width: 100%; padding: 8px 10px;
+    box-sizing: border-box;
+    text-align: center;
     color: #fff; background: #0a0a18;
     border: 1px solid #706deb; border-radius: 3px;
 }
 .title-login-input:focus { outline: none; border-color: #a9a9ff; }
+.title-login-error { color: #ff9a9a; font-size: 14px; text-align: center; text-shadow: 0 1px 3px #000; }
 .title-login-go {
-    font: inherit; font-size: 13px;
-    padding: 5px 12px; cursor: pointer;
+    font: inherit; font-size: 16px;
+    padding: 8px 12px; cursor: pointer;
     color: #fff; background: #2e2c9b;
     border: 1px solid #706deb; border-radius: 3px;
 }

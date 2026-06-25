@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <!-- maximum-scale=1 must be present BEFORE any input is focused: Android Chrome zooms IN to a
-         focused field and won't snap back if you only clamp afterward. This blocks zoom-IN (the
-         stuck-zoom bug) but NOT zoom-OUT, so you can still pinch to fit the 960px-wide region on a
-         phone. Do not add user-scalable=no — that would also block the fit-to-screen zoom-out. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <!-- Don't fight the mobile "zoom to the focused field" behavior — aim it. The avatar-name
+         prompt is the full region width (960px = 320*SCALE; see .title-login-input), so when a
+         phone zooms to that focused field it lands exactly at the scale where the whole region
+         fits. No maximum-scale clamp (that only blocked zoom-in and didn't un-stick Android). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>NeoHabitat — Web Client</title>
     <link rel="stylesheet" href="style.css" />
     <!--
