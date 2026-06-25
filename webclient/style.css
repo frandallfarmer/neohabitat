@@ -245,11 +245,13 @@ header.titlebar .tag {
    Synthesizes keydown events, so it's just a pad of buttons. Beige case + dark legends, chunky
    and pixelated to match the C64; modifier keys darker; an armed sticky modifier glows. */
 /* Dock: spans the habitat window's width and left-aligns to it (like the region frame), so the
-   keyboard inside centers UNDER the window rather than the whole viewport. */
+   keyboard inside sits directly UNDER the window. No max-width cap: #app has 16px padding, so a
+   max-width:100% would shrink the dock ~32px narrower than the region (which overflows that
+   padding) and leave the keyboard short on the right — reading as shifted left. Matching the
+   region's full width keeps it aligned under the game. */
 .osk-dock {
     align-self: flex-start;
     width: calc(320px * 3);   /* the region viewport width (REGION_CANVAS_W * Scale) */
-    max-width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
