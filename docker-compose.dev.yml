@@ -6,6 +6,17 @@
 # This file is never loaded in prod — Ansible uses docker-compose.prod.yml only.
 
 services:
+  neohabitat:
+    # Serve the webclient stack from the live working tree instead of the baked image, so edits to
+    # webclient/habisound/habiworld appear immediately at http://localhost:1701/webclient/ — no
+    # rebuild and no separate static server. (The Express pushserver already serves these dirs from
+    # repoRoot=/neohabitat; these read-only mounts shadow the COPY'd copies with the working tree.
+    # This is what `python -m http.server` used to cover.)
+    volumes:
+      - ./webclient:/neohabitat/webclient:ro
+      - ./habisound:/neohabitat/habisound:ro
+      - ./habiworld:/neohabitat/habiworld:ro
+
   bridge_v2:
     build:
       context: ./bridge_v2
