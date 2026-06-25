@@ -147,31 +147,24 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
     }
   }
 
-  // Once loaded, the player names their Avatar; submitting it dismisses the curtain and starts
-  // the client (no region is asked — the server lands them wherever they last were).
+  // Once loaded, the player names their Avatar via the browser's native prompt — it's one short
+  // field, and a native OS dialog avoids the zoom/scroll a page-embedded text input triggers on
+  // mobile under our prescaled (width=960) viewport. The server lands them wherever they last
+  // were — no region is asked.
   const [name, setName] = useState(() => new URLSearchParams(location.search).get("user") || "")
-  const [err, setErr] = useState("")
-  const inputRef = useRef(null)
-  const submit = async (e) => {
-    e?.preventDefault?.()
-    const n = name.trim()
-    if (!ready || !n) return
-    // The input is full region width (so a phone's zoom-to-focused-field lands at the whole-region
-    // fit scale), which drops the old 14ch visual length cue — so enforce the name limit here.
-    if (n.length > MAX_NAME_LEN) {
-      setErr(`Avatar names are ${MAX_NAME_LEN} characters or fewer.`)
-      return
+  const enter = async () => {
+    if (!ready) return
+    const ask = (def) => (window.prompt(`Avatar name (${MAX_NAME_LEN} characters max):`, def) ?? "").trim()
+    let n = ask(name)
+    while (n && n.length > MAX_NAME_LEN) {
+      window.alert(`Avatar names are ${MAX_NAME_LEN} characters or fewer.`)
+      n = ask(n.slice(0, MAX_NAME_LEN))
     }
-    // Blur the field so the on-screen keyboard dismisses as the client takes over.
-    inputRef.current?.blur?.()
+    if (!n) return // cancelled or left empty — stay on the title screen
+    setName(n)
     try { (await getSound()).stop() } catch (_) { /* fine */ }
     onProceed(n)
   }
-
-  // Focus the name field as soon as it appears.
-  useEffect(() => {
-    if (phase === "ready" && ready) inputRef.current?.focus()
-  }, [phase, ready])
 
   const onStageClick = () => { if (phase === "idle") begin() }
 
@@ -185,14 +178,9 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
       ${phase === "idle" && html`
         <div class="title-prompt">▶ Click to begin</div>`}
       ${phase === "ready" && (ready
-        ? html`<form class="title-login" onSubmit=${submit}>
-            <span class="title-login-label">Avatar name</span>
-            <input ref=${inputRef} class="title-login-input" value=${name} maxlength="32"
-                   autocomplete="off" spellcheck="false"
-                   onInput=${(e) => { setName(e.target.value); if (err) setErr("") }} />
-            ${err && html`<div class="title-login-error">${err}</div>`}
-            <button class="title-login-go" type="submit" disabled=${!name.trim()}>Enter Habitat</button>
-          </form>`
+        ? html`<div class="title-login">
+            <button class="title-login-go" onClick=${enter}>Enter Habitat</button>
+          </div>`
         : html`<div class="balloon">Loading…<span class="balloon-tail"></span></div>`)}
     </div>`
 }
