@@ -151,17 +151,10 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
     e?.preventDefault?.()
     const n = name.trim()
     if (!ready || !n) return
-    // Mobile browsers (notably Chrome) zoom the page IN when the name field is focused and leave
-    // it there, so the client lands stuck at that text-zoom level. Blur the field and momentarily
-    // clamp the visual viewport to scale 1 to snap it back, then restore the normal meta so the
-    // user can still pinch-zoom to fit the 320×SCALE-wide region on a narrow screen. (The 16px
-    // input font alone prevents the zoom on WebKit/iOS but not reliably on Chrome.)
+    // The mobile zoom-stick (Chrome zooming IN to the focused name field and not snapping back) is
+    // prevented up front by maximum-scale=1 in index.html's viewport meta, so there's nothing to
+    // undo here. Blur the field so the on-screen keyboard dismisses as the client takes over.
     inputRef.current?.blur?.()
-    const vp = document.querySelector('meta[name="viewport"]')
-    if (vp) {
-      vp.setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1")
-      setTimeout(() => vp.setAttribute("content", "width=device-width, initial-scale=1"), 350)
-    }
     try { (await getSound()).stop() } catch (_) { /* fine */ }
     onProceed(n)
   }
