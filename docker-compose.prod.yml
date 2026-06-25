@@ -36,3 +36,26 @@ services:
       # so the prod overlay's port list (which compose REPLACES rather
       # than merges) doesn't accidentally drop it.
       - "127.0.0.1:2018:2018"
+
+  caddy:
+    # HTTPS front on host :443 (see caddy/Caddyfile). Terminates TLS via Let's Encrypt
+    # (TLS-ALPN-01 on 443 — NOT HTTP-01, since the neohabitat container owns host :80),
+    # reverse-proxies the Alpha webclient + the game WebSocket to the neohabitat container,
+    # and 302-redirects everything else to the existing HTTP site. Prod-only: dev/CI never
+    # publishes 443 or needs a public cert.
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - neohabitat
+    ports:
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data      # persists the issued cert across redeploys (LE rate limits)
+      - caddy_config:/config
+    networks:
+      - neohabitat
+
+volumes:
+  caddy_data:
+  caddy_config:

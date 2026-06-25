@@ -271,7 +271,7 @@
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
           up -d --pull always --remove-orphans \
-          neohabitatmongo neohabitat bots otel-collector promtail
+          neohabitatmongo neohabitat caddy bots otel-collector promtail
       args:
         chdir: "{{ neohabitat_repo_path }}"
         executable: /bin/bash
@@ -279,15 +279,17 @@
       register: compose_up
       changed_when: "'Recreated' in compose_up.stderr or 'Started' in compose_up.stderr"
 
-    - name: Force-recreate monitoring sidecars every deploy
+    - name: Force-recreate bind-mounted-config services every deploy (sidecars + caddy)
       # Compose can't tell when a bind-mounted config file (otel-collector
-      # config, promtail config) changes content, so changes to those land
-      # via git but never get applied until the container is recreated.
-      # Sidecars are stateless and restart in <5s, so just always recreate.
+      # config, promtail config, caddy/Caddyfile) changes content, so changes
+      # to those land via git but never get applied until the container is
+      # recreated. All three are stateless and restart in <5s (caddy reloads
+      # its already-issued cert from the caddy_data volume — no LE re-issue),
+      # so just always recreate. Caddy's recreate is a ~1s blip on :443 only.
       shell: |
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \
-          up -d --force-recreate --no-deps otel-collector promtail
+          up -d --force-recreate --no-deps otel-collector promtail caddy
       args:
         chdir: "{{ neohabitat_repo_path }}"
         executable: /bin/bash

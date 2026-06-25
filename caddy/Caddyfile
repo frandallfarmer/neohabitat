@@ -1,0 +1,55 @@
+# HTTPS front for habitat.themade.org — terminates TLS on :443 and either serves the Alpha
+# webclient (by reverse-proxying the existing Express pushserver, which keeps the alpha-password
+# gate and serves identical files) or bounces everything else to the untouched HTTP site on :80.
+#
+# Why a separate front instead of adding TLS to Express: it leaves the working HTTP Docent +
+# Emulator site completely alone, and a cert hiccup here cannot take :80 down.
+#
+# Cert: Let's Encrypt via TLS-ALPN-01 on :443. We must NOT use the HTTP-01 challenge or bind :80
+# at all — the Express pushserver owns host :80. `caddy_data` (see compose) persists the cert
+# across redeploys so we don't re-issue and hit LE rate limits.
+{
+	# Don't stand up the usual :80 HTTP->HTTPS redirector — :80 belongs to Express.
+	auto_https disable_redirects
+}
+
+habitat.themade.org {
+	# Force the TLS-ALPN-01 challenge (runs on :443); the HTTP-01 challenge would need :80.
+	tls {
+		issuer acme {
+			disable_http_challenge
+		}
+	}
+
+	# The Alpha webclient and its sibling libs. Proxy to the Express pushserver (container :1701)
+	# rather than re-serving the files, so the alpha-password gate (pushserver/app.js alphaGate)
+	# and the exact deployed assets come along for free. `neohabitat` is the compose service name.
+	handle /webclient/* {
+		reverse_proxy neohabitat:1701
+	}
+	handle /habisound/* {
+		reverse_proxy neohabitat:1701
+	}
+	handle /habiworld/* {
+		reverse_proxy neohabitat:1701
+	}
+
+	# Status page — proxied to Express for now; the eventual "take it over" step swaps this one
+	# route for a local handler.
+	handle /status {
+		reverse_proxy neohabitat:1701
+	}
+
+	# Secure game socket. The webclient connects to wss://<host>/ws (live.js); Caddy upgrades and
+	# pipes to the plain-ws websocketProxy on :1987, which is path-agnostic (WebSocketServer({server})).
+	handle /ws/* {
+		reverse_proxy neohabitat:1987
+	}
+
+	# Bare "/" with no path — and any path this front doesn't own — bounces to the existing HTTP
+	# site so the Docent + Emulator page is preserved untouched. The webclient pulls nothing from
+	# these paths, so there is no mixed-content risk.
+	handle {
+		redir http://habitat.themade.org:80{uri} 302
+	}
+}
