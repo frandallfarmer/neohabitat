@@ -59,13 +59,17 @@ const ESP_MESSAGE_SENT = 7
 const ESP_MESSAGE_RECEIVED = 8
 const ESP_DEACTIVATES = 9
 const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
-// The websocketProxy runs at the page's HOST on a fixed port (pushserver config listenAddr
-// 0.0.0.0:1987; prod clientAddr habitat.themade.org:1987). Synthesize from location.hostname —
-// NOT location.host, which carries the page's own port — plus the proxy port, with the scheme
-// matched to the page (https page → wss, avoiding mixed-content blocks). A ?ws= param overrides.
+// The game socket reaches the websocketProxy (a byte-pipe to bridge:1986). Over plain HTTP
+// (dev/local) we hit it directly at the page host on its fixed port (pushserver listenAddr
+// 0.0.0.0:1987). Over HTTPS that would be mixed-content (wss required), and exposing a second TLS
+// port is avoidable: the prod Caddy front terminates TLS on 443 and reverse-proxies
+// wss://<host>/ws → ws://…:1987, so use the page's own origin + the /ws path (no explicit port).
+// A ?ws= param overrides either way.
 const WS_PROXY_PORT = 1987
 const wsDefault = () =>
-  q("ws", `${location.protocol === "https:" ? "wss:" : "ws:"}//${location.hostname}:${WS_PROXY_PORT}`)
+  q("ws", location.protocol === "https:"
+    ? `wss://${location.host}/ws`
+    : `ws://${location.hostname}:${WS_PROXY_PORT}`)
 const qNum = (k, d) => {
   const v = Number(q(k, d))
   return Number.isFinite(v) && v > 0 ? v : d
