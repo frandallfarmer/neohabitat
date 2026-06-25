@@ -146,15 +146,22 @@ header.titlebar .tag {
 /* Avatar-name prompt shown once the client has loaded (replaces "press any key"). */
 .title-login {
     position: absolute;
-    left: 0; right: 0; bottom: 14px;
+    left: 0; right: 0; bottom: 0;
     z-index: 3;
     /* Stack full-width so the input spans the whole region; see the input rule for why. */
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-    padding: 0 16px;
+    /* No horizontal padding: the input must be the FULL 960px stage width so a phone's
+       zoom-to-focused-field shows the whole region with nothing clipped (16px of side padding
+       left the title art clipped at the edges). Vertical padding + an opaque backdrop turn the
+       prompt into a clean bottom panel instead of floating label/fields over the title
+       cityscape, which read as an ugly overlap. */
+    padding: 14px 0;
     box-sizing: border-box;
+    background: #000;
+    border-top: 2px solid #4a48a0;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .title-login-label { color: #fff; font-size: 15px; text-shadow: 0 1px 3px #000; text-align: center; }
