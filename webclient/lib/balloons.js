@@ -261,7 +261,11 @@ function QuipSprite({ quip }) {
   )
   if (!quip || quip.anchorPx <= 0 || Date.now() > quip.until || !canvas) return null
   const left = quipSpriteLeftPx(quip.anchorPx) * scale
-  const top = -QUIP_PANEL_OVERLAP_PX * scale
+  // Drop the quip one charset line below where the raw C64 overlap (QUIP_PANEL_OVERLAP_PX = 8 =
+  // one line) would put it. That overlap poked the tail up into the newest balloon's bottom line
+  // — the balloon read as one line too high. With +LINE_PX_H it nets to the panel/band seam, so
+  // the tail sits just under the balloon's bottom border instead of covering it.
+  const top = (-QUIP_PANEL_OVERLAP_PX + LINE_PX_H) * scale
   return html`
     <div class="balloon-quip" style="left: ${left}px; top: ${top}px; background: transparent;">
       <${canvasImage} canvas=${canvas} />
