@@ -511,7 +511,7 @@ async function main() {
     avatarMotion.tick.value
     return html`
       <div class=${"statusbar " + st.kind}><span class="dot"></span>${st.text}</div>
-      <div class="region-frame" style="align-self:flex-start;">
+      <div class="region-frame" style="align-self:center;">
         ${showEdges ? html`<button class="edge-chevron left" style=${sideChevStyle} title="Walk off the left edge" onClick=${onEdgeClick("left")}>◀</button>` : null}
         <div class="habitat-viewport" style="background:#000;">
         <${Scale.Provider} value=${3}>

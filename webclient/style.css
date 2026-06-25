@@ -244,13 +244,13 @@ header.titlebar .tag {
 /* Optional on-screen C64-style keyboard (onscreen-keyboard.mjs) for touch / kiosk clients.
    Synthesizes keydown events, so it's just a pad of buttons. Beige case + dark legends, chunky
    and pixelated to match the C64; modifier keys darker; an armed sticky modifier glows. */
-/* Dock: spans the habitat window's width and left-aligns to it (like the region frame), so the
-   keyboard inside sits directly UNDER the window. No max-width cap: #app has 16px padding, so a
-   max-width:100% would shrink the dock ~32px narrower than the region (which overflows that
-   padding) and leave the keyboard short on the right — reading as shifted left. Matching the
-   region's full width keeps it aligned under the game. */
+/* Dock: the region-viewport width, centered in #app exactly like the region frame, so the keyboard
+   lands directly UNDER the game. Centered (not flush-left) because open-terrain regions wrap the
+   viewport in left/right edge chevrons (34px each) — the viewport is centered within that frame, so
+   only a centered dock stays aligned with it whether or not the chevrons are present. (No max-width
+   cap: #app's 16px padding would otherwise shrink it narrower than the region.) */
 .osk-dock {
-    align-self: flex-start;
+    align-self: center;
     width: calc(320px * 3);   /* the region viewport width (REGION_CANVAS_W * Scale) */
     display: flex;
     flex-direction: column;
