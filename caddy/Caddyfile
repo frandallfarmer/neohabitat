@@ -40,9 +40,12 @@ habitat.themade.org {
 		reverse_proxy neohabitat:1701
 	}
 
-	# Secure game socket. The webclient connects to wss://<host>/ws (live.js); Caddy upgrades and
-	# pipes to the plain-ws websocketProxy on :1987, which is path-agnostic (WebSocketServer({server})).
-	handle /ws/* {
+	# Secure game socket. The webclient connects to exactly wss://<host>/ws (live.js). `handle`
+	# takes a single matcher token and `/ws/*` does NOT match the bare `/ws` (that dropped the
+	# upgrade through to the redirect → 302), so use a named path matcher for both /ws and /ws/*.
+	# Caddy upgrades and pipes to the plain-ws websocketProxy on :1987 (path-agnostic).
+	@ws path /ws /ws/*
+	handle @ws {
 		reverse_proxy neohabitat:1987
 	}
 
