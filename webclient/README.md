@@ -24,8 +24,8 @@ python3 -m http.server 8000
 
 | URL | Purpose |
 |-----|---------|
-| [http://localhost:8000/webclient/](http://localhost:8000/webclient/) | Title sequence + Phase 0 shell |
-| [http://localhost:8000/webclient/live.html](http://localhost:8000/webclient/live.html) | **Live region viewer** (WebSocket → habiworld → habirender) |
+| [http://localhost:8000/webclient/](http://localhost:8000/webclient/) | **The live client** (same as live.html — both are the entry) |
+| [http://localhost:8000/webclient/live.html](http://localhost:8000/webclient/live.html) | **The live client** (WebSocket → habiworld → habirender) |
 | [http://localhost:8000/webclient/region.html](http://localhost:8000/webclient/region.html) | Static region JSON demo |
 
 ### Live viewer
@@ -46,8 +46,8 @@ websocketProxy → Transport → habiworld.apply (state + host behaviors) → re
 ## Layout
 
 ```
-index.html        title + shell sandbox
-live.html         live region viewer
+index.html        the live client (identical to live.html; ./ serves it)
+live.html         the live client (WebSocket → habiworld → habirender)
 region.html       static region render test
 lib/live.js       WebSocket harness, habiworld, avatar motion, sound glue
 lib/avatar-chore.js   client-side walk/gesture replay
