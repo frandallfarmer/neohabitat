@@ -21,7 +21,10 @@ import { useEffect, useRef, useState } from "preact/hooks"
 const html = htm.bind(h)
 
 // Region playfield is 320×200 C64 px; the stage shows it at this integer scale.
-const SCALE = 2
+// Match the in-game region Scale (live.js Scale.Provider = 3) so the title stage is the same
+// 960px width. The full-width avatar-name prompt is then a true 960px, so a phone's
+// zoom-to-focused-field lands at the scale where the whole 960px region fits.
+const SCALE = 3
 
 // ── the comet sprite, exactly as poked into sprite 0 by Main/comet.m ──
 // A 24-wide C64 sprite; init.m sets only these first three rows (the rest are 0).
