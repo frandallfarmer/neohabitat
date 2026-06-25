@@ -143,51 +143,31 @@ header.titlebar .tag {
 }
 @keyframes blink { 50% { opacity: 0.25; } }
 
-/* Avatar-name prompt shown once the client has loaded (replaces "press any key"). */
+/* Avatar-name entry shown once the title finishes loading. The name is collected via the browser's
+   native prompt (title.js) — a native dialog avoids the mobile zoom/scroll a page-embedded input
+   triggers under the prescaled width=960 viewport — so this is just a button on a bottom panel. */
 .title-login {
     position: absolute;
     left: 0; right: 0; bottom: 0;
     z-index: 3;
-    /* Stack full-width so the input spans the whole region; see the input rule for why. */
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
-    /* No horizontal padding: the input must be the FULL 960px stage width so a phone's
-       zoom-to-focused-field shows the whole region with nothing clipped (16px of side padding
-       left the title art clipped at the edges). Vertical padding + an opaque backdrop turn the
-       prompt into a clean bottom panel instead of floating label/fields over the title
-       cityscape, which read as an ugly overlap. */
-    padding: 14px 0;
+    /* Opaque bottom panel + divider so the button sits on a clean bar rather than floating over
+       the title cityscape (the earlier inline prompt overlapped the art). */
+    padding: 14px 16px;
     box-sizing: border-box;
     background: #000;
     border-top: 2px solid #4a48a0;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
-.title-login-label { color: #fff; font-size: 15px; text-shadow: 0 1px 3px #000; text-align: center; }
-.title-login-input {
-    /* Full region width on purpose: mobile browsers zoom to fit the focused field, so a field that
-       is ~the region width makes that zoom land at the scale where the whole 960px region fits —
-       instead of zooming into a tiny field and sticking there (the bug we kept chasing). The 14ch
-       visual length cue is gone, so title.js enforces the 14-char name limit by rejecting on
-       submit. 16px also keeps iOS from its own sub-16px focus zoom. */
-    font: inherit; font-size: 16px;
-    width: 100%; padding: 8px 10px;
-    box-sizing: border-box;
-    text-align: center;
-    color: #fff; background: #0a0a18;
-    border: 1px solid #706deb; border-radius: 3px;
-}
-.title-login-input:focus { outline: none; border-color: #a9a9ff; }
-.title-login-error { color: #ff9a9a; font-size: 14px; text-align: center; text-shadow: 0 1px 3px #000; }
 .title-login-go {
     font: inherit; font-size: 16px;
-    padding: 8px 12px; cursor: pointer;
+    padding: 10px 12px; cursor: pointer;
     color: #fff; background: #2e2c9b;
     border: 1px solid #706deb; border-radius: 3px;
 }
-.title-login-go:hover:not(:disabled) { background: #4a48c0; }
-.title-login-go:disabled { opacity: 0.5; cursor: default; }
+.title-login-go:hover { background: #4a48c0; }
 
 /* C64 word balloon panel (Main/balloons.m) — charset border above the graphics band. */
 .habitat-viewport {
