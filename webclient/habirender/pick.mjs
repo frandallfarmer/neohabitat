@@ -94,11 +94,24 @@ export const hitTestFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
   const lx = Math.floor(canvasX - itemPx)
   const ly = Math.floor(canvasY - itemPy)
   if (lx < 0 || ly < 0 || lx >= frame.canvas.width || ly >= frame.canvas.height) return false
+  // pointer.m fine_cel_point: container_type==1 → the WHOLE object is a bounding-box hit (every
+  // cel, no pixel test). Newsstand fronts (newsstand1.bin) are a bitmap booth with a transparent
+  // display window; without this the window falls through to the item behind it. Hit if the click
+  // lands in any cel's box (union of cel boxes = the object); fall back to the canvas extent if
+  // per-cel boxes aren't available.
+  if (frame.boxHit) {
+    if (!frame.celLayers?.length) return true
+    for (const cl of frame.celLayers) {
+      const cx = lx - cl.offsetX, cy = ly - cl.offsetY
+      if (cx >= 0 && cy >= 0 && cx < cl.canvas.width && cy < cl.canvas.height) return true
+    }
+  }
   // pointer.m boundary_check: a trapezoid (cel_trap) is hit-tested GEOMETRICALLY (trap.m —
   // is the cursor inside the slanted quad), NOT by cel-pixel opacity. A textured ground
   // trapezoid has transparent gaps in its fill; without this, clicks landing in a gap miss
   // the ground and fall through to the sky Flat behind it → wrongful sky_go. Check the quad
-  // coverage spans first; everything else falls through to the cel-pixel test below.
+  // coverage spans first; everything else falls through to the cel-pixel test below. (cel_box
+  // glass fronts also ride this path — celLayerRenderer.box marks every scanline full-width.)
   if (frame.trapLayers) {
     for (const tl of frame.trapLayers) {
       const ty = ly - tl.offsetY

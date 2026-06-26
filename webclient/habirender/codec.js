@@ -338,11 +338,18 @@ const decodeContentsXY = (data, off, nextBlockOff) => {
 }
 
 export const decodeProp = (data) => {
-    const prop = { 
+    const prop = {
         data: data,
         howHeld: decodeHowHeld(data.getUint8(0)),
         colorBitmask: data.getUint8(1),
         contentsInFront: (data.getUint8(3) & 0x80) == 0,
+        // pointer.m fine_cel_point: container_type (the offset-3 byte) == 1 means the WHOLE object
+        // is hit by its bounding box with NO per-cel pixel test (`cmp #1; beq pointed_at`). Newsstand
+        // fronts (newsstand1.bin, no_cont+1) use this: the booth is a bitmap with a transparent
+        // display window, and the window must still select the vendor. Distinct from a cel_box cel,
+        // which box-hits one cel; this box-hits every cel of the object. (1 can't be a real
+        // contentsXY offset — that table never starts inside the 7-byte header.)
+        boxHit: data.getUint8(3) == 1,
         walkto: { left: decodeWalkto(data.getUint8(4)), right: decodeWalkto(data.getUint8(5)), yoff: data.getInt8(6) },
         celmasks: [],
         cels: []
