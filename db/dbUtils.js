@@ -35,6 +35,11 @@ const runDBTests = async () => {
   var mongoHost = process.argv[2];
   var mode = process.argv[3];
 
+  if (!/^[a-zA-Z0-9.-]+$/.test(mongoHost)) {
+    console.error('Invalid MONGO_HOST format');
+    process.exit(-1);
+  }
+
   const client = await MongoClient.connect(`mongodb://${mongoHost}/`, {
     connectTimeoutMS: 15000
   });
