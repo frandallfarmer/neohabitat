@@ -1105,6 +1105,76 @@ test('SIT$ stand-up returns the avatar to the region and restores the stand pose
   assert.equal(w.get(21).mod.activity, 129) // STAND
 })
 
+// ── region-entry seating reconstruction (bug 3: reconnect while someone is seated) ──
+// The bridge passes a seated avatar's state as fields (Avatar.sittingIn/sittingSlot/
+// sittingAction + Seating.sitters[]); habiworld rebuilds the seat "containment" on make.
+
+test('region entry: avatar made BEFORE its seat is seated when the seat (sitters[]) arrives', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  // Real capture order: Chip's make arrives region-contained with sittingIn, before the couch.
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'user', ref: 'user-chip-1', name: 'Chip',
+      mods: [{ type: 'Avatar', noid: 59, x: 80, y: 133, orientation: 0, activity: 255,
+        sittingIn: 8, sittingSlot: 1, sittingAction: 157 }] },
+  })
+  assert.equal(w.get(59).containerRef, REGION_REF) // seat absent → not seated yet
+  assert.equal(w.get(59).mod.activity, 157)        // but the sit pose is already applied
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-couch-1', name: 'Couch',
+      mods: [{ type: 'Couch', noid: 8, x: 72, y: 134, orientation: 160, style: 0, sitters: [0, 59] }] },
+  })
+  assert.equal(w.get(59).containerRef, 'item-couch-1') // now seated
+  assert.equal(w.get(59).mod.y, 1)                      // slot 1
+  assert.equal(w.get(59).mod.activity, 157)
+})
+
+test('region entry: avatar made AFTER its seat is seated immediately from sittingIn', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-couch-2', name: 'Couch',
+      mods: [{ type: 'Couch', noid: 9, x: 72, y: 134, style: 1, sitters: [0, 0] }] },
+  })
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'user', ref: 'user-chip-2', name: 'Chip',
+      mods: [{ type: 'Avatar', noid: 60, x: 80, y: 133, sittingIn: 9, sittingSlot: 0, sittingAction: 133 }] },
+  })
+  assert.equal(w.get(60).containerRef, 'item-couch-2')
+  assert.equal(w.get(60).mod.activity, 133)
+})
+
+test('a seated avatar cannot walk — goXY Im_sitting → go_fail (no WALK)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-chair-s', name: 'Chair',
+      mods: [{ type: 'Chair', noid: 79, x: 12, y: 142, style: 0 }] },
+  })
+  w.me.containerRef = 'item-chair-s' // seated
+  const { calls, cb } = recorder()
+  await dispatch(w, ACTION_GO, 30, {}, cb) // would normally walk to the far frisbee
+  assert.equal(calls.walks.length, 0, 'no walk while seated')
+})
+
+test('WALK$ is a no-op for a seated avatar (walkto.m: don\'t move if contained)', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-chair-w', name: 'Chair',
+      mods: [{ type: 'Chair', noid: 78, x: 90, y: 140, style: 0 }] },
+  })
+  w.apply({ op: 'SIT$', noid: 21, up_or_down: 1, cont: 78, slot: 0 })
+  w.apply({ op: 'WALK$', noid: 21, x: 40, y: 140, how: 0 })
+  assert.equal(w.get(21).containerRef, 'item-chair-w') // still seated, not walked into the region
+})
+
 test('ON$ on a flashlight updates gr_state and region lighting', () => {
   const w = new HabitatWorld()
   makeStorm(w)

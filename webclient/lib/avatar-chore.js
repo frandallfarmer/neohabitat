@@ -327,6 +327,14 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
         if (msg.op === "POSTURE$" && msg.new_posture != null) {
             if (applyPersistentPosture(msg.noid, msg.new_posture, serverOrient, serverActivity)) return
         }
+        // avatar_SITORGETUP.m → v_set_actor_chore: a seated avatar HOLDS the sit pose; get-up
+        // stands. habiworld set mod.activity (the sittingAction on sit, STAND on get-up), passed
+        // here as serverActivity; apply it as the persistent posture so it overrides any stale
+        // walk/facing activityOverride — otherwise the neighbor "never visibly sits".
+        if (msg.op === "SIT$") {
+            applyPersistentPosture(msg.noid, msg.up_or_down ? serverActivity : 129, serverOrient, serverActivity)
+            return
+        }
         const fn = OP_GESTURE[msg.op]
         if (fn) beginGesture(msg.noid, fn(msg), serverOrient, serverActivity)
     }
