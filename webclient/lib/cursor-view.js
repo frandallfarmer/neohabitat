@@ -98,10 +98,15 @@ export function RegionCursor({
   const onPointerDown = useCallback((e) => {
     if (!enabled || e.button !== 0) return
     const phys = localFromEvent(e)
-    // While frozen after a verb, a click without a deliberate move begins at the FREEZE point
-    // (the press point of the last command) — the mouse "returns" there — instead of warping
-    // to wherever the OS pointer physically sits (the drag-end of that command).
-    const p = parkRef.current ? { x: parkRef.current.freezeX, y: parkRef.current.freezeY } : phys
+    // The C64 "return to the press point after a verb" model assumes a RELATIVE mouse: you can't
+    // teleport it, so a click without a deliberate move begins at the FROZEN press point of the
+    // last command rather than warping to where the OS pointer physically sits. A PEN or TOUCH is
+    // ABSOLUTE — putting it down at a new spot means "act HERE" — and a non-hovering pen emits no
+    // moves between lifting and re-touching, so the park would never clear and every command would
+    // fire at the first press point. So honor the freeze only for an actual mouse; pen/touch always
+    // anchor at the physical contact point.
+    const useFreeze = parkRef.current && e.pointerType === "mouse"
+    const p = useFreeze ? { x: parkRef.current.freezeX, y: parkRef.current.freezeY } : phys
     parkRef.current = null
     setPos(p)
     // C64: trigger down + centered stick → stop_cursor (options: four arrows + ?).
@@ -121,8 +126,13 @@ export function RegionCursor({
     // to it). We can't move the OS pointer, so remember both the freeze point (where the
     // cursor is drawn / where the next press anchors) and the physical release point (used
     // only to tell settling jitter from a deliberate move).
-    const rel = localFromEvent(e)
-    parkRef.current = { freezeX: anchorX, freezeY: anchorY, physX: rel.x, physY: rel.y }
+    // Park (freeze at the press point so the next click returns there) is the C64 RELATIVE-mouse
+    // behavior. A pen/touch is absolute, so release the position lock after the command and let the
+    // next contact land wherever the user points. Only a mouse parks.
+    if (e.pointerType === "mouse") {
+      const rel = localFromEvent(e)
+      parkRef.current = { freezeX: anchorX, freezeY: anchorY, physX: rel.x, physY: rel.y }
+    }
     setPos({ x: anchorX, y: anchorY })
     const command = commandFromCursorState(state)
     const canvasX = anchorX / scale
