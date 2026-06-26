@@ -26,22 +26,28 @@ async function key_do(ctx) {
   return { ok: true, keyNumber: number }
 }
 
-// tokens_do.m: holding the wad, pick an amount (the C64 popped the
-// denomination selector; a bot passes args.amount) and MSG_SPLIT it
-// off. The split-off wad arrives asynchronously as a make.
+// tokens_do.m: holding the wad, split an amount off it. The C64 popped the
+// denomination selector — "Available: <wad value>, Choose amount: " (tokens_do.m:31-40,
+// the # is the held wad's denomination) — via ctx.requestTextInput; bots pass args.amount.
+// MSG_SPLIT it off; the split-off wad arrives asynchronously as a make.
 async function tokens_do(ctx) {
   const inHand = ctx.inHand
   if (!inHand || inHand.noid !== ctx.pointed.noid) return ctx.beep('not-holding')
-  const amount = ctx.args.amount
+  let amount = ctx.args.amount
+  if (amount == null && ctx.requestTextInput) {
+    const denom = (ctx.pointed.mod.denom_hi || 0) * 256 + (ctx.pointed.mod.denom_lo || 0)
+    const typed = await ctx.requestTextInput(`Available: ${denom}, Choose amount: `, { numeric: true })
+    amount = parseInt(typed, 10)
+  }
   if (!amount || amount <= 0) return ctx.beep('no-amount')
-  ctx.chore('unpocket')
-  const reply = await ctx.send({
+  ctx.chore('unpocket')                            // chore AV_ACT_unpocket
+  const reply = await ctx.send({                   // sendMsg MSG_SPLIT
     op: 'SPLIT',
     to: ctx.pointed.ref,
     amount_lo: amount & 0xff,
     amount_hi: (amount >> 8) & 0xff,
   })
-  ctx.chore('stand')
+  ctx.chore('stand')                               // chore AV_ACT_stand
   if (!succeeded(reply)) return ctx.beep('server-denied')
   return { ok: true }
 }
