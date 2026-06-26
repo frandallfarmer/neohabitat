@@ -65,6 +65,9 @@ async function vendo_put(ctx) {
     return ctx.beep('payment-rejected')
   }
 
+  // C64 generic_coinOp plays COIN_ACCEPTED on a successful PAY before the device's own dispense
+  // sound — vendo_put sends VEND directly (not via generic_coinOp), so play it here too.
+  ctx.sound('COIN_ACCEPTED', front.noid)
   ctx.sound('VENDO_DISPENSING', front.noid)
   // Debit tokens locally (mirrors C64 v_spend); SELL$ broadcast covers neighbors.
   const price = (reply.item_price_lo || 0) + (reply.item_price_hi || 0) * 256
