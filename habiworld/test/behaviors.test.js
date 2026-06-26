@@ -1082,6 +1082,27 @@ test('SIT$ moves avatar into seat container on sit down', () => {
   w.apply({ op: 'SIT$', noid: 21, up_or_down: 1, cont: 75, slot: 2 })
   assert.equal(w.get(21).containerRef, 'item-chair-1')
   assert.equal(w.get(21).mod.y, 2)
+  // avatar_SITORGETUP.m: the seated avatar takes the sit pose from the seat's style bit
+  // (style 0 → sit_front 157) so observers compose it sitting, not standing.
+  assert.equal(w.get(21).mod.activity, 157)
+})
+
+test('SIT$ stand-up returns the avatar to the region and restores the stand pose', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-chair-2', name: 'Chair',
+      mods: [{ type: 'Chair', noid: 77, x: 90, y: 140, orientation: 0, gr_state: 0, style: 1 }],
+    },
+  })
+  w.apply({ op: 'SIT$', noid: 21, up_or_down: 1, cont: 77, slot: 0 })
+  assert.equal(w.get(21).containerRef, 'item-chair-2')
+  assert.equal(w.get(21).mod.activity, 133) // style 1 → sit_chair
+  w.apply({ op: 'SIT$', noid: 21, up_or_down: 0, cont: 77, slot: 0 })
+  assert.equal(w.get(21).containerRef, REGION_REF) // back in the region, not the seat
+  assert.equal(w.get(21).mod.activity, 129) // STAND
 })
 
 test('ON$ on a flashlight updates gr_state and region lighting', () => {

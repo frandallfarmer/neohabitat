@@ -641,7 +641,7 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                 const { obj, prop, container, layout } = layoutItem
                 var newLayout = null
                 if (prop.value) {
-                    if (container.value?.layout?.value) {
+                    if (container.value?.layout?.value && !prop.value.isBody) {
                         newLayout = containedItemLayout(
                             prop.value, 
                             obj.value.mods[0], 
@@ -649,7 +649,10 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                             container.value.obj.value.mods[0], 
                             container.value.layout.value.frames[0]
                         )
-                    } else if (!container.value) {
+                    } else if (!container.value || prop.value.isBody) {
+                        // A body (avatar) reaches here even when "contained" by a seat: C64
+                        // generic_goToFurniture change_containers an avatar into the seat ONLY for
+                        // position; display_avatar still draws the whole body (head/hand/sit posture).
                         if (prop.value.isBody) {
                             // FG/BG split (C64 Main/render.m): foreground objects — avatars,
                             // always flagged 0x80 (walkto.m: `ora #0x80`) — are the only ones
@@ -713,8 +716,19 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                                     actionName, 0)
                                 frames = standFrame ? [standFrame] : []
                             }
-                            const [x, y, z] = propLocationFromObjectXY(displayMod.x, displayMod.y)
-                            newLayout = { x, y, z, frames }
+                            if (container.value?.layout?.value) {
+                                // Seated: position via the seat's contents_xy[slot] — chairfb {0,23},
+                                // chairs {2,-14} (drawn behind), cafechair {-2,4} — like any contained
+                                // item, but keep the composed avatar frames (not the generic prop path).
+                                const seatPos = containedItemLayout(
+                                    prop.value, obj.value.mods[0],
+                                    container.value.prop.value, container.value.obj.value.mods[0],
+                                    container.value.layout.value.frames[0])
+                                newLayout = { x: seatPos.x, y: seatPos.y, z: seatPos.z, frames }
+                            } else {
+                                const [x, y, z] = propLocationFromObjectXY(displayMod.x, displayMod.y)
+                                newLayout = { x, y, z, frames }
+                            }
                         } else {
                             newLayout = regionItemLayout(prop.value, obj.value.mods[0])
                         }
