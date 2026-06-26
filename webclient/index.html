@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <!-- Prescale the whole app to the game display width. The client is laid out at a fixed 960px
-         (320 * Scale 3 — the in-game region width, matched by the SCALE=3 title), so declaring the
-         viewport width AS 960 makes mobile browsers scale the page to fit the device width: the
-         whole thing fits on load, no pinch and no fragile zoom-to-focused-field. Desktop browsers
-         ignore viewport width and render the 960px layout normally. -->
-    <meta name="viewport" content="width=960" />
+    <!-- Prescale the whole app to the WIDEST the client gets: an open-terrain region frame is the
+         960px game (320 * Scale 3) plus a 34px edge chevron on each side ≈ 1028px, rounded up to
+         the #app max-width 1040. Declaring the viewport width AS 1040 makes mobile browsers scale
+         the whole client (game, chevrons, keyboard) to fit the device with nothing clipped — and
+         since game + keyboard are center-aligned, the keyboard sits right under the game. Desktop
+         browsers ignore viewport width and render the 1040 layout normally. -->
+    <meta name="viewport" content="width=1040" />
     <title>NeoHabitat</title>
     <link rel="stylesheet" href="style.css" />
     <!--

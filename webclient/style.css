@@ -21,7 +21,10 @@ body {
 #app {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 16px;
+    /* No horizontal padding: the open-terrain region frame (960 game + 34px edge chevron each
+       side = 1028px) must fit inside the prescaled 1040 viewport. 16px side padding would shrink
+       the content box below 1028 and clip the chevroned frame. Vertical padding stays. */
+    padding: 16px 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
