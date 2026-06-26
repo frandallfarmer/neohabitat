@@ -272,6 +272,13 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   if (client.readText) {
     ctx.readText = (noid, opts) => client.readText(noid, opts)
   }
+  // actions.m wait_for_text_string — a GRAPHICAL client prompts the player to type a line (the
+  // C64's "Available: #, Choose amount: " denomination selector, "ESP:", "Page Number ?", etc.)
+  // and resolves with the typed string. Only defined when the client provides it; bots leave it
+  // undefined and pass the value up front via args (e.g. args.amount, args.text).
+  if (client.requestTextInput) {
+    ctx.requestTextInput = (prompt, opts) => client.requestTextInput(prompt, opts)
+  }
   // C64 newImage noid[, state]: optional state sets gr_state then redraws.
   // Background objects set background_render (full backdrop); the renderer
   // handles that via refresh on newImage / fieldChanged.

@@ -154,6 +154,17 @@ async function main() {
     maxBalloonLines: qNum("balloonHeight", 4),
   }))
   const textInputState = signal(createTextInputState())
+  // Client-initiated text prompt (ctx.requestTextInput — e.g. the ATM/token amount selector). It
+  // reuses the text-input line in prompt mode (setPromptLine locks the prefix). onTextSubmit
+  // resolves this with the typed value (sans the prefix) when set; resetForRegion abandons it.
+  let pendingPromptResolve = null
+  const requestTextInputUI = (prompt) =>
+    new Promise((resolve) => {
+      if (pendingPromptResolve) { const prev = pendingPromptResolve; pendingPromptResolve = null; prev(null) }
+      pendingPromptResolve = resolve
+      setPromptLine(textInputState.value, String(prompt ?? ""))
+      textInputState.value = { ...textInputState.value }
+    })
   // Optional on-screen keyboard — default ON for mobile browsers / touch devices (no physical
   // keyboard), OFF on desktop. `?osk=1`/`0` forces it. Never required; the toggle flips it.
   // The UA regex catches phones; coarse-pointer catches tablets / touch screens (incl. iPadOS,
@@ -223,6 +234,7 @@ async function main() {
     speakReplyPending = false
     if (speakReplyTimer) { clearTimeout(speakReplyTimer); speakReplyTimer = null }
     if (modeState.value.mode !== MODE_REGION) resolveMode(null) // close any open paper/book/inventory modal
+    if (pendingPromptResolve) { const r = pendingPromptResolve; pendingPromptResolve = null; r(null) } // abandon any open ctx.requestTextInput
   }
   world.on("regionChanged", resetForRegion)
   const onTextSubmit = async (payload) => {
@@ -234,6 +246,19 @@ async function main() {
       return
     }
     if (payload.kind === "prompt") {
+      if (pendingPromptResolve) {
+        // Client-initiated prompt (ctx.requestTextInput): resolve the behavior locally with the
+        // typed value — the line minus the locked prompt prefix (leftBound) — and leave prompt
+        // mode. No server PROMPT_REPLY. An empty value lets the behavior abort (C64: zero = abort).
+        const lb = textInputState.value.leftBound
+        const typed = payload.text.slice(typeof lb === "number" && lb >= 0 ? lb : 0)
+        const resolve = pendingPromptResolve
+        pendingPromptResolve = null
+        endPrompt(textInputState.value)
+        textInputState.value = { ...textInputState.value }
+        resolve(typed)
+        return
+      }
       // god-tool / server prompt REPL (Region.PROMPT_REPLY): send the FULL line back —
       // including the prompt prefix the server matches on (e.g. "Edit: ") — then leave
       // prompt mode. The server re-sends PROMPT_USER_$ for the next command; an empty line
@@ -405,7 +430,7 @@ async function main() {
       else if (wasEsp && !nowEsp) playEspSound(ESP_DEACTIVATES)
       textInputState.value = { ...textInputState.value }
     })
-    dispatchClient = buildDispatchClient({ transport, presentation, world })
+    dispatchClient = buildDispatchClient({ transport, presentation, world, requestTextInput: requestTextInputUI })
     const habitatVerb = (verb, noid, args) => dispatchVerb({
       world, dispatch, dispatchClient, verb, noid, args: args ?? {},
     })
