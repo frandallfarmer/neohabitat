@@ -319,20 +319,26 @@ async function atm_get(ctx) {
   return { ok: true, withdrawn }
 }
 
-// atm_put.m: deposit the held tokens.
+// atm_put.m: deposit the held tokens. C64 animation/sound sequence (atm_put.m:28-48): GO to the
+// ATM, operate chore + ATM_THINKING, wait out the operate animation, send DEPOSIT, hand_back chore,
+// then MONEY_INTO_ATM on success.
 async function atm_put(ctx) {
   const wad = ctx.inHand
   if (!wad || wad.type !== 'Tokens') return ctx.beep('not-tokens')
-  const go = await ctx.doAction(ACTION_GO)
+  const go = await ctx.doAction(ACTION_GO) // doMyAction ACTION_GO — walk to the ATM
   if (!go.ok) return ctx.beep(go.reason)
   await ctx.waitWalkAnimation()
+  ctx.chore('operate')                            // chore AV_ACT_operate
+  ctx.sound('ATM_THINKING', ctx.pointed.noid)     // sound ATM_THINKING
+  await ctx.waitWalkAnimation()                   // waitWhile animation_wait_bit (operate anim)
   // Atm.java DEPOSIT(@JSONMethod token_noid) looks up the mod by noid —
   // must send the wad's noid, not just the request.
   const reply = await ctx.send({ op: 'DEPOSIT', to: ctx.pointed.ref, token_noid: wad.noid })
+  ctx.chore('hand_back')                          // chore AV_ACT_hand_back
   if (!succeeded(reply)) return ctx.beep('server-denied')
+  ctx.sound('MONEY_INTO_ATM', ctx.pointed.noid)   // complexSound MONEY_INTO_ATM (on success)
   const deposited = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
   if (ctx.actor) ctx.actor.mod.bankBalance = (ctx.actor.mod.bankBalance || 0) + deposited
-  ctx.sound('MONEY_INTO_ATM', ctx.pointed.noid)
   ctx.world._deleteByNoid(wad.noid) // the wad went into the account
   return { ok: true, deposited }
 }
