@@ -105,6 +105,33 @@ const opaqueLayoutMap = {
 assert(pickAt(opaqueLayoutMap, tableObjects, 36, 117)?.noid === 50,
   "contents of an opaque container are not pickable")
 
+// ── container_type==1 whole-object box hit (pointer.m fine_cel_point) ─────────
+// A prop whose offset-3 byte == 1 (decodeProp boxHit) is hit by its whole bounding box with
+// NO pixel test — every cel's box, even transparent ones. Newsstand fronts (newsstand1.bin) need
+// this: a bitmap booth with a transparent display window must still select the vendor when the
+// window (or the item shown behind it) is clicked.  A 16x16 frame with NO opaque pixels and a
+// single full-frame celLayer: a normal cel would miss everywhere; boxHit makes the whole box win.
+const boxHitFrame = {
+  canvas: mockCanvas(16, 16, []), // entirely transparent
+  boxHit: true,
+  celLayers: [{ canvas: mockCanvas(16, 16, []), offsetX: 0, offsetY: 0, celIndex: 0 }],
+  minX: 0, maxX: 2, minY: -2, maxY: 0,
+}
+assert(hitTestFrame(boxHitFrame, 36, 117, 32, 113), "container_type==1 box-hit on a transparent cel")
+assert(!hitTestFrame(boxHitFrame, 0, 0, 32, 113), "boxHit still misses outside the cel box")
+// Without boxHit the same transparent frame misses (proves the flag is what flips it).
+assert(!hitTestFrame({ ...boxHitFrame, boxHit: false }, 36, 117, 32, 113),
+  "same frame without boxHit misses the transparent cel")
+const boxHitObjects = [
+  { ref: regionRef, type: "context", mods: [{ type: "Region" }] },
+  { ref: "item-stand", type: "item", in: regionRef, mods: [{ type: "Vendo_front", noid: 70, x: 40, y: 100 }] },
+]
+const boxHitLayoutMap = {
+  "item-stand": { layout: { x: 4, y: 14, z: 100, frames: [{ ...boxHitFrame, minX: 0, maxX: 2, minY: -2, maxY: 0 }] } },
+}
+assert(pickAt(boxHitLayoutMap, boxHitObjects, 36, 117)?.noid === 70,
+  "newsstand-style box-hit object is picked through its transparent window")
+
 // ── which_limb buffer (pointer.m which_limb / region.js limb-id twin) ─────────
 // The avatar's limbCanvas stores which_limb+1 in the red channel of each opaque
 // pixel; limbAtFrame decodes it back to 0=LEG, 1=TORSO, 2=ARM, 3=FACE.

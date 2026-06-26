@@ -187,7 +187,21 @@ function makeCtx(world, verb, pointed, args, client, parent) {
 
   // ── host I/O ──────────────────────────────────────────────────────
 
-  ctx.send = (msg) => client.send(msg)
+  ctx.send = async (msg) => {
+    const reply = await client.send(msg)
+    // A reply can carry a freshly-spawned object: the REQUESTER's own spawn rides INSIDE the reply
+    // (the C64 unpacks the contents vector FROM the reply — e.g. Vendo_front.java VEND returns the
+    // vended item as `object`), NOT as a separate broadcast make. Without adding it here it never
+    // enters the world tree, so the region won't re-render the new object until it's re-entered.
+    // Add it to the region (the item carries region coords / re-arrives as a region make on join);
+    // skip if its noid is already present. This emits 'added', which the client renders on.
+    const spawned = reply && reply.object
+    const noid = spawned && spawned.mods && spawned.mods[0] ? spawned.mods[0].noid : null
+    if (spawned && noid != null && world.region && world.region.ref && !world.objects.get(noid)) {
+      world._makeObject(spawned, world.region.ref, false)
+    }
+    return reply
+  }
 
   // Main/actions.m goXY — send WALK, wait reply, start_walk on success.
   ctx.walkTo = async (x, y) => {
@@ -271,6 +285,13 @@ function makeCtx(world, verb, pointed, args, client, parent) {
   // client provides it; bots leave it undefined and balloon the text instead.
   if (client.readText) {
     ctx.readText = (noid, opts) => client.readText(noid, opts)
+  }
+  // actions.m wait_for_text_string — a GRAPHICAL client prompts the player to type a line (the
+  // C64's "Available: #, Choose amount: " denomination selector, "ESP:", "Page Number ?", etc.)
+  // and resolves with the typed string. Only defined when the client provides it; bots leave it
+  // undefined and pass the value up front via args (e.g. args.amount, args.text).
+  if (client.requestTextInput) {
+    ctx.requestTextInput = (prompt, opts) => client.requestTextInput(prompt, opts)
   }
   // C64 newImage noid[, state]: optional state sets gr_state then redraws.
   // Background objects set background_render (full backdrop); the renderer

@@ -65,6 +65,9 @@ async function vendo_put(ctx) {
     return ctx.beep('payment-rejected')
   }
 
+  // C64 generic_coinOp plays COIN_ACCEPTED on a successful PAY before the device's own dispense
+  // sound — vendo_put sends VEND directly (not via generic_coinOp), so play it here too.
+  ctx.sound('COIN_ACCEPTED', front.noid)
   ctx.sound('VENDO_DISPENSING', front.noid)
   // Debit tokens locally (mirrors C64 v_spend); SELL$ broadcast covers neighbors.
   const price = (reply.item_price_lo || 0) + (reply.item_price_hi || 0) * 256
@@ -268,41 +271,77 @@ async function atm_do(ctx) {
   return { ok: true, balance: balance }
 }
 
-// atm_get.m: withdraw — the C64 prompted for an amount; bots pass
-// args.amount. The token wad arrives/updates asynchronously.
+// atm_get.m: withdraw cash. Faithful port of the C64 client (Behaviors/atm_get.m):
+//   - hand must be empty OR holding a token wad (atm_get.m:25-34);
+//   - GO to the ATM and wait (:35-36);
+//   - select_denomination: prompt "Available: <balance>, Choose amount: " (:38-42) — graphical
+//     clients prompt via ctx.requestTextInput; bots pass args.amount;
+//   - operate chore + ATM_THINKING, send WITHDRAW, MONEY_OUT_OF_ATM + hand_back (:48-52);
+//   - getResponse → beep_or_boing on failure (:54-58; actions.m:794: code 0 = beep, >=2 = boing);
+//   - debit the local balance by the ACTUAL amount granted (:60-74);
+//   - holding a wad → the cash merges into it (:76-93); empty hand → a new wad arrives async.
 async function atm_get(ctx) {
-  if (ctx.inHand) return ctx.beep('hands-full')
-  const amount = ctx.args.amount
-  if (!amount || amount <= 0) return ctx.beep('no-amount')
-  const go = await ctx.doAction(ACTION_GO)
+  const held = ctx.inHand
+  if (held && held.type !== 'Tokens') return ctx.beep('hands-full') // empty or a token wad only
+
+  const go = await ctx.doAction(ACTION_GO) // doMyAction ACTION_GO — walk to the ATM
   if (!go.ok) return ctx.beep(go.reason)
   await ctx.waitWalkAnimation()
-  const reply = await ctx.send({
+
+  let amount = ctx.args.amount
+  if (amount == null && ctx.requestTextInput) {
+    const balance = ctx.actor && ctx.actor.mod.bankBalance != null ? ctx.actor.mod.bankBalance : 0
+    const typed = await ctx.requestTextInput(`Available: ${balance}, Choose amount: `, { numeric: true })
+    amount = parseInt(typed, 10)
+  }
+  if (!amount || amount <= 0) return ctx.beep('no-amount') // no money chosen → abort
+
+  ctx.chore('operate')                            // chore AV_ACT_operate
+  ctx.sound('ATM_THINKING', ctx.pointed.noid)     // sound ATM_THINKING
+  const reply = await ctx.send({                  // sendMsg MSG_WITHDRAW
     op: 'WITHDRAW', to: ctx.pointed.ref,
     amount_lo: amount & 0xff, amount_hi: (amount >> 8) & 0xff,
   })
-  // Atm.java WITHDRAW replies { amount_lo, amount_hi, result_code } — no err field.
-  if (!reply || reply.result_code !== 1) return ctx.beep('server-denied')
+  ctx.sound('MONEY_OUT_OF_ATM', ctx.pointed.noid) // complexSound MONEY_OUT_OF_ATM
+  ctx.chore('hand_back')                          // chore AV_ACT_hand_back
+
+  // getResponse WITHDRAWAL_SUCCESS → beep_or_boing (Atm.java result_code: 1 ok, 0 beep, 2 boing).
+  const code = reply ? reply.result_code : 0
+  if (code !== 1) return code >= 2 ? ctx.boing('atm') : ctx.beep('atm')
+
+  // Debit the local balance by the ACTUAL withdrawal (server may grant less than requested).
   const withdrawn = (reply.amount_hi || 0) * 256 + (reply.amount_lo || 0)
   if (ctx.actor) ctx.actor.mod.bankBalance = (ctx.actor.mod.bankBalance || 0) - withdrawn
-  ctx.sound('MONEY_OUT_OF_ATM', ctx.pointed.noid)
+
+  // Holding a wad → the cash merges into it locally; empty hand → a fresh wad arrives async.
+  if (held && held.type === 'Tokens') {
+    const denom = (held.mod.denom_hi || 0) * 256 + (held.mod.denom_lo || 0) + withdrawn
+    held.mod.denom_lo = denom & 0xff
+    held.mod.denom_hi = (denom >> 8) & 0xff
+  }
   return { ok: true, withdrawn }
 }
 
-// atm_put.m: deposit the held tokens.
+// atm_put.m: deposit the held tokens. C64 animation/sound sequence (atm_put.m:28-48): GO to the
+// ATM, operate chore + ATM_THINKING, wait out the operate animation, send DEPOSIT, hand_back chore,
+// then MONEY_INTO_ATM on success.
 async function atm_put(ctx) {
   const wad = ctx.inHand
   if (!wad || wad.type !== 'Tokens') return ctx.beep('not-tokens')
-  const go = await ctx.doAction(ACTION_GO)
+  const go = await ctx.doAction(ACTION_GO) // doMyAction ACTION_GO — walk to the ATM
   if (!go.ok) return ctx.beep(go.reason)
   await ctx.waitWalkAnimation()
+  ctx.chore('operate')                            // chore AV_ACT_operate
+  ctx.sound('ATM_THINKING', ctx.pointed.noid)     // sound ATM_THINKING
+  await ctx.waitWalkAnimation()                   // waitWhile animation_wait_bit (operate anim)
   // Atm.java DEPOSIT(@JSONMethod token_noid) looks up the mod by noid —
   // must send the wad's noid, not just the request.
   const reply = await ctx.send({ op: 'DEPOSIT', to: ctx.pointed.ref, token_noid: wad.noid })
+  ctx.chore('hand_back')                          // chore AV_ACT_hand_back
   if (!succeeded(reply)) return ctx.beep('server-denied')
+  ctx.sound('MONEY_INTO_ATM', ctx.pointed.noid)   // complexSound MONEY_INTO_ATM (on success)
   const deposited = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
   if (ctx.actor) ctx.actor.mod.bankBalance = (ctx.actor.mod.bankBalance || 0) + deposited
-  ctx.sound('MONEY_INTO_ATM', ctx.pointed.noid)
   ctx.world._deleteByNoid(wad.noid) // the wad went into the account
   return { ok: true, deposited }
 }

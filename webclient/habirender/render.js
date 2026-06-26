@@ -412,7 +412,7 @@ celLayerRenderer.trap = (cel, colors, x, y) => {
 // We try to consistently model Habitat's coordinate space in our rendering code as y=0 for the bottom, with increasing y meaning going up.
 // However, the graphics code converts this internally to a coordinate space where increasing y means going down, and many internal
 // coordinates (cel offsets, etc.) assume this.
-export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOrigin = true, flipHorizontal }) => {
+export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOrigin = true, flipHorizontal, boxHit = false }) => {
     if (cels.length == 0) {
         return null
     }
@@ -481,6 +481,9 @@ export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOri
     }
     frame.xOrigin = xCorrect
     frame.yOrigin = yCorrect
+    // pointer.m container_type==1: the whole object box-hits (every cel, no pixel test). Carried
+    // to the pick via the frame; hitTestFrame box-tests the union of cel boxes when set.
+    frame.boxHit = boxHit
     return translateSpace(frame, -xCorrect, -yCorrect)
 }
 

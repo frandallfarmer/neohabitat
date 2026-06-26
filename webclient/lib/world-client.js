@@ -9,7 +9,7 @@ const resolveOutbound = (msg, world) => {
   return { ...msg, to: ref }
 }
 
-export function buildDispatchClient({ transport, presentation, world }) {
+export function buildDispatchClient({ transport, presentation, world, requestTextInput }) {
   // C64 client verbs target actor_noid; Elko JSON uses the avatar user-ref.
   const avatarRef = () => {
     const ref = world?.me?.ref
@@ -62,5 +62,9 @@ export function buildDispatchClient({ transport, presentation, world }) {
         sendMail: () => transport.sendForReply({ op: "PSENDMAIL", to: ref }),
       })
     },
+    // actions.m wait_for_text_string — prompt the player to type a line (atm/token amount, etc.)
+    // and resolve with the typed string. Provided by live.js (it owns the text-input line);
+    // undefined for bots, which pass the value via args. See habiworld kernel ctx.requestTextInput.
+    requestTextInput,
   }
 }

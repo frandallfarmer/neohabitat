@@ -114,18 +114,23 @@ async function gun_do(ctx) {
   return { ok: true, safetyOn: !!safetyOn }
 }
 
-// tokens_rdo.m: pay tokens to an avatar — DO the recipient while
-// holding the wad. Preconditions: subject is an avatar, we're adjacent,
-// THEIR hands are empty. Amount comes from args (the C64 popped the
-// denomination selector). PAYTO; the change and the recipient's new wad
-// arrive asynchronously.
+// tokens_rdo.m: pay tokens to an avatar — DO the recipient while holding the wad.
+// Preconditions: subject is an avatar, we're adjacent, THEIR hands are empty. The C64 popped the
+// denomination selector "Available: <wad value>, Choose amount: " (tokens_rdo.m:53-62) — graphical
+// clients prompt via ctx.requestTextInput; bots pass args.amount. PAYTO; the change and the
+// recipient's new wad arrive asynchronously.
 async function tokens_rdo(ctx) {
   const wad = ctx.pointed
   const recipient = ctx.subject
   if (!recipient || recipient.type !== 'Avatar') return ctx.beep('no-such-avatar')
   if (!ctx.isAdjacent(recipient.noid)) return ctx.beep('not-adjacent')
   if (ctx.world.holding(recipient.noid)) return ctx.beep('their-hands-full')
-  const amount = ctx.args.amount
+  let amount = ctx.args.amount
+  if (amount == null && ctx.requestTextInput) {
+    const denom = (wad.mod.denom_hi || 0) * 256 + (wad.mod.denom_lo || 0)
+    const typed = await ctx.requestTextInput(`Available: ${denom}, Choose amount: `, { numeric: true })
+    amount = parseInt(typed, 10)
+  }
   if (!amount || amount <= 0) return ctx.beep('no-amount')
 
   ctx.chore('hand_out')
