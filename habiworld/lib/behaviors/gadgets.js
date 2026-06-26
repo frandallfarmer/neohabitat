@@ -153,7 +153,10 @@ async function hole_do(ctx) {
 }
 
 // changomatic_rdo.m: zap the subject — MSG_CHANGE; success returns the
-// object's new orientation (turf repainting).
+// object's new orientation (turf repainting). Changomatic.java CHANGE binds the
+// request param "targetNoid" (required) and replies "CHANGE_NEW_ORIENTATION" — the
+// exact field names the C64 putArg CHANGE_TARGET / getResponse CHANGE_NEW_ORIENTATION
+// map to. (Server precondition: only succeeds in your own turf / a neighbor building.)
 async function changomatic_rdo(ctx) {
   const wand = ctx.pointed
   const target = ctx.subject
@@ -161,11 +164,12 @@ async function changomatic_rdo(ctx) {
   ctx.chore('shoot1')
   ctx.sound('CHANGOMATIC', wand.noid)
   const reply = await ctx.send({
-    op: 'CHANGE', to: wand.ref, target: target.noid,
+    op: 'CHANGE', to: wand.ref, targetNoid: target.noid,
   })
   ctx.chore('shoot2')
   if (!succeeded(reply)) return ctx.beep('server-denied')
-  if (reply.orientation !== undefined) target.mod.orientation = reply.orientation
+  const orient = reply.CHANGE_NEW_ORIENTATION
+  if (orient !== undefined) target.mod.orientation = orient
   ctx.newImage(target.noid)
   return { ok: true }
 }

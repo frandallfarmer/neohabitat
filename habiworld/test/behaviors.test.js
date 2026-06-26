@@ -559,6 +559,46 @@ test('DO on the street empty-handed depends to the avatar rdo (noEffect beep)', 
   assert.equal(calls.beeps, 1) // avatar rdo = noEffect = v_beep
 })
 
+// Hold a changomatic in the avatar's HANDS (rdo slot 1 = changomatic_rdo).
+function withHeldChangomatic(w) {
+  w.apply({
+    to: ME_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-changomatic-1', name: 'Changomatic',
+      mods: [{ type: 'Changomatic', noid: 96, x: 0, y: HANDS, orientation: 0, gr_state: 0 }],
+    },
+  })
+}
+
+test('changomatic_rdo sends targetNoid and applies CHANGE_NEW_ORIENTATION (Changomatic.java CHANGE)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldChangomatic(w)
+  // DO the street (50) while holding the changomatic: street.do = generic_depends → rdo on the
+  // in-hand changomatic = changomatic_rdo, with the street as subject (the recolor target).
+  // Reply shape is Changomatic.java's: send_reply_msg(... "err",TRUE, "CHANGE_NEW_ORIENTATION", o).
+  const { calls, cb } = recorder([{ type: 'reply', err: 1, CHANGE_NEW_ORIENTATION: 16 }])
+  const result = await dispatch(w, ACTION_DO, 50, {}, cb)
+  assert.ok(result.ok)
+  // The request field MUST be targetNoid (the required @JSONMethod param), not target —
+  // otherwise elko can't bind CHANGE and it silently no-ops.
+  assert.deepEqual(calls.sends, [{ op: 'CHANGE', to: 'item-changomatic-1', targetNoid: 50 }])
+  assert.equal(w.get(50).mod.orientation, 16) // CHANGE_NEW_ORIENTATION applied to the target
+})
+
+test('changomatic_rdo failure (no err) beeps and leaves the target orientation', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldChangomatic(w)
+  const orient0 = w.get(50).mod.orientation
+  // "You can't change that here." → send_reply_error → no err.
+  const { calls, cb } = recorder([{ type: 'reply', err: 0 }])
+  const result = await dispatch(w, ACTION_DO, 50, {}, cb)
+  assert.equal(result.ok, false)
+  assert.equal(calls.beeps, 1)
+  assert.equal(w.get(50).mod.orientation, orient0) // unchanged
+})
+
 // ── avatar verbs ────────────────────────────────────────────────────
 
 test('PUT at another avatar routes to avatar_put and hands the item over', async () => {
