@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <!-- Prescale to the 960px game width so mobile browsers fit the whole client on load; desktop
-         ignores viewport width. Same entry as index.html — both ./ and ./live.html run the client. -->
-    <meta name="viewport" content="width=960" />
+    <!-- Prescale to the widest the client gets (open-terrain region frame: 960 game + 34px edge
+         chevron each side ≈ 1028, rounded to the #app max-width 1040) so mobile fits the whole
+         client with nothing clipped; desktop ignores viewport width. Same entry as index.html. -->
+    <meta name="viewport" content="width=1040" />
     <title>NeoHabitat</title>
     <link rel="stylesheet" href="style.css" />
     <script type="importmap">
