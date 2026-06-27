@@ -452,15 +452,9 @@ export const frameFromCels = (cels, { colors: celColors, paintOrder, firstCelOri
     const frame = compositeLayers(layers)
     if (flipHorizontal) {
         frame.canvas = flipCanvas(frame.canvas)
-        // C64 paint.m / find_cel_xy: a side-view cel mirrors around cel_x_origin (the first cel's
-        // xOffset = xCorrect), NOT the bounding-box centre. This keeps the drawing origin
-        // flip-invariant, so a flipped container's contents_xy — anchored at that origin in
-        // containedItemLayout — still lands on it, and an object's mod.x (calibrated against the
-        // C64 origin) places the flipped sprite where the original does. (Was -maxX+1 / -minX+1,
-        // a bbox reflection that drifted the origin by the sprite's asymmetry.)
         const { minX, maxX } = frame
-        frame.minX = 2 * xCorrect - maxX
-        frame.maxX = 2 * xCorrect - minX
+        frame.minX = -maxX + 1
+        frame.maxX = -minX + 1
     }
     // Per-cel hit regions for pointer.m cel-level picking (pointed_at_cel_number). compositeLayers
     // drew each layer into frame.canvas at topLeftCanvasOffset(space, layer); record that exact
