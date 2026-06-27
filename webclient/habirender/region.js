@@ -169,6 +169,7 @@ const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is
 // 2=ARM, 3=FACE (equates.m). The pick reads this back to tell SPRAY / avatar_get
 // (face-limb redirect) which body part the cursor touched.
 const AVATAR_FACE_LIMB = 3
+const AVATAR_TORSO_LIMB = 3 // animate.m cel_number 3 — the limb that swaps cel for female avatars
 const PATTERN_FOR_LIMB = [0, 0, 2, 1, 3, 2]
 
 const actionView = (actionName) => {
@@ -251,7 +252,15 @@ const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
 
     for (let i = 0; i < body.limbs.length; i++) {
         const frame = animations[i].current ?? animations[i].startState
-        const istate = body.limbs[i].frames[frame]
+        let istate = body.limbs[i].frames[frame]
+        // animate.m:265-277 — the ONLY visual sex difference: a female avatar (orientation SEX_BIT
+        // 0x80) with a normal body (avatar_style 0) draws the NEXT torso cel. When the torso
+        // (cel_number 3) would draw its rest cel (state byte 0 → cel 0), use cel 1 (the female
+        // torso) instead. `lda #1` sets the cel index to 1, gated on the byte already being 0.
+        if (i === AVATAR_TORSO_LIMB && istate === 0
+            && (avatarMod.orientation & 0x80) && (avatarMod.style ?? 0) === 0) {
+            istate = 1
+        }
         const cel = istate >= 0 ? body.limbs[i].cels[istate] : null
         if (!cel) continue
         const pos = findCelXY(x, y, xRel, yRel, false)
