@@ -124,6 +124,22 @@ async function dispatch(world, verb, noid, args, client) {
     if (client && client.beep) client.beep('ghost-cant')
     return { ok: false, reason: 'ghost-no-verb' }
   }
+  // actions.m:288-300 — seated state is resolved in the command dispatcher, before the verb runs.
+  // While Im_sitting (≡ "contained" by a seat) you may ONLY GO; any other command beeps. And ANY
+  // GO is retargeted to the seat you're in (OBJECT_contained_by) — `sta pointed_noid` — so it runs
+  // the seat's GO = generic_goToFurniture get-up (stand, container back to region, NO walk; the
+  // cursor target is discarded, and goXY would go_fail on Im_sitting anyway). Floor-sitting does
+  // NOT set Im_sitting (avatar_go.m never inc's it) and stays region-contained, so it isn't caught
+  // here — a floor-sit GO walks normally.
+  const me = world.me
+  if (me.containerRef && world.region && me.containerRef !== world.region.ref) {
+    if (verb !== ACTION_GO) {
+      if (client && client.beep) client.beep('sitting')
+      return { ok: false, reason: 'sitting-go-only' }
+    }
+    const seat = world.getByRef(me.containerRef)
+    if (seat) noid = seat.noid
+  }
   const pointed = world.get(noid)
   if (!pointed) return { ok: false, reason: 'no-such-object' }
   if (!client || typeof client.send !== 'function' || typeof client.walkTo !== 'function') {

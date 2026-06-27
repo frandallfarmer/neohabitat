@@ -1129,9 +1129,13 @@ async function interactTick() {
 
     try {
       if (choice.kind === 'sit') {
-        // GO at furniture = the C64 sit toggle (generic_goToFurniture):
-        // walks over, SITORSTAND, container tracked in the world model.
-        await withTimeout(SageBot.performVerb(ACTION_GO, mod.noid), 30_000, 'sitOrstand')
+        // generic_goToFurniture is the C64 sit toggle, but the interactive two-GO flow makes a
+        // bare GO only walk (a human's second GO sits). Pass an explicit up_or_down via
+        // sitOrstand so the bot sits/stands in one call — toggled on our current seated state
+        // (seated → stand, standing → sit). dispatch.js retargets a seated GO to our seat anyway.
+        const me = SageBot.world && SageBot.world.me
+        const seated = !!(me && me.containerRef && me.containerRef !== SageBot.world.region.ref)
+        await withTimeout(SageBot.sitOrstand(seated ? 0 : 1, mod.noid), 30_000, 'sitOrstand')
       } else if (choice.kind === 'open') {
         await withTimeout(SageBot.performAction('OPEN', { noid: mod.noid }), 20_000, 'openDoor')
       } else if (choice.kind === 'get') {

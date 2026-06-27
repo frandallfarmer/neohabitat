@@ -53,6 +53,10 @@ function avatar_WALK(ctx) {
   const msg = ctx.args
   const o = world.get(msg.noid)
   if (!o) return { ok: false, reason: 'no-avatar' }
+  // walkto.m walk_to_cursor: "don't move if contained" (OBJECT_contained_by). A seated avatar's
+  // WALK$ is a no-op for observers — it stands up via SIT$ first; a stray WALK$ must not
+  // float-walk it at the seat.
+  if (o.containerRef && o.containerRef !== world.region.ref) return { ok: true, seated: true }
   const x = msg.x
   const y = msg.y
   const how = msg.how

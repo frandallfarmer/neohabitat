@@ -78,12 +78,18 @@ function avatar_SITORGETUP(ctx) {
   if (!avatar) return { ok: false, reason: 'no-avatar' }
   if (msg.up_or_down) {
     world._changeContainers(msg.noid, msg.cont, 0, msg.slot || 0)
+    // avatar_SITORGETUP.m: chore sit_front|sit_chair from the seat's style bit. Persist the pose
+    // so observers compose the seated avatar sitting (mod.activity drives the body composition).
+    const seat = world.get(msg.cont)
+    avatar.mod.activity = ((seat?.mod.style || 0) & 1) ? 133 /* AV_ACT_sit_chair */ : 157 /* AV_ACT_sit_front */
   } else {
     const seat = world.get(msg.cont)
     const x = seat ? seat.mod.x : (avatar.mod.x || 80)
     const y = seat ? (seat.mod.y | 0x80) : 144
     world._changeContainers(msg.noid, THE_REGION, x, y)
+    avatar.mod.activity = 129 // AV_ACT_stand
   }
+  world.emit('stateChanged', avatar)
   return { ok: true }
 }
 

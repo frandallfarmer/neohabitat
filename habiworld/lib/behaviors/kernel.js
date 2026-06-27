@@ -208,6 +208,9 @@ function makeCtx(world, verb, pointed, args, client, parent) {
     // goXY (actions.m:462-466): a ghost rts early — no WALK, no movement. A ghost has no body
     // to walk; only region-edge transit (changeRegion) moves it. Treat as a no-op success.
     if (world.amGhost) return { x, y }
+    // goXY (actions.m:457): Im_sitting → go_fail → do_nothing. A seated avatar can't walk — stand
+    // up (re-DO the furniture) first; otherwise the seated body walk-animates, floating at the seat.
+    if (me && me.containerRef && me.containerRef !== world.region.ref) return { x, y }
     const from = (me && me.mod.x !== undefined) ? { x: me.mod.x, y: me.mod.y } : null
     const arrived = await client.walkTo(x, y)
     const destX = arrived?.x ?? x

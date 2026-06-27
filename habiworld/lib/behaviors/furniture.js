@@ -9,15 +9,23 @@
 const { THE_REGION, ACTION_GO } = require('../constants')
 const { succeeded } = require('./kernel')
 
+// Avatar posture activity values (chore.m AV_ACT_*). generic_goToFurniture.m picks the seated
+// pose from the seat's style bit (style & 1 → sit_chair, else sit_front) and stands on get-up.
+const STAND = 129     // AV_ACT_stand
+const SIT_CHAIR = 133 // AV_ACT_sit_chair
+const SIT_FRONT = 157 // AV_ACT_sit_front
+
 // generic_goToFurniture.m. As a plain GO it just walks to the seat.
 // Re-invoked (the C64 user clicked DO), it sits — or stands if already
 // sitting. SITORSTAND goes to MY avatar with the seat noid; on success
 // the avatar's container changes to the seat (slot from the reply) or
 // back to the region when standing.
 //
-// Deviation from the original: when not yet adjacent the C64 only
-// walked, requiring a second click to sit. A bot can't click twice, so
-// we walk and then proceed to sit in one call.
+// generic_goToFurniture.m: a standing GO that is NOT yet adjacent does
+// `chainTo v_goXY` — it WALKS and the action ENDS; a second GO, now
+// adjacent, sits. The interactive (graphical) client follows this two-GO
+// flow. A bot can't click twice, so an explicit `up_or_down` intent (the
+// habibot sitOrstand path) skips the early return and walks+sits in one call.
 async function generic_goToFurniture(ctx) {
   const me = ctx.actor
   const seat = ctx.pointed
@@ -44,13 +52,22 @@ async function generic_goToFurniture(ctx) {
     if (!succeeded(reply)) return ctx.beep('server-denied')
     const spot = ctx.gotoCoords(seat.noid) || { x: seat.mod.x, y: seat.mod.y }
     ctx.changeContainers(me.noid, THE_REGION, spot.x, spot.y | 0x80)
+    // C64 chore AV_ACT_stand. Persist the pose (mod.activity drives the body composition) so
+    // the avatar recomposes standing once it's back in the region.
+    me.mod.activity = STAND
+    ctx.posture(STAND)
+    ctx.world.emit('stateChanged', me)
     return { ok: true, posture: 'standing' }
   }
 
   if (!ctx.isAdjacent()) {
+    // generic_goToFurniture.m: not adjacent → chainTo v_goXY (walk) and the action ENDS.
     const go = await ctx.doAction(ACTION_GO, { goOnly: true })
     if (!go.ok) return ctx.beep(go.reason)
     await ctx.waitWalkAnimation()
+    // Interactive client: a second GO (now adjacent) does the sit. Bots pass an explicit
+    // up_or_down and fall through to sit in one call (they can't issue a second GO).
+    if (ctx.args.up_or_down === undefined) return { ok: true, posture: 'walking' }
   }
 
   const reply = await ctx.send({
@@ -59,7 +76,13 @@ async function generic_goToFurniture(ctx) {
   if (!succeeded(reply)) return ctx.beep('server-denied')
   const slot = reply.slot !== undefined ? reply.slot : 0
   ctx.changeContainers(me.noid, seat.noid, 0, slot)
-  ctx.chore((seat.mod.style || 0) & 1 ? 'sit_chair' : 'sit_front')
+  // C64 generic_goToFurniture: set_actor_chore(sit_front|sit_chair) from the seat's style bit,
+  // then MSG_POSTURE. Persist the pose so the seated avatar composes sitting (mod.activity drives
+  // the body composition); neighbors derive the same from SIT$ in avatar_SITORGETUP.
+  const sit = ((seat.mod.style || 0) & 1) ? SIT_CHAIR : SIT_FRONT
+  me.mod.activity = sit
+  ctx.posture(sit)
+  ctx.world.emit('stateChanged', me)
   return { ok: true, posture: 'sitting' }
 }
 

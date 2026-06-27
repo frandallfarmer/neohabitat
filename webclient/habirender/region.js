@@ -595,7 +595,17 @@ export const containedItemLayout = (prop, mod, containerProp, containerMod, cont
     // if the contents are drawn in front, the container has its origin offset by the offset of its first cel.
     const originX = containerProp.contentsInFront ? containerSpace.xOrigin : 0
     const originY = containerProp.contentsInFront ? containerSpace.yOrigin : 0
-    const x = (containerX - originX) + (flipHorizontal ? -offsetX : offsetX)
+    // C64 contents_xy is an offset from the container's cel_x_origin. frameFromCels flips a
+    // side-view sprite around its BOUNDING BOX (-maxX+1), which drifts that origin by the
+    // sprite's asymmetry — so for a flipped container the contents must mirror the SAME way the
+    // sprite did, or they land a sprite-width off (the side-chair-sitter-on-air bug). Reflect the
+    // unflipped anchor through the sprite's flip map: p -> -p - 2*xCorrect + 1 (xCorrect = the
+    // first cel's xOffset = containerSpace.xOrigin), the exact inverse of the bbox flip, so the
+    // contents track the rendered sprite pixel-for-pixel.
+    const xUnflipped = (containerX - originX) + offsetX
+    const x = flipHorizontal
+        ? 2 * containerX - xUnflipped - 2 * containerSpace.xOrigin + 1
+        : xUnflipped
     const y = containerY - (offsetY + originY)
     const z = containerZ
     // offsets are relative to `cel_x_origin` / `cel_y_origin`, which is in "habitat space" but with
@@ -641,7 +651,7 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                 const { obj, prop, container, layout } = layoutItem
                 var newLayout = null
                 if (prop.value) {
-                    if (container.value?.layout?.value) {
+                    if (container.value?.layout?.value && !prop.value.isBody) {
                         newLayout = containedItemLayout(
                             prop.value, 
                             obj.value.mods[0], 
@@ -649,7 +659,10 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                             container.value.obj.value.mods[0], 
                             container.value.layout.value.frames[0]
                         )
-                    } else if (!container.value) {
+                    } else if (!container.value || prop.value.isBody) {
+                        // A body (avatar) reaches here even when "contained" by a seat: C64
+                        // generic_goToFurniture change_containers an avatar into the seat ONLY for
+                        // position; display_avatar still draws the whole body (head/hand/sit posture).
                         if (prop.value.isBody) {
                             // FG/BG split (C64 Main/render.m): foreground objects — avatars,
                             // always flagged 0x80 (walkto.m: `ora #0x80`) — are the only ones
@@ -676,7 +689,15 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                                 ?? serverActivity
                             const baseOrient = avatarMotion?.getOrient?.(serverMod.noid, serverMod.orientation)
                                 ?? serverMod.orientation
-                            const orientForCompose = displayOrientForActivity(activity, baseOrient)
+                            let orientForCompose = displayOrientForActivity(activity, baseOrient)
+                            // mix.m draw_contained_object (571-576): a contained object inherits its
+                            // container's cel_dx (facing). A seated avatar is "contained" by its seat,
+                            // so the body must face the way the SEAT faces, not the avatar's own facing.
+                            // Take the facing bit (0x01) from the seat. Only the side 'sit_chair' pose
+                            // is mirrored (flipComposedFrame keys on 0x01 for side views); 'sit_front'
+                            // is a front view, so this is a no-op there.
+                            const seatMod = container.value?.obj?.value?.mods?.[0]
+                            if (seatMod) orientForCompose = (orientForCompose & ~0x01) | (seatMod.orientation & 0x01)
                             const displayMod = motion?.type === "walk"
                                 ? {
                                     ...serverMod,
@@ -713,8 +734,19 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                                     actionName, 0)
                                 frames = standFrame ? [standFrame] : []
                             }
-                            const [x, y, z] = propLocationFromObjectXY(displayMod.x, displayMod.y)
-                            newLayout = { x, y, z, frames }
+                            if (container.value?.layout?.value) {
+                                // Seated: position via the seat's contents_xy[slot] — chairfb {0,23},
+                                // chairs {2,-14} (drawn behind), cafechair {-2,4} — like any contained
+                                // item, but keep the composed avatar frames (not the generic prop path).
+                                const seatPos = containedItemLayout(
+                                    prop.value, obj.value.mods[0],
+                                    container.value.prop.value, container.value.obj.value.mods[0],
+                                    container.value.layout.value.frames[0])
+                                newLayout = { x: seatPos.x, y: seatPos.y, z: seatPos.z, frames }
+                            } else {
+                                const [x, y, z] = propLocationFromObjectXY(displayMod.x, displayMod.y)
+                                newLayout = { x, y, z, frames }
+                            }
                         } else {
                             newLayout = regionItemLayout(prop.value, obj.value.mods[0])
                         }

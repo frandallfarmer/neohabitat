@@ -230,7 +230,32 @@ class HabitatWorld extends EventEmitter {
     // ~1s-delayed ghost eye) resolves `me` automatically via the getter; emit so the client
     // re-renders now that our body exists.
     this.emit('added', record)
+    this._reconcileSeating(record)
     if (mod.noid === this.meNoid) this.emit('stateChanged', record)
+  }
+
+  // Region-entry seating. The original client received a seated avatar already in the seat's
+  // CONTENTS (generic_goToFurniture.m change_containers it there for display). Elko can't contain
+  // avatars, so the bridge passes the seated state as fields instead — Avatar.sittingIn /
+  // sittingSlot / sittingAction and Seating.sitters[] — and we rebuild that "pretend containment"
+  // here so the avatar renders seated on entry. Make order isn't guaranteed (the avatar can arrive
+  // before its seat), so reconcile from BOTH the avatar (sittingIn) and the seat (sitters[]).
+  _reconcileSeating(record) {
+    const mod = record.mod
+    if (mod.type === 'Avatar' && mod.sittingIn) {
+      if (mod.sittingAction) mod.activity = mod.sittingAction // hold the sit chore (AV_ACT_sit_*)
+      if (this.objects.get(mod.sittingIn)) {
+        this._changeContainers(record.noid, mod.sittingIn, 0, mod.sittingSlot || 0)
+      }
+    } else if (Array.isArray(mod.sitters)) {
+      mod.sitters.forEach((sitterNoid, slot) => {
+        const sitter = sitterNoid ? this.objects.get(sitterNoid) : null
+        if (sitter && sitter.type === 'Avatar' && sitter.containerRef !== record.ref) {
+          if (sitter.mod.sittingAction) sitter.mod.activity = sitter.mod.sittingAction
+          this._changeContainers(sitterNoid, record.noid, 0, slot)
+        }
+      })
+    }
   }
 
   _deleteByRef(ref) {
