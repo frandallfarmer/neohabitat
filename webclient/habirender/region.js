@@ -595,7 +595,17 @@ export const containedItemLayout = (prop, mod, containerProp, containerMod, cont
     // if the contents are drawn in front, the container has its origin offset by the offset of its first cel.
     const originX = containerProp.contentsInFront ? containerSpace.xOrigin : 0
     const originY = containerProp.contentsInFront ? containerSpace.yOrigin : 0
-    const x = (containerX - originX) + (flipHorizontal ? -offsetX : offsetX)
+    // C64 contents_xy is an offset from the container's cel_x_origin. frameFromCels flips a
+    // side-view sprite around its BOUNDING BOX (-maxX+1), which drifts that origin by the
+    // sprite's asymmetry — so for a flipped container the contents must mirror the SAME way the
+    // sprite did, or they land a sprite-width off (the side-chair-sitter-on-air bug). Reflect the
+    // unflipped anchor through the sprite's flip map: p -> -p - 2*xCorrect + 1 (xCorrect = the
+    // first cel's xOffset = containerSpace.xOrigin), the exact inverse of the bbox flip, so the
+    // contents track the rendered sprite pixel-for-pixel.
+    const xUnflipped = (containerX - originX) + offsetX
+    const x = flipHorizontal
+        ? 2 * containerX - xUnflipped - 2 * containerSpace.xOrigin + 1
+        : xUnflipped
     const y = containerY - (offsetY + originY)
     const z = containerZ
     // offsets are relative to `cel_x_origin` / `cel_y_origin`, which is in "habitat space" but with
