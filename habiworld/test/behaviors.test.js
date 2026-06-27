@@ -7,7 +7,7 @@ const assert = require('node:assert')
 const { HabitatWorld, constants, dispatch, performGesture, performFnKey, behaviors, classes } = require('../index')
 const { adjacentCoords } = require('../lib/behaviors/kernel')
 const {
-  HANDS, HEAD, THE_REGION, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT,
+  HANDS, HEAD, THE_REGION, ACTION_DO, ACTION_RDO, ACTION_GO, ACTION_GET, ACTION_PUT, ACTION_TALK,
 } = constants
 
 const REGION_REF = 'context-Lori_Ln_113_front'
@@ -1222,6 +1222,45 @@ test('a non-GO command while seated beeps (actions.m:290 — can only GO while s
   assert.equal(calls.beeps, 1, 'beeped')
   assert.equal(calls.sends.length, 0, 'no server round-trip')
   assert.equal(w.me.containerRef, 'item-chair-b', 'still seated')
+})
+
+test('TALK is allowed while seated — actions.m checks COMMAND_TALK before the sitting gate', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-chair-t', name: 'Chair',
+      mods: [{ type: 'Chair', noid: 73, x: 12, y: 142, style: 0 }] },
+  })
+  w.me.containerRef = 'item-chair-t' // seated
+  const { calls, cb } = recorder()
+  const r = await dispatch(w, ACTION_TALK, 30, { text: 'hi from my chair' }, cb)
+  assert.notEqual(r.reason, 'sitting-go-only', 'not blocked by the seated gate')
+  assert.equal(calls.beeps, 0, 'no beep')
+  assert.ok(calls.sends.some((m) => m.op === 'SPEAK'), 'speech went out')
+  assert.equal(w.me.containerRef, 'item-chair-t', 'still seated (TALK does not get you up)')
+})
+
+test('sex_changer_do toggles SEX_BIT (0x80) and plays get_shot (sex_changer_do.m)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-sexer', name: 'Sex_changer',
+      mods: [{ type: 'Sex_changer', noid: 72, x: 20, y: 142, orientation: 0, gr_state: 0 }] },
+  })
+  const before = w.me.mod.orientation
+  const chores = []; const sends = []
+  const cb = {
+    chore: (act, noid) => chores.push({ act, noid }),
+    send: async (msg) => { sends.push(msg); return { type: 'reply', err: 1 } },
+    walkTo: async (x, y) => ({ x, y }),
+    sound: () => {}, newImage: () => {}, beep: () => {},
+  }
+  await dispatch(w, ACTION_DO, 72, {}, cb)
+  assert.equal(w.me.mod.orientation, before ^ 0x80, 'SEX_BIT (0x80) toggled, not 0x08')
+  assert.ok(sends.some((m) => m.op === 'SEXCHANGE'), 'sent MSG_SEXCHANGE')
+  assert.ok(chores.some((c) => c.act === 'get_shot'), 'played the get_shot reaction (chainTo set_actor_chore)')
 })
 
 test('WALK$ is a no-op for a seated avatar (walkto.m: don\'t move if contained)', () => {

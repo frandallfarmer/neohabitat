@@ -111,8 +111,15 @@ function host_CHANGE(ctx) {
 function host_SEXCHANGE(ctx) {
   const msg = ctx.args
   const target = ctx.world.get(msg.AVATAR_NOID)
-  if (target) {
-    target.mod.orientation = (target.mod.orientation || 0) ^ 0x100
+  // sex_changer_SEXCHANGE.m: the announced avatar toggles its SEX_BIT (0x80 — the bit
+  // colorsFromOrientation reads) and plays operate -> hand_back -> get_shot. Skip our OWN
+  // avatar: sex_changer_do already toggled it optimistically, so re-applying the broadcast
+  // here would cancel the change. (Was 0x100 — the wrong bit, so observers saw no change.)
+  if (target && target.noid !== ctx.world.meNoid) {
+    target.mod.orientation = (target.mod.orientation || 0) ^ 0x80
+    ctx.chore('operate', target.noid)
+    ctx.chore('hand_back', target.noid)
+    ctx.chore('get_shot', target.noid)
     ctx.world.emit('fieldChanged', target, null)
   }
   const machine = ctx.world.get(msg.noid)

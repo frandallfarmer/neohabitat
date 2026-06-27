@@ -157,7 +157,15 @@ export function createAvatarMotion({ frameMs = FRAME_MS } = {}) {
         startGestureNow(noid, next.action, next.serverOrient, next.serverActivity, next.holdActivity)
     }
 
-    const getOrient = (noid, serverOrient = 0) => orientOverrides.get(noid) ?? serverOrient
+    // The override snapshots facing/posture (displayOrientForActivity only touches bits 0x01/0x02).
+    // SEX_BIT (0x80) is gender, not facing — keep it LIVE from the server orientation so a sex
+    // change repaints immediately. Without this the override's stale sex bit shadows the change
+    // until a region change clears the override map (the "renders only after a refresh" bug).
+    const getOrient = (noid, serverOrient = 0) => {
+        const override = orientOverrides.get(noid)
+        if (override === undefined) return serverOrient
+        return (override & ~0x80) | (serverOrient & 0x80)
+    }
 
     const getActivity = (noid, serverActivity = 129) => activityOverrides.get(noid) ?? serverActivity
 

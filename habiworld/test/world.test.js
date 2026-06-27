@@ -281,12 +281,12 @@ test('FILL$ and POUR$ toggle bottle state', () => {
   assert.equal(w.get(80).mod.gr_state, 0)
 })
 
-test('SEXCHANGE$ toggles avatar body-type bit', () => {
+test('SEXCHANGE$ toggles avatar SEX_BIT (0x80 — the bit colorsFromOrientation reads)', () => {
   const w = new HabitatWorld()
   makeStorm(w)
   const before = w.get(21).mod.orientation
   w.apply({ op: 'SEXCHANGE$', noid: 99, AVATAR_NOID: 21 })
-  assert.equal(w.get(21).mod.orientation, before ^ 0x100)
+  assert.equal(w.get(21).mod.orientation, before ^ 0x80)
   w.apply({ op: 'SEXCHANGE$', noid: 99, AVATAR_NOID: 21 })
   assert.equal(w.get(21).mod.orientation, before) // toggle back
 })
