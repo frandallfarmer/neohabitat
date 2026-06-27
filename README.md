@@ -128,6 +128,7 @@ In-repo clients and libraries (besides the elko server in `src/` and the Go `bri
   - [`textclient/`](textclient/README.md) — a human, text-only terminal client: narrates the world and takes verb-first commands (`GO`/`GET`/`SAY`/…).
   - [`habibots/`](habibots/README.md) — in-world bots (including the LLM-driven `sagebot`), built on the `HabiBot` connection + world-model layer.
   - [`habiworld/`](habiworld/README.md) — the canonical client-side world model and 1986-faithful behavior dispatcher that the bots and `textclient` share.
+  - [`habisound/`](habisound/README.md) — plays Habitat's original C64 SID sound effects in the browser, live, from the 1986 `sfx.m` driver bytecode (a client-side consumer of `habiworld`'s sound events). [Soundboard demo](https://frandallfarmer.github.io/neohabitat-doc/docs/sounds/).
 
 Clients and bots connect through `bridge_v2` (port 2026), never to the elko server directly.
 
