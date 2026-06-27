@@ -204,26 +204,37 @@ function magic_lamp_RUB(ctx) {
   return { ok: true }
 }
 
-// sex_changer_do.m: stand next to the machine and operate it — the
-// host is told, and the avatar's body-type bit flips locally too.
+// sex_changer_do.m: stand next to the machine and operate it. Exact port of the C64 sequence:
+//   punt_if_not_adjacent; chore operate; newImage(machine,1); sendMsg SEXCHANGE;
+//   orientation ^= SEX_BIT; chore hand_back; sound SEX_CHANGER; newImage(machine,0);
+//   set_actor_chore get_shot.
 async function sex_changer_do(ctx) {
-  if (!ctx.isAdjacent()) return ctx.depends()
-  ctx.chore('operate')
-  ctx.newImage(ctx.pointed.noid, 1)
-  await ctx.send({ op: 'SEXCHANGE', to: ctx.pointed.ref })
+  if (!ctx.isAdjacent()) return ctx.depends()   // v_punt_if_not_adjacent
+  ctx.chore('operate')                           // chore AV_ACT_operate
+  ctx.newImage(ctx.pointed.noid, 1)              // newImage pointed_noid, 1
+  await ctx.send({ op: 'SEXCHANGE', to: ctx.pointed.ref })  // sendMsg MSG_SEXCHANGE
+  // getProp orientation; eor #SEX_BIT; putProp — toggle bit 0x80, the bit colorsFromOrientation
+  // reads to pick the body's colour scheme. (Was 0x08 — the wrong bit, so gender never changed.)
   if (ctx.actor && ctx.actor.mod.orientation !== undefined) {
-    ctx.actor.mod.orientation = ctx.actor.mod.orientation ^ 8 // SEX_BIT
+    ctx.actor.mod.orientation = ctx.actor.mod.orientation ^ 0x80
+    ctx.world.emit('stateChanged', ctx.actor)
   }
-  ctx.sound('SEX_CHANGER', ctx.pointed.noid)
-  ctx.newImage(ctx.pointed.noid, 0)
+  ctx.chore('hand_back')                         // chore AV_ACT_hand_back
+  ctx.sound('SEX_CHANGER', ctx.pointed.noid)     // complexSound SEX_CHANGER
+  ctx.newImage(ctx.pointed.noid, 0)              // newImage pointed_noid, 0
+  ctx.chore('get_shot')                          // chainTo v_set_actor_chore AV_ACT_get_shot
   return { ok: true }
 }
 
-// sex_changer_SEXCHANGE.m (host): flip avatar body-type bit (orientation 0x100).
+// sex_changer_SEXCHANGE.m (host): the announced avatar toggles its SEX_BIT (0x80 — the bit
+// colorsFromOrientation reads) and plays get_shot. The live SEXCHANGE$ broadcast routes to
+// state_host.host_SEXCHANGE; this class-slot twin is kept in lockstep so it can't reintroduce
+// the wrong bit. Skip our own avatar (sex_changer_do already toggled it optimistically).
 function sex_changer_SEXCHANGE(ctx) {
   const target = ctx.world.get(ctx.args.AVATAR_NOID ?? ctx.args.target)
-  if (target) {
-    target.mod.orientation = (target.mod.orientation || 0) ^ 0x100
+  if (target && target.noid !== ctx.world.meNoid) {
+    target.mod.orientation = (target.mod.orientation || 0) ^ 0x80
+    ctx.chore('get_shot', target.noid)
     ctx.world.emit('fieldChanged', target, null)
   }
   ctx.sound('SEX_CHANGER', ctx.pointed.noid)
