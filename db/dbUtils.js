@@ -35,6 +35,15 @@ const runDBTests = async () => {
   var mongoHost = process.argv[2];
   var mode = process.argv[3];
 
+  // Guard against connection-string injection via argv (PR #604). Allow a bare host plus an
+  // optional :port — the form every caller actually uses (db/Makefile default 127.0.0.1:27017,
+  // compose neohabitatmongo:27017). A stricter host-only pattern would reject those and break
+  // `make nuke`.
+  if (!/^[a-zA-Z0-9.-]+(:[0-9]+)?$/.test(mongoHost)) {
+    console.error('Invalid MONGO_HOST format');
+    process.exit(-1);
+  }
+
   const client = await MongoClient.connect(`mongodb://${mongoHost}/`, {
     connectTimeoutMS: 15000
   });
