@@ -21,9 +21,11 @@ const SIT_FRONT = 157 // AV_ACT_sit_front
 // the avatar's container changes to the seat (slot from the reply) or
 // back to the region when standing.
 //
-// Deviation from the original: when not yet adjacent the C64 only
-// walked, requiring a second click to sit. A bot can't click twice, so
-// we walk and then proceed to sit in one call.
+// generic_goToFurniture.m: a standing GO that is NOT yet adjacent does
+// `chainTo v_goXY` — it WALKS and the action ENDS; a second GO, now
+// adjacent, sits. The interactive (graphical) client follows this two-GO
+// flow. A bot can't click twice, so an explicit `up_or_down` intent (the
+// habibot sitOrstand path) skips the early return and walks+sits in one call.
 async function generic_goToFurniture(ctx) {
   const me = ctx.actor
   const seat = ctx.pointed
@@ -59,9 +61,13 @@ async function generic_goToFurniture(ctx) {
   }
 
   if (!ctx.isAdjacent()) {
+    // generic_goToFurniture.m: not adjacent → chainTo v_goXY (walk) and the action ENDS.
     const go = await ctx.doAction(ACTION_GO, { goOnly: true })
     if (!go.ok) return ctx.beep(go.reason)
     await ctx.waitWalkAnimation()
+    // Interactive client: a second GO (now adjacent) does the sit. Bots pass an explicit
+    // up_or_down and fall through to sit in one call (they can't issue a second GO).
+    if (ctx.args.up_or_down === undefined) return { ok: true, posture: 'walking' }
   }
 
   const reply = await ctx.send({

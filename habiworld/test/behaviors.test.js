@@ -1148,7 +1148,7 @@ test('region entry: avatar made AFTER its seat is seated immediately from sittin
   assert.equal(w.get(60).mod.activity, 133)
 })
 
-test('a seated avatar cannot walk — goXY Im_sitting → go_fail (no WALK)', async () => {
+test('GO while seated is retargeted to the seat → get up, no walk (actions.m:288-300)', async () => {
   const w = new HabitatWorld()
   makeStorm(w)
   w.apply({
@@ -1158,8 +1158,30 @@ test('a seated avatar cannot walk — goXY Im_sitting → go_fail (no WALK)', as
   })
   w.me.containerRef = 'item-chair-s' // seated
   const { calls, cb } = recorder()
-  await dispatch(w, ACTION_GO, 30, {}, cb) // would normally walk to the far frisbee
+  await dispatch(w, ACTION_GO, 30, {}, cb) // GO at the far frisbee — would normally walk there
+  // actions.m:288-300: a seated GO is reinterpreted as "get up from my seat" — the cursor
+  // target (frisbee 30) is discarded, SITORSTAND get-up is sent, and goXY never runs (no walk).
   assert.equal(calls.walks.length, 0, 'no walk while seated')
+  assert.equal(calls.sends[0]?.op, 'SITORSTAND', 'sent the seat get-up')
+  assert.equal(calls.sends[0]?.up_or_down, 0, 'up_or_down 0 = stand')
+  assert.equal(w.me.containerRef, w.region.ref, 'stood back up into the region')
+})
+
+test('a non-GO command while seated beeps (actions.m:290 — can only GO while sitting)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: { type: 'item', ref: 'item-chair-b', name: 'Chair',
+      mods: [{ type: 'Chair', noid: 71, x: 12, y: 142, style: 0 }] },
+  })
+  w.me.containerRef = 'item-chair-b' // seated
+  const { calls, cb } = recorder()
+  const r = await dispatch(w, ACTION_GET, 30, {}, cb) // try to GET the frisbee while seated
+  assert.equal(r.reason, 'sitting-go-only')
+  assert.equal(calls.beeps, 1, 'beeped')
+  assert.equal(calls.sends.length, 0, 'no server round-trip')
+  assert.equal(w.me.containerRef, 'item-chair-b', 'still seated')
 })
 
 test('WALK$ is a no-op for a seated avatar (walkto.m: don\'t move if contained)', () => {

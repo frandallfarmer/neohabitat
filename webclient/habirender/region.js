@@ -679,7 +679,15 @@ export const computeLayoutMap = (objects, sig = signal({}), avatarMotion = null)
                                 ?? serverActivity
                             const baseOrient = avatarMotion?.getOrient?.(serverMod.noid, serverMod.orientation)
                                 ?? serverMod.orientation
-                            const orientForCompose = displayOrientForActivity(activity, baseOrient)
+                            let orientForCompose = displayOrientForActivity(activity, baseOrient)
+                            // mix.m draw_contained_object (571-576): a contained object inherits its
+                            // container's cel_dx (facing). A seated avatar is "contained" by its seat,
+                            // so the body must face the way the SEAT faces, not the avatar's own facing.
+                            // Take the facing bit (0x01) from the seat. Only the side 'sit_chair' pose
+                            // is mirrored (flipComposedFrame keys on 0x01 for side views); 'sit_front'
+                            // is a front view, so this is a no-op there.
+                            const seatMod = container.value?.obj?.value?.mods?.[0]
+                            if (seatMod) orientForCompose = (orientForCompose & ~0x01) | (seatMod.orientation & 0x01)
                             const displayMod = motion?.type === "walk"
                                 ? {
                                     ...serverMod,
