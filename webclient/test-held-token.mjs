@@ -1,5 +1,6 @@
 // Held token: decodeProp animation table parses tok.bin cycle 0→4.
 import { readFileSync } from "fs"
+import { fileURLToPath } from "url"
 
 const decodeAnimations = (data, startEndTableOff, nextBlockOff, stateCount) => {
     const animations = []
@@ -17,7 +18,7 @@ const decodeAnimations = (data, startEndTableOff, nextBlockOff, stateCount) => {
     return animations
 }
 
-const buf = readFileSync("habirender/props/tok.bin")
+const buf = readFileSync(fileURLToPath(new URL("habirender/props/tok.bin", import.meta.url)))
 const data = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
 const stateCount = (data.getUint8(0) & 0x3f) + 1
 const graphicStateOff = data.getUint8(2)

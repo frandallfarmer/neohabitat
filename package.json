@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "npm --prefix webclient test && npm --prefix habiworld test"
+  }
+}
