@@ -94,6 +94,15 @@ class HabitatWorld extends EventEmitter {
       return
     }
 
+    // Magical.MAGIC broadcasts the caster's transient OPERATE posture to
+    // neighbors as its own op ('changeposture' { noid, newposture }), not
+    // POSTURE$. Normalize the field names and reuse avatar_POSTURE (slot 20).
+    if (op === 'changeposture') {
+      dispatchHostSync(this, { op: 'POSTURE$', noid: msg.noid, new_posture: msg.newposture })
+      this.emit('op', msg)
+      return
+    }
+
     if (MIGRATED_OPS.has(op)) {
       dispatchHostSync(this, msg)
     }

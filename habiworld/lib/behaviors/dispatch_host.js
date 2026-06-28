@@ -63,6 +63,7 @@ const MIGRATED_OPS = new Set([
   'ON$',
   'OFF$',
   'SIT$',
+  'CHANGESTATE$',
 ])
 
 // Ops whose wire noid does not match the class-table slot on that object (e.g. DIG$ on
@@ -121,6 +122,10 @@ const HOST_OP_SLOTS = {
   'OFF$': 8,
   'ON$': 9,
   'SIT$': 16,
+  // CHANGESTATE$ → slot 8 on the announced object: magic_immobile[8] is
+  // button_CHANGESTATE; die/etc.[8] is generic_CHANGESTATE. Each class's
+  // own slot-8 handler runs, so this one mapping serves every changer.
+  'CHANGESTATE$': 8,
 }
 
 const noopPresentationClient = () => ({

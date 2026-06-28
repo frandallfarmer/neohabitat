@@ -1715,3 +1715,49 @@ test('SELL$ plays VENDO_DISPENSING for observers', () => {
       mods: [{ type: 'Coke', noid: 83, x: 120, y: 140 }] } })
   assert.deepEqual(sounds, [{ name: 'VENDO_DISPENSING', noid: 82 }])
 })
+
+// ── stationary magic (magic_immobile: generic_adjacentDoMagic / button_CHANGESTATE) ──
+
+test('magic_immobile DO walks adjacent then sends MAGIC targeting the actor (generic_adjacentDoMagic.m)', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-idol-1', name: 'Idol',
+      mods: [{ type: 'Magic_immobile', noid: 40, x: 90, y: 140, magic_type: 5 }] } })
+  const { calls, cb } = recorder([{ type: 'reply' }])
+  const sounds = []
+  cb.sound = (name, noid) => sounds.push({ name, noid })
+  const result = await dispatch(w, ACTION_DO, 40, {}, cb)
+  assert.ok(result.ok)
+  assert.equal(calls.walks.length, 1, 'must walk adjacent before operating')
+  assert.deepEqual(calls.sends, [{ op: 'MAGIC', to: 'item-idol-1', target: 17 }])
+  assert.deepEqual(sounds, [{ name: 'MAGIC', noid: 40 }])
+})
+
+test('CHANGESTATE$ on a magic_immobile sets its graphic state and plays MAGIC (button_CHANGESTATE.m)', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({ op: 'make', to: REGION_REF,
+    obj: { type: 'item', ref: 'item-lever-1', name: 'Lever',
+      mods: [{ type: 'Magic_immobile', noid: 41, x: 90, y: 140, gr_state: 0 }] } })
+  const sounds = []
+  const chores = []
+  w.setClient({
+    sound: (n, noid) => sounds.push({ n, noid }),
+    chore: (a, noid) => chores.push({ a, noid }),
+  })
+  w.apply({ op: 'CHANGESTATE$', noid: 41, switcher: 17, new_state: 1 })
+  assert.equal(w.get(41).mod.gr_state, 1, 'new graphic state applied')
+  assert.deepEqual(sounds, [{ n: 'MAGIC', noid: 41 }])
+  assert.deepEqual(chores, [{ a: 'operate', noid: 17 }], 'the switcher avatar plays operate')
+})
+
+test('changeposture broadcast animates a neighbor OPERATE via avatar_POSTURE (Magical.MAGIC)', () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  const chores = []
+  w.setClient({ chore: (a, noid, hold) => chores.push({ a, noid, hold }) })
+  w.apply({ op: 'changeposture', noid: 21, newposture: 152 }) // OPERATE (AV_ACT_operate) on Naibor
+  assert.equal(w.get(21).mod.activity, 152, 'posture recorded on the caster')
+  assert.deepEqual(chores, [{ a: 'operate', noid: 21, hold: 152 }], 'transient operate chore, held')
+})
