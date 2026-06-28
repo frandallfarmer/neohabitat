@@ -135,6 +135,26 @@ test('FIDDLE_$ pokes gr_state, orientation, and token denominations', () => {
   assert.equal(w.get(40).mod.denom_hi, 1)
 })
 
+test('FIDDLE_$ offset 15 on a Sign writes text bytes, not token denom (god tool t-command)', () => {
+  // C64 fiddle_with_object writes raw bytes at the struct offset; offset 15 is
+  // C64_TEXT_OFFSET for a Poster (Sign/Short_sign) and C64_TOKEN_DENOM_OFFSET
+  // for Tokens. Magical.god_tool_revisited 't' broadcasts the sign text here.
+  const w = new HabitatWorld()
+  makeStorm(w)
+  w.apply({
+    to: REGION_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-sign-1', name: 'Sign',
+      mods: [{ type: 'Sign', noid: 41, x: 40, y: 130, ascii: [32, 32], denom_lo: 0, denom_hi: 0 }],
+    },
+  })
+  w.apply({ op: 'FIDDLE_$', noid: 0, target: 41, offset: 15, argCount: 2, value: 'HI' })
+  const sign = w.get(41)
+  assert.deepEqual(sign.mod.ascii, [72, 73], 'text bytes land in ascii (what the renderer reads)')
+  assert.equal(sign.mod.text, 'HI')
+  assert.equal(sign.mod.denom_lo, 0, 'denomination must NOT be clobbered on a sign')
+})
+
 test('GOAWAY_$ and delete remove objects', () => {
   const w = new HabitatWorld()
   makeStorm(w)

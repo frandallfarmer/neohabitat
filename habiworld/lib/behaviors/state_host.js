@@ -13,6 +13,12 @@ const {
   FIDDLE_CUSTOMIZE_OFFSET,
 } = require('../constants')
 
+// Poster-derived classes (Sign, Short_sign) keep their text bytes at the
+// same struct offset (15) that Tokens use for the 2-byte denomination —
+// see host_FIDDLE. webclient/habirender/region.js renders the text from
+// mod.ascii (falling back to mod.text).
+const POSTER_TYPES = new Set(['Sign', 'Short_sign'])
+
 // HabitatMod.java compose_fiddle_msg
 function host_FIDDLE(ctx) {
   const msg = ctx.args
@@ -21,8 +27,23 @@ function host_FIDDLE(ctx) {
   if (!o) return { ok: false, reason: 'no-target' }
   const values = Array.isArray(msg.value) ? msg.value : [msg.value]
   if (msg.offset === FIDDLE_TOKEN_DENOM_OFFSET) {
-    o.mod.denom_lo = values[0] || 0
-    o.mod.denom_hi = values[1] || 0
+    // C64 fiddle_with_object (actions.m) writes `count` raw bytes at the
+    // struct offset and never branches on class — the field that lives at
+    // the offset IS whatever that object's struct puts there. Byte 15 is
+    // overloaded: Tokens hold a 2-byte denomination, but a Sign / Short_sign
+    // (Poster) holds its text bytes (C64_TEXT_OFFSET == C64_TOKEN_DENOM_OFFSET
+    // == 15). Reproduce that per class — e.g. the god tool's 't' command
+    // FIDDLEs a sign's text at offset 15.
+    if (POSTER_TYPES.has(o.type)) {
+      const text = typeof msg.value === 'string'
+        ? msg.value
+        : values.map((c) => String.fromCharCode(c)).join('')
+      o.mod.ascii = Array.from(text, (c) => c.charCodeAt(0))
+      o.mod.text = text
+    } else {
+      o.mod.denom_lo = values[0] || 0
+      o.mod.denom_hi = values[1] || 0
+    }
   } else if (msg.offset === FIDDLE_CUSTOMIZE_OFFSET) {
     o.mod.custom = values
   } else if (msg.offset === FIDDLE_CONTAINED_OFFSET) {
