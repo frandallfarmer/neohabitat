@@ -35,25 +35,49 @@
 //         generic_sendMail / mailbox_MAILARRIVED — a sure sign it is
 //         a much older version.
 //
-// DEFAULT_MUD below still points at the older new.mud because the
-// committed lib/classes.js was generated from it; regenerating from
-// beta.mud is the planned migration (it introduces ~21 not-yet-ported
-// behaviors — elevator_talk, generic_rdoMagic, trap_put, ... — that
-// must be ported or left as loud `unported` stubs).
+// STATUS (2026-06): the migration to beta.mud is DONE. The committed
+// lib/classes.js IS the CANONICAL_MUD (Bak/beta.mud) table — a fresh
+// `node parse_mud.js "$CANONICAL_MUD"` diffs against the committed file in
+// only THREE slots, and in all three the committed file is deliberately
+// MORE correct for NeoHabitat. Do NOT blind-regenerate over them; each is
+// a hand-applied NeoHabitat host-dispatch adaptation that a raw beta.mud
+// dump would REGRESS:
+//
+//   ── NEOHABITAT OVERRIDES (keep these; beta.mud disagrees) ───────────
+//   1. class_compass slot 0 (do):  compass_do   (NOT beta's generic_read)
+//        NeoHabitat's Compass takes DIRECT, not the C64's READ.
+//   2. class_fortune_machine slot 8:  generic_PAY  (NOT beta's illegal;
+//        beta puts PAY at message-slot 10). dispatch_host.js routes inbound
+//        PAYTO$/PAY$ -> slot 8, so generic_PAY MUST sit at slot 8 or the
+//        payment notification is lost.
+//   3. class_game_piece slot 0 (do):  game_piece_do (NOT beta's
+//        generic_chgState). NeoHabitat uses KING, not C64 MSG_MAGIC — and
+//        generic_chgState is not even implemented in habiworld (would
+//        become a loud `unported` stub).
+//
+// So if you ever regenerate, re-apply those three slots by hand and
+// re-run `node --test` before committing.
+//
+// NB: ~/habitat-orig/sources/c64/beta.mud is NOT the canonical file despite
+// its path — it diverges from the deployed server (adds magic_container 99
+// / stocks 70, and stocks 70 collides with the server's STEREO 70). Only
+// Bak/beta.mud matches Constants.java. CANONICAL_MUD points there for a
+// reason; don't repoint it.
 
 const fs = require('fs')
 const path = require('path')
 
-// The canonical client muddle file (see the CANONICAL SOURCE note above).
-// The committed classes.js predates this finding and came from new.mud;
-// regenerate with `node parse_mud.js "$CANONICAL_MUD" > lib/classes.js`
-// once the ~21 beta-only behaviors are ported.
+// The canonical client muddle file (see the CANONICAL SOURCE / STATUS notes
+// above). The committed lib/classes.js was generated from this and then
+// hand-patched with the three NeoHabitat overrides listed above. Default
+// source for a regenerate:
+//   node parse_mud.js > lib/classes.js   # uses CANONICAL_MUD
 const CANONICAL_MUD = path.join(
   process.env.HOME || '', 'habitat-orig/habitat/Beta/Bak/beta.mud')
 
-// What the current committed lib/classes.js was actually generated from
-// (older; wrong for Flag/Mailbox/etc.). Kept as the default only to match
-// the committed output until the migration to CANONICAL_MUD happens.
+// The older muddle the FIRST classes.js was built from (wrong for
+// Flag/Mailbox/etc.); kept only for archival diffing. No longer the
+// default — the committed table is from CANONICAL_MUD now.
 const DEFAULT_MUD = path.join(
   process.env.HOME || '', 'habitat-orig/sources/c64/Behaviors/new.mud')
 
