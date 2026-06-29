@@ -367,6 +367,13 @@ async function main() {
         if (world.me?.ref) transport.send({ op: "NEWREGION", to: world.me.ref, direction: 4 })
         return
       }
+      // HATCHERY_$: the bridge has streamed the synthetic customizer make-storm (Avatar + worn
+      // head) and now tells us to enter the new-Avatar customizer (Main/custom.m) with the eight
+      // selectable head styles. Not a world-state op — drive the mode from here.
+      if (m.op === "HATCHERY_$") {
+        startHatchery(m.heads)
+        return
+      }
       // PROMPT_USER_$ (C64 MESSAGE_PROMPT_USER): server-driven text prompt — the god tool's
       // "Edit:" REPL, hatchery onboarding, sign editing, etc. Show the prompt in the input
       // line (setPromptLine locks the prefix via leftBound; the user types after it); the
@@ -482,11 +489,13 @@ async function main() {
   }
   let onCustomizeSubmit = async () => false
 
-  // Enter the Hatchery customizer (Main/custom.m) for the current Avatar. The host normally
-  // triggers this on a new user; this hook lets us drive it manually until the JSON-path
-  // entry signal exists (the bridge gap). It needs the make-storm in place (world.me + a worn
-  // head record). On success the real Turf make-storm follows and we drop back to region mode.
-  const startHatchery = () => {
+  // Enter the Hatchery customizer (Main/custom.m) for the current Avatar. The bridge drives
+  // this on a brand-new user: it streams the synthetic make-storm (Avatar + worn head) then a
+  // HATCHERY_$ signal carrying the eight selectable head styles (applyInbound below). It needs
+  // the make-storm in place (world.me + a worn head record). On CUSTOMIZE success the real Turf
+  // make-storm follows and we drop back to region mode. `heads` defaults to the canonical set
+  // for the manual globalThis hook.
+  const startHatchery = (heads) => {
     const avatar = world.me
     if (!avatar) { console.warn("[hatchery] no avatar in world yet"); return false }
     const head = world.contentsOf(avatar.noid).find((o) => /head/i.test(o.type))
@@ -494,7 +503,7 @@ async function main() {
     customizeParams.value = {
       avatarNoid: avatar.noid,
       headNoid: head.noid,
-      heads: HATCHERY_HEAD_STYLES.map((style) => ({ style })),
+      heads: (heads && heads.length ? heads : HATCHERY_HEAD_STYLES).map((style) => ({ style })),
     }
     modeState.value = { mode: MODE_CUSTOMIZE }
     return true

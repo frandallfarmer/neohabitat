@@ -17,7 +17,7 @@
 import { h } from "preact"
 import htm from "htm"
 import { useEffect, useRef, useState } from "preact/hooks"
-import { handleKey, avatarFields, customizePayload, newCustomizeState, PANELS } from "./customize.mjs"
+import { handleKey, avatarFields, customizePayload, newCustomizeState, randomizeAppearance, PANELS } from "./customize.mjs"
 
 const html = htm.bind(h)
 
@@ -56,8 +56,13 @@ function syncToWorld(world, state, avatarNoid, headNoid) {
 export const CustomizeView = ({ regionView, objects, avatarMotion, pickState,
   world, avatarNoid, headNoid, heads, onSubmit, onRestart }) => {
   // One working state per mount; key handling mutates it and we bump a tick to re-render.
+  // custom_frame runs init_cust before its first render, so the Avatar starts on a random
+  // look the user then tweaks (R re-rolls it).
   const stateRef = useRef(null)
-  if (stateRef.current === null) stateRef.current = newCustomizeState({ heads })
+  if (stateRef.current === null) {
+    stateRef.current = newCustomizeState({ heads })
+    randomizeAppearance(stateRef.current)
+  }
   const [, setTick] = useState(0)
   const [busy, setBusy] = useState(false) // "Please wait…" while the host validates (custom.m)
 

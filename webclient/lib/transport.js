@@ -123,7 +123,11 @@ export class Transport {
   // make (with you:true) arrives in the make-storm that follows. `context` is optional — omit
   // it and the server drops the user into wherever they last were (their saved region / turf).
   enterContext(context, username) {
-    const msg = { op: "entercontext", to: "session", user: `user-${username}` }
+    // hatchery:true advertises that this client can run the new-Avatar customizer
+    // (Main/custom.m). It's a capability, not a command — the bridge starts the
+    // hatchery only for a brand-new user when the server has it enabled; a
+    // returning user just enters normally. Bots never send it.
+    const msg = { op: "entercontext", to: "session", user: `user-${username}`, hatchery: true }
     if (context) msg.context = context
     return this.send(msg)
   }
