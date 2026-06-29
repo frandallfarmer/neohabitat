@@ -188,6 +188,17 @@ async function main() {
       balloonState.value = { ...state }
     },
   }
+  // Hatchery customizer instruction panel — drawn as the Avatar's own Habitat word
+  // balloons (custom.m draw_balloon_quip over object #1), not a CSS chat box. Clears
+  // the previous panel's lines, then pushes this panel's lines as quips from world.me.
+  const showHatcheryPanel = (lines) => {
+    const state = balloonState.value
+    state.lines = []
+    state.quip = null
+    const speaker = world.me?.noid ?? null
+    for (const line of lines) pushBalloon(state, world, line, { speaker })
+    balloonState.value = { ...state }
+  }
   let untrackBalloons = null
   const refresh = () => { objects.value = worldToObjects(world) }
   for (const ev of ["added", "removed", "regionDescribed", "regionChanged",
@@ -631,6 +642,7 @@ async function main() {
                       avatarNoid=${customizeParams.value?.avatarNoid}
                       headNoid=${customizeParams.value?.headNoid}
                       heads=${customizeParams.value?.heads}
+                      showPanel=${showHatcheryPanel}
                       onSubmit=${onCustomizeSubmit} />`
                   : html`<${regionView}
                     objects=${objs}
