@@ -39,8 +39,9 @@ import { dispatchVerb, dispatchVerbAtPick, pickRegionTarget } from "./verb-dispa
 import { REGION_CANVAS_W, REGION_CANVAS_H } from "../habirender/pick.mjs"
 import { actionFromCommand } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
-import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, resolveMode, pickFromContainerUI } from "./modes.js"
+import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, MODE_CUSTOMIZE, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
+import { CustomizeView } from "./customize-view.js"
 import { OnScreenKeyboard } from "./onscreen-keyboard.mjs"
 import { TextView } from "./text-view.js"
 import { TitleScreen } from "./title.js"
@@ -144,6 +145,12 @@ async function main() {
 
   const objects = signal([])
   const status = signal({ kind: "", text: "ready — set parameters and Connect" })
+  // MODE_CUSTOMIZE params (the worn Avatar + head noids + the eight selectable head styles),
+  // set when the Hatchery flow begins. The eight styles come from the host's customization
+  // vector (bridge hatchery.go NewHatcheryCustomizationVector); the canonical pre-randomized
+  // set is the fallback for the manual entry hook below.
+  const HATCHERY_HEAD_STYLES = [1, 2, 3, 4, 11, 21, 9, 30]
+  const customizeParams = signal(null)
   const playEspSound = (idx) => {
     const noid = world.me?.noid
     if (noid == null) return
@@ -450,8 +457,49 @@ async function main() {
     // an open container, which the behavior routes through ctx.pickFromContainer).
     globalThis.habitatInventory = (noid) =>
       pickFromContainerUI(noid).then((picked) => (console.log("[inventory] picked:", picked), picked))
+    // Submit the five customization bytes (MESSAGE_customize = 4) and resolve to the host's
+    // success flag (custom.m customize_reply: nonzero = enter the world, zero = restart).
+    // NOTE: the wire shape on the JSON path is the bridge gap we'll close next — the C64
+    // hatchery lives in the binary protocol (client_session.go handleHatcheryCustomize). This
+    // sends the op + 5 args to the region and trusts the reply's success flag; adjust to match
+    // whatever the bridge ends up emitting/accepting over JSON.
+    onCustomizeSubmit = async (payload) => {
+      const to = world.region?.ref || world.me?.ref
+      if (!to) return false
+      try {
+        const reply = await transport.sendForReply({ op: "CUSTOMIZE", to, custom: payload })
+        const ok = reply?.err ? false : (reply?.success ?? true)
+        // On success the host streams the real Turf make-storm; drop back to region mode so the
+        // new region renders (a changeContext would also reset it via resetForRegion).
+        if (ok) modeState.value = { mode: MODE_REGION }
+        return ok
+      } catch (e) {
+        console.warn("[hatchery] CUSTOMIZE reply failed:", e)
+        return false
+      }
+    }
     transport.connect()
   }
+  let onCustomizeSubmit = async () => false
+
+  // Enter the Hatchery customizer (Main/custom.m) for the current Avatar. The host normally
+  // triggers this on a new user; this hook lets us drive it manually until the JSON-path
+  // entry signal exists (the bridge gap). It needs the make-storm in place (world.me + a worn
+  // head record). On success the real Turf make-storm follows and we drop back to region mode.
+  const startHatchery = () => {
+    const avatar = world.me
+    if (!avatar) { console.warn("[hatchery] no avatar in world yet"); return false }
+    const head = world.contentsOf(avatar.noid).find((o) => /head/i.test(o.type))
+    if (!head) { console.warn("[hatchery] avatar has no worn head record"); return false }
+    customizeParams.value = {
+      avatarNoid: avatar.noid,
+      headNoid: head.noid,
+      heads: HATCHERY_HEAD_STYLES.map((style) => ({ style })),
+    }
+    modeState.value = { mode: MODE_CUSTOMIZE }
+    return true
+  }
+  globalThis.habitatHatchery = startHatchery
 
   const runRegionVerb = async (verb, { canvasX, canvasY, scale }, label) => {
     if (verbInFlight || !dispatchClient) return
@@ -546,7 +594,7 @@ async function main() {
         <${Scale.Provider} value=${3}>
           <${BalloonStage}
             stateSignal=${balloonState}
-            textInput=${region && mode.mode !== MODE_INVENTORY && mode.mode !== MODE_TEXT
+            textInput=${region && mode.mode !== MODE_INVENTORY && mode.mode !== MODE_TEXT && mode.mode !== MODE_CUSTOMIZE
               ? {
                   Line: TextInputLine,
                   stateSignal: textInputState,
@@ -564,6 +612,17 @@ async function main() {
                     onAbort=${() => resolveMode(null)} />`
                 : mode.mode === MODE_TEXT
                   ? html`<${TextView} text=${mode.text} onExit=${() => resolveMode(null)} />`
+                  : mode.mode === MODE_CUSTOMIZE
+                  ? html`<${CustomizeView}
+                      regionView=${regionView}
+                      objects=${objs}
+                      avatarMotion=${avatarMotion}
+                      pickState=${pickState}
+                      world=${world}
+                      avatarNoid=${customizeParams.value?.avatarNoid}
+                      headNoid=${customizeParams.value?.headNoid}
+                      heads=${customizeParams.value?.heads}
+                      onSubmit=${onCustomizeSubmit} />`
                   : html`<${regionView}
                     objects=${objs}
                     avatarMotion=${avatarMotion}

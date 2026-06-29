@@ -12,6 +12,10 @@ import { signal } from "@preact/signals"
 export const MODE_REGION = "region"
 export const MODE_INVENTORY = "inventory"
 export const MODE_TEXT = "text"
+// The Hatchery new-Avatar customizer (Main/custom.m). Unlike inventory/text it is not a
+// pick that resolves a noid — it's a full pre-game mode that owns the keyboard and freezes
+// the game cursor (custom_running + detach_from_stick). It exits by submitting CUSTOMIZE.
+export const MODE_CUSTOMIZE = "customize"
 
 // { mode, containerNoid } — containerNoid set in inventory mode (display_contents_noid).
 export const modeState = signal({ mode: MODE_REGION, containerNoid: null })
