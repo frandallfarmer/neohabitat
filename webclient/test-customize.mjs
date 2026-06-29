@@ -4,7 +4,7 @@ import {
   changeSex, selectHead, changeHeight, toggleWalk,
   changeHair, changeLegs, changeTorso, changeSleeves,
   randomizeAppearance, advancePanel, handleKey, customizePayload,
-  avatarFields, PANELS, SEX_BIT, FIRST_HEAD,
+  avatarFields, PANELS, BALLOON_TEXT, BALLOON_PROMPT, BALLOON_SEP, SEX_BIT, FIRST_HEAD,
 } from "./lib/customize.mjs"
 
 const assert = (cond, msg) => { if (!cond) throw new Error(msg) }
@@ -136,8 +136,21 @@ const fresh = () => newCustomizeState({ heads: heads8() })
 {
   assert(PANELS.length === 6, "six instruction panels (custom.m panel_0..5)")
   assert(PANELS[4].confirm === true && PANELS.filter((p) => p.confirm).length === 1, "only panel 4 confirms")
-  const legend = PANELS[3].lines.join(" ")
+  const legend = PANELS[3].entries.map((e) => e.text).join(" ")
   for (const fk of ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8"]) assert(legend.includes(fk), `legend names ${fk}`)
+}
+
+// Balloon colors duplicate the C64 colors_8-translated VIC values (balloons.m / custom.m):
+// text yellow 0x07, prompt 0x04, black separators 0x00 (invisible spacer rows).
+{
+  assert(BALLOON_TEXT === 0x07 && BALLOON_PROMPT === 0x04 && BALLOON_SEP === 0x00, "C64 balloon color values")
+  // panel_0: a black spacer, two yellow text lines, then the prompt color.
+  const colors = PANELS[0].entries.map((e) => e.color)
+  assert(colors[0] === BALLOON_SEP, "panel_0 opens with a black spacer (one_black_line)")
+  assert(colors[1] === BALLOON_TEXT && colors[2] === BALLOON_TEXT, "panel_0 text is yellow")
+  assert(colors[colors.length - 1] === BALLOON_PROMPT, "panel_0 ends with the prompt color")
+  // panel_4 has five black spacers before the confirm text (custom.m: five one_black_line).
+  assert(PANELS[4].entries.filter((e) => e.color === BALLOON_SEP).length === 5, "panel_4 has five spacers")
 }
 
 console.log("test-customize: ok")

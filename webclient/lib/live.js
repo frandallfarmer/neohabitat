@@ -190,13 +190,14 @@ async function main() {
   }
   // Hatchery customizer instruction panel — drawn as the Avatar's own Habitat word
   // balloons (custom.m draw_balloon_quip over object #1), not a CSS chat box. Clears
-  // the previous panel's lines, then pushes this panel's lines as quips from world.me.
-  const showHatcheryPanel = (lines) => {
+  // the previous panel's lines, then pushes this panel's entries from world.me, each
+  // in its C64 color ({ text, color }: yellow text, the prompt color, black spacers).
+  const showHatcheryPanel = (entries) => {
     const state = balloonState.value
     state.lines = []
     state.quip = null
     const speaker = world.me?.noid ?? null
-    for (const line of lines) pushBalloon(state, world, line, { speaker })
+    for (const e of entries) pushBalloon(state, world, e.text, { speaker, vicColor: e.color })
     balloonState.value = { ...state }
   }
   let untrackBalloons = null

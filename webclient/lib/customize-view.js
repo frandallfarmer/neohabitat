@@ -17,7 +17,7 @@
 import { h } from "preact"
 import htm from "htm"
 import { useEffect, useRef, useState } from "preact/hooks"
-import { handleKey, avatarFields, customizePayload, newCustomizeState, randomizeAppearance, PANELS, DEST_X, DEST_Y } from "./customize.mjs"
+import { handleKey, avatarFields, customizePayload, newCustomizeState, randomizeAppearance, PANELS, DEST_X, DEST_Y, BALLOON_TEXT } from "./customize.mjs"
 
 const html = htm.bind(h)
 
@@ -80,9 +80,9 @@ function syncToWorld(world, state, avatarNoid, headNoid, avatarMotion) {
 // the instruction lines plus the page prompt. `showPanel` is the game's balloon
 // renderer (live.js showHatcheryPanel), so these look exactly like in-world speech.
 function drawPanel(showPanel, s, busy) {
-  if (busy) { showPanel(["Please wait a few moments..."]); return }
-  const p = PANELS[Math.min(s.panel, PANELS.length - 1)]
-  showPanel([...p.lines, p.confirm ? "Type Y or N" : "Press the space bar"])
+  // custom_frame draws "Please wait…" via draw_balloon_quip (the red→yellow text color).
+  if (busy) { showPanel([{ text: "Please wait a few moments...", color: BALLOON_TEXT }]); return }
+  showPanel(PANELS[Math.min(s.panel, PANELS.length - 1)].entries)
 }
 
 export const CustomizeView = ({ regionView, objects, avatarMotion, pickState,

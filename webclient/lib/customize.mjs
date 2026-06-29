@@ -193,37 +193,60 @@ export function avatarFields(s) {
   }
 }
 
-// The instruction balloons, verbatim from custom.m (intro_0…intro_5d). Space
-// advances panels 0–3 and 5; panel 4 (confirm) takes Y/N. Each non-confirm panel
-// ends on "Press space bar" (press_return); the view draws these as the Avatar's
-// own quips, exactly as draw_balloon_quip does over object #1.
+// Balloon colors. custom.m draws the panels through draw_balloon, which TRANSLATES
+// the logical color via colors_8 (balloons.m) before display; one_black_line uses
+// draw_balloon_2 (untranslated). Duplicating the resulting VIC indices, not naming
+// them: text red(0x02)→colors_8[2]=yellow(0x07); prompt green(0x05)→colors_8[5]=0x04;
+// the black separator stays 0x00 (untranslated → invisible on the black panel, so it
+// reads as a blank spacer row, exactly as one_black_line draws press_return in black).
+export const BALLOON_TEXT = 0x07
+export const BALLOON_PROMPT = 0x04
+export const BALLOON_SEP = 0x00
+
+// One balloon "line": { text, color (VIC index) }. The instruction text is verbatim
+// from custom.m (intro_0…intro_5d, press_return). Space advances panels 0–3 and 5;
+// panel 4 (confirm) takes Y/N. SEP is a one_black_line spacer (invisible black row);
+// PROMPT is the green "Press space bar" (instructs).
+const txt = (text) => ({ text, color: BALLOON_TEXT })
+const SEP = { text: "Press space bar", color: BALLOON_SEP }
+const PROMPT = { text: "Press space bar", color: BALLOON_PROMPT }
+
 export const PANELS = [
-  { lines: [ // panel_0
-    "Welcome to Lucasfilm's Habitat! You are about to enter an exciting new world of fun and adventure!",
-    "In Habitat, you will be represented by me, your Avatar.",
+  { entries: [ // panel_0
+    SEP,
+    txt("Welcome to Lucasfilm's Habitat! You are about to enter an exciting new world of fun and adventure!"),
+    txt("In Habitat, you will be represented by me, your Avatar."),
+    PROMPT,
   ], confirm: false },
-  { lines: [ // panel_1
-    "Before you begin your adventures, you get to customize my appearance.",
-    "You can select my sex, height, head style, and hair and body colors.",
+  { entries: [ // panel_1
+    SEP,
+    txt("Before you begin your adventures, you get to customize my appearance."),
+    txt("You can select my sex, height, head style, and hair and body colors."),
+    SEP, PROMPT,
   ], confirm: false },
-  { lines: [ // panel_2
-    "In a moment, you will use the function keys to alter my appearance until it suits you.",
-    "You will then be prepared to enter the world of Habitat.",
+  { entries: [ // panel_2
+    txt("In a moment, you will use the function keys to alter my appearance until it suits you."),
+    txt("You will then be prepared to enter the world of Habitat."),
+    SEP, PROMPT,
   ], confirm: false },
-  { lines: [ // panel_3 — the F-key legend
-    "F1 changes my sex, F2 changes my head",
-    "F3 changes height, F4 walks me around",
-    "F5 changes hair, F6 changes leg color",
-    "F7 changes my torso, F8 changes arms",
-    "When finished, press the space bar.",
+  { entries: [ // panel_3 — the F-key legend; intro_3e is the green prompt line
+    SEP,
+    txt("F1 changes my sex, F2 changes my head"),
+    txt("F3 changes height, F4 walks me around"),
+    txt("F5 changes hair, F6 changes leg color"),
+    txt("F7 changes my torso, F8 changes arms"),
+    SEP,
+    { text: "When finished, press the space bar.", color: BALLOON_PROMPT },
   ], confirm: false },
-  { lines: [ // panel_4 — the Y/N confirm
-    "Am I now customized the way you want me to be? (Type Y or N)",
+  { entries: [ // panel_4 — Y/N confirm; five black lines push intro_4 down
+    SEP, SEP, SEP, SEP, SEP,
+    txt("Am I now customized the way you want me to be? (Type Y or N)"),
   ], confirm: true },
-  { lines: [ // panel_5
-    "OK!  Here we go!",
-    "I will first appear inside our Turf.",
-    "This is our home within the Habitat.",
-    "Practice with the controls a bit, then head out into the world. Explore! Meet people!  Above all, have fun!",
+  { entries: [ // panel_5
+    txt("OK!  Here we go!"),
+    txt("I will first appear inside our Turf."),
+    txt("This is our home within the Habitat."),
+    txt("Practice with the controls a bit, then head out into the world. Explore! Meet people!  Above all, have fun!"),
+    PROMPT,
   ], confirm: false },
 ]
