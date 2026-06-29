@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"bytes"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -91,41 +92,71 @@ func TestPickHatcheryHeads(t *testing.T) {
 func TestBuildHatcheryMakeStorm(t *testing.T) {
 	heads := []uint8{1, 2, 3, 4, 11, 21, 9, 30}
 	lines := buildHatcheryMakeStorm("user-zelda", "Zelda", heads)
-	if len(lines) != 4 {
-		t.Fatalf("expected 4 messages (region, avatar, head, signal), got %d", len(lines))
+	// region, ground, wall, avatar, head, HATCHERY_$ signal
+	if len(lines) != 6 {
+		t.Fatalf("expected 6 messages (region+ground+wall+avatar+head+signal), got %d", len(lines))
 	}
 
 	var region, avatar, head ElkoMessage
 	mustUnmarshal(t, lines[0], &region)
-	mustUnmarshal(t, lines[1], &avatar)
-	mustUnmarshal(t, lines[2], &head)
+	mustUnmarshal(t, lines[3], &avatar)
+	mustUnmarshal(t, lines[4], &head)
 
 	if region.Op == nil || *region.Op != "make" || region.Obj == nil ||
 		region.Obj.Mods[0].Type == nil || *region.Obj.Mods[0].Type != "Region" {
 		t.Errorf("first message is not a Region make: %s", lines[0])
 	}
+	// The backdrop makes carry a Ground (the floor) and a Wall — both with gr_state.
+	sceneTypes := map[string]bool{}
+	for _, ln := range lines[1:3] {
+		var m ElkoMessage
+		mustUnmarshal(t, ln, &m)
+		if m.Obj != nil && m.Obj.Mods[0].Type != nil {
+			sceneTypes[*m.Obj.Mods[0].Type] = true
+		}
+		if m.Obj == nil || m.Obj.Mods[0].GrState == nil {
+			t.Errorf("scenery make missing gr_state (renderer crashes without it): %s", ln)
+		}
+	}
+	for _, want := range []string{"Ground", "Wall"} {
+		if !sceneTypes[want] {
+			t.Errorf("backdrop missing %s; got %v", want, sceneTypes)
+		}
+	}
 	if avatar.You == nil || !*avatar.You {
-		t.Errorf("avatar make must carry you:true so world.me resolves: %s", lines[1])
+		t.Errorf("avatar make must carry you:true so world.me resolves: %s", lines[3])
 	}
 	if avatar.Obj == nil || avatar.Obj.Ref != "user-zelda" ||
 		avatar.Obj.Mods[0].Type == nil || *avatar.Obj.Mods[0].Type != "Avatar" ||
-		avatar.Obj.Mods[0].Noid == nil || *avatar.Obj.Mods[0].Noid != hatcheryAvatarNoid {
-		t.Errorf("avatar body wrong: %s", lines[1])
+		avatar.Obj.Mods[0].Noid == nil || *avatar.Obj.Mods[0].Noid != hatcheryAvatarNoid ||
+		avatar.Obj.Mods[0].GrState == nil {
+		t.Errorf("avatar body wrong (or missing gr_state): %s", lines[3])
 	}
 	if head.To == nil || *head.To != "user-zelda" || head.Obj == nil || head.Obj.In != "user-zelda" ||
 		head.Obj.Mods[0].Type == nil || *head.Obj.Mods[0].Type != "Head" ||
-		head.Obj.Mods[0].Style == nil || *head.Obj.Mods[0].Style != heads[0] {
-		t.Errorf("head must be worn in the avatar with the first style: %s", lines[2])
+		head.Obj.Mods[0].Style == nil || *head.Obj.Mods[0].Style != heads[0] ||
+		head.Obj.Mods[0].GrState == nil {
+		t.Errorf("head must be worn in the avatar with the first style and gr_state: %s", lines[4])
 	}
 
-	var sig struct {
-		Op    string  `json:"op"`
-		To    string  `json:"to"`
-		Heads []uint8 `json:"heads"`
+	// heads must be a real JSON array, NOT base64 — Go marshals []uint8 (==[]byte)
+	// as a base64 string, which the web client can't index. Assert the raw form and
+	// decode into []int (which rejects a base64 string, unlike []uint8).
+	if !bytes.Contains(lines[5], []byte(`"heads":[`)) {
+		t.Errorf("HATCHERY_$ heads must serialize as a JSON array, got: %s", lines[5])
 	}
-	mustUnmarshal(t, lines[3], &sig)
-	if sig.Op != "HATCHERY_$" || sig.To != "user-zelda" || !reflect.DeepEqual(sig.Heads, heads) {
-		t.Errorf("HATCHERY_$ signal wrong: %s", lines[3])
+	var sig struct {
+		Op    string `json:"op"`
+		To    string `json:"to"`
+		Heads []int  `json:"heads"`
+	}
+	mustUnmarshal(t, lines[5], &sig)
+	wantHeads := make([]int, len(heads))
+	for i, h := range heads {
+		wantHeads[i] = int(h)
+	}
+	if sig.Op != "HATCHERY_$" || sig.To != "user-zelda" || !reflect.DeepEqual(sig.Heads, wantHeads) {
+		t.Errorf("HATCHERY_$ signal wrong: %s", lines[6])
 	}
 }
 
