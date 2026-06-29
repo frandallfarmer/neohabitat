@@ -114,3 +114,115 @@ func buildHatcheryMakeStorm(avatarRef, fullName string, heads []uint8) [][]byte 
 	}
 	return out
 }
+
+// parseHatcheryAppearanceJson reads the five appearance bytes a JSON web client
+// sends with op "CUSTOMIZE" (msg.custom = [head_style, hair, av_orient, c0, c1]) —
+// the JSON analogue of the binary parseHatcheryAppearance.
+func parseHatcheryAppearanceJson(msg *ElkoMessage) (hatcheryAppearance, bool) {
+	if msg.Custom == nil || len(*msg.Custom) < 5 {
+		return hatcheryAppearance{}, false
+	}
+	a := *msg.Custom
+	return hatcheryAppearance{
+		headStyle:         a[0],
+		hairPattern:       a[1],
+		avatarOrientation: a[2],
+		custom0:           a[3],
+		custom1:           a[4],
+	}, true
+}
+
+// beginJsonHatchery streams the synthetic customizer make-storm to a JSON web
+// client and notifies habiproxy that the hatchery started. Caller holds stateMu.
+func (c *ClientSession) beginJsonHatchery() {
+	if err := c.sendHatcheryStateToHabiproxy("started"); err != nil {
+		c.log.Error().Err(err).Str("user_ref", c.userRef).Msg("Could not notify habiproxy that original hatchery started")
+	}
+	heads := pickHatcheryHeads()
+	for _, line := range buildHatcheryMakeStorm(c.userRef, c.UserName, heads) {
+		c.writeJsonToClient(line)
+	}
+	c.log.Info().Str("user_ref", c.userRef).Msg("Sent JSON hatchery make-storm; awaiting CUSTOMIZE")
+}
+
+// sendJsonCustomizeReply answers a JSON web client's CUSTOMIZE with a reply the
+// transport's sendForReply consumes (type:"reply"). success=false → the client
+// restarts the customizer (custom.m customize_reply == 0).
+func (c *ClientSession) sendJsonCustomizeReply(success bool) {
+	if b, err := json.Marshal(map[string]any{
+		"type":    "reply",
+		"op":      "CUSTOMIZE",
+		"success": success,
+	}); err == nil {
+		c.writeJsonToClient(b)
+	}
+}
+
+// handleJsonHatcheryCustomize is the JSON analogue of handleHatcheryCustomize:
+// build the real avatar from the five bytes (the shared finalizeHatchery), reply,
+// then enter the deferred context so Elko streams the real region. Never relayed
+// to Elko. Acquires stateMu itself (the passthrough loop does not hold it here).
+func (c *ClientSession) handleJsonHatcheryCustomize(msg *ElkoMessage) {
+	c.stateMu.Lock()
+	if !c.hatcheryPending {
+		c.stateMu.Unlock()
+		c.log.Warn().Msg("CUSTOMIZE received with no hatchery pending; ignoring")
+		return
+	}
+	appearance, ok := parseHatcheryAppearanceJson(msg)
+	if !ok {
+		c.stateMu.Unlock()
+		c.log.Error().Msg("JSON hatchery CUSTOMIZE payload too short")
+		c.sendJsonCustomizeReply(false)
+		return
+	}
+	if err := c.finalizeHatchery(appearance); err != nil {
+		c.stateMu.Unlock()
+		c.log.Error().Err(err).Str("user_ref", c.userRef).Msg("Could not create hatchery user")
+		c.sendJsonCustomizeReply(false)
+		return
+	}
+	desired := c.pendingHatcheryEnter
+	c.pendingHatcheryEnter = ""
+	c.stateMu.Unlock()
+	c.sendJsonCustomizeReply(true)
+	c.enterDeferredHatcheryContext(desired)
+}
+
+// enterDeferredHatcheryContext relays the held entercontext to Elko now that the
+// avatar exists, resolving the entry region the same way the normal JSON path
+// does: the client's requested context if any, else the user's last region, else
+// the bridge default.
+func (c *ClientSession) enterDeferredHatcheryContext(desired string) {
+	c.stateMu.Lock()
+	if c.user == nil && c.userRef != "" {
+		if u, err := c.findHabitatObj(c.userRef); err == nil && u != nil {
+			c.user = u
+		}
+	}
+	context := c.bridge.Context
+	if desired != "" {
+		context = desired
+	} else if c.user != nil && len(c.user.Mods) > 0 &&
+		c.user.Mods[0].LastArrivedIn != nil && *c.user.Mods[0].LastArrivedIn != "" {
+		context = *c.user.Mods[0].LastArrivedIn
+	}
+	userRef := c.userRef
+	c.bindAvatar(c.UserName)
+	c.bridgeAutoEnteredContext = ""
+	c.stateMu.Unlock()
+
+	b, err := json.Marshal(map[string]any{
+		"op":      "entercontext",
+		"to":      "session",
+		"context": context,
+		"user":    userRef,
+	})
+	if err != nil {
+		c.log.Error().Err(err).Msg("Could not marshal deferred hatchery entercontext")
+		return
+	}
+	if serr := c.sendRawToElko(b); serr != nil {
+		c.log.Error().Err(serr).Msg("Could not relay deferred hatchery entercontext")
+	}
+}

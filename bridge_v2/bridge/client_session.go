@@ -78,9 +78,9 @@ type ClientSession struct {
 	// stateMu. sync.Mutex is non-reentrant, and folding these fields into
 	// stateMu produced a deadlock right after logging "->CLIENT" on the
 	// IM_ALIVE short-circuit path.
-	qlinkMu           sync.Mutex
-	qlinkInSeq        byte // sequence number of last received QLink Action (peer's send seq)
-	qlinkOutSeq       byte // sequence number of next QLink Action we will send
+	qlinkMu     sync.Mutex
+	qlinkInSeq  byte // sequence number of last received QLink Action (peer's send seq)
+	qlinkOutSeq byte // sequence number of next QLink Action we will send
 	// QLink reliable delivery (guarded by qlinkMu). bridge_v2 originally had
 	// NO retransmission, so a single dropped region packet hung the C64
 	// forever ("infinite region transfer"). qlinkSentWindow holds un-ACKed
@@ -105,14 +105,23 @@ type ClientSession struct {
 	firstConnection   bool
 	hatcheryPending   bool
 	hatcheryCompleted bool
-	largeRequestCache []byte
-	nextRegion        string
-	nextRegionSet     bool
-	log               zerolog.Logger  // sticky avatar/ip/session_id structured fields
-	sessionID         string          // monotonic session handle, also a log + span attribute
-	ctx               context.Context // context carrying the session root span
-	span              trace.Span      // root span for this session, ended in Close()
-	jsonPassthrough   bool            // true => client speaks JSON directly to Elko; bridge relays
+	// hatcheryCapable gates the original-hatchery flow per CONNECTION CAPABILITY,
+	// not protocol: binary C64 clients are capable, the web client advertises it
+	// via hatchery:true on entercontext, and bots (also JSON-passthrough) are NOT —
+	// they can't customize, so they keep the immediate default-avatar path.
+	hatcheryCapable bool
+	// pendingHatcheryEnter holds a JSON web client's deferred entercontext context
+	// while it customizes: a brand-new user has no avatar, so we hold the entry,
+	// run the customizer, then enter the real region once CUSTOMIZE creates them.
+	pendingHatcheryEnter string
+	largeRequestCache    []byte
+	nextRegion           string
+	nextRegionSet        bool
+	log                  zerolog.Logger  // sticky avatar/ip/session_id structured fields
+	sessionID            string          // monotonic session handle, also a log + span attribute
+	ctx                  context.Context // context carrying the session root span
+	span                 trace.Span      // root span for this session, ended in Close()
+	jsonPassthrough      bool            // true => client speaks JSON directly to Elko; bridge relays
 	// bridgeAutoEnteredContext records the most recent context the
 	// bridge entered on the client's behalf (after a server-initiated
 	// changeContext in JSON-passthrough mode). Used to suppress the
@@ -1245,9 +1254,13 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			c.user = user
 			return
 		}
-		if c.bridge.OriginalHatchery && !c.jsonPassthrough {
+		// Hatchery is gated purely on CAPABILITY — no protocol test here. QLink/raw
+		// binary C64 clients set hatcheryCapable at connect; the web client sets it
+		// via hatchery:true on entercontext; bots never do, so they fall through to
+		// the default avatar below.
+		if c.bridge.OriginalHatchery && c.hatcheryCapable {
 			c.hatcheryPending = true
-			c.log.Info().Str("user_ref", c.userRef).Msg("User has no avatar; starting original hatchery flow")
+			c.log.Info().Str("user_ref", c.userRef).Bool("json", c.jsonPassthrough).Msg("User has no avatar; starting original hatchery flow")
 			return
 		}
 		err = c.createUserWithAppearance(fullName, nil)
@@ -1504,6 +1517,9 @@ func (c *ClientSession) Run() {
 
 	c.log.Info().Msg("ClientSession connected.")
 
+	// Raw binary (C64) clients run the native hatchery handshake → always capable.
+	c.hatcheryCapable = true
+
 	if err := c.connectToElko(); err != nil {
 		// Elko reachability is a hard invariant — see Bridge.Run.
 		c.log.Fatal().Err(err).Str("elko_host", c.bridge.elkoHost).Msg("Unable to connect to Elko")
@@ -1639,9 +1655,22 @@ func (c *ClientSession) runJsonPassthrough() {
 		// reject malformed messages.
 		var msg ElkoMessage
 		if jerr := json.Unmarshal(line, &msg); jerr == nil {
+			// A hatchery-capable web client (see entercontext below) sends
+			// op "CUSTOMIZE" with the five appearance bytes once the user has
+			// finished the customizer. Intercept it: build the real avatar and
+			// then enter the deferred context. Never relayed to Elko.
+			if msg.Op != nil && *msg.Op == "CUSTOMIZE" {
+				c.handleJsonHatcheryCustomize(&msg)
+				continue
+			}
 			if msg.Op != nil && *msg.Op == "entercontext" && msg.User != nil {
 				userName := strings.TrimPrefix(*msg.User, "user-")
 				c.stateMu.Lock()
+				// The web client advertises it can run the customizer via
+				// hatchery:true; bots never do, so they keep the default avatar.
+				if msg.Hatchery != nil && *msg.Hatchery {
+					c.hatcheryCapable = true
+				}
 				// Suppression: if the bridge already entered this
 				// exact context on the client's behalf (after a
 				// server-initiated changeContext), skip forwarding
@@ -1664,6 +1693,17 @@ func (c *ClientSession) runJsonPassthrough() {
 				if uerr := c.ensureUserCreated(userName); uerr != nil {
 					c.log.Error().Err(uerr).Str("user", userName).
 						Msg("Could not ensure User created, relaying entercontext anyway")
+				}
+				// Brand-new hatchery-capable user: hold this entry, stream the
+				// synthetic customizer make-storm, and wait for CUSTOMIZE — do NOT
+				// relay the entercontext to Elko (the avatar doesn't exist yet).
+				if c.hatcheryPending {
+					if msg.Context != nil {
+						c.pendingHatcheryEnter = *msg.Context
+					}
+					c.beginJsonHatchery()
+					c.stateMu.Unlock()
+					continue
 				}
 				c.bindAvatar(userName)
 				c.UserName = userName
@@ -2044,12 +2084,27 @@ func (c *ClientSession) handleHatcheryCustomize(args []byte) {
 		}
 		return
 	}
-	if err := c.createUserWithAppearance(c.UserName, &appearance); err != nil {
+	if err := c.finalizeHatchery(appearance); err != nil {
 		c.log.Error().Err(err).Str("user_ref", c.userRef).Msg("Could not create hatchery user")
 		if replyErr := c.sendCustomizeReply(false); replyErr != nil {
 			c.log.Error().Err(replyErr).Msg("Could not send hatchery failure reply")
 		}
 		return
+	}
+	if err := c.sendCustomizeReply(true); err != nil {
+		c.log.Error().Err(err).Msg("Could not send hatchery success reply")
+	}
+}
+
+// finalizeHatchery turns the five appearance bytes into the user's real Avatar,
+// the protocol-neutral core both the binary and JSON paths share: it creates the
+// user (createUserWithAppearance), flips the hatchery flags, and tells habiproxy
+// the docent handoff can proceed. Each caller sends its own protocol's reply.
+// Callers hold stateMu (createUserWithAppearance writes Mongo under it, as the
+// binary path always has).
+func (c *ClientSession) finalizeHatchery(appearance hatcheryAppearance) error {
+	if err := c.createUserWithAppearance(c.UserName, &appearance); err != nil {
+		return err
 	}
 	c.hatcheryPending = false
 	c.hatcheryCompleted = true
@@ -2062,9 +2117,7 @@ func (c *ClientSession) handleHatcheryCustomize(args []byte) {
 		Uint8("hair_pattern", appearance.hairPattern).
 		Uint8("avatar_orientation", appearance.avatarOrientation).
 		Msg("Created avatar from original hatchery customization")
-	if err := c.sendCustomizeReply(true); err != nil {
-		c.log.Error().Err(err).Msg("Could not send hatchery success reply")
-	}
+	return nil
 }
 
 func (c *ClientSession) handleClientMessage(data []byte) {

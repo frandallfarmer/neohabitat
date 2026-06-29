@@ -246,6 +246,11 @@ func (c *ClientSession) runHabilink() {
 
 	c.log.Info().Msg("Habilink session connected.")
 
+	// QLink/Habilink (C64) clients natively run the binary hatchery handshake, so
+	// they're always hatchery-capable. hatcheryCapable is the single capability the
+	// hatchery decision reads (ensureUserCreated) — no protocol test there.
+	c.hatcheryCapable = true
+
 	// Connect to Elko before reading anything from the client so the existing
 	// handlers (which assume an active elkoConn) work without modification.
 	if err := c.connectToElko(); err != nil {
