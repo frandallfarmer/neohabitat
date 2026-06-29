@@ -31,15 +31,49 @@ var hatcheryAllowedFemaleHeads = []uint8{2, 21, 30, 48, 56, 64, 65, 80, 84, 87, 
 const hatcheryHeadStyleOffset = 56
 const hatcheryHeadRecordSize = 6
 
-func NewHatcheryCustomizationVector() []uint8 {
+// pickHatcheryHeads chooses the eight head styles a new user is offered — four
+// male then four female, exactly as the original hatchery scrambled them
+// (hatchery.pl1 scramble_head_styles). BOTH the C64 binary vector and the JSON
+// make-storm are built from this one list, so the two clients always present the
+// same heads to the same user.
+func pickHatcheryHeads() []uint8 {
+	heads := make([]uint8, 0, 8)
+	heads = append(heads, pickUniqueHatcheryHeads(hatcheryAllowedMaleHeads, 4)...)
+	heads = append(heads, pickUniqueHatcheryHeads(hatcheryAllowedFemaleHeads, 4)...)
+	return heads
+}
+
+// hatcheryVectorWithHeads splices the eight chosen head styles into a copy of the
+// canonical customization vector at the C64 struct offsets. Every other byte is
+// the original verbatim — see TestHatcheryVectorGolden, which pins the C64 wire
+// format so a future edit can't silently change what existing C64 clients receive.
+func hatcheryVectorWithHeads(heads []uint8) []uint8 {
 	vector := append([]uint8(nil), HatcheryCustomizationVector...)
-	for i, style := range pickUniqueHatcheryHeads(hatcheryAllowedMaleHeads, 4) {
+	for i, style := range heads {
+		if i >= 8 {
+			break
+		}
 		vector[hatcheryHeadStyleOffset+i*hatcheryHeadRecordSize] = style
 	}
-	for i, style := range pickUniqueHatcheryHeads(hatcheryAllowedFemaleHeads, 4) {
-		vector[hatcheryHeadStyleOffset+(i+4)*hatcheryHeadRecordSize] = style
-	}
 	return vector
+}
+
+// HatcheryHeadStyles reads the eight head styles back out of a customization
+// vector — the inverse of hatcheryVectorWithHeads. The JSON make-storm is derived
+// through this from the very same bytes the C64 receives, so the two can't drift.
+func HatcheryHeadStyles(vector []uint8) []uint8 {
+	heads := make([]uint8, 8)
+	for i := range heads {
+		off := hatcheryHeadStyleOffset + i*hatcheryHeadRecordSize
+		if off < len(vector) {
+			heads[i] = vector[off]
+		}
+	}
+	return heads
+}
+
+func NewHatcheryCustomizationVector() []uint8 {
+	return hatcheryVectorWithHeads(pickHatcheryHeads())
 }
 
 func pickUniqueHatcheryHeads(heads []uint8, count int) []uint8 {
