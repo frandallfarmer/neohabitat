@@ -504,8 +504,8 @@ async function main() {
   // this on a brand-new user: it streams the synthetic make-storm (Avatar + worn head) then a
   // HATCHERY_$ signal carrying the eight selectable head styles (applyInbound below). It needs
   // the make-storm in place (world.me + a worn head record). On CUSTOMIZE success the real Turf
-  // make-storm follows and we drop back to region mode. `heads` defaults to the canonical set
-  // for the manual globalThis hook.
+  // make-storm follows and we drop back to region mode. `heads` falls back to the canonical
+  // pre-randomized set only if the signal ever arrives without them.
   const startHatchery = (heads) => {
     const avatar = world.me
     if (!avatar) { console.warn("[hatchery] no avatar in world yet"); return false }
@@ -519,7 +519,6 @@ async function main() {
     modeState.value = { mode: MODE_CUSTOMIZE }
     return true
   }
-  globalThis.habitatHatchery = startHatchery
 
   const runRegionVerb = async (verb, { canvasX, canvasY, scale }, label) => {
     if (verbInFlight || !dispatchClient) return

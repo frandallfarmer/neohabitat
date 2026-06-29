@@ -482,29 +482,7 @@ header.titlebar .tag {
 }
 
 /* MODE_CUSTOMIZE — the Hatchery customizer (lib/customize-view.js). The region renderer
-   draws the Avatar (cursor frozen: no regionInput); the instruction panel hangs over it as
-   the Avatar's quip, faithful to custom.m's draw_balloon_quip text panels. */
+   draws the Avatar (cursor frozen: no regionInput); the instruction panels render as the
+   Avatar's own Habitat word balloons (custom.m draw_balloon_quip) via the game's balloon
+   system, so the only style needed here is the stage wrapper. */
 .customize-stage { position: relative; }
-.customize-panel {
-    position: absolute;
-    left: 50%; top: 10px;
-    transform: translateX(-50%);
-    z-index: 4;
-    max-width: 88%;
-    background: #fff;
-    color: #000;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12px;
-    line-height: 1.35;
-    text-align: center;
-    padding: 8px 12px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px #000a;
-}
-.customize-line { margin: 0 0 4px; }
-.customize-prompt {
-    margin: 6px 0 0;
-    font-weight: bold;
-    color: #2a2a8c;
-    animation: blink 1.1s step-start infinite;
-}
