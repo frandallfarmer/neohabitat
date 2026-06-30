@@ -47,10 +47,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Alpha web client (developer build). It can overflow co-present C64 clients (Phase 7d traffic
-// pacing not done yet), so it's locked behind a shared password. An unset config.alphaPassword
-// leaves it open (dev). Served here because the page needs its sibling libs as siblings under
-// the host root: webclient/, habisound/, habiworld/ live next to pushserver/ in the repo/image.
+// Alpha web client. Co-presence traffic pacing has landed (Phase 7d wire pacing + the busy/wait
+// cursor's co-presence delays), so the page is now open in prod; config.alphaPassword (unset by
+// default) re-gates it behind a shared password if needed. Served here because the page needs its
+// sibling libs as siblings under the host root: webclient/, habisound/, habiworld/ live next to
+// pushserver/ in the repo/image.
 var ALPHA_PW = config.alphaPassword;
 function alphaGate(req, res, next) {
   if (!ALPHA_PW) return next();

@@ -1,9 +1,10 @@
 ---
 viceJsUrl: https://sgeo.github.io/experimental/neohabitat-joystick/x64.js
 
-# Shared password gating the Alpha web client (/webclient, /habisound, /habiworld). It's a
-# developer build that can overflow co-present C64 clients, so it's locked. Unset = open (dev).
-alphaPassword: oracle
+# The Alpha web client (/webclient, /habisound, /habiworld) is now OPEN. It was gated because a
+# fast client could overflow co-present C64 clients; that's resolved (Phase 7d wire pacing + the
+# busy/wait cursor's co-presence delays). To re-gate, set alphaPassword to a shared secret here
+# (pushserver/app.js alphaGate; unset = open).
 
 # Force /webclient onto HTTPS (the Caddy front on :443). A plain-HTTP hit to /webclient 302s to the
 # https URL so the client always runs in a secure context (habisound + wss). Prod-only — left unset
