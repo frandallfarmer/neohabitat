@@ -116,6 +116,7 @@ function makeSpritePair(iconRows, shadowRows, color) {
 }
 
 let cache = null
+let blinkCache = null
 
 export function cursorSpritePair(cursorState) {
   if (!cache) {
@@ -124,6 +125,18 @@ export function cursorSpritePair(cursorState) {
   }
   const idx = Math.max(0, Math.min(cursorState, CURSOR_PUT))
   return cache[idx]
+}
+
+// The "busy" blink frame: maintain_flashing (cursor.m:195) leaves the icon SHAPE alone and
+// flips its color register to black while a command is in flight. Same shadow, black icon —
+// the view alternates this with cursorSpritePair() at the flash rate.
+export function cursorSpriteBlinkPair(cursorState) {
+  if (!blinkCache) {
+    blinkCache = ICON_KEYS.map(([ik, sk]) =>
+      makeSpritePair(SPRITE_BITS[ik], SPRITE_BITS[sk], "#000000"))
+  }
+  const idx = Math.max(0, Math.min(cursorState, CURSOR_PUT))
+  return blinkCache[idx]
 }
 
 export const CURSOR_SPRITE_W = 24

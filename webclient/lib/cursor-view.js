@@ -2,7 +2,7 @@
 
 import { h } from "preact"
 import htm from "htm"
-import { useCallback, useRef, useState } from "preact/hooks"
+import { useCallback, useRef, useState, useEffect } from "preact/hooks"
 import { useContext } from "preact/hooks"
 import { Scale } from "../habirender/render.js"
 import { canvasPixelToMod } from "../habirender/pick.mjs"
@@ -14,7 +14,8 @@ import {
   commandFromCursorState,
   labelFromCommand,
 } from "./cursor.mjs"
-import { cursorSpritePair, CURSOR_SPRITE_W, CURSOR_SPRITE_H } from "./cursor-sprites.mjs"
+import { cursorSpritePair, cursorSpriteBlinkPair, CURSOR_SPRITE_W, CURSOR_SPRITE_H } from "./cursor-sprites.mjs"
+import { BLINK_MS } from "./busy.mjs"
 
 const html = htm.bind(h)
 const DRAG_THRESHOLD = 10
@@ -35,17 +36,34 @@ export function RegionCursor({
   onCommand,
   onMove,
   enabled = true,
+  busy = null,
+  busyIcon = null,
 }) {
   const scale = useContext(Scale)
   const [pos, setPos] = useState({ x: width / 2, y: height / 2 })
   const [cursorState, setCursorState] = useState(CURSOR_NORMAL)
   const holdRef = useRef(null)
+  // While a command is in flight the cursor FREEZES and the selected icon BLINKS to black
+  // (Main/cursor.m command_selected / maintain_flashing). `busy`/`busyIcon` are live.js
+  // signals; reading .value here subscribes this component so it re-renders when they change.
+  // busyIcon is the command being run (GO for an edge walk, the picked verb for a pie command),
+  // set by live.js withBusy — so the blink shows the right icon even for keyboard/edge commands.
+  const isBusy = !!(busy && busy.value)
+  const blinkState = (busyIcon && busyIcon.value != null) ? busyIcon.value : CURSOR_STOP
+  const [blinkOn, setBlinkOn] = useState(true)
   // While set after a verb, the cursor stays frozen at the press point (C64: it doesn't move
   // to where the drag ended) and the next click anchors there. Holds { freezeX, freezeY }
   // (the frozen display / next-press point) and { physX, physY } (the physical release point,
   // used only to distinguish settling jitter from a deliberate move). Cleared on a deliberate
   // move or the next press.
   const parkRef = useRef(null)
+
+  // Drive the blink while busy (flash_rate); when busy clears, stop and leave the icon solid.
+  useEffect(() => {
+    if (!isBusy) { setBlinkOn(true); return }
+    const id = setInterval(() => setBlinkOn((on) => !on), BLINK_MS)
+    return () => clearInterval(id)
+  }, [isBusy])
 
   const clamp = (x, y) => ({
     x: Math.max(0, Math.min(width * scale - 1, x)),
@@ -58,7 +76,7 @@ export function RegionCursor({
   }
 
   const onPointerMove = useCallback((e) => {
-    if (!enabled) return
+    if (!enabled || (busy && busy.value)) return // frozen while a command is in flight
     const p = localFromEvent(e)
     if (holdRef.current) {
       const { anchorX, anchorY, state } = holdRef.current
@@ -93,10 +111,10 @@ export function RegionCursor({
       const { x: habitatX } = canvasPixelToMod(p.x / scale, p.y / scale)
       onMove({ canvasX: p.x, canvasY: p.y, scale, habitatX })
     }
-  }, [enabled, scale, width, height, onMove])
+  }, [enabled, scale, width, height, onMove, busy])
 
   const onPointerDown = useCallback((e) => {
-    if (!enabled || e.button !== 0) return
+    if (!enabled || e.button !== 0 || (busy && busy.value)) return // locked while busy
     const phys = localFromEvent(e)
     // The C64 "return to the press point after a verb" model assumes a RELATIVE mouse: you can't
     // teleport it, so a click without a deliberate move begins at the FROZEN press point of the
@@ -114,7 +132,7 @@ export function RegionCursor({
     holdRef.current = { anchorX: p.x, anchorY: p.y, state: CURSOR_STOP }
     e.currentTarget.setPointerCapture(e.pointerId)
     e.preventDefault()
-  }, [enabled, scale, width, height])
+  }, [enabled, scale, width, height, busy])
 
   const onPointerUp = useCallback((e) => {
     if (!enabled || !holdRef.current) return
@@ -140,6 +158,7 @@ export function RegionCursor({
     const { x: habitatX } = canvasPixelToMod(canvasX, canvasY)
     onCommand?.({
       command,
+      cursorState: state, // the selected icon, so live.js blinks it (do/get/put/go/stop)
       label: labelFromCommand(command),
       canvasX: anchorX,
       canvasY: anchorY,
@@ -150,7 +169,12 @@ export function RegionCursor({
     e.preventDefault()
   }, [enabled, onCommand, scale])
 
-  const { icon, shadow } = cursorSpritePair(cursorState)
+  // While busy, freeze on the selected command icon and blink it to black at the flash rate
+  // (maintain_flashing). Otherwise draw the live cursor state as normal.
+  const displayState = isBusy ? blinkState : cursorState
+  const { icon, shadow } = (isBusy && !blinkOn)
+    ? cursorSpriteBlinkPair(displayState)
+    : cursorSpritePair(displayState)
   const sw = CURSOR_SPRITE_W * scale
   const sh = CURSOR_SPRITE_H * scale
   // sprites.m cursor hotspot — the crosshair center (the [255,0,255] bar crossing the

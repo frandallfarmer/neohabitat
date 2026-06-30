@@ -37,8 +37,9 @@ import {
 import { Scale } from "../habirender/render.js"
 import { dispatchVerb, dispatchVerbAtPick, pickRegionTarget } from "./verb-dispatch.js"
 import { REGION_CANVAS_W, REGION_CANVAS_H } from "../habirender/pick.mjs"
-import { actionFromCommand } from "./cursor.mjs"
+import { actionFromCommand, CURSOR_NORMAL, CURSOR_GO, CURSOR_STOP } from "./cursor.mjs"
 import { RegionCursor } from "./cursor-view.js"
+import { BusyState, shouldPace, SETTLE_GAP_MS } from "./busy.mjs"
 import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, MODE_CUSTOMIZE, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
 import { CustomizeView } from "./customize-view.js"
@@ -101,7 +102,59 @@ async function main() {
   // world.clear() (fired on every changeContext) nulls world._client, so it must be re-registered
   // after a region transition — see resetForRegion.
   let presentation = null
-  let verbInFlight = false
+  // Busy/wait interlock — Main/cursor.m command_selected / flashing. One command at a time:
+  // while busy the cursor freezes + blinks and EVERY other action is refused (keyboard.m bails
+  // on command_selected), until the reply, the avatar animation, and any make-storm it triggered
+  // have all settled, then a base throttle. Plus co-presence catch-up holds so slow native C64s
+  // stay in lockstep (see lib/busy.mjs). `busy` is the signal the cursor reads.
+  const busyState = new BusyState()
+  const busy = signal(false)
+  // The cursor icon to blink while busy (the selected command: GO for an edge walk, the picked
+  // verb for a pie command, STOP otherwise). Set by withBusy at arm time; the cursor reads it.
+  const busyIcon = signal(CURSOR_STOP)
+  let busyTimer = null
+  const nowMs = () => Date.now()
+  // Recompute the signal from busyState and (re)schedule the flip-off timer at the deadline.
+  const refreshBusy = () => {
+    const b = busyState.isBusy(nowMs())
+    if (busy.value !== b) busy.value = b
+    if (busyTimer) { clearTimeout(busyTimer); busyTimer = null }
+    const ms = busyState.msUntilIdle(nowMs())
+    if (b && ms > 0) busyTimer = setTimeout(refreshBusy, ms + 16)
+  }
+  // Resolve once my command's make-storm has gone quiet (or never came): the contents makes for
+  // e.g. a container OPEN arrive on the wire around the reply; give them a grace window to start,
+  // then wait for the burst to settle. applyInbound's noteMake() feeds the burst.
+  const waitStormSettle = (startedAt) => new Promise((resolve) => {
+    const tick = () => {
+      const t = nowMs()
+      if (busyState.sawMakeThisCommand) { if (busyState.stormSettled(t)) return resolve() }
+      else if (t - startedAt >= SETTLE_GAP_MS) return resolve()
+      setTimeout(tick, 60)
+    }
+    tick()
+  })
+  // Run a user command under the interlock: arm (freeze + blink), do it, then hold through the
+  // animation tail (whenIdle — the animation_wait_bit analog), the make-storm settle, and the
+  // base throttle before releasing. Bots/textclient will get this for free once busy.mjs lifts
+  // into habiworld (deferred); for now it's the webclient's own lockout.
+  const withBusy = async (fn, icon = CURSOR_STOP) => {
+    if (busy.value) return undefined
+    busyIcon.value = icon
+    busyState.armCommand()
+    refreshBusy()
+    try {
+      const out = await fn()
+      if (world.me?.noid != null) await avatarMotion.whenIdle?.(world.me.noid)
+      await waitStormSettle(nowMs())
+      return out
+    } catch (e) {
+      console.warn("[live] command failed:", e)
+    } finally {
+      busyState.releaseCommand(nowMs())
+      refreshBusy()
+    }
+  }
 
   // keyboard.m que_gesture → do_a_gesture.m: Ctrl+1..0 trigger avatar gestures (the value
   // is the AV_ACT the host expects in POSTURE). Only while standing in the region — text /
@@ -115,10 +168,10 @@ async function main() {
     if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
     const gesture = GESTURE_KEYS[e.key]
     if (gesture === undefined) return
-    if (modeState.value.mode !== MODE_REGION || !dispatchClient || !world.me) return
+    if (modeState.value.mode !== MODE_REGION || !dispatchClient || !world.me || busy.value) return
     e.preventDefault()
     e.stopImmediatePropagation() // own Ctrl+digit — keep it out of the speak line
-    performGesture(world, gesture, dispatchClient)
+    withBusy(() => performGesture(world, gesture, dispatchClient)) // gestures flash the cursor too
   }, true) // capture: intercept before the text-input keydown handler runs
 
   // keyboard.m que_gesture → Region action slots 9–16: the F-keys. beta.mud's Region table
@@ -132,7 +185,7 @@ async function main() {
     if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
     const slot = FKEY_SLOT[e.key]
     if (slot === undefined) return
-    if (modeState.value.mode !== MODE_REGION || !dispatchClient || !world.me) return
+    if (modeState.value.mode !== MODE_REGION || !dispatchClient || !world.me || busy.value) return
     e.preventDefault() // suppress browser F-key defaults (F5 reload, F3 find, …)
     e.stopImmediatePropagation()
     let pointedNoid = null
@@ -140,7 +193,7 @@ async function main() {
       const pick = pickRegionTarget(pickState, lastCursor.canvasX, lastCursor.canvasY, lastCursor.scale)
       pointedNoid = pick?.noid ?? null
     }
-    performFnKey(world, slot, pointedNoid, dispatchClient)
+    withBusy(() => performFnKey(world, slot, pointedNoid, dispatchClient))
   }, true)
 
   const objects = signal([])
@@ -249,7 +302,7 @@ async function main() {
     pickState.layoutMap = null                           // stale region geometry (rebuilt on remount)
     pickState.objects = null
     lastCursor = null
-    verbInFlight = false                                 // command_selected = 0xff: cancel any pending verb
+    busyState.reset(); refreshBusy()                     // command_selected = 0xff: cancel any pending verb
     speakReplyPending = false
     if (speakReplyTimer) { clearTimeout(speakReplyTimer); speakReplyTimer = null }
     if (modeState.value.mode !== MODE_REGION) resolveMode(null) // close any open paper/book/inventory modal
@@ -288,6 +341,10 @@ async function main() {
       textInputState.value = { ...textInputState.value }
       return
     }
+    // Gate new social actions while the cursor is busy/blinking — keyboard.m bails on
+    // command_selected, so typed speak/ESP were locked too. (Prompt replies above are the
+    // continuation of an in-flight command, not a new one, so they already returned.)
+    if (busy.value) return
     // C64 talk:: clears the line after send_string; ESP reply handled via getResponse.
     clearTextLine(textInputState.value)
     textInputState.value = { ...textInputState.value }
@@ -302,12 +359,15 @@ async function main() {
       const pick = (lastCursor && dispatchClient)
         ? pickRegionTarget(pickState, lastCursor.canvasX, lastCursor.canvasY, lastCursor.scale)
         : null
-      if (pick?.noid != null) {
-        dispatchVerb({ world, dispatch, dispatchClient, verb: ACTION_TALK, noid: pick.noid, args: { text: payload.text }, pick })
-      } else {
+      // ENTER sets command_selected = 6 (TALK) and flashes the cursor (keyboard.m get_key) —
+      // so speaking arms the busy/blink interlock like any other command.
+      withBusy(async () => {
+        if (pick?.noid != null) {
+          return dispatchVerb({ world, dispatch, dispatchClient, verb: ACTION_TALK, noid: pick.noid, args: { text: payload.text }, pick })
+        }
         // Nothing under the cursor (pointer never placed in-region) → broadcast to the room.
         transport.send({ op: "SPEAK", to: avatarRef, esp: 0, text: payload.text })
-      }
+      })
       return
     }
 
@@ -316,12 +376,14 @@ async function main() {
       ? { op: "ESP", to: avatarRef, esp: 1, text: "" }
       : payload.kind === "esp" ? { op: "ESP", to: avatarRef, esp: 1, text: payload.text } : null
     if (!msg) return
-    if (!transport.send(msg)) {
-      console.warn("[live] text submit: transport not connected")
-      return
-    }
-    // avatar_talk.m / generic_broadcast.m: sound ESP_MESSAGE_SENT after each v_ESP_talk.
-    playEspSound(ESP_MESSAGE_SENT)
+    withBusy(async () => {
+      if (!transport.send(msg)) {
+        console.warn("[live] text submit: transport not connected")
+        return
+      }
+      // avatar_talk.m / generic_broadcast.m: sound ESP_MESSAGE_SENT after each v_ESP_talk.
+      playEspSound(ESP_MESSAGE_SENT)
+    })
   }
   // context is optional — omitted, the server lands the avatar wherever they last were.
   const connect = async (ws, context, user) => {
@@ -403,6 +465,19 @@ async function main() {
         return
       }
       world.apply(m)
+      // Busy interlock, co-presence side. My own APPEARING_$ = I've finished loading this region
+      // (the C64 here_i_am): hold so co-present clients can load MY avatar before I act. While a
+      // command of mine is outstanding, each contained-object make extends the hold ~1s so a slow
+      // native C64 can disk-load it. Both are skipped when I'm alone (shouldPace). Idle makes from
+      // others (someone grabbing an ATM coin) hit noteMake but no-op — they never freeze my UI.
+      if (m.op === "APPEARING_$" && m.appearing === world.me?.noid) {
+        // Arrival is no longer a GO (that was leaving the old region) — blink the normal
+        // targeting cursor while co-present clients finish loading me.
+        busyIcon.value = CURSOR_NORMAL
+        busyState.armArrival(nowMs(), shouldPace(world)); refreshBusy()
+      } else if (m.op === "make" || m.op === "HEREIS_$") {
+        busyState.noteMake(nowMs(), shouldPace(world)); refreshBusy()
+      }
       const rec = world.get(m.noid)
       if (m.op === "FIDDLE_$" && m.offset === 9) {
         avatarMotion.noteServerFacing(m.noid)
@@ -521,34 +596,39 @@ async function main() {
     return true
   }
 
+  // The inner dispatch (the busy interlock is owned by the withBusy wrapper at the call sites).
   const runRegionVerb = async (verb, { canvasX, canvasY, scale }, label) => {
-    if (verbInFlight || !dispatchClient) return
-    verbInFlight = true
+    if (!dispatchClient) return
     try {
       const result = await dispatchVerbAtPick({
         world, dispatch, dispatchClient, verb, pickState, canvasX, canvasY, scale,
       })
+      // A non-ok result is normal gameplay feedback, not a problem: "locked" (a
+      // locked door), "beep"/"server-denied" (the C64 boing for a no-op DO), etc.
+      // The in-game beep/balloon IS the feedback; keep this at debug so it's there
+      // when developing (DevTools "Verbose") without spamming the console in play.
       if (!result?.ok && result?.reason !== "not-ready") {
-        console.warn(`[live] ${label}:`, result?.reason ?? result)
+        console.debug(`[live] ${label}:`, result?.reason ?? result)
       }
+      return result
     } catch (e) {
       console.warn(`[live] ${label} failed:`, e)
-    } finally {
-      verbInFlight = false
     }
   }
 
-  const onRegionCommand = async ({ command, label, canvasX, canvasY, scale, habitatX }) => {
-    if (verbInFlight || !dispatchClient) return
-    // C64 actions.m face_cursor → change_facing (gestures.m): turn toward the cursor BEFORE the
-    // command. That isn't just local — change_facing also sends MESSAGE_posture so neighbors see
-    // the new facing. faceCursor returns the POSTURE pose iff the facing actually changed.
-    const facePose = dispatchClient.faceCursor?.(habitatX)
-    if (facePose != null && world.me?.ref) {
-      transport.send({ op: "POSTURE", to: world.me.ref, pose: facePose })
-    }
-    const verb = actionFromCommand(command)
-    await runRegionVerb(verb, { canvasX, canvasY, scale }, label)
+  const onRegionCommand = ({ command, cursorState, label, canvasX, canvasY, scale, habitatX }) => {
+    if (busy.value || !dispatchClient) return
+    return withBusy(async () => {
+      // C64 actions.m face_cursor → change_facing (gestures.m): turn toward the cursor BEFORE the
+      // command. That isn't just local — change_facing also sends MESSAGE_posture so neighbors see
+      // the new facing. faceCursor returns the POSTURE pose iff the facing actually changed.
+      const facePose = dispatchClient.faceCursor?.(habitatX)
+      if (facePose != null && world.me?.ref) {
+        transport.send({ op: "POSTURE", to: world.me.ref, pose: facePose })
+      }
+      const verb = actionFromCommand(command)
+      return runRegionVerb(verb, { canvasX, canvasY, scale }, label)
+    }, cursorState ?? CURSOR_STOP) // blink the picked verb's icon
   }
 
   // Walk-off-edge transit. The C64 clamped the joystick cursor at the playfield boundary; a GO
@@ -562,7 +642,7 @@ async function main() {
   // sky (clicked in-region).
   const SCALE = 3
   const onEdgeClick = (edge) => async (e) => {
-    if (verbInFlight || !dispatchClient || !world.me) return
+    if (busy.value || !dispatchClient || !world.me) return
     const rect = e.currentTarget.getBoundingClientRect()
     let cx, cy // region-canvas coords, clamped to the in-game edge
     if (edge === "left" || edge === "right") {
@@ -583,8 +663,10 @@ async function main() {
     // GoToNewRegion — which walks to the edge (nested GO on the ground) and THEN transits with
     // the screen-edge direction. We reproduce both steps: first the GO/walk at the clamped edge
     // coordinate, then the transit via changeRegion using the C64 direction code.
-    await runRegionVerb(ACTION_GO, { canvasX: cx * SCALE, canvasY: cy * SCALE, scale: SCALE }, `edge-${edge}`)
-    await dispatchClient.changeRegion(edge)
+    return withBusy(async () => {
+      await runRegionVerb(ACTION_GO, { canvasX: cx * SCALE, canvasY: cy * SCALE, scale: SCALE }, `edge-${edge}`)
+      await dispatchClient.changeRegion(edge)
+    }, CURSOR_GO) // exiting the region is a GO — blink the GO icon, not the last verb
   }
 
   // The whole client: no connect form. The avatar name comes from the launch screen; we connect
@@ -651,6 +733,8 @@ async function main() {
                     regionInput=${{
                       Cursor: RegionCursor,
                       enabled: !!dispatchClient,
+                      busy,
+                      busyIcon,
                       onCommand: onRegionCommand,
                       onMove: (c) => { lastCursor = c },
                     }} />`}
