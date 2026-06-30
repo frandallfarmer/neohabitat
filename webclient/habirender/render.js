@@ -69,7 +69,12 @@ export const canvasFromBitmap = (bitmap, colors = {}, canvas = null) => {
     } else {
         canvas = makeCanvas(w, h)
     }
-    const ctx = canvas.getContext("2d")
+    // willReadFrequently: these cel canvases become the per-cel pick layers
+    // (region.js celLayers → pick.mjs cel-level hit test getImageData). A canvas's
+    // 2D context mode is fixed at the FIRST getContext, so the flag has to ride
+    // here — passing it later in pick.mjs is ignored. Drawing is putImageData
+    // (already CPU-side), so the CPU backing costs nothing.
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })
     const img = ctx.createImageData(w, h)
     
     const putpixel = (x, y, r, g, b, a) => {
@@ -137,7 +142,10 @@ export const compositeLayers = (layers, xCorrect = 0, yCorrect = 0) => {
     const space = compositeSpaces(layers)
 
     const canvas = canvasForSpace(space)
-    const ctx = canvas.getContext("2d")
+    // willReadFrequently: the composite is read back at pick time (frame.canvas
+    // box/alpha test and the limbCanvas which_limb readback, pick.mjs). The mode
+    // is locked at first getContext, so it must be set here, not in pick.mjs.
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })
     for (const layer of layers) {
         if (layer && layer.canvas) {
             drawInSpace(ctx, layer.canvas, space, layer)
@@ -579,7 +587,10 @@ export const framesFromAction = (action, body, options = {}) => {
 
 export const flipCanvas = (canvas) => {
     const flipped = makeCanvas(canvas.width, canvas.height)
-    const ctx = flipped.getContext("2d")
+    // willReadFrequently: the flipped canvas replaces frame.canvas / limbCanvas for
+    // mirrored (side-facing) sprites, both read back at pick time (pick.mjs). Flag at
+    // creation — the context mode can't be changed on a later getContext.
+    const ctx = flipped.getContext("2d", { willReadFrequently: true })
     ctx.translate(canvas.width, 0)
     ctx.scale(-1, 1)
     ctx.drawImage(canvas, 0, 0)
