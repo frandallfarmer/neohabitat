@@ -138,6 +138,10 @@ async function main() {
   // animation tail (whenIdle — the animation_wait_bit analog), the make-storm settle, and the
   // base throttle before releasing. Bots/textclient will get this for free once busy.mjs lifts
   // into habiworld (deferred); for now it's the webclient's own lockout.
+  // NOTE: deliberately NO safety timeout here. If a behavior awaits something that never
+  // resolves (e.g. awaiting a reply the server never sends), the cursor blinks forever — and
+  // that loud, obvious hang IS the bug report. A cap would mask such bugs as subtle intermittent
+  // locks. Fix the root cause in the behavior instead (see generic_askOracle / ASK).
   const withBusy = async (fn, icon = CURSOR_STOP) => {
     if (busy.value) return undefined
     busyIcon.value = icon

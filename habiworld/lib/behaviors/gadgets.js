@@ -245,7 +245,11 @@ async function mailbox_MAILARRIVED(ctx) {
 // (crystal ball / fountain). The answer comes back as object speech.
 async function generic_askOracle(ctx) {
   if (!ctx.args.text) return ctx.beep('nothing-to-ask')
-  await ctx.send({ op: 'ASK', to: ctx.pointed.ref, text: ctx.args.text })
+  // ASK has NO server reply — the oracle's answer arrives later as object speech
+  // (HabitatMod.generic_ASK does object_say, never send_reply_msg). So do NOT await it:
+  // ctx.send awaits a reply that never comes, hanging the caller forever (and, in the
+  // webclient, the busy/wait cursor). Fire and move on; the C64 askOracle.m doesn't block.
+  ctx.send({ op: 'ASK', to: ctx.pointed.ref, text: ctx.args.text }).catch(() => {})
   return { ok: true }
 }
 
