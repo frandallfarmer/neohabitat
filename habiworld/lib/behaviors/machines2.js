@@ -30,10 +30,17 @@ async function coke_machine_put(ctx) {
   return paid
 }
 
-// fortune_machine_put.m: same chain, different slot constant.
+// fortune_machine_put.m: same chain, different slot constant. The fortune rides back in the PAY
+// reply (response_data + Fortune offset); display it as a balloon over the MACHINE (the C64 sets
+// actor_noid = pointed_noid then v_balloonMessage). The actor sees it from the reply here; neighbors
+// get it from the server's OBJECTSPEAK_$ broadcast. On failure the C64 shows nothing (the "not enough
+// money" text is never seen — a documented client-canon bug), so we only balloon on success.
 async function fortune_machine_put(ctx) {
   const paid = await ctx.doAction(9) // FORTUNE_COINOP
-  if (paid.ok) ctx.sound('FORTUNE_DISPENSED', ctx.pointed.noid)
+  if (paid.ok) {
+    if (paid.text) ctx.balloon(paid.text, { speaker: ctx.pointed.noid, op: 'OBJECTSPEAK_$' })
+    ctx.sound('FORTUNE_DISPENSED', ctx.pointed.noid)
+  }
   return paid
 }
 

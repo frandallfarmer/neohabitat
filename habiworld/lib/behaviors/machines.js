@@ -69,7 +69,9 @@ async function generic_coinOp(ctx) {
   }
   ctx.sound('COIN_ACCEPTED', ctx.pointed.noid)
   spend(ctx, (reply.amount_lo || 0) + (reply.amount_hi || 0) * 256)
-  return { ok: true }
+  // Hand the PAY reply's text back to the caller — the fortune machine balloons it
+  // (generic_coinOp.m leaves response_data intact for fortune_machine_put). Coke/jukebox ignore it.
+  return { ok: true, text: reply.text }
 }
 
 // generic_PAY.m (host): an avatar paid a machine — debit the payer's wad
