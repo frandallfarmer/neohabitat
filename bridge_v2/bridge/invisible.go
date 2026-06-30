@@ -102,7 +102,10 @@ func modIsGhost(mod *HabitatMod) bool {
 // holdAvatarMod sets the on-hold bit on a parsed avatar mod. The C64/binary path re-encodes the
 // make from this mod (EncodeElkoModState), so mutating it here is sufficient. nil-safe.
 func holdAvatarMod(mod *HabitatMod) {
-	if mod == nil {
+	// GHOSTS ARE EXEMPT (Stratus regionproc.pl1: set_bit only `if my_noid ^= GHOST`). A held ghost
+	// would carry avatar_on_hold (0x40) to its OWN C64, which reads that as "No New Commands" —
+	// and a ghost never gets the APPEARING_$ that clears it, so F1/deghost is gated forever.
+	if mod == nil || modIsGhost(mod) {
 		return
 	}
 	if mod.GrState == nil {
@@ -119,6 +122,9 @@ func holdAvatarMod(mod *HabitatMod) {
 // Avatar make carries exactly one; its pocket items arrive as separate makes). If the bit is
 // already set, the bytes are returned untouched.
 func holdAvatarRaw(raw []byte, mod *HabitatMod) []byte {
+	if modIsGhost(mod) { // ghosts are exempt — see holdAvatarMod
+		return raw
+	}
 	var old uint8
 	if mod != nil && mod.GrState != nil {
 		old = *mod.GrState
