@@ -405,12 +405,13 @@ Each phase is independently demoable in the page shell.
       habiworld's ~27 modules in a waterfall; bundling/precomputing the module graph and
       memoizing decoded cels/charset glyphs would cut time-to-first-region. Not done — the
       interactive/steady-state cost (above) was the priority and is resolved.
-    - **Pick-path readback — DEFERRED (not blocking).** Picks read composite-layer canvases
-      via `getImageData` (`pick.mjs:85/97/116`) whose contexts were created during compositing
-      **without** `willReadFrequently` (so the pick-time flag is ignored — context attributes
-      are fixed at first `getContext`); this is the `pointerup took NNNms` jank. Fix is to
-      create the read-back canvases with the flag in `render.js`; a measurable interaction-
-      latency win when picked up.
+    - **Pick-path readback — DONE.** Picks read composite-layer canvases via `getImageData`
+      (`pick.mjs:85/97/116`) whose contexts were created during compositing **without**
+      `willReadFrequently` (so the pick-time flag was ignored — context attributes are fixed at
+      first `getContext`); this was the `pointerup took NNNms` jank. Fixed by creating the
+      read-back canvases with the flag at their `getContext("2d", { willReadFrequently: true })`
+      in `render.js` (per-cel, `compositeLayers`, `flipCanvas`). Measured in-browser: pointerup
+      dropped from ~73ms to 41–48ms (under Chrome's 50ms violation threshold).
 
   - **7c. Cleanup — repo hygiene and ground-truth debts.**
     - **`classes.js` → beta.mud ground truth.** The committed `habiworld/lib/classes.js` was
@@ -455,6 +456,14 @@ Each phase is independently demoable in the page shell.
     menu** that doesn't need the cursor to return to a point — e.g. press opens a radial menu
     anchored at the press point, the cursor roams freely to a wedge, release selects, and the
     target stays the press point. Decide between (a) and (b) here; both are legitimate.
+    **DEFERRED to the future (Randy, 2026-06-29) — do not redesign the model now.** Notes that
+    constrain any future redesign:
+    - On a **touch-screen / pen**, *flicking* with the CURRENT UI already gives the experience
+      most like the C64 joystick. The absolute-pointer divergence is **only a mouse-like-pointer
+      problem**. Any revised model **must retain** the touch/pen flick experience.
+    - The **mouse** experience is comparatively awkward, but acceptable for now (MFA).
+    - So the model redesign (a vs b) is not the priority. The priority is the **busy cursor**
+      (next item) — making the cursor wait/blink and block new commands while one is in flight.
   - **7f. Hatchery — new-avatar onboarding (LATE in Phase 7).** The Hatchery is the original
     Habitat first-connection flow: a brand-new user has no turf/avatar customization and is
     routed through the hatchery region to be "hatched" (avatar created, turf assigned) before
@@ -463,6 +472,37 @@ Each phase is independently demoable in the page shell.
     custom region flow it drives — so a first-time login doesn't dead-end. Scope the exact
     server-driven sequence (PROMPT_USER, customize, the hatchery region's behaviors) when we
     pick this up; treat it as its own onboarding sub-mode rather than a normal region.
+  - **7g. Busy/wait cursor + co-presence delays (webclient). DONE (webclient round).** The all-JS
+    client acts instantly, with none of the latency a real C64 lived under (slow modem + floppy
+    disk loads). Sharing a region with native C64 clients that makes it both **unfair** (arrive,
+    draw, and fire before co-present C64s have rendered you — the "gunfight") and a **load hazard**
+    (firing commands while C64s are mid disk-load piles broadcasts into their queues). The bridge
+    already byte-paces each C64 at modem baud (`client_connection.go` `ratelimit.Writer`) — the
+    byte-level crash backstop, untouched. What it can't model is the C64's **disk-load time** and
+    the original command **cadence**; this reproduces that client-side. Faithful to `Main/cursor.m`:
+    while a command is in flight (`command_selected ≥ 0`) the selected icon **freezes and blinks to
+    black** (`maintain_flashing`) and **all** input is refused (`keyboard.m` bails on
+    `command_selected` — typing/gestures/F-keys included), released after the reply +
+    `animation_wait_bit` (here: `avatarMotion.whenIdle`) + a base throttle (`throttle_duration`).
+    - **`lib/busy.mjs`** — pure, testable state machine (`BusyState`, `shouldPace`, constants;
+      `test-busy.mjs`). `THROTTLE_MS` is always-on per command; the **co-presence catch-up** holds
+      are skipped when alone: **+`OBJECT_LOAD_MS` (1s) per object** in a make-storm *my* command
+      triggered (each `make`/`HEREIS_$` while my command is outstanding), and an **`ARRIVAL_MS`
+      (~5s) hold on my own `APPEARING_$`** (co-present clients loading my head/hands/3 pockets).
+      Idle makes from others (someone grabbing an ATM coin) are inert — they never freeze my UI,
+      exactly as the C64 didn't.
+    - **`lib/live.js`** — a `busy` signal + `withBusy(fn)` wrapper replaces the old `verbInFlight`
+      latch and **gates every** outbound user action (pie verb + face-POSTURE, gesture, F-key,
+      edge-walk, speak/TALK, ESP); `applyInbound` feeds `APPEARING_$`/makes to the state machine.
+      Server-initiated ops (`AUTO_TELEPORT_$`, the hatchery `CUSTOMIZE` modal) stay ungated.
+    - **`lib/cursor-view.js` / `cursor-sprites.mjs`** — the blink (icon↔black at `BLINK_MS`) and the
+      frozen input bail. Region transit stays **blink-only** over the instantly-rendered region (no
+      `wait_for_region` black curtain — a deliberate deviation).
+    - *Deferred:* lift `busy.mjs` into habiworld so habibot/sagebot/textclient inherit the same
+      pacing (it's pure precisely so the lift is mechanical); calibrate the constants against the
+      C64 (`flash_rate`/`throttle_duration`) + VICE; a bridge "C64-present" flag to refine
+      `shouldPace`. No bridge changes this round. Acceptance bar before release: a co-present C64 in
+      VICE neither overruns nor sees the webclient act before it has rendered it.
 
 ## Running (Phase 0–1)
 

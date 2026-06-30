@@ -954,6 +954,8 @@ export const regionView = ({
                           width=${320}
                           height=${128}
                           enabled=${regionInput.enabled !== false}
+                          busy=${regionInput.busy}
+                          busyIcon=${regionInput.busyIcon}
                           onCommand=${regionInput.onCommand}
                           onMove=${regionInput.onMove} />`
                       : null}
