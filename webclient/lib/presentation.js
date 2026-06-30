@@ -47,6 +47,16 @@ export function buildPresentationClient({ hs, world, classes, avatarMotion, refr
         me.mod.activity ?? 129,
       )
     },
+    // The avatar's current EFFECTIVE facing — what we render. faceCursor set this toward the
+    // command's cursor/object before any walk, so walkTo uses it for the WALK `how` (the arrival
+    // facing co-present clients receive). Mirrors the C64 walk_how (= face the cursor), so others
+    // render us facing the same way we do — instead of the travel direction, which faces AWAY when
+    // the walk-to spot lands on the object's far side. true=left, false=right, null=unknown.
+    meFacingLeft() {
+      const me = world.me
+      if (me == null || !avatarMotion) return null
+      return (avatarMotion.getOrient(me.noid, me.mod.orientation ?? 0) & 0x01) === 1
+    },
     // avatar_go.m posture toggle (SIT/STAND on the floor). Our own POSTURE never
     // echoes back as POSTURE$, so drive the persistent-posture override here — the
     // same call onOp(POSTURE$) makes for neighbors, otherwise a stale walk-facing

@@ -20,7 +20,19 @@ export function buildDispatchClient({ transport, presentation, world, requestTex
   return {
     ...presentation,
     walkTo: async (x, y) => {
-      const how = x <= 80 ? 0 : 1
+      // `how`'s low bits are the ARRIVAL stand facing the server forwards verbatim to co-present
+      // clients (C64 walkto.m: walk_type & walk_end_chore → chore_table 0=stand_left, 1=stand_right).
+      // The C64 faces the command's CURSOR on arrival (face_cursor → walk_how), NOT the travel
+      // direction — so a GET/PUT/DO whose walk-to spot lands on the object's FAR side still ends up
+      // facing the object. We already render exactly that via faceCursor, so drive `how` from our
+      // own effective facing (presentation.meFacingLeft) to keep co-present C64s in agreement.
+      // Fallback to travel direction (toward the destination) when facing is unknown. We never
+      // decode `how` ourselves — it only affects how other clients see us.
+      const left = presentation.meFacingLeft?.()
+      const fromX = world?.me?.mod?.x
+      const how = left != null
+        ? (left ? 0 : 1)
+        : (typeof fromX === "number" && x < fromX ? 0 : 1)
       const reply = await transport.sendForReply({ op: "WALK", to: avatarRef(), x, y, how })
       return { x: reply.x ?? x, y: reply.y ?? y, how: reply.how ?? how }
     },
