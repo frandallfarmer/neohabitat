@@ -112,6 +112,10 @@ async function main() {
   // The cursor icon to blink while busy (the selected command: GO for an edge walk, the picked
   // verb for a pie command, STOP otherwise). Set by withBusy at arm time; the cursor reads it.
   const busyIcon = signal(CURSOR_STOP)
+  // Warp the game cursor to a canvas-px point (e.g. an edge chevron's clamped destination) so the
+  // GO blink renders where the walk is headed instead of wherever the pointer last sat. { x, y }
+  // in unscaled region-canvas px; the cursor scales it. A new object each set so the cursor reacts.
+  const cursorWarp = signal(null)
   let busyTimer = null
   const nowMs = () => Date.now()
   // Recompute the signal from busyState and (re)schedule the flip-off timer at the deadline.
@@ -185,6 +189,23 @@ async function main() {
   // The cursor's last canvas position, so an F-key picks whatever the cursor is over
   // (que_gesture → update_cursor → pointed_noid). Only F7 ask_for_help needs the target.
   let lastCursor = null
+  // Whether the pointer is currently over the region render area. The soft keyboard (and the
+  // F-keys / RETURN it synthesizes) live OUTSIDE it, so the live under-cursor pick is stale there.
+  let cursorInBounds = false
+  // The last object the player deliberately targeted in-region (clicked / verbed). When the
+  // cursor is OUT of bounds (e.g. driving the soft keyboard) keyboard commands target THIS, so
+  // RETURN (talk) and F7 still hit the fountain / teleport you were just on. Cleared on region change.
+  let lastTarget = null // { canvasX, canvasY, scale }
+  // Resolve the target for a keyboard-driven command (F7, RETURN-talk): under the cursor while it
+  // is in the region (the C64 pointed_noid); otherwise the last in-region target. An in-bounds hit
+  // refreshes lastTarget so it tracks the object you last pointed at before leaving for the soft kb.
+  const keyboardTargetPick = () => {
+    const at = cursorInBounds ? lastCursor : lastTarget
+    if (!at) return null
+    const pick = pickRegionTarget(pickState, at.canvasX, at.canvasY, at.scale)
+    if (pick?.noid != null && cursorInBounds) lastTarget = { canvasX: at.canvasX, canvasY: at.canvasY, scale: at.scale }
+    return pick
+  }
   window.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
     const slot = FKEY_SLOT[e.key]
@@ -193,9 +214,8 @@ async function main() {
     e.preventDefault() // suppress browser F-key defaults (F5 reload, F3 find, …)
     e.stopImmediatePropagation()
     let pointedNoid = null
-    if (slot === 15 && lastCursor) { // F7 ask_for_help points at the cursor object
-      const pick = pickRegionTarget(pickState, lastCursor.canvasX, lastCursor.canvasY, lastCursor.scale)
-      pointedNoid = pick?.noid ?? null
+    if (slot === 15) { // F7 ask_for_help points at the cursor object (or the last target if off-region)
+      pointedNoid = keyboardTargetPick()?.noid ?? null
     }
     withBusy(() => performFnKey(world, slot, pointedNoid, dispatchClient))
   }, true)
@@ -306,6 +326,7 @@ async function main() {
     pickState.layoutMap = null                           // stale region geometry (rebuilt on remount)
     pickState.objects = null
     lastCursor = null
+    lastTarget = null; cursorInBounds = false            // stale region geometry — drop the off-region target
     busyState.reset(); refreshBusy()                     // command_selected = 0xff: cancel any pending verb
     speakReplyPending = false
     if (speakReplyTimer) { clearTimeout(speakReplyTimer); speakReplyTimer = null }
@@ -360,9 +381,9 @@ async function main() {
       // object UNDER THE CURSOR, not an unconditional SPEAK-to-self. Talking at a teleport /
       // elevator / vendo / bureaucrat / Oracle hits its own talk handler; region / ground /
       // avatar resolve to generic_broadcast (the near-universal default = a plain SPEAK).
-      const pick = (lastCursor && dispatchClient)
-        ? pickRegionTarget(pickState, lastCursor.canvasX, lastCursor.canvasY, lastCursor.scale)
-        : null
+      // Off-region (driving the soft keyboard) the cursor is out of bounds, so target the last
+      // in-region object instead — lets the soft kb talk to the fountain/teleport you tapped.
+      const pick = dispatchClient ? keyboardTargetPick() : null
       // ENTER sets command_selected = 6 (TALK) and flashes the cursor (keyboard.m get_key) —
       // so speaking arms the busy/blink interlock like any other command.
       withBusy(async () => {
@@ -622,6 +643,11 @@ async function main() {
 
   const onRegionCommand = ({ command, cursorState, label, canvasX, canvasY, scale, habitatX }) => {
     if (busy.value || !dispatchClient) return
+    // Remember the object we just acted on (clicked / verbed / tapped) as the off-region target
+    // for later keyboard commands (soft-kb RETURN-talk, F7). Only when it resolves to a real
+    // object — tapping empty ground to walk shouldn't clear the last object target.
+    const tpick = pickRegionTarget(pickState, canvasX, canvasY, scale)
+    if (tpick?.noid != null) lastTarget = { canvasX, canvasY, scale }
     return withBusy(async () => {
       // C64 actions.m face_cursor → change_facing (gestures.m): turn toward the cursor BEFORE the
       // command. That isn't just local — change_facing also sends MESSAGE_posture so neighbors see
@@ -667,6 +693,7 @@ async function main() {
     // GoToNewRegion — which walks to the edge (nested GO on the ground) and THEN transits with
     // the screen-edge direction. We reproduce both steps: first the GO/walk at the clamped edge
     // coordinate, then the transit via changeRegion using the C64 direction code.
+    cursorWarp.value = { x: cx, y: cy } // snap the cursor to the edge so the GO blink marks the destination
     return withBusy(async () => {
       await runRegionVerb(ACTION_GO, { canvasX: cx * SCALE, canvasY: cy * SCALE, scale: SCALE }, `edge-${edge}`)
       await dispatchClient.changeRegion(edge)
@@ -739,8 +766,10 @@ async function main() {
                       enabled: !!dispatchClient,
                       busy,
                       busyIcon,
+                      cursorWarp,
                       onCommand: onRegionCommand,
-                      onMove: (c) => { lastCursor = c },
+                      onMove: (c) => { lastCursor = c; cursorInBounds = true },
+                      onBounds: (v) => { cursorInBounds = v },
                     }} />`}
           <//>
         <//>

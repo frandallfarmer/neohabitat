@@ -455,9 +455,11 @@ Each phase is independently demoable in the page shell.
     warp/drift); cost is click-to-engage + Esc-to-release UX. (b) A **redesigned absolute pie
     menu** that doesn't need the cursor to return to a point — e.g. press opens a radial menu
     anchored at the press point, the cursor roams freely to a wedge, release selects, and the
-    target stays the press point. Decide between (a) and (b) here; both are legitimate.
-    **DEFERRED to the future (Randy, 2026-06-29) — do not redesign the model now.** Notes that
-    constrain any future redesign:
+    target stays the press point. Both (a) and (b) are legitimate.
+    **DEFERRED — TBD (Randy, 2026-06-30).** Not a single pre-decided design: we expect to
+    **try several approaches** before settling, so treat this as an experiment track, not a
+    ready-to-build task. The current warp/park model is **MFA and works well on mobile/touch**.
+    Notes that constrain any future redesign:
     - On a **touch-screen / pen**, *flicking* with the CURRENT UI already gives the experience
       most like the C64 joystick. The absolute-pointer divergence is **only a mouse-like-pointer
       problem**. Any revised model **must retain** the touch/pen flick experience.

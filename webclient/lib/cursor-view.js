@@ -38,6 +38,8 @@ export function RegionCursor({
   enabled = true,
   busy = null,
   busyIcon = null,
+  cursorWarp = null,
+  onBounds,
 }) {
   const scale = useContext(Scale)
   const [pos, setPos] = useState({ x: width / 2, y: height / 2 })
@@ -64,6 +66,13 @@ export function RegionCursor({
     const id = setInterval(() => setBlinkOn((on) => !on), BLINK_MS)
     return () => clearInterval(id)
   }, [isBusy])
+
+  // Warp to a commanded position (an edge chevron's clamped destination): snap the cursor there
+  // so the GO blink marks where the walk is headed. `cursorWarp` is { x, y } in unscaled canvas px.
+  const warp = cursorWarp ? cursorWarp.value : null
+  useEffect(() => {
+    if (warp) setPos({ x: warp.x * scale, y: warp.y * scale })
+  }, [warp, scale])
 
   const clamp = (x, y) => ({
     x: Math.max(0, Math.min(width * scale - 1, x)),
@@ -191,6 +200,7 @@ export function RegionCursor({
       onPointerDown=${onPointerDown}
       onPointerUp=${onPointerUp}
       onPointerCancel=${onPointerUp}
+      onPointerLeave=${() => onBounds?.(false)}
       onContextMenu=${(e) => e.preventDefault()}>
       <img
         src=${shadow.toDataURL()}

@@ -956,8 +956,10 @@ export const regionView = ({
                           enabled=${regionInput.enabled !== false}
                           busy=${regionInput.busy}
                           busyIcon=${regionInput.busyIcon}
+                          cursorWarp=${regionInput.cursorWarp}
                           onCommand=${regionInput.onCommand}
-                          onMove=${regionInput.onMove} />`
+                          onMove=${regionInput.onMove}
+                          onBounds=${regionInput.onBounds} />`
                       : null}
                 </div>
             <//>
