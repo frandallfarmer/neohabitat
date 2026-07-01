@@ -218,6 +218,10 @@ jobs:
           # /etc/neohabitat/alerts.env (bridge_v2 systemd EnvironmentFile).
           # When unset, alerts are disabled — the dev/default state.
           DISCORD_WEBHOOK_LOGINS: ${{ secrets.DISCORD_WEBHOOK_LOGINS }}
+          # DISCORD_WEBHOOK_ORACLE_REQUESTS receives ASK/WISH speech aimed at
+          # oracular objects (fountain, crystal ball, genie) so operators can
+          # play Oracle. Same alerts.env delivery as the logins webhook.
+          DISCORD_WEBHOOK_ORACLE_REQUESTS: ${{ secrets.DISCORD_WEBHOOK_ORACLE_REQUESTS }}
         run: |
           export ANSIBLE_SSH_KEY="$HOME/.ssh/deploy_key"
           # MONITORING_ENV is read by the playbook via lookup('env',...);

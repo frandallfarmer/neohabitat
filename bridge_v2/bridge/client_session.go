@@ -1130,6 +1130,24 @@ func (c *ClientSession) notePresenceArrivalLocked() {
 	go c.bridge.presence.noteConnect(info)
 }
 
+// noteOracleAskLocked captures an ASK/WISH aimed at an object and hands it to the Discord
+// oracle-requests relay. Requires stateMu held (session identity + region are read here);
+// the Mongo class lookup and post run on their own goroutine.
+func (c *ClientSession) noteOracleAskLocked(verb string, targetRef string, text string) {
+	if c.bridge == nil || c.bridge.oracle == nil || c.userRef == "" {
+		return
+	}
+	ask := oracleAsk{
+		userRef:   c.userRef,
+		name:      c.UserName,
+		regionRef: c.regionRef,
+		targetRef: targetRef,
+		verb:      verb,
+		text:      text,
+	}
+	go c.bridge.oracle.relay(ask)
+}
+
 func (c *ClientSession) findHabitatObj(ref string) (*HabitatObject, error) {
 	cur, err := c.bridge.MongoCollection.
 		Find(c.bridge.mongoCtx, bson.M{"ref": ref})
@@ -1722,6 +1740,15 @@ func (c *ClientSession) runJsonPassthrough() {
 			if msg.Op != nil && *msg.Op == "CUSTOMIZE" {
 				c.handleJsonHatcheryCustomize(&msg)
 				continue
+			}
+			// Speech to an oracular object (ASK a fountain/crystal ball, WISH on a genie)
+			// → the Discord oracle-requests relay. Observation only; the line is still
+			// relayed to elko verbatim below.
+			if msg.Op != nil && (*msg.Op == "ASK" || *msg.Op == "WISH") &&
+				msg.To != nil && msg.Text != nil {
+				c.stateMu.Lock()
+				c.noteOracleAskLocked(*msg.Op, *msg.To, *msg.Text)
+				c.stateMu.Unlock()
 			}
 			if msg.Op != nil && *msg.Op == "entercontext" && msg.User != nil {
 				userName := strings.TrimPrefix(*msg.User, "user-")
@@ -2339,6 +2366,13 @@ func (c *ClientSession) handleClientMessage(data []byte) {
 				return
 			}
 		}
+	}
+
+	// Speech to an oracular object (ASK a fountain/crystal ball, WISH on a genie) → the
+	// Discord oracle-requests relay. handleClientMessage holds stateMu, satisfying the
+	// hook's Locked contract.
+	if (op == "ASK" || op == "WISH") && elkoMsg.Text != nil {
+		c.noteOracleAskLocked(op, ref, *elkoMsg.Text)
 	}
 
 	c.elkoSendChan <- &outboundElkoMessage{msg: elkoMsg}

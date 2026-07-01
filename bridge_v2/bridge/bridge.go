@@ -35,6 +35,10 @@ type Bridge struct {
 	// Nil in tests that build Bridge literals — all hooks nil-check it.
 	presence *presenceRegistry
 
+	// oracle relays ASK/WISH speech (fountain, crystal ball, genie…) to the Discord
+	// oracle-requests channel (see oracle.go). Nil in Bridge-literal tests.
+	oracle *oracleRelay
+
 	// listeners and listenAddrs are 1:1 by index. Multiple listeners
 	// let one stateful bridge process serve multiple host ports
 	// (1337/1986/2026 historically) without splitting session state
@@ -517,7 +521,9 @@ func NewBridge(
 	// Channels come from DISCORD_WEBHOOK_* env vars — configured on prod only (themade.org's
 	// Discord is public; dev must stay silent). Unconfigured, every post is a no-op but the
 	// presence history still records.
-	b.presence = newPresenceRegistry(b, NewDiscordNotifierFromEnv())
+	notifier := NewDiscordNotifierFromEnv()
+	b.presence = newPresenceRegistry(b, notifier)
+	b.oracle = newOracleRelay(b.presence, notifier)
 	return b
 }
 
