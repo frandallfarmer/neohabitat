@@ -28,6 +28,11 @@
     monitoring_env: "{{ lookup('env', 'MONITORING_ENV') | default('', true) }}"
     # Single-value: the Anthropic API key sage uses for LLM calls.
     anthropic_api_key: "{{ lookup('env', 'ANTHROPIC_API_KEY') | default('', true) }}"
+    # Discord webhook for the login-alerts channel (bridge_v2 presence alerts).
+    # Prod-only by design: themade.org's Discord is public, so dev stacks must
+    # never have DISCORD_WEBHOOK_* set. Future channels (oracle-requests, …)
+    # are one more lookup + one more line in alerts.env below.
+    discord_webhook_logins: "{{ lookup('env', 'DISCORD_WEBHOOK_LOGINS') | default('', true) }}"
   tasks:
     # If somebody has been hand-editing files on the box (the made has
     # historically lived this way), `ansible.builtin.git` with force=false
@@ -104,7 +109,8 @@
       become: true
       when: >
         (monitoring_env is defined and monitoring_env | length > 0) or
-        (anthropic_api_key is defined and anthropic_api_key | length > 0)
+        (anthropic_api_key is defined and anthropic_api_key | length > 0) or
+        (discord_webhook_logins is defined and discord_webhook_logins | length > 0)
 
     - name: Write /etc/neohabitat/monitoring.env from CI secret
       copy:
@@ -130,6 +136,23 @@
       become: true
       when: anthropic_api_key is defined and anthropic_api_key | length > 0
       register: bots_env_file
+      no_log: true
+
+    # ── Discord alert webhooks (bridge_v2 presence alerts) ────────────
+    # Loaded by the bridge_v2 systemd unit via EnvironmentFile. The env
+    # is read once at process start — SIGHUP/tableflip re-execs with the
+    # OLD env — so a changed file triggers the hard restart further down.
+    - name: Write /etc/neohabitat/alerts.env (Discord webhooks) from CI secret
+      copy:
+        dest: /etc/neohabitat/alerts.env
+        content: |
+          DISCORD_WEBHOOK_LOGINS={{ discord_webhook_logins }}
+        owner: "{{ neohabitat_owner }}"
+        group: "{{ neohabitat_group }}"
+        mode: "0600"
+      become: true
+      when: discord_webhook_logins is defined and discord_webhook_logins | length > 0
+      register: alerts_env_file
       no_log: true
 
     - name: Pull latest compose images
@@ -243,6 +266,24 @@
         state: reloaded   # ExecReload=/bin/kill -HUP $MAINPID
       become: true
       when: bv2_binary_changed
+
+    # Env (EnvironmentFile=alerts.env) is read once at process start, and a
+    # SIGHUP/tableflip re-exec inherits the OLD env — a changed alerts.env
+    # needs a real restart. Restart→reload mirrors the bridge_host handlers:
+    # the reload makes the tableflip child bind the admin port (issue #534).
+    - name: Restart bridge_v2 if alerts.env changed (hard restart picks up new env)
+      systemd:
+        name: bridge_v2.service
+        state: restarted
+      become: true
+      when: alerts_env_file is defined and alerts_env_file.changed
+
+    - name: Reload bridge_v2 after alerts.env restart (admin port binds in the child)
+      systemd:
+        name: bridge_v2.service
+        state: reloaded
+      become: true
+      when: alerts_env_file is defined and alerts_env_file.changed
 
     - name: Start bridge_v2 if not running (covers first-run / crash)
       systemd:

@@ -136,6 +136,9 @@ func runSimple(otelShutdown func(context.Context) error, adminMux *http.ServeMux
 	}
 
 	habitatBridge := newBridge()
+	if adminMux != nil {
+		adminMux.Handle("/presence", habitatBridge.PresenceHandler())
+	}
 	habitatBridge.Start()
 
 	sigCh := make(chan os.Signal, 1)
@@ -175,6 +178,11 @@ func runWithTableflip(otelShutdown func(context.Context) error, adminMux *http.S
 	}
 
 	habitatBridge := newBridge()
+	if adminMux != nil {
+		// ServeMux registration is mutex-protected, so registering after http.Serve
+		// started (above) is safe.
+		adminMux.Handle("/presence", habitatBridge.PresenceHandler())
+	}
 	listeners := make([]net.Listener, len(listenAddrs))
 
 	// Check if we're restoring from a parent's snapshot.
@@ -224,6 +232,9 @@ func runWithTableflip(otelShutdown func(context.Context) error, adminMux *http.S
 		if merr != nil {
 			log.Error().Err(merr).Msg("Could not read manifest; starting fresh")
 		} else {
+			// Restore the presence debounce clocks BEFORE any client can reconnect, so
+			// the post-reload reconnect wave stays off Discord.
+			habitatBridge.ImportPresenceDebounce(manifest.PresenceDebounce)
 			for _, snap := range manifest.Sessions {
 				f, ferr := upg.Fds.File("client-" + snap.SessionID)
 				if ferr != nil || f == nil {
