@@ -50,6 +50,11 @@ RestartSec=5s
 # non-root user only needs to flip User=.
 AmbientCapabilities=CAP_NET_ADMIN
 CapabilityBoundingSet=CAP_NET_ADMIN
+# Discord alert webhooks (DISCORD_WEBHOOK_* — presence login alerts today,
+# more channels later). Rendered by the deploy playbook from CI secrets;
+# absent in dev ("-" = ignore missing → alerts disabled). Read once at
+# start: a changed file needs a hard restart, not SIGHUP (deploy handles it).
+EnvironmentFile=-/etc/neohabitat/alerts.env
 # OTLP / OTel SDK config — same values the in-container service used.
 Environment=NEOHABITAT_ORIGINAL_HATCHERY={{ bridge_host_original_hatchery | ternary('true', 'false') }}
 Environment=OTEL_EXPORTER_OTLP_ENDPOINT={{ bridge_host_otel_endpoint }}

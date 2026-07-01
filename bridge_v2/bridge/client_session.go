@@ -148,6 +148,19 @@ type ClientSession struct {
 	wg                       sync.WaitGroup
 	who                      string
 
+	// presenceAnnounced latches the presence-alert connect hook: `make you:true` fires on
+	// EVERY region entry, but only the first one in a session is the login. Guarded by
+	// stateMu. Restored true across a tableflip handoff so restored sessions never
+	// re-announce.
+	presenceAnnounced bool
+	// presenceNewUser is set when ensureUserCreated finds no user doc — a brand-new avatar
+	// (drives the birth-announcement message). Written where userRef/UserName are (same
+	// discipline), read under stateMu at announce time.
+	presenceNewUser bool
+	// presenceClosed makes the disconnect record idempotent: Close() can run more than once
+	// (multiple error paths call `go c.Close()`). Guarded by closeMutex.
+	presenceClosed bool
+
 	// elkoRecovering serializes silent-reconnect attempts triggered by
 	// elkoReader EOF and elkoWriter error firing in parallel — without
 	// the guard, two recovery goroutines race to close + redial the
@@ -493,6 +506,8 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		// sessions' locks without deadlocking against the stateMu we hold here (arg evaluated
 		// now, under the lock, so the userRef read is race-free).
 		go c.bridge.closeOtherSessionsForUser(c, c.userRef)
+
+		c.notePresenceArrivalLocked()
 
 		// Elko sends the session user's avatar with noid=256 (UNASSIGNED_NOID);
 		// if so, map it to the ghost noid so the client has a valid uint8 to
@@ -1091,6 +1106,30 @@ func (c *ClientSession) addDefaultTokens(userRef string, fullName string) (err e
 	return
 }
 
+// notePresenceArrivalLocked fires the presence connect hook, once per session, from the
+// first `make you:true` (the login arrival) on either protocol path. Requires stateMu held
+// (both call sites hold it); the login facts are captured under the lock and the decision +
+// Discord post run on their own goroutine (noteConnect takes sessionsMutex and other
+// sessions' stateMu — never nest those under ours).
+func (c *ClientSession) notePresenceArrivalLocked() {
+	if c.presenceAnnounced || c.userRef == "" || c.bridge == nil || c.bridge.presence == nil {
+		return
+	}
+	c.presenceAnnounced = true
+	info := presenceConnect{
+		session:   c,
+		userRef:   c.userRef,
+		name:      c.UserName,
+		regionRef: c.regionRef,
+		newUser:   c.presenceNewUser,
+		json:      c.jsonPassthrough,
+	}
+	if c.user != nil && len(c.user.Mods) > 0 && c.user.Mods[0].Turf != nil {
+		info.turfRef = *c.user.Mods[0].Turf
+	}
+	go c.bridge.presence.noteConnect(info)
+}
+
 func (c *ClientSession) findHabitatObj(ref string) (*HabitatObject, error) {
 	cur, err := c.bridge.MongoCollection.
 		Find(c.bridge.mongoCtx, bson.M{"ref": ref})
@@ -1263,6 +1302,10 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			c.user = user
 			return
 		}
+		// No user doc: a brand-new avatar is being born this session (whether via the
+		// hatchery below or the immediate default create) — the presence alert gets the
+		// birth-announcement variant.
+		c.presenceNewUser = true
 		// Hatchery is gated purely on CAPABILITY — no protocol test here. QLink/raw
 		// binary C64 clients set hatcheryCapable at connect; the web client sets it
 		// via hatchery:true on entercontext; bots never do, so they fall through to
@@ -1932,6 +1975,7 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 				c.bridge.transit.clear(c.userRef)
 			}
 		}
+		c.notePresenceArrivalLocked()
 	}
 
 	// Transit complete for our own avatar: clear our global transit latch on our own APPEARING_$
@@ -2467,6 +2511,16 @@ func (c *ClientSession) Close() {
 	if c.bridge != nil && c.bridge.transit != nil {
 		c.bridge.transit.clear(c.userRef)
 	}
+	// Stamp the presence debounce clock (idempotently — Close can run more than once) so a
+	// reconnect within the window stays silent. Unlocked userRef/UserName reads mirror the
+	// transit.clear above; never posted, history-only.
+	c.closeMutex.Lock()
+	presenceNoted := c.presenceClosed
+	c.presenceClosed = true
+	c.closeMutex.Unlock()
+	if !presenceNoted && c.bridge != nil && c.bridge.presence != nil {
+		c.bridge.presence.noteDisconnect(c.userRef, c.UserName, c.jsonPassthrough)
+	}
 	// Flip the done flags first so other goroutines (notably
 	// writeJsonToClient) can distinguish a teardown-time write failure
 	// from a mid-session one. closeChannels also signals elkoWriter via
@@ -2629,6 +2683,7 @@ func (c *ClientSession) Snapshot() *SessionSnapshot {
 		JsonPassthrough:   c.jsonPassthrough,
 		QLinkMode:         c.qlinkMode,
 		Online:            c.Online,
+		PresenceAnnounced: c.presenceAnnounced,
 		QLinkInSeq:        c.qlinkInSeq,
 		QLinkOutSeq:       c.qlinkOutSeq,
 		ReplySeq:          c.replySeq,
@@ -2708,6 +2763,7 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 		hatcheryCompleted:        snap.HatcheryCompleted,
 		jsonPassthrough:          snap.JsonPassthrough,
 		largeRequestCache:        snap.LargeRequestCache,
+		presenceAnnounced:        snap.PresenceAnnounced,
 		nextRegion:               snap.NextRegion,
 		nextRegionSet:            snap.NextRegionSet,
 		sessionID:                snap.SessionID,

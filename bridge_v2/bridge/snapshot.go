@@ -26,6 +26,9 @@ type SessionSnapshot struct {
 	JsonPassthrough   bool `json:"json_passthrough"`
 	QLinkMode         bool `json:"qlink_mode"`
 	Online            bool `json:"online"`
+	// PresenceAnnounced carries the login-alert latch so a restored session never
+	// re-announces its avatar to Discord after a graceful reload.
+	PresenceAnnounced bool `json:"presence_announced"`
 
 	QLinkInSeq  byte  `json:"qlink_in_seq"`
 	QLinkOutSeq byte  `json:"qlink_out_seq"`
@@ -96,6 +99,11 @@ type HandoffManifest struct {
 	QLinkMode bool              `json:"qlink_mode"`
 	ElkoHost  string            `json:"elko_host"`
 	Context   string            `json:"context"`
+	// PresenceDebounce carries per-user last-disconnect times (unix seconds) across the
+	// handoff, INCLUDING a stamp for every skipped JSON session (they reconnect within
+	// seconds of the reload) — otherwise each deploy would re-announce every connected
+	// web user to Discord.
+	PresenceDebounce map[string]int64 `json:"presence_debounce,omitempty"`
 }
 
 func WriteManifest(path string, m *HandoffManifest) error {

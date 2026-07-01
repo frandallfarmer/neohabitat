@@ -213,6 +213,11 @@ jobs:
           # reads via env_file. When unset, sage exits at startup; the
           # other bots keep running.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # DISCORD_WEBHOOK_LOGINS is the themade.org Discord webhook for
+          # bridge_v2's login alerts. Deploy writes it into
+          # /etc/neohabitat/alerts.env (bridge_v2 systemd EnvironmentFile).
+          # When unset, alerts are disabled — the dev/default state.
+          DISCORD_WEBHOOK_LOGINS: ${{ secrets.DISCORD_WEBHOOK_LOGINS }}
         run: |
           export ANSIBLE_SSH_KEY="$HOME/.ssh/deploy_key"
           # MONITORING_ENV is read by the playbook via lookup('env',...);

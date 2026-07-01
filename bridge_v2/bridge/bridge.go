@@ -31,6 +31,10 @@ type Bridge struct {
 	// sessions because transiting is a property of the avatar, not of any single connection.
 	transit *transitRegistry
 
+	// presence is the login-alert producer + connect/disconnect history (see presence.go).
+	// Nil in tests that build Bridge literals — all hooks nil-check it.
+	presence *presenceRegistry
+
 	// listeners and listenAddrs are 1:1 by index. Multiple listeners
 	// let one stateful bridge process serve multiple host ports
 	// (1337/1986/2026 historically) without splitting session state
@@ -298,6 +302,9 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 		snap *SessionSnapshot
 	}
 	var quiesced []quiescedSession
+	// userRefs of skipped JSON sessions — they reconnect to the child within seconds, so
+	// pre-stamp their debounce clocks in the manifest (see HandoffManifest.PresenceDebounce).
+	var skippedJsonRefs []string
 
 	for _, sess := range b.Sessions {
 		sess.closeMutex.Lock()
@@ -319,6 +326,10 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 		if sess.jsonPassthrough {
 			log.Debug().Str("session", sess.sessionID).
 				Msg("Skipping snapshot (JSON passthrough — relies on client reconnect)")
+			// Unlocked read matches the sessionID/jsonPassthrough reads above.
+			if sess.userRef != "" {
+				skippedJsonRefs = append(skippedJsonRefs, sess.userRef)
+			}
 			continue
 		}
 		if tc, ok := sess.clientConn.conn.(*net.TCPConn); ok {
@@ -342,6 +353,16 @@ func (b *Bridge) SnapshotAllWithTCP() (*HandoffManifest, error) {
 		}
 		if snap != nil {
 			quiesced = append(quiesced, quiescedSession{sess, snap})
+		}
+	}
+
+	// Presence continuity: hand the debounce clocks to the child, stamping "now" for every
+	// skipped JSON session so its imminent reconnect is debounced, not re-announced.
+	if b.presence != nil {
+		manifest.PresenceDebounce = b.presence.exportDebounce()
+		now := time.Now().Unix()
+		for _, ref := range skippedJsonRefs {
+			manifest.PresenceDebounce[ref] = now
 		}
 	}
 
@@ -479,7 +500,7 @@ func NewBridge(
 ) *Bridge {
 	// Defensive copy so the caller's slice can't mutate ours later.
 	addrs := append([]string(nil), listenAddrs...)
-	return &Bridge{
+	b := &Bridge{
 		Context:          context,
 		DataRate:         dataRate,
 		OriginalHatchery: originalHatcheryEnabled(),
@@ -493,6 +514,11 @@ func NewBridge(
 		mongoDatabase:    mongoDatabase,
 		mongoCollection:  mongoCollection,
 	}
+	// Channels come from DISCORD_WEBHOOK_* env vars — configured on prod only (themade.org's
+	// Discord is public; dev must stay silent). Unconfigured, every post is a no-op but the
+	// presence history still records.
+	b.presence = newPresenceRegistry(b, NewDiscordNotifierFromEnv())
+	return b
 }
 
 func originalHatcheryEnabled() bool {
