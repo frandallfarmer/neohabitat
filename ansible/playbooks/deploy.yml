@@ -33,6 +33,8 @@
     # never have DISCORD_WEBHOOK_* set. Future channels (oracle-requests, …)
     # are one more lookup + one more line in alerts.env below.
     discord_webhook_logins: "{{ lookup('env', 'DISCORD_WEBHOOK_LOGINS') | default('', true) }}"
+    # Oracle-requests channel: ASK/WISH speech to the fountain/crystal ball/genie.
+    discord_webhook_oracle_requests: "{{ lookup('env', 'DISCORD_WEBHOOK_ORACLE_REQUESTS') | default('', true) }}"
   tasks:
     # If somebody has been hand-editing files on the box (the made has
     # historically lived this way), `ansible.builtin.git` with force=false
@@ -110,7 +112,8 @@
       when: >
         (monitoring_env is defined and monitoring_env | length > 0) or
         (anthropic_api_key is defined and anthropic_api_key | length > 0) or
-        (discord_webhook_logins is defined and discord_webhook_logins | length > 0)
+        (discord_webhook_logins is defined and discord_webhook_logins | length > 0) or
+        (discord_webhook_oracle_requests is defined and discord_webhook_oracle_requests | length > 0)
 
     - name: Write /etc/neohabitat/monitoring.env from CI secret
       copy:
@@ -147,11 +150,14 @@
         dest: /etc/neohabitat/alerts.env
         content: |
           DISCORD_WEBHOOK_LOGINS={{ discord_webhook_logins }}
+          DISCORD_WEBHOOK_ORACLE_REQUESTS={{ discord_webhook_oracle_requests }}
         owner: "{{ neohabitat_owner }}"
         group: "{{ neohabitat_group }}"
         mode: "0600"
       become: true
-      when: discord_webhook_logins is defined and discord_webhook_logins | length > 0
+      when: >
+        (discord_webhook_logins is defined and discord_webhook_logins | length > 0) or
+        (discord_webhook_oracle_requests is defined and discord_webhook_oracle_requests | length > 0)
       register: alerts_env_file
       no_log: true
 
