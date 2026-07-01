@@ -49,6 +49,23 @@ habitat.themade.org {
 		reverse_proxy neohabitat:1987
 	}
 
+	# The web-client docent page (/neohabitat) and the subresources it pulls, served over HTTPS so
+	# the page is a SECURE CONTEXT. The webclient runs in an iframe here, and its habisound
+	# AudioWorklet only works when the ENTIRE ancestor chain — this parent page included — is https;
+	# an http docent page embedding an https iframe is NOT a secure context, so sound dies. The
+	# plain-HTTP :80 site still serves all of these paths for the untouched C64 emulator page.
+	# SSE (the docent event stream) needs flushing disabled so region-change events arrive live.
+	@docentSSE path /events/*
+	handle @docentSSE {
+		reverse_proxy neohabitat:1701 {
+			flush_interval -1
+		}
+	}
+	@docent path /neohabitat /docs/* /renders/* /images/* /javascripts/* /stylesheets/*
+	handle @docent {
+		reverse_proxy neohabitat:1701
+	}
+
 	# Bare "/" with no path — and any path this front doesn't own — bounces to the existing HTTP
 	# site so the Docent + Emulator page is preserved untouched. The webclient pulls nothing from
 	# these paths, so there is no mixed-content risk.
