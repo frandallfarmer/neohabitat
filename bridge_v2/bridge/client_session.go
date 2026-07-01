@@ -485,6 +485,15 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		splitObjRef := strings.Split(msg.Obj.Ref, "-")
 		c.userRef = fmt.Sprintf("%s-%s", splitObjRef[0], splitObjRef[1])
 
+		// One live session per user. A second login for the same avatar (new window, the
+		// docent "Full Screen" navigation, a reconnect) must supersede the old one — otherwise
+		// the previous connection lingers with an avatar in the region and elko accumulates
+		// duplicate user-<name>-<NNNN> session clones. The newest arrival wins; force-close any
+		// prior session for this userRef. Runs in its own goroutine so it can take other
+		// sessions' locks without deadlocking against the stateMu we hold here (arg evaluated
+		// now, under the lock, so the userRef read is race-free).
+		go c.bridge.closeOtherSessionsForUser(c, c.userRef)
+
 		// Elko sends the session user's avatar with noid=256 (UNASSIGNED_NOID);
 		// if so, map it to the ghost noid so the client has a valid uint8 to
 		// reference. Matches Habitat2ElkoBridge.js ContentsVector.send logic
@@ -1635,6 +1644,14 @@ func (c *ClientSession) runJsonPassthrough() {
 		line, err := tp.ReadLineBytes()
 		if err != nil {
 			c.log.Error().Err(err).Msg("Error reading from JSON client")
+			// The web client (window) went away. Flip the teardown flag BEFORE closing
+			// elkoConn: closing the elko socket unblocks elkoReader with a "use of closed
+			// network connection" error, and if doneClosed isn't set yet it misreads that as
+			// an ELKO-side outage and fires recoverElkoConnection() — which re-dials elko and
+			// re-enters the avatar's context, resurrecting a clientless avatar in the region.
+			// closeChannels() sets doneClosed so elkoReader classifies its unblock as teardown
+			// and the avatar logs out cleanly. (Idempotent; Close() calls it again.)
+			c.closeChannels()
 			// Close elkoConn synchronously so elkoReader unblocks from its
 			// ReadLineBytes immediately rather than continuing to drain
 			// late server-side broadcasts onto the now-dead client socket.
@@ -1763,6 +1780,10 @@ func (c *ClientSession) runJsonPassthrough() {
 		// fields that our Go structs don't model.
 		if err := c.sendRawToElko(line); err != nil {
 			c.log.Error().Err(err).Msg("Could not forward JSON to Elko")
+			// Flip teardown BEFORE closing elkoConn so elkoReader classifies its unblock as
+			// teardown, not an elko-side outage (which would trigger recoverElkoConnection and
+			// resurrect the avatar). See the client-read error path above.
+			c.closeChannels()
 			_ = c.elkoConn.Close()
 			go c.Close()
 			return

@@ -79,6 +79,41 @@ func (b *Bridge) RemoveSession(s *ClientSession) {
 	observability.AddSessionActive(context.Background(), -1)
 }
 
+// closeOtherSessionsForUser force-closes any OTHER live session whose avatar is the same user as
+// `keep` (matched by userRef). A user must have at most one live session: a second login (new
+// browser window, the docent "Full Screen" navigation, a reconnect) otherwise strands the previous
+// avatar in the region with no client and piles up duplicate elko session clones. The newest login
+// wins; the stale one is torn down.
+//
+// Lock discipline (deadlock-free): snapshot the session pointers under sessionsMutex and release it
+// BEFORE touching any session's stateMu — never hold sessionsMutex while taking a session lock, and
+// never call this while holding keep's stateMu (the caller invokes it on a goroutine, passing
+// keep.userRef by value so the read is done under the caller's lock).
+func (b *Bridge) closeOtherSessionsForUser(keep *ClientSession, userRef string) {
+	if userRef == "" {
+		return
+	}
+	b.sessionsMutex.Lock()
+	candidates := make([]*ClientSession, 0, len(b.Sessions))
+	for _, s := range b.Sessions {
+		if s != keep {
+			candidates = append(candidates, s)
+		}
+	}
+	b.sessionsMutex.Unlock()
+
+	for _, s := range candidates {
+		s.stateMu.Lock()
+		match := s.userRef == userRef
+		s.stateMu.Unlock()
+		if match {
+			s.log.Warn().Str("user_ref", userRef).
+				Msg("Force-closing prior session for the same user (superseded by a new login)")
+			go s.Close()
+		}
+	}
+}
+
 func (b *Bridge) Run() {
 	b.wg.Add(1)
 	defer b.wg.Done()
