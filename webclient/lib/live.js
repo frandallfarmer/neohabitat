@@ -192,20 +192,30 @@ async function main() {
   // Whether the pointer is currently over the region render area. The soft keyboard (and the
   // F-keys / RETURN it synthesizes) live OUTSIDE it, so the live under-cursor pick is stale there.
   let cursorInBounds = false
-  // The last object the player deliberately targeted in-region (clicked / verbed). When the
-  // cursor is OUT of bounds (e.g. driving the soft keyboard) keyboard commands target THIS, so
-  // RETURN (talk) and F7 still hit the fountain / teleport you were just on. Cleared on region change.
-  let lastTarget = null // { canvasX, canvasY, scale }
+  // The off-region keyboard-command target. When the cursor is OUT of bounds (e.g. driving the
+  // soft keyboard) keyboard commands target THIS, so RETURN (talk) and F7 still hit the fountain /
+  // teleport you were just on. It DEFAULTS TO THE REGION (a plain broadcast / region-help target)
+  // and only points at a specific object after you tap/verb one — and it REVERTS TO THE REGION
+  // when you change regions or that object is deleted/destroyed, so a stale target never silently
+  // swallows your talk or F-key. { noid, canvasX, canvasY, scale } for an object; REGION_TARGET else.
+  const REGION_TARGET = { region: true }
+  let lastTarget = REGION_TARGET
   // Resolve the target for a keyboard-driven command (F7, RETURN-talk): under the cursor while it
-  // is in the region (the C64 pointed_noid); otherwise the last in-region target. An in-bounds hit
-  // refreshes lastTarget so it tracks the object you last pointed at before leaving for the soft kb.
+  // is in the region (the C64 pointed_noid); otherwise the last in-region target. REGION_TARGET (and
+  // an empty under-cursor) resolves to null — i.e. the region / broadcast.
   const keyboardTargetPick = () => {
     const at = cursorInBounds ? lastCursor : lastTarget
-    if (!at) return null
+    if (!at || at.region) return null
     const pick = pickRegionTarget(pickState, at.canvasX, at.canvasY, at.scale)
-    if (pick?.noid != null && cursorInBounds) lastTarget = { canvasX: at.canvasX, canvasY: at.canvasY, scale: at.scale }
+    if (pick?.noid != null && cursorInBounds) lastTarget = { noid: pick.noid, canvasX: at.canvasX, canvasY: at.canvasY, scale: at.scale }
     return pick
   }
+  // Revert the off-region target to the region when the object it points at leaves the world
+  // (deleted / destroyed / departed) — _deleteByNoid emits 'removed'. Otherwise a stale noid would
+  // keep swallowing soft-kb talk/F-keys after the object is gone.
+  world.on("removed", (rec) => {
+    if (rec && rec.noid != null && lastTarget && lastTarget.noid === rec.noid) lastTarget = REGION_TARGET
+  })
   window.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
     const slot = FKEY_SLOT[e.key]
@@ -326,7 +336,7 @@ async function main() {
     pickState.layoutMap = null                           // stale region geometry (rebuilt on remount)
     pickState.objects = null
     lastCursor = null
-    lastTarget = null; cursorInBounds = false            // stale region geometry — drop the off-region target
+    lastTarget = REGION_TARGET; cursorInBounds = false   // new region → talk/F-keys default to the region
     busyState.reset(); refreshBusy()                     // command_selected = 0xff: cancel any pending verb
     speakReplyPending = false
     if (speakReplyTimer) { clearTimeout(speakReplyTimer); speakReplyTimer = null }
@@ -383,6 +393,7 @@ async function main() {
       // avatar resolve to generic_broadcast (the near-universal default = a plain SPEAK).
       // Off-region (driving the soft keyboard) the cursor is out of bounds, so target the last
       // in-region object instead — lets the soft kb talk to the fountain/teleport you tapped.
+      // lastTarget defaults to (and reverts to) the REGION, so plain talk broadcasts to the room.
       const pick = dispatchClient ? keyboardTargetPick() : null
       // ENTER sets command_selected = 6 (TALK) and flashes the cursor (keyboard.m get_key) —
       // so speaking arms the busy/blink interlock like any other command.
@@ -647,7 +658,7 @@ async function main() {
     // for later keyboard commands (soft-kb RETURN-talk, F7). Only when it resolves to a real
     // object — tapping empty ground to walk shouldn't clear the last object target.
     const tpick = pickRegionTarget(pickState, canvasX, canvasY, scale)
-    if (tpick?.noid != null) lastTarget = { canvasX, canvasY, scale }
+    if (tpick?.noid != null) lastTarget = { noid: tpick.noid, canvasX, canvasY, scale }
     return withBusy(async () => {
       // C64 actions.m face_cursor → change_facing (gestures.m): turn toward the cursor BEFORE the
       // command. That isn't just local — change_facing also sends MESSAGE_posture so neighbors see
@@ -820,6 +831,31 @@ function boot() {
   }
 
   render(html`<${Boot} />`, root)
+  installFitToViewport(root)
+}
+
+// Scale-to-fit. The client renders at a fixed integer scale (320×3 = 960px region). When live.html
+// is the WHOLE page (the docent "Full Screen" button navigates here), a roomy desktop window leaves
+// it tiny and centered — so scale #app UP to fill the viewport. min(w,h) ratio keeps the whole client
+// on screen (nothing clipped). scrollWidth/Height are LAYOUT sizes (a CSS transform is paint-only and
+// doesn't change them), so the ResizeObserver re-fits when content actually changes (title→app,
+// region load, keyboard toggle) without feeding back on its own transform. Pick math is rect-ratio
+// based, so targeting stays true.
+// ONLY when we're the top-level page: the /neohabitat docent EMBEDS us in a sized iframe whose pane
+// can be WIDER than our 1040px natural width — fitting there would enlarge us past the pane (overflow
+// + clipped keyboard). Embedded, the iframe sizes us; we leave the render at its native scale.
+function installFitToViewport(root) {
+  if (!root || window.top !== window.self) return
+  const fit = () => {
+    const w = root.scrollWidth, h = root.scrollHeight
+    if (!w || !h) { root.style.transform = ""; return }
+    const s = Math.min(window.innerWidth / w, window.innerHeight / h)
+    root.style.transformOrigin = "top center"
+    root.style.transform = s > 1.01 ? `scale(${s})` : ""
+  }
+  window.addEventListener("resize", fit)
+  if (typeof ResizeObserver !== "undefined") new ResizeObserver(fit).observe(root)
+  fit()
 }
 
 boot()

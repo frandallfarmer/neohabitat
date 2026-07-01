@@ -21,9 +21,11 @@
     </script>
     <script type="module" src="./lib/live.js"></script>
 </head>
-<body>
+<body style="background: #000;">
     <!-- The C64 title sequence (lib/title.js) shows here first while the heavy client loads in
          the background; "press any key" swaps it for the live client. See lib/live.js boot(). -->
-    <div id="app" style="display: flex; flex-direction: column; gap: 10px; padding: 12px;"></div>
+    <!-- Small top padding (vs 12px sides/bottom) lifts the game + keyboard a few px so a row of the
+         black surround shows below the keyboard instead of the kb sitting flush on the frame edge. -->
+    <div id="app" style="display: flex; flex-direction: column; gap: 10px; padding: 2px 12px 12px;"></div>
 </body>
 </html>

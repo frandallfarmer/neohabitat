@@ -34,6 +34,21 @@ class IndexRoutes {
       });
     });
 
+    // The all-JS web client framed as a docent page (desktop), in place of the C64 emulator.
+    // /webclient/live.html stays the bare narrow-screen mobile client.
+    this.router.get('/neohabitat', function(req, res, next) {
+      var docentSessionId = newDocentSessionId();
+      res.cookie('docentSessionId', docentSessionId, {
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      res.render('neohabitat', {
+        title: 'Neohabitat — Web Client',
+        config: self.config,
+        docentSessionId: docentSessionId,
+      });
+    });
+
     this.router.get('/c64', function(req, res, next) {
       var awakeSessions = self.habiproxy.awakeSessions();
       if ('avatarName' in req.session && req.session.avatarName in awakeSessions) {

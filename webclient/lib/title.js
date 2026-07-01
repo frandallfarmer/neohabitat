@@ -168,6 +168,17 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
 
   const onStageClick = () => { if (phase === "idle") begin() }
 
+  // "Enter Habitat" (like the C64's "press any key past the title") also accepts a keypress, not
+  // just a click — once the button is up (client loaded + comet done), any key proceeds to the
+  // avatar-name prompt. Idle stays click-only: begin() starts audio, which the autoplay policy
+  // ties to a pointer gesture.
+  useEffect(() => {
+    if (phase !== "ready" || !ready) return
+    const onKey = () => enter()
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [phase, ready])
+
   return html`
     <div class="title-stage" style=${`width:${320 * SCALE}px;height:${200 * SCALE}px`}
          onClick=${onStageClick}>

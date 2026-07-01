@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <%- include ("./header.ejs") %>
+
+  <body>
+    <main role="main" class="container-fluid h-100 main-panel">
+      <div class="row h-100 docent-panel main-panel">
+        <!-- Web client pane (the all-JS Neohabitat client, in place of the C64 emulator): -->
+        <div class="col-7 main-panel h-100 emulator-panel">
+          <div class="embed-responsive webclient-div h-100">
+            <iframe name="webclientFrame" id="webclientFrame" title="Neohabitat Web Client"
+              class="embed-responsive-item webclient-frame"
+              src="/webclient/live.html?osk=1"
+              allow="autoplay; fullscreen; clipboard-write"></iframe>
+          </div>
+        </div>
+
+        <!-- Docent docs pane (region-specific once the docent locks onto your avatar): -->
+        <div class="col-5 mx-auto docent-div h-100">
+          <div class="embed-responsive docs-div h-100">
+            <iframe name="docsFrame" id="docsFrame" class="embed-responsive-item" src="/docs/region/WEBCLIENT_HELP"></iframe>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container-fluid">
+        <!-- Directioneering pane: compass + adjacent regions, shown once the docent follows your avatar. -->
+        <div class="row status-panel d-none text-center align-items-center">
+          <div class="col-2">
+            <img id="compass" src="/images/compass.png">
+            <h5 id="avatarHeader" class="text-center"></h5>
+            <small id="regionHeader" class="text-muted"></small>
+          </div>
+          <div class="col-2">
+            West <span id="westArrow"></span>
+            <h5 id="westHeader" class="text-center"></h5>
+            <img id="westImage" width="200px">
+          </div>
+          <div class="col-2">
+            North <span id="northArrow"></span>
+            <h5 id="northHeader" class="text-center"></h5>
+            <img id="northImage" width="200px">
+          </div>
+          <div class="col-2">
+            East <span id="eastArrow"></span>
+            <h5 id="eastHeader" class="text-center"></h5>
+            <img id="eastImage" width="200px">
+          </div>
+          <div class="col-2">
+            South <span id="southArrow"></span>
+            <h5 id="southHeader" class="text-center"></h5>
+            <img id="southImage" width="200px">
+          </div>
+          <div class="col-2">
+            <span id="orientationHeader" class="d-block"></span>
+            <div class="btn-group-vertical">
+              <a class="btn btn-primary" href="/webclient/live.html?osk=1" role="button">Full Screen</a>
+              <button type="button" class="btn btn-success" onclick="viewHelp(); return false;">Help</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Login pane: shown until the docent locks onto the avatar you log in as (on the left). -->
+        <div class="row login-panel text-center align-items-center">
+          <div class="mx-auto">
+            <div id="docentControls" class="d-inline-flex" style="gap: 0.5rem">
+              <button type="button" disabled="disabled" class="btn btn-primary">Docent waiting — log in on the left</button>
+            </div>
+            &nbsp;
+            <a class="btn btn-primary" href="/webclient/live.html?osk=1" role="button">Full Screen</a>
+            &nbsp;
+            <a class="btn btn-success" href="/" role="button">C64 Emulator</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <style type="text/css">
+      .webclient-div { position: relative; width: 100%; height: 100%; background: #000; }
+      .webclient-frame { width: 100%; height: 100%; border: 0; display: block; }
+      /* The directioneering bar holds the compass + four FULL-SIZE (160px) region thumbnails with
+         their region-name labels, which can wrap to two lines. Make the bar tall enough to fit them
+         at full scale rather than shrinking the previews/text into unreadability (the shared default
+         is 130px). */
+      .footer { height: 180px; }
+      .main-panel { margin-bottom: 180px; }
+      .status-panel, .login-panel { height: 180px; }
+      .status-panel { overflow: hidden; }
+    </style>
+
+    <%- include ("./footer.ejs") %>
+    <script type="text/javascript">
+      // Docent bootstrap: the page starts with no avatar and listens on the hatchery event
+      // stream keyed to this DocentSessionId. When you log in on the left, the websocket proxy
+      // maps this session's cookie to your avatar name and the server fires AVATAR_READY, after
+      // which eventStream.js follows your avatar's region changes (compass + adjacent regions).
+      var AvatarName = null;
+      var AvatarAttached = false;
+      var RedirectToEvents = false;
+      var DocentSessionId = "<%= docentSessionId %>";
+      // The web-client load/help screen (not the C64 emulator instructions). avatarSelector.js
+      // reads this for the initial docs pane and the Help button.
+      var DocentHelpPage = "/docs/region/WEBCLIENT_HELP";
+    </script>
+    <script type="text/javascript" src="/javascripts/avatarSelector.js"></script>
+    <script type="text/javascript" src="/javascripts/eventStream.js"></script>
+  </body>
+</html>

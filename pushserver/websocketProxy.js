@@ -59,12 +59,21 @@ function websocketMessageToBuffer(message) {
 
 function extractLoginName(message) {
   var text = websocketMessageToBuffer(message).toString('utf8');
-  if (text.indexOf('{') === -1 || text.indexOf('"name"') === -1) {
+  if (text.indexOf('{') === -1) {
     return null;
   }
-  var match = text.match(/"name"\s*:\s*"([^"]*)"/);
-  if (match) {
-    return match[1];
+  // C64 / binary Habilink preamble carries the avatar name as "name":"Alice".
+  if (text.indexOf('"name"') !== -1) {
+    var match = text.match(/"name"\s*:\s*"([^"]*)"/);
+    if (match) {
+      return match[1];
+    }
+  }
+  // The all-JS web client's entercontext carries it as "user":"user-alice" (no "name" field),
+  // so the docent (/neohabitat) can follow a web-client avatar the same way it follows the C64.
+  var userMatch = text.match(/"user"\s*:\s*"user-([^"]*)"/);
+  if (userMatch) {
+    return userMatch[1];
   }
   return null;
 }

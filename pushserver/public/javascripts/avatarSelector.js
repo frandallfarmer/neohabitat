@@ -1,4 +1,7 @@
-var EmulatorHelpPage = '/docs/region/EMULATOR_HELP';
+// A page may override the load/help doc (the web-client docent uses WEBCLIENT_HELP, not the
+// C64-emulator instructions) by defining DocentHelpPage before this script loads.
+var EmulatorHelpPage = (typeof DocentHelpPage !== 'undefined' && DocentHelpPage)
+  || '/docs/region/EMULATOR_HELP';
 
 function supportsGamepads() {
   return false;
