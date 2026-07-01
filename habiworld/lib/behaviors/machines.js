@@ -188,12 +188,16 @@ async function magic_lamp_do(ctx) {
   if (!ctx.inHand || ctx.inHand.noid !== lamp.noid) return ctx.depends()
   if (lamp.mod.gr_state) return ctx.beep('genie-already-out')
   const reply = await ctx.send({ op: 'RUB', to: lamp.ref })
-  if (!succeeded(reply)) return ctx.beep('server-denied')
+  // The RUB reply signals success in RUB_SUCCESS, not the generic err field
+  // (magic_lamp_do.m: getResponse RUB_SUCCESS / "Non-zero encodes success").
+  if (!reply || !reply.RUB_SUCCESS) return ctx.beep('server-denied')
   lamp.mod.gr_state = 1 // MAGIC_LAMP_GENIE
   ctx.newImage(lamp.noid)
   ctx.sound('GENIE_APPEARS', lamp.noid)
-  if (reply.text) ctx.balloon(reply.text)
-  return { ok: true, text: reply.text }
+  // The genie's greeting is the reply's RUB_MESSAGE, ballooned off the LAMP
+  // (magic_lamp_do.m: moveb pointed_noid, actor_noid → v_balloonMessage).
+  if (reply.RUB_MESSAGE) ctx.balloon(reply.RUB_MESSAGE, { speaker: lamp.noid })
+  return { ok: true, text: reply.RUB_MESSAGE }
 }
 
 // magic_lamp_RUB.m (host): someone summoned the genie.

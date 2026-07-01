@@ -359,17 +359,21 @@ async function atm_put(ctx) {
 // otherwise ordinary speech (slot 10 broadcast).
 async function magic_lamp_talk(ctx) {
   if (ctx.pointed.mod.gr_state) { // genie out
-    const reply = await ctx.send({
-      op: 'WISH', to: ctx.pointed.ref, text: ctx.args.text || '',
-    })
-    return succeeded(reply) ? { ok: true } : ctx.beep('wish-denied')
+    // WISH has NO server reply — the outcome arrives later as the WISH$ broadcast
+    // (Magic_lamp.WISH only broadcasts; the C64 sends the string and just clears the
+    // text line). Awaiting would hang forever — same bug class as generic_askOracle.
+    ctx.send({ op: 'WISH', to: ctx.pointed.ref, text: ctx.args.text || '' }).catch(() => {})
+    return { ok: true }
   }
   return ctx.doAction(10) // MAGIC_LAMP_BROADCAST → generic_broadcast
 }
 
-// magic_lamp_WISH (host): wish theatrics; outcome arrives separately.
+// magic_lamp_WISH (host): the genie grants (or times out on) a wish. The C64 balloons
+// the message, plays GENIE_OUT, and deletes the lamp — our lamp deletion arrives via
+// elko's own delete message (destroy_object → note_object_deletion), so only the
+// balloon + sound happen here.
 function magic_lamp_WISH(ctx) {
-  ctx.sound('MAGIC', ctx.pointed.noid)
+  ctx.sound('GENIE_OUT', ctx.pointed.noid)
   const text = ctx.args.WISH_MESSAGE
   if (text) ctx.balloon(text)
   return { ok: true }
