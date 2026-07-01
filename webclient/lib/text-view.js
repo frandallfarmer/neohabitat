@@ -174,10 +174,12 @@ export const TextView = ({ text, onExit }) => {
 
   // Pen follows the mouse, snapping to the cell under it (page rows 0..15, menu = 16).
   const cellFromEvent = (e) => {
+    // Map by rect RATIO, not fixed CELL px: an ancestor CSS transform (live.js fit-to-viewport)
+    // scales the on-screen rect. The field is exactly COLS × (MENU_ROW+1) cells, no padding.
     const r = e.currentTarget.getBoundingClientRect()
     return {
-      col: Math.max(0, Math.min(COLS - 1, Math.floor((e.clientX - r.left) / CELL))),
-      row: Math.max(0, Math.min(MENU_ROW, Math.floor((e.clientY - r.top) / CELL))),
+      col: Math.max(0, Math.min(COLS - 1, Math.floor(((e.clientX - r.left) / r.width) * COLS))),
+      row: Math.max(0, Math.min(MENU_ROW, Math.floor(((e.clientY - r.top) / r.height) * (MENU_ROW + 1)))),
     }
   }
   // Reading: the pen IS the pointer and follows the mouse. Editing: the pen is the typing

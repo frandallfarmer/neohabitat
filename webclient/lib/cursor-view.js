@@ -80,8 +80,12 @@ export function RegionCursor({
   })
 
   const localFromEvent = (e) => {
+    // Map by rect RATIO, not raw offsets: an ancestor CSS transform (live.js fit-to-viewport)
+    // scales the on-screen rect, so screen-px offsets must be converted back to layout px.
     const rect = e.currentTarget.getBoundingClientRect()
-    return clamp(e.clientX - rect.left, e.clientY - rect.top)
+    const rx = rect.width ? (width * scale) / rect.width : 1
+    const ry = rect.height ? (height * scale) / rect.height : 1
+    return clamp((e.clientX - rect.left) * rx, (e.clientY - rect.top) * ry)
   }
 
   const onPointerMove = useCallback((e) => {
