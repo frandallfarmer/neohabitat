@@ -1711,6 +1711,14 @@ func (c *ClientSession) runJsonPassthrough() {
 					c.log.Error().Err(uerr).Str("user", userName).
 						Msg("Could not ensure User created, relaying entercontext anyway")
 				}
+				// One live session per user (web-client path). ensureUserCreated has resolved
+				// c.userRef, and this is NOT a suppressed redundant entercontext, so we're a real
+				// new login: force-close any prior session for this same userRef now, before we
+				// relay to elko. Otherwise the old connection lingers (a refresh's stale WS), elko
+				// kicks it for the duplicate, its silent-reconnect resurrects it, and the user ends
+				// up doubly present — word balloons render twice. Runs on a goroutine (takes other
+				// sessions' locks); userRef passed by value, read here under the stateMu we hold.
+				go c.bridge.closeOtherSessionsForUser(c, c.userRef)
 				// Brand-new hatchery-capable user: hold this entry, stream the
 				// synthetic customizer make-storm, and wait for CUSTOMIZE — do NOT
 				// relay the entercontext to Elko (the avatar doesn't exist yet).

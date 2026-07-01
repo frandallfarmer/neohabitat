@@ -107,6 +107,14 @@ func (b *Bridge) closeOtherSessionsForUser(keep *ClientSession, userRef string) 
 		match := s.userRef == userRef
 		s.stateMu.Unlock()
 		if match {
+			// Mark it terminal BEFORE closing. If elko ALSO kicks this session for the
+			// duplicate login (it closes the socket with no `exit` op), its elkoReader would
+			// otherwise misread that as an outage and silent-reconnect the avatar back to life.
+			// elkoForcedExit is the "this session is done, do not reconnect" flag that both the
+			// elkoReader and recoverElkoConnection honor.
+			s.closeMutex.Lock()
+			s.elkoForcedExit = true
+			s.closeMutex.Unlock()
 			s.log.Warn().Str("user_ref", userRef).
 				Msg("Force-closing prior session for the same user (superseded by a new login)")
 			go s.Close()
