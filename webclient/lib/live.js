@@ -68,10 +68,17 @@ const q = (k, d) => new URLSearchParams(location.search).get(k) ?? d
 // wss://<host>/ws → ws://…:1987, so use the page's own origin + the /ws path (no explicit port).
 // A ?ws= param overrides either way.
 const WS_PROXY_PORT = 1987
-const wsDefault = () =>
-  q("ws", location.protocol === "https:"
+const wsDefault = () => {
+  const base = q("ws", location.protocol === "https:"
     ? `wss://${location.host}/ws`
     : `ws://${location.hostname}:${WS_PROXY_PORT}`)
+  // Forward the docent-session id (set on the /neohabitat iframe URL) onto the WS so the proxy can
+  // correlate this login with the docent page. It can't ride as a cookie: the docent page is HTTP
+  // :80 while the wss:// socket is HTTPS :443 (Caddy), and schemeful SameSite drops the cookie
+  // across that http→https hop. The explicit param is scheme-agnostic (the SSE uses one too).
+  const docent = q("docent", null)
+  return docent ? `${base}${base.includes("?") ? "&" : "?"}docent=${encodeURIComponent(docent)}` : base
+}
 const qNum = (k, d) => {
   const v = Number(q(k, d))
   return Number.isFinite(v) && v > 0 ? v : d

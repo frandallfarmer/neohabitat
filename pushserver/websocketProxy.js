@@ -116,6 +116,18 @@ function startWebsocketProxy(config) {
     var clientAddr = client._socket.remoteAddress;
     var cookies = parseCookies(req.headers.cookie);
     var docentSessionId = cookies.docentSessionId;
+    // Prefer an explicit ?docent=<id> on the WS URL over the cookie: the /neohabitat docent page is
+    // served over HTTP :80 while this game socket is HTTPS :443 (behind Caddy), and schemeful
+    // SameSite drops the docentSessionId cookie across that http->https hop, so it arrives 'unknown'.
+    // The webclient forwards the id as a query param (as the SSE already does), which is scheme-safe.
+    try {
+      var docentQuery = new URL(req.url, 'http://localhost').searchParams.get('docent');
+      if (docentQuery) {
+        docentSessionId = docentQuery;
+      }
+    } catch (err) {
+      // Malformed URL — fall back to the cookie value.
+    }
     var loginNameDetector = new LoginNameDetector();
 
     log.info('WebSocket connection from %s', clientAddr);
