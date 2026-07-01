@@ -846,8 +846,9 @@ function boot() {
 // it tiny and centered — so scale #app UP to fill the viewport. min(w,h) ratio keeps the whole client
 // on screen (nothing clipped). scrollWidth/Height are LAYOUT sizes (a CSS transform is paint-only and
 // doesn't change them), so the ResizeObserver re-fits when content actually changes (title→app,
-// region load, keyboard toggle) without feeding back on its own transform. Pick math is rect-ratio
-// based, so targeting stays true.
+// region load, keyboard toggle) without feeding back on its own transform. Pointer→canvas mapping
+// MUST be rect-ratio based under this transform (cursor-view localFromEvent, text-view
+// cellFromEvent) — raw clientX−rect.left offsets come back scaled and warp the pick.
 // ONLY when we're the top-level page: the /neohabitat docent EMBEDS us in a sized iframe whose pane
 // can be WIDER than our 1040px natural width — fitting there would enlarge us past the pane (overflow
 // + clipped keyboard). Embedded, the iframe sizes us; we leave the render at its native scale.
