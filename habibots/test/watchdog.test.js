@@ -42,6 +42,30 @@ test('resetSession drops the socket, counts, and debounces while resetting', () 
   assert.equal(destroys(), 1, 'no second destroy')
 })
 
+test('timeouts during an in-flight reset are coalesced (counted), not dropped', () => {
+  const { bot, destroys } = fakeBot()
+  bot.resetSession('reply:GET')       // opens the reset window, drops socket
+  assert.equal(destroys(), 1)
+  // Three more timeouts land while _resetting/disconnected — coalesced.
+  bot.resetSession('reply:WALK')
+  bot.resetSession('transit:newRegion(2)')
+  bot.resetSession('reply:WALK')
+  assert.equal(destroys(), 1, 'no extra socket drops during the window')
+  assert.equal(bot._consecutiveResets, 1)
+  assert.equal(bot._coalescedTimeouts, 3, 'all three coalesced timeouts counted')
+  assert.deepEqual(bot._coalescedReasons, { 'reply:WALK': 2, 'transit:newRegion(2)': 1 })
+
+  // The NEXT real reset folds the coalesced count into its history entry,
+  // then starts a fresh window.
+  bot._resetting = false
+  bot.connected = true
+  bot.resetSession('reply:GET')
+  const entry = bot._resetHistory[bot._resetHistory.length - 1]
+  assert.equal(entry.coalesced, 3)
+  assert.deepEqual(entry.coalescedReasons, { 'reply:WALK': 2, 'transit:newRegion(2)': 1 })
+  assert.equal(bot._coalescedTimeouts, 0, 'window reset after folding')
+})
+
 test('_noteSuccess clears the consecutive-reset count', () => {
   const { bot } = fakeBot()
   bot.resetSession('transit:newRegion(0)')

@@ -83,6 +83,10 @@ class HabiBot {
     this._lastSuccessAt = Date.now()
     this._pendingReplyOp = null
     this._resetHistory = []
+    // Timeouts that arrive while a reset is already in flight — coalesced,
+    // not dropped, so a whole-pipeline stall is visible as a count.
+    this._coalescedTimeouts = 0
+    this._coalescedReasons = {}
 
     // Ensures that only 1 Elko request is in flight at any given time.
     // We're talking to the 80's after all...
@@ -537,7 +541,10 @@ class HabiBot {
   _noteSuccess() {
     this._lastSuccessAt = Date.now()
     if (this._consecutiveResets !== 0) {
-      log.info('Session healthy again after %d reset(s)', this._consecutiveResets)
+      // event=session_recovered — stable tag so "how often do bots recover,
+      // and after how many resets" is one Loki query.
+      log.info('bot_session event=session_recovered bot=%s afterResets=%d %j',
+        this.username, this._consecutiveResets, this._diagnosticSnapshot())
       this._consecutiveResets = 0
     }
   }
@@ -559,34 +566,54 @@ class HabiBot {
   resetSession(reason) {
     const snap = this._diagnosticSnapshot()
     // Debounce: if a reset/reconnect is already underway (or we're already
-    // disconnected and the reconnect path owns recovery), don't pile on.
+    // disconnected and the reconnect path owns recovery), don't drop the
+    // socket again — but DO record it. A burst of timeouts unwinding at once
+    // is real signal (was it 1 stuck request or 20?), and at prod's INFO
+    // level a debug line would vanish. Count them and roll the reason in;
+    // the count surfaces on the reset that opened the window (below) and in
+    // the next one, so a coalesced storm is never silently swallowed.
     if (this._resetting || !this.connected) {
-      log.debug('resetSession(%s) skipped — reset already in progress %j', reason, snap)
+      this._coalescedTimeouts += 1
+      this._coalescedReasons[reason] = (this._coalescedReasons[reason] || 0) + 1
+      log.info('bot_session event=timeout_coalesced bot=%s reason=%s coalesced=%d',
+        this.username, reason, this._coalescedTimeouts)
       return
     }
     this._consecutiveResets += 1
-    this._resetHistory.push({ at: new Date().toISOString(), reason, snapshot: snap })
-    if (this._resetHistory.length > 20) this._resetHistory.shift()
+    // Fold any timeouts that coalesced onto the PREVIOUS reset window into
+    // this record before starting a fresh window.
+    const coalesced = this._coalescedTimeouts
+    const coalescedReasons = this._coalescedReasons
+    this._coalescedTimeouts = 0
+    this._coalescedReasons = {}
+    const entry = { at: new Date().toISOString(), reason, coalesced, coalescedReasons, snapshot: snap }
+    this._resetHistory.push(entry)
+    if (this._resetHistory.length > 50) this._resetHistory.shift()
 
     const max = (this.config && this.config.maxConsecutiveResets) || 5
     if (this._consecutiveResets >= max) {
+      // event=session_giveup — every reset in the run is already in the
+      // history dumped here, so the whole path to the give-up is captured.
       log.error(
-        'FATAL: session unrecoverable — %d consecutive resets with no successful ' +
-        'operation. reason=%s snapshot=%j history=%j. Exiting so the supervisor ' +
-        'respawns a fresh process.',
-        this._consecutiveResets, reason, snap, this._resetHistory)
+        'bot_session event=session_giveup bot=%s FATAL: unrecoverable — %d consecutive ' +
+        'resets with no successful operation. reason=%s snapshot=%j history=%j. Exiting ' +
+        'so the supervisor respawns a fresh process.',
+        this.username, this._consecutiveResets, reason, snap, this._resetHistory)
       process.exit(1)
       return
     }
 
-    log.warn('resetSession(%s) [%d/%d] — dropping socket to rebuild session. %j',
-      reason, this._consecutiveResets, max, snap)
+    // event=session_reset — WARN so it's visible at prod INFO, one stable
+    // tag for querying/alerting across all bots, with the full snapshot and
+    // any coalesced-timeout count from this window.
+    log.warn('bot_session event=session_reset bot=%s reason=%s reset=%d/%d coalesced=%d %j',
+      this.username, reason, this._consecutiveResets, max, coalesced, snap)
     this._resetting = true
     this._pendingReplyOp = null
     try {
       if (this.server) this.server.destroy()
     } catch (e) {
-      log.warn('resetSession: socket destroy threw: %s', e.message)
+      log.warn('bot_session event=reset_destroy_error bot=%s error=%s', this.username, e.message)
     }
     // onDisconnect (fired by the destroy) sets connected=false and schedules
     // the reconnect; connect()'s success handler clears _resetting.
