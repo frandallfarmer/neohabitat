@@ -368,14 +368,17 @@ async function magic_lamp_talk(ctx) {
   return ctx.doAction(10) // MAGIC_LAMP_BROADCAST → generic_broadcast
 }
 
-// magic_lamp_WISH (host): the genie grants (or times out on) a wish. The C64 balloons
-// the message, plays GENIE_OUT, and deletes the lamp — our lamp deletion arrives via
-// elko's own delete message (destroy_object → note_object_deletion), so only the
-// balloon + sound happen here.
+// magic_lamp_WISH (host): the genie grants (or times out on) a wish — balloon the
+// message, play GENIE_OUT, and DELETE the lamp locally (v_delete_object). The local
+// delete is load-bearing: elko's destroy_object never sends clients a delete for a
+// visibly-held item (note_object_deletion is C64 CAPMON bookkeeping, not a message),
+// so this WISH$ broadcast is the only "the lamp is gone" signal — exactly why the
+// C64 handler deletes it client-side.
 function magic_lamp_WISH(ctx) {
   ctx.sound('GENIE_OUT', ctx.pointed.noid)
   const text = ctx.args.WISH_MESSAGE
   if (text) ctx.balloon(text)
+  ctx.world._deleteByNoid(ctx.pointed.noid)
   return { ok: true }
 }
 

@@ -1162,6 +1162,10 @@ test('WISH$ plays GENIE_OUT and shows WISH_MESSAGE balloon', () => {
   w.apply({ op: 'WISH$', noid: 72, WISH_MESSAGE: 'Very well, I\'ll see what I can do.' })
   assert.deepEqual(sounds, [{ name: 'GENIE_OUT', noid: 72 }])
   assert.deepEqual(balloons, ['Very well, I\'ll see what I can do.'])
+  // v_delete_object: the WISH$ is the only "lamp is gone" signal (elko's
+  // destroy_object sends no delete for a visibly-held item) — the C64 handler
+  // deletes the lamp locally and so must we.
+  assert.equal(w.get(72), null)
 })
 
 test('SIT$ moves avatar into seat container on sit down', () => {
