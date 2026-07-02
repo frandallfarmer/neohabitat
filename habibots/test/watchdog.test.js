@@ -66,6 +66,25 @@ test('timeouts during an in-flight reset are coalesced (counted), not dropped', 
   assert.equal(bot._coalescedTimeouts, 0, 'window reset after folding')
 })
 
+test('a reset actually schedules a reconnect (destroy() alone would not)', async () => {
+  // Regression: resetSession dropped the socket with server.destroy(), but
+  // onDisconnect — which schedules the reconnect — is wired only to the
+  // socket's 'end'/'error' events. destroy() emits 'close', so the reconnect
+  // never fired and a reset bot vanished for good. resetSession must drive
+  // onDisconnect explicitly. (Caught live on dev, not by the mocked tests.)
+  const bot = new HabiBot('127.0.0.1', 9, 'testbot')
+  bot.config.shouldReconnect = true
+  bot.reconnectDelayMs = 5
+  bot.connected = true
+  bot.server = { destroy: () => { bot.connected = false } }
+  let reconnects = 0
+  bot.connect = () => { reconnects++ } // spy: don't touch the network
+  bot.resetSession('reply:GET')
+  assert.equal(bot.connected, false, 'socket was dropped')
+  await tick(40)
+  assert.ok(reconnects >= 1, 'reconnect was scheduled after the reset')
+})
+
 test('_noteSuccess clears the consecutive-reset count', () => {
   const { bot } = fakeBot()
   bot.resetSession('transit:newRegion(0)')

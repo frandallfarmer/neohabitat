@@ -615,8 +615,14 @@ class HabiBot {
     } catch (e) {
       log.warn('bot_session event=reset_destroy_error bot=%s error=%s', this.username, e.message)
     }
-    // onDisconnect (fired by the destroy) sets connected=false and schedules
-    // the reconnect; connect()'s success handler clears _resetting.
+    // CRITICAL: socket.destroy() emits 'close', but onDisconnect is wired only
+    // to 'end'/'error' — so the reconnect is NOT scheduled on its own (a reset
+    // would drop the socket and never come back). Drive the disconnect path
+    // explicitly. onDisconnect sets connected=false, fires the disconnect
+    // callbacks, and schedules the shouldReconnect backoff; connect()'s success
+    // handler then clears _resetting. Its <100ms idempotency guard absorbs any
+    // real 'error'/'close' the destroy might also raise.
+    this.onDisconnect()
   }
 
   /**
