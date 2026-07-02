@@ -44,9 +44,16 @@
             <version>3.12.14</version>
         </dependency>
         <dependency>
-            <groupId>com.github.ssalevan</groupId>
+            <!-- Randy's Elko fork, branch fix/persist-container-open-state:
+                 ssalevan's driver modernization (7ff0284) + two container
+                 fixes: persist open/closed state at transition time
+                 (FUDCo/Elko PR #4) and replaceOne instead of updateOne($set)
+                 so omitted-field encodes (e.g. 'closed') actually clear in
+                 mongo. Together they fix open containers arriving empty for
+                 users entering the region. -->
+            <groupId>com.github.frandallfarmer</groupId>
             <artifactId>Elko</artifactId>
-            <version>7ff0284</version>
+            <version>94c6db64fe</version>
         </dependency>
     </dependencies>
 
