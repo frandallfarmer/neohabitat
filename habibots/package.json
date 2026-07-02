@@ -16,5 +16,8 @@
     "url": "https://github.com/frandallfarmer/neohabitat.git",
     "directory": "habibots"
   },
-  "homepage": "https://frandallfarmer.github.io/neohabitat/"
+  "homepage": "https://frandallfarmer.github.io/neohabitat/",
+  "scripts": {
+    "test": "node --test test/"
+  }
 }
