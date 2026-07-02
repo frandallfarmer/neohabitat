@@ -482,6 +482,59 @@ test('spray_can DO guard-failure: {success:0, custom_1, custom_2} beeps and leav
   assert.deepEqual(w.me.mod.custom, [34, 129]) // unchanged
 })
 
+// ── magic lamp (same reply-contract family: RUB_SUCCESS, never err) ──
+// Ground truth: magic_lamp_do.m ("getResponse RUB_SUCCESS / Non-zero encodes
+// success"), magic_lamp_talk.m (WISH is fire-and-forget — the outcome arrives
+// later as the WISH$ broadcast; Magic_lamp.WISH never sends a direct reply).
+
+function withHeldLamp(w) {
+  w.apply({
+    to: ME_REF, op: 'make',
+    obj: {
+      type: 'item', ref: 'item-lamp-1', name: 'Magic Lamp',
+      mods: [{ type: 'Magic_lamp', noid: 96, x: 0, y: HANDS, orientation: 0, gr_state: 0 }],
+    },
+  })
+}
+
+test('magic_lamp DO (rub): RUB_SUCCESS reply summons the genie', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldLamp(w)
+  // Magic_lamp.java RUB reply shape: RUB_SUCCESS + RUB_MESSAGE, no err field.
+  const { calls, cb } = recorder([
+    { type: 'reply', noid: 96, RUB_SUCCESS: 1, RUB_MESSAGE: 'Oh, Master SageBot, your wish is my command!' },
+  ])
+  const result = await dispatch(w, ACTION_DO, 96, {}, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'RUB', to: 'item-lamp-1' }])
+  assert.equal(w.get(96).mod.gr_state, 1) // MAGIC_LAMP_GENIE — the genie appears
+  assert.equal(result.text, 'Oh, Master SageBot, your wish is my command!')
+})
+
+test('magic_lamp DO (rub): RUB_SUCCESS 0 refuses — no genie, no state change', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldLamp(w)
+  const { cb } = recorder([{ type: 'reply', noid: 96, RUB_SUCCESS: 0, RUB_MESSAGE: '' }])
+  const result = await dispatch(w, ACTION_DO, 96, {}, cb)
+  assert.equal(result.ok, false)
+  assert.equal(w.get(96).mod.gr_state, 0)
+})
+
+test('magic_lamp TALK with genie out sends WISH without awaiting a reply', async () => {
+  const w = new HabitatWorld()
+  makeStorm(w)
+  withHeldLamp(w)
+  w.get(96).mod.gr_state = 1 // genie out
+  // Empty scripted queue: sends resolve to undefined, so any await-and-check of a
+  // reply would report failure — fire-and-forget must succeed regardless.
+  const { calls, cb } = recorder([])
+  const result = await dispatch(w, ACTION_TALK, 96, { text: 'a sword' }, cb)
+  assert.ok(result.ok)
+  assert.deepEqual(calls.sends, [{ op: 'WISH', to: 'item-lamp-1', text: 'a sword' }])
+})
+
 test('dispatch on an unported behavior fails loudly with the .m name', async (t) => {
   // Find any class slot whose behavior hasn't been ported yet, so this
   // test keeps working as the port advances (and retires itself once
@@ -1088,7 +1141,9 @@ test('BUGOUT$ plays ESCAPE_DEVICE_ACTIVATES for a neighbor', () => {
   assert.deepEqual(sounds, [{ name: 'ESCAPE_DEVICE_ACTIVATES', noid: 71 }])
 })
 
-test('WISH$ plays MAGIC and shows WISH_MESSAGE balloon', () => {
+test('WISH$ plays GENIE_OUT and shows WISH_MESSAGE balloon', () => {
+  // magic_lamp_WISH.m: "sound GENIE_OUT, actor_noid" (the earlier MAGIC here
+  // matched the old implementation, not the C64).
   const w = new HabitatWorld()
   makeStorm(w)
   w.apply({
@@ -1105,8 +1160,12 @@ test('WISH$ plays MAGIC and shows WISH_MESSAGE balloon', () => {
     balloon: (text) => balloons.push(text),
   })
   w.apply({ op: 'WISH$', noid: 72, WISH_MESSAGE: 'Very well, I\'ll see what I can do.' })
-  assert.deepEqual(sounds, [{ name: 'MAGIC', noid: 72 }])
+  assert.deepEqual(sounds, [{ name: 'GENIE_OUT', noid: 72 }])
   assert.deepEqual(balloons, ['Very well, I\'ll see what I can do.'])
+  // v_delete_object: the WISH$ is the only "lamp is gone" signal (elko's
+  // destroy_object sends no delete for a visibly-held item) — the C64 handler
+  // deletes the lamp locally and so must we.
+  assert.equal(w.get(72), null)
 })
 
 test('SIT$ moves avatar into seat container on sit down', () => {
