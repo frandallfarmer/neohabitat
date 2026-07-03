@@ -3,8 +3,6 @@ package bridge
 import (
 	"errors"
 	"fmt"
-
-	"github.com/rs/zerolog/log"
 )
 
 // QLink wire-protocol constants. These mirror the corresponding values in
@@ -142,6 +140,32 @@ type QLinkFrame struct {
 // ErrQLinkBadFrame indicates a malformed QLink frame.
 var ErrQLinkBadFrame = errors.New("qlink: bad frame")
 
+// QLinkCRCError reports a frame whose transmitted CRC doesn't match the CRC
+// calculated over its bytes — real RS-232 line noise (IRQ jitter on the C64
+// user-port driver, U64 modem overruns). The decoded frame is still returned
+// alongside this error so callers can log its fields, but its contents MUST
+// NOT be acted upon: the C64 client's own receiver (mikes_protocol.m
+// bad_pkt) NAKs a corrupt packet and discards it, and the bridge mirrors
+// that. Processing a corrupt frame's RecvSeq once freed retransmit-window
+// frames the client never received, permanently truncating a split document
+// mid-page (the 2026-07-03 "REVOLUTIONARY SUES ORACLE" bug).
+type QLinkCRCError struct {
+	Reported   uint16
+	Calculated uint16
+}
+
+func (e *QLinkCRCError) Error() string {
+	return fmt.Sprintf("qlink: CRC mismatch (reported 0x%04x, calculated 0x%04x)",
+		e.Reported, e.Calculated)
+}
+
+// IsHandshakeProbe reports whether this mismatch is the client's intentional
+// handshake probe: a deliberately malformed packet sent so the server NAKs
+// it with valid send/recv sequence numbers. Not a real line error.
+func (e *QLinkCRCError) IsHandshakeProbe() bool {
+	return e.Reported == 0x3290 && e.Calculated == 0xa291
+}
+
 // DecodeQLinkFrame parses a single QLink frame body (without the trailing
 // FrameEnd byte) and verifies the CRC. The returned Payload aliases into the
 // input slice.
@@ -158,26 +182,19 @@ func DecodeQLinkFrame(frame []byte) (*QLinkFrame, error) {
 	reported := uint16(((uint16(frame[1])&0xF0)|(uint16(frame[2])&0x0F))<<8) |
 		uint16((frame[3]&0xF0)|(frame[4]&0x0F))
 	calculated := QLinkCRC16(frame[5:])
-	if reported != calculated {
-		// 0x3290/0xa291 is the intentional handshake probe: the client
-		// sends a deliberately malformed packet so the server NAKs it
-		// with valid send/recv sequence numbers. Not a real error.
-		// All other mismatches are real RS-232 bit errors (IRQ jitter on
-		// the C64 user-port driver) and stay at Warn.
-		if reported == 0x3290 && calculated == 0xa291 {
-			log.Debug().Msg("qlink: CRC handshake probe detected.")
-		} else {
-			log.Warn().Msgf("qlink: CRC mismatch ignored (reported 0x%04x, calculated 0x%04x)",
-				reported, calculated)
-		}
-	}
 
-	return &QLinkFrame{
+	parsed := &QLinkFrame{
 		Cmd:     frame[7],
 		SendSeq: frame[5],
 		RecvSeq: frame[6],
 		Payload: frame[QLinkHeaderLen:],
-	}, nil
+	}
+	if reported != calculated {
+		// Return the parsed frame for logging, but flag it corrupt — the
+		// caller must NAK and discard it (see QLinkCRCError).
+		return parsed, &QLinkCRCError{Reported: reported, Calculated: calculated}
+	}
+	return parsed, nil
 }
 
 // IsHabitatAction returns true if this Action frame's mnemonic matches the
