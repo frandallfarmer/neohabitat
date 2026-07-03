@@ -118,26 +118,29 @@ func TestQLinkRoundTrip(t *testing.T) {
 	}
 }
 
-// TestDecodeQLinkFrame_BadCRC confirms the decoder's documented lenient
-// behavior on CRC mismatch: it logs a warning but still returns the parsed
-// frame rather than rejecting it. Real C64 RS-232 streams get occasional
-// one-bit hiccups from IRQ jitter, and dropping those frames outright
-// would cause session hangs — downstream handling catches truly broken
-// payloads. See qlink_codec.go:161-169 for the rationale.
+// TestDecodeQLinkFrame_BadCRC confirms the decoder flags a CRC mismatch with
+// QLinkCRCError while still returning the parsed frame (for logging). The
+// caller must NAK and DISCARD such frames — the C64's own receiver does
+// exactly that (mikes_protocol.m bad_pkt: snd_NAK + discard). The old
+// "log and process anyway" leniency let a corrupt RecvSeq free
+// retransmit-window frames the client never received, permanently
+// truncating split documents (the "REVOLUTIONARY SUES ORACLE" page).
 func TestDecodeQLinkFrame_BadCRC(t *testing.T) {
 	frame := EncodeQLinkFrame(QLinkCmdReset, 0x7f, 0x7f, []byte{0x05, 0x09})
 	frame[1] ^= 0x10 // flip a CRC nibble bit
 	parsed, err := DecodeQLinkFrame(frame)
-	if err != nil {
-		t.Fatalf("DecodeQLinkFrame returned unexpected error on CRC mismatch: %v", err)
+	var crcErr *QLinkCRCError
+	if !errors.As(err, &crcErr) {
+		t.Fatalf("DecodeQLinkFrame err = %v, want *QLinkCRCError", err)
+	}
+	if crcErr.IsHandshakeProbe() {
+		t.Error("a random bit flip must not classify as the handshake probe")
 	}
 	if parsed == nil {
-		t.Fatal("DecodeQLinkFrame returned nil frame on CRC mismatch")
+		t.Fatal("DecodeQLinkFrame returned nil frame alongside QLinkCRCError")
 	}
-	// The frame fields should still be parsed from the raw bytes — only
-	// the CRC bytes themselves are corrupted. A Reset frame with send/recv
-	// sequences 0x7f/0x7f and payload {0x05, 0x09} should decode cleanly
-	// even with the CRC wrong.
+	// The frame fields are still parsed from the raw bytes so the caller
+	// can log them — only trusting them is forbidden.
 	if parsed.Cmd != QLinkCmdReset {
 		t.Errorf("Cmd = 0x%02x, want 0x%02x", parsed.Cmd, QLinkCmdReset)
 	}
@@ -149,6 +152,23 @@ func TestDecodeQLinkFrame_BadCRC(t *testing.T) {
 	}
 	if !bytes.Equal(parsed.Payload, []byte{0x05, 0x09}) {
 		t.Errorf("Payload = % x, want [05 09]", parsed.Payload)
+	}
+}
+
+// TestDecodeQLinkFrame_HandshakeProbe verifies the intentional malformed
+// handshake packet (reported 0x3290 / calculated 0xa291) is classified as
+// the probe, so the caller can log it at Debug instead of Warn. The client
+// builds it by sending Ping bytes with a Reset's CRC — reproduce that here.
+func TestDecodeQLinkFrame_HandshakeProbe(t *testing.T) {
+	// A Ping body (7f 7f 26) calculates to 0xa291... derive it instead of
+	// hardcoding assumptions: craft a frame whose payload CRCs to 0xa291
+	// is fiddly, so just assert on the classifier itself.
+	e := &QLinkCRCError{Reported: 0x3290, Calculated: 0xa291}
+	if !e.IsHandshakeProbe() {
+		t.Error("0x3290/0xa291 must classify as the handshake probe")
+	}
+	if (&QLinkCRCError{Reported: 0x3290, Calculated: 0xa292}).IsHandshakeProbe() {
+		t.Error("near-miss values must not classify as the probe")
 	}
 }
 

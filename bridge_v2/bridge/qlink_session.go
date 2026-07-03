@@ -348,9 +348,38 @@ func (c *ClientSession) qlinkFrameLoop() {
 // switch in QConnection.run().
 func (c *ClientSession) handleQLinkFrame(body []byte) error {
 	frame, err := DecodeQLinkFrame(body)
+	var crcErr *QLinkCRCError
+	if errors.As(err, &crcErr) {
+		// C64 ground truth (mikes_protocol.m bad_pkt): NAK the corrupt
+		// packet and discard it — never act on its contents. Feeding a
+		// corrupt frame into qlinkProcessAck once freed retransmit-window
+		// frames the client never received (its garbage RecvSeq "acked"
+		// them), permanently truncating a split document mid-page; a
+		// corrupt SendSeq likewise poisoned qlinkInSeq's piggyback acks.
+		// The NAK prompts the client to resend whatever the noise ate
+		// (got_NAK → all_NAKs resends its un-ACKed packets even when the
+		// NAK looks out-of-sequence).
+		if crcErr.IsHandshakeProbe() {
+			// The deliberately malformed handshake probe WANTS this NAK
+			// (with valid sequence numbers). Not a real line error.
+			c.log.Debug().Msg("qlink: CRC handshake probe — sending NAK")
+		} else {
+			c.log.Warn().
+				Uint8("cmd", frame.Cmd).
+				Uint8("send_seq", frame.SendSeq).
+				Uint8("recv_seq", frame.RecvSeq).
+				Msgf("qlink: %s — frame dropped, NAK sent", crcErr)
+		}
+		return c.sendQLinkNak()
+	}
 	if err != nil {
 		return err
 	}
+	// A valid frame re-arms the NAK debounce (the C64 does the same with
+	// NAK_sent in done_ACK / got_HBEAT).
+	c.qlinkMu.Lock()
+	c.qlinkNakSent = false
+	c.qlinkMu.Unlock()
 	c.log.Trace().
 		Uint8("cmd", frame.Cmd).
 		Uint8("send_seq", frame.SendSeq).
@@ -453,6 +482,27 @@ func (c *ClientSession) handleQLinkFrame(body []byte) error {
 func (c *ClientSession) sendQLinkAckLikeFrame(cmd byte) error {
 	c.qlinkMu.Lock()
 	frame := EncodeQLinkFrame(cmd, c.qlinkOutSeq, c.qlinkInSeq, nil)
+	c.qlinkMu.Unlock()
+	return c.writeQLinkFrameBytes(frame)
+}
+
+// sendQLinkNak sends a NAK (0x25) frame in response to a corrupt (bad-CRC)
+// inbound frame, debounced by qlinkNakSent exactly like the C64's NAK_sent
+// flag: one NAK per noise burst, re-armed when the next valid frame arrives.
+// The client's got_NAK handler resends its un-ACKed packets on ANY NAK —
+// even one whose sequence looks out-of-order ("do not bump sequence numbers
+// if out of order", mikes_protocol.m) — so we deliberately do NOT consume an
+// outSeq for it: NAKs aren't windowed for retransmission, and burning a
+// sequence number on an unreliable control frame would open a seq gap the
+// client could wedge on if the NAK itself were lost.
+func (c *ClientSession) sendQLinkNak() error {
+	c.qlinkMu.Lock()
+	if c.qlinkNakSent {
+		c.qlinkMu.Unlock()
+		return nil
+	}
+	c.qlinkNakSent = true
+	frame := EncodeQLinkFrame(HabitatNAK, c.qlinkOutSeq, c.qlinkInSeq, nil)
 	c.qlinkMu.Unlock()
 	return c.writeQLinkFrameBytes(frame)
 }

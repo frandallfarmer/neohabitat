@@ -87,9 +87,13 @@ type ClientSession struct {
 	// Action frames in send order; the C64 piggybacks its last-received seq
 	// on every frame, so we free acked frames and resend the rest when it
 	// falls behind (SequenceError/NAK, or a RecvSeq stuck across heartbeats).
-	qlinkSentWindow   []qlinkSentFrame
-	qlinkLastRecv     byte
-	qlinkLastResend   time.Time
+	qlinkSentWindow []qlinkSentFrame
+	qlinkLastRecv   byte
+	qlinkLastResend time.Time
+	// qlinkNakSent debounces our corrupt-frame NAKs, mirroring the C64's
+	// NAK_sent flag (mikes_protocol.m): one NAK per noise burst, re-armed
+	// by the next valid frame. Guarded by qlinkMu.
+	qlinkNakSent      bool
 	clientConn        *ClientConnection
 	clientReader      *bufio.Reader
 	closeMutex        sync.Mutex
