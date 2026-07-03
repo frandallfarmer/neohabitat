@@ -54,11 +54,29 @@ func (c *ClientSession) qlinkRecordSentLocked(seq byte, frame []byte) {
 	}
 }
 
-// qlinkAckCovers reports whether an ack of recvSeq acknowledges a frame sent
-// with sequence seq, accounting for the [QLinkSeqLow, QLinkSeqDefault] wrap.
-// Mirrors the freePackets test in QConnection.
+// qlinkSeqSpan is the size of the circular QLink sequence space
+// [QLinkSeqLow, QLinkSeqDefault] (0x10..0x7F = 112 values).
+const qlinkSeqSpan = int(QLinkSeqDefault) - int(QLinkSeqLow) + 1
+
+// qlinkSeqForward returns how many sequence increments it takes to get from
+// `from` to `to` in the circular space (0 if equal, wrapping 0x7F -> 0x10).
+func qlinkSeqForward(from, to byte) int {
+	d := (int(to) - int(from)) % qlinkSeqSpan
+	if d < 0 {
+		d += qlinkSeqSpan
+	}
+	return d
+}
+
+// qlinkAckCovers reports whether a cumulative ack of recvSeq acknowledges a
+// frame sent with sequence seq: recvSeq is at-or-past seq, allowing for the
+// [QLinkSeqLow, QLinkSeqDefault] wrap. "At or past" means the forward
+// distance from seq to recvSeq is under half the sequence space — the old
+// test (`recvSeq >= seq || seq-recvSeq > qlinkWindowSize`) declared any ack
+// lagging 17+ behind to be a wrap, which let a stale NAK RXSQ free frames
+// the client had never received (see qlinkProcessAck).
 func qlinkAckCovers(seq, recvSeq byte) bool {
-	return recvSeq >= seq || int(seq)-int(recvSeq) > qlinkWindowSize
+	return qlinkSeqForward(seq, recvSeq) <= qlinkSeqSpan/2
 }
 
 // qlinkRefreshRecvSeq returns a copy of a stored frame with its piggyback
@@ -103,28 +121,36 @@ func (c *ClientSession) qlinkProcessAck(frame *QLinkFrame) [][]byte {
 		return nil
 	}
 
-	// Free everything the client has now acknowledged.
-	for len(c.qlinkSentWindow) > 0 && qlinkAckCovers(c.qlinkSentWindow[0].seq, frame.RecvSeq) {
-		c.qlinkSentWindow = c.qlinkSentWindow[1:]
-	}
-	if len(c.qlinkSentWindow) == 0 {
-		c.qlinkLastRecv = frame.RecvSeq
-		return nil
-	}
-
 	resend := false
 	switch frame.Cmd {
 	case QLinkCmdSeqErr, HabitatNAK:
-		resend = true // client explicitly rejected/lost our last packet
+		// The client explicitly rejected/lost our last packet: resend, but
+		// NEVER free window frames from a NAK's RecvSeq. The C64 sends NAKs
+		// from quick_buf, its pre-built "always ready" buffer, so a NAK's
+		// RXSQ can lag far behind the true cumulative ack (observed live
+		// 2026-07-03: a NAK carried 85 while concurrent heartbeats said
+		// 100+). Trusting it freed split-document chunks the client never
+		// received — an unrecoverable livelock: the client kept asking for
+		// a seq we had already discarded, until it gave up and reset.
+		resend = true
 	default:
-		// Stuck RecvSeq across heartbeats => the client is still missing a
-		// frame it never received. Resend the window, rate-limited.
-		if frame.RecvSeq == c.qlinkLastRecv && time.Since(c.qlinkLastResend) >= qlinkResendInterval {
-			resend = true
+		// Heartbeats/acks/actions carry the client's live cumulative ack.
+		// Only honor it when it moves FORWARD from the last one (a
+		// backward ack is stale, not wrapped — cumulative acks never
+		// regress; the wrap 0x7F->0x10 IS forward motion here).
+		if qlinkSeqForward(c.qlinkLastRecv, frame.RecvSeq) <= qlinkSeqSpan/2 {
+			for len(c.qlinkSentWindow) > 0 && qlinkAckCovers(c.qlinkSentWindow[0].seq, frame.RecvSeq) {
+				c.qlinkSentWindow = c.qlinkSentWindow[1:]
+			}
+			// Stuck RecvSeq across heartbeats => the client is still
+			// missing a frame it never received. Resend, rate-limited.
+			if frame.RecvSeq == c.qlinkLastRecv && time.Since(c.qlinkLastResend) >= qlinkResendInterval {
+				resend = true
+			}
+			c.qlinkLastRecv = frame.RecvSeq
 		}
 	}
-	c.qlinkLastRecv = frame.RecvSeq
-	if !resend {
+	if len(c.qlinkSentWindow) == 0 || !resend {
 		return nil
 	}
 	c.qlinkLastResend = time.Now()
