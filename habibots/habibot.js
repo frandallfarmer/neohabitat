@@ -52,6 +52,9 @@ const SCREEN_DIRS = ['UP', 'RIGHT', 'DOWN', 'LEFT']
 
 const DefaultHabiBotConfig = {
   shouldReconnect: true,
+  // Consecutive session resets with no successful operation between them
+  // before the bot gives up and exits (process supervisor respawns fresh).
+  maxConsecutiveResets: 5,
 }
 
 
@@ -64,6 +67,26 @@ class HabiBot {
 
     this.server = null
     this.connected = false
+
+    // Session watchdog (see resetSession). In a single-request-in-flight
+    // blocking protocol, an expected response that never arrives — a reply
+    // (sendForReply) or a region-transit's you:true make (newRegion) — means
+    // the session is wedged even though the socket is still open. Every
+    // response timeout drops the socket so the reconnect path rebuilds a
+    // clean session. A run of resets with NO successful operation between
+    // them means recovery isn't working, so we exit loudly rather than
+    // thrash forever (the process supervisor then respawns a fresh one).
+    this._consecutiveResets = 0
+    this._resetting = false
+    this._lastInboundAt = Date.now()
+    this._lastInboundOp = null
+    this._lastSuccessAt = Date.now()
+    this._pendingReplyOp = null
+    this._resetHistory = []
+    // Timeouts that arrive while a reset is already in flight — coalesced,
+    // not dropped, so a whole-pipeline stall is visible as a count.
+    this._coalescedTimeouts = 0
+    this._coalescedReasons = {}
 
     // Ensures that only 1 Elko request is in flight at any given time.
     // We're talking to the 80's after all...
@@ -139,6 +162,8 @@ class HabiBot {
         self.connecting = false
         self.connected = true
         self.reconnectDelayMs = 1000  // reset backoff on successful connect
+        self._resetting = false       // reconnect finished; allow future resets
+        self._lastInboundAt = Date.now()
         log.info('Connected to server @%s:%d', self.host, self.port)
         log.debug('Running callbacks for connect @%s:%d', self.host, self.port)
         for (var i in self.callbacks.connected) {
@@ -434,6 +459,9 @@ class HabiBot {
     const arrivalP = new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         self._removeOnce('enteredRegion', onArrived)
+        // The transit's you:true make never came — the session can't move.
+        // Reset it (the caller, e.g. wanderTick, still sees the rejection).
+        self.resetSession(`transit:newRegion(${direction})`)
         reject(new Error(`newRegion(${direction}) timed out after ${timeout}ms waiting for enteredRegion`))
       }, timeout)
       function onArrived(bot, o) {
@@ -449,6 +477,7 @@ class HabiBot {
         }
         clearTimeout(timer)
         self._removeOnce('enteredRegion', onArrived)
+        self._noteSuccess() // transit completed — recovery counter resets
         resolve()
       }
       self.on('enteredRegion', onArrived)
@@ -474,6 +503,126 @@ class HabiBot {
       }
     }
     return ''
+  }
+
+  /**
+   * Snapshot of everything worth knowing when a session goes wrong, so a
+   * reset or exit log carries the full forensic picture (region, what we
+   * were waiting on, how long since we last heard from / succeeded with the
+   * server) instead of a bare "timed out". Cheap; safe to call anytime.
+   */
+  _diagnosticSnapshot() {
+    const now = Date.now()
+    const me = this.world && this.world.me
+    // Other avatars in the region (self + ghosts already excluded). Bot-vs-
+    // human classification lives in the bot layer, so keep this raw here.
+    let othersPresent = -1
+    try { othersPresent = this.collectAvatarNoids().length } catch (e) { othersPresent = -1 }
+    return {
+      bot: this.username,
+      connected: this.connected,
+      region: this._scanForCurrentRegionRef() || null,
+      avatarNoid: me ? me.noid : null,
+      exits: Object.keys(this.neighbors || {}).filter((d) => this.neighbors[d]),
+      othersPresent: othersPresent,
+      awaitingReplyOp: this._pendingReplyOp,
+      msSinceInbound: now - this._lastInboundAt,
+      lastInboundOp: this._lastInboundOp,
+      msSinceSuccess: now - this._lastSuccessAt,
+      consecutiveResets: this._consecutiveResets,
+    }
+  }
+
+  /**
+   * Record that the server responded to us — a reply landed or a transit
+   * completed. Clears the consecutive-reset count: recovery is working, so
+   * the give-up counter starts over.
+   */
+  _noteSuccess() {
+    this._lastSuccessAt = Date.now()
+    if (this._consecutiveResets !== 0) {
+      // event=session_recovered — stable tag so "how often do bots recover,
+      // and after how many resets" is one Loki query.
+      log.info('bot_session event=session_recovered bot=%s afterResets=%d %j',
+        this.username, this._consecutiveResets, this._diagnosticSnapshot())
+      this._consecutiveResets = 0
+    }
+  }
+
+  /**
+   * A response we were counting on never arrived (see the watchdog note in
+   * the constructor). Treat the session as wedged and reset it. The caller
+   * still rejects its own Promise; this only drives recovery.
+   *
+   * Drops the socket so onDisconnect → the shouldReconnect backoff path
+   * rebuilds a clean session. Debounced: a burst of timeouts (the whole
+   * request pipeline unwinding at once) triggers ONE reset, not one per
+   * stuck request. If resets pile up with no successful operation between
+   * them, recovery isn't working — log the full history and exit so the
+   * supervisor respawns a fresh process rather than looping in a bad state.
+   *
+   * @param {string} reason short tag for what timed out, e.g. "reply:GET"
+   */
+  resetSession(reason) {
+    const snap = this._diagnosticSnapshot()
+    // Debounce: if a reset/reconnect is already underway (or we're already
+    // disconnected and the reconnect path owns recovery), don't drop the
+    // socket again — but DO record it. A burst of timeouts unwinding at once
+    // is real signal (was it 1 stuck request or 20?), and at prod's INFO
+    // level a debug line would vanish. Count them and roll the reason in;
+    // the count surfaces on the reset that opened the window (below) and in
+    // the next one, so a coalesced storm is never silently swallowed.
+    if (this._resetting || !this.connected) {
+      this._coalescedTimeouts += 1
+      this._coalescedReasons[reason] = (this._coalescedReasons[reason] || 0) + 1
+      log.info('bot_session event=timeout_coalesced bot=%s reason=%s coalesced=%d',
+        this.username, reason, this._coalescedTimeouts)
+      return
+    }
+    this._consecutiveResets += 1
+    // Fold any timeouts that coalesced onto the PREVIOUS reset window into
+    // this record before starting a fresh window.
+    const coalesced = this._coalescedTimeouts
+    const coalescedReasons = this._coalescedReasons
+    this._coalescedTimeouts = 0
+    this._coalescedReasons = {}
+    const entry = { at: new Date().toISOString(), reason, coalesced, coalescedReasons, snapshot: snap }
+    this._resetHistory.push(entry)
+    if (this._resetHistory.length > 50) this._resetHistory.shift()
+
+    const max = (this.config && this.config.maxConsecutiveResets) || 5
+    if (this._consecutiveResets >= max) {
+      // event=session_giveup — every reset in the run is already in the
+      // history dumped here, so the whole path to the give-up is captured.
+      log.error(
+        'bot_session event=session_giveup bot=%s FATAL: unrecoverable — %d consecutive ' +
+        'resets with no successful operation. reason=%s snapshot=%j history=%j. Exiting ' +
+        'so the supervisor respawns a fresh process.',
+        this.username, this._consecutiveResets, reason, snap, this._resetHistory)
+      process.exit(1)
+      return
+    }
+
+    // event=session_reset — WARN so it's visible at prod INFO, one stable
+    // tag for querying/alerting across all bots, with the full snapshot and
+    // any coalesced-timeout count from this window.
+    log.warn('bot_session event=session_reset bot=%s reason=%s reset=%d/%d coalesced=%d %j',
+      this.username, reason, this._consecutiveResets, max, coalesced, snap)
+    this._resetting = true
+    this._pendingReplyOp = null
+    try {
+      if (this.server) this.server.destroy()
+    } catch (e) {
+      log.warn('bot_session event=reset_destroy_error bot=%s error=%s', this.username, e.message)
+    }
+    // CRITICAL: socket.destroy() emits 'close', but onDisconnect is wired only
+    // to 'end'/'error' — so the reconnect is NOT scheduled on its own (a reset
+    // would drop the socket and never come back). Drive the disconnect path
+    // explicitly. onDisconnect sets connected=false, fires the disconnect
+    // callbacks, and schedules the shouldReconnect backoff; connect()'s success
+    // handler then clears _resetting. Its <100ms idempotency guard absorbs any
+    // real 'error'/'close' the destroy might also raise.
+    this.onDisconnect()
   }
 
   /**
@@ -1260,12 +1409,18 @@ class HabiBot {
     return this.send(msg).then(() => new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         if (self._pendingReply === onReply) self._pendingReply = null
+        self._pendingReplyOp = null
+        // A reply that never arrives in a blocking single-in-flight protocol
+        // means the session is wedged — reset it (still reject our caller).
+        self.resetSession(`reply:${msg.op}`)
         reject(new Error(`sendForReply(${msg.op}) timed out after ${timeout}ms waiting for reply`))
       }, timeout)
       function onReply(reply) {
         clearTimeout(timer)
+        self._pendingReplyOp = null
         resolve(reply)
       }
+      self._pendingReplyOp = msg.op
       self._pendingReply = onReply
     }))
   }
@@ -1517,9 +1672,14 @@ class HabiBot {
 
   processData(buffer) {
     var self = this;
+    // Inbound liveness stamp: any byte from the server means the session is
+    // alive on the read side. Fed into the diagnostic snapshot so a reset log
+    // can show how long we'd been deaf.
+    self._lastInboundAt = Date.now()
     util.parseElko(buffer).forEach((message) => {
       log.debug('<-RCVD@%s:%s [%s]: %s', self.host, self.port, self.username, JSON.stringify(message));
       if (self._capture) self._capture.record('recv', message)
+      if (message && (message.op || message.type)) self._lastInboundOp = message.op || message.type
       this.processElkoMessage(message);
     });
   }
@@ -1544,6 +1704,7 @@ class HabiBot {
       if (this._pendingReply) {
         const pending = this._pendingReply
         this._pendingReply = null
+        this._noteSuccess() // the server answered us — recovery counter resets
         pending(o)
       }
       return;
