@@ -132,11 +132,12 @@ export function RegionCursor({
     holdRef.current = null
     try { e.currentTarget.releasePointerCapture(e.pointerId) } catch (_) { /* */ }
     setDrag(null) // end the rubber-band
-    // The verb runs at the press point (anchorX/anchorY below — C64 fires at the origin, not
-    // where the drag ended). The drawn cursor then resumes at the pointer's real position so a
-    // mouse never desyncs from the hidden OS pointer; a lifted pen/touch simply rests at the last
-    // contact until the next one.
-    setPos(localFromEvent(e))
+    // The verb runs at the press-point origin (anchorX/anchorY below — C64 fires at the origin,
+    // not where the drag ended), and the selected icon flashes THERE while the command is busy.
+    // A mouse then resumes at its real pointer position so the drawn cursor never desyncs from the
+    // hidden OS pointer (the park-removal fix). Touch/pen keep the original behavior — rest at the
+    // press point: there's no hover to resume to, and it leaves the busy flash on the target.
+    setPos(e.pointerType === "mouse" ? localFromEvent(e) : { x: anchorX, y: anchorY })
     const command = commandFromCursorState(state)
     const canvasX = anchorX / scale
     const canvasY = anchorY / scale
@@ -188,6 +189,14 @@ export function RegionCursor({
       onPointerCancel=${onPointerUp}
       onPointerLeave=${() => onBounds?.(false)}
       onContextMenu=${(e) => e.preventDefault()}>
+      <img
+        src=${shadow.toDataURL()}
+        alt=""
+        style="position: absolute; left: ${left + scale}px; top: ${top + scale}px; width: ${sw}px; height: ${sh}px; image-rendering: pixelated; pointer-events: none;" />
+      <img
+        src=${icon.toDataURL()}
+        alt=""
+        style="position: absolute; left: ${left}px; top: ${top}px; width: ${sw}px; height: ${sh}px; image-rendering: pixelated; pointer-events: none;" />
       ${guide ? html`
       <svg width=${width * scale} height=${height * scale}
            style="position: absolute; left: 0; top: 0; pointer-events: none;">
@@ -203,13 +212,5 @@ export function RegionCursor({
         <circle cx=${guide.bx} cy=${guide.by} r=${1.5 * scale}
                 fill="#ffffff" fill-opacity=${guide.active ? 0.95 : 0.5} />
       </svg>` : null}
-      <img
-        src=${shadow.toDataURL()}
-        alt=""
-        style="position: absolute; left: ${left + scale}px; top: ${top + scale}px; width: ${sw}px; height: ${sh}px; image-rendering: pixelated; pointer-events: none;" />
-      <img
-        src=${icon.toDataURL()}
-        alt=""
-        style="position: absolute; left: ${left}px; top: ${top}px; width: ${sw}px; height: ${sh}px; image-rendering: pixelated; pointer-events: none;" />
     </div>`
 }
