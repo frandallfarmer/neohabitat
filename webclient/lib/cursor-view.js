@@ -19,10 +19,6 @@ import { BLINK_MS } from "./busy.mjs"
 
 const html = htm.bind(h)
 const DRAG_THRESHOLD = 10
-// After a verb, the cursor freezes at the press point — where the next click must originate
-// (the mouse "returns" to it); settling jitter keeps it there, a deliberate move past this
-// (raw px, measured against the physical release point) lets it follow the pointer again.
-const UNPARK_THRESHOLD = 12
 // C64 draws cursor sprite after region objects (render.m); above layout.z (0–255).
 const CURSOR_Z_INDEX = 10000
 // sprites.m cursor crosshair hotspot: the pointing pixel is the sprite's center, row 10
@@ -53,12 +49,10 @@ export function RegionCursor({
   const isBusy = !!(busy && busy.value)
   const blinkState = (busyIcon && busyIcon.value != null) ? busyIcon.value : CURSOR_STOP
   const [blinkOn, setBlinkOn] = useState(true)
-  // While set after a verb, the cursor stays frozen at the press point (C64: it doesn't move
-  // to where the drag ended) and the next click anchors there. Holds { freezeX, freezeY }
-  // (the frozen display / next-press point) and { physX, physY } (the physical release point,
-  // used only to distinguish settling jitter from a deliberate move). Cleared on a deliberate
-  // move or the next press.
-  const parkRef = useRef(null)
+  // While holding, the live pointer position in scaled canvas px — drives the visible rubber-band
+  // from the frozen origin (the press point) to where the pointer now is, so center and the current
+  // offset/direction are always on screen. null when not mid-gesture.
+  const [drag, setDrag] = useState(null)
 
   // Drive the blink while busy (flash_rate); when busy clears, stop and leave the icon solid.
   useEffect(() => {
@@ -101,19 +95,9 @@ export function RegionCursor({
         holdRef.current.state = next
         setCursorState(next)
       }
+      setDrag(p) // live pointer → rubber-band endpoint
       e.preventDefault()
       return
-    }
-    if (parkRef.current) {
-      // Frozen at the press point after a verb. Compare the PHYSICAL pointer to the physical
-      // release point: settling jitter near it keeps the cursor frozen at the freeze point;
-      // a deliberate move past the threshold unfreezes and resumes following the pointer.
-      if (Math.abs(p.x - parkRef.current.physX) < UNPARK_THRESHOLD &&
-          Math.abs(p.y - parkRef.current.physY) < UNPARK_THRESHOLD) {
-        e.preventDefault()
-        return
-      }
-      parkRef.current = null
     }
     setPos(p)
     setCursorState(CURSOR_NORMAL)
@@ -128,21 +112,16 @@ export function RegionCursor({
 
   const onPointerDown = useCallback((e) => {
     if (!enabled || e.button !== 0 || (busy && busy.value)) return // locked while busy
-    const phys = localFromEvent(e)
-    // The C64 "return to the press point after a verb" model assumes a RELATIVE mouse: you can't
-    // teleport it, so a click without a deliberate move begins at the FROZEN press point of the
-    // last command rather than warping to where the OS pointer physically sits. A PEN or TOUCH is
-    // ABSOLUTE — putting it down at a new spot means "act HERE" — and a non-hovering pen emits no
-    // moves between lifting and re-touching, so the park would never clear and every command would
-    // fire at the first press point. So honor the freeze only for an actual mouse; pen/touch always
-    // anchor at the physical contact point.
-    const useFreeze = parkRef.current && e.pointerType === "mouse"
-    const p = useFreeze ? { x: parkRef.current.freezeX, y: parkRef.current.freezeY } : phys
-    parkRef.current = null
+    // Absolute anchoring for every pointer type: press anchors the origin wherever the pointer
+    // physically is. Pen/touch always did this; a mouse used to "return" to the last command's
+    // press point (the removed park), which desynced the drawn cursor from the hidden OS pointer
+    // and made it appear to jump on the next move.
+    const p = localFromEvent(e)
     setPos(p)
     // C64: trigger down + centered stick → stop_cursor (options: four arrows + ?).
     setCursorState(CURSOR_STOP)
     holdRef.current = { anchorX: p.x, anchorY: p.y, state: CURSOR_STOP }
+    setDrag({ x: p.x, y: p.y }) // show the origin dot immediately
     e.currentTarget.setPointerCapture(e.pointerId)
     e.preventDefault()
   }, [enabled, scale, width, height, busy])
@@ -152,19 +131,12 @@ export function RegionCursor({
     const { anchorX, anchorY, state } = holdRef.current
     holdRef.current = null
     try { e.currentTarget.releasePointerCapture(e.pointerId) } catch (_) { /* */ }
-    // The verb runs at the press point (anchorX/anchorY below) and the cursor stays FROZEN
-    // there — that freeze point is where the next click must originate (the mouse "returns"
-    // to it). We can't move the OS pointer, so remember both the freeze point (where the
-    // cursor is drawn / where the next press anchors) and the physical release point (used
-    // only to tell settling jitter from a deliberate move).
-    // Park (freeze at the press point so the next click returns there) is the C64 RELATIVE-mouse
-    // behavior. A pen/touch is absolute, so release the position lock after the command and let the
-    // next contact land wherever the user points. Only a mouse parks.
-    if (e.pointerType === "mouse") {
-      const rel = localFromEvent(e)
-      parkRef.current = { freezeX: anchorX, freezeY: anchorY, physX: rel.x, physY: rel.y }
-    }
-    setPos({ x: anchorX, y: anchorY })
+    setDrag(null) // end the rubber-band
+    // The verb runs at the press point (anchorX/anchorY below — C64 fires at the origin, not
+    // where the drag ended). The drawn cursor then resumes at the pointer's real position so a
+    // mouse never desyncs from the hidden OS pointer; a lifted pen/touch simply rests at the last
+    // contact until the next one.
+    setPos(localFromEvent(e))
     const command = commandFromCursorState(state)
     const canvasX = anchorX / scale
     const canvasY = anchorY / scale
@@ -197,6 +169,16 @@ export function RegionCursor({
   const left = pos.x - sw / 2
   const top = pos.y - CURSOR_HOTSPOT_Y * scale
 
+  // Rubber-band guide while holding: a dashed ring showing the STOP dead zone, a line from the
+  // frozen origin to the live pointer, and dots at both ends — so center and the current offset
+  // are always visible (the origin sprite already shows the active verb). Active = a verb will
+  // fire on release (not centered/STOP). Dark casing keeps it legible over any region art.
+  const hold = holdRef.current
+  const guide = !isBusy && hold && drag
+    ? { ax: hold.anchorX, ay: hold.anchorY, bx: drag.x, by: drag.y,
+        dead: DRAG_THRESHOLD * scale, active: cursorState !== CURSOR_STOP }
+    : null
+
   return html`
     <div
       style="position: absolute; inset: 0; z-index: ${CURSOR_Z_INDEX}; touch-action: none; cursor: none;"
@@ -206,6 +188,21 @@ export function RegionCursor({
       onPointerCancel=${onPointerUp}
       onPointerLeave=${() => onBounds?.(false)}
       onContextMenu=${(e) => e.preventDefault()}>
+      ${guide ? html`
+      <svg width=${width * scale} height=${height * scale}
+           style="position: absolute; left: 0; top: 0; pointer-events: none;">
+        <circle cx=${guide.ax} cy=${guide.ay} r=${guide.dead} fill="none"
+                stroke="#000000" stroke-opacity="0.4" stroke-width=${scale}
+                stroke-dasharray="${2 * scale} ${2 * scale}" />
+        <line x1=${guide.ax} y1=${guide.ay} x2=${guide.bx} y2=${guide.by}
+              stroke="#000000" stroke-opacity="0.55" stroke-width=${3 * scale} stroke-linecap="round" />
+        <line x1=${guide.ax} y1=${guide.ay} x2=${guide.bx} y2=${guide.by}
+              stroke="#ffffff" stroke-opacity=${guide.active ? 0.95 : 0.5} stroke-width=${1.5 * scale} stroke-linecap="round" />
+        <circle cx=${guide.ax} cy=${guide.ay} r=${1.75 * scale}
+                fill="#ffffff" stroke="#000000" stroke-opacity="0.6" stroke-width=${scale} />
+        <circle cx=${guide.bx} cy=${guide.by} r=${1.5 * scale}
+                fill="#ffffff" fill-opacity=${guide.active ? 0.95 : 0.5} />
+      </svg>` : null}
       <img
         src=${shadow.toDataURL()}
         alt=""
