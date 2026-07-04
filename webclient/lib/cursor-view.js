@@ -199,7 +199,7 @@ export function RegionCursor({
         style="position: absolute; left: ${left}px; top: ${top}px; width: ${sw}px; height: ${sh}px; image-rendering: pixelated; pointer-events: none;" />
       ${guide ? html`
       <svg width=${width * scale} height=${height * scale}
-           style="position: absolute; left: 0; top: 0; pointer-events: none;">
+           style="position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0.5;">
         <circle cx=${guide.ax} cy=${guide.ay} r=${guide.dead} fill="none"
                 stroke="#000000" stroke-opacity="0.4" stroke-width=${scale}
                 stroke-dasharray="${2 * scale} ${2 * scale}" />
