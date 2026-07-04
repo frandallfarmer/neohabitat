@@ -84,12 +84,20 @@ function gridToAscii(grid) {
   return out
 }
 
-// Render one charset line (full glyphs) onto ctx at (0, y) — caller pre-fills the field.
+// Render one charset line (full glyphs) onto ctx at (x-offset, y) — caller pre-fills the field.
 // A blank / all-spaces line yields no glyph layers (0×0 composite), which drawImage rejects.
+// frameFromText advances the pen past a space but pushes NO layer for it, and compositeLayers
+// then crops to the bounding box of the actual glyphs — so any LEADING spaces collapse and the
+// first glyph lands at x=0. That silently eats paragraph indents (e.g. "   Asked to comment").
+// The C64 (text_handler.m) renders each cell in place, so measure the leading blank cells and
+// blit the composite at that column offset to preserve them. (Internal spaces already survive:
+// they sit between glyphs, inside the composite's bbox.)
 function drawLine(ctx, bytes, y, charsetData) {
   if (!bytes.length || !charsetData) return
+  let indent = 0
+  while (indent < bytes.length && bytes[indent] === SPACE) indent++
   const frame = frameFromText(0, 8, [TXTCMD_HALF_SIZE, ...bytes], charsetData, BITMAP_PATTERN, 0, INK)
-  if (frame?.canvas?.width > 0 && frame.canvas.height > 0) ctx.drawImage(frame.canvas, 0, y)
+  if (frame?.canvas?.width > 0 && frame.canvas.height > 0) ctx.drawImage(frame.canvas, indent * NATIVE_CW, y)
 }
 
 function renderPage(rows, charsetData) {
