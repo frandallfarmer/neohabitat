@@ -53,12 +53,29 @@ export function RegionCursor({
   // from the frozen origin (the press point) to where the pointer now is, so center and the current
   // offset/direction are always on screen. null when not mid-gesture.
   const [drag, setDrag] = useState(null)
+  // Live pointer position (scaled canvas px), tracked even while a verb is busy, so a mouse can
+  // float the cursor back to it once the verb finishes. pendingFloat is armed only by a mouse
+  // release (touch/pen have no hover — they rest on the target they acted on).
+  const ptrRef = useRef(null)
+  const pendingFloat = useRef(false)
 
   // Drive the blink while busy (flash_rate); when busy clears, stop and leave the icon solid.
   useEffect(() => {
     if (!isBusy) { setBlinkOn(true); return }
     const id = setInterval(() => setBlinkOn((on) => !on), BLINK_MS)
     return () => clearInterval(id)
+  }, [isBusy])
+
+  // Flash-then-float: on release the cursor freezes and flashes the verb ON the target (the
+  // press-point origin, set in onPointerUp). It never warps away mid-verb. Only AFTER the verb
+  // finishes (busy → not busy) does a mouse float the cursor back to its live pointer.
+  const wasBusy = useRef(false)
+  useEffect(() => {
+    if (wasBusy.current && !isBusy && pendingFloat.current && ptrRef.current) {
+      setPos(ptrRef.current)
+      pendingFloat.current = false
+    }
+    wasBusy.current = isBusy
   }, [isBusy])
 
   // Warp to a commanded position (an edge chevron's clamped destination): snap the cursor there
@@ -83,8 +100,11 @@ export function RegionCursor({
   }
 
   const onPointerMove = useCallback((e) => {
-    if (!enabled || (busy && busy.value)) return // frozen while a command is in flight
+    if (!enabled) return
     const p = localFromEvent(e)
+    ptrRef.current = p // track the live pointer even while a verb is busy, so a mouse can float
+                       // back to it once the verb finishes (see the busy-clear effect)
+    if (busy && busy.value) return // frozen ON the target while a command is in flight
     if (holdRef.current) {
       const { anchorX, anchorY, state } = holdRef.current
       const dx = p.x - anchorX
@@ -132,12 +152,12 @@ export function RegionCursor({
     holdRef.current = null
     try { e.currentTarget.releasePointerCapture(e.pointerId) } catch (_) { /* */ }
     setDrag(null) // end the rubber-band
-    // The verb runs at the press-point origin (anchorX/anchorY below — C64 fires at the origin,
-    // not where the drag ended), and the selected icon flashes THERE while the command is busy.
-    // A mouse then resumes at its real pointer position so the drawn cursor never desyncs from the
-    // hidden OS pointer (the park-removal fix). Touch/pen keep the original behavior — rest at the
-    // press point: there's no hover to resume to, and it leaves the busy flash on the target.
-    setPos(e.pointerType === "mouse" ? localFromEvent(e) : { x: anchorX, y: anchorY })
+    // Freeze the cursor ON the target (the press-point origin) so the verb flashes on the object
+    // you pressed — never at the drag-end, and never mid-verb. A mouse floats back to its live
+    // pointer only AFTER the verb finishes (the busy-clear effect above); touch/pen have no hover,
+    // so they rest on the target they acted on.
+    if (e.pointerType === "mouse") pendingFloat.current = true
+    setPos({ x: anchorX, y: anchorY })
     const command = commandFromCursorState(state)
     const canvasX = anchorX / scale
     const canvasY = anchorY / scale
