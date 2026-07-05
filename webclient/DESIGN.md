@@ -456,16 +456,24 @@ Each phase is independently demoable in the page shell.
     menu** that doesn't need the cursor to return to a point — e.g. press opens a radial menu
     anchored at the press point, the cursor roams freely to a wedge, release selects, and the
     target stays the press point. Both (a) and (b) are legitimate.
-    **DEFERRED — TBD (Randy, 2026-06-30).** Not a single pre-decided design: we expect to
-    **try several approaches** before settling, so treat this as an experiment track, not a
-    ready-to-build task. The current warp/park model is **MFA and works well on mobile/touch**.
-    Notes that constrain any future redesign:
-    - On a **touch-screen / pen**, *flicking* with the CURRENT UI already gives the experience
-      most like the C64 joystick. The absolute-pointer divergence is **only a mouse-like-pointer
-      problem**. Any revised model **must retain** the touch/pen flick experience.
-    - The **mouse** experience is comparatively awkward, but acceptable for now (MFA).
-    - So the model redesign (a vs b) is not the priority. The priority is the **busy cursor**
-      (next item) — making the cursor wait/blink and block new commands while one is in flight.
+    **RESOLVED (2026-07-03, merge `25d39e99`) — a third path, neither (a) nor (b).** Rather than
+    Pointer Lock or a redesigned pie menu, the fix keeps the relative-stick model but removes the
+    divergence at its source and substitutes *visual* feedback for the joystick's lost
+    proprioception (`cursor-view.js`):
+    - **No park** — between gestures the drawn cursor follows the OS pointer **1:1** for every
+      pointer type, so nothing warps or drifts and the edge-chevron hand-off is seamless.
+    - **Rubber-band guide** — during a hold, a translucent dead-zone ring + a line from the frozen
+      origin to the live pointer + end dots show center and the current offset/direction, turning
+      the blind open-loop gesture into a closed loop (see the vector before you commit). This is
+      what makes the warps *less drastic*.
+    - **Flash-on-target, then float** — on release the cursor freezes and flashes the verb **on the
+      press-point origin** (the object acted on, C64-faithful) for the whole verb; only *after* the
+      verb finishes does a mouse float back to its live pointer — never to the drag-end, never a
+      stale park.
+    Touch/pen keep the C64-like **flick** unchanged (only the additive rubber-band is new), so the
+    long-standing constraint — *any revised model must retain the touch/pen flick* — holds.
+    Trackpad validated by Randy; touch validated on prod. This closes the last deferred Phase 7
+    item.
   - **7f. Hatchery — new-avatar onboarding (LATE in Phase 7).** The Hatchery is the original
     Habitat first-connection flow: a brand-new user has no turf/avatar customization and is
     routed through the hatchery region to be "hatched" (avatar created, turf assigned) before
