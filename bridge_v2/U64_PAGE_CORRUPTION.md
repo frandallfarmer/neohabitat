@@ -1,11 +1,13 @@
 # U64 split-document page corruption — investigation handoff
 
 **Audience:** Steve Salevan (U64 client / serial-over-network delivery layer)
-**From:** bridge_v2 investigation, 2026-07-03/04
+**From:** bridge_v2 investigation, 2026-07-03/04 (2nd symptom added 2026-07-06)
 **Status:** open. Two bridge-side QLink fixes shipped and validated (below); the
 on-screen corruption is **not** a bridge-protocol bug and reproduces only on the
 U64. This document hands the remaining problem to the U64/C64 side with all the
-evidence, the constraints, and a test harness you can drive.
+evidence, the constraints, and a test harness you can drive. **§2b** adds a
+second, sharper symptom (HELP balloons rendering page content) that pins the
+fault to the C64 receive buffer's contents, not the split-reassembly path.
 
 ---
 
@@ -68,6 +70,56 @@ Reference renders:
 Conclusion from the reference renders: given the correct bytes at a normal pace,
 the C64 client renders this page correctly. The U64 differs only in the
 **delivery timing and loss** of those bytes.
+
+---
+
+## 2b. Second symptom (2026-07-06) — HELP balloons render page content
+
+A sharper, arguably more damning instance of the same corruption. Pressing
+**F7 / HELP** on a book in the library should pop two speech balloons:
+`BOOK: DO while holding to read the book.` and `This book is '<title>'.`.
+Instead, on the U64 the balloons render **a chunk of the last page that was
+read** — e.g. `The Lottery offers three ways to win,` plus box-border
+characters and the page number `6` (RANT Vol.2 No.10, page 6). Screenshot:
+`~/Downloads/CorruptBookTitles.jpg`.
+
+**Proof the bridge is innocent (prod, Naibor, sessions 215/219, 2026-07-06,
+`188.26.199.149`):** across those sessions the bridge sent **25 correct
+`This book is '…'` balloons and ZERO balloons containing any page text**. The
+lottery/page bytes appear *only* in `split:true` READ replies (e.g. the
+`->CLIENT` page-6 sends at `10:54:59 / 10:55:10 / 10:55:17`), exactly where
+they belong. The clean HELP balloons for that very book went out at `10:48:59`
+(`This book is 'The Rant - Volume 2 - Number 10 - 03/23/1988'.`). So the bytes
+the U64 *drew* in the balloon are **not** the bytes the bridge *sent*. And the
+same session is mid-storm throughout: repeated `CRC mismatch … frame dropped,
+NAK sent`, `Client sent Habitat NAK`, `QLink retransmit (go-back-1)`.
+
+**Why it's possible — the C64 draws balloon text in place from the receive
+buffer** (`Main/actions.m`):
+
+```
+make_object_speak:
+    add16  response_data, #1, source   ; balloon text = the message body itself
+    lda    response_data[0] -> actor_noid
+    ... jmp draw_balloon               ; renders from `source` until the EOM terminator
+```
+
+`draw_balloon` reads the balloon string straight out of the received message
+sitting in the circular `super_buffer` (`response_data+1`), until it hits the
+end-of-message terminator — it never copies the text somewhere safe first. So
+if that buffer's framing is off by even a little — a lost/missing terminator,
+or a message start pointer that landed mid-buffer — `draw_balloon` reads on
+into whatever is adjacent, which is the **last page read** (a 640-byte READ
+reply that was just sitting there). A short HELP balloon then renders that
+stale page-6 data.
+
+**Why this matters for the diagnosis:** balloons are a *separate, short*
+message path from the split page reader, yet they corrupt with page content —
+which means the fault is in the **contents/framing of the C64 receive buffer
+(`super_buffer`) itself**, not merely in the split-packet reassembly. It
+localizes the bug to the same place §5 describes (the `super_buffer` /
+`is_there_space` / circular-wrap machinery) and rules out "it's only the
+DESCRIBE/READ split path." Same root cause, two faces.
 
 ---
 
