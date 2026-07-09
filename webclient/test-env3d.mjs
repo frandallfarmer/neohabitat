@@ -27,8 +27,8 @@ const near = (a, b, msg) => assert(Math.abs(a - b) < 1e-9, `${msg} (got ${a}, wa
   const zs = w.positions.filter((_, i) => i % 3 === 2)
   assert(zs.every((z) => z === -128), "wall is at the far edge (−Z)")
   const ys = w.positions.filter((_, i) => i % 3 === 1)
-  near(Math.max(...ys), STAGE_H, "wall reaches full height")
-  near(Math.min(...ys), 0, "wall meets the floor")
+  near(Math.max(...ys), STAGE_H - 32, "wall rises only above the horizon (STAGE_H − depth)")
+  near(Math.min(...ys), 0, "wall base at the horizon")
 }
 
 // ── stageRowToDepth: bottom row is nearest (z 0), higher rows recede toward −Z, clamped to band ──

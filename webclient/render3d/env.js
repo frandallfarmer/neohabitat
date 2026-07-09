@@ -44,15 +44,18 @@ export const floorGeometry = (regionDepth = DEFAULT_REGION_DEPTH, cfg = DEFAULT_
   return { positions: quad(farL, farR, nearR, nearL), uvs: quadUV(), wallZ }
 }
 
-// The back wall: a vertical quad at the far edge (z = −wallZ), full stage width, STAGE_H tall.
-// Background props hang just in front of this (project.js: wz = −wallZ + stagger, wy = y).
+// The back wall = the SKY, the region ABOVE the horizon. Its base is the horizon (y=0, where the
+// floor's far edge meets it) and it rises only (STAGE_H − region.depth) — the bottom region.depth
+// rows of the full-frame sky are below the horizon (the ground) and are clipped off the texture
+// (see applyFlatTexture). Background props hang just in front (project.js: wz = −wallZ + stagger).
 export const wallGeometry = (regionDepth = DEFAULT_REGION_DEPTH, cfg = DEFAULT_PROJECTION) => {
   const wallZ = regionDepth * cfg.depthScale
-  const topL = [0, STAGE_H, -wallZ]
-  const topR = [STAGE_W, STAGE_H, -wallZ]
+  const wallH = STAGE_H - regionDepth
+  const topL = [0, wallH, -wallZ]
+  const topR = [STAGE_W, wallH, -wallZ]
   const botR = [STAGE_W, 0, -wallZ]
   const botL = [0, 0, -wallZ]
-  return { positions: quad(topL, topR, botR, botL), uvs: quadUV(), wallZ }
+  return { positions: quad(topL, topR, botR, botL), uvs: quadUV(), wallZ, wallH }
 }
 
 // Promote a single trapezoidal ground/wall flat to a receding floor quad.

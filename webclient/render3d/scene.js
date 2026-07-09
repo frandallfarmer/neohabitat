@@ -95,9 +95,28 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   // Paint a region ground/sky flat's decoded cel canvas onto the floor/wall surface (idempotent per
   // canvas). NearestFilter keeps the C64 dither crisp. This is what "applies the ground texture to
   // the 3D base" instead of billboarding the flat vertically.
-  const applyFlatTexture = (mesh, canvas) => {
+  //
+  // A region's backdrop is often a STACK of same-typed flats (Plaza Fountain: a full-frame 128-tall
+  // blue Sky plus a shorter 64-tall green horizon band, both type "Sky"). They're low-Y sort hacks,
+  // not positions. For the single 3D surface we want the FULL backdrop, so prefer the TALLEST flat
+  // — else last-wins lets the short green band overwrite the blue sky (the "green sky" bug).
+  // clipBottom rows are dropped off the bottom of the texture before it's applied — used for the
+  // sky, whose lowest region.depth rows are below the horizon (the ground) and must not appear on
+  // the wall. General across regions: the sky is a full-frame flat, clipped by region.depth.
+  const applyFlatTexture = (mesh, canvas, clipBottom = 0) => {
     if (!mesh || !canvas || mesh.userData.texCanvas === canvas) return
-    const tex = new THREE.CanvasTexture(canvas)
+    if (canvas.height < (mesh.userData.texH ?? 0)) return
+    mesh.userData.texH = canvas.height
+    mesh.userData.texCanvas = canvas
+    let src = canvas
+    if (clipBottom > 0 && clipBottom < canvas.height) {
+      const h = canvas.height - clipBottom
+      src = document.createElement("canvas")
+      src.width = canvas.width
+      src.height = h
+      src.getContext("2d").drawImage(canvas, 0, 0, canvas.width, h, 0, 0, canvas.width, h)
+    }
+    const tex = new THREE.CanvasTexture(src)
     tex.magFilter = THREE.NearestFilter
     tex.minFilter = THREE.NearestFilter
     tex.generateMipmaps = false
@@ -106,7 +125,6 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     mesh.material.map = tex
     mesh.material.color.setHex(0xffffff)
     mesh.material.needsUpdate = true
-    mesh.userData.texCanvas = canvas
   }
 
   // ── billboard reconciler ──────────────────────────────────────────────────────
@@ -141,7 +159,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       // Ground/sky flats texture the floor/wall SURFACES rather than standing as billboards
       // (they are not in `live`, so any prior billboard for them is dropped below).
       if (isGroundFlat(mod)) { applyFlatTexture(floorMesh, layout.frames[0].canvas); continue }
-      if (isWallFlat(mod)) { applyFlatTexture(wallMesh, layout.frames[0].canvas); continue }
+      if (isWallFlat(mod)) { applyFlatTexture(wallMesh, layout.frames[0].canvas, regionDepth); continue }
       live.add(ref)
 
       let entry = billboards.get(ref)

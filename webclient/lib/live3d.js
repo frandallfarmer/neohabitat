@@ -131,7 +131,7 @@ async function main() {
   // Dev hook (opt-in via ?debug=1): expose the live model + view for console/automation probing.
   if (q("debug", null) === "1") {
     globalThis.__live3d = {
-      world, view, avatarMotion, transport, dispatch, dispatchClient, constants,
+      world, view, avatarMotion, transport, dispatch, dispatchClient, constants, objects, layoutSig,
       // Resolve a pick at client (canvas) coords, without a real pointer event.
       pickAtXY: (clientX, clientY) => view.pickAt({ clientX, clientY }),
       // Force a GO to a habitat coord (bypasses picking) to isolate the walk pipeline.
