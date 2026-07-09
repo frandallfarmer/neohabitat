@@ -10,14 +10,12 @@
 
 import { floorGeometry, wallGeometry } from "./env.js"
 import {
-  worldFromObjectXY, effectiveXY, worldXFromModX,
+  worldFromObjectXY, effectiveXY,
   STAGE_W, STAGE_H, DEFAULT_REGION_DEPTH, DEFAULT_PROJECTION, FOREGROUND_BIT,
 } from "./project.js"
 import { Billboard } from "./billboard.js"
 import { objectSpaceFromLayout } from "../habirender/region.js"
-
-// The 2D region canvas space (pick.mjs REGION_CANVAS_W/H): x in 0..40 columns, y in 0..127 rows.
-const REGION_SPACE = { minX: 0, minY: 0, maxX: STAGE_W / 8, maxY: STAGE_H - 1 }
+import { renderBackdrop, splitBackdrop } from "./backdrop.js"
 
 // Convert an object's 2D layout box into the world-space bottom-left corner of its billboard.
 //   • horizontal: exact 2D parity — pxLeft = objSpace.minX × 8 (render.js topLeftCanvasOffset).
@@ -29,13 +27,9 @@ const placeFromLayout = (layout, mod, regionDepth, cfg) => {
   return { wx: objSpace.minX * 8, wy: p.wy, wz: p.wz }
 }
 
-// The region's ground/backdrop flats become the 3D floor/wall SURFACES, not billboards.
-// Backdrop is "Wall" indoors and "Sky" outdoors (Plaza Fountain) — both texture the wall plane;
-// left un-handled, an outdoor Sky flat (v=0) billboards right at the camera and paints the whole
-// frame sky-blue.
-const isGroundFlat = (mod) => mod.type === "Ground" || mod.type === "Street"
-  || (mod.flat_type === 2 && (mod.type === "Flat" || mod.type === "Trapezoid" || mod.type === "Super_trapezoid"))
-const isWallFlat = (mod) => mod.type === "Wall" || mod.type === "Sky"
+// Background (the whole bg pass) is composited into one texture and split onto the floor/wall
+// surfaces (see backdrop.js); only FOREGROUND objects (0x80 — avatars, furniture) are billboards.
+const isForegroundMod = (mod) => (mod.y & FOREGROUND_BIT) !== 0
 
 export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
@@ -84,44 +78,26 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   buildEnv(regionDepth)
   placeCamera(regionDepth)
 
+  let lastBgSig = null // backdrop cache key; rebuild the backdrop only when the bg set/frames change
   const setRegionDepth = (d) => {
     const nd = d || DEFAULT_REGION_DEPTH
     if (nd === regionDepth) return
     regionDepth = nd
-    buildEnv(regionDepth) // new meshes → their userData.texCanvas is clear; flats re-apply next sync
+    buildEnv(regionDepth) // new meshes → force a backdrop re-apply
     placeCamera(regionDepth)
+    lastBgSig = null
   }
 
-  // Paint a region ground/sky flat's decoded cel canvas onto the floor/wall surface (idempotent per
-  // canvas). NearestFilter keeps the C64 dither crisp. This is what "applies the ground texture to
-  // the 3D base" instead of billboarding the flat vertically.
-  //
-  // A region's backdrop is often a STACK of same-typed flats (Plaza Fountain: a full-frame 128-tall
-  // blue Sky plus a shorter 64-tall green horizon band, both type "Sky"). They're low-Y sort hacks,
-  // not positions. For the single 3D surface we want the FULL backdrop, so prefer the TALLEST flat
-  // — else last-wins lets the short green band overwrite the blue sky (the "green sky" bug).
-  // clipBottom rows are dropped off the bottom of the texture before it's applied — used for the
-  // sky, whose lowest region.depth rows are below the horizon (the ground) and must not appear on
-  // the wall. General across regions: the sky is a full-frame flat, clipped by region.depth.
-  const applyFlatTexture = (mesh, canvas, clipBottom = 0) => {
-    if (!mesh || !canvas || mesh.userData.texCanvas === canvas) return
-    if (canvas.height < (mesh.userData.texH ?? 0)) return
-    mesh.userData.texH = canvas.height
-    mesh.userData.texCanvas = canvas
-    let src = canvas
-    if (clipBottom > 0 && clipBottom < canvas.height) {
-      const h = canvas.height - clipBottom
-      src = document.createElement("canvas")
-      src.width = canvas.width
-      src.height = h
-      src.getContext("2d").drawImage(canvas, 0, 0, canvas.width, h, 0, 0, canvas.width, h)
-    }
-    const tex = new THREE.CanvasTexture(src)
+  // Assign a canvas as a mesh's surface texture (NearestFilter keeps the C64 dither crisp).
+  const setMeshTexture = (mesh, canvas) => {
+    if (!mesh || !canvas) return
+    const tex = new THREE.CanvasTexture(canvas)
     tex.magFilter = THREE.NearestFilter
     tex.minFilter = THREE.NearestFilter
     tex.generateMipmaps = false
     if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace
     tex.needsUpdate = true
+    if (mesh.material.map) mesh.material.map.dispose()
     mesh.material.map = tex
     mesh.material.color.setHex(0xffffff)
     mesh.material.needsUpdate = true
@@ -148,6 +124,8 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     setRegionDepth(world.region?.depth)
     const regionRef = world.region?.ref
     const live = new Set()
+    const bgItems = []      // the region's background objects → composited into the backdrop
+    let bgSig = ""          // cache key: bg refs + their y + frame-canvas size
     for (const ref in layoutMap) {
       const item = layoutMap[ref]
       const layout = item.layout?.value
@@ -156,10 +134,16 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       const rec = world.getByRef ? world.getByRef(ref) : null
       const mod = obj.mods?.[0]
       if (!mod) continue
-      // Ground/sky flats texture the floor/wall SURFACES rather than standing as billboards
-      // (they are not in `live`, so any prior billboard for them is dropped below).
-      if (isGroundFlat(mod)) { applyFlatTexture(floorMesh, layout.frames[0].canvas); continue }
-      if (isWallFlat(mod)) { applyFlatTexture(wallMesh, layout.frames[0].canvas, regionDepth); continue }
+      // Background objects (the whole bg pass — sky, ground, walls, signs, …) are composited into
+      // the backdrop texture and split onto the floor/wall, NOT billboarded. Only foreground
+      // objects (0x80: avatars, furniture) and seated avatars become billboards.
+      const seated = rec && rec.containerRef && rec.containerRef !== regionRef
+      if (obj.in === regionRef && !isForegroundMod(mod) && !seated) {
+        const f = layout.frames[0]
+        bgItems.push({ frame: f, x: layout.x, y: layout.y, modY: mod.y })
+        bgSig += `${ref}:${mod.y}:${f?.canvas?.width}x${f?.canvas?.height};`
+        continue
+      }
       live.add(ref)
 
       let entry = billboards.get(ref)
@@ -185,6 +169,14 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     }
     // Drop billboards whose object left the region.
     for (const ref of [...billboards.keys()]) if (!live.has(ref)) removeBillboard(ref)
+
+    // Rebuild the backdrop only when the bg set/frames change (bg is static — sky/ground/signs).
+    if (bgSig !== lastBgSig) {
+      lastBgSig = bgSig
+      const { wall, floor } = splitBackdrop(renderBackdrop(bgItems), regionDepth)
+      setMeshTexture(wallMesh, wall)
+      setMeshTexture(floorMesh, floor)
+    }
   }
 
   // Advance animation frames on the 250ms cadence (static multi-frame props); avatar frames are
