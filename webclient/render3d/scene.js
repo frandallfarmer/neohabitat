@@ -1,0 +1,201 @@
+// scene.js — the Three.js diorama: fixed camera, real floor + back-wall geometry, and a reconciler
+// that turns habiworld's per-object composited frames (from region.js computeLayoutMap) into
+// billboards standing on the floor / hanging on the wall. GPU depth ordering replaces the 2D
+// client's painter's-Y z-index; a raycast replaces its pixel-readback pick.
+//
+// Three is passed in (from ../vendor/three.module.js) so this module has no hard import of it.
+// Placement reuses the 2D client's own layout box (objectSpaceFromLayout) for horizontal parity,
+// then lifts it into 3D via project.js. See the plan's risk note: the exact vertical anchor is
+// tuned against the live 2D render.
+
+import { floorGeometry, wallGeometry } from "./env.js"
+import {
+  worldFromObjectXY, effectiveXY, worldXFromModX,
+  STAGE_W, STAGE_H, DEFAULT_REGION_DEPTH, DEFAULT_PROJECTION, FOREGROUND_BIT,
+} from "./project.js"
+import { Billboard } from "./billboard.js"
+import { objectSpaceFromLayout } from "../habirender/region.js"
+
+// The 2D region canvas space (pick.mjs REGION_CANVAS_W/H): x in 0..40 columns, y in 0..127 rows.
+const REGION_SPACE = { minX: 0, minY: 0, maxX: STAGE_W / 8, maxY: STAGE_H - 1 }
+
+// Convert an object's 2D layout box into the world-space bottom-left corner of its billboard.
+//   • horizontal: exact 2D parity — pxLeft = objSpace.minX × 8 (render.js topLeftCanvasOffset).
+//   • foreground: rests on the floor (wy=0) at depth from mod.y; background: hangs on the wall
+//     (wz=wallZ) at height = objSpace.minY (habitat y-up == up the wall, 1:1 in canvas px).
+const placeFromLayout = (layout, mod, regionDepth, cfg) => {
+  const objSpace = objectSpaceFromLayout(layout)
+  const wxLeft = objSpace.minX * 8
+  const p = worldFromObjectXY(mod.x, mod.y, regionDepth, cfg)
+  if (p.foreground) return { wx: wxLeft, wy: 0, wz: p.wz }
+  return { wx: wxLeft, wy: objSpace.minY, wz: p.wz }
+}
+
+export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } = {}) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
+  renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2))
+
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color(0x0a0a1a) // C64-ish night; overdrawn by the region's own flats
+
+  // Fixed camera: a slightly elevated, near-head-on view of the set so depth reads without ever
+  // exposing the single wall's missing sides. Looks down +Z (from the front) at the floor's middle.
+  const camera = new THREE.PerspectiveCamera(42, 1, 1, 4000)
+  const placeCamera = (regionDepth) => {
+    const wallZ = regionDepth * projection.depthScale
+    // Elevated, near-head-on: enough tilt that the floor reads with depth, shallow enough that we
+    // never see over the single back wall and near billboards don't blow up at the frame edge.
+    // Tuned against the live "Immigration" set.
+    camera.position.set(STAGE_W / 2, STAGE_H * 0.64, -wallZ * 1.15)
+    camera.lookAt(STAGE_W / 2, STAGE_H * 0.32, wallZ * 0.5)
+  }
+
+  // Environment meshes (rebuilt when region depth changes).
+  const envGroup = new THREE.Group()
+  scene.add(envGroup)
+  let floorMesh = null
+  let wallMesh = null
+  const buildEnv = (regionDepth) => {
+    envGroup.clear()
+    const mkPlane = (geo, color) => {
+      const g = new THREE.BufferGeometry()
+      g.setAttribute("position", new THREE.Float32BufferAttribute(geo.positions, 3))
+      g.setAttribute("uv", new THREE.Float32BufferAttribute(geo.uvs, 2))
+      g.computeVertexNormals()
+      const mat = new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide })
+      return new THREE.Mesh(g, mat)
+    }
+    floorMesh = mkPlane(floorGeometry(regionDepth, projection), 0x243024) // muted ground
+    wallMesh = mkPlane(wallGeometry(regionDepth, projection), 0x101830)   // muted backdrop
+    envGroup.add(wallMesh)
+    envGroup.add(floorMesh)
+  }
+
+  let regionDepth = DEFAULT_REGION_DEPTH
+  buildEnv(regionDepth)
+  placeCamera(regionDepth)
+
+  const setRegionDepth = (d) => {
+    const nd = d || DEFAULT_REGION_DEPTH
+    if (nd === regionDepth) return
+    regionDepth = nd
+    buildEnv(regionDepth)
+    placeCamera(regionDepth)
+  }
+
+  // ── billboard reconciler ──────────────────────────────────────────────────────
+  // One Billboard per object ref; framesRef tracks frame-array identity so we only rebuild
+  // textures when the composited frames actually change (avatars change every tick; static props
+  // never do). `mesh.userData.noid` lets the raycast resolve a pick back to a game object.
+  const billboards = new Map() // ref → { bb, framesRef }
+  const pickGroup = new THREE.Group()
+  scene.add(pickGroup)
+
+  const removeBillboard = (ref) => {
+    const entry = billboards.get(ref)
+    if (!entry) return
+    pickGroup.remove(entry.bb.mesh)
+    entry.bb.dispose()
+    billboards.delete(ref)
+  }
+
+  // Sync from a computeLayoutMap result + the live world (for mod + seating resolution).
+  const syncObjects = (layoutMap, world) => {
+    setRegionDepth(world.region?.depth)
+    const regionRef = world.region?.ref
+    const live = new Set()
+    for (const ref in layoutMap) {
+      const item = layoutMap[ref]
+      const layout = item.layout?.value
+      const obj = item.obj?.value
+      if (!layout || !obj || !layout.frames || layout.frames.length === 0) continue
+      const rec = world.getByRef ? world.getByRef(ref) : null
+      const mod = obj.mods?.[0]
+      if (!mod) continue
+      live.add(ref)
+
+      let entry = billboards.get(ref)
+      if (!entry) {
+        const bb = new Billboard(THREE)
+        bb.mesh.userData.noid = mod.noid
+        pickGroup.add(bb.mesh)
+        entry = { bb, framesRef: null }
+        billboards.set(ref, entry)
+      }
+      if (entry.framesRef !== layout.frames) {
+        entry.bb.setFrames(layout.frames)
+        entry.framesRef = layout.frames
+      }
+      entry.bb.mesh.userData.noid = mod.noid
+
+      // Resolve seating (a seated avatar projects at the seat's floor position).
+      const containerRec = rec && rec.containerRef && rec.containerRef !== regionRef
+        ? (world.getByRef ? world.getByRef(rec.containerRef) : null) : null
+      const eff = rec ? effectiveXY(rec, containerRec, regionRef) : { x: mod.x, y: mod.y }
+      const pos = placeFromLayout(layout, eff, regionDepth, projection)
+      entry.bb.setWorldRect(pos.wx, pos.wy, pos.wz)
+    }
+    // Drop billboards whose object left the region.
+    for (const ref of [...billboards.keys()]) if (!live.has(ref)) removeBillboard(ref)
+  }
+
+  // Advance animation frames on the 250ms cadence (static multi-frame props); avatar frames are
+  // single-frame-per-tick already, so this is a no-op for them.
+  const advanceFrames = (nowMs) => {
+    const idx = Math.floor(nowMs / 250)
+    for (const { bb } of billboards.values()) bb.setFrameIndex(idx)
+  }
+
+  // ── picking ───────────────────────────────────────────────────────────────────
+  const raycaster = new THREE.Raycaster()
+  const ndc = new THREE.Vector2()
+  const pointerToNdc = (ev) => {
+    const r = canvas.getBoundingClientRect()
+    ndc.x = ((ev.clientX - r.left) / r.width) * 2 - 1
+    ndc.y = -((ev.clientY - r.top) / r.height) * 2 + 1
+  }
+  // Returns { kind:"object", noid } for a prop/avatar hit, or { kind:"floor", x, y } in habitat
+  // coords for a floor hit, or null.
+  const pickAt = (ev) => {
+    pointerToNdc(ev)
+    raycaster.setFromCamera(ndc, camera)
+    const objHits = raycaster.intersectObjects(pickGroup.children, false)
+    if (objHits.length > 0) {
+      const noid = objHits[0].object.userData.noid
+      if (noid != null) return { kind: "object", noid }
+    }
+    if (floorMesh) {
+      const fHits = raycaster.intersectObject(floorMesh, false)
+      if (fHits.length > 0) {
+        const p = fHits[0].point
+        // Inverse projection: worldX → habitat x (col×8 → col×4); worldZ → depth → foreground y.
+        const col = Math.round(p.x / 8)
+        let habX = col * 4
+        if (habX < 0) habX = 0
+        else if (habX > 160) habX = 160
+        let depth = Math.round(p.z / projection.depthScale)
+        if (depth < 0) depth = 0
+        else if (depth > regionDepth) depth = regionDepth
+        return { kind: "floor", x: habX, y: FOREGROUND_BIT | depth }
+      }
+    }
+    return null
+  }
+
+  // ── render loop plumbing ────────────────────────────────────────────────────────
+  const resize = () => {
+    const w = canvas.clientWidth || canvas.width
+    const h = canvas.clientHeight || canvas.height
+    renderer.setSize(w, h, false)
+    camera.aspect = w / h
+    camera.updateProjectionMatrix()
+  }
+  const renderFrame = () => renderer.render(scene, camera)
+
+  const dispose = () => {
+    for (const ref of [...billboards.keys()]) removeBillboard(ref)
+    renderer.dispose()
+  }
+
+  return { renderer, scene, camera, syncObjects, advanceFrames, pickAt, resize, renderFrame, setRegionDepth, dispose }
+}
