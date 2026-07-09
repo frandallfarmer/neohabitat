@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "In-world bots for Neohabitat",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.109.1",
+    "@anthropic-ai/sdk": "^0.110.0",
     "elizabot": "^0.0.3",
     "mongodb": "^7.5.0",
     "promise-queue": "^2.2.3",
