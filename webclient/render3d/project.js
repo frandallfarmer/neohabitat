@@ -12,12 +12,20 @@
 //
 // The 2D client overloads screen-Y as depth via zIndexFromObjectY (region.js:553) and paints
 // back-to-front. We instead give depth a real axis and let the GPU depth-buffer order things.
-// The faithful reading of the FOREGROUND bit for a *single-wall theater set* is:
+// Vertical model is unified by the HORIZON, which sits at v = region.depth (verified against live
+// data: the Immigration door is at y=32 with region.depth=32 — its base is on the horizon line).
+// v = (y & 0x7f) is the object's vertical value for BOTH layers; the FOREGROUND bit only affects
+// draw order (avatars always draw over floor props), not vertical placement. So:
 //
-//   • FOREGROUND object  → stands ON THE FLOOR at depth (y & 0x7f) into the walkable band.
-//                          world-Z = depth, world-Y = 0 (its billboard base rests on the floor).
-//   • BACKGROUND object  → hangs ON THE BACK WALL at height y (0..127 up the backdrop).
-//                          world-Z = wall (max depth), world-Y = y.
+//   • v ≤ region.depth  → ON THE FLOOR at depth v (receding toward −Z), billboard base on the floor
+//                         (world-Y = 0). Covers avatars/furniture AND low background props.
+//   • v > region.depth  → ON THE BACK WALL at height (v − region.depth) up from the horizon base.
+//                         world-Z = wall. A door (v = region.depth) has its base ON the horizon;
+//                         a high sign (v = 108) rides up the wall. (Placing it at world-Y = v — the
+//                         old model — floated everything region.depth too high.)
+//
+// The region's GROUND and WALL flats (Ground/Street/GROUND_FLAT, Wall) are NOT placed as billboards
+// by this — the renderer applies them as the floor/wall surface textures (see scene.js).
 //
 // World units are the 320×128 stage's *canvas pixels* (before the 2D client's 3× display Scale),
 // so billboard textures — which canvasFromBitmap already emits in doubled canvas px — share one
@@ -57,6 +65,7 @@ export const worldXFromModX = (modX) => Math.floor(signedX(modX) / 4) * 8
 export const DEFAULT_PROJECTION = {
   depthScale: 4.0,   // world-units of floor depth per habitat depth-unit
   bgLayerStep: 0.06, // world-units of forward stagger per habitat-y for background wall art
+  fgBias: 0.5,       // world-units a foreground object nudges toward the camera (draws over floor props)
 }
 
 // Clamp a foreground object's depth into the region's walkable band, matching cursorGoXY /
@@ -80,17 +89,18 @@ export const worldFromObjectXY = (modX, modY, regionDepth = DEFAULT_REGION_DEPTH
   const wx = worldXFromModX(modX)
   const foreground = isForeground(modY)
   const floorZ = regionDepth * cfg.depthScale // magnitude of the floor's far (wall) edge
-  if (foreground) {
-    // Stands on the floor at depth (y&0x7f), receding toward −Z (nearest the camera at wz=0).
-    const depth = bandDepth(modY, regionDepth)
-    return { wx, wy: 0, wz: -depth * cfg.depthScale, foreground: true, zLayer: zLayerFromY(modY) }
+  const v = modY & 0x7f
+  const zLayer = zLayerFromY(modY)
+  if (v <= regionDepth) {
+    // On the floor at depth v, receding toward −Z (nearest the camera at wz=0), base on the floor.
+    // Foreground objects nudge slightly forward so avatars draw over floor props at the same depth.
+    const wz = -v * cfg.depthScale + (foreground ? cfg.fgBias : 0)
+    return { wx, wy: 0, wz, foreground, zLayer, onFloor: true }
   }
-  // Background art hangs on the back wall: y is height up the backdrop (habitat y-up), not depth.
-  // Sits just in front of the wall plane (−floorZ), staggered forward by height so higher-y art
-  // draws in front — the 2D zIndexFromObjectY order for backgrounds.
-  const h = modY & 0x7f
-  const wz = -floorZ + (h + 1) * cfg.bgLayerStep
-  return { wx, wy: h, wz, foreground: false, zLayer: zLayerFromY(modY) }
+  // Above the horizon: on the back wall, height (v − depth) up from the horizon base. Staggered
+  // slightly toward the camera by height so higher art draws in front — 2D zIndexFromObjectY order.
+  const wz = -floorZ + (v - regionDepth) * cfg.bgLayerStep
+  return { wx, wy: v - regionDepth, wz, foreground, zLayer, onFloor: false }
 }
 
 // Resolve an object's EFFECTIVE (x, y) before projection, handling the seating "pretend

@@ -29,31 +29,37 @@ near(worldXFromModX(156), Math.floor(156 / 4) * 8, "worldX: right side")
 assert(isForeground(160) === true, "avatar y=160 is foreground")
 assert(isForeground(50) === false, "prop y=50 is background")
 
-// ── foreground avatar stands on the floor at depth (y&0x7f), receding toward −Z ──
+// ── a shallow floor object (v < depth) stands nearer the camera, feet on the floor ──
 {
-  const p = worldFromObjectXY(80, 160, 32)
+  const p = worldFromObjectXY(80, 128 + 8, 32) // foreground, v=8
   near(p.wx, 160, "fg wx")
-  near(p.wy, 0, "fg rests on floor")
-  near(p.wz, -32 * 4.0, "fg depth 32 × depthScale(4), into −Z")
-  assert(p.foreground === true, "fg flagged")
-  near(p.zLayer, 224, "fg zLayer = 128+(256-160)")
+  near(p.wy, 0, "floor object rests on the floor")
+  near(p.wz, -8 * 4.0 + 0.5, "depth 8 × scale, +fgBias toward camera")
+  assert(p.onFloor === true && p.foreground === true, "fg on floor")
 }
 
-// ── background prop hangs on the back wall at height y, just in front of the wall plane ──
+// ── a door at the horizon (v = region.depth) has its base ON the horizon, at the wall ──
 {
-  const p = worldFromObjectXY(80, 50, 32)
-  near(p.wy, 50, "bg height up the wall = y")
-  near(p.wz, -32 * 4.0 + 51 * 0.06, "bg just in front of the wall, staggered by height")
-  assert(p.foreground === false, "bg flagged")
-  near(p.zLayer, 50, "bg zLayer = y")
+  const p = worldFromObjectXY(68, 32, 32) // Immigration door: y=32, v=32 = depth
+  near(p.wy, 0, "door base sits on the horizon line (not floated up the wall)")
+  near(p.wz, -32 * 4.0, "door at the wall depth")
+  assert(p.onFloor === true, "door base is on the floor/horizon boundary")
 }
 
-// ── background front-to-back order preserved: higher-y art sits in front (larger, less-negative z) ──
+// ── a high wall object (v > depth) rides up the wall from the horizon base ──
 {
-  const low = worldFromObjectXY(80, 10, 32)
-  const high = worldFromObjectXY(80, 90, 32)
-  assert(high.wz > low.wz, "higher-y background draws in front of lower-y (2D zIndexFromObjectY)")
-  assert(low.wz < 0 && high.wz < 0, "both background sit in the −Z scene near the wall")
+  const p = worldFromObjectXY(36, 108, 32) // Immigration sign: y=108, v=108
+  near(p.wy, 108 - 32, "sign height = v − depth above the horizon")
+  assert(p.onFloor === false, "sign is on the wall")
+  near(p.wz, -32 * 4.0 + (108 - 32) * 0.06, "sign staggered forward of the wall by height")
+}
+
+// ── wall front-to-back order preserved: higher-y art draws in front (less-negative z) ──
+{
+  const lowW = worldFromObjectXY(80, 40, 32)   // v=40
+  const highW = worldFromObjectXY(80, 100, 32) // v=100
+  assert(highW.wz > lowW.wz, "higher wall art draws in front (2D zIndexFromObjectY)")
+  assert(lowW.onFloor === false && highW.onFloor === false, "both on the wall")
 }
 
 // ── depth clamps into the walkable band (kernel.js:65-68) ──

@@ -21,15 +21,18 @@ const REGION_SPACE = { minX: 0, minY: 0, maxX: STAGE_W / 8, maxY: STAGE_H - 1 }
 
 // Convert an object's 2D layout box into the world-space bottom-left corner of its billboard.
 //   • horizontal: exact 2D parity — pxLeft = objSpace.minX × 8 (render.js topLeftCanvasOffset).
-//   • foreground: rests on the floor (wy=0) at depth from mod.y; background: hangs on the wall
-//     (wz=wallZ) at height = objSpace.minY (habitat y-up == up the wall, 1:1 in canvas px).
+//   • vertical/depth: from the horizon model (project.js) — floor objects rest at wy=0 receding by
+//     depth; wall objects sit at wy=(v−depth) up from the horizon at the wall.
 const placeFromLayout = (layout, mod, regionDepth, cfg) => {
   const objSpace = objectSpaceFromLayout(layout)
-  const wxLeft = objSpace.minX * 8
   const p = worldFromObjectXY(mod.x, mod.y, regionDepth, cfg)
-  if (p.foreground) return { wx: wxLeft, wy: 0, wz: p.wz }
-  return { wx: wxLeft, wy: objSpace.minY, wz: p.wz }
+  return { wx: objSpace.minX * 8, wy: p.wy, wz: p.wz }
 }
+
+// The region's ground/sky flats become the 3D floor/wall SURFACES, not billboards.
+const isGroundFlat = (mod) => mod.type === "Ground" || mod.type === "Street"
+  || (mod.flat_type === 2 && (mod.type === "Flat" || mod.type === "Trapezoid" || mod.type === "Super_trapezoid"))
+const isWallFlat = (mod) => mod.type === "Wall"
 
 export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
@@ -67,6 +70,9 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     }
     floorMesh = mkPlane(floorGeometry(regionDepth, projection), 0x243024) // muted ground
     wallMesh = mkPlane(wallGeometry(regionDepth, projection), 0x101830)   // muted backdrop
+    // Nudge the wall a few units farther back so objects sitting AT the horizon (v = depth, e.g. a
+    // door: wz = −wallZ) render just in front of it instead of z-fighting the wall surface.
+    wallMesh.position.z = -3
     envGroup.add(wallMesh)
     envGroup.add(floorMesh)
   }
@@ -79,8 +85,25 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     const nd = d || DEFAULT_REGION_DEPTH
     if (nd === regionDepth) return
     regionDepth = nd
-    buildEnv(regionDepth)
+    buildEnv(regionDepth) // new meshes → their userData.texCanvas is clear; flats re-apply next sync
     placeCamera(regionDepth)
+  }
+
+  // Paint a region ground/sky flat's decoded cel canvas onto the floor/wall surface (idempotent per
+  // canvas). NearestFilter keeps the C64 dither crisp. This is what "applies the ground texture to
+  // the 3D base" instead of billboarding the flat vertically.
+  const applyFlatTexture = (mesh, canvas) => {
+    if (!mesh || !canvas || mesh.userData.texCanvas === canvas) return
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.magFilter = THREE.NearestFilter
+    tex.minFilter = THREE.NearestFilter
+    tex.generateMipmaps = false
+    if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace
+    tex.needsUpdate = true
+    mesh.material.map = tex
+    mesh.material.color.setHex(0xffffff)
+    mesh.material.needsUpdate = true
+    mesh.userData.texCanvas = canvas
   }
 
   // ── billboard reconciler ──────────────────────────────────────────────────────
@@ -112,6 +135,10 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       const rec = world.getByRef ? world.getByRef(ref) : null
       const mod = obj.mods?.[0]
       if (!mod) continue
+      // Ground/sky flats texture the floor/wall SURFACES rather than standing as billboards
+      // (they are not in `live`, so any prior billboard for them is dropped below).
+      if (isGroundFlat(mod)) { applyFlatTexture(floorMesh, layout.frames[0].canvas); continue }
+      if (isWallFlat(mod)) { applyFlatTexture(wallMesh, layout.frames[0].canvas); continue }
       live.add(ref)
 
       let entry = billboards.get(ref)
