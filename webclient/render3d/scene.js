@@ -78,14 +78,30 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   buildEnv(regionDepth)
   placeCamera(regionDepth)
 
-  let lastBgSig = null // backdrop cache key; rebuild the backdrop only when the bg set/frames change
+  // Backdrop rebuild bookkeeping. We can't cache on the bg set alone: trapezoid flats (sky/ground)
+  // allocate their canvas at full size and fill it ASYNCHRONOUSLY when the trap texture loads —
+  // same object, same width×height — so no set/identity key ever changes. Instead, after the bg set
+  // changes we rebuild + checksum the composite for a self-extending grace window and re-upload only
+  // when the pixels actually change; it self-heals when a trap fills in, then settles.
+  let lastBgSetSig = null // the bg SET signature (refs + sizes) — changes on add/remove/reload
+  let lastBgSum = null    // pixel checksum of the last uploaded composite
+  let bgGrace = 0         // frames left to keep re-checking (extended whenever pixels change)
   const setRegionDepth = (d) => {
     const nd = d || DEFAULT_REGION_DEPTH
     if (nd === regionDepth) return
     regionDepth = nd
     buildEnv(regionDepth) // new meshes → force a backdrop re-apply
     placeCamera(regionDepth)
-    lastBgSig = null
+    lastBgSetSig = null
+    lastBgSum = null
+  }
+
+  // Cheap content checksum over a strided pixel sample — detects an in-place trap fill.
+  const bgChecksum = (cv) => {
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data
+    let h = d.length
+    for (let i = 0; i < d.length; i += 4 * 211) h = (Math.imul(h, 31) + d[i] + d[i + 1] * 3 + d[i + 3] * 7) | 0
+    return h
   }
 
   // Assign a canvas as a mesh's surface texture (NearestFilter keeps the C64 dither crisp).
@@ -170,12 +186,24 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     // Drop billboards whose object left the region.
     for (const ref of [...billboards.keys()]) if (!live.has(ref)) removeBillboard(ref)
 
-    // Rebuild the backdrop only when the bg set/frames change (bg is static — sky/ground/signs).
-    if (bgSig !== lastBgSig) {
-      lastBgSig = bgSig
-      const { wall, floor } = splitBackdrop(renderBackdrop(bgItems), regionDepth)
-      setMeshTexture(wallMesh, wall)
-      setMeshTexture(floorMesh, floor)
+    // On any bg-set change, (re)open a ~10s grace window (trap textures fill in over seconds, and
+    // the set sig stabilizes BEFORE the pixels do). Throttled to ~10 Hz, rebuild + checksum the
+    // composite and re-upload only when the pixels change — catching async in-place trap fills. Each
+    // change re-extends the window; it closes once the backdrop has been stable for ~10s.
+    if (bgSig !== lastBgSetSig) { lastBgSetSig = bgSig; bgGrace = 600 }
+    if (bgGrace > 0 && bgItems.length) {
+      bgGrace--
+      if ((bgGrace % 6) === 0) {
+        const backdrop = renderBackdrop(bgItems)
+        const sum = bgChecksum(backdrop)
+        if (sum !== lastBgSum) {
+          lastBgSum = sum
+          bgGrace = 600 // pixels changed (a trap filled in) — keep watching
+          const { wall, floor } = splitBackdrop(backdrop, regionDepth)
+          setMeshTexture(wallMesh, wall)
+          setMeshTexture(floorMesh, floor)
+        }
+      }
     }
   }
 
