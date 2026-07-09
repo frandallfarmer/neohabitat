@@ -29,10 +29,13 @@ const placeFromLayout = (layout, mod, regionDepth, cfg) => {
   return { wx: objSpace.minX * 8, wy: p.wy, wz: p.wz }
 }
 
-// The region's ground/sky flats become the 3D floor/wall SURFACES, not billboards.
+// The region's ground/backdrop flats become the 3D floor/wall SURFACES, not billboards.
+// Backdrop is "Wall" indoors and "Sky" outdoors (Plaza Fountain) — both texture the wall plane;
+// left un-handled, an outdoor Sky flat (v=0) billboards right at the camera and paints the whole
+// frame sky-blue.
 const isGroundFlat = (mod) => mod.type === "Ground" || mod.type === "Street"
   || (mod.flat_type === 2 && (mod.type === "Flat" || mod.type === "Trapezoid" || mod.type === "Super_trapezoid"))
-const isWallFlat = (mod) => mod.type === "Wall"
+const isWallFlat = (mod) => mod.type === "Wall" || mod.type === "Sky"
 
 export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
