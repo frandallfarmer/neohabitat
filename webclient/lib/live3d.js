@@ -143,10 +143,18 @@ async function main() {
   }
 
   // Render loop: read current layouts (reactive to avatarMotion tick) → billboards → draw.
+  // Guard each frame so one bad object/frame can't abort the loop (which would freeze the scene —
+  // e.g. foreground objects never appearing). Errors are logged once per burst, not per frame.
+  let loopErrs = 0
   const loop = () => {
-    view.syncObjects(layoutSig.value, world)
-    view.advanceFrames(performance.now())
-    view.renderFrame()
+    try {
+      view.syncObjects(layoutSig.value, world)
+      view.advanceFrames(performance.now())
+      view.renderFrame()
+      loopErrs = 0
+    } catch (e) {
+      if (loopErrs++ < 3) console.error("[live3d] render frame failed:", e)
+    }
     requestAnimationFrame(loop)
   }
   requestAnimationFrame(loop)

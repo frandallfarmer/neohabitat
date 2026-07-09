@@ -126,6 +126,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   const billboards = new Map() // ref → { bb, framesRef }
   const pickGroup = new THREE.Group()
   scene.add(pickGroup)
+  let syncWarn = 0 // rate-limit per-object skip warnings
 
   const removeBillboard = (ref) => {
     const entry = billboards.get(ref)
@@ -143,6 +144,9 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     const bgItems = []      // the region's background objects → composited into the backdrop
     let bgSig = ""          // cache key: bg refs + their y + frame-canvas size
     for (const ref in layoutMap) {
+     // Guard each object so one bad frame/layout can't abort the whole sync (which would leave every
+     // foreground object unrendered — the "something aborted" symptom). Skip it, keep the rest.
+     try {
       const item = layoutMap[ref]
       const layout = item.layout?.value
       const obj = item.obj?.value
@@ -182,6 +186,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       const eff = rec ? effectiveXY(rec, containerRec, regionRef) : { x: mod.x, y: mod.y }
       const pos = placeFromLayout(layout, eff, regionDepth, projection)
       entry.bb.setWorldRect(pos.wx, pos.wy, pos.wz)
+     } catch (e) { if (syncWarn++ < 5) console.warn("[scene] skipped a bad object:", e) }
     }
     // Drop billboards whose object left the region.
     for (const ref of [...billboards.keys()]) if (!live.has(ref)) removeBillboard(ref)

@@ -25,9 +25,10 @@ export const renderBackdrop = (items) => {
   // Back-to-front, exactly like sortObjects/zIndexFromObjectY (low Y = drawn first = behind).
   const sorted = [...items].sort((a, b) => zLayerFromY(a.modY) - zLayerFromY(b.modY))
   for (const it of sorted) {
-    if (!it.frame?.canvas) continue
+    const c = it.frame?.canvas
+    if (!c || !c.width || !c.height) continue // a 0-size canvas (cel mid-load) would throw drawImage
     const [ix, iy] = topLeftCanvasOffset(REGION_SPACE, translateSpace(it.frame, it.x, it.y))
-    ctx.drawImage(it.frame.canvas, ix, iy)
+    ctx.drawImage(c, ix, iy)
   }
   return canvas
 }
