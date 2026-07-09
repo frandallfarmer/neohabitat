@@ -22,6 +22,11 @@
 // World units are the 320×128 stage's *canvas pixels* (before the 2D client's 3× display Scale),
 // so billboard textures — which canvasFromBitmap already emits in doubled canvas px — share one
 // scale with positions and land the same size the 2D client draws them.
+//
+// Axis convention: +X right, +Y up, and the scene RECEDES toward −Z (depth is negative). The
+// camera sits in front (+Z) looking toward −Z, so world +X lands on screen-right (matching habitat
+// x) and billboards' default front faces point at the camera (no mirroring). Getting this sign
+// wrong flips the whole scene left-for-right.
 
 // ── Model invariants (mirror habiworld/lib/constants.js + kernel.js) ─────────────────
 export const FOREGROUND_BIT = 0x80
@@ -46,8 +51,12 @@ export const worldXFromModX = (modX) => Math.floor(signedX(modX) / 4) * 8
 
 // Default projection tuning. depthScale stretches the shallow (≤32px) walkable band into a floor
 // that actually reads as receding; it's the one free aesthetic knob (the 2D client had none).
+// bgLayerStep staggers background objects slightly toward the camera by height so the 2D
+// front-to-back-by-Y order among wall art (zIndexFromObjectY = y for backgrounds) is preserved
+// instead of every backdrop z-fighting on one plane.
 export const DEFAULT_PROJECTION = {
-  depthScale: 4.0, // world-units of floor depth per habitat depth-unit
+  depthScale: 4.0,   // world-units of floor depth per habitat depth-unit
+  bgLayerStep: 0.06, // world-units of forward stagger per habitat-y for background wall art
 }
 
 // Clamp a foreground object's depth into the region's walkable band, matching cursorGoXY /
@@ -70,13 +79,18 @@ export const bandDepth = (modY, regionDepth = DEFAULT_REGION_DEPTH) => {
 export const worldFromObjectXY = (modX, modY, regionDepth = DEFAULT_REGION_DEPTH, cfg = DEFAULT_PROJECTION) => {
   const wx = worldXFromModX(modX)
   const foreground = isForeground(modY)
-  const wallZ = regionDepth * cfg.depthScale
+  const floorZ = regionDepth * cfg.depthScale // magnitude of the floor's far (wall) edge
   if (foreground) {
+    // Stands on the floor at depth (y&0x7f), receding toward −Z (nearest the camera at wz=0).
     const depth = bandDepth(modY, regionDepth)
-    return { wx, wy: 0, wz: depth * cfg.depthScale, foreground: true, zLayer: zLayerFromY(modY) }
+    return { wx, wy: 0, wz: -depth * cfg.depthScale, foreground: true, zLayer: zLayerFromY(modY) }
   }
-  // Background art rides the back wall: y is height up the backdrop (habitat y-up), not depth.
-  return { wx, wy: modY & 0x7f, wz: wallZ, foreground: false, zLayer: zLayerFromY(modY) }
+  // Background art hangs on the back wall: y is height up the backdrop (habitat y-up), not depth.
+  // Sits just in front of the wall plane (−floorZ), staggered forward by height so higher-y art
+  // draws in front — the 2D zIndexFromObjectY order for backgrounds.
+  const h = modY & 0x7f
+  const wz = -floorZ + (h + 1) * cfg.bgLayerStep
+  return { wx, wy: h, wz, foreground: false, zLayer: zLayerFromY(modY) }
 }
 
 // Resolve an object's EFFECTIVE (x, y) before projection, handling the seating "pretend

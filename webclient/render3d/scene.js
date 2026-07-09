@@ -43,11 +43,11 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   const camera = new THREE.PerspectiveCamera(42, 1, 1, 4000)
   const placeCamera = (regionDepth) => {
     const wallZ = regionDepth * projection.depthScale
-    // Elevated, near-head-on: enough tilt that the floor reads with depth, shallow enough that we
-    // never see over the single back wall and near billboards don't blow up at the frame edge.
-    // Tuned against the live "Immigration" set.
-    camera.position.set(STAGE_W / 2, STAGE_H * 0.64, -wallZ * 1.15)
-    camera.lookAt(STAGE_W / 2, STAGE_H * 0.32, wallZ * 0.5)
+    // In FRONT of the scene (+Z) looking toward −Z where it recedes — so world +X lands screen-right
+    // (matching habitat x) and billboards face the camera. Elevated enough that the floor reads with
+    // depth, shallow enough that we never see over the single back wall.
+    camera.position.set(STAGE_W / 2, STAGE_H * 0.64, wallZ * 1.15)
+    camera.lookAt(STAGE_W / 2, STAGE_H * 0.32, -wallZ * 0.5)
   }
 
   // Environment meshes (rebuilt when region depth changes).
@@ -168,12 +168,12 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       const fHits = raycaster.intersectObject(floorMesh, false)
       if (fHits.length > 0) {
         const p = fHits[0].point
-        // Inverse projection: worldX → habitat x (col×8 → col×4); worldZ → depth → foreground y.
+        // Inverse projection: worldX → habitat x (col×8 → col×4); worldZ (negative) → depth → y.
         const col = Math.round(p.x / 8)
         let habX = col * 4
         if (habX < 0) habX = 0
         else if (habX > 160) habX = 160
-        let depth = Math.round(p.z / projection.depthScale)
+        let depth = Math.round(-p.z / projection.depthScale)
         if (depth < 0) depth = 0
         else if (depth > regionDepth) depth = regionDepth
         return { kind: "floor", x: habX, y: FOREGROUND_BIT | depth }

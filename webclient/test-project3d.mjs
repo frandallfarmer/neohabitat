@@ -29,23 +29,31 @@ near(worldXFromModX(156), Math.floor(156 / 4) * 8, "worldX: right side")
 assert(isForeground(160) === true, "avatar y=160 is foreground")
 assert(isForeground(50) === false, "prop y=50 is background")
 
-// ── foreground avatar stands on the floor at depth (y&0x7f) ──
+// ── foreground avatar stands on the floor at depth (y&0x7f), receding toward −Z ──
 {
   const p = worldFromObjectXY(80, 160, 32)
   near(p.wx, 160, "fg wx")
   near(p.wy, 0, "fg rests on floor")
-  near(p.wz, 32 * 4.0, "fg depth 32 × depthScale(4)")
+  near(p.wz, -32 * 4.0, "fg depth 32 × depthScale(4), into −Z")
   assert(p.foreground === true, "fg flagged")
   near(p.zLayer, 224, "fg zLayer = 128+(256-160)")
 }
 
-// ── background prop hangs on the back wall at height y ──
+// ── background prop hangs on the back wall at height y, just in front of the wall plane ──
 {
   const p = worldFromObjectXY(80, 50, 32)
   near(p.wy, 50, "bg height up the wall = y")
-  near(p.wz, 32 * 4.0, "bg sits at the wall (max depth)")
+  near(p.wz, -32 * 4.0 + 51 * 0.06, "bg just in front of the wall, staggered by height")
   assert(p.foreground === false, "bg flagged")
   near(p.zLayer, 50, "bg zLayer = y")
+}
+
+// ── background front-to-back order preserved: higher-y art sits in front (larger, less-negative z) ──
+{
+  const low = worldFromObjectXY(80, 10, 32)
+  const high = worldFromObjectXY(80, 90, 32)
+  assert(high.wz > low.wz, "higher-y background draws in front of lower-y (2D zIndexFromObjectY)")
+  assert(low.wz < 0 && high.wz < 0, "both background sit in the −Z scene near the wall")
 }
 
 // ── depth clamps into the walkable band (kernel.js:65-68) ──

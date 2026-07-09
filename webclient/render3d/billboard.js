@@ -32,11 +32,9 @@ export class Billboard {
     })
     this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), this.material)
     this.mesh.frustumCulled = false
-    // A PlaneGeometry's textured front face points +Z, but the fixed camera views the set from the
-    // −Z (front) side — so without this it would see the BACK of every sprite and the art would
-    // read mirrored (e.g. text signs backwards). Rotate 180° about Y so the front face, un-mirrored,
-    // points at the camera. (Rotation is about the plane's center, so placement is unaffected.)
-    this.mesh.rotation.y = Math.PI
+    // A PlaneGeometry's textured front face points +Z; the camera sits in front (+Z) looking toward
+    // −Z (project.js axis convention), so it sees the front face un-mirrored. No rotation needed —
+    // and adding one would flip the art (and the whole scene) left-for-right.
   }
 
   // Build one CanvasTexture per animation frame (cached); size to the current frame.

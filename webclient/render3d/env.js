@@ -35,23 +35,23 @@ const quadUV = () => [
 // back to the wall (depth = region.depth → wz = wallZ). Lies flat (constant wy=0), so its far
 // edge meets the base of the wall.
 export const floorGeometry = (regionDepth = DEFAULT_REGION_DEPTH, cfg = DEFAULT_PROJECTION) => {
-  const wallZ = regionDepth * cfg.depthScale
-  // Viewed from the front/above: near edge (z=0) toward camera, far edge (z=wallZ) at the wall.
+  const wallZ = regionDepth * cfg.depthScale // magnitude; the scene recedes toward −Z
+  // Near edge (z=0) toward the front camera, far edge (z=−wallZ) at the wall.
   const nearL = [0, 0, 0]
   const nearR = [STAGE_W, 0, 0]
-  const farR = [STAGE_W, 0, wallZ]
-  const farL = [0, 0, wallZ]
+  const farR = [STAGE_W, 0, -wallZ]
+  const farL = [0, 0, -wallZ]
   return { positions: quad(farL, farR, nearR, nearL), uvs: quadUV(), wallZ }
 }
 
-// The back wall: a vertical quad at the far edge (wz = wallZ), full stage width, STAGE_H tall.
-// Background props hang against this (project.js puts them at wz = wallZ, wy = y).
+// The back wall: a vertical quad at the far edge (z = −wallZ), full stage width, STAGE_H tall.
+// Background props hang just in front of this (project.js: wz = −wallZ + stagger, wy = y).
 export const wallGeometry = (regionDepth = DEFAULT_REGION_DEPTH, cfg = DEFAULT_PROJECTION) => {
   const wallZ = regionDepth * cfg.depthScale
-  const topL = [0, STAGE_H, wallZ]
-  const topR = [STAGE_W, STAGE_H, wallZ]
-  const botR = [STAGE_W, 0, wallZ]
-  const botL = [0, 0, wallZ]
+  const topL = [0, STAGE_H, -wallZ]
+  const topR = [STAGE_W, STAGE_H, -wallZ]
+  const botR = [STAGE_W, 0, -wallZ]
+  const botL = [0, 0, -wallZ]
   return { positions: quad(topL, topR, botR, botL), uvs: quadUV(), wallZ }
 }
 
@@ -86,11 +86,10 @@ export const trapQuad = (corners, toDepth, toWorldX = (x) => x) => {
 // `region.depth` rows of the STAGE_H-tall stage; row (STAGE_H-1) is depth 0 (nearest), and rows
 // climb toward the wall depth. Used to feed trapQuad's toDepth for floor flats.
 export const stageRowToDepth = (regionDepth = DEFAULT_REGION_DEPTH, cfg = DEFAULT_PROJECTION) => {
-  const bandTop = STAGE_H - 1 - regionDepth // live.js:698-704 bandTop
   return (canvasY) => {
     let depth = STAGE_H - 1 - canvasY // rows below bandTop map into [0, regionDepth]
     if (depth < 0) depth = 0
     else if (depth > regionDepth) depth = regionDepth
-    return depth * cfg.depthScale
+    return -depth * cfg.depthScale // world Z (negative = into the scene)
   }
 }
