@@ -46,7 +46,15 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     // In FRONT of the scene (+Z) looking toward −Z where it recedes — so world +X lands screen-right
     // (matching habitat x) and billboards face the camera. Elevated enough that the floor reads with
     // depth, shallow enough that we never see over the single back wall.
-    camera.position.set(STAGE_W / 2, STAGE_H * 0.64, wallZ * 1.15)
+    //
+    // Pull back far enough to frame the ENTIRE back wall width (STAGE_W) with a margin, for the
+    // CURRENT aspect — otherwise a shallow region (small wallZ, e.g. Plaza Fountain) sits too close
+    // and clips the wall. Never closer than the old wallZ×1.15 framing. Recomputed on resize.
+    const vHalf = (camera.fov * Math.PI / 180) / 2
+    const hHalf = Math.atan(Math.tan(vHalf) * (camera.aspect || 1))
+    const distForWidth = ((STAGE_W / 2) * 1.15) / Math.tan(hHalf) // z-distance to fit the wall width
+    const camZ = Math.max(wallZ * 1.15, distForWidth - wallZ)
+    camera.position.set(STAGE_W / 2, STAGE_H * 0.64, camZ)
     camera.lookAt(STAGE_W / 2, STAGE_H * 0.32, -wallZ * 0.5)
   }
 
@@ -136,6 +144,39 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     billboards.delete(ref)
   }
 
+  // Get-or-create a billboard for a ref, refreshing its frames when they change.
+  const ensureBillboard = (ref, mod, frames) => {
+    let entry = billboards.get(ref)
+    if (!entry) {
+      entry = { bb: new Billboard(THREE), framesRef: null }
+      pickGroup.add(entry.bb.mesh)
+      billboards.set(ref, entry)
+    }
+    if (entry.framesRef !== frames) { entry.bb.setFrames(frames); entry.framesRef = frames }
+    entry.bb.mesh.userData.noid = mod.noid
+    return entry
+  }
+
+  // Place a contained item ON its container's plane (2D containedItemLayout): the item's own layout
+  // is already container-relative (computeLayoutMap ran containedItemLayout / offsetsFromContainer),
+  // so its horizontal is absolute and its vertical offset from the container is (item.minY −
+  // container.minY). Depth is the container's plane; contentsInFront nudges it in front, else behind.
+  const containedItemPos = (layout, containerItem) => {
+    const cLayout = containerItem.layout?.value
+    const cMod = containerItem.obj?.value?.mods?.[0]
+    const cProp = containerItem.prop?.value
+    if (!cLayout || !cMod || !cProp) return null
+    const cObjSpace = objectSpaceFromLayout(cLayout)
+    const cPlace = placeFromLayout(cLayout, cMod, regionDepth, projection)
+    const myObjSpace = objectSpaceFromLayout(layout)
+    const bias = cProp.contentsInFront ? projection.fgBias : -projection.fgBias
+    return {
+      wx: myObjSpace.minX * 8,
+      wy: cPlace.wy + (myObjSpace.minY - cObjSpace.minY),
+      wz: cPlace.wz + bias,
+    }
+  }
+
   // Sync from a computeLayoutMap result + the live world (for mod + seating resolution).
   const syncObjects = (layoutMap, world) => {
     setRegionDepth(world.region?.depth)
@@ -164,22 +205,32 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
         bgSig += `${ref}:${mod.y}:${f?.canvas?.width}x${f?.canvas?.height};`
         continue
       }
+      // A contained item (a box's contents, a phone in a desk) renders ON its container's plane at
+      // the container's contentsXY offset — and ONLY if the container displays contents. An opaque
+      // container has no contentsXY table → contents hidden (the open-box case). Excludes an avatar's
+      // own head/hand (composed into the body frame) and seated avatars (bodies, handled below).
+      const containerItem = (obj.in && obj.in !== regionRef) ? layoutMap[obj.in] : null
+      const containerProp = containerItem?.prop?.value
+      if (containerItem && containerProp) {
+        // Contained in a body (avatar): head/hands are composed INTO the body frame and pocket
+        // inventory is invisible in-region (C64 display_avatar) — never a separate billboard.
+        if (containerProp.isBody) { removeBillboard(ref); continue }
+        // Contained in a real container (box/desk). NOT a seated avatar (an Avatar in a non-body
+        // seat) — that falls through to the normal path below (effectiveXY seat resolution).
+        if (rec?.mod?.type !== "Avatar") {
+          const isGlue = containerItem.obj?.value?.mods?.[0]?.type === "Glue" // offset via mod fields, not contentsXY
+          const shows = isGlue || (containerProp.contentsXY && containerProp.contentsXY.length > mod.y)
+          if (!shows) { removeBillboard(ref); continue } // opaque container / slot not displayed → hidden
+          const pos = containedItemPos(layout, containerItem)
+          if (!pos) continue
+          live.add(ref)
+          ensureBillboard(ref, mod, layout.frames).bb.setWorldRect(pos.wx, pos.wy, pos.wz)
+          continue
+        }
+      }
+
       live.add(ref)
-
-      let entry = billboards.get(ref)
-      if (!entry) {
-        const bb = new Billboard(THREE)
-        bb.mesh.userData.noid = mod.noid
-        pickGroup.add(bb.mesh)
-        entry = { bb, framesRef: null }
-        billboards.set(ref, entry)
-      }
-      if (entry.framesRef !== layout.frames) {
-        entry.bb.setFrames(layout.frames)
-        entry.framesRef = layout.frames
-      }
-      entry.bb.mesh.userData.noid = mod.noid
-
+      const entry = ensureBillboard(ref, mod, layout.frames)
       // Resolve seating (a seated avatar projects at the seat's floor position).
       const containerRec = rec && rec.containerRef && rec.containerRef !== regionRef
         ? (world.getByRef ? world.getByRef(rec.containerRef) : null) : null
@@ -261,6 +312,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     const h = canvas.clientHeight || canvas.height
     renderer.setSize(w, h, false)
     camera.aspect = w / h
+    placeCamera(regionDepth) // reframe for the new aspect so the full wall still fits
     camera.updateProjectionMatrix()
   }
   const renderFrame = () => renderer.render(scene, camera)
