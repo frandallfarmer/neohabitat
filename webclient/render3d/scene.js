@@ -15,6 +15,7 @@ import {
 } from "./project.js"
 import { Billboard } from "./billboard.js"
 import { renderBackdrop, splitBackdrop } from "./backdrop.js"
+import { hitTestFrame, celNumberAtFrame, limbAtFrame } from "../habirender/pick.mjs"
 
 // The object's ORIGIN in world coords (the billboard adds each frame's own cel offset — billboard.js).
 //   • horizontal: originX = layout.x × 8 (the object's x column; frame.minX×8 is added per frame).
@@ -152,6 +153,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     }
     if (entry.framesRef !== frames) { entry.bb.setFrames(frames); entry.framesRef = frames }
     entry.bb.mesh.userData.noid = mod.noid
+    entry.bb.mesh.userData.bb = entry.bb // so the raycast can read the CURRENT frame for cel/limb pick
     return entry
   }
 
@@ -282,31 +284,45 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     ndc.x = ((ev.clientX - r.left) / r.width) * 2 - 1
     ndc.y = -((ev.clientY - r.top) / r.height) * 2 + 1
   }
-  // Returns { kind:"object", noid } for a prop/avatar hit, or { kind:"floor", x, y } in habitat
-  // coords for a floor hit, or null.
+  const clampN = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v)
+  // Pick at a pointer position (an event or {clientX, clientY}). Returns the SAME shape as the 2D
+  // pick.mjs pickAt so verb-dispatch is reused unchanged:
+  //   object hit → { kind:"object", noid, habitatX, habitatY, whichLimb, celNumber }
+  //   floor hit  → { kind:"floor", x, y }  (habitat coords; x/y kept for the current live3d.js)
+  //   miss       → null
+  // whichLimb/celNumber come from the TRANSFORM-BACK: the billboard's raycast UV maps straight into
+  // its current 2D frame, so pick.mjs limbAtFrame/celNumberAtFrame read the same cel/limb buffers the
+  // 2D renderer built (SPRAY limb, door cel-2 pass-through). habitatX/Y is the cursor's floor coord.
   const pickAt = (ev) => {
     pointerToNdc(ev)
     raycaster.setFromCamera(ndc, camera)
-    const objHits = raycaster.intersectObjects(pickGroup.children, false)
-    if (objHits.length > 0) {
-      const noid = objHits[0].object.userData.noid
-      if (noid != null) return { kind: "object", noid }
-    }
+    // Cursor habitat coord = where the ray meets the floor (GO target / face), regardless of hits.
+    let habitatX = 0, habitatY = FOREGROUND_BIT | 0, onFloor = false
     if (floorMesh) {
       const fHits = raycaster.intersectObject(floorMesh, false)
       if (fHits.length > 0) {
-        const p = fHits[0].point
-        // Inverse projection: worldX → habitat x (col×8 → col×4); worldZ (negative) → depth → y.
-        const col = Math.round(p.x / 8)
-        let habX = col * 4
-        if (habX < 0) habX = 0
-        else if (habX > 160) habX = 160
-        let depth = Math.round(-p.z / projection.depthScale)
-        if (depth < 0) depth = 0
-        else if (depth > regionDepth) depth = regionDepth
-        return { kind: "floor", x: habX, y: FOREGROUND_BIT | depth }
+        const p = fHits[0].point // worldX → habitat x (col×8 → col×4); worldZ (−) → depth
+        habitatX = clampN(Math.round(p.x / 8) * 4, 0, 160)
+        habitatY = FOREGROUND_BIT | clampN(Math.round(-p.z / projection.depthScale), 0, regionDepth)
+        onFloor = true
       }
     }
+    // Foreground billboards, nearest-first; skip transparent cel pixels (alpha test), like the 2D pick.
+    for (const h of raycaster.intersectObjects(pickGroup.children, false)) {
+      const noid = h.object.userData.noid
+      const bb = h.object.userData.bb
+      const frame = bb?.frames?.[bb.index]
+      if (noid == null || !frame?.canvas || !h.uv) continue
+      const px = Math.floor(h.uv.x * frame.canvas.width)
+      const py = Math.floor((1 - h.uv.y) * frame.canvas.height) // CanvasTexture flipY
+      if (!hitTestFrame(frame, px, py, 0, 0)) continue // transparent → not a real hit; try behind
+      return {
+        kind: "object", noid, habitatX, habitatY,
+        whichLimb: limbAtFrame(frame, px, py, 0, 0),
+        celNumber: celNumberAtFrame(frame, px, py, 0, 0),
+      }
+    }
+    if (onFloor) return { kind: "floor", x: habitatX, y: habitatY }
     return null
   }
 
