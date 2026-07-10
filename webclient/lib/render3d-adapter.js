@@ -87,7 +87,11 @@ export function make3DAdapter() {
   return {
     RegionView: RegionView3D,
     Cursor: RegionCursor,          // the shell threads this into regionInput.Cursor; the modal pie-cursor
-    installFit: installFitToViewport,
+    // NO installFit: the 2D client's fit-to-viewport CSS-transforms #app to scale the 960px stage up,
+    // but CSS-scaling a live WebGL canvas tears/blurs it on real GPUs (the POC, with no transform,
+    // was crisp). So the 3D client leaves #app un-transformed and renders the canvas at native
+    // resolution. (Filling large viewports responsively is a follow-up — resize the WebGL buffer
+    // rather than CSS-scale it.)
 
     // Pick at the cursor's press-anchor. canvasX/canvasY are scaled logical px (0..320*scale,
     // 0..128*scale) — the space RegionCursor works in. Convert to the pointer's screen position over
@@ -124,20 +128,4 @@ export function make3DAdapter() {
     // immediately via the agnostic changeRegion, without a walk-to-edge GO first; a later refinement.)
     sideChevronStyle: () => `height:${CANVAS_H}px; align-self:center;`,
   }
-}
-
-// Scale #app up to fill the viewport when we're the top-level page (same as the 2D adapter — the 3D
-// region is a fixed-size element too). Embedded in the docent iframe, the iframe sizes us.
-function installFitToViewport(root) {
-  if (!root || window.top !== window.self) return
-  const fit = () => {
-    const w = root.scrollWidth, h = root.scrollHeight
-    if (!w || !h) { root.style.transform = ""; return }
-    const s = Math.min(window.innerWidth / w, window.innerHeight / h)
-    root.style.transformOrigin = "top center"
-    root.style.transform = s > 1.01 ? `scale(${s})` : ""
-  }
-  window.addEventListener("resize", fit)
-  if (typeof ResizeObserver !== "undefined") new ResizeObserver(fit).observe(root)
-  fit()
 }
