@@ -234,8 +234,15 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       // Resolve seating (a seated avatar projects at the seat's floor position).
       const containerRec = rec && rec.containerRef && rec.containerRef !== regionRef
         ? (world.getByRef ? world.getByRef(rec.containerRef) : null) : null
-      const eff = rec ? effectiveXY(rec, containerRec, regionRef) : { x: mod.x, y: mod.y }
-      const pos = placeFromLayout(layout, eff, regionDepth, projection)
+      // DEPTH must follow the walk animation. computeLayoutMap builds a FREE object's layout from
+      // the animated displayMod, so layout.y already carries the current v (depth) — but the server
+      // mod.y is stale mid-walk. wx comes from the (animated) layout, so left/right worked; wz came
+      // from mod.y, so forward/back was frozen. Drive depth from layout.y (keeping the FOREGROUND
+      // bit) for free objects; seated/contained objects keep their container's depth (effectiveXY).
+      const depthSource = containerRec
+        ? effectiveXY(rec, containerRec, regionRef)
+        : { x: mod.x, y: (mod.y & FOREGROUND_BIT) | (layout.y & 0x7f) }
+      const pos = placeFromLayout(layout, depthSource, regionDepth, projection)
       entry.bb.setWorldRect(pos.wx, pos.wy, pos.wz)
      } catch (e) { if (syncWarn++ < 5) console.warn("[scene] skipped a bad object:", e) }
     }
@@ -322,5 +329,16 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     renderer.dispose()
   }
 
-  return { renderer, scene, camera, syncObjects, advanceFrames, pickAt, resize, renderFrame, setRegionDepth, dispose }
+  // Debug/automation: the current world position of a billboard by noid (null if not present).
+  const billboardPos = (noid) => {
+    for (const { bb } of billboards.values()) {
+      if (bb.mesh.userData.noid === noid) {
+        const p = bb.mesh.position
+        return { x: p.x, y: p.y, z: p.z }
+      }
+    }
+    return null
+  }
+
+  return { renderer, scene, camera, syncObjects, advanceFrames, pickAt, resize, renderFrame, setRegionDepth, dispose, billboardPos }
 }
