@@ -47,6 +47,9 @@ export class Billboard {
     this.frames = frames || []
     const THREE = this.THREE
     this.textures = this.frames.map((f) => {
+      // An "off" animation beat is a null frame (frameFromCels returns null for an empty cel set —
+      // e.g. the blank beats of the staggered blinking signs). No texture; _applyFrame hides the mesh.
+      if (!f || !f.canvas) return null
       const tex = new THREE.CanvasTexture(f.canvas)
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.NearestFilter
@@ -70,8 +73,15 @@ export class Billboard {
 
   _applyFrame() {
     const f = this.frames[this.index]
-    if (!f) return
-    this.material.map = this.textures[this.index]
+    const tex = this.textures[this.index]
+    if (!f || !tex) {
+      // "off" beat (null frame): render nothing, matching the 2D animatedDiv drawing an empty canvas.
+      // Hiding the mesh (rather than keeping the previous frame) is what makes the staggered blink work.
+      this.mesh.visible = false
+      return
+    }
+    this.mesh.visible = true
+    this.material.map = tex
     this.material.needsUpdate = true
     const w = f.canvas.width
     const h = f.canvas.height
@@ -108,7 +118,7 @@ export class Billboard {
   }
 
   _disposeTextures() {
-    for (const t of this.textures) t.dispose?.()
+    for (const t of this.textures) t?.dispose?.()
     this.textures = []
   }
 }
