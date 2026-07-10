@@ -56,9 +56,26 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     const vHalf = (camera.fov * Math.PI / 180) / 2
     const hHalf = Math.atan(Math.tan(vHalf) * (camera.aspect || 1))
     const distForWidth = ((STAGE_W / 2) * 1.15) / Math.tan(hHalf) // z-distance to fit the wall width
-    const camZ = Math.max(wallZ * 1.15, distForWidth - wallZ)
-    camera.position.set(STAGE_W / 2, STAGE_H * 0.64, camZ)
-    camera.lookAt(STAGE_W / 2, STAGE_H * 0.32, -wallZ * 0.5)
+    // VERTICAL fit: pull back far enough that BOTH the wall top AND the floor's near edge (the front
+    // lip) are in frame — otherwise shallow regions (small wallZ) clip the tall wall above and the
+    // front lip below. The camera stays elevated at cy and is pitched so the near edge lands at a
+    // fixed screen height (NEAR_NDC, a small front-lip margin below it); we then need cz large enough
+    // that the wall top clears the top (WALL_NDC). Both targets ARE the depth-32 framing, so every
+    // depth frames alike (at depth 32 this reproduces the old cy=0.64·H / lookY=0.32·H camera). The
+    // near edge and wall top are horizontal screen lines (no corner droop), so center math suffices.
+    const cy = STAGE_H * 0.64
+    const NEAR_NDC = -0.854, WALL_NDC = 0.974
+    const DELTA = Math.atan(-NEAR_NDC * Math.tan(vHalf)) // pitch offset that puts the near edge at NEAR_NDC
+    const lookPitch = (cz) => Math.atan(cy / cz) - DELTA
+    const wallNdc = (cz) => Math.tan(lookPitch(cz) + Math.atan((STAGE_H - cy) / (wallZ + cz))) / Math.tan(vHalf)
+    let lo = wallZ * 1.15, hi = 6000 // wallNdc decreases as cz grows → find the smallest cz that fits
+    for (let i = 0; i < 48; i++) { const m = (lo + hi) / 2; if (wallNdc(m) > WALL_NDC) lo = m; else hi = m }
+    const camZ = Math.max(wallZ * 1.15, distForWidth - wallZ, hi)
+    const lookY = cy - Math.tan(lookPitch(camZ)) * (camZ + wallZ / 2)
+    camera.position.set(STAGE_W / 2, cy, camZ)
+    camera.lookAt(STAGE_W / 2, lookY, -wallZ / 2)
+    camera.updateMatrixWorld() // refresh matrixWorldInverse now so project()/unproject() (edge wedges,
+    // walk-off-edge, balloon x) are correct even when called before the next renderFrame updates it.
   }
 
   // Environment meshes (rebuilt when region depth changes).

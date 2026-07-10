@@ -14,15 +14,25 @@ import { computeLayoutMap } from "../habirender/region.js"
 import { pickAt as pick2D } from "../habirender/pick.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { createScene } from "../render3d/scene.js"
+import { DEFAULT_PROJECTION, DEFAULT_REGION_DEPTH } from "../render3d/project.js"
 
 const html = htm.bind(h)
 const REGION_W = 320, REGION_H = 128, SCALE = 3
 const CANVAS_W = REGION_W * SCALE, CANVAS_H = REGION_H * SCALE // 960×384
+const DEPTH_SCALE = DEFAULT_PROJECTION.depthScale // world Z per habitat depth-unit (scene default)
+const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v)
 
 export function make3DAdapter() {
   // The live scene/canvas, set by RegionView3D on mount so the coordinate hooks below can reach it.
   const sceneRef = { view: null, canvas: null }
   const _v = new THREE.Vector3()
+
+  // Project a FLOOR world point (wx lateral 0..320, wz depth ≤0 receding) to region-canvas coords
+  // (cx 0..REGION_W, cy 0..REGION_H) via the live camera. `behind` = the point is behind the camera.
+  const floorToRegionCanvas = (view, wx, wz) => {
+    _v.set(wx, 0, wz).project(view.camera)
+    return { cx: (_v.x * 0.5 + 0.5) * REGION_W, cy: (1 - (_v.y * 0.5 + 0.5)) * REGION_H, behind: _v.z > 1 }
+  }
 
   // The region slot: mounts the Three scene, drives the render loop, populates pickState, and
   // overlays the shared modal cursor (RegionCursor) — the same one the 2D client uses.
@@ -32,6 +42,10 @@ export function make3DAdapter() {
     latest.current = { objects, avatarMotion, world }
     const layoutSig = useRef(null)
     if (!layoutSig.current) layoutSig.current = signal({})
+    // Bumped once the scene mounts and on every reframe (resize) so the render recomputes the edge
+    // wedges against the live camera. Read in the render body → this component re-renders on change.
+    const readySig = useRef(null)
+    if (!readySig.current) readySig.current = signal(0)
 
     // Recompute the composited layout when the object set changes (the per-avatar layout effects then
     // update it every avatarMotion tick — the loop reads the reactive value).
@@ -42,12 +56,13 @@ export function make3DAdapter() {
       const view = createScene(THREE, { canvas })
       sceneRef.view = view; sceneRef.canvas = canvas
       view.resize()
+      readySig.current.value++ // scene mounted → recompute edge wedges
       if (new URLSearchParams(location.search).has("debug")) {
         window.__scene3d = view; window.__pickState3d = pickState; window.__pick2D = pick2D
       }
-      const onResize = () => view.resize()
+      const onResize = () => { view.resize(); readySig.current.value++ }
       window.addEventListener("resize", onResize)
-      let raf = 0, errs = 0
+      let raf = 0, errs = 0, lastCamZ = null
       const loop = () => {
         const { objects, world } = latest.current
         try {
@@ -59,6 +74,11 @@ export function make3DAdapter() {
           }
           view.advanceFrames(performance.now())
           view.renderFrame()
+          // Recompute the edge wedges whenever the camera reframes — resize, or the region depth
+          // change that syncObjects applies here (setRegionDepth → placeCamera). The wedge geometry is
+          // projected in the render, so a re-render must follow the reframe. camZ captures both.
+          const cz = view.camera.position.z
+          if (cz !== lastCamZ) { lastCamZ = cz; readySig.current.value++ }
           errs = 0
         } catch (e) { if (errs++ < 3) console.error("[render3d] frame failed:", e) }
         raf = requestAnimationFrame(loop)
@@ -72,6 +92,33 @@ export function make3DAdapter() {
       }
     }, [])
 
+    // Perspective edge affordances: wedge polygons over the BLACK margins adjacent to the floor's
+    // projected edges — a left/right triangle beside each slanted floor edge and a front-lip strip
+    // below the near edge. Clicking one runs the shell's walk-off-edge (regionInput.onEdge). They sit
+    // ABOVE the cursor overlay, but only the filled polygons capture clicks (pointer-events), so an
+    // in-region floor click falls through the transparent SVG to the cursor beneath. readySig makes
+    // this recompute once the scene mounts / reframes (the camera frames to the current aspect).
+    readySig.current.value // subscribe
+    const view = sceneRef.view
+    const depth = world?.region?.depth ?? DEFAULT_REGION_DEPTH
+    let wedges = null
+    if (view?.camera && regionInput?.onEdge && regionInput.enabled) {
+      const P = (wx, wz) => { const p = floorToRegionCanvas(view, wx, wz); return [Math.round(p.cx * SCALE), Math.round(p.cy * SCALE)] }
+      const wallZ = depth * DEPTH_SCALE
+      const nL = P(0, 0), nR = P(REGION_W, 0), fL = P(0, -wallZ), fR = P(REGION_W, -wallZ)
+      const poly = (pts) => pts.map((p) => p.join(",")).join(" ")
+      wedges = {
+        left: poly([[0, fL[1]], fL, nL, [0, nL[1]]]),
+        right: poly([[CANVAS_W, fR[1]], fR, nR, [CANVAS_W, nR[1]]]),
+        down: poly([nL, nR, [CANVAS_W, CANVAS_H], [0, CANVAS_H]]),
+        // Glyphs sit UP toward the horizon end of each wedge and OUT toward the screen edge.
+        gl: [Math.max(16, fL[0] * 0.14), fL[1] + (CANVAS_H - fL[1]) * 0.30],
+        gr: [Math.min(CANVAS_W - 16, fR[0] + (CANVAS_W - fR[0]) * 0.86), fR[1] + (CANVAS_H - fR[1]) * 0.30],
+        // Front-lip glyph only when the near edge is actually on-screen (else the floor fills to the
+        // bottom and there's no visible front edge to walk off).
+        gd: nL[1] < CANVAS_H - 8 ? [CANVAS_W / 2, (nL[1] + CANVAS_H) / 2] : null,
+      }
+    }
     const Cursor = regionInput?.Cursor
     return html`
       <div style="position: relative; width: ${CANVAS_W}px; height: ${CANVAS_H}px; background: #2c2c31;">
@@ -84,6 +131,16 @@ export function make3DAdapter() {
                     busy=${regionInput.busy} busyIcon=${regionInput.busyIcon}
                     cursorWarp=${regionInput.cursorWarp} />`
           : null}
+        ${wedges ? html`
+          <svg viewBox="0 0 ${CANVAS_W} ${CANVAS_H}" width=${CANVAS_W} height=${CANVAS_H}
+               style="position:absolute; left:0; top:0; overflow:hidden; pointer-events:none; z-index:10001;">
+            <polygon class="edge-wedge" points=${wedges.left} onClick=${regionInput.onEdge("left")}><title>Walk off the left edge</title></polygon>
+            <polygon class="edge-wedge" points=${wedges.right} onClick=${regionInput.onEdge("right")}><title>Walk off the right edge</title></polygon>
+            <polygon class="edge-wedge" points=${wedges.down} onClick=${regionInput.onEdge("down")}><title>Walk off the front edge</title></polygon>
+            <text class="edge-wedge-glyph" x=${wedges.gl[0]} y=${wedges.gl[1]}>◀</text>
+            <text class="edge-wedge-glyph" x=${wedges.gr[0]} y=${wedges.gr[1]}>▶</text>
+            ${wedges.gd ? html`<text class="edge-wedge-glyph" x=${wedges.gd[0]} y=${wedges.gd[1]}>▼</text>` : null}
+          </svg>` : null}
       </div>`
   }
 
@@ -135,8 +192,39 @@ export function make3DAdapter() {
       return Math.max(0, Math.min(160, Math.round((_v.x * 0.5 + 0.5) * 160)))
     },
 
-    // Full-height side chevrons over the 3D canvas. (edgeCoord omitted for now → a chevron transits
-    // immediately via the agnostic changeRegion, without a walk-to-edge GO first; a later refinement.)
-    sideChevronStyle: () => `height:${CANVAS_H}px; align-self:center;`,
+    // The 3D client draws its OWN edge affordances (the perspective wedges in RegionView3D), so the
+    // shell must NOT also render its rectangular grid chevrons. onEdge is still the shell's shared
+    // walk-then-transit handler; the wedges just invoke it.
+    rendersOwnEdges: true,
+
+    // Walk-off-edge → a floor GO coordinate at the region's x-edge, THEN transit (shell onEdgeClick).
+    // The 2D returns habitat coords directly; here the shell RAYCASTS the returned point, so we must
+    // return a floor SCREEN point (perspective). The depth comes from where the click landed within
+    // the floor edge's on-screen span (top/horizon → far, bottom/near-edge → near); we project a
+    // floor world point there (nudged just inside the edge so the raycast reliably lands on the floor).
+    edgeCoord: (edge, e, region) => {
+      const { view, canvas } = sceneRef
+      if (!view?.camera || !canvas) return null
+      const depth = region?.depth ?? DEFAULT_REGION_DEPTH
+      const rect = canvas.getBoundingClientRect()
+      // UN-PROJECT the click onto the floor plane (y=0): perspective-correct, so the walk target lands
+      // where the click points at the ground (a linear screen-Y→depth map is wrong under perspective).
+      const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1
+      const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1
+      _v.set(ndcX, ndcY, 0.5).unproject(view.camera)
+      const cam = view.camera.position
+      const dy = _v.y - cam.y
+      if (Math.abs(dy) < 1e-6) return null
+      const t = -cam.y / dy
+      const hitX = cam.x + t * (_v.x - cam.x) // world x where the click ray meets the floor
+      const hitZ = cam.z + t * (_v.z - cam.z) // world z (depth) there
+      const wallZ = depth * DEPTH_SCALE
+      const wz = Math.max(-wallZ, Math.min(0, hitZ)) // clamp into the walkable band
+      // left/right: pin x to the region's edge (walk off the side); down: keep the click's x (walk off
+      // the front). Nudge x just inside so the shell's raycast reliably lands on the floor.
+      const wx = edge === "left" ? 2 : edge === "right" ? REGION_W - 2 : Math.max(2, Math.min(REGION_W - 2, hitX))
+      const { cx, cy, behind } = floorToRegionCanvas(view, wx, wz)
+      return behind ? null : { cx, cy, scale: SCALE }
+    },
   }
 }
