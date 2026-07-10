@@ -765,6 +765,7 @@ export async function createClientShell(adapter) {
                     objects=${objs}
                     avatarMotion=${avatarMotion}
                     pickState=${pickState}
+                    world=${world}
                     regionInput=${{
                       Cursor: adapter.Cursor,
                       enabled: !!dispatchClient,
