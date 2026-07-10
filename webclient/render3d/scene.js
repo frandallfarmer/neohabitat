@@ -14,7 +14,8 @@ import {
   STAGE_W, STAGE_H, DEFAULT_REGION_DEPTH, DEFAULT_PROJECTION, FOREGROUND_BIT,
 } from "./project.js"
 import { Billboard } from "./billboard.js"
-import { renderBackdrop, splitBackdrop } from "./backdrop.js"
+import { splitBackdrop } from "./backdrop.js"
+import { compositeRegion } from "../habirender/region.js"
 import { hitTestFrame, celNumberAtFrame, limbAtFrame } from "../habirender/pick.mjs"
 
 // The object's ORIGIN in world coords (the billboard adds each frame's own cel offset — billboard.js).
@@ -35,7 +36,10 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2))
 
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x0a0a1a) // C64-ish night; overdrawn by the region's own flats
+  // Unrendered space (the canvas area outside the diorama flats, and behind props that hang off the
+  // frame like lamp posts). A subtle neutral dark grey — NOT a C64 palette value (it sits between
+  // black #000 and C64 dark grey #4a4a4a) so black props read against it instead of vanishing.
+  scene.background = new THREE.Color(0x2c2c31) // overdrawn by the region's own flats
 
   // Fixed camera: a slightly elevated, near-head-on view of the set so depth reads without ever
   // exposing the single wall's missing sides. Looks down +Z (from the front) at the floor's middle.
@@ -177,11 +181,11 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   }
 
   // Sync from a computeLayoutMap result + the live world (for mod + seating resolution).
-  const syncObjects = (layoutMap, world) => {
+  const syncObjects = (layoutMap, world, objects) => {
     setRegionDepth(world.region?.depth)
     const regionRef = world.region?.ref
     const live = new Set()
-    const bgItems = []      // the region's background objects → composited into the backdrop
+    let bgCount = 0         // how many background objects the backdrop will composite (grace gate)
     let bgSig = ""          // cache key: bg refs + their y + frame-canvas size
     for (const ref in layoutMap) {
      // Guard each object so one bad frame/layout can't abort the whole sync (which would leave every
@@ -200,14 +204,14 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       const seated = rec && rec.containerRef && rec.containerRef !== regionRef
       if (obj.in === regionRef && !isForegroundMod(mod) && !seated) {
         const f = layout.frames[0]
-        bgItems.push({ frame: f, x: layout.x, y: layout.y, modY: mod.y })
-        // The backdrop is cached and only rebuilt when this signature changes, so it must capture
-        // everything that alters what a background object draws: its render position (x,y), z-order
-        // (mod.y), and the fields that pick its frame — gr_state (animinit.m graphic state: doors
-        // opening, machines, gates, any state transition), orientation (horizontal flip), style
-        // (which prop), and the frame's size. gr_state is the general "BG object changed" signal;
-        // don't special-case doors. (In-place trap fills keep the same signature — the checksum
-        // grace window below catches those.)
+        bgCount++
+        // The backdrop (composited by compositeRegion below) is cached and only rebuilt when this
+        // signature changes, so it must capture everything that alters what a background object
+        // draws: its render position (x,y), z-order (mod.y), and the fields that pick its frame —
+        // gr_state (animinit.m graphic state: doors opening, machines, gates, any state transition),
+        // orientation (horizontal flip), style (which prop), and the frame's size. gr_state is the
+        // general "BG object changed" signal; don't special-case doors. (In-place trap fills keep
+        // the same signature — the checksum grace window below catches those.)
         bgSig += `${ref}:${layout.x},${layout.y}:${mod.y}:${mod.gr_state ?? 0}:${mod.orientation ?? 0}:${mod.style ?? 0}:${f?.canvas?.width}x${f?.canvas?.height};`
         continue
       }
@@ -262,10 +266,12 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     // change and async in-place trap fills. Each change re-extends the window; it closes once the
     // backdrop has been stable for ~10s.
     if (bgSig !== lastBgSetSig) { lastBgSetSig = bgSig; bgGrace = 600 }
-    if (bgGrace > 0 && bgItems.length) {
+    if (bgGrace > 0 && bgCount) {
       bgGrace--
       if ((bgGrace % 6) === 0) {
-        const backdrop = renderBackdrop(bgItems)
+        // Composite via the SHARED 2D compositor (bgOnly) so the backdrop is bit-identical to the 2D
+        // web client's render — same position/z-order/contents/trap handling — then split it.
+        const backdrop = compositeRegion(objects, layoutMap, { bgOnly: true })
         const sum = bgChecksum(backdrop)
         if (sum !== lastBgSum) {
           lastBgSum = sum

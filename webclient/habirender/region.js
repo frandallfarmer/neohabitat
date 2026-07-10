@@ -966,24 +966,29 @@ export const regionView = ({
         <//>`
 }
 
-export const generateRegionCanvas = async (filename) => {
-    const objects = await until(() => useHabitatJson(filename), o => o.length > 0)
-    await until(charset)
-    const layoutMap = computeLayoutMap(objects)
-    await until(() => Object.values(layoutMap).every(({ layout }) => layout.value))
+// Composite a region's objects into one 320×128 canvas — the canonical region backdrop, drawn with
+// the SAME per-object position / z-order / contents / trap-frame handling the 2D web client uses.
+// The 3D diorama reuses this (bgOnly: skip FOREGROUND 0x80 objects, which it billboards separately)
+// so its backdrop is bit-identical to the 2D client's before it is split onto the floor/wall. This
+// is the single source of truth for compositing — do not reimplement it per-renderer.
+export const compositeRegion = (objects, layoutMap, { bgOnly = false } = {}) => {
     const regionSpace = { minX: 0, minY: 0, maxX: 160 / 4, maxY: 127 }
     const canvas = canvasForSpace(regionSpace)
     const ctx = canvas.getContext("2d")
     const drawItem = (obj) => {
-        const { x, y, frames } = layoutMap[obj.ref].layout.value
-        const frame = frames[0]
+        const layout = layoutMap[obj.ref]?.layout?.value
+        if (!layout) return
+        const { x, y, frames } = layout
+        const frame = frames?.[0]
         if (frame?.canvas) {
             const [iX, iY] = positionInRegion(translateSpace(frame, x, y))
             ctx.drawImage(frame.canvas, iX, iY)
         }
     }
     for (const [obj, contents] of sortObjects(objects)) {
-        const prop = layoutMap[obj.ref].prop.value
+        if (bgOnly && (obj.mods?.[0]?.y & 0x80)) continue // FOREGROUND → billboard in 3D, not backdrop
+        const prop = layoutMap[obj.ref]?.prop?.value
+        if (!prop) continue
         drawItem(obj)
         for (const child of contents) {
             if (prop.contentsXY.length > child.mods[0].y) {
@@ -995,6 +1000,14 @@ export const generateRegionCanvas = async (filename) => {
         }
     }
     return canvas
+}
+
+export const generateRegionCanvas = async (filename) => {
+    const objects = await until(() => useHabitatJson(filename), o => o.length > 0)
+    await until(charset)
+    const layoutMap = computeLayoutMap(objects)
+    await until(() => Object.values(layoutMap).every(({ layout }) => layout.value))
+    return compositeRegion(objects, layoutMap)
 }
 
 export const regionImageView = ({ filename }) => {

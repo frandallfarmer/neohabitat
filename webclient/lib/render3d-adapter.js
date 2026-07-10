@@ -55,7 +55,7 @@ export function make3DAdapter() {
             const lm = layoutSig.current.value
             pickState.layoutMap = lm      // kept in sync for the shell / keyboard-target picks
             pickState.objects = objects
-            view.syncObjects(lm, world)
+            view.syncObjects(lm, world, objects)
           }
           view.advanceFrames(performance.now())
           view.renderFrame()
@@ -74,7 +74,7 @@ export function make3DAdapter() {
 
     const Cursor = regionInput?.Cursor
     return html`
-      <div style="position: relative; width: ${CANVAS_W}px; height: ${CANVAS_H}px; background: #000;">
+      <div style="position: relative; width: ${CANVAS_W}px; height: ${CANVAS_H}px; background: #2c2c31;">
         <canvas ref=${canvasRef} width=${CANVAS_W} height=${CANVAS_H}
                 style="display:block; width:${CANVAS_W}px; height:${CANVAS_H}px; image-rendering:pixelated;"></canvas>
         ${Cursor && regionInput.enabled
