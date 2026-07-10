@@ -12,6 +12,7 @@ import { signal } from "@preact/signals"
 import * as THREE from "../vendor/three.module.js"
 import { computeLayoutMap } from "../habirender/region.js"
 import { findGroundObject } from "../habirender/pick.mjs"
+import { RegionCursor } from "./cursor-view.js"
 import { createScene } from "../render3d/scene.js"
 
 const html = htm.bind(h)
@@ -85,6 +86,7 @@ export function make3DAdapter() {
 
   return {
     RegionView: RegionView3D,
+    Cursor: RegionCursor,          // the shell threads this into regionInput.Cursor; the modal pie-cursor
     installFit: installFitToViewport,
 
     // Pick at the cursor's press-anchor. canvasX/canvasY are scaled logical px (0..320*scale,
