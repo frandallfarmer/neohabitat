@@ -201,7 +201,14 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       if (obj.in === regionRef && !isForegroundMod(mod) && !seated) {
         const f = layout.frames[0]
         bgItems.push({ frame: f, x: layout.x, y: layout.y, modY: mod.y })
-        bgSig += `${ref}:${mod.y}:${f?.canvas?.width}x${f?.canvas?.height};`
+        // The backdrop is cached and only rebuilt when this signature changes, so it must capture
+        // everything that alters what a background object draws: its render position (x,y), z-order
+        // (mod.y), and the fields that pick its frame — gr_state (animinit.m graphic state: doors
+        // opening, machines, gates, any state transition), orientation (horizontal flip), style
+        // (which prop), and the frame's size. gr_state is the general "BG object changed" signal;
+        // don't special-case doors. (In-place trap fills keep the same signature — the checksum
+        // grace window below catches those.)
+        bgSig += `${ref}:${layout.x},${layout.y}:${mod.y}:${mod.gr_state ?? 0}:${mod.orientation ?? 0}:${mod.style ?? 0}:${f?.canvas?.width}x${f?.canvas?.height};`
         continue
       }
       // A contained item (a box's contents, a phone in a desk) renders ON its container's plane at
@@ -248,10 +255,12 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     // Drop billboards whose object left the region.
     for (const ref of [...billboards.keys()]) if (!live.has(ref)) removeBillboard(ref)
 
-    // On any bg-set change, (re)open a ~10s grace window (trap textures fill in over seconds, and
-    // the set sig stabilizes BEFORE the pixels do). Throttled to ~10 Hz, rebuild + checksum the
-    // composite and re-upload only when the pixels change — catching async in-place trap fills. Each
-    // change re-extends the window; it closes once the backdrop has been stable for ~10s.
+    // On any change to the bg signature — a new bg set, OR a background object changing gr_state /
+    // position / flip (a door opens, etc.) — (re)open a ~10s grace window (trap textures also fill in
+    // over seconds, and the sig stabilizes BEFORE those pixels do). Throttled to ~10 Hz, rebuild +
+    // checksum the composite and re-upload only when the pixels change — catching both the state
+    // change and async in-place trap fills. Each change re-extends the window; it closes once the
+    // backdrop has been stable for ~10s.
     if (bgSig !== lastBgSetSig) { lastBgSetSig = bgSig; bgGrace = 600 }
     if (bgGrace > 0 && bgItems.length) {
       bgGrace--
