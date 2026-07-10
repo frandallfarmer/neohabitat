@@ -713,8 +713,10 @@ export async function createClientShell(adapter) {
     const st = status.value
     const region = objs.find((o) => o.type === "context")
     const mode = modeState.value
-    // Edge-transit chevrons show only when standing in a region (not over a modal display).
-    const showEdges = region && dispatchClient && mode.mode === MODE_REGION
+    // Edge-transit chevrons show only when standing in a region (not over a modal display) — and only
+    // when the renderer doesn't draw its OWN edge affordances (the 3D adapter renders perspective
+    // wedges inside its RegionView instead; adapter.rendersOwnEdges).
+    const showEdges = region && dispatchClient && mode.mode === MODE_REGION && !adapter.rendersOwnEdges
     // Side chevrons span only the walkable band — from the region's bottom edge up by `depth` —
     // so they read as "walk off the ground edge", not the sky. canvasY is 1:1 with habitat y, so
     // the band is `depth` px tall (×scale). The region render sits one text-input line (8px×scale)
@@ -775,6 +777,7 @@ export async function createClientShell(adapter) {
                       onCommand: onRegionCommand,
                       onMove: (c) => { lastCursor = c; cursorInBounds = true },
                       onBounds: (v) => { cursorInBounds = v },
+                      onEdge: onEdgeClick, // a renderer that draws its OWN edge affordances (3D wedges) invokes this
                     }} />`}
           <//>
         <//>
