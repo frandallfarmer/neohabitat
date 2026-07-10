@@ -133,7 +133,7 @@ export const HELD_PICK_MARKER = 0x80
 const AVATAR_HAND_SLOT = 5 // dataequates.m AVATAR_HAND
 
 /** Raw pick-buffer id (red channel) at the click, or 0 for none/non-avatar. */
-const markerAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
+export const markerAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
   const buf = frame?.limbCanvas
   if (!buf) return 0
   const lx = Math.floor(canvasX - itemPx)
@@ -155,7 +155,7 @@ export const limbAtFrame = (frame, canvasX, canvasY, itemPx, itemPy) => {
 }
 
 /** The item an avatar holds (its HANDS-slot contents), for held-item picking. */
-const heldItemOf = (objects, avatarRef) =>
+export const heldItemOf = (objects, avatarRef) =>
   objects.find((o) => o.type === "item" && o.in === avatarRef
     && o.mods?.[0]?.y === AVATAR_HAND_SLOT) ?? null
 
