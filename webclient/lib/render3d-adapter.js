@@ -11,7 +11,7 @@ import { useRef, useEffect } from "preact/hooks"
 import { signal } from "@preact/signals"
 import * as THREE from "../vendor/three.module.js"
 import { computeLayoutMap } from "../habirender/region.js"
-import { pickAt as pick2D } from "../habirender/pick.mjs"
+import { pickAt as pick2D, heldItemOf } from "../habirender/pick.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { createScene } from "../render3d/scene.js"
 import { DEFAULT_PROJECTION, DEFAULT_REGION_DEPTH } from "../render3d/project.js"
@@ -164,8 +164,17 @@ export function make3DAdapter() {
       const fy = canvasY / (REGION_H * scale)
       const pick = view.pickAt({ clientX: rect.left + fx * rect.width, clientY: rect.top + fy * rect.height })
       if (!pick) return null
-      // Foreground billboard: the scene already transform-backed limb/cel.
+      // Foreground billboard: the scene already transform-backed limb/cel. A hit on the HELD item's
+      // pixels (pick.held, the 0x80 marker) resolves to the avatar's HANDS-slot object — like the 2D
+      // pickAt — so F7 / verbs target what's in hand, not the avatar. Find the avatar by noid to get
+      // its ref for heldItemOf.
       if (pick.kind === "object") {
+        if (pick.held) {
+          const objs = pickState?.objects || []
+          const avatar = objs.find(o => o.mods?.[0]?.noid === pick.noid)
+          const item = avatar ? heldItemOf(objs, avatar.ref) : null
+          if (item?.mods?.[0]) return { noid: item.mods[0].noid, habitatX: pick.habitatX, habitatY: pick.habitatY }
+        }
         return { noid: pick.noid, habitatX: pick.habitatX, habitatY: pick.habitatY, whichLimb: pick.whichLimb, celNumber: pick.celNumber }
       }
       // Backdrop (wall/floor): the scene inverted the horizon split into 2D backdrop canvas coords.

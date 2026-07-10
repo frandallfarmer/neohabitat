@@ -16,7 +16,7 @@ import {
 import { Billboard } from "./billboard.js"
 import { splitBackdrop } from "./backdrop.js"
 import { compositeRegion } from "../habirender/region.js"
-import { hitTestFrame, celNumberAtFrame, limbAtFrame } from "../habirender/pick.mjs"
+import { hitTestFrame, celNumberAtFrame, markerAtFrame, HELD_PICK_MARKER } from "../habirender/pick.mjs"
 
 // The object's ORIGIN in world coords (the billboard adds each frame's own cel offset — billboard.js).
 //   • horizontal: originX = layout.x × 8 (the object's x column; frame.minX×8 is added per frame).
@@ -348,10 +348,15 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       const px = Math.floor(h.uv.x * frame.canvas.width)
       const py = Math.floor((1 - h.uv.y) * frame.canvas.height) // CanvasTexture flipY
       if (!hitTestFrame(frame, px, py, 0, 0)) continue // transparent → not a real hit; try behind
+      // Read the avatar pick-buffer marker once: 1–4 → a body limb (SPRAY), 0x80 → the HELD item's
+      // pixels (composeAvatarFrame paints them with HELD_PICK_MARKER). `held` lets the adapter resolve
+      // the click to the avatar's HANDS-slot object (pick.mjs heldItemOf) — matching the 2D pickAt.
+      const marker = markerAtFrame(frame, px, py, 0, 0)
       return {
         kind: "object", noid, habitatX, habitatY,
-        whichLimb: limbAtFrame(frame, px, py, 0, 0),
+        whichLimb: marker >= 1 && marker <= 4 ? marker - 1 : null,
         celNumber: celNumberAtFrame(frame, px, py, 0, 0),
+        held: marker === HELD_PICK_MARKER,
       }
     }
     // No billboard → the BACKDROP. Invert splitBackdrop: the wall shows the top (STAGE_H−depth) rows,
