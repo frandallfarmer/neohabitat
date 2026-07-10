@@ -23,7 +23,7 @@ import {
   freeTalkerSlot,
   vicColorForSpeaker,
   speakerQuipX,
-  speakerAnchorForRecord,
+  speakerAnchorPx,
 } from "./balloons-layout.mjs"
 
 const html = htm.bind(h)
@@ -130,11 +130,17 @@ export function createBalloonState({
   maxDisplayLines = 10,
   maxBalloonLines = C64_MAX_BALLOON_LINES,
   maxHistoryLines = 100,
+  // Renderer hook: a speaker noid → its x in the 0..320 panel/screen space (where the quip tail
+  // points). Defaults to the 2D placement (speakerXposFromMod via speakerQuipX); the 3D client
+  // supplies a camera projection of the speaker's billboard. Only balloon horizontal positioning
+  // uses it — the panel is a fixed top band, so there is no vertical/head projection.
+  speakerScreenX = null,
 } = {}) {
   return {
     maxDisplayLines,
     maxBalloonLines,
     maxHistoryLines,
+    speakerScreenX,
     lines: [],
     scrollOffset: 0, // lines scrolled up from the bottom (0 = newest visible)
     talkerSlots: [0, 0, 0, 0, 0, 0],
@@ -213,7 +219,8 @@ export function pushBalloon(state, world, text, meta = {}) {
     meNoid,
     speakerNoid: speaker,
   })
-  const speakerX = speakerQuipX(world, speaker)
+  const projectSpeakerX = state.speakerScreenX ?? speakerQuipX
+  const speakerX = projectSpeakerX(world, speaker)
   const centerX = speakerX > 0 ? speakerX : 80
   const quipX = showQuip ? speakerX : 0
   const formatted = formatBalloonText(body, state.maxBalloonLines, { centerX })
@@ -227,7 +234,9 @@ export function pushBalloon(state, world, text, meta = {}) {
   while (state.lines.length > state.maxHistoryLines) state.lines.shift()
   state.scrollOffset = 0
 
-  const anchorPx = speakerX > 0 ? speakerAnchorForRecord(world?.get?.(speaker)) : 0
+  // The quip-tail pixel anchor derives from the same speaker-x (speakerAnchorPx(speakerX) equals
+  // the old speakerAnchorForRecord for the 2D default, and points at the projected x for 3D).
+  const anchorPx = speakerX > 0 ? speakerAnchorPx(speakerX) : 0
   if (showQuip && quipX > 0 && anchorPx > 0) {
     state.quip = { anchorPx, vicColor, until: Date.now() + QUIP_DURATION_MS }
   } else {
