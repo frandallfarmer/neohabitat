@@ -285,26 +285,26 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     ndc.y = -((ev.clientY - r.top) / r.height) * 2 + 1
   }
   const clampN = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v)
-  // Pick at a pointer position (an event or {clientX, clientY}). Returns the SAME shape as the 2D
-  // pick.mjs pickAt so verb-dispatch is reused unchanged:
-  //   object hit → { kind:"object", noid, habitatX, habitatY, whichLimb, celNumber }
-  //   floor hit  → { kind:"floor", x, y }  (habitat coords; x/y kept for the current live3d.js)
-  //   miss       → null
-  // whichLimb/celNumber come from the TRANSFORM-BACK: the billboard's raycast UV maps straight into
+  // Pick at a pointer position (an event or {clientX, clientY}):
+  //   foreground billboard → { kind:"object", noid, habitatX, habitatY, whichLimb, celNumber }
+  //   backdrop (wall/floor) → { kind:"backdrop", backdropX, backdropY }  (un-split 2D canvas coords)
+  //   miss                  → null
+  // FG whichLimb/celNumber come from the TRANSFORM-BACK: the billboard's raycast UV maps straight into
   // its current 2D frame, so pick.mjs limbAtFrame/celNumberAtFrame read the same cel/limb buffers the
   // 2D renderer built (SPRAY limb, door cel-2 pass-through). habitatX/Y is the cursor's floor coord.
+  // A BACKGROUND object (sign, door, ground) is baked into the backdrop texture, so we hand the caller
+  // its position in that texture and it reuses the 2D pick.mjs pickAt against the background objects.
   const pickAt = (ev) => {
     pointerToNdc(ev)
     raycaster.setFromCamera(ndc, camera)
-    // Cursor habitat coord = where the ray meets the floor (GO target / face), regardless of hits.
-    let habitatX = 0, habitatY = FOREGROUND_BIT | 0, onFloor = false
+    // Cursor habitat coord = where the ray meets the floor (GO target / face), for the FG-object case.
+    let habitatX = 0, habitatY = FOREGROUND_BIT | 0
     if (floorMesh) {
       const fHits = raycaster.intersectObject(floorMesh, false)
       if (fHits.length > 0) {
         const p = fHits[0].point // worldX → habitat x (col×8 → col×4); worldZ (−) → depth
         habitatX = clampN(Math.round(p.x / 8) * 4, 0, 160)
         habitatY = FOREGROUND_BIT | clampN(Math.round(-p.z / projection.depthScale), 0, regionDepth)
-        onFloor = true
       }
     }
     // Foreground billboards, nearest-first; skip transparent cel pixels (alpha test), like the 2D pick.
@@ -322,7 +322,19 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
         celNumber: celNumberAtFrame(frame, px, py, 0, 0),
       }
     }
-    if (onFloor) return { kind: "floor", x: habitatX, y: habitatY }
+    // No billboard → the BACKDROP. Invert splitBackdrop: the wall shows the top (STAGE_H−depth) rows,
+    // the floor the bottom `depth` rows; CanvasTexture flipY means UV v=1 is the top image row. Map the
+    // hit UV back to the un-split backdrop canvas (x∈[0,STAGE_W), y∈[0,STAGE_H−1)) for pick.mjs pickAt.
+    const bg = raycaster.intersectObjects([wallMesh, floorMesh].filter(Boolean), false)[0]
+    if (bg?.uv) {
+      const wallH = STAGE_H - regionDepth
+      const u = clampN(bg.uv.x, 0, 1), v = clampN(bg.uv.y, 0, 1)
+      const backdropX = clampN(Math.round(u * STAGE_W), 0, STAGE_W - 1)
+      const rawY = bg.object === wallMesh ? (1 - v) * (wallH - 1)
+                                          : wallH + (1 - v) * (regionDepth - 1)
+      const backdropY = clampN(Math.round(rawY), 0, STAGE_H - 2) // pick.mjs REGION_CANVAS_H is 127
+      return { kind: "backdrop", backdropX, backdropY }
+    }
     return null
   }
 

@@ -11,7 +11,7 @@ import { useRef, useEffect } from "preact/hooks"
 import { signal } from "@preact/signals"
 import * as THREE from "../vendor/three.module.js"
 import { computeLayoutMap } from "../habirender/region.js"
-import { findGroundObject } from "../habirender/pick.mjs"
+import { pickAt as pick2D } from "../habirender/pick.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { createScene } from "../render3d/scene.js"
 
@@ -42,6 +42,9 @@ export function make3DAdapter() {
       const view = createScene(THREE, { canvas })
       sceneRef.view = view; sceneRef.canvas = canvas
       view.resize()
+      if (new URLSearchParams(location.search).has("debug")) {
+        window.__scene3d = view; window.__pickState3d = pickState; window.__pick2D = pick2D
+      }
       const onResize = () => view.resize()
       window.addEventListener("resize", onResize)
       let raf = 0, errs = 0
@@ -104,13 +107,21 @@ export function make3DAdapter() {
       const fy = canvasY / (REGION_H * scale)
       const pick = view.pickAt({ clientX: rect.left + fx * rect.width, clientY: rect.top + fy * rect.height })
       if (!pick) return null
+      // Foreground billboard: the scene already transform-backed limb/cel.
       if (pick.kind === "object") {
         return { noid: pick.noid, habitatX: pick.habitatX, habitatY: pick.habitatY, whichLimb: pick.whichLimb, celNumber: pick.celNumber }
       }
-      // Floor → GO on the region's ground object at the floor's habitat coords (the 2D fallback).
-      const ground = findGroundObject(pickState?.objects || [])
-      if (!ground) return null
-      return { noid: ground.mods[0].noid, habitatX: pick.x, habitatY: pick.y }
+      // Backdrop (wall/floor): the scene inverted the horizon split into 2D backdrop canvas coords.
+      // Background objects (signs, doors, ground) are baked into that texture from the SAME 2D layout,
+      // so pick.mjs pickAt resolves them there exactly as the 2D client would — including the ground
+      // fallback (→ floor GO). Exclude FOREGROUND objects (avatars/furniture): those are billboards
+      // handled by the raycast above, and their 2D layout position ≠ their 3D screen position.
+      if (pick.kind === "backdrop") {
+        const bgObjects = (pickState?.objects || []).filter(o => o.type === "context" || !(o.mods?.[0]?.y & 0x80))
+        const hit = pick2D(pickState?.layoutMap, bgObjects, pick.backdropX, pick.backdropY)
+        return hit ? { noid: hit.noid, habitatX: hit.habitatX, habitatY: hit.habitatY, whichLimb: hit.whichLimb, celNumber: hit.celNumber } : null
+      }
+      return null
     },
 
     // Balloon horizontal hook: project the speaker's billboard to the screen and map into the
