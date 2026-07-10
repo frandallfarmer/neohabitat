@@ -21,6 +21,10 @@ export class Billboard {
     this.index = 0
     this.w = 1
     this.h = 1
+    // The object's ORIGIN in world coords (feet/base). Each frame is placed by its OWN cel space
+    // relative to this origin (see _applyFrame), so a multi-frame animation whose bounding box
+    // shifts (a walk cycle) doesn't hop against a fixed union box.
+    this.anchor = { x: 0, y: 0, z: 0 }
     // A unit plane; we scale it per-frame so a single geometry serves every size.
     this.material = new THREE.MeshBasicMaterial({
       transparent: true,
@@ -76,12 +80,22 @@ export class Billboard {
       this.h = h
       this.mesh.scale.set(w, h, 1)
     }
+    // This frame's canvas bottom-left, from the object origin + the frame's OWN cel space:
+    //   left   = originX + minX×8   (canvas.width = (maxX−minX)×8)
+    //   bottom = originY + minY     (canvas.height = maxY−minY; minY=0 keeps feet on the origin)
+    // Different frames (a walk cycle) each place by their own minY, so the origin stays put — no bop.
+    const left = this.anchor.x + (f.minX || 0) * 8
+    const bottom = this.anchor.y + (f.minY || 0)
+    this.mesh.position.set(left + w / 2, bottom + h / 2, this.anchor.z)
   }
 
-  // Place the quad by its LEFT / BASE corner in world coords, at depth wz. The plane is centered
-  // on its own origin, so offset by half-size to put (wx, wy) at the bottom-left of the sprite.
+  // Set the object's ORIGIN (feet/base) in world coords, at depth wz. Per-frame cel offsets are
+  // applied in _applyFrame; single/resting frames (minY=0, minX=union) reduce to the old placement.
   setWorldRect(wx, wy, wz) {
-    this.mesh.position.set(wx + this.w / 2, wy + this.h / 2, wz)
+    this.anchor.x = wx
+    this.anchor.y = wy
+    this.anchor.z = wz
+    this._applyFrame()
   }
 
   // No-op for the fixed camera; hook for a future sway/parallax camera.

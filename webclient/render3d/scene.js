@@ -4,9 +4,9 @@
 // client's painter's-Y z-index; a raycast replaces its pixel-readback pick.
 //
 // Three is passed in (from ../vendor/three.module.js) so this module has no hard import of it.
-// Placement reuses the 2D client's own layout box (objectSpaceFromLayout) for horizontal parity,
-// then lifts it into 3D via project.js. See the plan's risk note: the exact vertical anchor is
-// tuned against the live 2D render.
+// Placement gives the billboard the object's ORIGIN (project.js horizon model); the billboard then
+// positions each animation frame by its own cel space (billboard.js), matching the 2D client's
+// per-frame draw so a walk cycle doesn't hop.
 
 import { floorGeometry, wallGeometry } from "./env.js"
 import {
@@ -14,17 +14,15 @@ import {
   STAGE_W, STAGE_H, DEFAULT_REGION_DEPTH, DEFAULT_PROJECTION, FOREGROUND_BIT,
 } from "./project.js"
 import { Billboard } from "./billboard.js"
-import { objectSpaceFromLayout } from "../habirender/region.js"
 import { renderBackdrop, splitBackdrop } from "./backdrop.js"
 
-// Convert an object's 2D layout box into the world-space bottom-left corner of its billboard.
-//   • horizontal: exact 2D parity — pxLeft = objSpace.minX × 8 (render.js topLeftCanvasOffset).
-//   • vertical/depth: from the horizon model (project.js) — floor objects rest at wy=0 receding by
+// The object's ORIGIN in world coords (the billboard adds each frame's own cel offset — billboard.js).
+//   • horizontal: originX = layout.x × 8 (the object's x column; frame.minX×8 is added per frame).
+//   • vertical/depth: the horizon model (project.js) — floor objects' feet rest at wy=0 receding by
 //     depth; wall objects sit at wy=(v−depth) up from the horizon at the wall.
 const placeFromLayout = (layout, mod, regionDepth, cfg) => {
-  const objSpace = objectSpaceFromLayout(layout)
   const p = worldFromObjectXY(mod.x, mod.y, regionDepth, cfg)
-  return { wx: objSpace.minX * 8, wy: p.wy, wz: p.wz }
+  return { wx: layout.x * 8, wy: p.wy, wz: p.wz }
 }
 
 // Background (the whole bg pass) is composited into one texture and split onto the floor/wall
@@ -157,22 +155,21 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     return entry
   }
 
-  // Place a contained item ON its container's plane (2D containedItemLayout): the item's own layout
-  // is already container-relative (computeLayoutMap ran containedItemLayout / offsetsFromContainer),
-  // so its horizontal is absolute and its vertical offset from the container is (item.minY −
-  // container.minY). Depth is the container's plane; contentsInFront nudges it in front, else behind.
+  // The ORIGIN of a contained item ON its container's plane (2D containedItemLayout). The item's own
+  // layout is already container-relative (computeLayoutMap ran containedItemLayout /
+  // offsetsFromContainer), so its origin X is layout.x×8 and its origin Y is the container's origin
+  // plus the 2D vertical offset (item.layout.y − container.layout.y). The billboard adds each frame's
+  // own cel offset. Depth is the container's plane; contentsInFront nudges it in front, else behind.
   const containedItemPos = (layout, containerItem) => {
     const cLayout = containerItem.layout?.value
     const cMod = containerItem.obj?.value?.mods?.[0]
     const cProp = containerItem.prop?.value
     if (!cLayout || !cMod || !cProp) return null
-    const cObjSpace = objectSpaceFromLayout(cLayout)
-    const cPlace = placeFromLayout(cLayout, cMod, regionDepth, projection)
-    const myObjSpace = objectSpaceFromLayout(layout)
+    const cPlace = placeFromLayout(cLayout, cMod, regionDepth, projection) // container origin anchor
     const bias = cProp.contentsInFront ? projection.fgBias : -projection.fgBias
     return {
-      wx: myObjSpace.minX * 8,
-      wy: cPlace.wy + (myObjSpace.minY - cObjSpace.minY),
+      wx: layout.x * 8,
+      wy: cPlace.wy + (layout.y - cLayout.y),
       wz: cPlace.wz + bias,
     }
   }
