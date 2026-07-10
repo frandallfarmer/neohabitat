@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NeoHabitat 3D (diorama)</title>
-    <!-- Same specifiers the shared libs (region.js, avatar-chore.js, presentation.js …) import.
-         Three is loaded by live3d.js via a relative path and passed in, so it needs no mapping. -->
+    <meta name="viewport" content="width=1040" />
+    <title>NeoHabitat 3D</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Same importmap + #app shell as live.html — the 3D client is the same app-shell with a
+         different renderer adapter. Three.js is loaded by render3d-adapter.js via a relative path
+         (passed into createScene), so it needs no import-map entry. -->
     <script type="importmap">
         {
             "imports": {
@@ -17,19 +19,9 @@
             }
         }
     </script>
-    <style>
-        html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
-        #scene { display: block; width: 100vw; height: 100vh; touch-action: none; image-rendering: pixelated; }
-        #status3d {
-            position: fixed; left: 8px; bottom: 8px; z-index: 10;
-            font: 12px/1.4 monospace; color: #9fe; background: rgba(0,0,0,.55);
-            padding: 4px 8px; border-radius: 4px; pointer-events: none; max-width: 90vw;
-        }
-    </style>
     <script type="module" src="./lib/live3d.js"></script>
 </head>
-<body>
-    <canvas id="scene"></canvas>
-    <div id="status3d">loading…</div>
+<body style="background: #000;">
+    <div id="app" style="display: flex; flex-direction: column; gap: 10px; padding: 2px 12px 12px;"></div>
 </body>
 </html>

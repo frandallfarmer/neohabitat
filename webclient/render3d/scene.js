@@ -15,6 +15,7 @@ import {
 } from "./project.js"
 import { Billboard } from "./billboard.js"
 import { renderBackdrop, splitBackdrop } from "./backdrop.js"
+import { hitTestFrame, celNumberAtFrame, limbAtFrame } from "../habirender/pick.mjs"
 
 // The object's ORIGIN in world coords (the billboard adds each frame's own cel offset — billboard.js).
 //   • horizontal: originX = layout.x × 8 (the object's x column; frame.minX×8 is added per frame).
@@ -152,6 +153,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     }
     if (entry.framesRef !== frames) { entry.bb.setFrames(frames); entry.framesRef = frames }
     entry.bb.mesh.userData.noid = mod.noid
+    entry.bb.mesh.userData.bb = entry.bb // so the raycast can read the CURRENT frame for cel/limb pick
     return entry
   }
 
@@ -199,7 +201,14 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
       if (obj.in === regionRef && !isForegroundMod(mod) && !seated) {
         const f = layout.frames[0]
         bgItems.push({ frame: f, x: layout.x, y: layout.y, modY: mod.y })
-        bgSig += `${ref}:${mod.y}:${f?.canvas?.width}x${f?.canvas?.height};`
+        // The backdrop is cached and only rebuilt when this signature changes, so it must capture
+        // everything that alters what a background object draws: its render position (x,y), z-order
+        // (mod.y), and the fields that pick its frame — gr_state (animinit.m graphic state: doors
+        // opening, machines, gates, any state transition), orientation (horizontal flip), style
+        // (which prop), and the frame's size. gr_state is the general "BG object changed" signal;
+        // don't special-case doors. (In-place trap fills keep the same signature — the checksum
+        // grace window below catches those.)
+        bgSig += `${ref}:${layout.x},${layout.y}:${mod.y}:${mod.gr_state ?? 0}:${mod.orientation ?? 0}:${mod.style ?? 0}:${f?.canvas?.width}x${f?.canvas?.height};`
         continue
       }
       // A contained item (a box's contents, a phone in a desk) renders ON its container's plane at
@@ -246,10 +255,12 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     // Drop billboards whose object left the region.
     for (const ref of [...billboards.keys()]) if (!live.has(ref)) removeBillboard(ref)
 
-    // On any bg-set change, (re)open a ~10s grace window (trap textures fill in over seconds, and
-    // the set sig stabilizes BEFORE the pixels do). Throttled to ~10 Hz, rebuild + checksum the
-    // composite and re-upload only when the pixels change — catching async in-place trap fills. Each
-    // change re-extends the window; it closes once the backdrop has been stable for ~10s.
+    // On any change to the bg signature — a new bg set, OR a background object changing gr_state /
+    // position / flip (a door opens, etc.) — (re)open a ~10s grace window (trap textures also fill in
+    // over seconds, and the sig stabilizes BEFORE those pixels do). Throttled to ~10 Hz, rebuild +
+    // checksum the composite and re-upload only when the pixels change — catching both the state
+    // change and async in-place trap fills. Each change re-extends the window; it closes once the
+    // backdrop has been stable for ~10s.
     if (bgSig !== lastBgSetSig) { lastBgSetSig = bgSig; bgGrace = 600 }
     if (bgGrace > 0 && bgItems.length) {
       bgGrace--
@@ -282,30 +293,56 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
     ndc.x = ((ev.clientX - r.left) / r.width) * 2 - 1
     ndc.y = -((ev.clientY - r.top) / r.height) * 2 + 1
   }
-  // Returns { kind:"object", noid } for a prop/avatar hit, or { kind:"floor", x, y } in habitat
-  // coords for a floor hit, or null.
+  const clampN = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v)
+  // Pick at a pointer position (an event or {clientX, clientY}):
+  //   foreground billboard → { kind:"object", noid, habitatX, habitatY, whichLimb, celNumber }
+  //   backdrop (wall/floor) → { kind:"backdrop", backdropX, backdropY }  (un-split 2D canvas coords)
+  //   miss                  → null
+  // FG whichLimb/celNumber come from the TRANSFORM-BACK: the billboard's raycast UV maps straight into
+  // its current 2D frame, so pick.mjs limbAtFrame/celNumberAtFrame read the same cel/limb buffers the
+  // 2D renderer built (SPRAY limb, door cel-2 pass-through). habitatX/Y is the cursor's floor coord.
+  // A BACKGROUND object (sign, door, ground) is baked into the backdrop texture, so we hand the caller
+  // its position in that texture and it reuses the 2D pick.mjs pickAt against the background objects.
   const pickAt = (ev) => {
     pointerToNdc(ev)
     raycaster.setFromCamera(ndc, camera)
-    const objHits = raycaster.intersectObjects(pickGroup.children, false)
-    if (objHits.length > 0) {
-      const noid = objHits[0].object.userData.noid
-      if (noid != null) return { kind: "object", noid }
-    }
+    // Cursor habitat coord = where the ray meets the floor (GO target / face), for the FG-object case.
+    let habitatX = 0, habitatY = FOREGROUND_BIT | 0
     if (floorMesh) {
       const fHits = raycaster.intersectObject(floorMesh, false)
       if (fHits.length > 0) {
-        const p = fHits[0].point
-        // Inverse projection: worldX → habitat x (col×8 → col×4); worldZ (negative) → depth → y.
-        const col = Math.round(p.x / 8)
-        let habX = col * 4
-        if (habX < 0) habX = 0
-        else if (habX > 160) habX = 160
-        let depth = Math.round(-p.z / projection.depthScale)
-        if (depth < 0) depth = 0
-        else if (depth > regionDepth) depth = regionDepth
-        return { kind: "floor", x: habX, y: FOREGROUND_BIT | depth }
+        const p = fHits[0].point // worldX → habitat x (col×8 → col×4); worldZ (−) → depth
+        habitatX = clampN(Math.round(p.x / 8) * 4, 0, 160)
+        habitatY = FOREGROUND_BIT | clampN(Math.round(-p.z / projection.depthScale), 0, regionDepth)
       }
+    }
+    // Foreground billboards, nearest-first; skip transparent cel pixels (alpha test), like the 2D pick.
+    for (const h of raycaster.intersectObjects(pickGroup.children, false)) {
+      const noid = h.object.userData.noid
+      const bb = h.object.userData.bb
+      const frame = bb?.frames?.[bb.index]
+      if (noid == null || !frame?.canvas || !h.uv) continue
+      const px = Math.floor(h.uv.x * frame.canvas.width)
+      const py = Math.floor((1 - h.uv.y) * frame.canvas.height) // CanvasTexture flipY
+      if (!hitTestFrame(frame, px, py, 0, 0)) continue // transparent → not a real hit; try behind
+      return {
+        kind: "object", noid, habitatX, habitatY,
+        whichLimb: limbAtFrame(frame, px, py, 0, 0),
+        celNumber: celNumberAtFrame(frame, px, py, 0, 0),
+      }
+    }
+    // No billboard → the BACKDROP. Invert splitBackdrop: the wall shows the top (STAGE_H−depth) rows,
+    // the floor the bottom `depth` rows; CanvasTexture flipY means UV v=1 is the top image row. Map the
+    // hit UV back to the un-split backdrop canvas (x∈[0,STAGE_W), y∈[0,STAGE_H−1)) for pick.mjs pickAt.
+    const bg = raycaster.intersectObjects([wallMesh, floorMesh].filter(Boolean), false)[0]
+    if (bg?.uv) {
+      const wallH = STAGE_H - regionDepth
+      const u = clampN(bg.uv.x, 0, 1), v = clampN(bg.uv.y, 0, 1)
+      const backdropX = clampN(Math.round(u * STAGE_W), 0, STAGE_W - 1)
+      const rawY = bg.object === wallMesh ? (1 - v) * (wallH - 1)
+                                          : wallH + (1 - v) * (regionDepth - 1)
+      const backdropY = clampN(Math.round(rawY), 0, STAGE_H - 2) // pick.mjs REGION_CANVAS_H is 127
+      return { kind: "backdrop", backdropX, backdropY }
     }
     return null
   }
