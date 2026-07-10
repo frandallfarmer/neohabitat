@@ -62,7 +62,7 @@ export function make3DAdapter() {
       }
       const onResize = () => { view.resize(); readySig.current.value++ }
       window.addEventListener("resize", onResize)
-      let raf = 0, errs = 0
+      let raf = 0, errs = 0, lastCamZ = null
       const loop = () => {
         const { objects, world } = latest.current
         try {
@@ -74,6 +74,11 @@ export function make3DAdapter() {
           }
           view.advanceFrames(performance.now())
           view.renderFrame()
+          // Recompute the edge wedges whenever the camera reframes — resize, or the region depth
+          // change that syncObjects applies here (setRegionDepth → placeCamera). The wedge geometry is
+          // projected in the render, so a re-render must follow the reframe. camZ captures both.
+          const cz = view.camera.position.z
+          if (cz !== lastCamZ) { lastCamZ = cz; readySig.current.value++ }
           errs = 0
         } catch (e) { if (errs++ < 3) console.error("[render3d] frame failed:", e) }
         raf = requestAnimationFrame(loop)
@@ -202,18 +207,22 @@ export function make3DAdapter() {
       if (!view?.camera || !canvas) return null
       const depth = region?.depth ?? DEFAULT_REGION_DEPTH
       const rect = canvas.getBoundingClientRect()
-      let wx, wz
-      if (edge === "left" || edge === "right") {
-        wx = edge === "left" ? 2 : REGION_W - 2
-        // Depth from the click's vertical position within this edge's projected near→far screen span.
-        const nearY = floorToRegionCanvas(view, wx, 0).cy * SCALE * (rect.height / CANVAS_H)
-        const farY = floorToRegionCanvas(view, wx, -depth * DEPTH_SCALE).cy * SCALE * (rect.height / CANVAS_H)
-        const frac = clamp01(((e.clientY - rect.top) - farY) / Math.max(1, nearY - farY)) // 0 far → 1 near
-        wz = -(1 - frac) * depth * DEPTH_SCALE
-      } else { // down / front lip: the near floor edge, x from the click across the canvas
-        wx = clamp01((e.clientX - rect.left) / rect.width) * REGION_W
-        wz = -1 * DEPTH_SCALE
-      }
+      // UN-PROJECT the click onto the floor plane (y=0): perspective-correct, so the walk target lands
+      // where the click points at the ground (a linear screen-Y→depth map is wrong under perspective).
+      const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1
+      const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1
+      _v.set(ndcX, ndcY, 0.5).unproject(view.camera)
+      const cam = view.camera.position
+      const dy = _v.y - cam.y
+      if (Math.abs(dy) < 1e-6) return null
+      const t = -cam.y / dy
+      const hitX = cam.x + t * (_v.x - cam.x) // world x where the click ray meets the floor
+      const hitZ = cam.z + t * (_v.z - cam.z) // world z (depth) there
+      const wallZ = depth * DEPTH_SCALE
+      const wz = Math.max(-wallZ, Math.min(0, hitZ)) // clamp into the walkable band
+      // left/right: pin x to the region's edge (walk off the side); down: keep the click's x (walk off
+      // the front). Nudge x just inside so the shell's raycast reliably lands on the floor.
+      const wx = edge === "left" ? 2 : edge === "right" ? REGION_W - 2 : Math.max(2, Math.min(REGION_W - 2, hitX))
       const { cx, cy, behind } = floorToRegionCanvas(view, wx, wz)
       return behind ? null : { cx, cy, scale: SCALE }
     },
