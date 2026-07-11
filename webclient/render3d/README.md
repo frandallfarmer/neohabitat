@@ -161,6 +161,11 @@ held-item picking all work through the **same renderer-agnostic code as the 2D c
   continue. Disable with `?neighbors=0`. Matched/180°/±90° facings are handled; corner (diagonal)
   neighbors are a future refinement. The valid-exit chevrons (only where a neighbor exists) are
   independent of this switch and always on.
+- **Floating region-name labels (experimental).** The current region's name floats in the grey band
+  above the wall; each neighbor's name floats as a "To …" exit — the left/right ones raked onto the
+  next-region selection wedge's diagonal, the down one in the chevron band (`render3d/labels.js`,
+  drawn on top with `depthTest:false`). The current name always shows; the "To …" exit names ride the
+  `?neighbors=0` switch. North (behind the wall) has no surface and is skipped.
 - The ground is a flat receding quad; a genuinely trapezoidal ground flat isn't yet promoted to its
   own angled geometry (`env.js` `trapQuad` exists but isn't wired).
 - Occasional all-black avatar (a container/composition edge case) still open.

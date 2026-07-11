@@ -16,6 +16,7 @@ import {
 import { Billboard } from "./billboard.js"
 import { splitBackdrop } from "./backdrop.js"
 import { buildNeighborDioramas, clearNeighbors } from "./neighbors.js"
+import { buildRegionLabel, buildNeighborLabels, clearLabel } from "./labels.js"
 import { compositeRegion } from "../habirender/region.js"
 import { hitTestFrame, celNumberAtFrame, markerAtFrame, HELD_PICK_MARKER } from "../habirender/pick.mjs"
 
@@ -113,6 +114,13 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION, ne
   scene.add(neighborsGroup)
   let lastNeighborRegion = null
   let neighborToken = { stale: false }
+
+  // Floating region-name text in the grey band above the wall (labels.js). Rebuilt on region change;
+  // NOT gated by the neighbors switch — the name shows even with ?neighbors=0.
+  const labelGroup = new THREE.Group()
+  scene.add(labelGroup)
+  let lastLabelRegion = null
+  let labelToken = { stale: false }
 
   // Backdrop rebuild bookkeeping. We can't cache on the bg set alone: trapezoid flats (sky/ground)
   // allocate their canvas at full size and fill it ASYNCHRONOUSLY when the trap texture loads —
@@ -216,6 +224,13 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION, ne
       neighborToken.stale = true
       neighborToken = { stale: false }
       buildNeighborDioramas(THREE, neighborsGroup, world, regionDepth, projection, neighborToken)
+    }
+    if (regionRef && regionRef !== lastLabelRegion) {
+      lastLabelRegion = regionRef
+      labelToken.stale = true
+      labelToken = { stale: false }
+      buildRegionLabel(THREE, labelGroup, world, regionDepth, projection) // current region (clears group)
+      if (neighbors) buildNeighborLabels(THREE, labelGroup, world, regionDepth, projection, labelToken, camera) // side names, with previews
     }
     const live = new Set()
     let bgCount = 0         // how many background objects the backdrop will composite (grace gate)
@@ -406,6 +421,7 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION, ne
     for (const ref of [...billboards.keys()]) removeBillboard(ref)
     neighborToken.stale = true
     clearNeighbors(neighborsGroup)
+    clearLabel(labelGroup)
     renderer.dispose()
   }
 

@@ -30,7 +30,7 @@ export const sideNeighborRef = (neighbors, orientation, side) => {
 // Per-neighbor {depth, orientation} from its DB context mod — the metadata the render bitmaps lack.
 // contextMap() (db/contextmap.json) maps ref → {filename}; parse that file's context/Region mod.
 const metaCache = new Map()
-const neighborMeta = async (ref) => {
+export const neighborMeta = async (ref) => {
   if (metaCache.has(ref)) return metaCache.get(ref)
   let meta = null
   try {
