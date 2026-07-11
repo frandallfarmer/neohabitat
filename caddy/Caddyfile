@@ -61,7 +61,7 @@ habitat.themade.org {
 			flush_interval -1
 		}
 	}
-	@docent path /neohabitat /docs/* /renders/* /images/* /javascripts/* /stylesheets/*
+	@docent path /neohabitat /neohabitat3d /docs/* /renders/* /images/* /javascripts/* /stylesheets/*
 	handle @docent {
 		reverse_proxy neohabitat:1701
 	}

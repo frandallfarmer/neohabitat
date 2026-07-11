@@ -49,6 +49,22 @@ class IndexRoutes {
       });
     });
 
+    // Same docent wrapper, but around the 3D web client (live3d.html) with the region docent text in
+    // a page-width frame below it instead of the right-hand pane. Reuses the identical docent-session
+    // correlation + SSE; live3d.html and the shared shell are untouched.
+    this.router.get('/neohabitat3d', function(req, res, next) {
+      var docentSessionId = newDocentSessionId();
+      res.cookie('docentSessionId', docentSessionId, {
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      res.render('neohabitat3d', {
+        title: 'Neohabitat — 3D Web Client',
+        config: self.config,
+        docentSessionId: docentSessionId,
+      });
+    });
+
     this.router.get('/c64', function(req, res, next) {
       var awakeSessions = self.habiproxy.awakeSessions();
       if ('avatarName' in req.session && req.session.avatarName in awakeSessions) {
