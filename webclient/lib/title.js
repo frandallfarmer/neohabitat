@@ -17,6 +17,7 @@
 import { h } from "preact"
 import htm from "htm"
 import { useEffect, useRef, useState } from "preact/hooks"
+import { getSoundEngine, ensureGestureAudioContext } from "./sound.js"
 
 const html = htm.bind(h)
 
@@ -70,22 +71,6 @@ const TITLE_SRC = "./assets/habsill.png"
 const BITMAP_Y = 72 // 9 text rows × 8 — where the bitmap band begins on the C64 screen
 const MAX_NAME_LEN = 14 // Habitat avatar-name limit; enforced on submit (the input is full-width)
 
-// Lazy, shared sound engine. Imported dynamically so a failure to load/init audio
-// (or its AudioWorklet) degrades to a silent-but-working title — the visuals and the
-// "proceed" flow never depend on sound.
-let _hsPromise = null
-async function getSound() {
-  if (!_hsPromise) {
-    _hsPromise = (async () => {
-      const { HabiSound } = await import("../../habisound/lib/habisound.js")
-      const hs = new HabiSound()
-      await hs.init()
-      return hs
-    })()
-  }
-  return _hsPromise
-}
-
 const Comet = ({ playing, onDone }) => {
   const canvasRef = useRef(null)
 
@@ -135,16 +120,18 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
   // title (live.js boot), the comet can finish first — hold at "Loading…" until it's ready.
   const [phase, setPhase] = useState("idle")
 
-  const begin = async () => {
+  const begin = () => {
     if (phase !== "idle") return
     setPhase("playing")
-    try {
-      const hs = await getSound()
-      await hs.resume()       // must be inside the click for autoplay policy
-      hs.playTune("title")    // opening-notes warm-up still TODO (see task: title music)
-    } catch (e) {
-      console.warn("title music unavailable:", e)
-    }
+    // Seize THIS click for audio: create + resume the shared AudioContext SYNCHRONOUSLY,
+    // before any await, so Safari honors it (autoplay policy needs live user activation —
+    // the old code awaited getSound() first, losing activation, so nothing played). The
+    // engine (worklet + bank) then loads async on the already-running context, and the game
+    // reuses that same context, so audio started here survives into the world.
+    ensureGestureAudioContext()
+    getSoundEngine()
+      .then((hs) => hs.playTune("title")) // opening-notes warm-up still TODO (see task: title music)
+      .catch((e) => console.warn("title music unavailable:", e))
   }
 
   // Once loaded, the player names their Avatar via the browser's native prompt — it's one short
@@ -162,7 +149,7 @@ export const TitleScreen = ({ onProceed, ready = true }) => {
     }
     if (!n) return // cancelled or left empty — stay on the title screen
     setName(n)
-    try { (await getSound()).stop() } catch (_) { /* fine */ }
+    try { (await getSoundEngine()).stop() } catch (_) { /* fine */ }
     onProceed(n)
   }
 

@@ -18,6 +18,22 @@ const trace = (...args) => { if (SOUND_TRACE) console.log("[sound-trace]", ...ar
 let _enginePromise = null
 let _focusResumeInstalled = false
 
+// The ONE AudioContext for the whole client. It must be created and resumed synchronously
+// inside a real user gesture — the title screen's "Click to begin" — because Safari only
+// honors AudioContext.resume() while user activation is live (Chrome's sticky activation is
+// lenient; Safari's is not). Both the title music and the in-world sound engine share it, so
+// audio that starts on that first click keeps working into the game. Call this from the click
+// handler BEFORE any await.
+let _gestureCtx = null
+export function ensureGestureAudioContext() {
+  const AC = globalThis.AudioContext || globalThis.webkitAudioContext
+  if (!_gestureCtx && AC) _gestureCtx = new AC()
+  // resume() is fire-and-forget, but the CALL must happen with activation still live — hence
+  // callers must invoke this synchronously in the gesture, not after an await.
+  _gestureCtx?.resume?.().catch(() => {})
+  return _gestureCtx
+}
+
 /** Same as Connect's `await hs.resume()` — run when the tab regains focus. */
 export function installFocusResume(getHs) {
   if (_focusResumeInstalled || typeof document === 'undefined') return
@@ -41,7 +57,9 @@ export async function getSoundEngine(opts = {}) {
       trace("init: loading HabiSound from", HABISOUND_URL)
       const { HabiSound } = await import(HABISOUND_URL)
       const hs = new HabiSound({
-        audioContext: opts.audioContext ?? null,
+        // Default to the gesture-seized shared context so the engine adopts the already-
+        // running context from the title's first click (Safari), not a fresh suspended one.
+        audioContext: opts.audioContext ?? _gestureCtx ?? null,
         dataUrl: new URL("../../habisound/data/sounds.json", import.meta.url).href,
         workletUrl: new URL("../../habisound/lib/synth-worklet.js", import.meta.url).href,
       })

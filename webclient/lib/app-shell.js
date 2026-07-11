@@ -438,18 +438,28 @@ export async function createClientShell(adapter) {
     try {
       if (!hs) {
         if (SOUND_TRACE) console.log("[sound-trace] Connect: initializing habisound…")
-        // AudioContext must be constructed in the synchronous tail of the click handler.
-        const AC = globalThis.AudioContext || globalThis.webkitAudioContext
-        const gestureCtx = AC ? new AC() : null
-        hs = await getSoundEngine({ audioContext: gestureCtx })
-        await hs.resume()
+        // The AudioContext was created + resumed in the title's first click
+        // (ensureGestureAudioContext) and is shared via getSoundEngine — adopt it, do NOT
+        // make a fresh (suspended) one here.
+        hs = await getSoundEngine()
         installFocusResume(() => hs)
+        // Fallback if the title gesture was skipped (e.g. a direct-connect entry): resume on
+        // the next pointer/key gesture.
+        const armResume = () => {
+          hs?.resume().catch(() => {})
+          window.removeEventListener("pointerdown", armResume, true)
+          window.removeEventListener("keydown", armResume, true)
+        }
+        window.addEventListener("pointerdown", armResume, true)
+        window.addEventListener("keydown", armResume, true)
         if (SOUND_TRACE) console.log("[sound-trace] Connect: audioContext =", hs.ctx?.state)
-      } else {
-        await hs.resume()
       }
+      // Best-effort resume — NEVER awaited. Safari won't settle ctx.resume() without active
+      // user activation, so awaiting it here hung the whole connection ("stuck at ready —
+      // set parameters and Connect"). Sound is optional and must not gate the transport.
+      hs?.resume().catch(() => {})
     } catch (e) {
-      console.warn("[sound-trace] habisound init FAILED — continuing without sound", e)
+      console.warn("[sound] init failed — continuing without sound", e)
       hs = null
     }
     if (transport) transport.close()
