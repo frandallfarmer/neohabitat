@@ -58,16 +58,19 @@ export async function make2DAdapter() {
 // screen. scrollWidth/Height are LAYOUT sizes (a CSS transform is paint-only), so the ResizeObserver
 // re-fits when content actually changes (title→app, region load, keyboard toggle). Pointer→canvas
 // mapping MUST be rect-ratio based under this transform (cursor-view localFromEvent, text-view
-// cellFromEvent). ONLY when top-level: the /neohabitat docent EMBEDS us in a sized iframe that can be
-// wider than our natural width — fitting there would overflow; embedded, the iframe sizes us.
+// cellFromEvent). Top-level (docent "Full Screen"): scale UP to fill a roomy window. Embedded (the
+// /neohabitat docent col-7 iframe): scale DOWN to fit when the column is narrower than our natural
+// width (below ~1500px window the client would otherwise overflow and clip); a wider column just
+// centers us at natural size. Same rect-ratio pointer mapping handles either transform direction.
 function installFitToViewport(root) {
-  if (!root || window.top !== window.self) return
+  if (!root) return
+  const embedded = window.top !== window.self
   const fit = () => {
     const w = root.scrollWidth, h = root.scrollHeight
     if (!w || !h) { root.style.transform = ""; return }
     const s = Math.min(window.innerWidth / w, window.innerHeight / h)
     root.style.transformOrigin = "top center"
-    root.style.transform = s > 1.01 ? `scale(${s})` : ""
+    root.style.transform = embedded ? (s < 0.99 ? `scale(${s})` : "") : (s > 1.01 ? `scale(${s})` : "")
   }
   window.addEventListener("resize", fit)
   if (typeof ResizeObserver !== "undefined") new ResizeObserver(fit).observe(root)
