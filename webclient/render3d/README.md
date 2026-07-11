@@ -5,7 +5,7 @@ instead of the flat 2D scene. It is a **separate, additive alternate client**: t
 2D web client (`live.html`) is untouched. Entry point:
 
 ```
-http://<host>/webclient/live3d.html?user=<name>[&context=<context-ref>][&debug=1]
+http://<host>/webclient/live3d.html[?debug=1]     # avatar name is prompted at the title screen
 ```
 
 The bet — and why it works — is that Habitat is *already 2.5-D*: object `y` is overloaded as
@@ -28,8 +28,7 @@ hatchery, City Library, Plaza Fountain/West, 44 Aric Ave front + interior):
 - Camera auto-frames the full back wall per aspect; survives window resize; one bad object or a
   bad frame can't freeze the scene.
 
-POC-level gaps are listed under **Known limitations**. Chief among them: **picking background
-objects** (design below).
+Remaining gaps are listed under **Known limitations**.
 
 ## Architecture — the seam
 
@@ -130,9 +129,9 @@ close and clip the wall. Deep regions keep black side-margins, which is fine.
 - **Foreground billboard → verb.** Raycast the billboard group; each mesh carries `userData.noid`;
   dispatch GET (shift = DO) against it. Contained items (now billboards) are pickable this way too.
 
-**Planned — picking background objects (the transform-back).**
+**Picking background objects (the transform-back) — implemented (`scene.js` `pickAt`).**
 Background objects (signs, doors, machines, wall art) are **baked into the backdrop texture**, so
-they have no individual meshes to raycast. The plan (fully general):
+they have no individual meshes to raycast. The approach (fully general):
 
 1. On a pointer event, first raycast the foreground billboard group (above). If it hits, done.
 2. Otherwise raycast the **wall** and **floor** meshes. Three's `intersection.uv` gives the hit's
@@ -151,19 +150,25 @@ held-item redirect) by mapping the 3D hit back onto the un-split backdrop the pi
 the UV→canvas mapping in step 3 is new. Keep a per-frame cache of the region↔backdrop mapping so a
 click is O(1).
 
-## Known limitations (POC)
-- Background-object picking not yet wired (design above); only floor-walk and foreground-billboard
-  picking work today.
-- No balloons, text input, inventory grid, customizer, multi-region transitions, or full verb set —
-  those are the "playable parity" follow-on.
+## Known limitations
+The 3D client now runs on the shared app-shell (`lib/app-shell.js`) parameterized by a renderer
+adapter (`lib/render3d-adapter.js`), so balloons, text input, the inventory grid, the customizer,
+multi-region transitions (perspective edge wedges), the full verb set, and background-object /
+held-item picking all work through the **same renderer-agnostic code as the 2D client** — no
+3D-specific versions of those overlays. Remaining:
+- **Neighbor-region previews (experimental, on by default).** The left/right grey margins are filled
+  with the adjacent regions' pre-rendered bitmaps (`render3d/neighbors.js`) so streets visually
+  continue. Disable with `?neighbors=0`. Matched/180°/±90° facings are handled; corner (diagonal)
+  neighbors are a future refinement. The valid-exit chevrons (only where a neighbor exists) are
+  independent of this switch and always on.
 - The ground is a flat receding quad; a genuinely trapezoidal ground flat isn't yet promoted to its
   own angled geometry (`env.js` `trapQuad` exists but isn't wired).
 - Occasional all-black avatar (a container/composition edge case) still open.
-- `?debug=1` exposes `window.__live3d` (world/view/dispatch/layout) for inspection — dev only.
+- `?debug=1` exposes `window.__scene3d` / `__pickState3d` / `__pick2D` for inspection — dev only.
 
 ## Try it
 ```
 cd webclient && npm test          # pure-module unit tests (projection + geometry)
 # dev stack serves the working tree at http://localhost:1701/webclient/
-open http://localhost:1701/webclient/live3d.html?user=<yourAvatar>
+open http://localhost:1701/webclient/live3d.html   # enter your avatar name at the title screen
 ```

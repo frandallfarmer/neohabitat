@@ -15,6 +15,7 @@ import {
 } from "./project.js"
 import { Billboard } from "./billboard.js"
 import { splitBackdrop } from "./backdrop.js"
+import { buildNeighborDioramas, clearNeighbors } from "./neighbors.js"
 import { compositeRegion } from "../habirender/region.js"
 import { hitTestFrame, celNumberAtFrame, markerAtFrame, HELD_PICK_MARKER } from "../habirender/pick.mjs"
 
@@ -31,7 +32,7 @@ const placeFromLayout = (layout, mod, regionDepth, cfg) => {
 // surfaces (see backdrop.js); only FOREGROUND objects (0x80 — avatars, furniture) are billboards.
 const isForegroundMod = (mod) => (mod.y & FOREGROUND_BIT) !== 0
 
-export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } = {}) {
+export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION, neighbors = true } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2))
 
@@ -105,6 +106,13 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   let regionDepth = DEFAULT_REGION_DEPTH
   buildEnv(regionDepth)
   placeCamera(regionDepth)
+
+  // POC: neighbor-region previews — the adjacent regions' bitmaps filling the grey side margins (see
+  // neighbors.js). Rebuilt (async) whenever the region changes; a token cancels an in-flight build.
+  const neighborsGroup = new THREE.Group()
+  scene.add(neighborsGroup)
+  let lastNeighborRegion = null
+  let neighborToken = { stale: false }
 
   // Backdrop rebuild bookkeeping. We can't cache on the bg set alone: trapezoid flats (sky/ground)
   // allocate their canvas at full size and fill it ASYNCHRONOUSLY when the trap texture loads —
@@ -201,6 +209,14 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
   const syncObjects = (layoutMap, world, objects) => {
     setRegionDepth(world.region?.depth)
     const regionRef = world.region?.ref
+    // POC: (re)build the left/right neighbor previews when the region changes (regionDepth is now
+    // current). Gated by the `neighbors` switch (?neighbors=0 off) — a hook for future corner renders.
+    if (neighbors && regionRef && regionRef !== lastNeighborRegion) {
+      lastNeighborRegion = regionRef
+      neighborToken.stale = true
+      neighborToken = { stale: false }
+      buildNeighborDioramas(THREE, neighborsGroup, world, regionDepth, projection, neighborToken)
+    }
     const live = new Set()
     let bgCount = 0         // how many background objects the backdrop will composite (grace gate)
     let bgSig = ""          // cache key: bg refs + their y + frame-canvas size
@@ -388,6 +404,8 @@ export function createScene(THREE, { canvas, projection = DEFAULT_PROJECTION } =
 
   const dispose = () => {
     for (const ref of [...billboards.keys()]) removeBillboard(ref)
+    neighborToken.stale = true
+    clearNeighbors(neighborsGroup)
     renderer.dispose()
   }
 

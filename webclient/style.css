@@ -213,8 +213,10 @@ header.titlebar .tag {
     fill: rgba(108, 192, 255, 0.10);
     transition: fill 0.1s;
 }
-.edge-wedge:hover { fill: rgba(108, 192, 255, 0.28); }
-.edge-wedge:active { fill: rgba(108, 192, 255, 0.40); }
+/* A side is one selection: hovering EITHER pane (floor wedge or wall box) lights up both, so the
+   neighbor floor+wall read as a single linked transit target. */
+.edge-side:hover .edge-wedge { fill: rgba(108, 192, 255, 0.28); }
+.edge-side:active .edge-wedge { fill: rgba(108, 192, 255, 0.40); }
 .edge-wedge-glyph {
     pointer-events: none;
     fill: #6cc0ff;

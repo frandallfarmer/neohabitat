@@ -14,6 +14,7 @@ import { computeLayoutMap } from "../habirender/region.js"
 import { pickAt as pick2D, heldItemOf } from "../habirender/pick.mjs"
 import { RegionCursor } from "./cursor-view.js"
 import { createScene } from "../render3d/scene.js"
+import { sideNeighborRef } from "../render3d/neighbors.js"
 import { DEFAULT_PROJECTION, DEFAULT_REGION_DEPTH } from "../render3d/project.js"
 
 const html = htm.bind(h)
@@ -53,7 +54,11 @@ export function make3DAdapter() {
 
     useEffect(() => {
       const canvas = canvasRef.current
-      const view = createScene(THREE, { canvas })
+      // Neighbor-region previews are ON by default; ?neighbors=0 (or off/false/no) disables them.
+      // A hook for iterating — e.g. swapping in future "corner" renders for the perpendicular case.
+      const nb = new URLSearchParams(location.search).get("neighbors")
+      const showNeighbors = !["0", "off", "false", "no"].includes((nb || "").toLowerCase())
+      const view = createScene(THREE, { canvas, neighbors: showNeighbors })
       sceneRef.view = view; sceneRef.canvas = canvas
       view.resize()
       readySig.current.value++ // scene mounted → recompute edge wedges
@@ -101,15 +106,29 @@ export function make3DAdapter() {
     readySig.current.value // subscribe
     const view = sceneRef.view
     const depth = world?.region?.depth ?? DEFAULT_REGION_DEPTH
+    // Only offer an exit on a side that actually HAS a neighbor (else the transit won't resolve).
+    const nbrs = world?.region?.neighbors, ori = world?.region?.orientation ?? 0
+    const has = { left: !!sideNeighborRef(nbrs, ori, "left"), right: !!sideNeighborRef(nbrs, ori, "right"), down: !!sideNeighborRef(nbrs, ori, "down") }
     let wedges = null
     if (view?.camera && regionInput?.onEdge && regionInput.enabled) {
       const P = (wx, wz) => { const p = floorToRegionCanvas(view, wx, wz); return [Math.round(p.cx * SCALE), Math.round(p.cy * SCALE)] }
-      const wallZ = depth * DEPTH_SCALE
+      const wallZ = depth * DEPTH_SCALE, wallH = REGION_H - depth
+      // Wall-top corners (world y = wallH at the back plane). The side wedges run the FULL height of the
+      // current region's left/right silhouette (floor margin + back wall), so mousing anywhere down the
+      // side edge — including over the neighbor-preview wall — highlights it as a transit target. A
+      // wall-area click un-projects past the far edge → edgeCoord clamps it to the region-depth edge.
+      const Pw = (wx) => { _v.set(wx, wallH, -wallZ).project(view.camera); return [Math.round((_v.x * 0.5 + 0.5) * CANVAS_W), Math.round((1 - (_v.y * 0.5 + 0.5)) * CANVAS_H)] }
       const nL = P(0, 0), nR = P(REGION_W, 0), fL = P(0, -wallZ), fR = P(REGION_W, -wallZ)
+      const WL = Pw(0), WR = Pw(REGION_W)
       const poly = (pts) => pts.map((p) => p.join(",")).join(" ")
+      // Two panes per side — the floor-margin wedge and the wall box above it — grouped so mousing
+      // either highlights BOTH (the neighbor floor+wall reads as one linked transit selection).
       wedges = {
-        left: poly([[0, fL[1]], fL, nL, [0, nL[1]]]),
-        right: poly([[CANVAS_W, fR[1]], fR, nR, [CANVAS_W, nR[1]]]),
+        has,
+        leftFloor: poly([[0, fL[1]], fL, nL, [0, nL[1]]]),
+        leftWall: poly([[0, 0], WL, fL, [0, fL[1]]]),
+        rightFloor: poly([[CANVAS_W, fR[1]], fR, nR, [CANVAS_W, nR[1]]]),
+        rightWall: poly([[CANVAS_W, 0], WR, fR, [CANVAS_W, fR[1]]]),
         down: poly([nL, nR, [CANVAS_W, CANVAS_H], [0, CANVAS_H]]),
         // Glyphs sit UP toward the horizon end of each wedge and OUT toward the screen edge.
         gl: [Math.max(16, fL[0] * 0.14), fL[1] + (CANVAS_H - fL[1]) * 0.30],
@@ -134,12 +153,20 @@ export function make3DAdapter() {
         ${wedges ? html`
           <svg viewBox="0 0 ${CANVAS_W} ${CANVAS_H}" width=${CANVAS_W} height=${CANVAS_H}
                style="position:absolute; left:0; top:0; overflow:hidden; pointer-events:none; z-index:10001;">
-            <polygon class="edge-wedge" points=${wedges.left} onClick=${regionInput.onEdge("left")}><title>Walk off the left edge</title></polygon>
-            <polygon class="edge-wedge" points=${wedges.right} onClick=${regionInput.onEdge("right")}><title>Walk off the right edge</title></polygon>
-            <polygon class="edge-wedge" points=${wedges.down} onClick=${regionInput.onEdge("down")}><title>Walk off the front edge</title></polygon>
-            <text class="edge-wedge-glyph" x=${wedges.gl[0]} y=${wedges.gl[1]}>◀</text>
-            <text class="edge-wedge-glyph" x=${wedges.gr[0]} y=${wedges.gr[1]}>▶</text>
-            ${wedges.gd ? html`<text class="edge-wedge-glyph" x=${wedges.gd[0]} y=${wedges.gd[1]}>▼</text>` : null}
+            ${wedges.has.left ? html`<g class="edge-side" onClick=${regionInput.onEdge("left")}><title>Walk off the left edge</title>
+              <polygon class="edge-wedge" points=${wedges.leftFloor}/>
+              <polygon class="edge-wedge" points=${wedges.leftWall}/>
+            </g>` : null}
+            ${wedges.has.right ? html`<g class="edge-side" onClick=${regionInput.onEdge("right")}><title>Walk off the right edge</title>
+              <polygon class="edge-wedge" points=${wedges.rightFloor}/>
+              <polygon class="edge-wedge" points=${wedges.rightWall}/>
+            </g>` : null}
+            ${wedges.has.down ? html`<g class="edge-side" onClick=${regionInput.onEdge("down")}><title>Walk off the front edge</title>
+              <polygon class="edge-wedge" points=${wedges.down}/>
+            </g>` : null}
+            ${wedges.has.left ? html`<text class="edge-wedge-glyph" x=${wedges.gl[0]} y=${wedges.gl[1]}>◀</text>` : null}
+            ${wedges.has.right ? html`<text class="edge-wedge-glyph" x=${wedges.gr[0]} y=${wedges.gr[1]}>▶</text>` : null}
+            ${wedges.has.down && wedges.gd ? html`<text class="edge-wedge-glyph" x=${wedges.gd[0]} y=${wedges.gd[1]}>▼</text>` : null}
           </svg>` : null}
       </div>`
   }
@@ -222,13 +249,22 @@ export function make3DAdapter() {
       const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1
       _v.set(ndcX, ndcY, 0.5).unproject(view.camera)
       const cam = view.camera.position
-      const dy = _v.y - cam.y
-      if (Math.abs(dy) < 1e-6) return null
-      const t = -cam.y / dy
-      const hitX = cam.x + t * (_v.x - cam.x) // world x where the click ray meets the floor
-      const hitZ = cam.z + t * (_v.z - cam.z) // world z (depth) there
       const wallZ = depth * DEPTH_SCALE
-      const wz = Math.max(-wallZ, Math.min(0, hitZ)) // clamp into the walkable band
+      const dy = _v.y - cam.y
+      const FAR = -wallZ + 2 // just inside the far edge, so the shell's raycast lands on the FLOOR (not
+      // the wall behind it) and rounds to habitat y = region depth
+      let wz, hitX = cam.x
+      if (dy < -1e-6) {
+        // Ray points DOWN → it meets the floor plane (y=0) in front; use that depth (perspective-correct),
+        // clamped into the walkable band. A click near/just-above the horizon clamps to the FAR edge.
+        const t = -cam.y / dy
+        hitX = cam.x + t * (_v.x - cam.x)                       // world x where the ray meets the floor
+        wz = Math.max(FAR, Math.min(0, cam.z + t * (_v.z - cam.z)))
+      } else {
+        // Click AT/ABOVE the horizon (over the back wall / neighbor-wall pane) → no floor hit in front;
+        // walk to the region's FAR edge (habitat y = region depth), then transit.
+        wz = FAR
+      }
       // left/right: pin x to the region's edge (walk off the side); down: keep the click's x (walk off
       // the front). Nudge x just inside so the shell's raycast reliably lands on the floor.
       const wx = edge === "left" ? 2 : edge === "right" ? REGION_W - 2 : Math.max(2, Math.min(REGION_W - 2, hitX))
