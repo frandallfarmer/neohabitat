@@ -206,7 +206,9 @@ func readHabilinkPreamble(r *bufio.Reader, sessionID string) (string, error) {
 				return "", fmt.Errorf("%w: EOF before username found", ErrQLinkPreamble)
 			}
 			if err != io.EOF {
-				return "", fmt.Errorf("%w: read error: %v", ErrQLinkPreamble, err)
+				// %w on the underlying error too, so callers can errors.As it
+				// (e.g. runHabilink detects a read-deadline timeout this way).
+				return "", fmt.Errorf("%w: read error: %w", ErrQLinkPreamble, err)
 			}
 		}
 		log.Trace().Str("session_id", sessionID).Str("line", line).Msg("Habilink preamble line")
@@ -286,7 +288,38 @@ func (c *ClientSession) runHabilink() {
 
 	// Phase 1: Habilink JSON preamble — read text lines until we see the
 	// {"name":"..."} field.
+	//
+	// CONNECT fallback for modems that don't emit their own. dial_modem() blocks
+	// after ATDT waiting for a Hayes "CONNECT" result code. A proper modem emits it
+	// (pipe_modem.py does; a correct Hayes modem should) and the client sends its
+	// login immediately. The Ultimate 64's built-in modem, however, opens the TCP
+	// transparently and never emits CONNECT — the client hangs at "Dialing" forever
+	// (the same gap qlink's HabilinkListener papered over). Rather than always
+	// injecting CONNECT — which prepends junk to a well-behaved client's stream —
+	// send it ONLY as a fallback: read the preamble under a 2s deadline; if the
+	// {"name":...} login doesn't arrive, the modem gave no CONNECT, so we supply one
+	// and read again. Peeking for "any byte" is NOT enough — a transparent modem
+	// forwards the client's dial chatter, which isn't the login.
+	if conn := c.clientConn.conn; conn != nil {
+		_ = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+	}
 	username, err := readHabilinkPreamble(c.clientReader, c.sessionID)
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Timeout() {
+		if conn := c.clientConn.conn; conn != nil {
+			_ = conn.SetReadDeadline(time.Time{})
+		}
+		if _, werr := c.clientConn.WriteRaw([]byte("\r\rCONNECT\r")); werr != nil {
+			c.log.Error().Err(werr).Msg("Habilink CONNECT fallback write failed")
+			go c.Close()
+			return
+		}
+		c.log.Debug().Msg("no login within 2s — sent CONNECT fallback (transparent modem)")
+		username, err = readHabilinkPreamble(c.clientReader, c.sessionID)
+	}
+	if conn := c.clientConn.conn; conn != nil {
+		_ = conn.SetReadDeadline(time.Time{})
+	}
 	if err != nil {
 		c.log.Error().Err(err).Msg("Habilink preamble failed")
 		go c.Close()
