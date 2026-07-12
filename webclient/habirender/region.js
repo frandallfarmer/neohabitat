@@ -131,9 +131,23 @@ export const imageSchemaFromMod = (mod) => {
 // ── webclient (habirender) divergence: avatar/body rendering ──────────────────
 // The inspector renders props (decodeProp); avatars are composite *bodies* (decodeBody +
 // framesFromAction), never wired into the region view because static region files have no
-// avatars. The live client does. Map a body class to its Avatar.bin-style body file; humans
-// use bodies/Avatar.bin (other bodies in bodies.json are Phase 3+).
-const bodyFileForClass = (classname) => classname === "class_avatar" ? "bodies/Avatar.bin" : null
+// avatars. The live client does. An avatar's `style` field selects its body figure: the C64
+// GetImage (database.m Get_ISA_addr) resolves class_avatar's image-resource-table[style]. The
+// order + files below are beta.mud's class_avatar image list — style 0 is the human body,
+// 1–6 the non-human bodies. Asset note: beta.mud names the penguin image "Peng.bin" but our
+// bundled body file is "Peng_uppercase.bin". MP/Heli exist as assets but are NOT in
+// class_avatar (Images/notes.txt marks them unused), so no style reaches them.
+const AVATAR_BODY_FILES = [
+    "bodies/Avatar.bin",          // 0  avatar_side_image (human)
+    "bodies/Peng_uppercase.bin",  // 1  avatar_peng_image
+    "bodies/Spid.bin",            // 2  avatar_spid_image
+    "bodies/Drag.bin",            // 3  avatar_drag_image
+    "bodies/Gunship.bin",         // 4  avatar_gunship_image
+    "bodies/Tank.bin",            // 5  avatar_tank_image
+    "bodies/Tentacle.bin",        // 6  avatar_tentacle_image
+]
+const bodyFileForClass = (classname, style = 0) =>
+    classname === "class_avatar" ? (AVATAR_BODY_FILES[style] ?? AVATAR_BODY_FILES[0]) : null
 
 // Avatar contents slots (C64 dataequates.m): only the HEAD (6, at the neck) and a held
 // HANDS item (5) draw on the avatar; all other slots are pocket inventory and are not drawn.
@@ -158,10 +172,6 @@ const limbPatternsFromMod = (mod) => {
     return [(c[0] >> 4) & 0xf, c[0] & 0xf, (c[1] >> 4) & 0xf, c[1] & 0xf]
 }
 
-// Per-view limb draw order (C64 animate.m / simulator DRAW_ORDER). 'head' is the head STEP
-// — the head object then the face overlay (head_placeholder, limb 4) on top.
-const LIMB_DRAW_ORDER = [0, 1, 2, 3, "head", 5]
-const AVATAR_HEAD_CEL = 4   // head_placeholder limb / neck cel (body.headCelNumber)
 const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is negated → +63
 
 // animate.m pattern_for_limb — maps each body cel (0–5) to its which_limb pattern
@@ -180,10 +190,15 @@ const actionView = (actionName) => {
 
 const drawOrderForAction = (body, actionName) => {
     const view = actionView(actionName)
-    const headStep = (i) => i === AVATAR_HEAD_CEL ? "head" : i
+    // Replace the neck cel with the head STEP (head object + face overlay). A headless body
+    // (headCelNumber 255) never matches, so all six cels draw as ordinary limbs and no head
+    // is composed — even if the server still parked a Head object in the avatar's HEAD slot.
+    const headStep = (i) => i === body.headCelNumber ? "head" : i
     if (view === "front") return body.frontFacingLimbOrder.map(headStep)
     if (view === "back") return body.backFacingLimbOrder.map(headStep)
-    return LIMB_DRAW_ORDER
+    // Side view: the C64 draws cels in numeric order 0→5 (animate.m cels_to_draw bit walk),
+    // with the head at its neck cel. For the human that's [0,1,2,3,head,5].
+    return [0, 1, 2, 3, 4, 5].map(headStep)
 }
 
 // chore.m special_hold: howHeld from the held prop (byte 0 & hold_mask). Non-swing
@@ -262,9 +277,25 @@ const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
             istate = 1
         }
         const cel = istate >= 0 ? body.limbs[i].cels[istate] : null
-        if (!cel) continue
-        const pos = findCelXY(x, y, xRel, yRel, false)
         const heightLift = body.limbs[i].affectedByHeight ? avatarHeight : 0
+        if (!cel) {
+            // Undrawn cel. animate.m get_limb_coords clears only ch_tab (the "drawn" flag) and
+            // leaves cx_tab/cy_tab persistent, and the running origin does NOT advance (no
+            // get_cel_loc_addr). We build fresh arrays per frame, so record the current running
+            // origin here rather than leaving cx[i]/cy[i] undefined — otherwise a headless body's
+            // undrawn hand cel (limb 5) makes the held-item anchor cy[AVATAR_HAND] NaN. cels[i]
+            // stays unset so the limb still isn't painted; origin/rel carry to the next limb.
+            cx[i] = x
+            cy[i] = -y - heightLift
+            if (i === AVATAR_HAND) {
+                handTabX = x
+                handTabY = -y - heightLift
+                handRelX = xRel
+                handRelY = yRel
+            }
+            continue
+        }
+        const pos = findCelXY(x, y, xRel, yRel, false)
         cx[i] = pos.x
         // The chain (x/y, findCelXY) stays in C64 Y-down; the composite space is Y-up, so
         // NEGATE the stored cy. C64 cy_tab = cel_y + avatar_height → Y-up: −(cel_y + height).
@@ -360,9 +391,13 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     const { cx, cy, cels, handX, handY } = chain
     const facing = headFacingFromAction(actionName)
     const facePattern = headPatternFromMod(headMod, limbPatterns[3])
-    // walk: legs_right yRel is the animating paint offset for upper-body cels. cy is now
-    // Y-up (negated), so the bob offset flips sign to match.
-    const walkPaintY = isWalkAction(actionName) ? -(cels[0]?.yRel ?? 0) : 0
+    // walk paint offset: an empirical HUMAN side-walk calibration (commit dfe0862d) — upper-body cels
+    // shift by the small legs_right residual yRel (−1); cy is Y-up so the sign flips. Gated to the human
+    // body (style 0), like the female-torso swap: the non-human bodies' legs_right yRel is STRUCTURAL
+    // leg-height (e.g. Dragon 25), not a bob residual, and applying it would collapse the whole body onto
+    // the legs. The C64 paints every limb at cy_tab directly with no such term (animate.m paint_limb), so
+    // no offset IS the canonical behavior for those bodies.
+    const walkPaintY = (isWalkAction(actionName) && (avatarMod.style ?? 0) === 0) ? -(cels[0]?.yRel ?? 0) : 0
     const layerFor = (cel, x, y, pattern) =>
         cel ? translateSpace(frameFromCels([cel], { colors: { pattern }, firstCelOrigin: false }), x, y) : null
 
@@ -393,7 +428,11 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
     // idValue: pick-buffer red-channel id — which_limb+1 for body cels, HELD_PICK_MARKER
     // for the held item (its own object, mix.m draw_contained_object), 0 for none.
     const push = (layer, idValue) => {
-        if (!layer) return
+        // Defense-in-depth: never hand idLayerFrom a degenerate layer — canvasForSpace would make a
+        // 0-/NaN-sized canvas and getImageData throws IndexSizeError. `!(d > 0)` catches 0, negative,
+        // NaN and undefined. (The held-item NaN anchor that first tripped this is root-fixed in
+        // avatarLimbChainAt; this just keeps one bad cel from ever taking down the whole client.)
+        if (!layer || !((layer.maxX - layer.minX) > 0) || !((layer.maxY - layer.minY) > 0)) return
         layers.push(layer)
         idLayers.push(idLayerFrom(layer, idValue))
     }
@@ -403,19 +442,20 @@ const composeAvatarFrame = (body, avatarMod, headProp, headMod, handProp, handMo
             push(heldLayer, HELD_PICK_MARKER) // held item is pickable as its own object
         }
         if (key === "head") {
+            const hcn = body.headCelNumber   // the neck cel (drawOrderForAction only emits "head" when valid)
             if (headProp?.celmasks?.length) {
                 const anim = headProp.animations?.[facing] ?? headProp.animations?.[0] ?? { startState: 0 }
                 const state = Math.min(anim.startState ?? 0, headProp.celmasks.length - 1)
                 const headFrame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]),
                     { colors: headMod ? colorsFromMod(headMod) : { pattern: limbPatterns[3] }, firstCelOrigin: false })
                 if (headFrame) {
-                    push(translateSpace(headFrame, cx[AVATAR_HEAD_CEL],
-                        cy[AVATAR_HEAD_CEL] + AVATAR_HEAD_LIFT + walkPaintY), AVATAR_FACE_LIMB + 1)
+                    push(translateSpace(headFrame, cx[hcn],
+                        cy[hcn] + AVATAR_HEAD_LIFT + walkPaintY), AVATAR_FACE_LIMB + 1)
                 }
             }
             if (shouldPaintFacePlate(headProp, facing)) {
-                push(layerFor(cels[AVATAR_HEAD_CEL], cx[AVATAR_HEAD_CEL],
-                    cy[AVATAR_HEAD_CEL] + walkPaintY, facePattern), AVATAR_FACE_LIMB + 1)
+                push(layerFor(cels[hcn], cx[hcn],
+                    cy[hcn] + walkPaintY, facePattern), AVATAR_FACE_LIMB + 1)
             }
         } else if (key !== 0) {
             push(layerFor(cels[key], cx[key], cy[key] + walkPaintY,
@@ -489,7 +529,7 @@ export const composeAvatarFrameAt = (body, avatarMod, headProp, headMod, handPro
 }
 
 export const propFromMod = (mod, ref) => {
-    const bodyFile = bodyFileForClass(javaTypeToMuddleClass(mod.type))
+    const bodyFile = bodyFileForClass(javaTypeToMuddleClass(mod.type), mod.style ?? 0)
     if (bodyFile) {
         // useBinary returns the decoded body (has .limbs) or null while loading; the body
         // path is keyed off prop.limbs in propFramesFromMod below.
