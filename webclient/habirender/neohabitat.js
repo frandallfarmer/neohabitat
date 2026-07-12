@@ -77,7 +77,6 @@ function templateHabitatObject(data) {
 }
 
 export function parseHabitatObject(data) {
-    console.log(templateHabitatObject(data))
     return JSON.parse(templateHabitatObject(data))
 }
 

@@ -37,9 +37,16 @@ export const neighborMeta = async (ref) => {
     const map = await until(() => contextMap(), (m) => Object.keys(m).length > 0)
     const filename = map[ref]?.filename
     if (filename) {
-      const objs = parseHabitatRegion(await (await fetch(filename)).text())
-      const rmod = objs.find((o) => o.type === "context")?.mods?.[0] || {}
-      meta = { depth: rmod.depth ?? 32, orientation: rmod.orientation ?? 0 }
+      // The live server can list a neighbor whose region JSON isn't in the static webclient bundle
+      // (contextmap carries every region's name, but only some region files ship). A missing file
+      // 404s to an HTML error page — bail on !ok so we don't parse HTML (which threw + spammed the
+      // console). meta stays null and the caller falls back to the current region's depth.
+      const res = await fetch(filename)
+      if (res.ok) {
+        const objs = parseHabitatRegion(await res.text())
+        const rmod = objs.find((o) => o.type === "context")?.mods?.[0] || {}
+        meta = { depth: rmod.depth ?? 32, orientation: rmod.orientation ?? 0 }
+      }
     }
   } catch (_) { /* fall back to current depth */ }
   metaCache.set(ref, meta)
