@@ -32,21 +32,6 @@ var (
 	ClientCrashes  metric.Int64Counter
 )
 
-// Diagnostic metrics — specific failure modes we've had to reconstruct from
-// logs after the fact (silent region-transition stalls, etc.). Surfacing them
-// as first-class counters lets the dashboard alert on them directly instead of
-// waiting for a tester to report a lockup.
-var (
-	// RegionTransits counts NEWREGION-driven (immediate:false) context changes
-	// started — the denominator for the stall rate.
-	RegionTransits metric.Int64Counter
-	// RegionTransitStalls counts transitions the watchdog had to force-recover
-	// because the client never sent its follow-up DESCRIBE within the window
-	// (see ClientSession.regionTransitWatchdogFired). Each one was a silent,
-	// permanent client lockup before the watchdog existed.
-	RegionTransitStalls metric.Int64Counter
-)
-
 // Attribute key constants used as both span attributes and zerolog
 // structured-log field names so a trace and its surrounding logs share
 // keys for indexing in Grafana Cloud.
@@ -132,23 +117,6 @@ func InitInstruments() error {
 		return fmt.Errorf("client.crashes: %w", err)
 	}
 
-	// Diagnostic metrics.
-	RegionTransits, err = meter.Int64Counter(
-		"bridge_v2.region_transit.total",
-		metric.WithDescription("NEWREGION-driven (immediate:false) context changes started"),
-	)
-	if err != nil {
-		return fmt.Errorf("region_transit.total: %w", err)
-	}
-
-	RegionTransitStalls, err = meter.Int64Counter(
-		"bridge_v2.region_transit.stalls",
-		metric.WithDescription("Region transitions the watchdog force-recovered (client never sent DESCRIBE)"),
-	)
-	if err != nil {
-		return fmt.Errorf("region_transit.stalls: %w", err)
-	}
-
 	return nil
 }
 
@@ -202,18 +170,4 @@ func IncClientCrashes(ctx context.Context, attrs ...attribute.KeyValue) {
 		return
 	}
 	ClientCrashes.Add(ctx, 1, metric.WithAttributes(attrs...))
-}
-
-func IncRegionTransits(ctx context.Context, attrs ...attribute.KeyValue) {
-	if RegionTransits == nil {
-		return
-	}
-	RegionTransits.Add(ctx, 1, metric.WithAttributes(attrs...))
-}
-
-func IncRegionTransitStalls(ctx context.Context, attrs ...attribute.KeyValue) {
-	if RegionTransitStalls == nil {
-		return
-	}
-	RegionTransitStalls.Add(ctx, 1, metric.WithAttributes(attrs...))
 }
