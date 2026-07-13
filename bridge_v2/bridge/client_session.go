@@ -35,6 +35,13 @@ var nextSessionID uint64
 
 const MaxClientMessages = 500
 
+// regionTransitWatchdogTimeout bounds how long the bridge waits for the client's
+// follow-up MESSAGE_DESCRIBE after an immediate:false changeContext before it
+// force-enters the new region to break a silent lockup. Generous vs the normal
+// sub-second DESCRIBE so it only fires on a genuine stall. A var (not const) so
+// tests can shorten it.
+var regionTransitWatchdogTimeout = 15 * time.Second
+
 var ElkoMsgTerminator = []byte("\n\n")
 
 type outboundElkoMessage struct {
@@ -121,11 +128,16 @@ type ClientSession struct {
 	largeRequestCache    []byte
 	nextRegion           string
 	nextRegionSet        bool
-	log                  zerolog.Logger  // sticky avatar/ip/session_id structured fields
-	sessionID            string          // monotonic session handle, also a log + span attribute
-	ctx                  context.Context // context carrying the session root span
-	span                 trace.Span      // root span for this session, ended in Close()
-	jsonPassthrough      bool            // true => client speaks JSON directly to Elko; bridge relays
+	// regionTransitGen is bumped when a region transition is armed (changeContext
+	// immediate:false) and on every enterContext. The transit watchdog captures
+	// it at arm time and only fires if it's unchanged at timeout — i.e. no client
+	// DESCRIBE (enterContext) or newer transition resolved it. Guarded by stateMu.
+	regionTransitGen uint64
+	log              zerolog.Logger  // sticky avatar/ip/session_id structured fields
+	sessionID        string          // monotonic session handle, also a log + span attribute
+	ctx              context.Context // context carrying the session root span
+	span             trace.Span      // root span for this session, ended in Close()
+	jsonPassthrough  bool            // true => client speaks JSON directly to Elko; bridge relays
 	// bridgeAutoEnteredContext records the most recent context the
 	// bridge entered on the client's behalf (after a server-initiated
 	// changeContext in JSON-passthrough mode). Used to suppress the
@@ -562,6 +574,16 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		// the binary handleClientMessage path; same outcome.
 		if boolor(msg.Immediate, false) {
 			c.enterContext(c.nextRegion)
+		} else {
+			// immediate:false — the transition now hinges entirely on the
+			// client sending MESSAGE_DESCRIBE (which drives enterContext). If it
+			// never does — e.g. its region change raced a co-present avatar's
+			// arrival, so the C64 dropped the follow-up DESCRIBE — habiproxy's
+			// Elko-side stays torn down and the session hangs forever with NO
+			// error anywhere (the Snogpitch lockup, 2026-07). Arm a watchdog to
+			// force the entry as a recovery net.
+			observability.IncRegionTransits(c.ctx)
+			c.armRegionTransitWatchdog(c.nextRegion)
 		}
 		return
 	}
@@ -2402,6 +2424,49 @@ func (c *ClientSession) enterContext(context string) {
 	c.nextRegion = ""
 	c.nextRegionSet = true
 	c.firstConnection = false
+	// Advance the transit epoch: we've entered a context, so any pending
+	// region-transit watchdog is now moot and must not fire.
+	c.regionTransitGen++
+}
+
+// armRegionTransitWatchdog starts a one-shot timer for the pending
+// immediate:false region transition to region. If the client's MESSAGE_DESCRIBE
+// (which drives enterContext) hasn't fired by regionTransitWatchdogTimeout,
+// regionTransitWatchdogFired force-enters the region so the session can't hang
+// forever. Caller must hold stateMu.
+func (c *ClientSession) armRegionTransitWatchdog(region string) {
+	c.regionTransitGen++
+	gen := c.regionTransitGen
+	time.AfterFunc(regionTransitWatchdogTimeout, func() {
+		c.regionTransitWatchdogFired(gen, region)
+	})
+}
+
+// regionTransitWatchdogFired runs regionTransitWatchdogTimeout after arming. It
+// force-enters the stalled region iff nothing resolved the transition in the
+// meantime (regionTransitGen unchanged) and the session is still alive. Emits a
+// WARN and the region_transit.stalls metric so the recovery is observable.
+func (c *ClientSession) regionTransitWatchdogFired(gen uint64, region string) {
+	// Lock-free early out if the session was torn down while we waited.
+	select {
+	case <-c.done:
+		return
+	default:
+	}
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+	if c.regionTransitGen != gen {
+		// A client DESCRIBE (enterContext) or a newer changeContext already
+		// advanced the epoch — nothing stalled.
+		return
+	}
+	observability.IncRegionTransitStalls(c.ctx)
+	c.log.Warn().
+		Str("region", region).
+		Dur("after", regionTransitWatchdogTimeout).
+		Msg("region transition stalled — client never sent DESCRIBE; force-entering to recover")
+	// enterContext advances regionTransitGen, so this cannot re-fire/loop.
+	c.enterContext(region)
 }
 
 func (c *ClientSession) enterContextAfterRegionChecks(context string) {
