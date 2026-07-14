@@ -70,10 +70,15 @@
     "ref": "item-sky46d0", 
     "mods": [
       {
-        "y": 2, 
-        "x": 0, 
-        "style": 7, 
-        "type": "Sky", 
+        "y": 56,
+        "x": 0,
+        "trapezoid_type": 0,
+        "upper_left_x": 0,
+        "upper_right_x": 160,
+        "lower_left_x": 0,
+        "lower_right_x": 160,
+        "height": 8,
+        "type": "Trapezoid",
         "orientation": 172
       }
     ], 
@@ -85,14 +90,14 @@
     "ref": "item-trapezoid8b23", 
     "mods": [
       {
-        "y": 3, 
+        "y": 0, 
         "x": 0,
         "trapezoid_type": 2, 
         "upper_left_x": 0, 
         "upper_right_x": 160, 
         "lower_left_x": 0, 
         "lower_right_x": 160, 
-        "height": 47, 
+        "height": 56, 
         "type": "Trapezoid", 
         "orientation": 220
       }
