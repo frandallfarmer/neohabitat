@@ -219,7 +219,14 @@ B.wall_go = async (ctx) => {
 
 // Behaviors/trap_go.m: a Flat's 'go' re-dispatches to internal slot
 // 8 + flat_type (8 = sky_go, 9 = wall_go, 10 = goToCursor, 11 = noEffect).
-B.trap_go = async (ctx) => ctx.doAction(8 + (ctx.pointed.mod.flat_type || 0))
+// A Flat carries the type as `flat_type`; a Trapezoid/Super_trapezoid carries it as
+// `trapezoid_type` (elko Polygonal.encodePolygonal emits trapezoid_type and does NOT emit
+// flat_type). Read whichever is present — else a GROUND trapezoid (type 2) falls to slot 8
+// = sky_go and a GO on the ground wrongly leaves the region "up".
+B.trap_go = async (ctx) => {
+  const m = ctx.pointed.mod
+  return ctx.doAction(8 + (m.flat_type ?? m.trapezoid_type ?? 0))
+}
 
 // Behaviors/trap_put.m: PUT (drop) the held item onto a Trapezoid/Flat/
 // Super_trapezoid — but ONLY when it's a GROUND-type surface

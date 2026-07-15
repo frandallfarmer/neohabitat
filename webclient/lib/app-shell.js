@@ -710,7 +710,11 @@ export async function createClientShell(adapter) {
     const coord = adapter.edgeCoord?.(edge, e, world.region) // { cx, cy, scale } | null
     if (coord) cursorWarp.value = { x: coord.cx, y: coord.cy } // snap the (2D) cursor to the destination
     return withBusy(async () => {
+      // Walk to the edge (a GROUND trapezoid GO is now a real walk — see habiworld trap_go).
       if (coord) await runRegionVerb(ACTION_GO, { canvasX: coord.cx * coord.scale, canvasY: coord.cy * coord.scale, scale: coord.scale }, `edge-${edge}`)
+      // Let the walk ANIMATION finish before leaving (walkTo only awaits the WALK reply) — else the
+      // transit fires mid-walk. Same settle the command interlock uses below.
+      if (world.me?.noid != null) await avatarMotion.whenIdle?.(world.me.noid)
       await dispatchClient.changeRegion(edge)
     }, CURSOR_GO) // exiting the region is a GO — blink the GO icon, not the last verb
   }
