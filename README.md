@@ -5,22 +5,34 @@ NeoHabitat.org: The Neoclassical Habitat Server Project
 [![Twitter Follow](https://img.shields.io/twitter/follow/NeoHabitatProj.svg?style=social&label=Follow)](https://twitter.com/NeoHabitatProj)
 [Developer Discord](https://discord.gg/rspcX27Vt4)
 
-We're recreating [Lucasfilm's Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology.  We'd love it if you joined us!
+We're recreating [Lucasfilm's Habitat](https://en.wikipedia.org/wiki/Habitat_(video_game)), the world's first MMO, using modern technology. We'd love it if you joined us!
 
 Play Habitat Now!
 -----------------
 
-We maintain a demo server running the latest NeoHabitat code and you can connect to it at any time. There's often a few members of the regular crew hanging out there, so come say hey!
+We run a public server at **habitat.themade.org** with the latest NeoHabitat code. There's often a few members of the regular crew hanging out there, so come say hey!
+
+**No install needed — play in your browser:**
+
+| | |
+|---|---|
+| 🕹️ **[Play Original Now](http://habitat.themade.org/)** | The genuine C64 client in an in-browser emulator, with the Docent guide — the authentic 1986 experience. |
+| ⚡ **[Play Accelerated](http://habitat.themade.org/neohabitat)** | The all-JavaScript [web client](docs/webclient.md) + Docent — same world, no emulator, fast and crisp. |
+| 📱 **[Play Mobile](https://habitat.themade.org/webclient/live.html)** | The web client full-page, for phones and tablets. |
+
+**Or install a client:**
+
+- **[C64 emulator (VICE)](docs/c64-clients.md#vice)** — Windows installer, macOS app, or manual Linux/*BSD setup (details also in Step 1 below).
+- **[Ultimate 64 / Ultimate II+](docs/c64-clients.md#ultimate-64)** — run the client on U64 hardware over your home network ([full guide](https://github.com/ssalevan/habiclient/blob/main/docs/U64.md)).
+- **[Real Commodore 64](README-RealC64.md)** — original iron, floppies, and a WiFi modem.
+
+All the ways in, on one page: **[docs/play.md](docs/play.md)**.
 
 **Please note**: NeoHabitat is still in development, so there will likely be some instability. If you see anything weird, please [tell us about it in our Discord](https://discord.gg/rspcX27Vt4).
 
-With all that out of the way, here's how to get started:
-
-- If you want to use Habitat with a real C64, please switch over to [these instructions](https://github.com/frandallfarmer/neohabitat/blob/master/README-RealC64.md) for making disks and using modern connection hardware.
-
-- You can also use our [web based client](http://habitat.themade.org) to connect via a browser. Just skip to **Step 2** below to learn how to get ingame.
-
 ### Step 1 - Download and Install either the Windows or OSX Habitat package (which comes with VICE, the C64 emulator)
+
+*(Skip this step if you're using a browser client above — go straight to Step 2.)*
 
 **Windows**
 
@@ -48,7 +60,7 @@ With all that out of the way, here's how to get started:
 - Install VICE and `nc` (netcat) via your package manager
 - Extract the Windows release of [Neohabitat.zip](https://github.com/frandallfarmer/neohabitat-doc/blob/master/installers/Neohabitat.zip?raw=true) to get the `.d64` files and `fliplist-C64.vfl`
 - Run the VICE C64 emulator with these options set:  
-  `x64 -rsuser -rsuserdev 0 -rsdev1 '|nc 20.3.249.92 1986' -rsuserbaud 1200 -flipname fliplist-C64.vfl Habitat-Boot.d64`
+  `x64 -rsuser -rsuserdev 0 -rsdev1 '|nc habitat.themade.org 1986' -rsuserbaud 1200 -flipname fliplist-C64.vfl Habitat-Boot.d64`
 - There is a bug in current versions of VICE which breaks this network support (https://sourceforge.net/p/vice-emu/bugs/1356). Versions including r38928 and earlier work.
 
 ### Step 2 - Login and play!
@@ -79,7 +91,7 @@ Welcome to NeoHabitat! There's a whole lot you can do here and thousands of exot
 
 Before you go anywhere, **we highly recommend opening up our [Docent support software](http://habitat.themade.org)**. It's a browser based guide that'll help you navigate NeoHabitat, learn the controls and teach you about the history of the world. It's interactive and will update as you move around without you having to lift a finger.
 
-If you are using the web based client mentioned earlier, the Docent support software is already active!
+If you are using one of the browser clients above, the Docent support software is already active!
 
 To learn about all the things you can do in more detail, read the [official Habitat manual](https://frandallfarmer.github.io/neohabitat-doc/docs/Avatar%20Handbook.html) from 1988.
 
@@ -115,20 +127,30 @@ If you're having trouble getting NeoHabitat working, don't worry, we're here to 
 
 If you encounter a glitch whilst playing NeoHabitat, please check to see if it's been filed as an [issue](https://github.com/frandallfarmer/neohabitat/issues). If it hasn't, we'd appreciate it if you let us know what happened so we can investigate.
 
-Developer Documentation
------------------------
+Experiments
+-----------
 
-If you'd like to contribute to NeoHabitat, there are plenty of great opportunities! Come check our our extensive developer documentation:
+Beyond the standard clients there's a growing family of experimental clients, agents, and tools — including **[Sagebot](docs/sagebot.md)**, our LLM-driven resident; the **[3D diorama client](docs/webclient3d.md)**; and the **[text-only terminal client](textclient/README.md)**.
 
-  - [Getting Started for Developers](https://github.com/frandallfarmer/neohabitat-doc/blob/master/docs/getting_started.md)
+👉 **[docs/experiments.md](docs/experiments.md)**
+
+Developer & Operator Documentation
+----------------------------------
+
+If you'd like to contribute to NeoHabitat, there are plenty of great opportunities!
+
+  - **[Run your own server](docs/run-your-own-server.md)** — the full stack (Elko + `bridge_v2` + web clients + bots) via Docker Compose.
+  - [The web client](docs/webclient.md) and its [design doc](webclient/DESIGN.md).
+  - [PROTOCOL.md](PROTOCOL.md) — the Habitat/Elko wire protocol reference.
   - [Developer Wiki](https://github.com/frandallfarmer/neohabitat/wiki/Developers-Documentation)
 
 In-repo clients and libraries (besides the elko server in `src/` and the Go `bridge_v2/`):
 
   - [`textclient/`](textclient/README.md) — a human, text-only terminal client: narrates the world and takes verb-first commands (`GO`/`GET`/`SAY`/…).
-  - [`habibots/`](habibots/README.md) — in-world bots (including the LLM-driven `sagebot`), built on the `HabiBot` connection + world-model layer.
-  - [`habiworld/`](habiworld/README.md) — the canonical client-side world model and 1986-faithful behavior dispatcher that the bots and `textclient` share.
+  - [`habibots/`](habibots/README.md) — in-world bots (including the LLM-driven [`sagebot`](docs/sagebot.md)), built on the `HabiBot` connection + world-model layer.
+  - [`habiworld/`](habiworld/README.md) — the canonical client-side world model and 1986-faithful behavior dispatcher that the clients and bots share.
   - [`habisound/`](habisound/README.md) — plays Habitat's original C64 SID sound effects in the browser, live, from the 1986 `sfx.m` driver bytecode (a client-side consumer of `habiworld`'s sound events). [Soundboard demo](https://frandallfarmer.github.io/neohabitat-doc/docs/sounds/).
+  - [`regionator/`](regionator/README.md) — compile `.rdl` region description files into NeoHabitat JSON regions.
 
 Clients and bots connect through `bridge_v2` (port 2026), never to the elko server directly.
 
