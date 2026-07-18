@@ -12,6 +12,7 @@ import (
 	"math/rand"
 	"net"
 	"net/textproto"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -1297,6 +1298,16 @@ func (c *ClientSession) createUserWithAppearance(fullName string, appearance *ha
 	return
 }
 
+// validAvatarName gates minting a NEW user document from a client-supplied
+// login name. The binary port receives arbitrary internet garbage (TLS
+// handshakes, scanner probes): handleInitialClientMessage treats everything
+// before the first ':' byte as the login name, so before this check every
+// probe minted a user doc — and permanently leaked a turf, since
+// ensureTurfAssigned runs on every creation. Printable ASCII only, starts
+// alphanumeric, max 32 chars. Deliberately NOT applied to existing users:
+// a doc already in mongo can always log back in, whatever its name.
+var validAvatarName = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9 ._'-]{0,31}$`)
+
 func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 	c.userRef = fmt.Sprintf("user-%s", strings.Replace(
 		strings.ToLower(fullName), " ", "_", -1))
@@ -1324,7 +1335,13 @@ func (c *ClientSession) ensureUserCreated(fullName string) (err error) {
 			c.user = user
 			return
 		}
-		// No user doc: a brand-new avatar is being born this session (whether via the
+		// No user doc: this login would mint a brand-new avatar, so the name
+		// must look like one a person typed (see validAvatarName).
+		if !validAvatarName.MatchString(fullName) {
+			c.log.Warn().Str("full_name", fmt.Sprintf("%q", fullName)).Msg("Refusing to create user for invalid avatar name")
+			return fmt.Errorf("invalid avatar name %q", fullName)
+		}
+		// A brand-new avatar is being born this session (whether via the
 		// hatchery below or the immediate default create) — the presence alert gets the
 		// birth-announcement variant.
 		c.presenceNewUser = true
