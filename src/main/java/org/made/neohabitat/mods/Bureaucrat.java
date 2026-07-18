@@ -105,7 +105,7 @@ public class Bureaucrat extends Openable implements Copyable, Runnable {
 	    String BureacratID = object().name().toLowerCase();
             switch(BureacratID) { //Use object().name() to differentiate the bureaucrats (before was gr_state)
             case "propertycrabot":
-                switch(command) {
+                switch(command.toUpperCase()) { // don't make people hold shift
                 case "MOVE:":
                 case "PROPERTY:":
                     turfcrat_MOVE(from, avatar, remainder);
