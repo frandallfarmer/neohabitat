@@ -2,13 +2,21 @@
 /** recoverTurfs.js - Reclaim turfs (and delete the users/avatars holding them) from
  *  abandoned single-visit accounts in the NeoHabitat Elko Mongo database.
  *
- *  A user is a reclamation candidate when ALL of the following hold:
- *    - their Avatar mod has a real turf (not empty / not "context-test")
- *    - they connected on at most one distinct day (stats[HS$lifetime] <= 1,
- *      or no stats at all — i.e. Elko never checkpointed a second visit)
- *    - their last connection (Avatar.lastConnectedDay, days-since-epoch) is
- *      more than --days ago (default 90)
- *    - they are not a god account (nitty_bits GOD_BIT) and not in --keep
+ *  A user is a reclamation candidate when their Avatar mod has a real turf
+ *  (not empty / not "context-test"), they are not a god account (nitty_bits
+ *  GOD_BIT), they are not in --keep, and EITHER:
+ *
+ *  single-visit: they connected on at most one distinct day
+ *      (stats[HS$lifetime] <= 1) and their last connection
+ *      (Avatar.lastConnectedDay, days-since-epoch) is more than --days ago
+ *      (default 90), OR
+ *
+ *  never-played: they have no stats and no lastConnectedDay at all — Elko
+ *      never saw them arrive in a region — and their user document was
+ *      created (ObjectId timestamp) more than --days ago. These are mostly
+ *      port-scanner debris: garbage bytes (e.g. TLS handshakes) sent to the
+ *      bridge's binary port were read as login names, minting a user and
+ *      leaking a turf each time.
  *
  *  Reclaiming means:
  *    1. delete every item document contained (recursively) in the user doc
@@ -95,25 +103,34 @@ async function containedRefs(odb, containerRef) {
 		if ((av.nitty_bits || 0) & GOD_BIT) continue;
 		const lifetime = (av.stats && av.stats[HS$LIFETIME]) || 0;
 		if (lifetime > 1) continue;
-		// No lastConnectedDay means Elko never checkpointed an arrival; only
-		// reclaim those when explicitly idle-verified is impossible, so skip.
-		if (!av.lastConnectedDay) continue;
-		if (av.lastConnectedDay > cutoffDay) continue;
-		candidates.push({user, av});
+		if (av.lastConnectedDay) {
+			// Single-visit: connected on one day, idle past the cutoff.
+			if (av.lastConnectedDay > cutoffDay) continue;
+			candidates.push({user, av, kind: 'single-visit', lastSeen: new Date(av.lastConnectedDay * ONE_DAY)});
+		} else if (!av.stats) {
+			// Never-played: Elko never checkpointed an arrival. Age the user
+			// doc by its ObjectId creation timestamp (the only date we have).
+			if (typeof user._id?.getTimestamp !== 'function') continue;
+			const created = user._id.getTimestamp();
+			if (created.getTime() > cutoffDay * ONE_DAY) continue;
+			candidates.push({user, av, kind: 'never-played', lastSeen: created});
+		}
 	}
 
-	console.log(`${candidates.length} candidate(s): single-visit users idle > ${Argv.days} days, holding a turf\n`);
+	console.log(`${candidates.length} candidate(s): single-visit or never-played users idle > ${Argv.days} days, holding a turf\n`);
 
 	let freed = 0;
-	for (const {user, av} of candidates) {
+	for (const {user, av, kind, lastSeen} of candidates) {
 		const items = await containedRefs(odb, user.ref);
 		const region = await odb.findOne({ref: av.turf});
 		const resident = region && region.mods && region.mods[0] && region.mods[0].resident;
-		const lastSeen = new Date(av.lastConnectedDay * ONE_DAY).toISOString().slice(0, 10);
+		const when = lastSeen.toISOString().slice(0, 10);
 		const turfNote = !region ? 'MISSING REGION'
 			: resident === user.ref ? 'resident matches'
 			: `resident is ${JSON.stringify(resident || '')} — region left untouched`;
-		console.log(`${user.ref} ("${user.name}")  last seen ${lastSeen}  turf ${av.turf} (${turfNote})  ${items.length} item(s)`);
+		// Scanner-debris refs/names are raw binary; keep the report terminal-safe.
+		const clean = s => (s || '').replace(/[^\x20-\x7e]/g, '�').slice(0, 40);
+		console.log(`${kind}: ${clean(user.ref)} ("${clean(user.name)}")  ${kind === 'single-visit' ? 'last seen' : 'created'} ${when}  turf ${av.turf} (${turfNote})  ${items.length} item(s)`);
 
 		if (!Argv.apply) continue;
 
