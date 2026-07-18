@@ -41,6 +41,16 @@ repo.
 👉 **[Inspector app](https://frandallfarmer.github.io/neohabitat-doc/inspector/)** ·
 [source](https://github.com/frandallfarmer/neohabitat-doc/tree/master/inspector)
 
+## Habitat Avatar Simulator
+
+Julien Dorra's browser-based avatar dress-up lab: every one of the 160+
+original heads, all 16 spray-on clothing patterns, poses, and views —
+decoded from the original C64 assets and rendered with the authentic
+limb-chaining pipeline. A beautiful independent companion to the Inspector.
+
+👉 **[Avatar Simulator](https://juliendorra.com/habitat/)** ·
+[source](https://github.com/juliendorra/Habitat-Avatar-Simulator)
+
 ## habibots — the bot framework
 
 Write your own in-world bot in a few dozen lines of Node: connection, region
