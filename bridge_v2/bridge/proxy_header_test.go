@@ -13,9 +13,17 @@ import (
 type addrConn struct {
 	discardConn
 	remote net.Addr
+	local  net.Addr
 }
 
 func (a *addrConn) RemoteAddr() net.Addr { return a.remote }
+
+func (a *addrConn) LocalAddr() net.Addr {
+	if a.local != nil {
+		return a.local
+	}
+	return a.discardConn.LocalAddr()
+}
 
 func newProxyTestSession(peerIP string, stream string) *ClientSession {
 	bridge := &Bridge{DataRate: 1 << 20}
@@ -67,6 +75,27 @@ func TestProxyHeaderConsumedFromPrivatePeer(t *testing.T) {
 	b, err := s.clientReader.Peek(1)
 	if err != nil || b[0] != '{' {
 		t.Fatalf("next byte after header = %q, %v; want '{'", b, err)
+	}
+}
+
+func TestProxyHeaderTrustedFromSelfConnection(t *testing.T) {
+	// Prod topology: the pushserver container dials the host-systemd
+	// bridge through the machine's public IP, so peer == local address.
+	bridge := &Bridge{DataRate: 1 << 20}
+	conn := &addrConn{
+		remote: &net.TCPAddr{IP: net.ParseIP("20.3.249.92"), Port: 33992},
+		local:  &net.TCPAddr{IP: net.ParseIP("20.3.249.92"), Port: 2026},
+	}
+	s := &ClientSession{
+		bridge:     bridge,
+		clientConn: NewClientConnection(bridge, conn),
+		clientReader: bufio.NewReader(strings.NewReader(
+			"PROXY TCP4 60.234.208.18 127.0.0.1 51234 2026\r\n{\"op\":\"x\"}\n")),
+		done: make(chan struct{}),
+	}
+	s.maybeConsumeProxyHeader()
+	if s.realClientAddr != "60.234.208.18:51234" {
+		t.Fatalf("realClientAddr = %q, want 60.234.208.18:51234", s.realClientAddr)
 	}
 }
 
