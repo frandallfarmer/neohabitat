@@ -14,7 +14,12 @@ requireHttps: true
 websocketProxy:
   clientAddr: habitat.themade.org:1987
   listenAddr: 0.0.0.0:1987
-  remoteAddr: habitat.themade.org:1986
+  # host.docker.internal (extra_hosts host-gateway, same pattern as the
+  # bots) reaches the host-systemd bridge over the docker bridge network,
+  # so the bridge sees a PRIVATE peer and trusts our PROXY header. The
+  # old habitat.themade.org target hairpinned through Azure fabric NAT,
+  # arriving with the PUBLIC IP as source — untrusted, header ignored.
+  remoteAddr: host.docker.internal:1986
 
 bridgeAdminAddr: host.docker.internal:2027
 

@@ -99,17 +99,48 @@ func TestProxyHeaderTrustedFromSelfConnection(t *testing.T) {
 	}
 }
 
-func TestProxyHeaderIgnoredFromPublicPeer(t *testing.T) {
-	stream := "PROXY TCP4 1.2.3.4 127.0.0.1 1 2\r\n"
-	s := newProxyTestSession("8.8.8.8", stream)
+func TestProxyHeaderFromPublicPeerConsumedNotHonored(t *testing.T) {
+	// The header is stripped from ANY peer — leaving it on the stream
+	// poisons Run()'s first-byte protocol sniff (the 2026-07-19 outage).
+	// But an untrusted peer's claimed origin must never be used.
+	s := newProxyTestSession("8.8.8.8",
+		"PROXY TCP4 1.2.3.4 127.0.0.1 1 2\r\n{\"op\":\"x\"}\n")
 	s.maybeConsumeProxyHeader()
 	if s.realClientAddr != "" {
 		t.Fatalf("realClientAddr = %q, want empty (public peer must not spoof)", s.realClientAddr)
 	}
-	// Stream must be untouched for normal protocol handling.
-	got := make([]byte, len(stream))
-	if _, err := io.ReadFull(s.clientReader, got); err != nil || string(got) != stream {
-		t.Fatalf("stream after ignored header = %q, %v", got, err)
+	b, err := s.clientReader.Peek(1)
+	if err != nil || b[0] != '{' {
+		t.Fatalf("next byte after consumed header = %q, %v; want '{'", b, err)
+	}
+}
+
+func TestParseTrustedProxies(t *testing.T) {
+	nets := parseTrustedProxies("20.3.249.92, 10.0.0.0/8, garbage, ")
+	if len(nets) != 2 {
+		t.Fatalf("parsed %d nets, want 2", len(nets))
+	}
+	if !nets[0].Contains(net.ParseIP("20.3.249.92")) {
+		t.Error("single-IP entry should contain itself")
+	}
+	if nets[0].Contains(net.ParseIP("20.3.249.93")) {
+		t.Error("single-IP entry must not contain neighbors")
+	}
+	if !nets[1].Contains(net.ParseIP("10.99.1.2")) {
+		t.Error("CIDR entry should contain member address")
+	}
+}
+
+func TestProxyHeaderHonoredViaTrustedProxiesEnv(t *testing.T) {
+	saved := trustedProxyNets
+	trustedProxyNets = parseTrustedProxies("198.18.0.7")
+	defer func() { trustedProxyNets = saved }()
+
+	s := newProxyTestSession("198.18.0.7",
+		"PROXY TCP4 60.234.208.18 127.0.0.1 51234 2026\r\n{\"op\":\"x\"}\n")
+	s.maybeConsumeProxyHeader()
+	if s.realClientAddr != "60.234.208.18:51234" {
+		t.Fatalf("realClientAddr = %q, want honored via env allowlist", s.realClientAddr)
 	}
 }
 

@@ -12,6 +12,7 @@ import (
 	"math/rand"
 	"net"
 	"net/textproto"
+	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -1577,37 +1578,78 @@ func parseProxyV1Line(line []byte) (string, bool) {
 	return net.JoinHostPort(fields[2], fields[4]), true
 }
 
-// maybeConsumeProxyHeader consumes an optional PROXY protocol v1 header at
-// the head of the client stream. Web clients reach the bridge through
-// Caddy -> pushserver, so their TCP peer is always an on-box proxy address
-// and every web session used to log the same useless IP; pushserver now
-// prepends a PROXY line carrying the browser's real address (taken from
-// Caddy's X-Forwarded-For). The header is honored ONLY when the socket
-// peer is loopback/private — a public client sending "PROXY ..." is left
-// untouched for normal protocol handling, so origins can't be spoofed
-// from the internet.
-func (c *ClientSession) maybeConsumeProxyHeader() {
+// trustedProxyNets are extra peers allowed to assert a PROXY-header origin,
+// from BRIDGE_TRUSTED_PROXIES (comma-separated IPs or CIDRs). Escape hatch
+// for topologies where the on-box proxy's connections don't arrive from a
+// loopback/private/self address (e.g. a NAT hairpin); unset means no extras.
+var trustedProxyNets = parseTrustedProxies(os.Getenv("BRIDGE_TRUSTED_PROXIES"))
+
+func parseTrustedProxies(spec string) []*net.IPNet {
+	var nets []*net.IPNet
+	for _, part := range strings.Split(spec, ",") {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+		if _, n, err := net.ParseCIDR(part); err == nil {
+			nets = append(nets, n)
+			continue
+		}
+		if ip := net.ParseIP(part); ip != nil {
+			bits := len(ip) * 8
+			nets = append(nets, &net.IPNet{IP: ip, Mask: net.CIDRMask(bits, bits)})
+			continue
+		}
+		log.Warn().Str("entry", part).Msg("BRIDGE_TRUSTED_PROXIES: ignoring unparseable entry")
+	}
+	return nets
+}
+
+// trustedProxyPeer reports whether this connection's peer may assert a
+// PROXY-header origin: loopback, RFC1918 (docker networks), the bridge's
+// own local address (a self-connection), or a BRIDGE_TRUSTED_PROXIES entry.
+func (c *ClientSession) trustedProxyPeer() bool {
 	host, _, err := net.SplitHostPort(c.clientConn.RemoteAddr().String())
 	if err != nil {
-		return
+		return false
 	}
 	peer := net.ParseIP(host)
 	if peer == nil {
-		return
+		return false
 	}
-	// Trusted peers: loopback, RFC1918 (docker networks), or the host's
-	// own address — on prod the pushserver container reaches the
-	// host-systemd bridge through the machine's public IP, so a
-	// self-connection is still the on-box proxy, not the internet.
-	trusted := peer.IsLoopback() || peer.IsPrivate()
-	if !trusted && c.clientConn.LocalAddr() != nil {
-		if localHost, _, lerr := net.SplitHostPort(c.clientConn.LocalAddr().String()); lerr == nil {
-			trusted = localHost == host
+	if peer.IsLoopback() || peer.IsPrivate() {
+		return true
+	}
+	if c.clientConn.LocalAddr() != nil {
+		if localHost, _, lerr := net.SplitHostPort(c.clientConn.LocalAddr().String()); lerr == nil && localHost == host {
+			return true
 		}
 	}
-	if !trusted {
-		return
+	for _, n := range trustedProxyNets {
+		if n.Contains(peer) {
+			return true
+		}
 	}
+	return false
+}
+
+// maybeConsumeProxyHeader consumes an optional PROXY protocol v1 header at
+// the head of the client stream. Web clients reach the bridge through
+// Caddy -> pushserver, so their TCP peer is always an on-box proxy address
+// and every web session used to log the same useless IP; pushserver
+// prepends a PROXY line carrying the browser's real address (taken from
+// Caddy's X-Forwarded-For).
+//
+// The header is CONSUMED from any peer but HONORED only from trusted ones
+// (trustedProxyPeer). Consume-unconditionally is a hard-won invariant: no
+// client protocol starts with these six bytes (QLink frames start 0x5A,
+// JSON clients '{'), and leaving an unconsumed "PROXY ..." line on the
+// stream poisons the first-byte protocol sniff in Run() — on 2026-07-19
+// that diverted every prod web login into the QLink branch and broke
+// them all. Worst case now is discarding one garbage line from a scanner.
+// Spoofing stays impossible: an untrusted peer's claimed address is
+// logged and ignored, never used.
+func (c *ClientSession) maybeConsumeProxyHeader() {
 	// Peek(1) before Peek(len): Peek(n) blocks until n bytes arrive, and
 	// only the proxy path ever starts with 'P' (QLink starts 0x5A, JSON
 	// clients '{'), so this can't stall a real client that sends one byte
@@ -1634,7 +1676,14 @@ func (c *ClientSession) maybeConsumeProxyHeader() {
 	}
 	addr, ok := parseProxyV1Line(line)
 	if !ok {
-		c.log.Warn().Str("line", fmt.Sprintf("%q", line)).Msg("Ignoring malformed PROXY header")
+		c.log.Warn().Str("line", fmt.Sprintf("%q", line)).Msg("Consumed malformed PROXY header (ignored)")
+		return
+	}
+	if !c.trustedProxyPeer() {
+		c.log.Warn().
+			Str("claimed_ip", addr).
+			Str("peer", c.clientConn.RemoteAddr().String()).
+			Msg("PROXY header from untrusted peer — consumed but ignored (BRIDGE_TRUSTED_PROXIES extends trust)")
 		return
 	}
 	c.realClientAddr = addr
