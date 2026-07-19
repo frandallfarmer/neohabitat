@@ -1592,7 +1592,20 @@ func (c *ClientSession) maybeConsumeProxyHeader() {
 		return
 	}
 	peer := net.ParseIP(host)
-	if peer == nil || !(peer.IsLoopback() || peer.IsPrivate()) {
+	if peer == nil {
+		return
+	}
+	// Trusted peers: loopback, RFC1918 (docker networks), or the host's
+	// own address — on prod the pushserver container reaches the
+	// host-systemd bridge through the machine's public IP, so a
+	// self-connection is still the on-box proxy, not the internet.
+	trusted := peer.IsLoopback() || peer.IsPrivate()
+	if !trusted && c.clientConn.LocalAddr() != nil {
+		if localHost, _, lerr := net.SplitHostPort(c.clientConn.LocalAddr().String()); lerr == nil {
+			trusted = localHost == host
+		}
+	}
+	if !trusted {
 		return
 	}
 	// Peek(1) before Peek(len): Peek(n) blocks until n bytes arrive, and
