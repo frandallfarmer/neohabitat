@@ -79,10 +79,6 @@ func (c *ClientConnection) RemoteAddr() net.Addr {
 	return c.conn.RemoteAddr()
 }
 
-func (c *ClientConnection) LocalAddr() net.Addr {
-	return c.conn.LocalAddr()
-}
-
 func NewClientConnectionWithRate(conn net.Conn, dataRate int) *ClientConnection {
 	byteRate := float64(dataRate) / 10.0
 	rateBucket := ratelimit.NewBucketWithRate(byteRate, 1)

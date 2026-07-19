@@ -88,7 +88,7 @@ func TestPresenceAlertsFreshLogin(t *testing.T) {
 
 func TestPresenceDebounceWindow(t *testing.T) {
 	p, hook, now := newTestPresence(t)
-	p.noteDisconnect("user-randy", "Randy", true, "")
+	p.noteDisconnect("user-randy", "Randy", true)
 	*now = now.Add(presenceDebounceWindow - time.Second)
 	p.noteConnect(connectInfo("user-randy", "Randy", "context-Downtown_4f"))
 	if posts := hook.posts(); len(posts) != 0 {
@@ -198,7 +198,7 @@ func TestPresenceNewUserFanfare(t *testing.T) {
 
 func TestPresenceDebounceHandoffRoundTrip(t *testing.T) {
 	p, hook, now := newTestPresence(t)
-	p.noteDisconnect("user-randy", "Randy", true, "")
+	p.noteDisconnect("user-randy", "Randy", true)
 	exported := p.exportDebounce()
 	if len(exported) != 1 {
 		t.Fatalf("export = %v", exported)

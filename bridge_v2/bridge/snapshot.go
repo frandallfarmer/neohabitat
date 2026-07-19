@@ -17,9 +17,6 @@ type SessionSnapshot struct {
 	RegionRef    string `json:"region_ref"`
 	Ref          string `json:"ref"`
 	Who          string `json:"who"`
-	// RealClientAddr preserves a PROXY-protocol-reported origin across a
-	// tableflip handoff; the inherited socket only knows the proxy peer.
-	RealClientAddr string `json:"real_client_addr,omitempty"`
 	PacketPrefix string `json:"packet_prefix,omitempty"`
 
 	Connected         bool `json:"connected"`
