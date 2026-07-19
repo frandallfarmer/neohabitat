@@ -37,6 +37,7 @@ type PresenceEvent struct {
 	RegionRef string    `json:"region_ref,omitempty"`
 	Region    string    `json:"region,omitempty"` // display name, or "their turf"
 	Client    string    `json:"client,omitempty"` // "c64" | "web"
+	IP        string    `json:"ip,omitempty"`     // origin address (PROXY-header-aware)
 	Alerted   bool      `json:"alerted"`
 	Reason    string    `json:"reason,omitempty"` // why a connect was NOT posted
 }
@@ -51,6 +52,7 @@ type presenceConnect struct {
 	turfRef   string
 	newUser   bool
 	json      bool
+	ip        string
 }
 
 type presenceRegistry struct {
@@ -141,7 +143,7 @@ func (p *presenceRegistry) noteConnect(info presenceConnect) {
 	p.record(PresenceEvent{
 		Time: now, Kind: "connect", UserRef: info.userRef, Name: info.name,
 		RegionRef: info.regionRef, Region: eventRegion, Client: clientKind(info.json),
-		Alerted: reason == "", Reason: reason,
+		IP: info.ip, Alerted: reason == "", Reason: reason,
 	})
 	if reason == "" {
 		p.notifier.Post(presenceLoginsChannel, formatLoginAlert(info, regionLabel, atTurf, humans))
@@ -149,7 +151,7 @@ func (p *presenceRegistry) noteConnect(info presenceConnect) {
 }
 
 // noteDisconnect stamps the debounce clock and records history. Never posts.
-func (p *presenceRegistry) noteDisconnect(userRef string, name string, json bool) {
+func (p *presenceRegistry) noteDisconnect(userRef string, name string, json bool, ip string) {
 	if p == nil || userRef == "" {
 		return
 	}
@@ -166,6 +168,7 @@ func (p *presenceRegistry) noteDisconnect(userRef string, name string, json bool
 	p.mu.Unlock()
 	p.record(PresenceEvent{
 		Time: now, Kind: "disconnect", UserRef: userRef, Name: name, Client: clientKind(json),
+		IP: ip,
 	})
 }
 
@@ -305,6 +308,7 @@ func (p *presenceRegistry) record(ev PresenceEvent) {
 		Str("region_ref", ev.RegionRef).
 		Str("region", ev.Region).
 		Str("client", ev.Client).
+		Str("ip", ev.IP).
 		Bool("alerted", ev.Alerted).
 		Str("reason", ev.Reason).
 		Msg("presence_event")
