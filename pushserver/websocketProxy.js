@@ -78,6 +78,44 @@ function extractLoginName(message) {
   return null;
 }
 
+function normalizeAddress(addr) {
+  if (!addr) {
+    return '';
+  }
+  // Node reports IPv4 peers on a dual-stack socket as ::ffff:1.2.3.4.
+  return addr.replace(/^::ffff:/i, '');
+}
+
+function isPrivateAddress(addr) {
+  return addr === '::1' ||
+    /^(127\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/.test(addr);
+}
+
+// The browser's true address. HTTPS clients reach this proxy through Caddy,
+// so the socket peer is an on-box address and the origin arrives in
+// X-Forwarded-For. Trust that header only from private/loopback peers so a
+// direct connection can't spoof its origin.
+function realClientAddress(req) {
+  var peer = normalizeAddress(req.socket.remoteAddress);
+  var xff = req.headers['x-forwarded-for'];
+  if (xff && isPrivateAddress(peer)) {
+    var first = xff.split(',')[0].trim();
+    if (first) {
+      return normalizeAddress(first);
+    }
+  }
+  return peer;
+}
+
+// PROXY protocol v1 header carrying clientAddr as the connection origin,
+// for the bridge to log instead of this proxy's address.
+function proxyProtocolLine(clientAddr, clientPort, targetPort) {
+  var family = clientAddr.indexOf(':') >= 0 ? 'TCP6' : 'TCP4';
+  var dstHost = family === 'TCP6' ? '::1' : '127.0.0.1';
+  return 'PROXY ' + family + ' ' + clientAddr + ' ' + dstHost + ' ' +
+    (clientPort || 0) + ' ' + targetPort + '\r\n';
+}
+
 class LoginNameDetector {
   constructor() {
     this.buffer = Buffer.alloc(0);
@@ -113,7 +151,7 @@ function startWebsocketProxy(config) {
   var wsServer = new WebSocketServer({server: server});
 
   wsServer.on('connection', function(client, req) {
-    var clientAddr = client._socket.remoteAddress;
+    var clientAddr = realClientAddress(req);
     var cookies = parseCookies(req.headers.cookie);
     var docentSessionId = cookies.docentSessionId;
     // Prefer an explicit ?docent=<id> on the WS URL over the cookie: the /neohabitat docent page is
@@ -136,6 +174,16 @@ function startWebsocketProxy(config) {
       log.debug('WebSocket proxy connected %s to %s:%s',
         clientAddr, target.host, target.port);
     });
+
+    // First bytes on the bridge connection: a PROXY protocol v1 header so
+    // the bridge logs the browser's address instead of this proxy's.
+    // Written immediately (not in the connect callback) — net.Socket
+    // queues pre-connect writes in order, so this always precedes any
+    // client data forwarded below.
+    if (clientAddr) {
+      targetSocket.write(
+        proxyProtocolLine(clientAddr, req.socket.remotePort, target.port));
+    }
 
     targetSocket.on('data', function(data) {
       try {
@@ -186,5 +234,7 @@ function startWebsocketProxy(config) {
 
 module.exports = startWebsocketProxy;
 module.exports.extractLoginName = extractLoginName;
+module.exports.realClientAddress = realClientAddress;
+module.exports.proxyProtocolLine = proxyProtocolLine;
 module.exports.LoginNameDetector = LoginNameDetector;
 module.exports.websocketMessageToBuffer = websocketMessageToBuffer;

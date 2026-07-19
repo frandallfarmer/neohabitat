@@ -48,6 +48,46 @@ function testMessageBufferConversionPreservesBytes() {
     Array.from(bytes));
 }
 
+function fakeReq(remoteAddress, xff, remotePort) {
+  return {
+    socket: {remoteAddress: remoteAddress, remotePort: remotePort || 4242},
+    headers: xff ? {'x-forwarded-for': xff} : {},
+  };
+}
+
+function testRealClientAddressTrustsForwardedFromPrivatePeer() {
+  assert.strictEqual(
+    websocketProxy.realClientAddress(fakeReq('::ffff:172.18.0.2', '60.234.208.18')),
+    '60.234.208.18');
+  assert.strictEqual(
+    websocketProxy.realClientAddress(fakeReq('127.0.0.1', '60.234.208.18, 10.0.0.1')),
+    '60.234.208.18');
+}
+
+function testRealClientAddressIgnoresForwardedFromPublicPeer() {
+  assert.strictEqual(
+    websocketProxy.realClientAddress(fakeReq('::ffff:8.8.8.8', '1.2.3.4')),
+    '8.8.8.8');
+}
+
+function testRealClientAddressFallsBackToPeer() {
+  assert.strictEqual(
+    websocketProxy.realClientAddress(fakeReq('::ffff:172.18.0.2', null)),
+    '172.18.0.2');
+}
+
+function testProxyProtocolLine() {
+  assert.strictEqual(
+    websocketProxy.proxyProtocolLine('60.234.208.18', 51234, 2026),
+    'PROXY TCP4 60.234.208.18 127.0.0.1 51234 2026\r\n');
+  assert.strictEqual(
+    websocketProxy.proxyProtocolLine('2001:db8::7', 51234, 2026),
+    'PROXY TCP6 2001:db8::7 ::1 51234 2026\r\n');
+  assert.strictEqual(
+    websocketProxy.proxyProtocolLine('60.234.208.18', undefined, 2026),
+    'PROXY TCP4 60.234.208.18 127.0.0.1 0 2026\r\n');
+}
+
 testExtractsNameOnlyPreamble();
 testExtractsLoginPreamble();
 testExtractsArrayBufferPreamble();
@@ -55,3 +95,7 @@ testDetectsFragmentedPreamble();
 testDetectsFragmentedArrayPreamble();
 testIgnoresNonLoginFrame();
 testMessageBufferConversionPreservesBytes();
+testRealClientAddressTrustsForwardedFromPrivatePeer();
+testRealClientAddressIgnoresForwardedFromPublicPeer();
+testRealClientAddressFallsBackToPeer();
+testProxyProtocolLine();

@@ -97,6 +97,11 @@ type ClientSession struct {
 	qlinkNakSent      bool
 	clientConn        *ClientConnection
 	clientReader      *bufio.Reader
+	// realClientAddr is the origin address reported by a PROXY protocol v1
+	// header from the on-box websocket proxy (pushserver); web sessions
+	// otherwise all appear to come from the proxy itself. Empty for direct
+	// connections — RealClientAddr() falls back to the socket peer.
+	realClientAddr string
 	closeMutex        sync.Mutex
 	connected         bool
 	contentsVector    *ContentsVector
@@ -256,11 +261,14 @@ func (c *ClientSession) TableKey() string {
 // log lines from any goroutine using c.log will have avatar=<name>
 // attached.
 func (c *ClientSession) bindAvatar(name string) {
-	c.log = log.With().
-		Str("ip", c.TableKey()).
+	lc := log.With().
+		Str("ip", c.RealClientAddr()).
 		Str("session_id", c.sessionID).
-		Str("avatar", name).
-		Logger()
+		Str("avatar", name)
+	if c.realClientAddr != "" {
+		lc = lc.Str("proxy_peer", c.TableKey())
+	}
+	c.log = lc.Logger()
 	if c.span != nil {
 		c.span.SetAttributes(observability.AvatarAttr(name))
 	}
@@ -1128,6 +1136,7 @@ func (c *ClientSession) notePresenceArrivalLocked() {
 		regionRef: c.regionRef,
 		newUser:   c.presenceNewUser,
 		json:      c.jsonPassthrough,
+		ip:        c.RealClientAddr(),
 	}
 	if c.user != nil && len(c.user.Mods) > 0 && c.user.Mods[0].Turf != nil {
 		info.turfRef = *c.user.Mods[0].Turf
@@ -1545,7 +1554,99 @@ func (c *ClientSession) recoverElkoConnection() {
 	}
 }
 
+// proxyV1Sig is the fixed prefix of a PROXY protocol v1 header line.
+const proxyV1Sig = "PROXY "
+
+// parseProxyV1Line extracts the source address from a PROXY protocol v1
+// header line ("PROXY TCP4 <src> <dst> <srcport> <dstport>\r\n").
+// Returns ok=false for UNKNOWN or malformed lines.
+func parseProxyV1Line(line []byte) (string, bool) {
+	fields := strings.Fields(strings.TrimSpace(string(line)))
+	if len(fields) < 6 || fields[0] != "PROXY" {
+		return "", false
+	}
+	if fields[1] != "TCP4" && fields[1] != "TCP6" {
+		return "", false
+	}
+	if net.ParseIP(fields[2]) == nil {
+		return "", false
+	}
+	if _, err := strconv.Atoi(fields[4]); err != nil {
+		return "", false
+	}
+	return net.JoinHostPort(fields[2], fields[4]), true
+}
+
+// maybeConsumeProxyHeader consumes an optional PROXY protocol v1 header at
+// the head of the client stream. Web clients reach the bridge through
+// Caddy -> pushserver, so their TCP peer is always an on-box proxy address
+// and every web session used to log the same useless IP; pushserver now
+// prepends a PROXY line carrying the browser's real address (taken from
+// Caddy's X-Forwarded-For). The header is honored ONLY when the socket
+// peer is loopback/private — a public client sending "PROXY ..." is left
+// untouched for normal protocol handling, so origins can't be spoofed
+// from the internet.
+func (c *ClientSession) maybeConsumeProxyHeader() {
+	host, _, err := net.SplitHostPort(c.clientConn.RemoteAddr().String())
+	if err != nil {
+		return
+	}
+	peer := net.ParseIP(host)
+	if peer == nil || !(peer.IsLoopback() || peer.IsPrivate()) {
+		return
+	}
+	// Peek(1) before Peek(len): Peek(n) blocks until n bytes arrive, and
+	// only the proxy path ever starts with 'P' (QLink starts 0x5A, JSON
+	// clients '{'), so this can't stall a real client that sends one byte
+	// and waits. The proxy writes the whole header in a single segment.
+	peek, err := c.clientReader.Peek(1)
+	if err != nil || peek[0] != proxyV1Sig[0] {
+		return
+	}
+	sig, err := c.clientReader.Peek(len(proxyV1Sig))
+	if err != nil || string(sig) != proxyV1Sig {
+		return
+	}
+	// 107 bytes is the v1 spec's maximum header length.
+	line, err := readFirstLineEitherTerminator(c.clientReader, 107)
+	if err != nil {
+		return
+	}
+	// The line reader stops at the '\r' of the "\r\n" terminator; consume
+	// the '\n' too so protocol sniffing sees the client's first real byte.
+	if len(line) > 0 && line[len(line)-1] == '\r' {
+		if next, perr := c.clientReader.Peek(1); perr == nil && next[0] == '\n' {
+			c.clientReader.ReadByte()
+		}
+	}
+	addr, ok := parseProxyV1Line(line)
+	if !ok {
+		c.log.Warn().Str("line", fmt.Sprintf("%q", line)).Msg("Ignoring malformed PROXY header")
+		return
+	}
+	c.realClientAddr = addr
+	c.log = log.With().
+		Str("ip", addr).
+		Str("proxy_peer", c.clientConn.RemoteAddr().String()).
+		Str("session_id", c.sessionID).
+		Logger()
+	if c.span != nil {
+		c.span.SetAttributes(observability.IPAttr(addr))
+	}
+}
+
+// RealClientAddr is the best-known origin for this session: the
+// PROXY-protocol-reported browser address when the connection came through
+// the on-box websocket proxy, else the socket peer.
+func (c *ClientSession) RealClientAddr() string {
+	if c.realClientAddr != "" {
+		return c.realClientAddr
+	}
+	return c.clientConn.RemoteAddr().String()
+}
+
 func (c *ClientSession) Run() {
+	c.maybeConsumeProxyHeader()
 	// Peek ONE byte to decide broad protocol class. Any client sends
 	// at least one byte promptly after the TCP handshake (QLink Reset
 	// frame starts with 0x5A, JSON clients with '{', legacy
@@ -2574,7 +2675,7 @@ func (c *ClientSession) Close() {
 	c.presenceClosed = true
 	c.closeMutex.Unlock()
 	if !presenceNoted && c.bridge != nil && c.bridge.presence != nil {
-		c.bridge.presence.noteDisconnect(c.userRef, c.UserName, c.jsonPassthrough)
+		c.bridge.presence.noteDisconnect(c.userRef, c.UserName, c.jsonPassthrough, c.RealClientAddr())
 	}
 	// Flip the done flags first so other goroutines (notably
 	// writeJsonToClient) can distinguish a teardown-time write failure
@@ -2730,6 +2831,7 @@ func (c *ClientSession) Snapshot() *SessionSnapshot {
 		RegionRef:         c.regionRef,
 		Ref:               c.ref,
 		Who:               c.who,
+		RealClientAddr:    c.realClientAddr,
 		PacketPrefix:      c.packetPrefix,
 		Connected:         c.connected,
 		FirstConnection:   c.firstConnection,
@@ -2833,6 +2935,7 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 		waitingForAvatar:         snap.WaitingForAvatar,
 		waitingForAvatarContents: snap.WaitingForAvatarContents,
 		who:                      snap.Who,
+		realClientAddr:           snap.RealClientAddr,
 	}
 
 	// Rebuild the clientReader, prepending any buffered data that was
@@ -2891,6 +2994,9 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 	remoteAddr := "unknown"
 	if clientConn != nil && clientConn.RemoteAddr() != nil {
 		remoteAddr = clientConn.RemoteAddr().String()
+	}
+	if snap.RealClientAddr != "" {
+		remoteAddr = snap.RealClientAddr
 	}
 	sess.log = log.With().
 		Str("ip", remoteAddr).
