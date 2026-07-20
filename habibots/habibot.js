@@ -1774,7 +1774,17 @@ class HabiBot {
         // to=item-box-... etc. Underscore-prefix to signal "client-
         // side bookkeeping, never sent back to server."
         o.obj._container = o.to
-        this.noids[o.obj.mods[0].noid] = o.obj
+        // Noids are one byte on the C64 wire; 256 is elko's backend-only
+        // UNASSIGNED_NOID, stamped on a still-ghost avatar and each of its
+        // pocket contents. Indexing those makes would let the last of them
+        // (always the Tokens, "Money for X") squat one table slot, and the
+        // ghost's I_AM_HERE broadcasts APPEARING_$ appearing=256 — which is
+        // how the welcomebot ended up greeting new users' wallets. Sentinel
+        // noids never enter the table; getNoid() then returns null and every
+        // handler's existing null guard skips cleanly.
+        if (o.obj.mods[0].noid <= 255) {
+          this.noids[o.obj.mods[0].noid] = o.obj
+        }
       }
       if (o.you) {
         var split = ref.split('-')
