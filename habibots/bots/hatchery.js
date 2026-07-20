@@ -91,7 +91,10 @@ HatcheryBot.on('APPEARING_$', (bot, msg) => {
     log.error('No avatar found at noid: %s', msg.appearing)
     return
   }
-  
+  if (avatar.name.toLowerCase() === Argv.username.toLowerCase()) {
+    return
+  }
+
   bot.say("TO: " + avatar.name)
     .then(() => bot.wait(5000))
     .then(() => bot.ESPsayLines(GreetingText))
@@ -108,7 +111,14 @@ HatcheryBot.on('APPEARING_$', (bot, msg) => {
  */
 HatcheryBot.on('make', (bot, msg) => {
   if (msg.obj.mods[0].type == "Avatar") {
-    if (msg.type !== undefined && msg.type === null) {  
+    // Own de-ghost: the bot itself re-enters the hatchery as a ghost on every
+    // restart and ensureCorporated fires this same type:null make — without
+    // this check it runs the whole greeting flow addressed to itself. Case-
+    // insensitive: the avatar name is "WelcomeBot" but -u is "welcomebot".
+    if (msg.obj.name.toLowerCase() === Argv.username.toLowerCase()) {
+      return
+    }
+    if (msg.type !== undefined && msg.type === null) {
     bot.say("TO: " + msg.obj.name) 
       .then(() => bot.wait(5000))
       .then(() => bot.ESPsayLines(GreetingText))
