@@ -1,9 +1,10 @@
 [
   {
-    "ref": "context-hatchery", 
-    "capacity": 64, 
-    "type": "context", 
-    "name": "NeoHabitat Immigration", 
+    "ref": "context-hatchery",
+    "capacity": 64,
+    "type": "context",
+    "name": "NeoHabitat Immigration",
+    "aliases": [ "pop-hatchery" ],
     "mods": [
       {
         "town_dir": UP, 
