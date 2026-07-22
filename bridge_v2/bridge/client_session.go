@@ -1268,7 +1268,11 @@ func (c *ClientSession) createUserWithAppearance(fullName string, appearance *ha
 			{
 				Type:            StringP("Avatar"),
 				FirstConnection: BoolP(true),
-				AmAGhost:        BoolP(true),
+				// New users arrive corporeal. Ghost arrival was for landing
+				// in crowded public regions (the 2017 fountain-era flow);
+				// Immigration is effectively private, and first-timers were
+				// bouncing without ever finding the deghost control.
+				AmAGhost:        BoolP(false),
 				X:               Uint8P(10),
 				Y:               Uint8P(128 + uint8(rand.Intn(32))),
 				BodyType:        StringP("male"),
