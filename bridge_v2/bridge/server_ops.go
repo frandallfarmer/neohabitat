@@ -88,8 +88,8 @@ func init() {
 			// recursive removeNoid sweep can later identify this
 			// object as a child of its current holder. See PUT$ for
 			// the full rationale.
-			if obj := s.objects[*o.ObjectNoid]; obj != nil {
-				obj.container = *o.ContainerNoid
+			if s != nil {
+				s.noteContainerChange(s.objects[*o.ObjectNoid], *o.ContainerNoid, u8(o.Y))
 			}
 			return false
 		},
@@ -175,6 +175,12 @@ func init() {
 		ToClient: func(o *ElkoMessage, buf *HabBuf, s *ClientSession) bool {
 			buf.AddInt(*o.Target)
 			buf.AddInt(*o.How)
+			// Mirror the pickup: the target item is now in the message
+			// avatar's hand. See noteContainerChange for why every
+			// container move must be tracked.
+			if s != nil && o.Noid != nil {
+				s.noteContainerChange(s.objects[*o.Target], *o.Noid, AVATAR_HAND)
+			}
 			return false
 		},
 	}
@@ -193,6 +199,18 @@ func init() {
 		Reqno: 17,
 		ToClient: func(o *ElkoMessage, buf *HabBuf, s *ClientSession) bool {
 			buf.AddInt(*o.AvatarNoid)
+			// Mirror the hand-to-hand transfer: the item in
+			// avatar_noid's hand moves into the message avatar's hand
+			// (C64 avatar_GRABFROM.m: changeContainers into the
+			// actor's AVATAR_HAND). Elko emits this for both the HAND
+			// and GRAB verbs. Skipping this mirror is what crashed a
+			// C64 with Fatal Error #11 on 2026-07-23: the giver left
+			// the region and the sweep GOAWAY'd the item out of the
+			// receiver's hand, so the item's next legitimate async
+			// referenced a noid the client had deleted.
+			if s != nil && o.Noid != nil {
+				s.noteContainerChange(s.handItem(*o.AvatarNoid), *o.Noid, AVATAR_HAND)
+			}
 			return false
 		},
 	}
@@ -341,8 +359,8 @@ func init() {
 			// of the region, removeNoid doesn't see it as a child,
 			// and the C64 client is left rendering the object as an
 			// orphan floating wherever the holder last stood.
-			if obj := s.objects[*o.ObjectNoid]; obj != nil {
-				obj.container = *o.Cont
+			if s != nil {
+				s.noteContainerChange(s.objects[*o.ObjectNoid], *o.Cont, u8(o.Y))
 			}
 			return false
 		},
@@ -462,6 +480,12 @@ func init() {
 			buf.AddInt(*o.X)
 			buf.AddInt(*o.Y)
 			buf.AddInt(*o.Hit)
+			// Mirror the throw: the object leaves the thrower's hand
+			// and lands on the region floor. Without this the sweep
+			// would GOAWAY a floor item when the thrower later exits.
+			if s != nil {
+				s.noteContainerChange(s.objects[*o.ObjectNoid], REGION_NOID, u8(o.Y))
+			}
 			return false
 		},
 	}
