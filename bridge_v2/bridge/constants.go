@@ -34,6 +34,11 @@ const UNASSIGNED_NOID uint16 = 256
 // Habitat2ElkoBridge.js's ContentsVector.send path.
 const GHOST_NOID uint8 = 255
 
+// AVATAR_HAND is the avatar containment slot holding the in-hand item
+// (C64 dataequates.m `define AVATAR_HAND = 5`; Java Constants.HANDS).
+// A contained object's mod.Y is its slot index within its container.
+const AVATAR_HAND uint8 = 5
+
 type ServerMessage uint8
 
 const (

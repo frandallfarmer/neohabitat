@@ -24,6 +24,15 @@ func init() {
 	Translators["GET"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
 			b.AddInt(u8(o.Err))
+			// The initiator of a transfer never sees the GET$/GRABFROM$
+			// neighbor async — its own containment map must be mirrored
+			// from the reply. GET runs on the item, so the reply noid
+			// IS the item; on success (err == TRUE = 1) it is now in
+			// our avatar's hand.
+			if s != nil && u8(o.Err) == 1 && o.Noid != nil &&
+				s.Avatar != nil && s.Avatar.Noid != nil {
+				s.noteContainerChange(s.objects[*o.Noid], uint8(*s.Avatar.Noid), AVATAR_HAND)
+			}
 			return false
 		},
 	}
@@ -628,6 +637,15 @@ func init() {
 	Translators["GRAB"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
 			b.AddInt(u8(o.ItemNoid))
+			// Reply mirror (see GET): on success the reply carries the
+			// noid of the item we grabbed out of the other avatar's
+			// hand — it is now in our own hand. item_noid == 0 means
+			// the grab was refused.
+			if s != nil && s.Avatar != nil && s.Avatar.Noid != nil {
+				if itemNoid := u8(o.ItemNoid); itemNoid != 0 {
+					s.noteContainerChange(s.objects[itemNoid], uint8(*s.Avatar.Noid), AVATAR_HAND)
+				}
+			}
 			return false
 		},
 	}
@@ -635,6 +653,13 @@ func init() {
 	Translators["HAND"] = &Translator{
 		ToClient: func(o *ElkoMessage, b *HabBuf, s *ClientSession) bool {
 			b.AddInt(u8(o.Err))
+			// Reply mirror (see GET): HAND runs on the receiving
+			// avatar, so the reply noid is the receiver; on success
+			// the item leaves our hand for theirs.
+			if s != nil && u8(o.Err) == 1 && o.Noid != nil &&
+				s.Avatar != nil && s.Avatar.Noid != nil {
+				s.noteContainerChange(s.handItem(uint8(*s.Avatar.Noid)), *o.Noid, AVATAR_HAND)
+			}
 			return false
 		},
 	}

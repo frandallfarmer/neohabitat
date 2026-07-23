@@ -987,6 +987,39 @@ func (c *ClientSession) removeNoid(noid uint8) error {
 	return nil
 }
 
+// handItem returns the tracked object currently in the given avatar's
+// hand (container == avatarNoid, slot == AVATAR_HAND), or nil when
+// nothing is tracked there.
+func (c *ClientSession) handItem(avatarNoid uint8) *ElkoMessage {
+	for _, obj := range c.objects {
+		if obj != nil && obj.container == avatarNoid &&
+			obj.mod != nil && obj.mod.Y != nil && *obj.mod.Y == AVATAR_HAND {
+			return obj
+		}
+	}
+	return nil
+}
+
+// noteContainerChange records that a tracked object now lives in
+// `container` at slot/position `y`. Every server broadcast or reply
+// that moves an object between containers must be mirrored here:
+// removeNoid's recursive sweep trusts this map to decide what leaves
+// the region with a departing avatar, and a stale entry makes it
+// GOAWAY an object the C64 can still legitimately receive asyncs for
+// — which the C64 treats as fatal heap corruption (error #11,
+// missing_object). Y is a region coordinate when container is the
+// region, a slot index otherwise — same convention as the C64 heap.
+func (c *ClientSession) noteContainerChange(item *ElkoMessage, container, y uint8) {
+	if item == nil {
+		return
+	}
+	item.container = container
+	if item.mod != nil {
+		slot := y
+		item.mod.Y = &slot
+	}
+}
+
 // setFirstConnection sets mods.0.firstConnection = true on the user
 // document. Called from ensureUserCreated for returning users.
 //
