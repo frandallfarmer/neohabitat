@@ -10,7 +10,14 @@
 //     (maintain_flashing, cursor.m:195). All keyboard / joystick input is ignored while
 //     busy (keyboard.m:8-18 bails on command_selected, region_is_ready, custom_running).
 //   • start_cursor_flashing (cursor.m:233) also starts throttle_running — the C64 already
-//     imposed a post-command throttle. THROTTLE_MS is that throttle_duration.
+//     imposed a post-command throttle. We generalize that into a per-command MINIMUM WAIT
+//     (measured from when the command is armed) so the webclient can't issue commands faster
+//     than a C64's turn rate: BASE_WAIT_MS solo, +PER_AVATAR_MS for each additional avatar in
+//     the room. This emulates real C64 behavior — its frame rate (and thus command cadence)
+//     degrades as avatar_count rises (Main/actions.m, database.m), so an all-C64 room
+//     self-throttles to a shared turn rate; the instantly-responsive webclient has no such
+//     degradation and must reproduce it deliberately or it overruns a co-present C64's tiny
+//     serial buffer (the 2026-07-23 Ivan HELP/F7 congestion drop).
 //   • event_handler (comm_control.m:69) releases once the throttle expires and the reply
 //     lands; animation_wait_bit / reply_wait_bit are the "world settling" interlock, whose
 //     web analogs are the dispatch reply await + avatarMotion.whenIdle.
@@ -19,10 +26,12 @@
 // instantly, but a co-present native C64 must load resources from floppy (~1s per object in
 // an arriving contents vector; ~5s to load a newly-arrived avatar's head/hands/3 pockets).
 // We hold the cursor that much longer so the C64 stays in lockstep and isn't overrun — but
-// ONLY when someone else is present (shouldPace); solo play stays instant.
+// ONLY when someone else is present (shouldPace); the co-presence catch-up stays off in solo
+// play (the base per-command wait below still applies).
 
 // ── tunable constants (calibrate against the C64 flash_rate / throttle_duration + VICE) ──
-export const THROTTLE_MS = 250 // base post-command throttle (always on — faithful per-command)
+export const BASE_WAIT_MS = 2000 // minimum wait per command, solo — a C64-like per-command turn rate
+export const PER_AVATAR_MS = 1000 // added to the minimum wait for each additional avatar in the room
 export const OBJECT_LOAD_MS = 1000 // co-presence: per object in a make-storm I triggered
 export const ARRIVAL_MS = 5000 // co-presence: hold on my own arrival (others load my avatar)
 export const SETTLE_GAP_MS = 300 // a make-storm is "settled" after this quiet gap
@@ -42,6 +51,28 @@ export function shouldPace(world, meNoid = world && world.meNoid) {
   return !!ghost && meNoid !== GHOST_NOID
 }
 
+// paceCount returns N — the number of command-generating occupants in the room, INCLUDING me
+// — which scales the per-command minimum wait (minWaitMs). Each corporeal avatar counts: they
+// issue commands, and their resulting traffic is what a co-present C64 must absorb. A lone
+// observing ghost (noid 255 — one or more ghosted watchers ride the single record) counts as
+// avatar #2 and NO more: ghosting exists partly to shed a non-essential avatar's command /
+// traffic load, so a ghost is presence without command generation. Once ≥2 corporeal avatars
+// are here, the ghost adds nothing. Reads world; never mutates it.
+export function paceCount(world, meNoid = world && world.meNoid) {
+  if (!world || typeof world.avatars !== "function") return 1
+  const corporeal = world.avatars().length // includes me when I'm corporeal
+  if (corporeal >= 2) return corporeal
+  const ghost = typeof world.ghost === "function" ? world.ghost() : null
+  if (ghost && meNoid !== GHOST_NOID) return 2 // a lone observing ghost is avatar #2
+  return Math.max(1, corporeal)
+}
+
+// minWaitMs maps a room population (paceCount) to the per-command minimum wait: BASE_WAIT_MS
+// alone, plus PER_AVATAR_MS for every avatar beyond the first (2s, 3s, 4s… for 1, 2, 3…).
+export function minWaitMs(count) {
+  return BASE_WAIT_MS + PER_AVATAR_MS * Math.max(0, count - 1)
+}
+
 // The busy state. Two overlapping notions of "busy", mirroring the C64:
 //   • commandActive — a command of mine is in flight (command_selected >= 0). True from
 //     armCommand() until releaseCommand(); makes that land in this window are "mine" and
@@ -56,13 +87,16 @@ export class BusyState {
     this.busyUntil = 0
     this.lastMakeAt = 0 // when the most recent make landed (for the settle gap)
     this.sawMakeThisCommand = false
+    this.commandArmedAt = 0 // when the outstanding command was armed (base-floor anchor)
   }
 
   // A user command begins (pie verb / gesture / F-key / speak-verb / edge-walk). Freeze +
   // blink immediately; the wall-clock tail is set at release once we know reply/anim/storm.
-  armCommand() {
+  // `now` anchors the per-command minimum-wait floor (see releaseCommand).
+  armCommand(now = 0) {
     this.commandActive = true
     this.sawMakeThisCommand = false
+    this.commandArmedAt = now
     return this
   }
 
@@ -78,10 +112,13 @@ export class BusyState {
   }
 
   // The command's reply + animation have completed and its make-storm has settled. End the
-  // command-active freeze and set the throttle tail (always — faithful throttle_duration).
-  releaseCommand(now) {
+  // command-active freeze and enforce the per-command MINIMUM WAIT, measured from when the
+  // command was ARMED — so a command whose own work already outran the floor adds nothing,
+  // while a trivial one is still held to it. minWait = BASE_WAIT_MS + PER_AVATAR_MS × (others
+  // in the room); the caller passes minWaitMs(paceCount(world)). Defaults to the solo base.
+  releaseCommand(now, minWait = BASE_WAIT_MS) {
     this.commandActive = false
-    this.busyUntil = Math.max(this.busyUntil, now + THROTTLE_MS)
+    this.busyUntil = Math.max(this.busyUntil, this.commandArmedAt + minWait)
     return this
   }
 
@@ -106,6 +143,7 @@ export class BusyState {
     this.busyUntil = 0
     this.lastMakeAt = 0
     this.sawMakeThisCommand = false
+    this.commandArmedAt = 0
     return this
   }
 

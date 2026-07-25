@@ -37,7 +37,7 @@ import {
 import { Scale } from "../habirender/render.js"
 import { dispatchVerb } from "./verb-dispatch.js"
 import { actionFromCommand, CURSOR_NORMAL, CURSOR_GO, CURSOR_STOP } from "./cursor.mjs"
-import { BusyState, shouldPace, SETTLE_GAP_MS } from "./busy.mjs"
+import { BusyState, shouldPace, paceCount, minWaitMs, SETTLE_GAP_MS } from "./busy.mjs"
 import { modeState, MODE_REGION, MODE_INVENTORY, MODE_TEXT, MODE_CUSTOMIZE, resolveMode, pickFromContainerUI } from "./modes.js"
 import { InventoryView } from "./inventory-view.js"
 import { CustomizeView } from "./customize-view.js"
@@ -157,7 +157,7 @@ export async function createClientShell(adapter) {
   const withBusy = async (fn, icon = CURSOR_STOP) => {
     if (busy.value) return undefined
     busyIcon.value = icon
-    busyState.armCommand()
+    busyState.armCommand(nowMs())
     refreshBusy()
     try {
       const out = await fn()
@@ -167,7 +167,10 @@ export async function createClientShell(adapter) {
     } catch (e) {
       console.warn("[live] command failed:", e)
     } finally {
-      busyState.releaseCommand(nowMs())
+      // Per-command minimum wait, scaled by room population (BASE_WAIT_MS + PER_AVATAR_MS per
+      // additional avatar) — measured from arm, so it only holds a command whose own work
+      // finished faster than a C64's turn rate would. paceCount applies the ghost-as-#2 rule.
+      busyState.releaseCommand(nowMs(), minWaitMs(paceCount(world)))
       refreshBusy()
     }
   }
