@@ -1,12 +1,12 @@
 // Node tests: the busy/wait-cursor state machine (lib/busy.mjs).
 import {
-  BusyState, shouldPace,
-  THROTTLE_MS, OBJECT_LOAD_MS, ARRIVAL_MS, SETTLE_GAP_MS,
+  BusyState, shouldPace, paceCount, minWaitMs,
+  BASE_WAIT_MS, PER_AVATAR_MS, OBJECT_LOAD_MS, ARRIVAL_MS, SETTLE_GAP_MS,
 } from "./lib/busy.mjs"
 
 const assert = (cond, msg) => { if (!cond) throw new Error(msg) }
 
-// A minimal world stub for shouldPace (only avatars()/ghost()/meNoid are read).
+// A minimal world stub for shouldPace/paceCount (only avatars()/ghost()/meNoid are read).
 const world = ({ avatars = [], ghost = null, meNoid = 1 }) => ({
   meNoid,
   avatars: () => avatars,
@@ -22,40 +22,74 @@ const world = ({ avatars = [], ghost = null, meNoid = 1 }) => ({
   assert(shouldPace(null) === false, "no world → no pace")
 }
 
-// ── base throttle: ALWAYS applied at release, even alone (faithful throttle_duration) ──
+// ── paceCount: corporeal occupants incl. me; a lone ghost counts only as avatar #2 ──
+{
+  assert(paceCount(world({ avatars: [{ noid: 1 }], meNoid: 1 })) === 1, "alone → 1")
+  assert(paceCount(world({ avatars: [{ noid: 1 }, { noid: 7 }], meNoid: 1 })) === 2, "two avatars → 2")
+  assert(paceCount(world({ avatars: [{ noid: 1 }, { noid: 7 }, { noid: 9 }], meNoid: 1 })) === 3, "three avatars → 3")
+  assert(paceCount(world({ avatars: [{ noid: 1 }], ghost: { noid: 255 }, meNoid: 1 })) === 2, "me + a lone ghost → 2 (ghost is avatar #2)")
+  assert(paceCount(world({ avatars: [{ noid: 1 }, { noid: 7 }], ghost: { noid: 255 }, meNoid: 1 })) === 2, "ghost adds nothing once ≥2 real avatars")
+  assert(paceCount(world({ avatars: [], ghost: { noid: 255 }, meNoid: 255 })) === 1, "I AM the ghost, empty room → 1 (no self-pace)")
+  assert(paceCount(null) === 1, "no world → 1")
+}
+
+// ── minWaitMs: 2s base, +1s per additional avatar (the agreed progression table) ──
+{
+  assert(minWaitMs(1) === BASE_WAIT_MS, "1 avatar → 2s base")
+  assert(minWaitMs(2) === BASE_WAIT_MS + PER_AVATAR_MS, "2 avatars → 3s")
+  assert(minWaitMs(3) === BASE_WAIT_MS + 2 * PER_AVATAR_MS, "3 avatars → 4s")
+  assert(minWaitMs(6) === BASE_WAIT_MS + 5 * PER_AVATAR_MS, "6 avatars → 7s")
+}
+
+// ── base per-command floor: minimum wait measured from ARM (BASE_WAIT_MS solo) ──
 {
   const b = new BusyState()
-  b.armCommand()
+  b.armCommand(1000)
   assert(b.isBusy(1000) === true, "command-active → busy immediately")
-  b.releaseCommand(1000)
+  b.releaseCommand(1000) // solo default = BASE_WAIT_MS, anchored at the arm time (1000)
   assert(b.commandActive === false, "release clears command-active")
-  assert(b.isBusy(1000) === true, "throttle tail keeps it busy at release")
-  assert(b.isBusy(1000 + THROTTLE_MS - 1) === true, "still busy just before throttle expires")
-  assert(b.isBusy(1000 + THROTTLE_MS) === false, "idle once throttle expires")
-  assert(b.msUntilIdle(1000) === THROTTLE_MS, "msUntilIdle = THROTTLE_MS right after release")
+  assert(b.isBusy(1000 + BASE_WAIT_MS - 1) === true, "held until the base floor (from arm)")
+  assert(b.isBusy(1000 + BASE_WAIT_MS) === false, "idle once the base floor passes")
+}
+{
+  // A command whose natural work already outran the floor gets NO extra hold.
+  const b = new BusyState()
+  b.armCommand(1000)
+  b.releaseCommand(1000 + BASE_WAIT_MS + 500) // released well past the floor
+  assert(b.isBusy(1000 + BASE_WAIT_MS + 500) === false, "no added hold when natural work outran the floor")
+}
+{
+  // Population scaling: 3 avatars → base + 2×per-avatar minimum wait, from arm.
+  const b = new BusyState()
+  b.armCommand(1000)
+  const wait = minWaitMs(3)
+  b.releaseCommand(1000, wait)
+  assert(b.isBusy(1000 + wait - 1) === true, "held until the scaled (4s) floor")
+  assert(b.isBusy(1000 + wait) === false, "idle at the scaled floor")
 }
 
 // ── make-storm accrual: 1s per object, ONLY while a command is outstanding, ONLY when paced ──
 {
   // Paced (someone else present): each make adds OBJECT_LOAD_MS.
   const b = new BusyState()
-  b.armCommand()
+  b.armCommand(1000)
   b.noteMake(1000, true)
   b.noteMake(1000, true)
   b.noteMake(1000, true)
-  b.releaseCommand(1000)
-  // three objects → ~3s of catch-up, dominating the base throttle
+  b.releaseCommand(1000) // solo base floor (3000) < storm tail (4000) → storm dominates
+  // three objects → ~3s of catch-up from t=1000, dominating the 2s base floor
   assert(b.isBusy(1000 + 3 * OBJECT_LOAD_MS - 1) === true, "3 objects ≈ 3s of hold")
-  assert(b.isBusy(1000 + 3 * OBJECT_LOAD_MS + THROTTLE_MS) === false, "released after the storm drains")
+  assert(b.isBusy(1000 + 3 * OBJECT_LOAD_MS) === false, "released after the storm drains")
 }
 {
-  // Unpaced (alone): makes during a command do NOT accrue catch-up time; only base throttle.
+  // Unpaced (alone): makes during a command do NOT accrue catch-up time; only the base floor.
   const b = new BusyState()
-  b.armCommand()
+  b.armCommand(1000)
   b.noteMake(1000, false)
   b.noteMake(1000, false)
   b.releaseCommand(1000)
-  assert(b.isBusy(1000 + THROTTLE_MS) === false, "alone: no per-object hold, just throttle")
+  assert(b.isBusy(1000 + BASE_WAIT_MS - 1) === true, "alone: held to the base floor")
+  assert(b.isBusy(1000 + BASE_WAIT_MS) === false, "alone: no per-object hold, just the base floor")
 }
 {
   // Idle makes (no command outstanding) are inert — the ATM-coin case: another user's action
@@ -70,7 +104,7 @@ const world = ({ avatars = [], ghost = null, meNoid = 1 }) => ({
 // ── storm settle: quiet gap after the last make ──
 {
   const b = new BusyState()
-  b.armCommand()
+  b.armCommand(1000)
   assert(b.stormSettled(1000) === true, "no makes yet → settled")
   b.noteMake(1000, true)
   assert(b.stormSettled(1000) === false, "just saw a make → not settled")
@@ -94,9 +128,9 @@ const world = ({ avatars = [], ghost = null, meNoid = 1 }) => ({
 {
   const b = new BusyState()
   b.armArrival(1000, true) // until 1000 + ARRIVAL_MS
-  b.armCommand()
-  b.releaseCommand(1000) // throttle tail is far shorter than the arrival hold
-  assert(b.isBusy(1000 + ARRIVAL_MS - 1) === true, "the longer (arrival) hold wins, not the throttle")
+  b.armCommand(1000)
+  b.releaseCommand(1000) // base floor is far shorter than the arrival hold
+  assert(b.isBusy(1000 + ARRIVAL_MS - 1) === true, "the longer (arrival) hold wins, not the base floor")
 }
 
 console.log("test-busy: ok")
