@@ -11,7 +11,7 @@
     "mongodb": "^7.5",
     "walk": "^2.3.9",
     "winston": "^3.19.0",
-    "yargs": "^18.0.0"
+    "yargs": "^18.1.0"
   },
   "scripts": {
     "convertClientDataToJava": "node convertClientDataToJava.js",
