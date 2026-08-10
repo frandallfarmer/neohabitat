@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Habitat Solid Avatar Lab</title>
+    <!-- habirender pulls preact through region.js; same importmap as live.html so the lab runs the
+         REAL compositor, not a copy of it. The diff panel's whole value is that both sides of the
+         comparison come from the code the shipping client uses. -->
+    <script type="importmap">
+        {
+            "imports": {
+                "htm": "./vendor/htm.mjs",
+                "preact": "./vendor/preact.mjs",
+                "preact/hooks": "./vendor/hooks.mjs",
+                "@preact/signals-core": "./vendor/signals-core.mjs",
+                "@preact/signals": "./vendor/signals.mjs"
+            }
+        }
+    </script>
+    <style>
+        :root { color-scheme: dark; }
+        body {
+            margin: 0; background: #101018; color: #cfd2dc;
+            font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+        h1 { font-size: 15px; margin: 0 0 2px; color: #fff; letter-spacing: .04em; }
+        .sub { color: #7c8296; margin: 0 0 14px; }
+        .wrap { display: flex; gap: 18px; padding: 14px 18px 24px; align-items: flex-start; flex-wrap: wrap; }
+        .stage { background: #4a4a55; border: 1px solid #2a2e3c; border-radius: 4px; }
+        .panel { min-width: 260px; max-width: 320px; display: flex; flex-direction: column; gap: 10px; }
+        .row { display: flex; align-items: center; gap: 8px; }
+        .row > label { flex: 0 0 78px; color: #8b91a6; }
+        .row > input[type=range] { flex: 1; }
+        .row > select, .row > input[type=number] { flex: 1; background: #1b1f2b; color: #cfd2dc;
+            border: 1px solid #333a4c; border-radius: 3px; padding: 3px 5px; font: inherit; }
+        .val { flex: 0 0 44px; text-align: right; color: #e5c07b; }
+        button { background: #232838; color: #cfd2dc; border: 1px solid #39405480; border-radius: 3px;
+            padding: 4px 10px; font: inherit; cursor: pointer; }
+        button:hover { background: #2d3348; }
+        fieldset { border: 1px solid #2a2e3c; border-radius: 4px; margin: 0; padding: 8px 10px 10px; }
+        legend { color: #7c8296; padding: 0 4px; }
+        .diff { padding: 0 18px 28px; }
+        .diffgrid { display: flex; gap: 22px; flex-wrap: wrap; }
+        .diffcell { text-align: center; }
+        .diffcell canvas { background: #4a4a55; border: 1px solid #2a2e3c; image-rendering: pixelated;
+            display: block; margin: 0 auto 4px; }
+        .diffcell .cap { color: #8b91a6; }
+        .ok { color: #98c379; } .bad { color: #e06c75; } .warn { color: #e5c07b; }
+        #stats { white-space: pre; color: #7c8296; }
+    </style>
+    <script type="module" src="./lib/avatar3d.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <div>
+            <h1>SOLID AVATAR LAB</h1>
+            <p class="sub">A visual hull recovered from the 1986 side / front / back cels.</p>
+            <canvas id="stage" class="stage" width="520" height="520"></canvas>
+        </div>
+        <div class="panel" id="controls"></div>
+    </div>
+    <div class="diff">
+        <fieldset>
+            <legend>cardinal fidelity &mdash; solid vs. the 2D compositor</legend>
+            <div class="diffgrid" id="diffgrid"></div>
+            <p id="stats"></p>
+        </fieldset>
+    </div>
+</body>
+</html>

@@ -177,3 +177,80 @@ cd webclient && npm test          # pure-module unit tests (projection + geometr
 # dev stack serves the working tree at http://localhost:1701/webclient/
 open http://localhost:1701/webclient/live3d.html   # enter your avatar name at the title screen
 ```
+
+---
+
+# Solid Avatars — a second experiment (`voxel.js` / `avatarvox.js` / `avatar3d.html`)
+
+The diorama draws avatars as **billboards**, which is right for props: they were only ever drawn
+once. Avatars and heads are different — the 1986 artists drew them **three times**, side, front and
+back (the fourth view is the mirrored side, paint.m). Three orthographic silhouettes 90° apart are
+exactly the input a **visual hull** wants, so a genuinely solid avatar can be *recovered from the
+art* rather than modelled by hand. All 160+ heads come along for free.
+
+This is an experiment, not part of the client: `live.html` and `live3d.html` are untouched.
+
+```
+http://<host>/webclient/avatar3d.html      # the turntable lab + cardinal diff panel
+```
+
+## How it works
+
+Per **part**, never per figure — intersecting whole-body silhouettes produces the classic
+visual-hull phantom (the arm's depth applied at the torso's width). Habitat hands us the
+decomposition for free, because the art is already per-limb.
+
+```
+solid(x,y,z) ⟺ front(x,y) ∧ side′(z,y) ∧ envelope(x,y,z)
+```
+
+Registration is not estimated: `region.js avatarLimbChainAt` is run three times, once per view, and
+**a limb's horizontal position in the side view is its depth**. Colours come from the art — each
+face wears the view that looks at it — with no lighting term, because the artists already painted
+the difference between the views.
+
+Voxels are non-cubic (2 × 1 × 2 world units) because a C64 multicolor pixel is 2 world units wide
+and 1 tall. That is what makes an orthographic render at yaw 0 land on the 2D client's pixel grid.
+
+## What the art can and cannot support
+
+- **Only stand, walk and sit have three views.** `choreographyActions` pairs facings for those
+  three and nothing else, so `wave`, `point`, `bend_over`, `throw`, `punch` are side-only. A
+  rotating solid of a gesture would be invention, not restoration.
+- **The far limb has no side art at all** — seen from the side the human's left arm is hidden, so
+  animate.m does not draw it. Its depth profile is borrowed from its mirror partner (the limb
+  sharing its pattern class), which is the one silhouette Habitat *did* draw for "an arm, in
+  profile".
+- **The views disagree on limb height by 2–8 rows** (side legs y0..28 vs front y0..24, and so on).
+  A solid has one height per limb, so the front wins — it is the (x,y) mask and the only view
+  showing both arms. Measured cost: ~8% of the side silhouette at stand, ~14% mid-walk.
+- **Front and back silhouettes cannot both be honoured** — a solid's shadow is the same along +Z
+  and −Z. The back cel paints the far faces; it never carves.
+- **Walk cycles do not correspond**: 7 side frames against 3 front/back frames, phase-mapped.
+
+## Verification
+
+```
+cd webclient && npm test                     # pure hull/mesh/rasterizer tests (test-voxel.mjs)
+node check-avatar3d.mjs                      # cardinal fidelity through the REAL compositor
+node check-avatar3d.mjs --screenshot DIR     # …plus a yaw sweep to look at
+```
+
+`check-avatar3d.mjs` needs `playwright` importable from `webclient/`; it is deliberately **not**
+named `test-*.mjs`, because `node --test` stays dependency-free. It asserts that the solid
+rasterized along **+z is alpha-identical** to `composeAvatarFrameAt` — currently true for every
+body style, head and pose it covers — and holds the side view to a regression budget rather than
+claiming an exactness the art cannot support.
+
+## Known artifacts
+
+- A head hull is nearly cubic (head0 is 12 wide × 26 tall × 16 deep — the side cel carries the nose
+  and hair profile), and a cube wearing the front cel on one facet and the profile on the next reads
+  at 45° as **two flat portraits meeting at an edge**. Rounding the head hard (`roundHead` 1) turns
+  that into a single 3/4 view; limbs want much less (`roundLimb` ~0.45). Angle-blended face colours
+  would be the real fix.
+- The borrowed far-arm profile sits at the same depth as the near arm, so at 45° the two arms
+  separate visibly.
+- **Do not render these on a black background.** The C64 wild-colour dither legitimately paints
+  black pixels (`rgbaFromNibble`: `patternColors[2]` is colour 0), so a dark hat or a dithered robe
+  reads as holes in the mesh. The figure is not falling apart; it is camouflaged.
