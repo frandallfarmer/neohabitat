@@ -51,6 +51,18 @@ limb-chaining pipeline. A beautiful independent companion to the Inspector.
 👉 **[Avatar Simulator](https://juliendorra.com/habitat/)** ·
 [source](https://github.com/juliendorra/Habitat-Avatar-Simulator)
 
+## Solid avatars — the art reconstructed in 3D
+
+Where the Avatar Simulator shows the three views the artists drew, this
+reconstructs what lies *between* them. Every avatar and head was drawn from the
+side, the front and the back in 1986 — three silhouettes ninety degrees apart,
+which is exactly what you need to recover a **solid**. A turntable lab with the
+spray can, all 160+ heads, animated-GIF export, and a panel that diffs the
+result against the 2D client pixel for pixel.
+
+👉 **[Solid Avatars](https://frandallfarmer.github.io/neohabitat-doc/docs/solid-avatars.html)** ·
+try it at [habitat.themade.org/webclient/avatar3d.html](http://habitat.themade.org/webclient/avatar3d.html)
+
 ## habibots — the bot framework
 
 Write your own in-world bot in a few dozen lines of Node: connection, region

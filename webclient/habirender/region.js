@@ -137,7 +137,7 @@ export const imageSchemaFromMod = (mod) => {
 // 1–6 the non-human bodies. Asset note: beta.mud names the penguin image "Peng.bin" but our
 // bundled body file is "Peng_uppercase.bin". MP/Heli exist as assets but are NOT in
 // class_avatar (Images/notes.txt marks them unused), so no style reaches them.
-const AVATAR_BODY_FILES = [
+export const AVATAR_BODY_FILES = [
     "bodies/Avatar.bin",          // 0  avatar_side_image (human)
     "bodies/Peng_uppercase.bin",  // 1  avatar_peng_image
     "bodies/Spid.bin",            // 2  avatar_spid_image
@@ -151,8 +151,8 @@ const bodyFileForClass = (classname, style = 0) =>
 
 // Avatar contents slots (C64 dataequates.m): only the HEAD (6, at the neck) and a held
 // HANDS item (5) draw on the avatar; all other slots are pocket inventory and are not drawn.
-const AVATAR_HAND = 5
-const AVATAR_HEAD = 6
+export const AVATAR_HAND = 5
+export const AVATAR_HEAD = 6
 // The head (and held item) are composed INTO the avatar frame by composeAvatarFrames (one
 // coordinate space, C64 animate.m), so no avatar contents render as separate contained
 // items. Empty = regionItemView draws no contents for a body. (Held-item compositing TBD.)
@@ -167,28 +167,28 @@ const AVATAR_HAND_OFFSET = { x: 6, y: -14 }
 // Limb colors from the avatar's 2 custom bytes, per C64 animate.m get_limb_cel_pattern:
 // slots LEG=0, TORSO=1, ARM=2, FACE=3 (equates.m). LEG/TORSO from custom[0] hi/lo nibble,
 // ARM/FACE from custom[1] hi/lo. (FACE should follow the head's pattern once heads compose.)
-const limbPatternsFromMod = (mod) => {
+export const limbPatternsFromMod = (mod) => {
     const c = mod.custom || [0, 0]
     return [(c[0] >> 4) & 0xf, c[0] & 0xf, (c[1] >> 4) & 0xf, c[1] & 0xf]
 }
 
-const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is negated → +63
+export const AVATAR_HEAD_LIFT = 63 // C64: head at cy_tab[hcn]-63; inspector frame Y is negated → +63
 
 // animate.m pattern_for_limb — maps each body cel (0–5) to its which_limb pattern
 // class (pointer.m: which_limb = pattern_for_limb[cel_number]). 0=LEG, 1=TORSO,
 // 2=ARM, 3=FACE (equates.m). The pick reads this back to tell SPRAY / avatar_get
 // (face-limb redirect) which body part the cursor touched.
-const AVATAR_FACE_LIMB = 3
+export const AVATAR_FACE_LIMB = 3
 const AVATAR_TORSO_LIMB = 3 // animate.m cel_number 3 — the limb that swaps cel for female avatars
 const PATTERN_FOR_LIMB = [0, 0, 2, 1, 3, 2]
 
-const actionView = (actionName) => {
+export const actionView = (actionName) => {
     if (actionName === "stand_back" || actionName === "walk_back") return "back"
     if (actionName === "walk_front" || actionName === "stand_front" || actionName === "sit_front") return "front"
     return "side"
 }
 
-const drawOrderForAction = (body, actionName) => {
+export const drawOrderForAction = (body, actionName) => {
     const view = actionView(actionName)
     // Replace the neck cel with the head STEP (head object + face overlay). A headless body
     // (headCelNumber 255) never matches, so all six cels draw as ordinary limbs and no head
@@ -218,7 +218,7 @@ const applySpecialHoldOverride = (ov, howHeld) => {
     return ov
 }
 
-const initAnimationsForAction = (body, actionName, handProp) => {
+export const initAnimationsForAction = (body, actionName, handProp) => {
     const choreIndex = body.actions?.[actionName]
     if (choreIndex == null) return null
     const howHeld = handProp?.howHeld
@@ -259,7 +259,7 @@ const avatarHeightFromMod = (mod) => (mod.orientation & 0x7f) >> 3
 // find_cel_xy uses cel_dx on C64, but paint.m also flips each cel; we flip the composite.
 // Undrawn limbs (frame → cel −1): C64 skips get_cel_loc_addr so last_cel_x/y_rel and
 // cel_x/y_origin persist — e.g. side stand legs_right y_rel=−1 carries to the torso.
-const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
+export const avatarLimbChainAt = (body, animations, avatarMod, actionName) => {
     const avatarHeight = avatarHeightFromMod(avatarMod)
     let x = 0, y = 0, xRel = 0, yRel = 0
     const cx = [], cy = [], cels = []
@@ -327,7 +327,7 @@ const flipComposedFrame = (frame, avatarMod, actionName) => {
     return frame
 }
 
-const headPatternFromMod = (headMod, fallback) => {
+export const headPatternFromMod = (headMod, fallback) => {
     if (!headMod) return fallback
     const c = colorsFromOrientation(headMod.orientation)
     return c.pattern ?? c.wildcard ?? fallback
@@ -597,7 +597,7 @@ const propLocationFromObjectXY = (modX, modY) => {
     return [Math.floor(signedXCoordinate(modX) / 4), modY % 128, zIndexFromObjectY(modY)]
 }
 
-const colorsFromMod = (mod) => {
+export const colorsFromMod = (mod) => {
     const colors = colorsFromOrientation(mod.orientation)
     if (mod.ascii && mod.ascii.length > 0) {
         colors.bytes = mod.ascii
