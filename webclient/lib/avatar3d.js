@@ -20,6 +20,7 @@ import { composeAvatarFrameAt, AVATAR_BODY_FILES } from "../habirender/region.js
 import { buildFigureParts, geometryFromParts, rasterizeFigure, layerFromFrame, POSE_TRIPLES,
     registrationReport } from "../render3d/avatarvox.js"
 import { compareLayers, bboxOf, layerAt, mirrorView } from "../render3d/voxel.js"
+import { quantizeFrames, encodeGif } from "../render3d/gifenc.js"
 
 const BODY_NAMES = ["Human", "Penguin", "Spider", "Dragon", "Gunship", "Tank", "Tentacle"]
 
@@ -79,7 +80,11 @@ const loadHead = async (path) => decodeProp(await loadBinary(path))
 
 // ── three scene ──────────────────────────────────────────────────────────────────────────────
 const canvas = document.getElementById("stage")
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
+// preserveDrawingBuffer so the GIF export can read a frame back after rendering it. antialias off
+// is not just for looks: smoothed edges would blend C64 colours into in-between values and turn a
+// 17-colour rotation into a few thousand, which is the one thing that would make the GIF export
+// need real quantization.
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, preserveDrawingBuffer: true })
 renderer.setPixelRatio(1)
 // NOT black. The C64 wild-colour dither legitimately paints BLACK pixels (render.js
 // rgbaFromNibble: patternColors[2] is colour 0), so on a black backdrop a dithered robe or a dark
@@ -247,6 +252,55 @@ const renderDiff = () => {
     }
     return summary
 }
+
+// ── GIF export ───────────────────────────────────────────────────────────────────────────────
+// One full turn, sampled at even yaw steps so the loop is seamless: frame N would be frame 0 again,
+// so it is not emitted. Rendering is synchronous per frame and read back immediately
+// (preserveDrawingBuffer), with a yield every few frames so the tab does not lock up.
+const BACKDROP_RGB = [0x4a, 0x4a, 0x55]
+
+const captureRotation = async ({ frames, onProgress }) => {
+    const wasSpinning = state.autorotate
+    const wasYaw = state.yaw
+    state.autorotate = false
+    const w = canvas.width, h = canvas.height
+    const scratch = document.createElement("canvas")
+    scratch.width = w; scratch.height = h
+    const sctx = scratch.getContext("2d", { willReadFrequently: true })
+    const shots = []
+    try {
+        for (let i = 0; i < frames; i++) {
+            pivot.rotation.y = THREE.MathUtils.degToRad((i * 360) / frames)
+            renderer.render(scene, camera)
+            sctx.drawImage(canvas, 0, 0)
+            shots.push(sctx.getImageData(0, 0, w, h).data)
+            onProgress?.(i + 1, frames)
+            if (i % 4 === 3) await new Promise((r) => setTimeout(r, 0))
+        }
+    } finally {
+        state.autorotate = wasSpinning
+        setYaw(wasYaw)
+        pivot.rotation.y = THREE.MathUtils.degToRad(wasYaw)
+        renderer.render(scene, camera)
+    }
+    return { shots, width: w, height: h }
+}
+
+const buildRotationGif = async ({ frames = 36, delayMs = 60, transparent = false, onProgress } = {}) => {
+    const { shots, width, height } = await captureRotation({ frames, onProgress })
+    const q = quantizeFrames(shots, { backgroundRGB: BACKDROP_RGB })
+    const bytes = encodeGif({
+        width, height, palette: q.palette,
+        frames: q.indexed.map((indices) => ({ indices, delayMs })),
+        loop: 0,
+        transparentIndex: transparent ? q.backgroundIndex : null,
+    })
+    return { bytes, width, height, frames, colors: q.palette.length, exact: q.exact }
+}
+
+const describeGif = (r) =>
+    `${r.frames} frames · ${r.width}×${r.height} · ${r.colors} colours` +
+    `${r.exact ? "" : " (approximated!)"} · ${(r.bytes.length / 1024).toFixed(0)} KB`
 
 // ── rebuild pipeline ─────────────────────────────────────────────────────────────────────────
 const rebuild = () => {
@@ -447,6 +501,57 @@ const buildControls = () => {
     }
     view.appendChild(snap)
     panel.appendChild(view)
+
+    // Export is view-only too — it must never rebuild the hull.
+    const exp = el("fieldset", {}, [el("legend", { textContent: "export" })])
+    const framesSel = el("select")
+    for (const n of [12, 24, 36, 48, 72]) framesSel.appendChild(el("option", { value: String(n), textContent: `${n} frames` }))
+    framesSel.value = "36"
+    addRow(exp, "steps", framesSel)
+    const fpsSel = el("select")
+    // GIF delays are hundredths of a second, so only these divide evenly — anything else is a lie
+    // rounded at encode time.
+    for (const [ms, lbl] of [[40, "25 fps"], [50, "20 fps"], [60, "16.7 fps"], [80, "12.5 fps"], [100, "10 fps"]]) {
+        fpsSel.appendChild(el("option", { value: String(ms), textContent: lbl }))
+    }
+    fpsSel.value = "60"
+    addRow(exp, "speed", fpsSel)
+    const transp = el("input", { type: "checkbox" })
+    const transpRow = addRow(exp, "transparent", transp)
+    transpRow.title = "Off by default: the C64 dither paints real black pixels, which vanish on a dark page."
+    const status = el("div", { className: "cap", textContent: "" })
+    const goBtn = el("button", { type: "button", textContent: "export rotation GIF" })
+    goBtn.addEventListener("click", async () => {
+        goBtn.disabled = true
+        try {
+            const r = await buildRotationGif({
+                frames: +framesSel.value,
+                delayMs: +fpsSel.value,
+                transparent: transp.checked,
+                onProgress: (i, n) => { goBtn.textContent = `rendering ${i}/${n}…` },
+            })
+            const blob = new Blob([r.bytes], { type: "image/gif" })
+            const url = URL.createObjectURL(blob)
+            const a = el("a", { href: url, download: gifFilename() })
+            document.body.appendChild(a); a.click(); a.remove()
+            setTimeout(() => URL.revokeObjectURL(url), 10000)
+            status.textContent = describeGif(r)
+        } catch (e) {
+            status.textContent = `export failed: ${e?.message ?? e}`
+        } finally {
+            goBtn.disabled = false
+            goBtn.textContent = "export rotation GIF"
+        }
+    })
+    exp.appendChild(el("div", { className: "row" }, [goBtn]))
+    exp.appendChild(status)
+    panel.appendChild(exp)
+}
+
+// Name the file after what is actually in it, so a folder of experiments stays legible.
+const gifFilename = () => {
+    const head = state.head.replace("heads/", "").replace(".bin", "")
+    return `habitat-${BODY_NAMES[state.style].toLowerCase()}-${head}-${state.pose}.gif`
 }
 
 // ── main loop ────────────────────────────────────────────────────────────────────────────────
@@ -475,6 +580,14 @@ const labApi = {
     },
     rebuild() { rebuild(); return window.__avatarvox.summary },
     setYaw(deg) { state.autorotate = false; setYaw(deg) },
+    // Returns the GIF as base64 so check-avatar3d.mjs can write the real file out and hand it back
+    // to the browser's own decoder — the only verification that actually proves the bytes are valid.
+    async exportGif(opts) {
+        const r = await buildRotationGif(opts)
+        let bin = ""
+        for (const b of r.bytes) bin += String.fromCharCode(b)
+        return { base64: btoa(bin), width: r.width, height: r.height, frames: r.frames, colors: r.colors, exact: r.exact, bytes: r.bytes.length }
+    },
     get state() { return { ...state } },
 }
 

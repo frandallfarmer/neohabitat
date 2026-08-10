@@ -6,7 +6,7 @@
 // is to run both in a page. avatar3d.html already does exactly that for its diff panel; this
 // script just drives it and reads the numbers back out of window.__avatarvox.
 //
-//   node webclient/check-avatar3d.mjs [--url URL] [--headed] [--screenshot DIR]
+//   node webclient/check-avatar3d.mjs [--url URL] [--headed] [--screenshot DIR] [--gif DIR]
 //
 // Needs `playwright` importable from this directory; it is NOT a webclient dependency (the
 // webclient deliberately has none) so this check is opt-in and separate from `npm test`.
@@ -25,7 +25,7 @@
 
 import { chromium } from "playwright"
 import { createServer } from "node:http"
-import { readFile } from "node:fs/promises"
+import { readFile, writeFile } from "node:fs/promises"
 import { extname, join, normalize } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -145,6 +145,45 @@ const run = async () => {
             await page.locator("#stage").screenshot({ path: join(shotDir, `yaw-${String(yaw).padStart(3, "0")}.png`) })
         }
         console.log(`screenshots → ${shotDir}`)
+    }
+
+    // --gif: export a real rotation, hand the bytes back to the browser's OWN decoder, and write
+    // the file out. A hand-written GIF encoder can produce something that round-trips through a
+    // hand-written decoder and is still not a valid GIF; only an independent decoder settles it.
+    const gifDir = arg("--gif", null)
+    if (gifDir) {
+        for (const [name, patch, opts] of [
+            ["rotation-opaque", { head: "heads/wizard0.bin" }, { frames: 24, delayMs: 60 }],
+            ["rotation-transparent", { head: "heads/wizard0.bin" }, { frames: 24, delayMs: 60, transparent: true }],
+            ["rotation-walk", { head: "heads/head0.bin", pose: "walk" }, { frames: 36, delayMs: 60 }],
+        ]) {
+            const r = await page.evaluate(async ({ patch, opts }) => {
+                await window.__avatarvoxLab.setState(patch)
+                window.__avatarvoxLab.rebuild()
+                const out = await window.__avatarvoxLab.exportGif(opts)
+                // Decode it with the browser, from the exact bytes we are about to write to disk.
+                const blob = await (await fetch(`data:image/gif;base64,${out.base64}`)).blob()
+                try {
+                    const bmp = await createImageBitmap(blob)
+                    out.decoded = { width: bmp.width, height: bmp.height }
+                } catch (e) {
+                    out.decodeError = String(e)
+                }
+                return out
+            }, { patch: { ...BASE, ...patch }, opts })
+
+            const file = join(gifDir, `${name}.gif`)
+            await writeFile(file, Buffer.from(r.base64, "base64"))
+            const okSize = r.decoded && r.decoded.width === r.width && r.decoded.height === r.height
+            const verdict = r.decodeError ? `UNDECODABLE (${r.decodeError})`
+                : okSize ? "decodes ok" : `decoded to the wrong size ${r.decoded.width}×${r.decoded.height}`
+            console.log(`gif ${name.padEnd(22)} ${r.frames} frames · ${r.width}×${r.height} · ` +
+                `${r.colors} colours${r.exact ? "" : " (APPROXIMATED)"} · ` +
+                `${(r.bytes / 1024).toFixed(0)} KB · ${verdict}`)
+            if (!okSize) failures.push(`${name}.gif: ${verdict}`)
+            if (!r.exact) failures.push(`${name}.gif: colours were approximated — the render is no longer pure C64 palette`)
+        }
+        console.log(`gifs → ${gifDir}`)
     }
 
     // Colour agreement is reported, never asserted: where limbs overlap, the solid resolves by real

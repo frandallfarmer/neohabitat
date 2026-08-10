@@ -225,6 +225,27 @@ skin. "Pattern 9" means nothing as a number, so each picker is a popdown of the 
 swatches, rendered through the same `canvasFromBitmap` the avatar's own limbs go through, over a
 bitmap of all-wild pixels.
 
+## Exporting a rotation as an animated GIF
+
+The lab's **export** panel captures one full turn — even yaw steps, frame *N* omitted because it
+would be frame 0 again, so the loop is seamless — and downloads it as an animated GIF named after
+what is in it (`habitat-human-wizard0-stand.gif`).
+
+The encoder is ours (`render3d/gifenc.js`), not a vendored library, because the expensive part of a
+general GIF encoder is **colour quantization** and we have the opposite problem. GIF is a
+palettized format capped at 256 colours; a Habitat rotation contains about **four** — the backdrop
+plus whatever the dither draws from (blue, black, skin). The palette is just the set of colours
+present, the mapping is exact and lossless, and what is left is a header writer plus LZW. That
+keeps the webclient's zero-dependency, no-build-step posture intact.
+
+Two things the renderer must keep doing for this to stay lossless, both load-bearing rather than
+cosmetic: `antialias: false` (smoothed edges would blend C64 colours into thousands of in-between
+values) and `preserveDrawingBuffer: true` (so a frame can be read back after it is drawn). The
+export reports the palette size and shouts if any colour had to be approximated.
+
+Transparency is offered but **off by default** — the C64 dither paints real black pixels, so a
+transparent GIF dropped on a dark page loses the hat and the outlines.
+
 ## What the art can and cannot support
 
 - **Only stand, walk and sit have three views.** `choreographyActions` pairs facings for those
@@ -244,9 +265,10 @@ bitmap of all-wild pixels.
 ## Verification
 
 ```
-cd webclient && npm test                     # pure hull/mesh/rasterizer tests (test-voxel.mjs)
+cd webclient && npm test                     # pure tests: test-voxel.mjs + test-gifenc.mjs
 node check-avatar3d.mjs                      # cardinal fidelity through the REAL compositor
 node check-avatar3d.mjs --screenshot DIR     # …plus a yaw sweep to look at
+node check-avatar3d.mjs --gif DIR            # …plus exported GIFs, decoded by Chromium itself
 ```
 
 `check-avatar3d.mjs` needs `playwright` importable from `webclient/`; it is deliberately **not**
