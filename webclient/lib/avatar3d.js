@@ -14,7 +14,8 @@
 
 import * as THREE from "../vendor/three.module.js"
 import { getFile } from "../habirender/shim.js"
-import { decodeBody, decodeProp } from "../habirender/codec.js"
+import { decodeBody, decodeProp, emptyBitmap } from "../habirender/codec.js"
+import { canvasFromBitmap, celPatterns } from "../habirender/render.js"
 import { composeAvatarFrameAt, AVATAR_BODY_FILES } from "../habirender/region.js"
 import { buildFigureParts, geometryFromParts, rasterizeFigure, layerFromFrame, POSE_TRIPLES,
     registrationReport } from "../render3d/avatarvox.js"
@@ -303,6 +304,73 @@ const select = (options, get, set) => {
     return s
 }
 
+// ── spray can ────────────────────────────────────────────────────────────────────────────────
+// The four avatar "colours" are not colours: they are PATTERN indices into celPatterns
+// (render.js, from paint.m:447), each a 4×4 dither whose 2-bit cells choose between blue,
+// the wildcard, black and skin. Pattern 4 versus pattern 9 is meaningless as a number, so the
+// picker shows the real thing — a swatch rendered by the SAME canvasFromBitmap the avatar's own
+// limbs go through, over a bitmap of all-wild pixels.
+//
+// The four slots are exactly what the spray can addresses. habiworld's class_spray_can sends
+// `{op:'SPRAY', limb}` and the can answers with SPRAY_CUSTOMIZE_0/1 — the two `custom` bytes
+// unpacked here as LEG / TORSO / ARM / FACE (equates.m), which is also what custom.m's F5–F8 set.
+const SPRAY_SLOTS = [
+    { key: "legs", label: "legs", limb: 0, hint: "custom[0] hi · F6" },
+    { key: "torso", label: "torso", limb: 1, hint: "custom[0] lo · F7" },
+    { key: "arms", label: "arms", limb: 2, hint: "custom[1] hi · F8" },
+    { key: "hair", label: "hair", limb: 3, hint: "head orientation · F5" },
+]
+
+// A swatch of one pattern, at native C64 proportions (a multicolor pixel is twice as wide as tall).
+// `emptyBitmap(w,h,1)` fills with nibble 1 = "wild", which is the value the dither actually acts on.
+const patternSwatch = (pattern, wBytes = 3, h = 12) => {
+    const canvas = canvasFromBitmap(emptyBitmap(wBytes, h, 1), { pattern })
+    canvas.style.width = `${canvas.width}px`
+    canvas.style.height = `${canvas.height}px`
+    return canvas
+}
+
+const sprayPopdown = (get, set) => {
+    const wrap = el("div", { className: "pop" })
+    const button = el("button", { type: "button" })
+    const menu = el("div", { className: "popmenu" })
+    const label = el("span", { textContent: "" })
+    const caret = el("span", { className: "caret", textContent: "▾" })
+
+    const paintButton = () => {
+        button.textContent = ""
+        button.appendChild(patternSwatch(get(), 6, 14))
+        label.textContent = String(get())
+        button.appendChild(label)
+        button.appendChild(caret)
+    }
+    const close = () => menu.classList.remove("open")
+    button.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const wasOpen = menu.classList.contains("open")
+        for (const m of document.querySelectorAll(".popmenu.open")) m.classList.remove("open")
+        if (!wasOpen) menu.classList.add("open")
+    })
+    document.addEventListener("click", close)
+
+    for (let p = 0; p < celPatterns.length; p++) {
+        const b = el("button", { type: "button", title: `pattern ${p}` })
+        b.appendChild(patternSwatch(p, 5, 14))
+        b.appendChild(el("span", { textContent: String(p) }))
+        b.addEventListener("click", (e) => { e.stopPropagation(); set(p); close(); paintButton(); syncSwatches(); rebuild() })
+        menu.appendChild(b)
+    }
+    const syncSwatches = () => {
+        ;[...menu.children].forEach((b, p) => b.classList.toggle("sel", p === get()))
+    }
+
+    paintButton(); syncSwatches()
+    syncers.push(() => { paintButton(); syncSwatches() })
+    wrap.appendChild(button)
+    wrap.appendChild(menu)
+    return wrap
+}
+
 const checkbox = (get, set) => {
     const c = el("input", { type: "checkbox", checked: get() })
     c.addEventListener("change", () => { set(c.checked); rebuild() })
@@ -339,15 +407,18 @@ const buildControls = () => {
     addRow(figure, "female", checkbox(() => state.female, (v) => { state.female = v }))
     panel.appendChild(figure)
 
-    const colour = el("fieldset", {}, [el("legend", { textContent: "colours (custom.m nibbles)" })])
-    for (const key of ["legs", "torso", "arms", "hair"]) {
-        addRow(colour, key, ...slider(0, 15, 1, () => state[key], (v) => { state[key] = v }))
+    // One popdown per spray-can limb slot (equates.m LEG/TORSO/ARM/FACE).
+    const spray = el("fieldset", {}, [el("legend", { textContent: "spray can — limb patterns" })])
+    for (const slot of SPRAY_SLOTS) {
+        const row = addRow(spray, slot.label,
+            sprayPopdown(() => state[slot.key], (v) => { state[slot.key] = v }))
+        row.title = `SPRAY limb ${slot.limb} · ${slot.hint}`
     }
-    panel.appendChild(colour)
+    panel.appendChild(spray)
 
     const solid = el("fieldset", {}, [el("legend", { textContent: "solid" })])
-    addRow(solid, "round limb", ...slider(0, 1, 0.05, () => state.roundLimb, (v) => { state.roundLimb = v }))
-    addRow(solid, "round head", ...slider(0, 1, 0.05, () => state.roundHead, (v) => { state.roundHead = v }))
+    addRow(solid, "limb round", ...slider(0, 1, 0.05, () => state.roundLimb, (v) => { state.roundLimb = v }))
+    addRow(solid, "head round", ...slider(0, 1, 0.05, () => state.roundHead, (v) => { state.roundHead = v }))
     // How the side cel's depth profile is read across the front's rows. See voxel.js
     // sideProfileRows — the two views disagree on limb height and this is the choice of who loses.
     addRow(solid, "side rows", select([["absolute", "absolute (1:1, clamp)"], ["proportional", "proportional (stretch)"]],

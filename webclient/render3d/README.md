@@ -212,6 +212,19 @@ the difference between the views.
 Voxels are non-cubic (2 × 1 × 2 world units) because a C64 multicolor pixel is 2 world units wide
 and 1 tall. That is what makes an orthographic render at yaw 0 land on the 2D client's pixel grid.
 
+## The spray can
+
+The lab's four limb pickers are the spray can's four targets — LEG / TORSO / ARM / FACE
+(equates.m), which is what `habiworld` `class_spray_can` addresses with `{op:'SPRAY', limb}` and
+what the can's `SPRAY_CUSTOMIZE_0/1` reply writes back into the avatar's two `custom` bytes
+(custom.m F5–F8 set the same four).
+
+Those nibbles are **not colours**: they are indices into `celPatterns` (render.js, from
+paint.m:447), each a 4×4 dither whose 2-bit cells choose between blue, the wildcard, black and
+skin. "Pattern 9" means nothing as a number, so each picker is a popdown of the sixteen real
+swatches, rendered through the same `canvasFromBitmap` the avatar's own limbs go through, over a
+bitmap of all-wild pixels.
+
 ## What the art can and cannot support
 
 - **Only stand, walk and sit have three views.** `choreographyActions` pairs facings for those

@@ -30,7 +30,7 @@
         .stage { background: #4a4a55; border: 1px solid #2a2e3c; border-radius: 4px; }
         .panel { min-width: 260px; max-width: 320px; display: flex; flex-direction: column; gap: 10px; }
         .row { display: flex; align-items: center; gap: 8px; }
-        .row > label { flex: 0 0 78px; color: #8b91a6; }
+        .row > label { flex: 0 0 96px; color: #8b91a6; }
         .row > input[type=range] { flex: 1; }
         .row > select, .row > input[type=number] { flex: 1; background: #1b1f2b; color: #cfd2dc;
             border: 1px solid #333a4c; border-radius: 3px; padding: 3px 5px; font: inherit; }
@@ -40,6 +40,21 @@
         button:hover { background: #2d3348; }
         fieldset { border: 1px solid #2a2e3c; border-radius: 4px; margin: 0; padding: 8px 10px 10px; }
         legend { color: #7c8296; padding: 0 4px; }
+        /* Spray-can popdown: a swatch button that opens a grid of the 16 dither patterns. */
+        .pop { position: relative; flex: 1; }
+        .pop > button { display: flex; align-items: center; gap: 7px; width: 100%; padding: 2px 6px; }
+        .pop canvas { image-rendering: pixelated; display: block; border: 1px solid #00000060; }
+        .pop .caret { margin-left: auto; color: #7c8296; }
+        .popmenu {
+            position: absolute; z-index: 20; top: calc(100% + 3px); left: 0;
+            display: none; grid-template-columns: repeat(4, auto); gap: 4px;
+            background: #1b1f2b; border: 1px solid #394054; border-radius: 4px; padding: 6px;
+            box-shadow: 0 6px 18px #000a;
+        }
+        .popmenu.open { display: grid; }
+        .popmenu button { padding: 2px; line-height: 0; border-color: transparent; }
+        .popmenu button.sel { border-color: #e5c07b; }
+        .popmenu button span { display: block; font-size: 9px; line-height: 1.2; color: #7c8296; }
         .diff { padding: 0 18px 28px; }
         .diffgrid { display: flex; gap: 22px; flex-wrap: wrap; }
         .diffcell { text-align: center; }
