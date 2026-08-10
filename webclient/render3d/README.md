@@ -180,7 +180,10 @@ open http://localhost:1701/webclient/live3d.html   # enter your avatar name at t
 
 ---
 
-# Solid Avatars — a second experiment (`voxel.js` / `avatarvox.js` / `avatar3d.html`)
+# Solid avatars
+
+*A second experiment: `voxel.js` / `avatarvox.js` / `gifenc.js` / `avatar3d.html`.
+User-facing writeup: [docs/solid-avatars.md](../../docs/solid-avatars.md).*
 
 The diorama draws avatars as **billboards**, which is right for props: they were only ever drawn
 once. Avatars and heads are different — the 1986 artists drew them **three times**, side, front and
