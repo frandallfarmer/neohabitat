@@ -60,7 +60,7 @@ which is exactly what you need to recover a **solid**. A turntable lab with the
 spray can, all 160+ heads, animated-GIF export, and a panel that diffs the
 result against the 2D client pixel for pixel.
 
-👉 **[solid-avatars.md](solid-avatars.md)** ·
+👉 **[Solid Avatars](https://frandallfarmer.github.io/neohabitat-doc/docs/solid-avatars.html)** ·
 try it at [habitat.themade.org/webclient/avatar3d.html](http://habitat.themade.org/webclient/avatar3d.html)
 
 ## habibots — the bot framework
