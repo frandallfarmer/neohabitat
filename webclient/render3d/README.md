@@ -229,7 +229,7 @@ bitmap of all-wild pixels.
 
 The lab's **export** panel captures one full turn — even yaw steps, frame *N* omitted because it
 would be frame 0 again, so the loop is seamless — and downloads it as an animated GIF named after
-what is in it (`habitat-human-wizard0-stand.gif`).
+what is in it (`habitat-human-wizard0-6968.gif`).
 
 The encoder is ours (`render3d/gifenc.js`), not a vendored library, because the expensive part of a
 general GIF encoder is **colour quantization** and we have the opposite problem. GIF is a

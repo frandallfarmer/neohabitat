@@ -61,6 +61,10 @@
         .diffcell canvas { background: #4a4a55; border: 1px solid #2a2e3c; image-rendering: pixelated;
             display: block; margin: 0 auto 4px; }
         .diffcell .cap { color: #8b91a6; }
+        /* The export status prints the filename on its own line — the browser picks the folder,
+           so the name is the only thing we can actually tell the user to look for. */
+        .exportstatus { color: #8b91a6; white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 6px; }
+        .exportstatus:empty { display: none; }
         .ok { color: #98c379; } .bad { color: #e06c75; } .warn { color: #e5c07b; }
         #stats { white-space: pre; color: #7c8296; }
     </style>

@@ -519,7 +519,7 @@ const buildControls = () => {
     const transp = el("input", { type: "checkbox" })
     const transpRow = addRow(exp, "transparent", transp)
     transpRow.title = "Off by default: the C64 dither paints real black pixels, which vanish on a dark page."
-    const status = el("div", { className: "cap", textContent: "" })
+    const status = el("div", { className: "exportstatus", textContent: "" })
     const goBtn = el("button", { type: "button", textContent: "export rotation GIF" })
     goBtn.addEventListener("click", async () => {
         goBtn.disabled = true
@@ -532,10 +532,13 @@ const buildControls = () => {
             })
             const blob = new Blob([r.bytes], { type: "image/gif" })
             const url = URL.createObjectURL(blob)
-            const a = el("a", { href: url, download: gifFilename() })
+            const name = gifFilename()
+            const a = el("a", { href: url, download: name })
             document.body.appendChild(a); a.click(); a.remove()
             setTimeout(() => URL.revokeObjectURL(url), 10000)
-            status.textContent = describeGif(r)
+            // Show the name: the browser decides WHERE the file goes, so the least we can do is
+            // say what to look for.
+            status.textContent = `${name}\n${describeGif(r)}`
         } catch (e) {
             status.textContent = `export failed: ${e?.message ?? e}`
         } finally {
@@ -548,10 +551,24 @@ const buildControls = () => {
     panel.appendChild(exp)
 }
 
-// Name the file after what is actually in it, so a folder of experiments stays legible.
+// Name the file after what is actually in it, so a folder of experiments stays legible:
+//
+//     habitat-<body>-<head>-<LTAH>.gif       e.g. habitat-human-wizard0-6968.gif
+//
+// The four texture digits are Legs, Torso, Arms, Hair, in the order the spray-can panel lists
+// them. HEX, one digit each, because that is exactly how Habitat stores them — custom.m packs
+// legs/torso into the nibbles of custom[0] and arms into the high nibble of custom[1], and the
+// hair pattern rides in the head's orientation. So the suffix is not an invented code, it is the
+// paint values written out.
+const textureDigits = () =>
+    [state.legs, state.torso, state.arms, state.hair]
+        .map((n) => (n & 0xf).toString(16)).join("")
+
 const gifFilename = () => {
-    const head = state.head.replace("heads/", "").replace(".bin", "")
-    return `habitat-${BODY_NAMES[state.style].toLowerCase()}-${head}-${state.pose}.gif`
+    const safe = (s) => String(s).replace(/[^a-z0-9_]+/gi, "-")
+    const body = BODY_NAMES[state.style] ?? `style${state.style}`
+    const head = state.head.replace(/^heads\//, "").replace(/\.bin$/, "")
+    return `habitat-${safe(body.toLowerCase())}-${safe(head)}-${textureDigits()}.gif`
 }
 
 // ── main loop ────────────────────────────────────────────────────────────────────────────────
