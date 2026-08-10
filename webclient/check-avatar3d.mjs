@@ -6,7 +6,11 @@
 // is to run both in a page. avatar3d.html already does exactly that for its diff panel; this
 // script just drives it and reads the numbers back out of window.__avatarvox.
 //
-//   node webclient/check-avatar3d.mjs [--url URL] [--headed] [--screenshot DIR] [--gif DIR]
+//   node webclient/check-avatar3d.mjs [--url URL] [--headed] [--screenshot [DIR]] [--gif [DIR]]
+//
+// --screenshot and --gif take an optional directory; bare, they write to webclient/out/ (created
+// on demand, and git-ignored). The lab's own export button is unrelated to these — it triggers a
+// normal browser download, so the browser decides where that file lands.
 //
 // Needs `playwright` importable from this directory; it is NOT a webclient dependency (the
 // webclient deliberately has none) so this check is opt-in and separate from `npm test`.
@@ -25,17 +29,34 @@
 
 import { chromium } from "playwright"
 import { createServer } from "node:http"
-import { readFile, writeFile } from "node:fs/promises"
-import { extname, join, normalize } from "node:path"
+import { readFile, writeFile, mkdir } from "node:fs/promises"
+import { extname, join, normalize, resolve as resolvePath } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const HERE = fileURLToPath(new URL(".", import.meta.url))
 const argv = process.argv.slice(2)
 const arg = (name, fallback) => {
     const i = argv.indexOf(name)
-    return i >= 0 ? argv[i + 1] : fallback
+    if (i < 0) return fallback
+    const next = argv[i + 1]
+    // `--gif` with no path used to yield undefined, which read as "not requested" and skipped the
+    // whole step — a passing run that silently wrote nothing. A bare flag now means "use the
+    // default directory" instead.
+    return (next === undefined || next.startsWith("--")) ? true : next
 }
 const HEADED = argv.includes("--headed")
+
+// Where a bare `--screenshot` / `--gif` writes. Relative to the webclient directory, not the
+// caller's cwd, so the files land next to the code that made them wherever you invoke from.
+const DEFAULT_OUT = join(HERE, "out")
+
+// Resolve a flag that names a directory, creating it if need be. `true` = bare flag → the default.
+const outDir = async (flag) => {
+    if (!flag) return null
+    const dir = flag === true ? DEFAULT_OUT : resolvePath(flag)
+    await mkdir(dir, { recursive: true })
+    return dir
+}
 
 const MIME = {
     ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript",
@@ -88,7 +109,11 @@ const CASES = [
 
 const run = async () => {
     const { server, port } = await serve()
-    const url = arg("--url", `http://127.0.0.1:${port}/avatar3d.html`)
+    const fallbackUrl = `http://127.0.0.1:${port}/avatar3d.html`
+    // A bare `--url` yields `true` (the directory-flag convention above); it is not a URL, so fall
+    // back rather than handing `true` to page.goto.
+    const urlArg = arg("--url", fallbackUrl)
+    const url = typeof urlArg === "string" ? urlArg : fallbackUrl
     const browser = await chromium.launch({ headless: !HEADED, args: ["--use-gl=swiftshader"] })
     const page = await browser.newPage()
     const consoleErrors = []
@@ -132,7 +157,7 @@ const run = async () => {
     // --screenshot: numbers say the silhouette is right; they cannot say the figure reads well in
     // the round. Emit a yaw sweep so the in-between angles — the whole point of the experiment —
     // can actually be looked at.
-    const shotDir = arg("--screenshot", null)
+    const shotDir = await outDir(arg("--screenshot", null))
     if (shotDir) {
         await page.evaluate(async () => {
             await window.__avatarvoxLab.setState({ style: 0, head: "heads/wizard0.bin", pose: "stand" })
@@ -150,7 +175,7 @@ const run = async () => {
     // --gif: export a real rotation, hand the bytes back to the browser's OWN decoder, and write
     // the file out. A hand-written GIF encoder can produce something that round-trips through a
     // hand-written decoder and is still not a valid GIF; only an independent decoder settles it.
-    const gifDir = arg("--gif", null)
+    const gifDir = await outDir(arg("--gif", null))
     if (gifDir) {
         for (const [name, patch, opts] of [
             ["rotation-opaque", { head: "heads/wizard0.bin" }, { frames: 24, delayMs: 60 }],
