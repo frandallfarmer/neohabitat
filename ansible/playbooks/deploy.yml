@@ -308,6 +308,55 @@
         - 1986
         - 2026
 
+    # The port checks above CANNOT detect a failed tableflip upgrade. When the
+    # new child dies during startup, the old process keeps its listeners, so
+    # 1337/1986/2026 all answer and the deploy goes green while prod quietly
+    # carries on running the previous binary.
+    #
+    # That is not hypothetical: the otel 1.45.0 bump shipped a binary that
+    # exited 1 in OpenTelemetry init ("conflicting Schema URL"). tableflip kept
+    # the old process alive — no outage, which is the design working — but the
+    # deploy reported success and the change was not live. It was only found by
+    # hand-checking /proc/<pid>/exe afterwards.
+    #
+    # After a successful re-exec the running process executes the file now on
+    # disk. After a failed one it is still executing the inode that `mv`
+    # replaced, which the kernel marks "(deleted)". That is the signal.
+    - name: Verify bridge_v2 re-exec actually took (running binary is the one we shipped)
+      shell: |
+        set -u
+        pid=$(systemctl show bridge_v2.service -p MainPID --value)
+        if [ -z "$pid" ] || [ "$pid" = "0" ]; then
+          echo "FAIL: bridge_v2 has no MainPID"
+          exit 1
+        fi
+        exe=$(readlink "/proc/$pid/exe" || echo "<unreadable>")
+        echo "MainPID=$pid exe=$exe"
+        case "$exe" in
+          *"(deleted)")
+            echo "FAIL: bridge_v2 is STILL RUNNING THE PREVIOUS BINARY."
+            echo "The tableflip re-exec did not take — the new binary most likely"
+            echo "crashed during startup. Prod is up on the old build; the change"
+            echo "you just deployed is NOT live. Recent journal:"
+            # Match the upgrade path specifically. A plain "error" grep drowns
+            # in routine per-client EOF noise and buries the real cause.
+            journalctl -u bridge_v2 --since "-10 min" --no-pager 2>/dev/null \
+              | grep -iE "graceful upgrade|Upgrade failed|level\":\"fatal|panic" \
+              | tail -15 || true
+            exit 1
+            ;;
+        esac
+        echo "OK: running binary matches the deployed file"
+      become: true
+      when: bv2_binary_changed
+      register: bv2_reexec_check
+      changed_when: false
+      # The tableflip handoff and its sd_notify(MAINPID=) are asynchronous, so
+      # give systemd a few seconds to start tracking the child before judging.
+      retries: 6
+      delay: 5
+      until: bv2_reexec_check.rc == 0
+
     # ── everyone else ────────────────────────────────────────────────
     - name: Bring up non-bridge services (recreate only on image change)
       # Explicit service list — bridge_v2 isn't in docker anymore (it's

@@ -24,15 +24,25 @@ import (
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.41.0"
+	// MUST track the semconv version that sdk/resource itself imports —
+	// resource.Merge refuses to merge two resources with conflicting schema
+	// URLs, so a mismatch here is a FATAL error at startup, not a warning.
+	// otel sdk 1.45.0 moved resource.Default() from schema 1.41.0 to 1.43.0.
+	// See buildResource and TestBuildResource.
+	semconv "go.opentelemetry.io/otel/semconv/v1.43.0"
 )
 
-// Init wires up the global tracer and meter providers and starts the
-// Go runtime metrics collector. The returned shutdown function flushes
-// both providers and should be called from the SIGINT path before
-// process exit so in-flight spans and metric data points reach the
-// collector.
-func Init(ctx context.Context, serviceName, version string) (func(context.Context) error, error) {
+// semconvSchemaURL is the schema URL of the semconv package imported above.
+// Named here so the drift test checks the SAME import production code uses,
+// rather than importing semconv a second time and drifting independently.
+const semconvSchemaURL = semconv.SchemaURL
+
+// buildResource merges the SDK's default resource with our service identity.
+//
+// Split out of Init purely so it can be tested without a collector: this is the
+// one part of OTel setup that can fail on a plain dependency bump, and Init as a
+// whole needs a live OTLP endpoint to run.
+func buildResource(serviceName, version string) (*resource.Resource, error) {
 	res, err := resource.Merge(
 		resource.Default(),
 		resource.NewWithAttributes(
@@ -43,6 +53,19 @@ func Init(ctx context.Context, serviceName, version string) (func(context.Contex
 	)
 	if err != nil {
 		return nil, fmt.Errorf("build resource: %w", err)
+	}
+	return res, nil
+}
+
+// Init wires up the global tracer and meter providers and starts the
+// Go runtime metrics collector. The returned shutdown function flushes
+// both providers and should be called from the SIGINT path before
+// process exit so in-flight spans and metric data points reach the
+// collector.
+func Init(ctx context.Context, serviceName, version string) (func(context.Context) error, error) {
+	res, err := buildResource(serviceName, version)
+	if err != nil {
+		return nil, err
 	}
 
 	traceExp, err := otlptracehttp.New(ctx)
