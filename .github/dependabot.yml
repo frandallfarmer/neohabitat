@@ -29,3 +29,13 @@ updates:
     directory: "/bridge_v2"
     schedule:
       interval: "weekly"
+    groups:
+      # OpenTelemetry ships its modules as a matched set, and bridge_v2 depends on
+      # eight of them. Ungrouped, one release fans out into eight PRs — more than
+      # the default open-PR limit of five, so the set arrives PARTIAL and merging
+      # what showed up leaves go.mod straddling two otel versions. Worse, every
+      # merge to master deploys prod, so a routine bump becomes eight deploys.
+      # One PR for the whole family fixes both.
+      opentelemetry:
+        patterns:
+          - "go.opentelemetry.io/*"
