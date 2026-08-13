@@ -1,3 +1,4 @@
+import ast
 import json
 import os
 import re
@@ -174,7 +175,7 @@ class Region(object):
     if parse_results is not None:
       # It's much easier to work with the pure Python representation of a
       # pyparsing.ParseResults, hence this horrible hack.
-      exec('self.raw_results = ' + parse_results.__repr__())
+      self.raw_results = ast.literal_eval(parse_results.__repr__())
       self.results_dict = self.raw_results[1]
 
   def __repr__(self):
