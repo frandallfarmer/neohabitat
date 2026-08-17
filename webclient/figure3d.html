@@ -57,6 +57,10 @@
         .popmenu button { padding: 2px; line-height: 0; border-color: transparent; }
         .popmenu button.sel { border-color: #e5c07b; }
         .popmenu button span { display: block; font-size: 9px; line-height: 1.2; color: #7c8296; }
+        /* The export status prints the filename on its own line — the browser picks the folder, so
+           the name is the only thing we can tell the user to look for. */
+        .exportstatus { color: #8b91a6; white-space: pre-wrap; overflow-wrap: anywhere; margin: 6px 0 0; }
+        .exportstatus:empty { display: none; }
         .report { padding: 0 18px 28px; }
         table { border-collapse: collapse; font-size: 12px; }
         th, td { text-align: left; padding: 2px 12px 2px 0; }

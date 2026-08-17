@@ -1,6 +1,6 @@
 // check-figure3d.mjs — headless checks for the Habitat Figure Lab.
 //
-//   node webclient/check-figure3d.mjs [--url URL] [--headed] [--screenshot [DIR]]
+//   node webclient/check-figure3d.mjs [--url URL] [--headed] [--screenshot [DIR]] [--gif [DIR]]
 //
 // Deliberately NOT named test-*.mjs, for the same reason check-avatar3d.mjs is not: `node --test`
 // stays dependency-free, and this needs a browser and a GPU. `playwright` must be importable from
@@ -25,7 +25,7 @@
 
 import { chromium } from "playwright"
 import { createServer } from "node:http"
-import { readFile, mkdir } from "node:fs/promises"
+import { readFile, writeFile, mkdir } from "node:fs/promises"
 import { extname, join, normalize, resolve as resolvePath } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -193,6 +193,7 @@ const run = async () => {
     const urlArg = arg("--url", fallbackUrl)
     const url = typeof urlArg === "string" ? urlArg : fallbackUrl
     const shotDir = await outDir(arg("--screenshot", false))
+    const gifDir = await outDir(arg("--gif", false))
 
     const browser = await chromium.launch({ headless: !HEADED, args: ["--use-gl=swiftshader"] })
     const page = await browser.newPage()
@@ -279,6 +280,58 @@ const run = async () => {
         if (shotDir) {
             const file = join(shotDir, `figure3d-${label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.png`)
             await page.locator("#stage").screenshot({ path: file })
+        }
+    }
+
+    // ── the GIF export ───────────────────────────────────────────────────────────────────────
+    // Encoded for real and parsed back, because the failure that matters is not "the button threw"
+    // — it is a file that downloads happily and then will not open, or opens as a still. Checking
+    // the header, the loop extension and the frame count costs nothing and catches both.
+    for (const mode of ["both", "clip", "turntable"]) {
+        await page.evaluate(async (s) => {
+            await window.__figure3d.setState(s)
+        }, { ...BASE, clip: "Walk", yaw: 20, pixelSize: 4 })
+        const g = await page.evaluate(
+            async (mode) => window.__figure3d.buildGif({ mode, frames: 10, cycles: 1 }), mode)
+        const bytes = Uint8Array.from(g.bytes)
+        const header = String.fromCharCode(...bytes.slice(0, 6))
+
+        if (header !== "GIF89a") fail(`gif ${mode}: bad header ${JSON.stringify(header)}`)
+        if (!g.exact) fail(`gif ${mode}: palette was approximated — ${g.colors} colours found`)
+        if (g.colors > 256) fail(`gif ${mode}: ${g.colors} colours exceeds the GIF limit`)
+        // 0x21 0xF9 0x04 is the Graphic Control Extension that precedes each frame; one per frame.
+        let gce = 0
+        for (let i = 0; i + 2 < bytes.length; i++) {
+            if (bytes[i] === 0x21 && bytes[i + 1] === 0xf9 && bytes[i + 2] === 0x04) gce++
+        }
+        if (gce !== 10) fail(`gif ${mode}: ${gce} frames encoded, expected 10`)
+        if (bytes[bytes.length - 1] !== 0x3b) fail(`gif ${mode}: missing trailer`)
+        if (mode !== "turntable" && !g.animated) fail(`gif ${mode}: clip was not sampled`)
+
+        // THE ASSERTION THAT MATTERS, and the one that was missing the first time round. Every
+        // check above passed on a "clip" GIF whose 36 frames were byte-identical: the mixer skips
+        // paused actions, so setTime never advanced the walk and the export was a structurally
+        // perfect animation of one still pose. Nothing that inspects the FILE can see that. Count
+        // the distinct frames instead.
+        //
+        // "clip" holds the camera still, so distinct frames there can only come from the animation
+        // itself — which makes it the strict case. Turntable and spin+play would differ from the
+        // yaw alone even if the clip were frozen.
+        if (g.distinctFrames < 10) {
+            fail(`gif ${mode}: only ${g.distinctFrames} of 10 frames differ — ` +
+                (mode === "clip" ? "the clip is not advancing" : "the figure is not moving"))
+        }
+
+        console.log(`ok   gif ${mode.padEnd(20)} ${gce} frames (${g.distinctFrames} distinct) · ` +
+            `${g.colors} colours · ${g.delayMs}ms · ${(bytes.length / 1024).toFixed(0)} KB`)
+
+        if (gifDir) {
+            // A real one, at settings worth looking at rather than the ten cheap frames above.
+            const full = await page.evaluate(
+                async (mode) => window.__figure3d.buildGif({ mode, frames: 36, cycles: 2 }), mode)
+            const file = join(gifDir, `figure3d-${mode}.gif`)
+            await writeFile(file, Buffer.from(Uint8Array.from(full.bytes)))
+            console.log(`     → ${file} (${(full.bytes.length / 1024).toFixed(0)} KB)`)
         }
     }
 

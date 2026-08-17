@@ -28,6 +28,7 @@ import { buildHeadPart, geometryFromParts } from "../render3d/avatarvox.js"
 import { Billboard } from "../render3d/billboard.js"
 import { frameFromCels, celsFromMask } from "../habirender/render.js"
 import { createPostFX } from "../render3d/postfx.js"
+import { quantizeFrames, encodeGif } from "../render3d/gifenc.js"
 import { createControlKit } from "./lab-controls.js"
 
 const FIGURE_URL = "./assets3d/quaternius-casual.glb"
@@ -84,6 +85,12 @@ const state = {
 
     held: "(none)",
     heldFraction: 0.14,
+
+    gifMode: "both",
+    gifFrames: 36,
+    gifFps: 20,
+    gifCycles: 1,
+    gifTransparent: false,
 }
 
 let figure = null
@@ -502,6 +509,28 @@ const buildControls = () => {
         () => state.held, (v) => setHeld(v)))
     addRow(hand, "size", ...slider(0.04, 0.4, 0.01,
         () => state.heldFraction, (v) => { state.heldFraction = v }))
+
+    const gif = group(panel, "animated GIF")
+    addRow(gif, "motion", select([
+        ["both", "spin + play"],
+        ["clip", "play in place"],
+        ["turntable", "spin only"],
+    ], () => state.gifMode, (v) => { state.gifMode = v }))
+    addRow(gif, "frames", ...slider(8, 72, 2, () => state.gifFrames, (v) => { state.gifFrames = v }))
+    // Only consulted when there is no clip to take the tempo from.
+    addRow(gif, "fps", ...slider(5, 30, 1, () => state.gifFps, (v) => { state.gifFps = v }))
+    // How many times the clip loops per full turn. 1 is a slow amble; 2–3 looks like walking while
+    // being turned on a plinth, which is the shape of the thing people actually post.
+    addRow(gif, "clip loops", ...slider(1, 4, 1, () => state.gifCycles, (v) => { state.gifCycles = v }))
+    addRow(gif, "transparent", checkbox(() => state.gifTransparent, (v) => { state.gifTransparent = v }))
+    const gifStatus = el("p", { className: "exportstatus" })
+    const gifBtn = el("button", { type: "button", textContent: "export GIF" })
+    gifBtn.addEventListener("click", () => {
+        gifBtn.disabled = true
+        exportGif(gifStatus).finally(() => { gifBtn.disabled = false })
+    })
+    gif.appendChild(gifBtn)
+    gif.appendChild(gifStatus)
 }
 
 const buildReport = () => {
@@ -521,6 +550,138 @@ const buildReport = () => {
         table.appendChild(tr)
     }
     host.appendChild(table)
+}
+
+// ── GIF export ───────────────────────────────────────────────────────────────────────────────
+// render3d/gifenc.js already does this for the Solid Avatar Lab and needs no changes: a Habitat
+// frame carries about seventeen distinct colours, so the palette is simply the set of colours
+// present, the mapping is exact and nothing is lost. What is different here is that this figure can
+// MOVE, so there are two independent things to animate and the interesting one is not the
+// turntable:
+//
+//   turntable  spin 360°, figure held still — what the solid lab does
+//   clip       camera still, play one animation through — a Habitat avatar WALKING
+//   both       spin one full turn while the clip loops a whole number of times
+//
+// Every mode is seamless by construction: frame N would be frame 0 again, so it is not emitted.
+
+/** The background colour actually in the framebuffer — read, not assumed. */
+const backdropOf = (rgba) => [rgba[0], rgba[1], rgba[2]]
+
+const captureFrames = async ({ mode, frames, cycles, onProgress }) => {
+    const wasSpinning = state.autorotate
+    const wasYaw = state.yaw
+    const wasPlaying = state.playing
+    state.autorotate = false
+    state.playing = false
+
+    const w = canvas.width, h = canvas.height
+    const scratch = document.createElement("canvas")
+    scratch.width = w; scratch.height = h
+    const sctx = scratch.getContext("2d", { willReadFrequently: true })
+
+    // A gesture is a held pose with no timeline, so there is nothing for "clip" to sample; fall
+    // back to the turntable rather than emitting N copies of one frame.
+    const clipObj = state.mode === "clip" ? figure.clipByLabel(state.clip) : null
+    const canAnimate = !!clipObj && mode !== "turntable"
+    const duration = clipObj?.duration ?? 0
+
+    const shots = []
+    try {
+        if (canAnimate) {
+            applyClip()
+            // MUST unpause. applyClip honours state.playing, which the capture just set false to
+            // stop the rAF loop fighting it — and AnimationMixer.setTime SKIPS PAUSED ACTIONS, so
+            // the clip never advances and every frame comes out identical. The GIF is then a
+            // structurally valid 36-frame animation of one still pose, which passes every check
+            // that looks at the file rather than at the pixels.
+            if (action) action.paused = false
+        }
+        for (let i = 0; i < frames; i++) {
+            const spin = mode === "clip" ? wasYaw : (i * 360) / frames
+            pivot.rotation.y = THREE.MathUtils.degToRad(spin)
+            if (canAnimate && mixer) mixer.setTime((i * duration * cycles) / frames)
+            postfx.render(scene, camera)
+            sctx.drawImage(canvas, 0, 0)
+            shots.push(sctx.getImageData(0, 0, w, h).data)
+            onProgress?.(i + 1, frames)
+            // Yield every few frames or the tab locks up for the whole capture.
+            if (i % 4 === 3) await new Promise((r) => setTimeout(r, 0))
+        }
+    } finally {
+        state.autorotate = wasSpinning
+        state.playing = wasPlaying
+        state.yaw = wasYaw
+        pivot.rotation.y = THREE.MathUtils.degToRad(wasYaw)
+        applyMode()
+        postfx.render(scene, camera)
+        kit.sync()
+    }
+    // How many of the captured frames are actually different from one another. Cheap FNV-1a over
+    // every fourth byte — enough to separate real motion from a repeated still, which is the whole
+    // question, and the one a structural check on the encoded file cannot answer.
+    const seen = new Set()
+    for (const s of shots) {
+        let hash = 0x811c9dc5
+        for (let i = 0; i < s.length; i += 4) hash = Math.imul(hash ^ s[i], 0x01000193)
+        seen.add(hash >>> 0)
+    }
+
+    return { shots, width: w, height: h, animated: canAnimate, duration, distinctFrames: seen.size }
+}
+
+const buildGif = async ({ mode, frames, fps, transparent, cycles, onProgress }) => {
+    const cap = await captureFrames({ mode, frames, cycles, onProgress })
+    const q = quantizeFrames(cap.shots, { backgroundRGB: backdropOf(cap.shots[0]) })
+    // A clip's own duration sets the tempo when there is one — a walk cycle played at an arbitrary
+    // frame rate is a walk cycle at the wrong speed, and that reads as wrong immediately.
+    const delayMs = cap.animated && mode !== "turntable"
+        ? Math.max(20, Math.round((cap.duration * cycles * 1000) / frames))
+        : Math.round(1000 / fps)
+    const bytes = encodeGif({
+        width: cap.width, height: cap.height, palette: q.palette,
+        frames: q.indexed.map((indices) => ({ indices, delayMs })),
+        loop: 0,
+        transparentIndex: transparent ? q.backgroundIndex : null,
+    })
+    return {
+        bytes, frames, delayMs, width: cap.width, height: cap.height,
+        colors: q.palette.length, exact: q.exact, animated: cap.animated,
+        distinctFrames: cap.distinctFrames,
+    }
+}
+
+const gifFilename = () => {
+    const what = state.mode === "gesture" ? state.gesture : state.clip
+    const head = state.head.replace(/^heads\/|\.bin$/g, "")
+    return `habitat-${what}-${head}-px${state.pixelSize}.gif`.toLowerCase().replace(/[^a-z0-9.-]+/g, "-")
+}
+
+const exportGif = async (statusNode) => {
+    const say = (msg, cls = "") => { statusNode.className = `exportstatus ${cls}`; statusNode.textContent = msg }
+    try {
+        say("rendering…")
+        const r = await buildGif({
+            mode: state.gifMode, frames: state.gifFrames, fps: state.gifFps,
+            transparent: state.gifTransparent, cycles: state.gifCycles,
+            onProgress: (i, n) => say(`rendering frame ${i}/${n}…`),
+        })
+        const name = gifFilename()
+        const a = document.createElement("a")
+        a.href = URL.createObjectURL(new Blob([r.bytes], { type: "image/gif" }))
+        a.download = name
+        a.click()
+        URL.revokeObjectURL(a.href)
+        say(`${name}\n${r.frames} frames · ${r.width}×${r.height} · ${r.colors} colours` +
+            `${r.exact ? "" : " (approximated!)"} · ${r.delayMs}ms/frame · ` +
+            `${(r.bytes.length / 1024).toFixed(0)} KB` +
+            (state.gifMode !== "turntable" && !r.animated
+                ? "\nno clip to sample — exported as a turntable instead" : ""),
+            r.exact ? "ok" : "warn")
+    } catch (e) {
+        say(`export failed: ${e.message}`, "bad")
+        throw e
+    }
 }
 
 // ── main loop ────────────────────────────────────────────────────────────────────────────────
@@ -568,6 +729,17 @@ const labApi = {
         state.gesture = gesture
         ;(poses[gesture] ??= {})[bone] = xyz
         applyPose()
+    },
+    /** Build a GIF and hand back the bytes — the check encodes one rather than trusting the button. */
+    async buildGif(options = {}) {
+        const r = await buildGif({
+            mode: options.mode ?? state.gifMode,
+            frames: options.frames ?? state.gifFrames,
+            fps: options.fps ?? state.gifFps,
+            cycles: options.cycles ?? state.gifCycles,
+            transparent: options.transparent ?? state.gifTransparent,
+        })
+        return { ...r, bytes: Array.from(r.bytes) }
     },
     clearPose(gesture) {
         poses[gesture] = {}

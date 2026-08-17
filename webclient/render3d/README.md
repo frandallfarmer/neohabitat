@@ -398,13 +398,41 @@ skinning-aware material, they ink the seam where an arm crosses the torso, and t
 keyline in **final pixels** — so a 1px line stays 1px at every pixel size, which is what Habitat's
 keylines were.
 
+## Animated GIF export
+
+`render3d/gifenc.js` is reused unchanged — see the Solid Avatar Lab section above for why a
+hand-written encoder is the *small* option here (a Habitat frame carries about four colours, so the
+palette is the set of colours present and the mapping is exact).
+
+What is different is that this figure can move, so there are two independent things to animate and
+the interesting one is not the turntable:
+
+| motion | what it does |
+|---|---|
+| **spin + play** | one full turn while the clip loops a whole number of times — the default |
+| **play in place** | camera still, one pass of the animation. A Habitat avatar *walking* |
+| **spin only** | figure held still, 360° turn. What the solid lab does |
+
+Every mode is seamless by construction: frame *N* would be frame 0 again, so it is not emitted.
+**When there is a clip, the clip's own duration sets the tempo** — a walk cycle played at an
+arbitrary frame rate is a walk cycle at the wrong speed, and that reads as wrong instantly. The
+`fps` slider is only consulted when there is nothing to take the tempo from.
+
+A gesture is a held pose with no timeline, so asking for "play in place" on one degrades to a
+turntable and says so in the status line rather than emitting N copies of a single frame.
+
 ## Verification
 
 ```
 cd webclient
 node --test                     # includes test-habimat.mjs and test-habipose.mjs
-node check-figure3d.mjs --screenshot
+node check-figure3d.mjs --screenshot --gif
 ```
+
+The GIF path is checked by **encoding one and parsing it back** — header, one Graphic Control
+Extension per frame, the trailer, an exact palette, and `animated` actually true for the clip modes.
+The failure worth catching is not "the button threw"; it is a file that downloads happily and then
+will not open, or opens as a still.
 
 The headless check asserts two things that are exactly checkable, at every yaw and pixel size:
 
