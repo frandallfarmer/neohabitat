@@ -292,3 +292,148 @@ claiming an exactness the art cannot support.
 - **Do not render these on a black background.** The C64 wild-colour dither legitimately paints
   black pixels (`rgbaFromNibble`: `patternColors[2]` is colour 0), so a dark hat or a dithered robe
   reads as holes in the mesh. The figure is not falling apart; it is camouflaged.
+
+---
+
+# Habitat Figure Lab — a skeletal 3D avatar with C64 colouring
+
+```
+http://localhost:1701/webclient/figure3d.html
+```
+
+A **second, separate** experiment from the solid avatar above, and both stay. The solid recovers a
+true 3D figure from the 1986 cels and is pixel-exact at the cardinals — but it can only ever stand,
+walk and sit, because those are the only poses the artists drew from more than one angle
+(`POSE_TRIPLES` in `avatarvox.js`). A figure that cannot wave is not a Habitat avatar.
+
+So this one inverts the trade. The body is a **CC0 rigged humanoid** (Quaternius *Casual Character*
+— see `../assets3d/CREDITS.md`) that can be posed and animated freely, and the Habitat *look* is
+bought back by porting the thing that actually makes a Habitat avatar look like one:
+
+**the colouring model, not the artwork.**
+
+## The core of it: `rgbaFromNibble` in GLSL
+
+`habirender/palette.js` is Habitat's entire colour system, and it is four values deep:
+
+```
+patternColors = [6, wildcard, 0, skin]     // 6 is a fixed dark blue
+nibble 0 → transparent
+nibble 1 → WILD: two bits of celPatterns[pattern][y%4] chosen by (x%4)*2 → index patternColors
+nibble 2 → black
+nibble 3 → skin
+```
+
+Not a texture — an **index map plus three player-controlled values**, which is why a spray can could
+recolour an avatar in 1986. `habimat.js` ports that to a shader and `test-habimat.mjs` proves the
+port by running it against `rgbaFromNibble` itself over **every** combination of nibble, x%4, y%4,
+pattern and a spread of colour choices. The GLSL mirrors `resolveNibble` statement for statement, so
+it inherits that proof.
+
+Three things make it work on geometry the C64 never drew:
+
+1. **The nibble comes from the MATERIAL, the limb class from the SKELETON.** They cannot come from
+   the same place: the Quaternius shirt is one material, but its short sleeves belong to Habitat's
+   ARM slot while its body belongs to TORSO, and the bare arm below the sleeve is skin on the same
+   mesh. Material answers *cloth / skin / outline*; the dominant skinning bone answers *which
+   garment*.
+2. **There are no textures to classify.** The pack ships nine flat-colour materials and
+   `images: 0` — a surface already partitioned into nine regions is an index map somebody else
+   drew. `CASUAL_MATERIAL_NIBBLES` makes the nine decisions explicitly; the heuristics in
+   `classifyMaterials` are only a starting point for an unknown asset, and every material's
+   deciding rule is printed in the lab.
+3. **Shading stays inside the palette.** Habitat has no lighting, but an unlit low-poly humanoid at
+   three-quarters has no readable form. `paletteRampFor` derives a dark/base/light ramp out of the
+   16 colodore colours by hue and lightness, so an N·L term picks a neighbouring *palette entry*
+   rather than inventing a colour. Off by default — the C64 was flat.
+
+## The head is not an interpretation
+
+The body is a stand-in; the head is the character. `buildHeadPart` (extracted from
+`buildFigureParts`, registered to its own cel space instead of to a Habitat limb chain) recovers the
+same true solid from the same three cels, for every entry in `heads.json`, and it hangs off the
+rig's `Head` bone — so all 160-odd heads come along and follow every animation for free.
+
+Two numbers had to be measured off the rig rather than guessed, and both were guessed wrong first:
+
+- **Scale.** The head bone carries a world scale of **100** (the pack came out of FBX in
+  centimetres) and a voxel is 2×1×2 world units. A hardcoded factor produced a head that filled half
+  the frame. The lab now solves for the scale from the measured figure height, hull height and bone
+  scale, so the requested head/body fraction is the fraction you get.
+- **Where it mounts.** The `Head` bone is up inside the skull, so anchoring the hull's base there
+  leaves the head on a stalk — and the bigger you make it the further it flies. The mount drops to
+  the `Neck` bone, measured at bind, so growing the head engulfs the shoulders instead. Which is
+  what a Habitat avatar looks like.
+
+**The proportion is the real experiment.** On the C64 an avatar is 58 units and `head0` is 26 of
+them — a Habitat head is **45%** of the figure. The Quaternius character's own head is 19%. The
+slider spans both, and the default (30%) is a bid, not an answer.
+
+## Gestures: authored, not found
+
+Habitat has 30 chore actions; the pack has 24 clips. Three line up (`Idle`, `Walk`, `Wave`) and
+nothing outside Habitat has `gimme`, `unpocket` or `bend_over`. But most Habitat gestures are a
+**single held pose**, not a loop — so a gesture is about six numbers on four bones, which is a
+slider panel and a JSON file rather than a Blender pipeline.
+
+`habipose.js` keeps that pure (a pose is `{bone: [x,y,z]}` in degrees **as a delta from rest**, so it
+transfers if the body is ever swapped); `poses.json` holds the table; the lab is the editor and
+exports the file the same way the GIF export works.
+
+⚠️ **Restoring bind pose before applying a pose is not optional.** Stopping an action does not undo
+it — every bone stays where the last evaluated frame left it, and a pose only names twenty of
+sixty-two. The other forty-two keep the residue of whatever played last, including `Root` and
+`Body`, and the figure comes out subtly rotated and never the same twice. It reads as a broken pose
+rather than as a stale skeleton.
+
+**Coverage today: 3 authored, 4 from clips, 17 to do.** `poseCoverage` reports it and the lab prints
+it; the remaining seventeen want somebody with the live slider and the original cel side by side,
+which is exactly what the editor is for.
+
+## The retro dial
+
+`postfx.js`: render into a target 1/N the size, snap every pixel to the nearest colodore colour, ink
+depth discontinuities black. Depth edges rather than an inverted hull because they need no second
+skinning-aware material, they ink the seam where an arm crosses the torso, and they measure the
+keyline in **final pixels** — so a 1px line stays 1px at every pixel size, which is what Habitat's
+keylines were.
+
+## Verification
+
+```
+cd webclient
+node --test                     # includes test-habimat.mjs and test-habipose.mjs
+node check-figure3d.mjs --screenshot
+```
+
+The headless check asserts two things that are exactly checkable, at every yaw and pixel size:
+
+- **PALETTE** — with quantize on, *every* pixel in the framebuffer is one of the 16 colodore
+  colours. Antialiasing, tone mapping, a stray sRGB conversion or a lit material all break this, and
+  all of them are invisible by eye until the image is subtly not-C64 any more.
+- **PIXEL GRID** — at pixel size N the framebuffer is constant over every aligned N×N block. This is
+  what separates a real low-resolution render from a full-resolution one with a blur.
+
+Plus role-colour presence (if skin stops appearing, the arms have gone missing) and a pin on the
+vendored rig's 10 primitives / 62 bones / 24 clips.
+
+⚠️ **Colour management must stay off on this page** (`THREE.ColorManagement.enabled = false`, plus
+`LinearSRGBColorSpace` output and `NoToneMapping`). The shader's palette values were already exact —
+they come from a `NoColorSpace` lookup texture — but the *clear colour* was not: Three converted the
+hex to linear on assignment, nothing converted it back, `0x4a4a55` reached the framebuffer as
+`0x141418`, and that quantized to **black**, which hid the black keyline against a black background.
+Found by dumping actual pixels, not by reading documentation.
+
+## Known limitations
+
+- **Seventeen gestures are unposed** and fall back to rest. Stated, not hidden.
+- **The pack's `Idle` and `Walk` are its own**, not Habitat's — Habitat's walk is a 7-frame cycle
+  with a very particular gait, and matching it would mean authoring the cycle too.
+- **The held prop is a billboard**, which is correct rather than lazy: Habitat props were drawn once
+  from one angle, so there is no second view to build a solid from. It has a size slider but no hand
+  offset, so it sits at the wrist rather than in the grip.
+- **Non-human bodies are out of scope.** Habitat has seven body styles including Dragon, Tank and
+  Tentacle; a humanoid rig covers none of them. They keep the hull/billboard path.
+- **Height and sex** (`SEX_BIT`, `HEIGHT_MASK` in `lib/customize.mjs`) are not wired up yet; they
+  want bone scaling rather than a second mesh.
+- Nothing here touches `live.html` or `live3d.html`.

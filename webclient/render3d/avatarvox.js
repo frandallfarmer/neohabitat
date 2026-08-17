@@ -213,24 +213,66 @@ export const buildFigureParts = (body, avatarMod, headProp, headMod, options = {
     }
 
     if (headed) {
+        const pattern = headPatternFromMod(headMod, limbPatterns[3])
         const headLayer = (view) => {
             const v = views[view]
             if (!v) return EMPTY_LAYER
-            const facing = VIEW_FACING[view]
-            const anim = headProp.animations?.[facing] ?? headProp.animations?.[0] ?? { startState: 0 }
-            const state = Math.min(anim.startState ?? 0, headProp.celmasks.length - 1)
-            const frame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]), {
-                colors: headMod ? colorsFromMod(headMod) : { pattern: headPatternFromMod(headMod, limbPatterns[3]) },
-                firstCelOrigin: false,
+            return headViewLayer(headProp, headMod, view, {
+                pattern,
+                dx: v.chain.cx[hcn],
+                dy: v.chain.cy[hcn] + AVATAR_HEAD_LIFT + v.walkPaintY,
             })
-            if (!frame) return EMPTY_LAYER
-            return layerFromFrame(translateSpace(frame,
-                v.chain.cx[hcn], v.chain.cy[hcn] + AVATAR_HEAD_LIFT + v.walkPaintY))
         }
         pushPart("head", headLayer("front"), headLayer("side"), headLayer("back"), "head")
     }
 
     return parts
+}
+
+/**
+ * One view of a worn head, as a registered layer.
+ *
+ * `dx`/`dy` place it in whatever frame the caller is building. buildFigureParts passes the body's
+ * limb chain, so the head lands on the neck; buildHeadPart passes nothing, so the head stays in its
+ * own cel space and can be mounted on something that is not a Habitat body.
+ */
+const headViewLayer = (headProp, headMod, view, { pattern, dx = 0, dy = 0 }) => {
+    const facing = VIEW_FACING[view]
+    const anim = headProp.animations?.[facing] ?? headProp.animations?.[0] ?? { startState: 0 }
+    const state = Math.min(anim.startState ?? 0, headProp.celmasks.length - 1)
+    const frame = frameFromCels(celsFromMask(headProp, headProp.celmasks[state]), {
+        colors: headMod ? colorsFromMod(headMod) : { pattern },
+        firstCelOrigin: false,
+    })
+    if (!frame) return EMPTY_LAYER
+    return layerFromFrame(translateSpace(frame, dx, dy))
+}
+
+/**
+ * A worn head as a standalone solid, registered to its OWN cel space rather than to a body.
+ *
+ * The three head cels are drawn in one coordinate frame by construction — they are three states of
+ * a single prop — so with no chain offsets applied they are already mutually registered, and the
+ * hull comes out centred on the head itself. That is what lets a 1986 head be parented to a bone on
+ * a rig that has nothing to do with Habitat (lib/figure3d.js).
+ *
+ * Returns null rather than throwing for a head with no cels, so a sweep over all 160+ entries in
+ * heads.json cannot be stopped by one odd file.
+ *
+ * `roundness` defaults to 1 for the same reason buildFigureParts uses 1 for heads: a head hull is
+ * nearly cubic, and an unrounded cube wearing the front cel on one facet and the profile on the
+ * next reads at 45° as two flat portraits meeting at an edge.
+ */
+export const buildHeadPart = (headProp, headMod, options = {}) => {
+    const { roundness = 1, rowMapping = "absolute", pattern = 15 } = options
+    if (!headProp?.celmasks?.length) return null
+    const layer = (view) => headViewLayer(headProp, headMod, view, { pattern })
+    const front = layer("front")
+    const side = layer("side")
+    if (front.w === 0 || side.w === 0) return null
+    const grid = hullFromViews({ front, side, back: layer("back") }, { roundness, rowMapping })
+    if (grid.diagnostics.voxels === 0) return null
+    return { name: "head", kind: "head", grid, diagnostics: grid.diagnostics }
 }
 
 /**

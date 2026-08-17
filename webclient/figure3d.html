@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Habitat Figure Lab</title>
+    <!-- "three" is an import-map entry here and nowhere else in the client. The vendored
+         GLTFLoader is stock three-addons code and imports the bare specifier; patching that out
+         would mean re-patching it on every three upgrade. live.html / live3d.html keep loading
+         Three by relative path and are untouched. -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./vendor/three.module.js",
+                "htm": "./vendor/htm.mjs",
+                "preact": "./vendor/preact.mjs",
+                "preact/hooks": "./vendor/hooks.mjs",
+                "@preact/signals-core": "./vendor/signals-core.mjs",
+                "@preact/signals": "./vendor/signals.mjs"
+            }
+        }
+    </script>
+    <style>
+        :root { color-scheme: dark; }
+        body {
+            margin: 0; background: #101018; color: #cfd2dc;
+            font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+        h1 { font-size: 15px; margin: 0 0 2px; color: #fff; letter-spacing: .04em; }
+        .sub { color: #7c8296; margin: 0 0 14px; max-width: 62ch; }
+        .wrap { display: flex; gap: 18px; padding: 14px 18px 24px; align-items: flex-start; flex-wrap: wrap; }
+        .stage { background: #4a4a55; border: 1px solid #2a2e3c; border-radius: 4px; image-rendering: pixelated; }
+        .panel { min-width: 268px; max-width: 330px; display: flex; flex-direction: column; gap: 10px; }
+        .row { display: flex; align-items: center; gap: 8px; }
+        .row > label { flex: 0 0 96px; color: #8b91a6; }
+        .row > input[type=range] { flex: 1; }
+        .row > select, .row > input[type=number] { flex: 1; background: #1b1f2b; color: #cfd2dc;
+            border: 1px solid #333a4c; border-radius: 3px; padding: 3px 5px; font: inherit; }
+        .val { flex: 0 0 44px; text-align: right; color: #e5c07b; }
+        button { background: #232838; color: #cfd2dc; border: 1px solid #39405480; border-radius: 3px;
+            padding: 4px 10px; font: inherit; cursor: pointer; }
+        button:hover { background: #2d3348; }
+        fieldset { border: 1px solid #2a2e3c; border-radius: 4px; margin: 0; padding: 8px 10px 10px; }
+        legend { color: #7c8296; padding: 0 4px; }
+        /* Spray-can popdown, shared with the Solid Avatar Lab (lib/lab-controls.js). */
+        .pop { position: relative; flex: 1; }
+        .pop > button { display: flex; align-items: center; gap: 7px; width: 100%; padding: 2px 6px; }
+        .pop canvas { image-rendering: pixelated; display: block; border: 1px solid #00000060; }
+        .pop .caret { margin-left: auto; color: #7c8296; }
+        .popmenu {
+            position: absolute; z-index: 20; top: calc(100% + 3px); left: 0;
+            display: none; grid-template-columns: repeat(4, auto); gap: 4px;
+            background: #1b1f2b; border: 1px solid #394054; border-radius: 4px; padding: 6px;
+            box-shadow: 0 6px 18px #000a;
+        }
+        .popmenu.open { display: grid; }
+        .popmenu button { padding: 2px; line-height: 0; border-color: transparent; }
+        .popmenu button.sel { border-color: #e5c07b; }
+        .popmenu button span { display: block; font-size: 9px; line-height: 1.2; color: #7c8296; }
+        .report { padding: 0 18px 28px; }
+        table { border-collapse: collapse; font-size: 12px; }
+        th, td { text-align: left; padding: 2px 12px 2px 0; }
+        th { color: #7c8296; font-weight: normal; }
+        .swatch { display: inline-block; width: 10px; height: 10px; border: 1px solid #0006;
+            vertical-align: -1px; margin-right: 5px; }
+        #status { white-space: pre-wrap; color: #7c8296; }
+        .ok { color: #98c379; } .bad { color: #e06c75; } .warn { color: #e5c07b; }
+    </style>
+    <script type="module" src="./lib/figure3d.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <div>
+            <h1>HABITAT FIGURE LAB</h1>
+            <p class="sub">
+                A rigged 3D figure wearing Habitat's coloring model &mdash; the same four-value
+                index map, wildcard colour and 4&times;4 dither the C64 used, ported to a shader.
+                Body: Quaternius, CC0. Head: the solid hull recovered from the 1986 cel art.
+            </p>
+            <canvas id="stage" class="stage" width="520" height="520"></canvas>
+            <p id="status"></p>
+        </div>
+        <div class="panel" id="controls"></div>
+    </div>
+    <div class="report">
+        <fieldset>
+            <legend>material &rarr; nibble &mdash; and the rule that decided it</legend>
+            <div id="matreport"></div>
+        </fieldset>
+    </div>
+</body>
+</html>

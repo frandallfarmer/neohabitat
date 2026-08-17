@@ -14,13 +14,13 @@
 
 import * as THREE from "../vendor/three.module.js"
 import { getFile } from "../habirender/shim.js"
-import { decodeBody, decodeProp, emptyBitmap } from "../habirender/codec.js"
-import { canvasFromBitmap, celPatterns } from "../habirender/render.js"
+import { decodeBody, decodeProp } from "../habirender/codec.js"
 import { composeAvatarFrameAt, AVATAR_BODY_FILES } from "../habirender/region.js"
 import { buildFigureParts, geometryFromParts, rasterizeFigure, layerFromFrame, POSE_TRIPLES,
     registrationReport } from "../render3d/avatarvox.js"
 import { compareLayers, bboxOf, layerAt, mirrorView } from "../render3d/voxel.js"
 import { quantizeFrames, encodeGif } from "../render3d/gifenc.js"
+import { createControlKit } from "./lab-controls.js"
 
 const BODY_NAMES = ["Human", "Penguin", "Spider", "Dragon", "Gunship", "Tank", "Tentacle"]
 
@@ -315,122 +315,12 @@ const rebuild = () => {
 }
 
 // ── controls ─────────────────────────────────────────────────────────────────────────────────
-const el = (tag, props = {}, kids = []) => {
-    const n = Object.assign(document.createElement(tag), props)
-    for (const k of kids) n.appendChild(k)
-    return n
-}
-
-const addRow = (parent, label, control, valueNode) => {
-    const row = el("div", { className: "row" })
-    row.appendChild(el("label", { textContent: label }))
-    row.appendChild(control)
-    if (valueNode) row.appendChild(valueNode)
-    parent.appendChild(row)
-    return row
-}
-
-// Every control registers a syncer so labApi.setState can drive the lab from outside and leave the
-// widgets showing the truth — otherwise the automated check and the on-screen panel drift apart.
-const syncers = []
-const syncControls = () => { for (const s of syncers) s() }
-
-const show = (v) => (typeof v === "number" && !Number.isInteger(v)) ? v.toFixed(2) : String(v)
-
-const slider = (min, max, step, get, set) => {
-    const val = el("span", { className: "val", textContent: show(get()) })
-    const input = el("input", { type: "range", min, max, step, value: get() })
-    input.addEventListener("input", () => {
-        set(parseFloat(input.value))
-        val.textContent = show(get())
-        rebuild()
-    })
-    syncers.push(() => { input.value = String(get()); val.textContent = show(get()) })
-    return [input, val]
-}
-
-const select = (options, get, set) => {
-    const s = el("select")
-    for (const [value, label] of options) s.appendChild(el("option", { value, textContent: label }))
-    s.value = get()
-    s.addEventListener("change", async () => { await set(s.value); rebuild() })
-    syncers.push(() => { s.value = get() })
-    return s
-}
-
-// ── spray can ────────────────────────────────────────────────────────────────────────────────
-// The four avatar "colours" are not colours: they are PATTERN indices into celPatterns
-// (render.js, from paint.m:447), each a 4×4 dither whose 2-bit cells choose between blue,
-// the wildcard, black and skin. Pattern 4 versus pattern 9 is meaningless as a number, so the
-// picker shows the real thing — a swatch rendered by the SAME canvasFromBitmap the avatar's own
-// limbs go through, over a bitmap of all-wild pixels.
-//
-// The four slots are exactly what the spray can addresses. habiworld's class_spray_can sends
-// `{op:'SPRAY', limb}` and the can answers with SPRAY_CUSTOMIZE_0/1 — the two `custom` bytes
-// unpacked here as LEG / TORSO / ARM / FACE (equates.m), which is also what custom.m's F5–F8 set.
-const SPRAY_SLOTS = [
-    { key: "legs", label: "legs", limb: 0, hint: "custom[0] hi · F6" },
-    { key: "torso", label: "torso", limb: 1, hint: "custom[0] lo · F7" },
-    { key: "arms", label: "arms", limb: 2, hint: "custom[1] hi · F8" },
-    { key: "hair", label: "hair", limb: 3, hint: "head orientation · F5" },
-]
-
-// A swatch of one pattern, at native C64 proportions (a multicolor pixel is twice as wide as tall).
-// `emptyBitmap(w,h,1)` fills with nibble 1 = "wild", which is the value the dither actually acts on.
-const patternSwatch = (pattern, wBytes = 3, h = 12) => {
-    const canvas = canvasFromBitmap(emptyBitmap(wBytes, h, 1), { pattern })
-    canvas.style.width = `${canvas.width}px`
-    canvas.style.height = `${canvas.height}px`
-    return canvas
-}
-
-const sprayPopdown = (get, set) => {
-    const wrap = el("div", { className: "pop" })
-    const button = el("button", { type: "button" })
-    const menu = el("div", { className: "popmenu" })
-    const label = el("span", { textContent: "" })
-    const caret = el("span", { className: "caret", textContent: "▾" })
-
-    const paintButton = () => {
-        button.textContent = ""
-        button.appendChild(patternSwatch(get(), 6, 14))
-        label.textContent = String(get())
-        button.appendChild(label)
-        button.appendChild(caret)
-    }
-    const close = () => menu.classList.remove("open")
-    button.addEventListener("click", (e) => {
-        e.stopPropagation()
-        const wasOpen = menu.classList.contains("open")
-        for (const m of document.querySelectorAll(".popmenu.open")) m.classList.remove("open")
-        if (!wasOpen) menu.classList.add("open")
-    })
-    document.addEventListener("click", close)
-
-    for (let p = 0; p < celPatterns.length; p++) {
-        const b = el("button", { type: "button", title: `pattern ${p}` })
-        b.appendChild(patternSwatch(p, 5, 14))
-        b.appendChild(el("span", { textContent: String(p) }))
-        b.addEventListener("click", (e) => { e.stopPropagation(); set(p); close(); paintButton(); syncSwatches(); rebuild() })
-        menu.appendChild(b)
-    }
-    const syncSwatches = () => {
-        ;[...menu.children].forEach((b, p) => b.classList.toggle("sel", p === get()))
-    }
-
-    paintButton(); syncSwatches()
-    syncers.push(() => { paintButton(); syncSwatches() })
-    wrap.appendChild(button)
-    wrap.appendChild(menu)
-    return wrap
-}
-
-const checkbox = (get, set) => {
-    const c = el("input", { type: "checkbox", checked: get() })
-    c.addEventListener("change", () => { set(c.checked); rebuild() })
-    syncers.push(() => { c.checked = get() })
-    return c
-}
+// The widgets themselves live in lib/lab-controls.js — figure3d.js wants the same set, and the
+// spray popdown especially must not exist twice (it renders its swatches through the real
+// canvasFromBitmap, so a second copy could drift and the drift would read as a rendering bug).
+const kit = createControlKit({ onChange: () => rebuild() })
+const { el, addRow, slider, select, checkbox, sprayPopdown, SPRAY_SLOTS } = kit
+const syncControls = kit.sync
 
 let partPicker = null
 let yawInput = null

@@ -1,0 +1,16 @@
+{
+  "wave": {
+    "UpperArm.R": [150, 0, 0],
+    "LowerArm.R": [30, 0, 0]
+  },
+  "bend_over": {
+    "Hips": [35, 0, 0],
+    "Abdomen": [12, 0, 0],
+    "UpperArm.R": [18, 0, 0],
+    "UpperArm.L": [18, 0, 0]
+  },
+  "point": {
+    "UpperArm.R": [100, 0, 0],
+    "Chest": [0, -15, 0]
+  }
+}
