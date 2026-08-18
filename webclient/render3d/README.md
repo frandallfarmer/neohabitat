@@ -297,6 +297,15 @@ claiming an exactness the art cannot support.
 
 # Habitat Figure Lab — a skeletal 3D avatar with C64 colouring
 
+> **This branch is not going to master.** `feat/webclient-figure3d` is a permanent side branch by
+> Randy's decision — *"it's to be forever a branch, it's just too weird."* Do not merge it, do not
+> open a PR for it, and do not deploy it. It exists to be looked at, spun, and exported as a GIF.
+>
+> That is not a criticism of the code: everything here is tested and green. It is a judgement about
+> what NeoHabitat should ship, and the judgement has been made. If you found this branch and your
+> first thought was "why was this never merged" — this paragraph is the answer.
+
+
 ```
 http://localhost:1701/webclient/figure3d.html
 ```
