@@ -57,6 +57,11 @@ services:
       context: ./bridge_v2
       dockerfile: Dockerfile.dev
     command: ["air"]
+    # See the matching note in docker-compose.dev.yml. bridge_v2 is absent from the base
+    # docker-compose.yml, so it inherits no restart policy and defaulted to `restart: no`
+    # — the one dev service that stayed down after a reboot. Kept in sync here because
+    # this file, not dev.yml, is what a bare `docker compose up` uses.
+    restart: unless-stopped
     env_file:
       - path: .env
         required: false
