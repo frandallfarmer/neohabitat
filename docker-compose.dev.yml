@@ -22,6 +22,14 @@ services:
       context: ./bridge_v2
       dockerfile: Dockerfile.dev
     command: ["air"]
+    # Without this the bridge is the ONLY dev service that does not come back after a
+    # reboot or a Docker restart: every other service inherits `restart: unless-stopped`
+    # from docker-compose.yml, but bridge_v2 is defined only in the dev overlays, so it
+    # defaulted to `restart: no`. Air exits 0 on SIGTERM ("see you again~"), and a 0 exit
+    # is indistinguishable from a deliberate stop to `on-failure` — `unless-stopped` is
+    # what actually restores it on daemon start, while still respecting an explicit
+    # `docker compose stop bridge_v2`.
+    restart: unless-stopped
     # Repo-local .env (see .env.example). Picks up any bridge-relevant
     # overrides (log levels, debug flags) without compose edits.
     env_file:
@@ -35,10 +43,22 @@ services:
     ports:
       - "2026:2026"
       - "2027:2027"
-    # cap_add: [NET_ADMIN] and security_opt: [seccomp:unconfined] come from
-    # docker-compose.override.yml's bridge_v2 (always merged into the dev project). Compose
-    # concatenates list fields across files, and duplicate security_opt items are now a hard
-    # validation error ("items at 0 and 1 are equal"), so they must NOT be repeated here.
+    # TCP_REPAIR (bridge/tcp_repair.go) needs CAP_NET_ADMIN, and the seccomp default
+    # profile blocks the socket options it sets. Without both, a SIGHUP graceful upgrade
+    # still "succeeds" but drops every live session — the exact tableflip path that broke
+    # silently in prod (#661/#663), so dev must be able to exercise it.
+    #
+    # These used to be omitted here with a comment claiming they were inherited from
+    # docker-compose.override.yml because it is "always merged into the dev project".
+    # That is not true: dev.sh runs `docker compose -f docker-compose.yml -f
+    # docker-compose.dev.yml`, and passing any -f DISABLES auto-loading of the override
+    # file. The dev.sh bridge was running with no added capabilities at all. Nothing
+    # merges this file and override.yml together (CI uses base only; ansible uses
+    # base+prod+monitoring), so there is no duplicate-list-item validation error to avoid.
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
     networks:
       - neohabitat
     depends_on:
