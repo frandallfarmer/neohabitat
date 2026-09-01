@@ -35,6 +35,13 @@
     discord_webhook_logins: "{{ lookup('env', 'DISCORD_WEBHOOK_LOGINS') | default('', true) }}"
     # Oracle-requests channel: ASK/WISH speech to the fountain/crystal ball/genie.
     discord_webhook_oracle_requests: "{{ lookup('env', 'DISCORD_WEBHOOK_ORACLE_REQUESTS') | default('', true) }}"
+    # Oracle bot credentials. Unlike the webhooks above these belong to the
+    # bots container, NOT the bridge: a token in alerts.env would force a hard
+    # bridge restart (dropping live C64 sessions) every time it changed.
+    discord_bot_token: "{{ lookup('env', 'DISCORD_BOT_TOKEN') | default('', true) }}"
+    discord_oracle_guild_id: "{{ lookup('env', 'DISCORD_ORACLE_GUILD_ID') | default('', true) }}"
+    discord_oracle_channel_id: "{{ lookup('env', 'DISCORD_ORACLE_CHANNEL_ID') | default('', true) }}"
+    discord_oracle_role_id: "{{ lookup('env', 'DISCORD_ORACLE_ROLE_ID') | default('', true) }}"
   tasks:
     # If somebody has been hand-editing files on the box (the made has
     # historically lived this way), `ansible.builtin.git` with force=false
@@ -133,11 +140,20 @@
         dest: /etc/neohabitat/bots.env
         content: |
           ANTHROPIC_API_KEY={{ anthropic_api_key }}
+          DISCORD_BOT_TOKEN={{ discord_bot_token }}
+          DISCORD_ORACLE_GUILD_ID={{ discord_oracle_guild_id }}
+          DISCORD_ORACLE_CHANNEL_ID={{ discord_oracle_channel_id }}
+          DISCORD_ORACLE_ROLE_ID={{ discord_oracle_role_id }}
         owner: "{{ neohabitat_owner }}"
         group: "{{ neohabitat_group }}"
         mode: "0600"
       become: true
-      when: anthropic_api_key is defined and anthropic_api_key | length > 0
+      # Any one secret is reason enough to write the file; each bot decides
+      # for itself whether it has what it needs (both sage and oracle skip
+      # their own launch when theirs is blank).
+      when: >-
+        (anthropic_api_key is defined and anthropic_api_key | length > 0) or
+        (discord_bot_token is defined and discord_bot_token | length > 0)
       register: bots_env_file
       no_log: true
 
@@ -392,7 +408,7 @@
       become: true
       changed_when: true
 
-    - name: Recreate bots if bots.env changed (so sage picks up the new key)
+    - name: Recreate bots if bots.env changed (so sage and oracle pick up new keys)
       shell: |
         set -euo pipefail
         docker compose {{ neohabitat_compose_files | map('regex_replace', '^', '-f ') | join(' ') }} \

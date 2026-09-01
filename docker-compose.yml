@@ -120,4 +120,4 @@ services:
     networks:
       - neohabitat
     entrypoint: ['/habibots/run']
-    command: ['hatchery', 'eliza', 'sage']
+    command: ['hatchery', 'eliza', 'sage', 'oracle']

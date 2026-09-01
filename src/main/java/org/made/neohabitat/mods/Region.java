@@ -263,11 +263,21 @@ public class Region extends Container implements UserWatcher, ContextMod, Contex
                 if (avatar.amAGhost) {
                     object_say(who, UPGRADE_PREFIX + "You are a ghost. Press F1 to become an Avatar.");
                 }
-                tellEveryone(who.name() + " has arrived.");
+                if (!avatar.nitty_bits[HIDDEN_AVATAR]) {
+                    tellEveryone(who.name() + " has arrived.");
+                }
             }
         }
         avatar.check_mail();
-        Region.addUser(who);
+        // NameToUser is what every "who else is here" feature reads: the F3 list
+        // (sayUserList), /online counts (topPopulatedRealms), ESP targeting, /join,
+        // /invite, /teleport, /yank and tellEveryone. Keeping a hidden avatar out of it
+        // suppresses all of them at once. removeUser needs no matching guard — removing an
+        // absent key is a no-op, and its other work (region contents, obj list) still
+        // has to happen.
+        if (!avatar.nitty_bits[HIDDEN_AVATAR]) {
+            Region.addUser(who);
+        }
     }
 
     public void noteUserDeparture(User who) {

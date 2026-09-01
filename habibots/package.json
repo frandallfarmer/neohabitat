@@ -4,6 +4,7 @@
   "description": "In-world bots for Neohabitat",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",
+    "discord.js": "^14.27.0",
     "elizabot": "^0.0.3",
     "mongodb": "^7.5.0",
     "promise-queue": "^2.2.3",

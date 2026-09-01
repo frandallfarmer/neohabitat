@@ -10,11 +10,14 @@ import (
 	"time"
 )
 
-// capturingWebhook is an httptest Discord endpoint recording each posted `content`.
+// capturingWebhook is an httptest Discord endpoint recording each post. Producers use
+// either plain `content` (presence) or a single embed (oracle), so it records the prose of
+// both — an embed's description — under contents, plus the embed footers separately.
 type capturingWebhook struct {
-	mu       sync.Mutex
-	contents []string
-	srv      *httptest.Server
+	mu           sync.Mutex
+	contents     []string
+	embedFooters []string
+	srv          *httptest.Server
 }
 
 func newCapturingWebhook(t *testing.T) *capturingWebhook {
@@ -22,11 +25,22 @@ func newCapturingWebhook(t *testing.T) *capturingWebhook {
 	c := &capturingWebhook{}
 	c.srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var body struct {
-			Content string `json:"content"`
+			Content string         `json:"content"`
+			Embeds  []discordEmbed `json:"embeds"`
 		}
 		_ = json.NewDecoder(r.Body).Decode(&body)
 		c.mu.Lock()
-		c.contents = append(c.contents, body.Content)
+		if len(body.Embeds) > 0 {
+			c.contents = append(c.contents, body.Embeds[0].Description)
+			footer := ""
+			if body.Embeds[0].Footer != nil {
+				footer = body.Embeds[0].Footer.Text
+			}
+			c.embedFooters = append(c.embedFooters, footer)
+		} else {
+			c.contents = append(c.contents, body.Content)
+			c.embedFooters = append(c.embedFooters, "")
+		}
 		c.mu.Unlock()
 		w.WriteHeader(http.StatusNoContent)
 	}))
@@ -51,6 +65,14 @@ func (c *capturingWebhook) posts() []string {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return append([]string(nil), c.contents...)
+}
+
+// footers returns the embed footer of each post ("" for plain-content posts). Call after
+// posts(), which is the call that waits for the worker to drain.
+func (c *capturingWebhook) footers() []string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return append([]string(nil), c.embedFooters...)
 }
 
 // newTestPresence builds a registry with a fake clock and a capturing webhook on the

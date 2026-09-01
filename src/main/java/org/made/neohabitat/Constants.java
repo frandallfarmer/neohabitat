@@ -252,6 +252,17 @@ public interface Constants {
     public static final int      MISC_FLAG3                 = 7;
     /* avatar NEOHabitat nitty_bit flags start at the top and work down. */
     public static final int      INTENTIONAL_GHOST          = 31;
+    /**
+     * Keeps an avatar out of Region.NameToUser, which is the single table behind every
+     * "who else is here" feature: the F3 user list, /online population counts, ESP
+     * targeting by name, /join, /invite, /teleport, /yank and tellEveryone. Set it on a
+     * service avatar (the Oracle, and any bot we don't want players addressing) so it can
+     * hold a session and use the mail system without ever appearing as a resident.
+     *
+     * Mail sent TO a hidden avatar takes Paper.sendMailToUser's offline branch and queues
+     * at mail-&lt;name&gt; in mongo, which is where its bot reads replies from anyway.
+     */
+    public static final int      HIDDEN_AVATAR              = 30;
     
     /* object nitty-bits constants */
     public static final int      DOOR_AVATAR_RESTRICTED_BIT = 32;

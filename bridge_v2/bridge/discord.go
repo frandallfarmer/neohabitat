@@ -32,6 +32,20 @@ type DiscordNotifier struct {
 type discordPost struct {
 	channel string
 	content string
+	embed   *discordEmbed
+}
+
+// discordEmbed is the slice of Discord's embed object we use. The description carries the
+// same prose a plain post would; the footer carries machine-readable context a reader can
+// act on later — the oracle relay stamps the asker's user ref there so an operator's reply
+// in Discord can be routed back in-world with no correlation state on our side.
+type discordEmbed struct {
+	Description string              `json:"description,omitempty"`
+	Footer      *discordEmbedFooter `json:"footer,omitempty"`
+}
+
+type discordEmbedFooter struct {
+	Text string `json:"text"`
 }
 
 const (
@@ -88,13 +102,23 @@ func (d *DiscordNotifier) Enabled(channel string) bool {
 // Post enqueues content for a named channel. No-op (never an error) when the notifier or
 // the channel is unconfigured; drops with a warning when the queue is full.
 func (d *DiscordNotifier) Post(channel string, content string) {
-	if d == nil || d.queue == nil || !d.Enabled(channel) {
+	d.enqueue(discordPost{channel: channel, content: content})
+}
+
+// PostEmbed enqueues a single embed for a named channel. Same no-op and drop semantics as
+// Post; used where a reader needs structured context alongside the prose.
+func (d *DiscordNotifier) PostEmbed(channel string, embed *discordEmbed) {
+	d.enqueue(discordPost{channel: channel, embed: embed})
+}
+
+func (d *DiscordNotifier) enqueue(p discordPost) {
+	if d == nil || d.queue == nil || !d.Enabled(p.channel) {
 		return
 	}
 	select {
-	case d.queue <- discordPost{channel: channel, content: content}:
+	case d.queue <- p:
 	default:
-		log.Warn().Str("channel", channel).Msg("Discord queue full; dropping message")
+		log.Warn().Str("channel", p.channel).Msg("Discord queue full; dropping message")
 	}
 }
 
@@ -107,10 +131,15 @@ func (d *DiscordNotifier) run() {
 func (d *DiscordNotifier) deliver(p discordPost) {
 	// allowed_mentions:[] so an avatar named "@everyone" (or containing any mention) can
 	// never ping the channel — names are player-controlled input.
-	body, err := json.Marshal(map[string]interface{}{
-		"content":          p.content,
+	payload := map[string]interface{}{
 		"allowed_mentions": map[string]interface{}{"parse": []string{}},
-	})
+	}
+	if p.embed != nil {
+		payload["embeds"] = []*discordEmbed{p.embed}
+	} else {
+		payload["content"] = p.content
+	}
+	body, err := json.Marshal(payload)
 	if err != nil {
 		log.Error().Err(err).Str("channel", p.channel).Msg("Could not marshal Discord message")
 		return

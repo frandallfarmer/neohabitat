@@ -15,7 +15,7 @@ next one is a one-file change. This document is the map for future hookups.
    paths: binary + JSON) │  oracle.go    → "oracle-     │
                          │                  requests"   │
                          └──────────────┬───────────────┘
-                                        │ notifier.Post(channel, content)
+                                        │ notifier.Post / PostEmbed
                          ┌──────────────▼───────────────┐
                          │ discord.go — DiscordNotifier │
                          │  channels from env:          │
@@ -106,6 +106,10 @@ exclusion for bots whose names don't end in "bot".
 4. Write a producer that calls `notifier.Post("<name>", content)` — see `oracle.go`
    for the shape (a small struct captured under the session's `stateMu`, the decision
    + Mongo lookups + post on their own goroutine, a structured log line always).
+   Use `PostEmbed` instead when something downstream has to *act* on the message
+   rather than just read it: an embed footer carries a routing key out of the prose,
+   which is what lets the oracle bot answer a request without the bridge remembering
+   anything. Plain `Post` stays right for alerts nobody replies to.
 
 The notifier itself never changes.
 
@@ -125,8 +129,14 @@ The notifier itself never changes.
   speech, so the bridge can't see them; catching them means implementing
   `message_to_god` in elko (needs sign-off) and probably a third ops/security
   channel.
-- **Oracle *answers*** — two-way flow (operator replies in Discord → in-game
-  `object_say`) would need an inbound bot/webhook listener, a bigger design.
+- ~~**Oracle *answers***~~ — shipped, but not in the bridge. An operator picks a
+  request in Discord and the reply is mailed to the asker in-world; see
+  `habibots/bots/oracle.js`. The bridge's only part is the embed footer
+  (`formatOracleFooter`), which carries `<user ref> · <display name>` so the
+  answering bot can route a reply with no correlation state on this side. The
+  inbound half deliberately lives in a bot, not here: mail is an avatar action
+  the bridge cannot perform, and a Discord bot token in `alerts.env` would force
+  a hard bridge restart — dropping live C64 sessions — on every rotation.
 - **"Where is everyone?" (issue #245)** — the `GET /presence` endpoint already
   exposes who's online + regions; an in-game or /status rendering can build on it.
 - Known gap: the webclient's genie flow is broken (issue #607), so `WISH` relay is
