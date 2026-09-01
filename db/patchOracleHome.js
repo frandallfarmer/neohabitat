@@ -41,17 +41,20 @@ const USAGE = [
   '  --url=//HOST:PORT/DB   mongodb server url (default //127.0.0.1:27017/elko)',
   '  --apply                actually write; without it this is a dry run',
   '  --force                overwrite records that already exist',
+  '  --undo                 remove everything this script added, and any',
+  '                         state the Oracle accumulated while running',
   '  --help                 this message',
   '',
 ].join('\n');
 
 function parseArgs(argv) {
-  const opts = { url: '//127.0.0.1:27017/elko', apply: false, force: false, help: false };
+  const opts = { url: '//127.0.0.1:27017/elko', apply: false, force: false, undo: false, help: false };
   for (const arg of argv) {
     const [key, value] = arg.replace(/^--/, '').split('=');
     if (key === 'url' && value) opts.url = value;
     else if (key === 'apply') opts.apply = true;
     else if (key === 'force') opts.force = true;
+    else if (key === 'undo') opts.undo = true;
     else if (key === 'help' || key === 'h') opts.help = true;
     else { console.error(`Unrecognised argument: ${arg}\n${USAGE}`); process.exit(1); }
   }
@@ -68,6 +71,7 @@ const SOURCES = [
 
 const ORACLE_USER_REF = 'user-oracle';
 const ORACLE_REGION_REF = 'context-oraclehome';
+const ORACLE_NAME = 'oracle';   // lowercased display name: mail-<name>, paper-item-<name>.*
 
 function load(file) {
   const records = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -114,6 +118,55 @@ async function checkIsolation(odb) {
 
   let records = [];
   for (const file of SOURCES) records = records.concat(load(file));
+
+  if (Argv.undo) {
+    // The inverse of a patch run, scoped so it can only ever touch the
+    // Oracle. Beyond the seeded refs this also clears what the Oracle
+    // accumulates once it is live — mail it was sent, the letter bodies,
+    // and the `i-<id>` Paper that special_get mints to replace a mailed
+    // sheet — because those are exactly the records a re-patch would
+    // otherwise trip over.
+    const targets = [];
+    for (const record of records) targets.push({ filter: { ref: record.ref }, label: record.ref });
+    targets.push({ filter: { in: new RegExp(`^${ORACLE_USER_REF}`) }, label: "anything contained in user-oracle (its Paper/Head, incl. i-<id> replacements)" });
+
+    // Letter BODIES are stored as `paper-i-<id>` — a shape shared by every
+    // avatar's mail, with nothing in the ref tying one to its author. So
+    // they must never be matched by pattern: `^paper-` would delete other
+    // players' letters, including ones the Oracle has already delivered and
+    // which are now the recipient's property. Instead, resolve the exact
+    // refs still listed in the Oracle's own undelivered queue.
+    const queue = await odb.findOne({ ref: `mail-${ORACLE_NAME}` });
+    const orphanBodies = ((queue && queue.queue) || []).map((entry) => entry.paper_ref).filter(Boolean);
+    if (orphanBodies.length) {
+      targets.push({ filter: { ref: { $in: orphanBodies } }, label: `${orphanBodies.length} undelivered letter body/bodies addressed to the Oracle` });
+    }
+    targets.push({ filter: { ref: `mail-${ORACLE_NAME}` }, label: `mail-${ORACLE_NAME} (its mail queue)` });
+
+    let total = 0;
+    for (const t of targets) {
+      const n = await odb.countDocuments(t.filter);
+      total += n;
+      console.log(`  ${String(n).padStart(3)}  ${t.label}`);
+    }
+    console.log(`\n${total} record(s) would be removed.`);
+    console.log('\nNOT touched: any letter a player already received from the Oracle.');
+    console.log('Those are ordinary mail in that player\'s own pocket and queue, and their');
+    console.log('bodies are indistinguishable by ref from everyone else\'s.');
+    if (!Argv.apply) {
+      console.log('\nDry run — nothing removed. Re-run with --undo --apply to commit.');
+      await client.close();
+      return;
+    }
+    for (const t of targets) {
+      const res = await odb.deleteMany(t.filter);
+      if (res.deletedCount) console.log(`  removed ${res.deletedCount}: ${t.label}`);
+    }
+    const left = await odb.countDocuments({ $or: [{ ref: /oracle/ }, { in: new RegExp(`^${ORACLE_USER_REF}`) }] });
+    console.log(`\nOracle-related records remaining: ${left} (expect 0)`);
+    await client.close();
+    return;
+  }
 
   const heldPaper = await oracleAlreadyHasPaper(odb);
   const plan = [];
