@@ -67,6 +67,28 @@ a resident. Two things arrange that:
   address, and `is_turf` deliberately unset so it can never be handed to
   a new player as their turf.
 
+### Installing the Oracle on an existing server
+
+`make db` runs `nuke` first, so it must never be pointed at a live server.
+Use the one-shot migration instead, which touches only the seven records
+this feature introduces and deletes nothing:
+
+```sh
+cd db
+node patchOracleHome.js --url=//127.0.0.1:27017/elko            # dry run
+node patchOracleHome.js --url=//127.0.0.1:27017/elko --apply    # commit
+```
+
+It is safe to re-run: existing records are left alone unless `--force`. It
+will not re-add `item-oracle.paper` once the Oracle owns a sheet under
+another ref — mailing destroys the sheet you send and `special_get` mints
+the replacement as `i-<id>`, so re-seeding would leave two Papers in
+MAIL_SLOT. It also warns if any region has come to list `context-oraclehome`
+as a neighbour, or a teleport address points at it.
+
+The elko image must already carry `HIDDEN_AVATAR` when this runs; if the
+image lags, the Oracle shows up in everyone's F3 until it catches up.
+
 ### Letters addressed to the Oracle
 
 A player can write `to: oracle` on a Paper and mail it. Because the Oracle
