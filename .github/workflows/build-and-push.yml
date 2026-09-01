@@ -222,6 +222,16 @@ jobs:
           # oracular objects (fountain, crystal ball, genie) so operators can
           # play Oracle. Same alerts.env delivery as the logins webhook.
           DISCORD_WEBHOOK_ORACLE_REQUESTS: ${{ secrets.DISCORD_WEBHOOK_ORACLE_REQUESTS }}
+          # The Oracle bot answers those requests: an operator picks a request
+          # in Discord and its reply is mailed to the asker in-world. These go
+          # to bots.env, NOT alerts.env — a token in alerts.env would force a
+          # hard bridge restart (dropping live C64 sessions) on every change.
+          # ROLE_ID is optional; unset means any member of the channel may
+          # answer. When the token is unset the oracle bot simply doesn't start.
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_ORACLE_GUILD_ID: ${{ secrets.DISCORD_ORACLE_GUILD_ID }}
+          DISCORD_ORACLE_CHANNEL_ID: ${{ secrets.DISCORD_ORACLE_CHANNEL_ID }}
+          DISCORD_ORACLE_ROLE_ID: ${{ secrets.DISCORD_ORACLE_ROLE_ID }}
         run: |
           export ANSIBLE_SSH_KEY="$HOME/.ssh/deploy_key"
           # MONITORING_ENV is read by the playbook via lookup('env',...);

@@ -1,0 +1,36 @@
+[ {
+	"type" : "user",
+	"ref" : "user-oracle",
+	"name" : "Oracle",
+	"mods" : [ {
+		"type" : "Avatar",
+		"x" : 80,
+		"y" : 130,
+		"turf" : "context-oraclehome",
+		"bodyType" : "female",
+		"bankBalance" : 0,
+		"custom" : [ 108, 136 ],
+		"nitty_bits" : 536870912
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-oracle.paper",
+	"name" : "Pad and mailbox",
+	"in" : "user-oracle",
+	"mods" : [ {
+		"type" : "Paper",
+		"orientation" : 16,
+		"y" : 4
+	} ]
+}, {
+	"type" : "item",
+	"ref" : "item-oracle.head",
+	"name" : "Oracle's Head",
+	"in" : "user-oracle",
+	"mods" : [ {
+		"type" : "Head",
+		"style" : 121,
+		"orientation" : 8,
+		"y" : 6
+	} ]
+} ]

@@ -87,7 +87,30 @@ func (o *oracleRelay) relay(ask oracleAsk) {
 	if !posted {
 		return
 	}
-	o.notifier.Post(oracleChannel, formatOracleRequest(ask.verb, ask.name, class, region, text))
+	o.notifier.PostEmbed(oracleChannel, &discordEmbed{
+		Description: formatOracleRequest(ask.verb, ask.name, class, region, text),
+		Footer:      &discordEmbedFooter{Text: formatOracleFooter(ask.userRef, ask.name)},
+	})
+}
+
+// formatOracleFooter stamps what an Oracle's reply needs to reach the asker in-world:
+//
+//	user-randy · Randy
+//
+// Posting an embed rather than plain content is what makes answering possible at all: it
+// keeps the routing key out of the prose, so a reader recovers it from the message itself
+// and the bridge keeps no correlation state.
+//
+// Both fields are needed. The ref identifies the account in logs, but Habitat mail is
+// addressed by DISPLAY NAME — Region.addUser keys NameToUser on name().toLowerCase(), and
+// Avatar.mailQueueRef() is "mail-" + that. The ref cannot recover it: ensureUserCreated
+// builds the ref by lowercasing the name and mapping spaces to underscores, and avatar names
+// may legally contain underscores of their own, so the inverse is ambiguous. The name is
+// free-form and therefore goes LAST — a reader takes field 0 as the ref and rejoins
+// everything after it as the name, which round-trips even if a name contains the separator.
+// Neither field is sensitive; both are already public in the description above.
+func formatOracleFooter(userRef string, name string) string {
+	return userRef + " · " + name
 }
 
 // formatOracleRequest renders the channel line, e.g.:

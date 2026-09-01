@@ -18,6 +18,7 @@
     "dbUtils": "node dbUtils.js",
     "dumpTeleportEntries": "node dumpTeleportEntries.js",
     "generateBookOfRecords": "node generateBookOfRecords.js",
+    "patchOracleHome": "node patchOracleHome.js",
     "populateModels": "node populateModels.js",
     "translateBookToHTML": "node translateBookToHTML.js"
   },

@@ -996,10 +996,24 @@ class HabiBot {
   // WRITE — overwrite a Paper's contents. text is a regular string; we
   // convert to a 7-bit ASCII int array per the wire format. Pass empty
   // string to clear the paper.
+  //
+  // Paper.WRITE (Paper.java:157) reads a request_ascii of exactly 16
+  // elements as "erase this sheet" — that length IS the sentinel, not the
+  // content. Two consequences, both handled here:
+  //   - an empty string has to be sent as a 16-element array, or the
+  //     server takes the write branch instead and leaves the sheet in
+  //     WRITTEN state holding nothing.
+  //   - a real 16-character page would erase the sheet by accident, so it
+  //     gets a trailing space. webclient/lib/text-view.js does the same.
   writePaper(paperRef, text) {
     var ascii = []
     if (text) {
       for (var i = 0; i < text.length; i++) ascii.push(text.charCodeAt(i) & 0x7F)
+    }
+    if (ascii.length === 0) {
+      ascii = new Array(16).fill(0)      // the clear sentinel
+    } else if (ascii.length === 16) {
+      ascii.push(32)                     // ' ' — never collide with it
     }
     return this.sendWithDelay({ op: 'WRITE', to: paperRef, request_ascii: ascii }, 500)
   }

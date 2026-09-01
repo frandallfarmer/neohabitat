@@ -119,3 +119,43 @@ func TestOracleUnconfiguredChannelIsNoop(t *testing.T) {
 		targetRef: "item-fountain1", verb: "ASK", text: "anyone there?",
 	})
 }
+
+// The footer is the whole point of posting an embed: it carries the routing key an operator's
+// reply needs to reach the asker in-world, without the bridge keeping any correlation state.
+func TestOracleEmbedFooterCarriesUserRef(t *testing.T) {
+	o, hook := newTestOracle(t)
+	o.classCache["item-fountain1"] = "Fountain"
+	o.relay(oracleAsk{
+		userRef: "user-randy", name: "Randy", regionRef: "context-Downtown_5f",
+		targetRef: "item-fountain1", verb: "ASK", text: "How do I remove a curse?",
+	})
+	if posts := hook.posts(); len(posts) != 1 {
+		t.Fatalf("expected 1 post, got %v", posts)
+	}
+	footers := hook.footers()
+	want := "user-randy · Randy"
+	if footers[0] != want {
+		t.Fatalf("footer = %q, want %q", footers[0], want)
+	}
+}
+
+// Habitat mail is addressed by display name, which is free-form, so it goes last and a
+// reader rejoins everything after the ref. Names containing the separator must round-trip.
+func TestOracleEmbedFooterSurvivesAwkwardNames(t *testing.T) {
+	o, hook := newTestOracle(t)
+	o.classCache["item-fountain1"] = "Fountain"
+	o.relay(oracleAsk{
+		userRef: "user-phil_collins", name: "Phil · Collins", regionRef: "context-Downtown_5f",
+		targetRef: "item-fountain1", verb: "ASK", text: "anyone there?",
+	})
+	if posts := hook.posts(); len(posts) != 1 {
+		t.Fatalf("expected 1 post, got %v", posts)
+	}
+	parts := strings.Split(hook.footers()[0], " · ")
+	if parts[0] != "user-phil_collins" {
+		t.Fatalf("user ref = %q", parts[0])
+	}
+	if name := strings.Join(parts[1:], " · "); name != "Phil · Collins" {
+		t.Fatalf("name = %q, want %q", name, "Phil · Collins")
+	}
+}

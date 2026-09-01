@@ -88,13 +88,23 @@ if [[ "${@}" = *"protester"* ]]; then
 fi
 
 if [[ "${@}" = *"oracle"* ]]; then
-  echo 'Launching oracle...'
-  supervisor -w "${DIR}" -- bots/oracle.js \
-    -c "${GREETER1_REGION}" \
-    -h "${HABITAT_HOST}" \
-    -p "${HABITAT_PORT}" \
-    -s "${SLACK_TOKEN}" \
-    -u devil &
+  if [[ -z "${DISCORD_BOT_TOKEN}" || -z "${DISCORD_ORACLE_GUILD_ID}" || -z "${DISCORD_ORACLE_CHANNEL_ID}" ]]; then
+    # Same reasoning as sage: bots.env may not be deployed yet, and a bot
+    # that exits on every start just makes supervisor thrash. Re-deploy
+    # once the secrets are written to bring the oracle up.
+    echo 'Skipping oracle (Discord credentials not set).'
+  else
+    echo 'Launching oracle...'
+    # Lowercase, like every other bot: Elko user refs are case-sensitive
+    # and the seeded avatar is `user-oracle`.
+    : "${HABIBOTS_ORACLE_REGION:=context-oraclehome}"
+    : "${HABIBOTS_ORACLE_USER:=oracle}"
+    supervisor -w "${DIR}" -- bots/oracle.js \
+      -c "${HABIBOTS_ORACLE_REGION}" \
+      -h "${HABITAT_HOST}" \
+      -p "${HABITAT_PORT}" \
+      -u "${HABIBOTS_ORACLE_USER}" &
+  fi
 fi
 
 if [[ "${@}" = *"sage"* ]]; then
