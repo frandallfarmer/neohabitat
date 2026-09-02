@@ -185,3 +185,83 @@ test('a letter that reads back empty is left intact, not cleared', async () => {
   assert.ok(!sent.includes('WRITE'), 'must not clear a letter it could not read')
   assert.ok(!sent.includes('PUT'), 'must not discard a letter it could not read')
 })
+
+// Paper.GET is gated on empty_handed(avatar), and the failure is silent —
+// Paper.READ answers showEmptyPaper when you aren't holding the sheet. So a
+// draft abandoned in HANDS breaks both sending and receiving, and looks like an
+// unreadable letter. This bit production.
+function fakeBot(items, sent) {
+  return {
+    world: { me: { noid: 1 }, getByRef: () => null,
+      inventory: () => items.map((i) => ({ ref: i.ref, type: i.type, name: i.name, noid: 1, mod: { y: i.slot, gr_state: i.grState } })) },
+    writePaper: (ref, text) => { sent.push(`WRITE:${ref}:${text === '' ? 'clear' : 'text'}`); return Promise.resolve({ ok: true }) },
+    send: (msg) => { sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) },
+    sendForReply: (msg) => { sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ascii: [] }) },
+  }
+}
+
+// A WRITTEN page in hand is ambiguous — Paper.GET fiddles an INCOMING letter to
+// WRITTEN as you pick it up — so the postmark decides. This is the case that
+// bit production: a player's letter stranded in hand, where treating "WRITTEN"
+// as "my draft" would have erased it.
+function pageBot(items, sent, pageText) {
+  const bot = fakeBot(items, sent)
+  bot.sendForReply = (msg) => {
+    sent.push(`${msg.op}:${msg.to}`)
+    return Promise.resolve({ ascii: [...String(pageText)].map((c) => c.charCodeAt(0)) })
+  }
+  return bot
+}
+
+test('a postmarked page in hand is handed back, never destroyed', async () => {
+  const sent = []
+  const bot = pageBot([{ ref: 'stuck', type: 'Paper', slot: 5, grState: 1 }], sent,
+    'From: Randy          Postmark: 26-09-02 Does mail work too?')
+  const res = await mail.clearHands(bot)
+  assert.strictEqual(res.ok, false)
+  assert.strictEqual(res.recovered.sender, 'Randy')
+  assert.strictEqual(res.recovered.body, 'Does mail work too?')
+  assert.strictEqual(res.ref, 'stuck')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must not blank a letter')
+  assert.ok(!sent.some((s) => s.startsWith('PUT')), 'must not discard a letter')
+})
+
+test('an unpostmarked draft in hand is blanked and discarded', async () => {
+  const sent = []
+  const bot = pageBot([{ ref: 'draft', type: 'Paper', slot: 5, grState: 1 }], sent, 'to: someone')
+  const res = await mail.clearHands(bot)
+  assert.strictEqual(res.ok, true)
+  assert.strictEqual(res.cleared, true)
+  assert.ok(sent.includes('WRITE:draft:clear'), 'blanks the draft')
+  assert.ok(sent.some((s) => s.startsWith('PUT:draft')), 'puts it away so the server destroys it')
+})
+
+test('an unreadable page in hand is refused rather than destroyed', async () => {
+  const sent = []
+  const bot = pageBot([{ ref: 'mystery', type: 'Paper', slot: 5, grState: 1 }], sent, '')
+  const res = await mail.clearHands(bot)
+  assert.strictEqual(res.ok, false)
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must not blank what it cannot read')
+  assert.ok(!sent.some((s) => s.startsWith('PUT')))
+})
+
+test('an unread letter in hands is never destroyed', async () => {
+  const sent = []
+  const bot = fakeBot([{ ref: 'letter', type: 'Paper', slot: 5, grState: 2 }], sent)
+  const res = await mail.clearHands(bot)
+  assert.strictEqual(res.ok, false)
+  assert.deepStrictEqual(sent, [], 'must not touch it')
+})
+
+test('a blank sheet in hands is left alone - it is usable', async () => {
+  const sent = []
+  const bot = fakeBot([{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }], sent)
+  assert.strictEqual((await mail.clearHands(bot)).ok, true)
+  assert.deepStrictEqual(sent, [])
+})
+
+test('empty hands need no clearing', async () => {
+  const sent = []
+  assert.strictEqual((await mail.clearHands(fakeBot([], sent))).ok, true)
+  assert.deepStrictEqual(sent, [])
+})

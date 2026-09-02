@@ -157,6 +157,11 @@ async function drainMailSlot(bot) {
     (it) => it.type === 'Paper' && it.slot === awareness.MAIL_SLOT &&
       (it.grState || 0) === awareness.PAPER_LETTER_STATE)
   if (!letter) return { drained: false, text: '' }
+  const hands = await clearHands(bot)
+  if (!hands.ok) {
+    log.warn(`cannot collect mail: ${hands.error}`)
+    return { drained: false, text: '' }
+  }
   // GET moves it to HANDS and pops the next queued letter into MAIL_SLOT
   // (Paper.GET's update_mail_slot call). READ requires it be held.
   await withTimeout(getObj(bot, letter.ref), 10000, 'drainMailSlot.pick_up')
@@ -244,6 +249,61 @@ function discardBlankPaper(bot, ref) {
   return bot.send({ op: 'PUT', to: ref, containerNoid: me.noid, x: 0, y: DISCARD_SLOT, orientation: 0 })
 }
 
+// Every Paper.GET is gated on empty_handed(avatar) — ANY object in HANDS makes
+// the pick-up fail. Worse, the failure is quiet: Paper.READ answers
+// showEmptyPaper when you are not holding the sheet, so a draft left in hands by
+// an interrupted compose breaks both sending and receiving and presents as "the
+// letter read back empty". Seen in production. So: empty the hands first.
+async function clearHands(bot) {
+  const held = awareness.getInventory(bot).find((it) => it.slot === awareness.HANDS_SLOT)
+  if (!held) return { ok: true }
+  if (held.type !== 'Paper') {
+    log.warn(`holding a ${held.type}, which blocks picking anything up`)
+    return { ok: false, error: `hands are full (holding a ${held.type})` }
+  }
+  const state = held.grState || 0
+  if (state === awareness.PAPER_BLANK_STATE) return { ok: true } // usable as-is
+  if (state === awareness.PAPER_LETTER_STATE) {
+    // Unread mail we picked up and never finished with. Never destroy it.
+    return { ok: false, error: 'holding an unread letter', letter: held }
+  }
+
+  // WRITTEN is ambiguous and dangerous to guess at: Paper.GET fiddles an
+  // INCOMING letter to WRITTEN as you pick it up, so a written page in hands is
+  // either our own abandoned draft or somebody's letter we collected and never
+  // finished reading. Read it and let the postmark decide. A page with a sender
+  // on it is never destroyed here - it is handed back for the caller to deliver
+  // first. (Production had exactly this: a player's letter stuck in hands,
+  // blocking every pick-up, where blind cleanup would have erased it.)
+  let text = ''
+  for (let attempt = 0; attempt < READ_ATTEMPTS && !text; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, READ_RETRY_MS))
+    try {
+      text = decodePage(await withTimeout(readPaperPage(bot, held.ref), 10000, 'clearHands.read'))
+    } catch (err) {
+      log.warn(`could not read the page in hand: ${err.message}`)
+    }
+  }
+  const info = parsePostmark(text)
+  if (info.sender) {
+    log.info(`recovered a letter from ${info.sender} that was stuck in hand`)
+    return { ok: false, recovered: { sender: info.sender, body: info.body, text: text }, ref: held.ref }
+  }
+  if (!text) {
+    // Could not read it at all - refuse rather than destroy something unseen.
+    return { ok: false, error: 'holding a page that cannot be read' }
+  }
+  await discardHeldPaper(bot, held.ref)
+  log.info('discarded an abandoned draft that was blocking the hands')
+  return { ok: true, cleared: true }
+}
+
+// Blank a held sheet and put it away; Paper.PUT destroys a blank one.
+async function discardHeldPaper(bot, ref) {
+  await withTimeout(bot.writePaper(ref, ''), 10000, 'discardHeld.blank')
+  await withTimeout(discardBlankPaper(bot, ref), 10000, 'discardHeld.discard')
+}
+
 // composeAndSendMail — pick up a blank Paper, write the addressed page,
 // and PSENDMAIL it. The bot must be logged in: mailing is an avatar
 // action, not a server call.
@@ -262,6 +322,8 @@ async function composeAndSendMail(bot, opts) {
     return { ok: false, error: 'body is empty after sanitizing' }
   }
 
+  const hands = await clearHands(bot)
+  if (!hands.ok && !hands.letter) return { ok: false, error: hands.error }
   let { paper, error } = chooseBlankPaper(bot)
   const readLetters = []
   if (error && opts && opts.drainMail) {
@@ -289,6 +351,8 @@ async function composeAndSendMail(bot, opts) {
 module.exports = {
   composeAndSendMail,
   drainMailSlot,
+  clearHands,
+  discardHeldPaper,
   parsePostmark,
   buildMailPage,
   wrapForPaper,
