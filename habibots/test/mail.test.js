@@ -165,3 +165,23 @@ test('an unpostmarked page yields no sender rather than a wrong one', () => {
   assert.strictEqual(mail.parsePostmark('').sender, null)
   assert.strictEqual(mail.parsePostmark(null).sender, null)
 })
+
+// elko loads a letter body from mongo asynchronously (Paper.retrievePaperContents),
+// so a read can win the race and come back empty. Clearing on the strength of
+// that would destroy a player's letter with nobody having seen it, so an
+// unreadable letter is left in the slot instead — blocked but recoverable.
+test('a letter that reads back empty is left intact, not cleared', async () => {
+  const inv = [{ ref: 'p1', type: 'Paper', slot: 4, grState: 2, name: 'Pad and mailbox' }]
+  const sent = []
+  const bot = {
+    world: { me: { noid: 1 }, getByRef: () => null, inventory: () => inv.map((i) => ({ ref: i.ref, type: i.type, name: i.name, noid: 1, mod: { y: i.slot, gr_state: i.grState } })) },
+    sendForReply: (msg) => { sent.push(msg.op); return Promise.resolve({ ascii: [] }) },  // always empty
+    writePaper: () => { sent.push('WRITE'); return Promise.resolve({ ok: true }) },
+    send: (msg) => { sent.push(msg.op); return Promise.resolve({ ok: true }) },
+  }
+  const res = await mail.drainMailSlot(bot)
+  assert.strictEqual(res.drained, false)
+  assert.strictEqual(res.unreadable, true)
+  assert.ok(!sent.includes('WRITE'), 'must not clear a letter it could not read')
+  assert.ok(!sent.includes('PUT'), 'must not discard a letter it could not read')
+})

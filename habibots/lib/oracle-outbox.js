@@ -23,6 +23,9 @@ const { MongoClient } = require('mongodb')
 const DEFAULT_URI = process.env.HABIBOTS_MONGO_URL || 'mongodb://neohabitatmongo:27017'
 const DB_NAME = 'habibots'
 const COLLECTION = 'oracle_outbox'
+// elko's own database, read only, purely to see whether mail is waiting.
+const ELKO_DB = 'elko'
+const ELKO_COLLECTION = 'odb'
 
 class OracleOutbox {
   constructor(uri) {
@@ -122,6 +125,24 @@ class OracleOutbox {
     await this.col.updateOne(
       { _id: id },
       { $set: { lastError: message, lastAttemptAt: new Date() }, $inc: { attempts: 1 } })
+  }
+
+  // Is there mail waiting for this avatar? A READ-ONLY peek at elko's own
+  // queue, used only to decide whether it is worth re-entering the region;
+  // every actual change still goes through the game. Returns 0 when mongo is
+  // unavailable, so an unreachable database means "do nothing", never a storm
+  // of region entries.
+  async queuedMailFor(avatarName) {
+    await this._ensureReady()
+    if (!this.client) return 0
+    try {
+      const doc = await this.client.db(ELKO_DB).collection(ELKO_COLLECTION)
+        .findOne({ ref: `mail-${String(avatarName).toLowerCase()}` })
+      return (doc && Array.isArray(doc.queue)) ? doc.queue.length : 0
+    } catch (err) {
+      log.warn(`could not peek at the mail queue: ${err.message}`)
+      return 0
+    }
   }
 
   async close() {

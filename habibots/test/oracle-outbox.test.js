@@ -52,3 +52,12 @@ test('a failed delivery stays queued', async () => {
   assert.strictEqual(pending[0].lastError, 'the Oracle is not in-world yet')
   assert.strictEqual(pending[0].attempts, 1)
 })
+
+// The mail peek decides whether to re-enter the region. If mongo is
+// unreachable it must read as "no mail" — an error must never turn into a
+// storm of region entries, which is what trips the region's capacity limit.
+test('the mail peek reads as empty when mongo is unreachable', async () => {
+  const box = offline()
+  assert.strictEqual(await box.queuedMailFor('oracle'), 0)
+  assert.strictEqual(await box.queuedMailFor('anybody'), 0)
+})

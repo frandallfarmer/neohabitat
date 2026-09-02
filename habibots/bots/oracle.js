@@ -57,6 +57,7 @@ log.configure({
 
 const HabiBot = require('../habibot')
 const mail = require('../lib/mail')
+const awareness = require('../lib/sage/awareness')
 const { OracleOutbox } = require('../lib/oracle-outbox')
 const { askerFromMessage } = require('../lib/oracle-footer')
 
@@ -114,6 +115,16 @@ const NO_PINGS = { parse: [] }
 const LETTER_ICON = '✉️'
 const LETTER_TEXT_MAX = 300 // matches oracleTextMax on the bridge side
 
+// How often to look for mail addressed to the Oracle. See pollForMail for why
+// this has to be a poll rather than an event.
+const MAIL_POLL_SECONDS = parseInt(process.env.HABIBOTS_ORACLE_MAIL_POLL_SECONDS || '120', 10)
+// Worst-case latency before a letter to the Oracle is noticed.
+// Each region entry hands over exactly one letter, so a backlog needs a pass
+// each; bounded so one tick cannot run away.
+const MAIL_DRAIN_PASSES = 5
+// Region entry -> check_mail -> the letter appears in the slot, all asynchronous.
+const MAIL_SETTLE_MS = 3000
+
 const outbox = new OracleOutbox()
 
 // ── Habitat side ───────────────────────────────────────────────────────
@@ -134,6 +145,70 @@ OracleBot.on('enteredRegion', (bot) => {
       return drainOutbox()
     })
     .catch((err) => log.error(`OracleBot could not corporate: ${err.message}`))
+})
+
+// Collecting mail addressed to the Oracle. Two facts shape this, both measured
+// rather than assumed:
+//
+//   - Avatar.check_mail() — the only thing that moves a letter from the
+//     mail-<name> queue into the pocket — runs ONLY in Region.noteUserArrival.
+//     This bot enters its region once and then stands still, so without a nudge
+//     it checks for mail exactly once, at startup, and letters sit in mongo.
+//   - The game's own "* You have MAIL in your pocket. *" announcement did NOT
+//     reliably reach us on that path in testing, so it is treated as a bonus
+//     trigger below, never as the mechanism.
+//
+// So: peek at the queue (a read-only look at elko's own data), and only when
+// something is actually waiting, re-enter the region to make elko hand it over.
+// Re-entering on a bare timer instead would churn context entries for nothing
+// and can trip the region's capacity limit — elko answers a full context with
+// {"op":"exit","why":"full"}, which would lock the Oracle out of its own house.
+let checking = false
+let lastLetterText = null
+
+async function checkForMail() {
+  if (!inWorld || checking) return
+  checking = true
+  try {
+    for (let pass = 0; pass < MAIL_DRAIN_PASSES; pass++) {
+      const slotLetter = awareness.getInventory(OracleBot).some((it) =>
+        it.type === 'Paper' && it.slot === awareness.MAIL_SLOT &&
+        (it.grState || 0) === awareness.PAPER_LETTER_STATE)
+      const waiting = slotLetter ? 0 : await outbox.queuedMailFor(Argv.username)
+      if (!slotLetter && !waiting) return
+      if (!slotLetter) {
+        log.info(`${waiting} letter(s) waiting; re-entering ${Argv.context} to collect`)
+        await OracleBot.gotoContext(Argv.context)
+        await new Promise((r) => setTimeout(r, MAIL_SETTLE_MS))
+      }
+      const drained = await serialize(() => mail.drainMailSlot(OracleBot))
+      if (!drained || !drained.drained) return
+      // The world model can still show the old letter for a moment after the
+      // slot is cleared, and draining again would post the same letter to
+      // Discord twice. The page text is the only identity available here —
+      // text_path is server-side and never reaches the client — so an
+      // identical page back-to-back ends the sweep.
+      if (drained.text && drained.text === lastLetterText) {
+        log.debug('same letter read twice; the mail slot has not caught up yet')
+        return
+      }
+      lastLetterText = drained.text || null
+      log.info(`picked up a letter from ${drained.sender || 'an unknown sender'}`)
+      await relayLetter(drained).catch((err) =>
+        log.error(`could not relay a letter to Discord: ${err.message}`))
+      await new Promise((r) => setTimeout(r, MAIL_SETTLE_MS))
+    }
+  } catch (err) {
+    log.error(`mail check failed: ${err.message}`)
+  } finally {
+    checking = false
+  }
+}
+
+// Free extra trigger when the game does announce (habibot promotes the balloon
+// into this event). Never depended upon — see above.
+OracleBot.on('mailArrived', () => {
+  checkForMail().catch((err) => log.error(`mail check: ${err.message}`))
 })
 
 OracleBot.on('disconnected', () => {
@@ -341,6 +416,9 @@ async function onAnswerSubmitted(interaction) {
     log.warn(`could not mark ${targetId} answered: ${err.message}`)
   }
 }
+
+setInterval(() => { checkForMail().catch((err) => log.error(`mail check: ${err.message}`)) },
+  MAIL_POLL_SECONDS * 1000)
 
 OracleBot.connect()
 discord.login(TOKEN).catch((err) => {
