@@ -72,6 +72,7 @@ const SOURCES = [
 const ORACLE_USER_REF = 'user-oracle';
 const ORACLE_REGION_REF = 'context-oraclehome';
 const ORACLE_NAME = 'oracle';   // lowercased display name: mail-<name>, paper-item-<name>.*
+const MAIL_SLOT = 4;            // Constants.java
 
 function load(file) {
   const records = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -80,13 +81,14 @@ function load(file) {
   return records;
 }
 
-// The Oracle's MAIL_SLOT Paper must stay unique — see the header.
-async function oracleAlreadyHasPaper(odb) {
-  const existing = await odb.findOne({
+// The Oracle's MAIL_SLOT Paper must stay unique — see the header. Returns every
+// Paper the Oracle owns, so the caller can tell whether seeding one more would
+// put a second sheet in the mail slot.
+async function oraclePapers(odb) {
+  return odb.find({
     in: new RegExp(`^${ORACLE_USER_REF}`),
     'mods.0.type': 'Paper',
-  });
-  return existing ? existing.ref : null;
+  }).toArray();
 }
 
 // The region is only isolated as long as nothing links to it.
@@ -168,13 +170,21 @@ async function checkIsolation(odb) {
     return;
   }
 
-  const heldPaper = await oracleAlreadyHasPaper(odb);
+  const papers = await oraclePapers(odb);
   const plan = [];
   for (const record of records) {
     const existing = await odb.findOne({ ref: record.ref }, { projection: { ref: 1 } });
     const isSeedPaper = record.in === ORACLE_USER_REF && record.mods[0].type === 'Paper';
-    if (isSeedPaper && heldPaper && heldPaper !== record.ref) {
-      plan.push({ record, action: 'skip', why: `the Oracle already owns a Paper (${heldPaper}); adding this one would put two in MAIL_SLOT` });
+    // A live Oracle no longer owns the seeded ref (PSENDMAIL destroys the sheet
+    // you mail and special_get mints the replacement as `i-<id>`), and its own
+    // sheet moves between slots as it works. Writing the seed record back would
+    // slam it into MAIL_SLOT alongside whatever is already there — the exact
+    // two-Papers-in-one-slot state the bot's drain logic exists to prevent. So
+    // this is checked BEFORE --force: forcing must never be able to cause it.
+    const otherPaperInMailSlot = papers.find((p) =>
+      p.ref !== record.ref && p.mods[0].y === MAIL_SLOT);
+    if (isSeedPaper && otherPaperInMailSlot) {
+      plan.push({ record, action: 'skip', why: `the Oracle already has a Paper in MAIL_SLOT (${otherPaperInMailSlot.ref}); writing this one would make two` });
     } else if (!existing) {
       plan.push({ record, action: 'insert', why: 'not present' });
     } else if (Argv.force) {
@@ -212,13 +222,14 @@ async function checkIsolation(odb) {
 
   const user = await odb.findOne({ ref: ORACLE_USER_REF });
   const region = await odb.findOne({ ref: ORACLE_REGION_REF });
-  const papers = await odb.countDocuments({ in: new RegExp(`^${ORACLE_USER_REF}`), 'mods.0.type': 'Paper' });
+  const finalPapers = await oraclePapers(odb);
+  const inMailSlot = finalPapers.filter((p) => p.mods[0].y === MAIL_SLOT).length;
   console.log('\nVerification:');
   console.log(`  ${ORACLE_USER_REF}: ${user ? 'present' : 'MISSING'}` +
     (user ? `, nitty_bits=${user.mods[0].nitty_bits} (HIDDEN_AVATAR=${1 << 29}), turf=${user.mods[0].turf}` : ''));
   console.log(`  ${ORACLE_REGION_REF}: ${region ? 'present' : 'MISSING'}` +
     (region ? `, neighbors=${JSON.stringify(region.mods[0].neighbors)}, is_turf=${region.mods[0].is_turf === true}` : ''));
-  console.log(`  Papers owned by the Oracle: ${papers} (must be exactly 1)`);
+  console.log(`  Papers owned by the Oracle: ${finalPapers.length}, of which ${inMailSlot} in MAIL_SLOT (must be exactly 1)`);
   console.log('\nThe elko image must already carry HIDDEN_AVATAR, or the Oracle will show up in F3.');
 
   await client.close();
