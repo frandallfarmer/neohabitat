@@ -168,6 +168,11 @@ type ClientSession struct {
 	// (drives the birth-announcement message). Written where userRef/UserName are (same
 	// discipline), read under stateMu at announce time.
 	presenceNewUser bool
+	// presenceHidden latches elko's HIDDEN_AVATAR nitty_bit from this session's own arrival
+	// make, so the presence producer can exclude the avatar from the logins channel and from
+	// the in-world count — including when scanning OTHER sessions, which is why it lives here
+	// rather than only in presenceConnect. Guarded by stateMu with the rest of the identity.
+	presenceHidden bool
 	// presenceClosed makes the disconnect record idempotent: Close() can run more than once
 	// (multiple error paths call `go c.Close()`). Guarded by closeMutex.
 	presenceClosed bool
@@ -521,6 +526,7 @@ func (c *ClientSession) handleElkoMessage(msg *ElkoMessage) {
 		// now, under the lock, so the userRef read is race-free).
 		go c.bridge.closeOtherSessionsForUser(c, c.userRef)
 
+		c.presenceHidden = modIsHiddenAvatar(mod)
 		c.notePresenceArrivalLocked()
 
 		// Elko sends the session user's avatar with noid=256 (UNASSIGNED_NOID);
@@ -1171,6 +1177,7 @@ func (c *ClientSession) notePresenceArrivalLocked() {
 		newUser:   c.presenceNewUser,
 		json:      c.jsonPassthrough,
 		ip:        c.RealClientAddr(),
+		hidden:    c.presenceHidden,
 	}
 	if c.user != nil && len(c.user.Mods) > 0 && c.user.Mods[0].Turf != nil {
 		info.turfRef = *c.user.Mods[0].Turf
@@ -2222,6 +2229,7 @@ func (c *ClientSession) handleElkoMessageJson(raw []byte, msg *ElkoMessage) {
 			if modIsGhost(mod) {
 				c.bridge.transit.clear(c.userRef)
 			}
+			c.presenceHidden = modIsHiddenAvatar(mod)
 		}
 		c.notePresenceArrivalLocked()
 	}
@@ -2940,6 +2948,7 @@ func (c *ClientSession) Snapshot() *SessionSnapshot {
 		QLinkMode:         c.qlinkMode,
 		Online:            c.Online,
 		PresenceAnnounced: c.presenceAnnounced,
+		PresenceHidden:    c.presenceHidden,
 		QLinkInSeq:        c.qlinkInSeq,
 		QLinkOutSeq:       c.qlinkOutSeq,
 		ReplySeq:          c.replySeq,
@@ -3020,6 +3029,7 @@ func RestoreSession(b *Bridge, snap *SessionSnapshot, clientConn net.Conn, elkoC
 		jsonPassthrough:          snap.JsonPassthrough,
 		largeRequestCache:        snap.LargeRequestCache,
 		presenceAnnounced:        snap.PresenceAnnounced,
+		presenceHidden:           snap.PresenceHidden,
 		nextRegion:               snap.NextRegion,
 		nextRegionSet:            snap.NextRegionSet,
 		sessionID:                snap.SessionID,

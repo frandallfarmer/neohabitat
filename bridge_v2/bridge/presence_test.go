@@ -273,3 +273,57 @@ func TestPrettifyContextRef(t *testing.T) {
 		}
 	}
 }
+
+// A hidden service avatar (the Oracle) carries elko's HIDDEN_AVATAR nitty_bit. It must be as
+// invisible to #just-connected as a *bot is: no login post, and no seat in the "N avatars
+// in-world" tally that every human's login line carries.
+func TestPresenceHiddenAvatarSuppressedAndUncounted(t *testing.T) {
+	p, hook, _ := newTestPresence(t)
+	oracle := &ClientSession{
+		bridge: p.bridge, userRef: "user-oracle", UserName: "oracle", presenceHidden: true,
+	}
+	p.bridge.Sessions["oracle"] = oracle
+
+	info := connectInfo("user-oracle", "oracle", "context-oraclehome")
+	info.session = oracle // this arrival IS that session, not a concurrent one
+	info.hidden = true
+	p.noteConnect(info)
+	if posts := hook.posts(); len(posts) != 0 {
+		t.Fatalf("hidden avatar login must be silent; got %v", posts)
+	}
+	p.mu.Lock()
+	reason := p.history[len(p.history)-1].Reason
+	p.mu.Unlock()
+	if reason != "hidden" {
+		t.Fatalf("reason = %q, want hidden", reason)
+	}
+
+	p.noteConnect(connectInfo("user-randy", "Randy", "context-Downtown_4f"))
+	posts := hook.posts()
+	if len(posts) != 1 {
+		t.Fatalf("human login must post; got %v", posts)
+	}
+	if !strings.Contains(posts[0], "1 avatar in-world") {
+		t.Fatalf("hidden avatar must not inflate the count: %q", posts[0])
+	}
+}
+
+// The bit is read off the arrival make, not off a name — 1<<29 is Constants.HIDDEN_AVATAR (30)
+// through packBits' 1-based mapping. An avatar with other nitty_bits set stays visible.
+func TestModIsHiddenAvatar(t *testing.T) {
+	if modIsHiddenAvatar(nil) {
+		t.Fatal("nil mod must not be hidden")
+	}
+	if modIsHiddenAvatar(&HabitatMod{}) {
+		t.Fatal("absent nitty_bits must not be hidden")
+	}
+	if modIsHiddenAvatar(&HabitatMod{NittyBits: Int32P(1 << 3)}) { // GOD_FLAG (4)
+		t.Fatal("an unrelated nitty_bit must not read as hidden")
+	}
+	if !modIsHiddenAvatar(&HabitatMod{NittyBits: Int32P(536870912)}) {
+		t.Fatal("HIDDEN_AVATAR (536870912) must read as hidden")
+	}
+	if !modIsHiddenAvatar(&HabitatMod{NittyBits: Int32P(536870912 | 1<<3)}) {
+		t.Fatal("HIDDEN_AVATAR alongside another bit must read as hidden")
+	}
+}
