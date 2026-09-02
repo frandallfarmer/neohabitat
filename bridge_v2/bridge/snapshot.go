@@ -32,6 +32,10 @@ type SessionSnapshot struct {
 	// PresenceAnnounced carries the login-alert latch so a restored session never
 	// re-announces its avatar to Discord after a graceful reload.
 	PresenceAnnounced bool `json:"presence_announced"`
+	// PresenceHidden carries the HIDDEN_AVATAR flag, which is only ever read off the
+	// arrival make — a restored session gets no second make, so without this a service
+	// avatar would start counting toward the in-world tally again after a reload.
+	PresenceHidden bool `json:"presence_hidden,omitempty"`
 
 	QLinkInSeq  byte  `json:"qlink_in_seq"`
 	QLinkOutSeq byte  `json:"qlink_out_seq"`

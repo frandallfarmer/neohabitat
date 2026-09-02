@@ -45,9 +45,12 @@ cannot ping the channel (`allowed_mentions: {parse: []}`).
   (binary `handleElkoMessage` and JSON `handleElkoMessageJson` — a you-make fires on
   every region entry; the `presenceAnnounced` latch keeps only the login).
 - Suppression order: another live session for the same user (takeover/second window)
-  → 5-minute debounce since the user's last disconnect → `*bot` names +
+  → 5-minute debounce since the user's last disconnect → hidden service avatars
+  (elko's `HIDDEN_AVATAR` nitty_bit, read off the arrival make) → `*bot` names +
   `DISCORD_ALERT_EXCLUDE` (comma list, for bots not ending in "bot").
-- Bots are also excluded from the "avatars in-world" count.
+- Bots and hidden avatars are also excluded from the "avatars in-world" count. The
+  Oracle is hidden: elko already keeps it out of `Region.NameToUser` (F3, `/online`,
+  ESP), and honouring the same bit here keeps Discord's count agreeing with the game's.
 - Variants: `at *their turf*` when the entry region is the user's turf; 🎉 hatched
   fanfare for brand-new users; 🕹️ = binary/C64 path, 🌐 = web/JSON path.
 - Disconnects are recorded (they arm the debounce) but **never posted**.
@@ -95,7 +98,10 @@ sessions (including TCP_REPAIR'd C64s); steady-state deploys with an unchanged
 alerts.env stay on the seamless tableflip path.
 
 `DISCORD_ALERT_EXCLUDE` (optional, comma-separated names/refs) extends the `*bot`
-exclusion for bots whose names don't end in "bot".
+exclusion for bots whose names don't end in "bot". Prefer the `HIDDEN_AVATAR`
+nitty_bit for a service avatar: it travels with the avatar's own state, so it needs
+no bridge env change (and therefore no hard restart) and cannot drift from what elko
+already hides.
 
 ## Adding a channel (the recipe)
 

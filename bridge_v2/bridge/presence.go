@@ -53,6 +53,9 @@ type presenceConnect struct {
 	newUser   bool
 	json      bool
 	ip        string
+	// hidden: the arriving avatar carries elko's HIDDEN_AVATAR nitty_bit — a service
+	// avatar (the Oracle) that elko already keeps out of Region.NameToUser.
+	hidden bool
 }
 
 type presenceRegistry struct {
@@ -87,8 +90,24 @@ func newPresenceRegistry(b *Bridge, notifier *DiscordNotifier) *presenceRegistry
 	}
 }
 
+// hiddenAvatarBit is elko's Constants.HIDDEN_AVATAR (nitty_bit 30). The bit constants are
+// 1-based (inherited from PL/1), and HabitatMod.packBits maps bit N to 1<<(N-1), so 30 is
+// 1<<29. Elko keeps such an avatar out of Region.NameToUser — the table behind the F3 list,
+// /online counts, ESP and tellEveryone — so presence honours the same bit: a hidden service
+// avatar neither announces itself in the logins channel nor counts toward "N in-world".
+const hiddenAvatarBit int32 = 1 << 29
+
+// modIsHiddenAvatar reads that bit off an own-avatar (you:true) make. Avatar.encode emits
+// nitty_bits whenever the packed value is non-zero, on the client control path as well as the
+// durable one, so the bridge sees it on arrival without consulting Mongo.
+func modIsHiddenAvatar(mod *HabitatMod) bool {
+	return mod != nil && mod.NittyBits != nil && *mod.NittyBits&hiddenAvatarBit != 0
+}
+
 // isBot: `*bot` names (welcomebot, elizabot, sagebot…) and DISCORD_ALERT_EXCLUDE entries are
-// excluded from channel posts AND from the in-world avatar count (humans only).
+// excluded from channel posts AND from the in-world avatar count (humans only). Hidden
+// service avatars get the same treatment via modIsHiddenAvatar, keyed on state rather than
+// on a name — see hiddenAvatarBit.
 func (p *presenceRegistry) isBot(userRef string, name string) bool {
 	for _, id := range []string{userRef, name} {
 		id = strings.TrimPrefix(strings.ToLower(strings.TrimSpace(id)), "user-")
@@ -127,8 +146,13 @@ func (p *presenceRegistry) noteConnect(info presenceConnect) {
 		}
 		p.mu.Unlock()
 	}
-	if reason == "" && p.isBot(info.userRef, info.name) {
-		reason = "bot"
+	if reason == "" {
+		switch {
+		case info.hidden:
+			reason = "hidden"
+		case p.isBot(info.userRef, info.name):
+			reason = "bot"
+		}
 	}
 	if reason == "" && !p.notifier.Enabled(presenceLoginsChannel) {
 		reason = "disabled"
@@ -177,7 +201,7 @@ func (p *presenceRegistry) noteDisconnect(userRef string, name string, json bool
 // sessionsMutex, release, then read each userRef under its own stateMu (never nested).
 func (p *presenceRegistry) scanSessions(info presenceConnect) (concurrent bool, humans int) {
 	seen := map[string]struct{}{}
-	if !p.isBot(info.userRef, info.name) {
+	if !info.hidden && !p.isBot(info.userRef, info.name) {
 		seen[info.userRef] = struct{}{}
 	}
 	if p.bridge != nil {
@@ -191,7 +215,7 @@ func (p *presenceRegistry) scanSessions(info presenceConnect) (concurrent bool, 
 		p.bridge.sessionsMutex.Unlock()
 		for _, s := range others {
 			s.stateMu.Lock()
-			ref, name := s.userRef, s.UserName
+			ref, name, hidden := s.userRef, s.UserName, s.presenceHidden
 			s.stateMu.Unlock()
 			if ref == "" {
 				continue
@@ -199,7 +223,7 @@ func (p *presenceRegistry) scanSessions(info presenceConnect) (concurrent bool, 
 			if ref == info.userRef {
 				concurrent = true
 			}
-			if !p.isBot(ref, name) {
+			if !hidden && !p.isBot(ref, name) {
 				seen[ref] = struct{}{}
 			}
 		}

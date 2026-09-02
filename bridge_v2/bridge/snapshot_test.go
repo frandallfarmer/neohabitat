@@ -38,6 +38,7 @@ func TestSessionSnapshot_RoundTrip(t *testing.T) {
 		},
 		DataRate:           1200,
 		BufferedClientData: []byte{0x5A, 0x81},
+		PresenceHidden:     true,
 	}
 
 	data, err := json.Marshal(snap)
@@ -70,6 +71,11 @@ func TestSessionSnapshot_RoundTrip(t *testing.T) {
 	}
 	if len(restored.BufferedClientData) != 2 || restored.BufferedClientData[0] != 0x5A {
 		t.Errorf("BufferedClientData = %v, want [5A 81]", restored.BufferedClientData)
+	}
+	// A hidden service avatar must stay hidden across a tableflip: the flag is read off the
+	// arrival make, and a restored session never gets a second one.
+	if !restored.PresenceHidden {
+		t.Error("PresenceHidden = false, want true")
 	}
 	contents := restored.NoidContents["0"]
 	if len(contents) != 3 || contents[2] != 42 {
