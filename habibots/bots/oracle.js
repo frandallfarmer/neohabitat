@@ -171,6 +171,20 @@ async function checkForMail() {
   checking = true
   try {
     for (let pass = 0; pass < MAIL_DRAIN_PASSES; pass++) {
+      // A letter can be stranded in hand by an interrupted collection, which
+      // blocks every pick-up until it is dealt with. Deliver it, then let go.
+      const hands = await serialize(() => mail.clearHands(OracleBot))
+      if (hands.recovered) {
+        if (hands.recovered.text !== lastLetterText) {
+          lastLetterText = hands.recovered.text
+          log.info(`delivering a letter from ${hands.recovered.sender} that was stuck in hand`)
+          await relayLetter(hands.recovered).catch((err) =>
+            log.error(`could not relay a recovered letter: ${err.message}`))
+        }
+        await serialize(() => mail.discardHeldPaper(OracleBot, hands.ref))
+        continue
+      }
+
       const slotLetter = awareness.getInventory(OracleBot).some((it) =>
         it.type === 'Paper' && it.slot === awareness.MAIL_SLOT &&
         (it.grState || 0) === awareness.PAPER_LETTER_STATE)

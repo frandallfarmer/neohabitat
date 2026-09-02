@@ -1,7 +1,8 @@
 [{
 	"type": "context",
 	"ref": "context-oraclehome",
-	"capacity": 4,
+	"_comment": "capacity is deliberately generous, not tight. Nothing can reach this region anyway (no exits, no neighbours, no teleport address, and its occupant is hidden), so a low cap protects nothing - while a session that does not exit cleanly consumes a slot, and the Oracle re-enters here to collect mail. Twice in testing a tight cap locked it out of its own house with {\"op\":\"exit\",\"why\":\"full\"}.",
+	"capacity": 32,
 	"name": "Oracle's Home",
 	"mods": [
 		{
