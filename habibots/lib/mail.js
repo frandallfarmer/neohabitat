@@ -39,6 +39,11 @@ const CLEAR_SENTINEL_LENGTH = 16
 // blank sheet wherever it lands.
 const DISCARD_SLOT = 0
 
+// Paper.retrievePaperContents loads a letter body from mongo asynchronously, so
+// the first read after the slot is repointed can legitimately come back empty.
+const READ_ATTEMPTS = 4
+const READ_RETRY_MS = 1200
+
 // Mirrors bridge_v2's validAvatarName, lowercased: mail is addressed by
 // DISPLAY NAME (Region.addUser keys NameToUser on name().toLowerCase()),
 // and those legally contain spaces and apostrophes. Paper.findAddressee
@@ -155,11 +160,25 @@ async function drainMailSlot(bot) {
   // GET moves it to HANDS and pops the next queued letter into MAIL_SLOT
   // (Paper.GET's update_mail_slot call). READ requires it be held.
   await withTimeout(getObj(bot, letter.ref), 10000, 'drainMailSlot.pick_up')
+  // Retry an empty read. advance_mail_slot repoints text_path and then loads
+  // the body from mongo ASYNCHRONOUSLY (Paper.retrievePaperContents), so a read
+  // that wins the race gets an empty page — and clearing on the strength of
+  // that would destroy a player's letter without anyone ever seeing it.
   let text = ''
-  try {
-    text = decodePage(await withTimeout(readPaperPage(bot, letter.ref), 10000, 'drainMailSlot.read'))
-  } catch (err) {
-    log.warn(`could not read the letter in MAIL_SLOT before clearing it: ${err.message}`)
+  for (let attempt = 0; attempt < READ_ATTEMPTS && !text; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, READ_RETRY_MS))
+    try {
+      text = decodePage(await withTimeout(readPaperPage(bot, letter.ref), 10000, 'drainMailSlot.read'))
+    } catch (err) {
+      log.warn(`could not read the letter in MAIL_SLOT: ${err.message}`)
+    }
+  }
+  if (!text) {
+    // Leave it where it is rather than clear it away unread. The slot stays
+    // blocked, which is visible and recoverable; a silently destroyed letter
+    // is neither.
+    log.warn('a letter in MAIL_SLOT read back empty after retries; leaving it intact')
+    return { drained: false, text: '', unreadable: true }
   }
   // Blank it (an empty write is Paper.WRITE's clear sentinel, which also
   // resets text_path so is_blank() holds), then put it back in a pocket so
@@ -169,6 +188,9 @@ async function drainMailSlot(bot) {
   await withTimeout(discardBlankPaper(bot, letter.ref), 10000, 'drainMailSlot.discard')
   const letterInfo = parsePostmark(text)
   log.info(`read a letter from ${letterInfo.sender || 'an unknown sender'} out of MAIL_SLOT`)
+  // `text` is the whole page including the postmark, which is the only
+  // identity a caller can use to spot the same letter twice: text_path lives
+  // server-side and never reaches the client's world model.
   return { drained: true, ref: letter.ref, text: text, sender: letterInfo.sender, body: letterInfo.body }
 }
 
