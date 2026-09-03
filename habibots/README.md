@@ -107,6 +107,34 @@ answer anyone, permanently. After reading, the sheet is blanked and put
 back in a pocket, which makes the server destroy it (`Paper.java:334`),
 leaving exactly one Paper in the slot.
 
+### Nothing may be left in the hands
+
+`Paper.GET` is gated on `empty_handed(avatar)`, so a single page stranded in
+HANDS disables the Oracle in **both** directions — it can neither collect a
+letter nor pick up a blank sheet to answer one — and every symptom downstream
+presents as "the letter read back empty" instead of "the hands are full".
+Production, 2026-09-02: an elko-side EOF interrupted a collection, a letter sat
+in the Oracle's hands for sixteen hours, and the bot looped every two minutes
+doing nothing and logging nothing.
+
+So every mail check starts by clearing the hands, along this ladder:
+
+1. **Blank sheet** — fine as it is, use it.
+2. **Readable page with a postmark, or anything that arrived as a `LETTER`** —
+   somebody else wrote it. Relay it to Discord *first*, then dispose of it.
+3. **Readable page with no postmark and `WRITTEN` state** — our own abandoned
+   draft. Blank it and put it away, which destroys it.
+4. **Unreadable** — retried across several checks first, because elko loads
+   letter bodies asynchronously and one empty read proves nothing. A page still
+   unreadable minutes later has a `text_path` pointing at a document that no
+   longer exists. It is moved **intact** into a free pocket slot (never blanked
+   first — `Paper.PUT` destroys only a sheet that is already blank), the hands
+   come free, and the channel is told once.
+
+Destroying an unread page is not on the ladder. A `WRITTEN` page in hand is
+genuinely ambiguous, because `Paper.GET` fiddles an incoming letter to `WRITTEN`
+as you pick it up, so "written must mean my own draft" would erase real mail.
+
 It is **not** a ghost, though that looks like the obvious answer. A ghost
 cannot mail: `HabitatMod.objectIsComplete` skips `Region.addToNoids` when
 the container is a ghost avatar, so a ghost's pocket Paper is never

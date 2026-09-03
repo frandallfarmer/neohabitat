@@ -124,6 +124,12 @@ const MAIL_POLL_SECONDS = parseInt(process.env.HABIBOTS_ORACLE_MAIL_POLL_SECONDS
 const MAIL_DRAIN_PASSES = 5
 // Region entry -> check_mail -> the letter appears in the slot, all asynchronous.
 const MAIL_SETTLE_MS = 3000
+// How many consecutive checks may find the SAME unreadable page in hand before
+// it is set aside. elko loads a letter body asynchronously (Paper.retrieve-
+// PaperContents), so one empty read proves nothing and patience is right. A page
+// still unreadable minutes later has a text_path pointing at a document that no
+// longer exists and will never read - waiting forever just keeps the bot deaf.
+const UNREADABLE_STOW_AFTER = 3
 
 const outbox = new OracleOutbox()
 
@@ -165,6 +171,64 @@ OracleBot.on('enteredRegion', (bot) => {
 // {"op":"exit","why":"full"}, which would lock the Oracle out of its own house.
 let checking = false
 let lastLetterText = null
+// Blocked-hands bookkeeping: which page is stuck, for how many checks running,
+// and which ones we have already reported to Discord (once each, not per tick).
+let stuckRef = null
+let stuckStrikes = 0
+const stowedReported = new Set()
+
+// Full hands are the bot's most dangerous state: Paper.GET is gated on
+// empty_handed(avatar), so a single stranded page disables mail in BOTH
+// directions, and every failure downstream of it presents as "the letter read
+// back empty" rather than as "the hands are full". Recovery ladder, in order of
+// preference: deliver it (clearHands hands a readable letter back), discard it
+// if it is only our own blank draft, and failing both, set it aside intact in a
+// pocket. Destroying an unread page is never on the ladder.
+//
+// Returns true if the hands are now free and the caller should carry on.
+async function freeTheHands(hands) {
+  const ref = hands.ref || null
+  if (ref === stuckRef) stuckStrikes++
+  else {
+    stuckRef = ref
+    stuckStrikes = 1
+  }
+  // Give an unreadable page a few checks to become readable before giving up on
+  // it - a body still loading is indistinguishable from a body that is gone.
+  if (hands.unreadable && stuckStrikes < UNREADABLE_STOW_AFTER) {
+    log.warn(`hands blocked: ${hands.error} (attempt ${stuckStrikes}/${UNREADABLE_STOW_AFTER})`)
+    return false
+  }
+  log.error(`hands blocked: ${hands.error}; setting it aside so mail can flow again`)
+  const stowed = await serialize(() => mail.stowHeldItem(OracleBot))
+  if (!stowed.ok) {
+    log.error(`could not free the hands: ${stowed.error}`)
+    return false
+  }
+  stuckRef = null
+  stuckStrikes = 0
+  if (stowed.stowed && stowed.ref && !stowedReported.has(stowed.ref)) {
+    stowedReported.add(stowed.ref)
+    await noteStowed(stowed).catch((err) =>
+      log.error(`could not report the set-aside page: ${err.message}`))
+  }
+  return true
+}
+
+// Say so in the channel. A page nobody can read is a real loss - somebody may
+// have mailed the Oracle and got no answer - and the alternative is that it
+// happens silently, which is how this went unnoticed for sixteen hours.
+async function noteStowed(stowed) {
+  const channel = await discord.channels.fetch(CHANNEL_ID)
+  await channel.send({
+    embeds: [{
+      description: `⚠️ The Oracle was holding a ${stowed.type} it could not read, which blocks all mail. ` +
+        `It has been set aside intact in pocket slot ${stowed.slot} — nothing was destroyed — and mail is flowing again.`,
+    }],
+    allowedMentions: NO_PINGS,
+  })
+  log.info(`reported a set-aside ${stowed.type} to Discord`)
+}
 
 async function checkForMail() {
   if (!inWorld || checking) return
@@ -174,6 +238,10 @@ async function checkForMail() {
       // A letter can be stranded in hand by an interrupted collection, which
       // blocks every pick-up until it is dealt with. Deliver it, then let go.
       const hands = await serialize(() => mail.clearHands(OracleBot))
+      if (hands.ok) {
+        stuckRef = null
+        stuckStrikes = 0
+      }
       if (hands.recovered) {
         if (hands.recovered.text !== lastLetterText) {
           lastLetterText = hands.recovered.text
@@ -182,6 +250,14 @@ async function checkForMail() {
             log.error(`could not relay a recovered letter: ${err.message}`))
         }
         await serialize(() => mail.discardHeldPaper(OracleBot, hands.ref))
+        stuckRef = null
+        stuckStrikes = 0
+        continue
+      }
+      // Anything else in the hands blocks every Paper.GET, so the bot can
+      // neither collect mail nor compose a reply. Never leave it there.
+      if (!hands.ok) {
+        if (!await freeTheHands(hands)) return
         continue
       }
 

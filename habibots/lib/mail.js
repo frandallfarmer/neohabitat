@@ -39,6 +39,11 @@ const CLEAR_SENTINEL_LENGTH = 16
 // blank sheet wherever it lands.
 const DISCARD_SLOT = 0
 
+// The numbered pockets, in the order stowHeldItem will fill them. MAIL_SLOT (4)
+// is excluded on purpose: it is the mailbox, and a second Paper parked there is
+// its own bug (see db/patchOracleHome.js).
+const POCKET_SLOTS = [0, 1, 2, 3]
+
 // Paper.retrievePaperContents loads a letter body from mongo asynchronously, so
 // the first read after the slot is repointed can legitimately come back empty.
 const READ_ATTEMPTS = 4
@@ -263,18 +268,24 @@ async function clearHands(bot) {
   }
   const state = held.grState || 0
   if (state === awareness.PAPER_BLANK_STATE) return { ok: true } // usable as-is
-  if (state === awareness.PAPER_LETTER_STATE) {
-    // Unread mail we picked up and never finished with. Never destroy it.
-    return { ok: false, error: 'holding an unread letter', letter: held }
-  }
 
+  // Everything else gets READ, and the page decides what happens to it.
+  //
   // WRITTEN is ambiguous and dangerous to guess at: Paper.GET fiddles an
   // INCOMING letter to WRITTEN as you pick it up, so a written page in hands is
   // either our own abandoned draft or somebody's letter we collected and never
-  // finished reading. Read it and let the postmark decide. A page with a sender
-  // on it is never destroyed here - it is handed back for the caller to deliver
-  // first. (Production had exactly this: a player's letter stuck in hands,
-  // blocking every pick-up, where blind cleanup would have erased it.)
+  // finished reading. A page with a sender on it is never destroyed here - it is
+  // handed back for the caller to deliver first. (Production had exactly this: a
+  // player's letter stuck in hands, blocking every pick-up, where blind cleanup
+  // would have erased it.)
+  //
+  // LETTER used to be refused here without even looking, on the theory that
+  // unread mail must never be touched. That was the wrong end of the stick:
+  // reading it IS how it gets delivered, and refusing left the hands full
+  // forever. Since every Paper.GET is gated on empty_handed, the bot then went
+  // silently deaf - it could neither collect mail nor compose a reply, and
+  // logged nothing. Production, 2026-09-02: a letter sat in the Oracle's hands
+  // for sixteen hours while it looped every two minutes doing nothing.
   let text = ''
   for (let attempt = 0; attempt < READ_ATTEMPTS && !text; attempt++) {
     if (attempt) await new Promise((r) => setTimeout(r, READ_RETRY_MS))
@@ -285,13 +296,19 @@ async function clearHands(bot) {
     }
   }
   const info = parsePostmark(text)
-  if (info.sender) {
-    log.info(`recovered a letter from ${info.sender} that was stuck in hand`)
+  // A postmark means somebody else wrote it. So does arriving as a LETTER, even
+  // if the postmark is missing - anything handed to us through the mail system
+  // gets delivered before it is disposed of.
+  if (text && (info.sender || state === awareness.PAPER_LETTER_STATE)) {
+    log.info(`recovered a letter from ${info.sender || 'an unknown sender'} that was stuck in hand`)
     return { ok: false, recovered: { sender: info.sender, body: info.body, text: text }, ref: held.ref }
   }
   if (!text) {
     // Could not read it at all - refuse rather than destroy something unseen.
-    return { ok: false, error: 'holding a page that cannot be read' }
+    // `unreadable` tells the caller this is the recoverable kind of stuck: the
+    // page is intact and can be set aside (stowHeldItem) once patience runs
+    // out, which is not the same as being free to destroy it.
+    return { ok: false, unreadable: true, ref: held.ref, error: 'holding a page that cannot be read' }
   }
   await discardHeldPaper(bot, held.ref)
   log.info('discarded an abandoned draft that was blocking the hands')
@@ -299,6 +316,33 @@ async function clearHands(bot) {
 }
 
 // Blank a held sheet and put it away; Paper.PUT destroys a blank one.
+// The escape hatch for a page the bot cannot read: move it out of HANDS into a
+// free numbered pocket slot, WITHOUT blanking it first. Nothing is destroyed -
+// Paper.PUT only destroys a sheet that is already blank - so an unreadable page
+// survives for a human to look at, while the hands come free and mail flows
+// again. Slots 0-3 are the pockets; MAIL_SLOT (4) is the mailbox and must stay
+// available for incoming letters, so it is never a target.
+//
+// Preferred over destroying an unreadable page (which risks erasing a player's
+// letter) and over leaving it in hands (which silently disables the whole bot).
+async function stowHeldItem(bot) {
+  const inv = awareness.getInventory(bot)
+  const held = inv.find((it) => it.slot === awareness.HANDS_SLOT)
+  if (!held) return { ok: true, stowed: false }
+  const me = bot.world && bot.world.me
+  if (!me) return { ok: false, error: 'no avatar in the world model' }
+  const taken = new Set(inv.map((it) => it.slot))
+  const slot = POCKET_SLOTS.find((n) => !taken.has(n))
+  if (slot === undefined) {
+    return { ok: false, error: 'every pocket slot is full' }
+  }
+  await withTimeout(
+    bot.send({ op: 'PUT', to: held.ref, containerNoid: me.noid, x: 0, y: slot, orientation: 0 }),
+    10000, 'stowHeldItem.put')
+  log.warn(`set aside ${held.type} ${held.ref} in pocket slot ${slot} to free the hands`)
+  return { ok: true, stowed: true, slot: slot, ref: held.ref, type: held.type }
+}
+
 async function discardHeldPaper(bot, ref) {
   await withTimeout(bot.writePaper(ref, ''), 10000, 'discardHeld.blank')
   await withTimeout(discardBlankPaper(bot, ref), 10000, 'discardHeld.discard')
@@ -353,6 +397,7 @@ module.exports = {
   drainMailSlot,
   clearHands,
   discardHeldPaper,
+  stowHeldItem,
   parsePostmark,
   buildMailPage,
   wrapForPaper,

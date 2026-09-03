@@ -241,16 +241,84 @@ test('an unreadable page in hand is refused rather than destroyed', async () => 
   const bot = pageBot([{ ref: 'mystery', type: 'Paper', slot: 5, grState: 1 }], sent, '')
   const res = await mail.clearHands(bot)
   assert.strictEqual(res.ok, false)
+  assert.strictEqual(res.unreadable, true, 'the caller needs to know this one is recoverable')
+  assert.strictEqual(res.ref, 'mystery')
   assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must not blank what it cannot read')
   assert.ok(!sent.some((s) => s.startsWith('PUT')))
 })
 
-test('an unread letter in hands is never destroyed', async () => {
+// Refusing to even LOOK at an unread letter was the 2026-09-02 production jam:
+// the hands stayed full, and since Paper.GET is gated on empty_handed the bot
+// went silently deaf in both directions. Reading it is how it gets delivered.
+test('an unread letter in hands is read and handed back for delivery', async () => {
   const sent = []
-  const bot = fakeBot([{ ref: 'letter', type: 'Paper', slot: 5, grState: 2 }], sent)
+  const bot = pageBot([{ ref: 'letter', type: 'Paper', slot: 5, grState: 2 }], sent,
+    'From: Naibor         Postmark: 26-09-02 Works like a charm')
   const res = await mail.clearHands(bot)
   assert.strictEqual(res.ok, false)
-  assert.deepStrictEqual(sent, [], 'must not touch it')
+  assert.strictEqual(res.recovered.sender, 'Naibor')
+  assert.strictEqual(res.recovered.body, 'Works like a charm')
+  assert.ok(sent.some((s) => s.startsWith('READ:letter')), 'must actually read it')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must not blank a letter')
+  assert.ok(!sent.some((s) => s.startsWith('PUT')), 'delivery comes before disposal')
+})
+
+// A LETTER with no postmark still came through the mail system, so it goes up
+// to Discord unattributed rather than being treated as our own scrap paper.
+test('an unpostmarked LETTER is still delivered, not discarded', async () => {
+  const sent = []
+  const bot = pageBot([{ ref: 'odd', type: 'Paper', slot: 5, grState: 2 }], sent, 'no postmark here')
+  const res = await mail.clearHands(bot)
+  assert.strictEqual(res.recovered.sender, null)
+  assert.strictEqual(res.recovered.body, 'no postmark here')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must not blank it')
+})
+
+// The escape hatch. An unreadable page must not sit in the hands forever (that
+// disables the bot) and must not be destroyed (it may be someone's letter), so
+// it is moved intact into a free pocket.
+test('stowHeldItem moves the held page to a free pocket without blanking it', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
+    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
+  ], sent)
+  const res = await mail.stowHeldItem(bot)
+  assert.strictEqual(res.ok, true)
+  assert.strictEqual(res.slot, 0)
+  assert.strictEqual(res.ref, 'husk')
+  assert.ok(sent.includes('PUT:husk'), 'moves it out of the hands')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'never blanks it — that would destroy it on PUT')
+})
+
+test('stowHeldItem skips occupied pockets and never targets the mail slot', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
+    { ref: 'a', type: 'Paper', slot: 0, grState: 1 },
+    { ref: 'b', type: 'Paper', slot: 1, grState: 1 },
+    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
+  ], sent)
+  assert.strictEqual((await mail.stowHeldItem(bot)).slot, 2)
+})
+
+test('stowHeldItem reports failure when every pocket is full', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
+    ...[0, 1, 2, 3].map((n) => ({ ref: `p${n}`, type: 'Paper', slot: n, grState: 1 })),
+  ], sent)
+  const res = await mail.stowHeldItem(bot)
+  assert.strictEqual(res.ok, false)
+  assert.deepStrictEqual(sent, [], 'no half-move')
+})
+
+test('stowHeldItem is a no-op with empty hands', async () => {
+  const sent = []
+  const res = await mail.stowHeldItem(fakeBot([], sent))
+  assert.strictEqual(res.ok, true)
+  assert.strictEqual(res.stowed, false)
+  assert.deepStrictEqual(sent, [])
 })
 
 test('a blank sheet in hands is left alone - it is usable', async () => {
