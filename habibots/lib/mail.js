@@ -325,6 +325,14 @@ async function clearHands(bot) {
 //
 // Preferred over destroying an unreadable page (which risks erasing a player's
 // letter) and over leaving it in hands (which silently disables the whole bot).
+//
+// CALLER CONTRACT: the world model will still show the item in HANDS afterwards.
+// generic_PUT announces the move with send_neighbor_msg, which excludes the
+// actor — the same blindness that stops a bot seeing its own GET — so elko and
+// the model disagree until the region is re-entered. A caller that loops on
+// "are my hands clear?" must refresh, or it will set the same page aside on
+// every pass and never get any further. Seen in production the first time this
+// ran.
 async function stowHeldItem(bot) {
   const inv = awareness.getInventory(bot)
   const held = inv.find((it) => it.slot === awareness.HANDS_SLOT)

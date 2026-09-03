@@ -207,6 +207,15 @@ async function freeTheHands(hands) {
   }
   stuckRef = null
   stuckStrikes = 0
+  // Our own PUT is announced with send_neighbor_msg, which EXCLUDES the actor —
+  // the same blindness that stops us seeing our own GET. So elko has moved the
+  // page into a pocket while our world model still shows it in HANDS, and
+  // without a refresh the next check finds the "same" blocked hands and sets it
+  // aside again, forever, never reaching the mail. Re-entering the region
+  // rebuilds contents from elko's own makes; it is the same nudge used below to
+  // make check_mail run.
+  await OracleBot.gotoContext(Argv.context)
+  await new Promise((r) => setTimeout(r, MAIL_SETTLE_MS))
   if (stowed.stowed && stowed.ref && !stowedReported.has(stowed.ref)) {
     stowedReported.add(stowed.ref)
     await noteStowed(stowed).catch((err) =>

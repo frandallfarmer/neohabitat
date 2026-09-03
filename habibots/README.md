@@ -131,6 +131,14 @@ So every mail check starts by clearing the hands, along this ladder:
    first — `Paper.PUT` destroys only a sheet that is already blank), the hands
    come free, and the channel is told once.
 
+Step 4 ends with a **region re-entry**, and that part is not optional.
+`generic_PUT` announces the move with `send_neighbor_msg`, which excludes the
+actor, so the bot cannot see its own `PUT` any more than it can see its own
+`GET`: elko has the page in a pocket while the world model still shows it in
+hand. Without the refresh the next check finds the same "blocked" hands and sets
+the page aside again on every pass, never reaching the mail — which is exactly
+what the first deployment of this fix did.
+
 Destroying an unread page is not on the ladder. A `WRITTEN` page in hand is
 genuinely ambiguous, because `Paper.GET` fiddles an incoming letter to `WRITTEN`
 as you pick it up, so "written must mean my own draft" would erase real mail.
