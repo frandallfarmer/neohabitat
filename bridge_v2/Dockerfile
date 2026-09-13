@@ -1,9 +1,9 @@
 # bridge_v2 — Go reimplementation of the Habitat<->Elko bridge.
 #
-# Multi-stage build: a golang:1.25 builder produces a static linux/amd64
+# Multi-stage build: a golang:1.26 builder produces a static linux/amd64
 # binary, which we then drop into a tiny distroless/static runtime image.
 
-FROM golang:1.25 AS build
+FROM golang:1.26 AS build
 
 WORKDIR /src
 
