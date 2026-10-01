@@ -226,6 +226,20 @@ test('a postmarked page in hand is handed back, never destroyed', async () => {
   assert.ok(!sent.some((s) => s.startsWith('PUT')), 'must not discard a letter')
 })
 
+// Randy's rule: a blank sheet goes on the GROUND, where the region recycles it —
+// never into a pocket, which would keep it and eventually fill the bot's slots.
+test('a blanked sheet is put down on the ground, not into a pocket', async () => {
+  const sent = []
+  const bot = pageBot([{ ref: 'draft', type: 'Paper', slot: 5, grState: 1 }], sent, 'to: someone')
+  const msgs = []
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  await mail.clearHands(bot)
+  const put = msgs.find((m) => m.op === 'PUT')
+  assert.ok(put, 'the blanked sheet is put down')
+  assert.strictEqual(put.containerNoid, 0, 'containerNoid must be THE_REGION (0) — the ground')
+  assert.strictEqual(put.y, undefined, 'no pocket slot: Paper.PUT takes x/y from the avatar')
+})
+
 test('an unpostmarked draft in hand is blanked and discarded', async () => {
   const sent = []
   const bot = pageBot([{ ref: 'draft', type: 'Paper', slot: 5, grState: 1 }], sent, 'to: someone')
