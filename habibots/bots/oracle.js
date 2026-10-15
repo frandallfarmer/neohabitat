@@ -258,7 +258,9 @@ async function checkForMail() {
           await relayLetter(hands.recovered).catch((err) =>
             log.error(`could not relay a recovered letter: ${err.message}`))
         }
-        await serialize(() => mail.discardHeldPaper(OracleBot, hands.ref))
+        // Delivered — put it down unblanked. Blanking a letter deletes its body,
+        // which the mail system may still reference (see putDownHeldPaper).
+        await serialize(() => mail.putDownHeldPaper(OracleBot, hands.ref))
         stuckRef = null
         stuckStrikes = 0
         continue

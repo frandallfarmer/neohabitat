@@ -186,6 +186,26 @@ test('a letter that reads back empty is left intact, not cleared', async () => {
   assert.ok(!sent.includes('PUT'), 'must not discard a letter it could not read')
 })
 
+// Letter bodies are SHARED: sendMailToUser reuses the sender's text_path and
+// advance_mail_slot points the next mail-slot sheet at the same path. Paper.WRITE's
+// clear deletes that body, so blanking a received letter destroys content other
+// sheets still reference — observed in production on 2026-09-30, which left the
+// Oracle holding letters it could not read.
+test('a letter read out of the mail slot is put down, never blanked', async () => {
+  const sent = []
+  const inv = [{ ref: 'letter', type: 'Paper', slot: 4, grState: 2, name: 'Pad and mailbox' }]
+  const msgs = []
+  const bot = pageBot(inv, sent, 'From: Naibor          Postmark: 26-09-30 Works like a charm')
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.drainMailSlot(bot)
+  assert.strictEqual(res.drained, true)
+  assert.strictEqual(res.sender, 'Naibor')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must NOT blank a letter — that deletes a shared body')
+  const put = msgs.find((m) => m.op === 'PUT')
+  assert.ok(put, 'the letter is put down')
+  assert.strictEqual(put.containerNoid, 0, 'onto the ground (THE_REGION), not a pocket')
+})
+
 // Paper.GET is gated on empty_handed(avatar), and the failure is silent —
 // Paper.READ answers showEmptyPaper when you aren't holding the sheet. So a
 // draft abandoned in HANDS breaks both sending and receiving, and looks like an
