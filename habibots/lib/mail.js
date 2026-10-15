@@ -35,9 +35,10 @@ const MAIL_BODY_MAX = MAIL_COLS * MAIL_BODY_ROWS // 600
 // webclient/lib/text-view.js:81 fixes this by padding a space; do the same.
 const CLEAR_SENTINEL_LENGTH = 16
 
-// Any numbered pocket slot (0-3) works for disposal; Paper.PUT destroys a
-// blank sheet wherever it lands.
-const DISCARD_SLOT = 0
+// THE_REGION (Constants.java:272) — the container noid that means "the ground".
+// Paper.PUT defaults containerNoid to THE_REGION and x/y/orientation to the
+// avatar's own, so a PUT carrying only this drops the sheet at the bot's feet.
+const THE_REGION = 0
 
 // The numbered pockets, in the order stowHeldItem will fill them. MAIL_SLOT (4)
 // is excluded on purpose: it is the mailbox, and a second Paper parked there is
@@ -190,12 +191,15 @@ async function drainMailSlot(bot) {
     log.warn('a letter in MAIL_SLOT read back empty after retries; leaving it intact')
     return { drained: false, text: '', unreadable: true }
   }
-  // Blank it (an empty write is Paper.WRITE's clear sentinel, which also
-  // resets text_path so is_blank() holds), then put it back in a pocket so
-  // the server destroys it. Reusing this sheet instead would leave the
-  // MAIL_SLOT replacement behind as a second Paper in the same slot.
-  await withTimeout(bot.writePaper(letter.ref, ''), 10000, 'drainMailSlot.clear')
-  await withTimeout(discardBlankPaper(bot, letter.ref), 10000, 'drainMailSlot.discard')
+  // Put the letter DOWN, unblanked. Never blank a letter: Paper.WRITE's clear
+  // calls deletePaperContents(), which removes the body document — and letter
+  // bodies are SHARED (sendMailToUser reuses the sender's text_path, and
+  // advance_mail_slot points the next mail-slot sheet at the same path). Blanking
+  // one sheet therefore destroys content other sheets and queued records still
+  // reference, which is how the Oracle ended up holding unreadable letters it
+  // could neither deliver nor safely destroy. Paper.GET's special_get already
+  // spawned the replacement sheet in MAIL_SLOT, so nothing needs this one.
+  await withTimeout(putDownHeldPaper(bot, letter.ref), 10000, 'drainMailSlot.putdown')
   const letterInfo = parsePostmark(text)
   log.info(`read a letter from ${letterInfo.sender || 'an unknown sender'} out of MAIL_SLOT`)
   // `text` is the whole page including the postmark, which is the only
@@ -243,15 +247,20 @@ function decodePage(reply) {
   return out
 }
 
-// Paper.PUT destroys a sheet outright once it is blank (Paper.java:334) —
-// the same way a player gets rid of scrap by stuffing it back in a pocket.
-// This is what keeps MAIL_SLOT at exactly one Paper: GET spawns the
-// replacement, and the sheet we read gets disposed of instead of piling up
-// as a second occupant of the slot.
+// Paper.PUT destroys a sheet outright once it is blank (Paper.java:334), so
+// disposal is just "blank it, then put it down".
+//
+// Put it DOWN ON THE GROUND, never into a pocket (Randy's rule): the region
+// recycles a blank sheet left on the floor, whereas a pocket slot keeps it —
+// and a bot that quietly accumulates paper in its pockets runs out of free
+// slots, which is how the Oracle ends up unable to take anything else.
+// This is also what keeps MAIL_SLOT at exactly one Paper: Paper.GET spawns the
+// replacement, and the sheet we read gets disposed of instead of piling up as a
+// second occupant of the slot.
 function discardBlankPaper(bot, ref) {
-  const me = bot.world && bot.world.me
-  if (!me) return Promise.resolve({ ok: false })
-  return bot.send({ op: 'PUT', to: ref, containerNoid: me.noid, x: 0, y: DISCARD_SLOT, orientation: 0 })
+  // containerNoid only: Paper.PUT fills x/y/orientation from the avatar, so the
+  // sheet lands at the bot's own feet.
+  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
 }
 
 // Every Paper.GET is gated on empty_handed(avatar) — ANY object in HANDS makes
@@ -351,6 +360,17 @@ async function stowHeldItem(bot) {
   return { ok: true, stowed: true, slot: slot, ref: held.ref, type: held.type }
 }
 
+// Put a sheet down on the ground exactly as it is — no blanking, so nothing is
+// deleted. A non-blank sheet survives the PUT (Paper.PUT only destroys when
+// is_blank()), which is the point: the letter's content stays intact for whoever
+// else still points at it. Frees the hands, which is what blocks Paper.GET.
+function putDownHeldPaper(bot, ref) {
+  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+}
+
+// Dispose of a sheet WE wrote: blank it (destroying the body we created, which
+// nothing else references) and put it down so the region recycles it. Never call
+// this on a letter someone mailed us — see putDownHeldPaper.
 async function discardHeldPaper(bot, ref) {
   await withTimeout(bot.writePaper(ref, ''), 10000, 'discardHeld.blank')
   await withTimeout(discardBlankPaper(bot, ref), 10000, 'discardHeld.discard')
@@ -405,6 +425,7 @@ module.exports = {
   drainMailSlot,
   clearHands,
   discardHeldPaper,
+  putDownHeldPaper,
   stowHeldItem,
   parsePostmark,
   buildMailPage,
