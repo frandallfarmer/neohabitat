@@ -310,48 +310,96 @@ test('an unpostmarked LETTER is still delivered, not discarded', async () => {
 
 // The escape hatch. An unreadable page must not sit in the hands forever (that
 // disables the bot) and must not be destroyed (it may be someone's letter), so
-// it is moved intact into a free pocket.
-test('stowHeldItem moves the held page to a free pocket without blanking it', async () => {
+// it goes on the GROUND intact — never into a pocket. An avatar carries exactly
+// one sheet, in MAIL_SLOT; a second Paper on the avatar is the bug this fixes.
+test('dropHeldItem puts the held page on the ground, never in a pocket', async () => {
   const sent = []
+  const msgs = []
   const bot = fakeBot([
     { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
     { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
   ], sent)
-  const res = await mail.stowHeldItem(bot)
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.dropHeldItem(bot)
   assert.strictEqual(res.ok, true)
-  assert.strictEqual(res.slot, 0)
+  assert.strictEqual(res.dropped, true)
   assert.strictEqual(res.ref, 'husk')
-  assert.ok(sent.includes('PUT:husk'), 'moves it out of the hands')
+  const put = msgs.find((m) => m.op === 'PUT' && m.to === 'husk')
+  assert.ok(put, 'moves it out of the hands')
+  assert.strictEqual(put.containerNoid, 0, 'containerNoid must be THE_REGION (0) — the ground')
+  assert.strictEqual(put.y, undefined, 'no pocket slot may be named')
   assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'never blanks it — that would destroy it on PUT')
+  assert.strictEqual(res.slot, undefined, 'a slot in the result would mean it went into a pocket')
 })
 
-test('stowHeldItem skips occupied pockets and never targets the mail slot', async () => {
+// The old pocket-stowing behaviour dead-ended here: four stowed sheets and it
+// gave up with the hands still full, which is to say with mail still broken.
+// The ground never fills up.
+test('dropHeldItem still frees the hands when every pocket is occupied', async () => {
   const sent = []
-  const bot = fakeBot([
-    { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
-    { ref: 'a', type: 'Paper', slot: 0, grState: 1 },
-    { ref: 'b', type: 'Paper', slot: 1, grState: 1 },
-    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
-  ], sent)
-  assert.strictEqual((await mail.stowHeldItem(bot)).slot, 2)
-})
-
-test('stowHeldItem reports failure when every pocket is full', async () => {
-  const sent = []
+  const msgs = []
   const bot = fakeBot([
     { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
     ...[0, 1, 2, 3].map((n) => ({ ref: `p${n}`, type: 'Paper', slot: n, grState: 1 })),
   ], sent)
-  const res = await mail.stowHeldItem(bot)
-  assert.strictEqual(res.ok, false)
-  assert.deepStrictEqual(sent, [], 'no half-move')
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.dropHeldItem(bot)
+  assert.strictEqual(res.ok, true, 'full pockets are irrelevant now')
+  assert.strictEqual(res.dropped, true)
+  assert.strictEqual(msgs.find((m) => m.op === 'PUT').containerNoid, 0)
 })
 
-test('stowHeldItem is a no-op with empty hands', async () => {
+test('dropHeldItem is a no-op with empty hands', async () => {
   const sent = []
-  const res = await mail.stowHeldItem(fakeBot([], sent))
+  const res = await mail.dropHeldItem(fakeBot([], sent))
   assert.strictEqual(res.ok, true)
-  assert.strictEqual(res.stowed, false)
+  assert.strictEqual(res.dropped, false)
+  assert.deepStrictEqual(sent, [])
+})
+
+// The invariant sweep: exactly one sheet on the avatar, in MAIL_SLOT. Anything
+// in a numbered pocket is a stray left by the old behaviour and goes to ground.
+test('sweepStrayPaper moves stray sheets out of the numbered pockets', async () => {
+  const sent = []
+  const msgs = []
+  const bot = fakeBot([
+    { ref: 'stray0', type: 'Paper', slot: 0, grState: 2 },
+    { ref: 'stray3', type: 'Paper', slot: 3, grState: 1 },
+    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
+  ], sent)
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.sweepStrayPaper(bot)
+  assert.deepStrictEqual(res.moved, ['stray0', 'stray3'])
+  assert.strictEqual(msgs.length, 2, 'only the strays move')
+  for (const m of msgs) {
+    assert.strictEqual(m.op, 'PUT')
+    assert.strictEqual(m.containerNoid, 0, 'onto the ground')
+  }
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'a stray may be someone\'s letter — never blank it')
+})
+
+test('sweepStrayPaper never touches the mail slot or the hands', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 2 },
+    { ref: 'held', type: 'Paper', slot: 5, grState: 1 },
+  ], sent)
+  const res = await mail.sweepStrayPaper(bot)
+  assert.deepStrictEqual(res.moved, [], 'the reserved slot is where a sheet belongs')
+  assert.deepStrictEqual(sent, [])
+})
+
+// Tokens legitimately live in pocket slot 0 and a Head in slot 6 — the sweep is
+// about Paper only, and must not start redistributing the bot's belongings.
+test('sweepStrayPaper leaves non-Paper pocket items alone', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'money', type: 'Tokens', slot: 0 },
+    { ref: 'head', type: 'Head', slot: 6 },
+    { ref: 'compass', type: 'Compass', slot: 1 },
+  ], sent)
+  const res = await mail.sweepStrayPaper(bot)
+  assert.deepStrictEqual(res.moved, [])
   assert.deepStrictEqual(sent, [])
 })
 

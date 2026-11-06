@@ -40,10 +40,12 @@ const CLEAR_SENTINEL_LENGTH = 16
 // avatar's own, so a PUT carrying only this drops the sheet at the bot's feet.
 const THE_REGION = 0
 
-// The numbered pockets, in the order stowHeldItem will fill them. MAIL_SLOT (4)
-// is excluded on purpose: it is the mailbox, and a second Paper parked there is
-// its own bug (see db/patchOracleHome.js).
-const POCKET_SLOTS = [0, 1, 2, 3]
+// The numbered pockets — general storage; Tokens live in slot 0, a Head in 6.
+// Paper must NEVER rest in one. An avatar carries exactly ONE sheet, in
+// MAIL_SLOT (4), which is the self-replenishing mailbox; any other sheet belongs
+// on the ground, where a blank one is recycled and a written one stays readable.
+// sweepStrayPaper enforces that invariant.
+const NUMBERED_POCKET_SLOTS = [0, 1, 2, 3]
 
 // Paper.retrievePaperContents loads a letter body from mongo asynchronously, so
 // the first read after the slot is repointed can legitimately come back empty.
@@ -250,6 +252,17 @@ function decodePage(reply) {
 // Paper.PUT destroys a sheet outright once it is blank (Paper.java:334), so
 // disposal is just "blank it, then put it down".
 //
+// The ONE way anything goes to the ground. Every disposal below routes through
+// this, so "a sheet belongs on the floor, not in a pocket" has a single
+// definition and a pocket slot cannot creep back into one of these PUTs — there
+// is no parameter here to pass one in.
+//
+// containerNoid only: Paper.PUT fills x/y/orientation from the avatar, so the
+// sheet lands at the bot's own feet.
+function putOnGround(bot, ref) {
+  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+}
+
 // Put it DOWN ON THE GROUND, never into a pocket (Randy's rule): the region
 // recycles a blank sheet left on the floor, whereas a pocket slot keeps it —
 // and a bot that quietly accumulates paper in its pockets runs out of free
@@ -258,9 +271,7 @@ function decodePage(reply) {
 // replacement, and the sheet we read gets disposed of instead of piling up as a
 // second occupant of the slot.
 function discardBlankPaper(bot, ref) {
-  // containerNoid only: Paper.PUT fills x/y/orientation from the avatar, so the
-  // sheet lands at the bot's own feet.
-  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+  return putOnGround(bot, ref)
 }
 
 // Every Paper.GET is gated on empty_handed(avatar) — ANY object in HANDS makes
@@ -315,8 +326,8 @@ async function clearHands(bot) {
   if (!text) {
     // Could not read it at all - refuse rather than destroy something unseen.
     // `unreadable` tells the caller this is the recoverable kind of stuck: the
-    // page is intact and can be set aside (stowHeldItem) once patience runs
-    // out, which is not the same as being free to destroy it.
+    // page is intact and can be put on the ground (dropHeldItem) once patience
+    // runs out, which is not the same as being free to destroy it.
     return { ok: false, unreadable: true, ref: held.ref, error: 'holding a page that cannot be read' }
   }
   await discardHeldPaper(bot, held.ref)
@@ -324,13 +335,20 @@ async function clearHands(bot) {
   return { ok: true, cleared: true }
 }
 
-// Blank a held sheet and put it away; Paper.PUT destroys a blank one.
-// The escape hatch for a page the bot cannot read: move it out of HANDS into a
-// free numbered pocket slot, WITHOUT blanking it first. Nothing is destroyed -
-// Paper.PUT only destroys a sheet that is already blank - so an unreadable page
-// survives for a human to look at, while the hands come free and mail flows
-// again. Slots 0-3 are the pockets; MAIL_SLOT (4) is the mailbox and must stay
-// available for incoming letters, so it is never a target.
+// The escape hatch for an item the bot cannot deal with: move it out of HANDS
+// onto the GROUND, WITHOUT blanking it first. This is deliberately not a pocket.
+// An earlier version parked the page in a free numbered pocket, which broke the
+// one-sheet invariant (two Papers on the avatar at once), stacked up sheets the
+// bot would never look at again, and eventually dead-ended on "every pocket slot
+// is full" — with mail still blocked, which was the thing it set out to fix.
+//
+// On the ground the outcome is right either way, because Paper.PUT
+// (Paper.java:330) destroys the sheet only when is_blank():
+//   - a blank sheet is recycled by the game, exactly as it should be;
+//   - a written sheet SURVIVES at the bot's feet, where a human can walk in,
+//     read it and pick it up — which was the whole point of "set aside intact".
+// Either way the hands come free, which is what gates Paper.GET and therefore
+// all mail in both directions.
 //
 // Preferred over destroying an unreadable page (which risks erasing a player's
 // letter) and over leaving it in hands (which silently disables the whole bot).
@@ -339,25 +357,36 @@ async function clearHands(bot) {
 // generic_PUT announces the move with send_neighbor_msg, which excludes the
 // actor — the same blindness that stops a bot seeing its own GET — so elko and
 // the model disagree until the region is re-entered. A caller that loops on
-// "are my hands clear?" must refresh, or it will set the same page aside on
-// every pass and never get any further. Seen in production the first time this
-// ran.
-async function stowHeldItem(bot) {
-  const inv = awareness.getInventory(bot)
-  const held = inv.find((it) => it.slot === awareness.HANDS_SLOT)
-  if (!held) return { ok: true, stowed: false }
-  const me = bot.world && bot.world.me
-  if (!me) return { ok: false, error: 'no avatar in the world model' }
-  const taken = new Set(inv.map((it) => it.slot))
-  const slot = POCKET_SLOTS.find((n) => !taken.has(n))
-  if (slot === undefined) {
-    return { ok: false, error: 'every pocket slot is full' }
+// "are my hands clear?" must refresh, or it will drop the same page on every
+// pass and never get any further. Seen in production the first time this ran.
+async function dropHeldItem(bot) {
+  const held = awareness.getInventory(bot).find((it) => it.slot === awareness.HANDS_SLOT)
+  if (!held) return { ok: true, dropped: false }
+  await withTimeout(putOnGround(bot, held.ref), 10000, 'dropHeldItem.put')
+  log.warn(`put ${held.type} ${held.ref} on the ground to free the hands`)
+  return { ok: true, dropped: true, ref: held.ref, type: held.type }
+}
+
+// Enforce the one-sheet invariant: the ONLY Paper an avatar may carry is the one
+// in MAIL_SLOT. Any sheet found in a numbered pocket (0-3) is a stray — put it on
+// the ground, where a blank one is recycled and a written one stays readable.
+//
+// This both cleans up after the old pocket-stowing behaviour and stops any future
+// path from quietly re-breaking the invariant. Non-Paper items are left strictly
+// alone: Tokens legitimately live in slot 0 and a Head in slot 6.
+//
+// Same CALLER CONTRACT as dropHeldItem — the model will not reflect these PUTs
+// until the region is re-entered.
+async function sweepStrayPaper(bot) {
+  const strays = awareness.getInventory(bot).filter((it) =>
+    it.type === 'Paper' && NUMBERED_POCKET_SLOTS.includes(it.slot))
+  const moved = []
+  for (const stray of strays) {
+    await withTimeout(putOnGround(bot, stray.ref), 10000, 'sweepStrayPaper.put')
+    log.warn(`swept a stray Paper ${stray.ref} out of pocket slot ${stray.slot} onto the ground`)
+    moved.push(stray.ref)
   }
-  await withTimeout(
-    bot.send({ op: 'PUT', to: held.ref, containerNoid: me.noid, x: 0, y: slot, orientation: 0 }),
-    10000, 'stowHeldItem.put')
-  log.warn(`set aside ${held.type} ${held.ref} in pocket slot ${slot} to free the hands`)
-  return { ok: true, stowed: true, slot: slot, ref: held.ref, type: held.type }
+  return { ok: true, moved: moved }
 }
 
 // Put a sheet down on the ground exactly as it is — no blanking, so nothing is
@@ -365,7 +394,7 @@ async function stowHeldItem(bot) {
 // is_blank()), which is the point: the letter's content stays intact for whoever
 // else still points at it. Frees the hands, which is what blocks Paper.GET.
 function putDownHeldPaper(bot, ref) {
-  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+  return putOnGround(bot, ref)
 }
 
 // Dispose of a sheet WE wrote: blank it (destroying the body we created, which
@@ -426,7 +455,8 @@ module.exports = {
   clearHands,
   discardHeldPaper,
   putDownHeldPaper,
-  stowHeldItem,
+  dropHeldItem,
+  sweepStrayPaper,
   parsePostmark,
   buildMailPage,
   wrapForPaper,

@@ -125,11 +125,11 @@ const MAIL_DRAIN_PASSES = 5
 // Region entry -> check_mail -> the letter appears in the slot, all asynchronous.
 const MAIL_SETTLE_MS = 3000
 // How many consecutive checks may find the SAME unreadable page in hand before
-// it is set aside. elko loads a letter body asynchronously (Paper.retrieve-
+// it goes on the ground. elko loads a letter body asynchronously (Paper.retrieve-
 // PaperContents), so one empty read proves nothing and patience is right. A page
 // still unreadable minutes later has a text_path pointing at a document that no
 // longer exists and will never read - waiting forever just keeps the bot deaf.
-const UNREADABLE_STOW_AFTER = 3
+const UNREADABLE_DROP_AFTER = 3
 
 const outbox = new OracleOutbox()
 
@@ -175,15 +175,16 @@ let lastLetterText = null
 // and which ones we have already reported to Discord (once each, not per tick).
 let stuckRef = null
 let stuckStrikes = 0
-const stowedReported = new Set()
+const droppedReported = new Set()
 
 // Full hands are the bot's most dangerous state: Paper.GET is gated on
 // empty_handed(avatar), so a single stranded page disables mail in BOTH
 // directions, and every failure downstream of it presents as "the letter read
 // back empty" rather than as "the hands are full". Recovery ladder, in order of
 // preference: deliver it (clearHands hands a readable letter back), discard it
-// if it is only our own blank draft, and failing both, set it aside intact in a
-// pocket. Destroying an unread page is never on the ladder.
+// if it is only our own blank draft, and failing both, put it on the GROUND
+// intact. Destroying an unread page is never on the ladder, and neither is a
+// pocket: the avatar carries exactly one sheet, in MAIL_SLOT.
 //
 // Returns true if the hands are now free and the caller should carry on.
 async function freeTheHands(hands) {
@@ -195,31 +196,31 @@ async function freeTheHands(hands) {
   }
   // Give an unreadable page a few checks to become readable before giving up on
   // it - a body still loading is indistinguishable from a body that is gone.
-  if (hands.unreadable && stuckStrikes < UNREADABLE_STOW_AFTER) {
-    log.warn(`hands blocked: ${hands.error} (attempt ${stuckStrikes}/${UNREADABLE_STOW_AFTER})`)
+  if (hands.unreadable && stuckStrikes < UNREADABLE_DROP_AFTER) {
+    log.warn(`hands blocked: ${hands.error} (attempt ${stuckStrikes}/${UNREADABLE_DROP_AFTER})`)
     return false
   }
-  log.error(`hands blocked: ${hands.error}; setting it aside so mail can flow again`)
-  const stowed = await serialize(() => mail.stowHeldItem(OracleBot))
-  if (!stowed.ok) {
-    log.error(`could not free the hands: ${stowed.error}`)
+  log.error(`hands blocked: ${hands.error}; putting it down so mail can flow again`)
+  const dropped = await serialize(() => mail.dropHeldItem(OracleBot))
+  if (!dropped.ok) {
+    log.error(`could not free the hands: ${dropped.error}`)
     return false
   }
   stuckRef = null
   stuckStrikes = 0
   // Our own PUT is announced with send_neighbor_msg, which EXCLUDES the actor —
   // the same blindness that stops us seeing our own GET. So elko has moved the
-  // page into a pocket while our world model still shows it in HANDS, and
-  // without a refresh the next check finds the "same" blocked hands and sets it
-  // aside again, forever, never reaching the mail. Re-entering the region
-  // rebuilds contents from elko's own makes; it is the same nudge used below to
-  // make check_mail run.
+  // page to the ground while our world model still shows it in HANDS, and
+  // without a refresh the next check finds the "same" blocked hands and drops it
+  // again, forever, never reaching the mail. Re-entering the region rebuilds
+  // contents from elko's own makes; it is the same nudge used below to make
+  // check_mail run.
   await OracleBot.gotoContext(Argv.context)
   await new Promise((r) => setTimeout(r, MAIL_SETTLE_MS))
-  if (stowed.stowed && stowed.ref && !stowedReported.has(stowed.ref)) {
-    stowedReported.add(stowed.ref)
-    await noteStowed(stowed).catch((err) =>
-      log.error(`could not report the set-aside page: ${err.message}`))
+  if (dropped.dropped && dropped.ref && !droppedReported.has(dropped.ref)) {
+    droppedReported.add(dropped.ref)
+    await noteDropped(dropped).catch((err) =>
+      log.error(`could not report the page put down: ${err.message}`))
   }
   return true
 }
@@ -227,22 +228,34 @@ async function freeTheHands(hands) {
 // Say so in the channel. A page nobody can read is a real loss - somebody may
 // have mailed the Oracle and got no answer - and the alternative is that it
 // happens silently, which is how this went unnoticed for sixteen hours.
-async function noteStowed(stowed) {
+async function noteDropped(dropped) {
   const channel = await discord.channels.fetch(CHANNEL_ID)
   await channel.send({
     embeds: [{
-      description: `⚠️ The Oracle was holding a ${stowed.type} it could not read, which blocks all mail. ` +
-        `It has been set aside intact in pocket slot ${stowed.slot} — nothing was destroyed — and mail is flowing again.`,
+      description: `⚠️ The Oracle was holding a ${dropped.type} it could not read, which blocks all mail. ` +
+        `It has been set down intact on the floor of the Oracle's house — nothing was destroyed, ` +
+        `and anyone who goes there can read it and pick it up — and mail is flowing again.`,
     }],
     allowedMentions: NO_PINGS,
   })
-  log.info(`reported a set-aside ${stowed.type} to Discord`)
+  log.info(`reported a ${dropped.type} put down on the ground to Discord`)
 }
 
 async function checkForMail() {
   if (!inWorld || checking) return
   checking = true
   try {
+    // Enforce the one-sheet invariant before anything else. A Paper in a
+    // numbered pocket is a stray — the old pocket-stowing behaviour left them
+    // there — and belongs on the ground. This is an inventory scan that finds
+    // nothing in the normal case, so only an actual sweep pays for the region
+    // re-entry its PUTs need (see the sweepStrayPaper caller contract).
+    const swept = await serialize(() => mail.sweepStrayPaper(OracleBot))
+    if (swept.moved.length) {
+      log.info(`swept ${swept.moved.length} stray sheet(s) out of the pockets onto the ground`)
+      await OracleBot.gotoContext(Argv.context)
+      await new Promise((r) => setTimeout(r, MAIL_SETTLE_MS))
+    }
     for (let pass = 0; pass < MAIL_DRAIN_PASSES; pass++) {
       // A letter can be stranded in hand by an interrupted collection, which
       // blocks every pick-up until it is dealt with. Deliver it, then let go.
