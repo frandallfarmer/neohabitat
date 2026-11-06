@@ -182,9 +182,11 @@ const droppedReported = new Set()
 // directions, and every failure downstream of it presents as "the letter read
 // back empty" rather than as "the hands are full". Recovery ladder, in order of
 // preference: deliver it (clearHands hands a readable letter back), discard it
-// if it is only our own blank draft, and failing both, put it on the GROUND
-// intact. Destroying an unread page is never on the ladder, and neither is a
-// pocket: the avatar carries exactly one sheet, in MAIL_SLOT.
+// if it is only our own blank draft, and failing both, erase it and put it on
+// the GROUND. A pocket is never on the ladder: the avatar carries exactly one
+// sheet, in MAIL_SLOT. Erasing is what makes the region recycle the sheet, and
+// it only ever happens to a page that has been dealt with — relayed, or read so
+// many times that its body is provably gone.
 //
 // Returns true if the hands are now free and the caller should carry on.
 async function freeTheHands(hands) {
@@ -271,9 +273,11 @@ async function checkForMail() {
           await relayLetter(hands.recovered).catch((err) =>
             log.error(`could not relay a recovered letter: ${err.message}`))
         }
-        // Delivered — put it down unblanked. Blanking a letter deletes its body,
-        // which the mail system may still reference (see putDownHeldPaper).
-        await serialize(() => mail.putDownHeldPaper(OracleBot, hands.ref))
+        // Delivered, so it is dealt with: erase it, then put it down. Habitat
+        // mail is fire-and-forget — PSENDMAIL destroy_object's the sender's own
+        // sheet on send, so there is no second copy anywhere that needs this
+        // body, and an erased sheet gets recycled instead of littering the floor.
+        await serialize(() => mail.discardHeldPaper(OracleBot, hands.ref))
         stuckRef = null
         stuckStrikes = 0
         continue

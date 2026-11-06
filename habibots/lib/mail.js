@@ -193,15 +193,22 @@ async function drainMailSlot(bot) {
     log.warn('a letter in MAIL_SLOT read back empty after retries; leaving it intact')
     return { drained: false, text: '', unreadable: true }
   }
-  // Put the letter DOWN, unblanked. Never blank a letter: Paper.WRITE's clear
-  // calls deletePaperContents(), which removes the body document — and letter
-  // bodies are SHARED (sendMailToUser reuses the sender's text_path, and
-  // advance_mail_slot points the next mail-slot sheet at the same path). Blanking
-  // one sheet therefore destroys content other sheets and queued records still
-  // reference, which is how the Oracle ended up holding unreadable letters it
-  // could neither deliver nor safely destroy. Paper.GET's special_get already
-  // spawned the replacement sheet in MAIL_SLOT, so nothing needs this one.
-  await withTimeout(putDownHeldPaper(bot, letter.ref), 10000, 'drainMailSlot.putdown')
+  // The letter has been read, so it is DEALT WITH: erase it, then put it down.
+  // Randy's rule — there is no utility in old mail once it has been handled, and
+  // erasing is what lets the region recycle the sheet instead of leaving it on
+  // the floor forever.
+  //
+  // Erasing is safe here, and the earlier "letter bodies are SHARED, never blank
+  // one" reasoning was too cautious. By the time a letter is readable in hand,
+  // nothing else points at its body:
+  //   - the sender's own sheet was destroy_object'd by PSENDMAIL on send
+  //     (Paper.java:276) — the sender keeps no copy;
+  //   - the queue record was popNextMail'd off the MailQueue by advance_mail_slot
+  //     (Avatar.java) before the slot could be read.
+  // So Paper.WRITE's clear -> deletePaperContents() removes a body that is this
+  // sheet's alone. Paper.GET's special_get already spawned the replacement sheet
+  // in MAIL_SLOT, so nothing needs this one either.
+  await withTimeout(discardHeldPaper(bot, letter.ref), 20000, 'drainMailSlot.discard')
   const letterInfo = parsePostmark(text)
   log.info(`read a letter from ${letterInfo.sender || 'an unknown sender'} out of MAIL_SLOT`)
   // `text` is the whole page including the postmark, which is the only
@@ -362,8 +369,21 @@ async function clearHands(bot) {
 async function dropHeldItem(bot) {
   const held = awareness.getInventory(bot).find((it) => it.slot === awareness.HANDS_SLOT)
   if (!held) return { ok: true, dropped: false }
-  await withTimeout(putOnGround(bot, held.ref), 10000, 'dropHeldItem.put')
-  log.warn(`put ${held.type} ${held.ref} on the ground to free the hands`)
+  // A Paper that reached here has been read and re-read and will not yield its
+  // text, which means its text_path points at a body that is already gone. It
+  // has been dealt with as far as it can be, so it is erased like any other
+  // handled sheet: there is nothing left to destroy, and a blank sheet is
+  // recycled on PUT instead of lying on the floor forever.
+  //
+  // Only Paper is erased. Anything else in the hands (a Compass, say) has no
+  // page to write, so it is simply put down.
+  if (held.type === 'Paper') {
+    await withTimeout(discardHeldPaper(bot, held.ref), 20000, 'dropHeldItem.discard')
+    log.warn(`erased and dropped an unreadable Paper ${held.ref} to free the hands`)
+  } else {
+    await withTimeout(putOnGround(bot, held.ref), 10000, 'dropHeldItem.put')
+    log.warn(`put ${held.type} ${held.ref} on the ground to free the hands`)
+  }
   return { ok: true, dropped: true, ref: held.ref, type: held.type }
 }
 
@@ -389,17 +409,12 @@ async function sweepStrayPaper(bot) {
   return { ok: true, moved: moved }
 }
 
-// Put a sheet down on the ground exactly as it is — no blanking, so nothing is
-// deleted. A non-blank sheet survives the PUT (Paper.PUT only destroys when
-// is_blank()), which is the point: the letter's content stays intact for whoever
-// else still points at it. Frees the hands, which is what blocks Paper.GET.
-function putDownHeldPaper(bot, ref) {
-  return putOnGround(bot, ref)
-}
-
-// Dispose of a sheet WE wrote: blank it (destroying the body we created, which
-// nothing else references) and put it down so the region recycles it. Never call
-// this on a letter someone mailed us — see putDownHeldPaper.
+// Dispose of a handled sheet: blank it, then put it down so the region recycles
+// it. This is the disposal for EVERY sheet the bot is finished with — a draft we
+// wrote, a letter we have relayed, or a page that would not read. Blanking
+// deletes the body via deletePaperContents(), which is correct in all three
+// cases: by the time a sheet is finished with, its body is its own (see the note
+// in drainMailSlot for why the sender and the mail queue no longer hold it).
 async function discardHeldPaper(bot, ref) {
   await withTimeout(bot.writePaper(ref, ''), 10000, 'discardHeld.blank')
   await withTimeout(discardBlankPaper(bot, ref), 10000, 'discardHeld.discard')
@@ -454,7 +469,6 @@ module.exports = {
   drainMailSlot,
   clearHands,
   discardHeldPaper,
-  putDownHeldPaper,
   dropHeldItem,
   sweepStrayPaper,
   parsePostmark,

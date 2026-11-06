@@ -186,12 +186,15 @@ test('a letter that reads back empty is left intact, not cleared', async () => {
   assert.ok(!sent.includes('PUT'), 'must not discard a letter it could not read')
 })
 
-// Letter bodies are SHARED: sendMailToUser reuses the sender's text_path and
-// advance_mail_slot points the next mail-slot sheet at the same path. Paper.WRITE's
-// clear deletes that body, so blanking a received letter destroys content other
-// sheets still reference — observed in production on 2026-09-30, which left the
-// Oracle holding letters it could not read.
-test('a letter read out of the mail slot is put down, never blanked', async () => {
+// Handled mail is ERASED, then dropped — Randy's rule: there is no utility in old
+// mail once it has been dealt with, and only an erased sheet gets recycled by the
+// region instead of lying on the floor forever.
+//
+// Erasing is safe because Habitat mail is fire-and-forget: PSENDMAIL
+// destroy_object's the sender's own sheet on send (Paper.java:276), and
+// advance_mail_slot popNextMail's the queue record before the slot can be read.
+// By the time a letter is readable in hand, its body is this sheet's alone.
+test('a letter read out of the mail slot is erased, then put down', async () => {
   const sent = []
   const inv = [{ ref: 'letter', type: 'Paper', slot: 4, grState: 2, name: 'Pad and mailbox' }]
   const msgs = []
@@ -200,10 +203,15 @@ test('a letter read out of the mail slot is put down, never blanked', async () =
   const res = await mail.drainMailSlot(bot)
   assert.strictEqual(res.drained, true)
   assert.strictEqual(res.sender, 'Naibor')
-  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must NOT blank a letter — that deletes a shared body')
+  assert.ok(sent.includes('WRITE:letter:clear'), 'the handled letter is erased')
   const put = msgs.find((m) => m.op === 'PUT')
   assert.ok(put, 'the letter is put down')
   assert.strictEqual(put.containerNoid, 0, 'onto the ground (THE_REGION), not a pocket')
+  // Erase BEFORE drop, or Paper.PUT sees a non-blank sheet and leaves it lying there.
+  assert.ok(sent.indexOf('WRITE:letter:clear') < sent.indexOf('PUT:letter'),
+    'the erase must come before the PUT for the region to recycle it')
+  // The caller still gets the text — it was read before being erased.
+  assert.ok(res.text.includes('Works like a charm'), 'relayed content survives the erase')
 })
 
 // Paper.GET is gated on empty_handed(avatar), and the failure is silent —
@@ -328,8 +336,27 @@ test('dropHeldItem puts the held page on the ground, never in a pocket', async (
   assert.ok(put, 'moves it out of the hands')
   assert.strictEqual(put.containerNoid, 0, 'containerNoid must be THE_REGION (0) — the ground')
   assert.strictEqual(put.y, undefined, 'no pocket slot may be named')
-  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'never blanks it — that would destroy it on PUT')
   assert.strictEqual(res.slot, undefined, 'a slot in the result would mean it went into a pocket')
+  // A page this unreadable has a text_path pointing at a body that is already
+  // gone, so erasing destroys nothing and lets the region recycle the sheet.
+  assert.ok(sent.includes('WRITE:husk:clear'), 'the dealt-with page is erased')
+  assert.ok(sent.indexOf('WRITE:husk:clear') < sent.indexOf('PUT:husk'),
+    'erase before drop, or PUT leaves a non-blank sheet on the floor')
+})
+
+// dropHeldItem is the generic hands-freeing escape hatch, so it can meet a
+// Compass or a Head. Only Paper has a page to write — anything else is simply
+// put down, and must never be handed to writePaper.
+test('dropHeldItem puts a non-Paper item down without trying to erase it', async () => {
+  const sent = []
+  const msgs = []
+  const bot = fakeBot([{ ref: 'compass', type: 'Compass', slot: 5 }], sent)
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.dropHeldItem(bot)
+  assert.strictEqual(res.dropped, true)
+  assert.strictEqual(res.type, 'Compass')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'a Compass has no page to erase')
+  assert.strictEqual(msgs.find((m) => m.op === 'PUT').containerNoid, 0)
 })
 
 // The old pocket-stowing behaviour dead-ended here: four stowed sheets and it
