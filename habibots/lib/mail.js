@@ -47,6 +47,11 @@ const THE_REGION = 0
 // sweepStrayPaper enforces that invariant.
 const NUMBERED_POCKET_SLOTS = [0, 1, 2, 3]
 
+// How long to wait for elko's acknowledgement that a PSENDMAIL actually went,
+// and how often to look. See confirmMailSent for what counts as proof.
+const SEND_CONFIRM_MS = 3000
+const SEND_CONFIRM_POLL_MS = 100
+
 // Paper.retrievePaperContents loads a letter body from mongo asynchronously, so
 // the first read after the slot is repointed can legitimately come back empty.
 const READ_ATTEMPTS = 4
@@ -420,6 +425,31 @@ async function discardHeldPaper(bot, ref) {
   await withTimeout(discardBlankPaper(bot, ref), 10000, 'discardHeld.discard')
 }
 
+// Did the mail actually GO? Nothing else in the bot answers this: mailPaper
+// resolves when the bytes reach the socket (sendWithDelay's server.write
+// callback), not when elko replies, so a PSENDMAIL that the server rejected —
+// an addressee it could not parse, or a sheet we turned out not to be holding —
+// looks exactly like a success from here.
+//
+// The server gives us a usable acknowledgement, though. PSENDMAIL on success
+// does send_goaway_msg(noid) then destroy_object (Paper.java:276), and
+// send_goaway_msg is a CONTEXT BROADCAST (new_broadcast_msg + context().send),
+// which reaches the sender too — unlike send_neighbor_goaway_msg, which excludes
+// the actor. habiworld applies GOAWAY_$ by removing the object, so THE SHEET
+// DISAPPEARING FROM OUR OWN INVENTORY IS THE PROOF THAT THE MAIL WENT.
+//
+// Returns true once the sheet is gone, false if it is still ours when the clock
+// runs out.
+async function confirmMailSent(bot, ref, timeoutMs) {
+  const deadline = Date.now() + (timeoutMs || SEND_CONFIRM_MS)
+  for (;;) {
+    const stillHere = awareness.getInventory(bot).some((it) => it.ref === ref)
+    if (!stillHere) return true
+    if (Date.now() >= deadline) return false
+    await new Promise((r) => setTimeout(r, SEND_CONFIRM_POLL_MS))
+  }
+}
+
 // composeAndSendMail — pick up a blank Paper, write the addressed page,
 // and PSENDMAIL it. The bot must be logged in: mailing is an avatar
 // action, not a server call.
@@ -460,6 +490,25 @@ async function composeAndSendMail(bot, opts) {
   }
   await withTimeout(bot.writePaper(paper.ref, text), 10000, 'composeAndSendMail.write')
   await withTimeout(bot.mailPaper(paper.ref), 10000, 'composeAndSendMail.send')
+  // Confirm the send BEFORE reporting success. The caller marks the outbox entry
+  // delivered on ok:true, so claiming a send that did not happen loses the answer
+  // permanently — it would never be retried.
+  //
+  // Nothing is erased or deleted on either branch. On success the server already
+  // destroyed the sheet for us (destroy_object in PSENDMAIL), so there is nothing
+  // left to dispose of. On failure the written sheet is still in our hands and we
+  // deliberately leave it: the outbox records a failure and retries, and the stale
+  // draft is recycled by the next clearHands, which reads it, finds our own
+  // unposted text and erases it. Erasing it here would destroy the text while the
+  // answer still had to go out.
+  if (!await confirmMailSent(bot, paper.ref, SEND_CONFIRM_MS)) {
+    log.warn(`PSENDMAIL for ${recipient} was not acknowledged; the sheet is still in hand`)
+    return {
+      ok: false,
+      error: `the server did not accept the letter to ${recipient} (still holding the page)`,
+      readLetters: readLetters,
+    }
+  }
   log.info(`mailed a letter to ${recipient} (${text.length} chars, truncated=${truncated})`)
   return { ok: true, recipient, truncated, readLetters: readLetters }
 }

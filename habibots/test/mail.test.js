@@ -442,3 +442,57 @@ test('empty hands need no clearing', async () => {
   assert.strictEqual((await mail.clearHands(fakeBot([], sent))).ok, true)
   assert.deepStrictEqual(sent, [])
 })
+
+
+// ── Outbound: the send must be CONFIRMED before anything acts on it ──────────
+// mailPaper resolves when the bytes hit the socket, not when elko replies, so a
+// rejected PSENDMAIL used to look like a success — and the caller marks the
+// outbox entry delivered on ok:true, which loses the answer for good. The proof
+// of a real send is the sheet vanishing: PSENDMAIL does send_goaway_msg (a
+// context broadcast, so the sender sees it) then destroy_object.
+test('a send is only reported ok once the sheet is gone from the inventory', async () => {
+  const sent = []
+  const items = [{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }]
+  const bot = fakeBot(items, sent)
+  // elko accepts it: the sheet is destroyed and GOAWAY_$ removes it from the model.
+  bot.send = (msg) => {
+    sent.push(`${msg.op}:${msg.to}`)
+    if (msg.op === 'PSENDMAIL') items.length = 0
+    return Promise.resolve({ ok: true })
+  }
+  bot.mailPaper = (ref) => bot.send({ op: 'PSENDMAIL', to: ref })
+  const res = await mail.composeAndSendMail(bot, { recipient: 'randy', body: 'seek within' })
+  assert.strictEqual(res.ok, true)
+  assert.strictEqual(res.recipient, 'randy')
+  assert.ok(sent.includes('PSENDMAIL:blank'), 'the letter is mailed')
+})
+
+test('a send the server never acknowledged is reported as a failure', async () => {
+  const sent = []
+  // elko rejects it: the sheet stays in our hands, so no GOAWAY ever arrives.
+  const bot = fakeBot([{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }], sent)
+  bot.mailPaper = (ref) => bot.send({ op: 'PSENDMAIL', to: ref })
+  const res = await mail.composeAndSendMail(bot, { recipient: 'randy', body: 'seek within' })
+  assert.strictEqual(res.ok, false, 'must not claim a send the server did not take')
+  assert.ok(/did not accept/.test(res.error), `unexpected error: ${res.error}`)
+  // The unsent reply is left alone — the outbox retries it. Erasing here would
+  // destroy the text while the answer still had to go out.
+  assert.ok(!sent.some((s) => s === 'WRITE:blank:clear'), 'an UNSENT reply is never erased')
+})
+
+// On a successful send the server has already destroyed the sheet, so the bot
+// must not try to dispose of it afterwards — there is nothing left to dispose of.
+test('nothing is erased or put down after a successful send', async () => {
+  const sent = []
+  const items = [{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }]
+  const bot = fakeBot(items, sent)
+  bot.send = (msg) => {
+    sent.push(`${msg.op}:${msg.to}`)
+    if (msg.op === 'PSENDMAIL') items.length = 0
+    return Promise.resolve({ ok: true })
+  }
+  bot.mailPaper = (ref) => bot.send({ op: 'PSENDMAIL', to: ref })
+  await mail.composeAndSendMail(bot, { recipient: 'randy', body: 'seek within' })
+  const afterSend = sent.slice(sent.indexOf('PSENDMAIL:blank') + 1)
+  assert.deepStrictEqual(afterSend, [], `nothing may follow the send, got ${afterSend}`)
+})
