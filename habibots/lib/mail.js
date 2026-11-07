@@ -40,10 +40,17 @@ const CLEAR_SENTINEL_LENGTH = 16
 // avatar's own, so a PUT carrying only this drops the sheet at the bot's feet.
 const THE_REGION = 0
 
-// The numbered pockets, in the order stowHeldItem will fill them. MAIL_SLOT (4)
-// is excluded on purpose: it is the mailbox, and a second Paper parked there is
-// its own bug (see db/patchOracleHome.js).
-const POCKET_SLOTS = [0, 1, 2, 3]
+// The numbered pockets — general storage; Tokens live in slot 0, a Head in 6.
+// Paper must NEVER rest in one. An avatar carries exactly ONE sheet, in
+// MAIL_SLOT (4), which is the self-replenishing mailbox; any other sheet belongs
+// on the ground, where a blank one is recycled and a written one stays readable.
+// sweepStrayPaper enforces that invariant.
+const NUMBERED_POCKET_SLOTS = [0, 1, 2, 3]
+
+// How long to wait for elko's acknowledgement that a PSENDMAIL actually went,
+// and how often to look. See confirmMailSent for what counts as proof.
+const SEND_CONFIRM_MS = 3000
+const SEND_CONFIRM_POLL_MS = 100
 
 // Paper.retrievePaperContents loads a letter body from mongo asynchronously, so
 // the first read after the slot is repointed can legitimately come back empty.
@@ -191,15 +198,22 @@ async function drainMailSlot(bot) {
     log.warn('a letter in MAIL_SLOT read back empty after retries; leaving it intact')
     return { drained: false, text: '', unreadable: true }
   }
-  // Put the letter DOWN, unblanked. Never blank a letter: Paper.WRITE's clear
-  // calls deletePaperContents(), which removes the body document — and letter
-  // bodies are SHARED (sendMailToUser reuses the sender's text_path, and
-  // advance_mail_slot points the next mail-slot sheet at the same path). Blanking
-  // one sheet therefore destroys content other sheets and queued records still
-  // reference, which is how the Oracle ended up holding unreadable letters it
-  // could neither deliver nor safely destroy. Paper.GET's special_get already
-  // spawned the replacement sheet in MAIL_SLOT, so nothing needs this one.
-  await withTimeout(putDownHeldPaper(bot, letter.ref), 10000, 'drainMailSlot.putdown')
+  // The letter has been read, so it is DEALT WITH: erase it, then put it down.
+  // Randy's rule — there is no utility in old mail once it has been handled, and
+  // erasing is what lets the region recycle the sheet instead of leaving it on
+  // the floor forever.
+  //
+  // Erasing is safe here, and the earlier "letter bodies are SHARED, never blank
+  // one" reasoning was too cautious. By the time a letter is readable in hand,
+  // nothing else points at its body:
+  //   - the sender's own sheet was destroy_object'd by PSENDMAIL on send
+  //     (Paper.java:276) — the sender keeps no copy;
+  //   - the queue record was popNextMail'd off the MailQueue by advance_mail_slot
+  //     (Avatar.java) before the slot could be read.
+  // So Paper.WRITE's clear -> deletePaperContents() removes a body that is this
+  // sheet's alone. Paper.GET's special_get already spawned the replacement sheet
+  // in MAIL_SLOT, so nothing needs this one either.
+  await withTimeout(discardHeldPaper(bot, letter.ref), 20000, 'drainMailSlot.discard')
   const letterInfo = parsePostmark(text)
   log.info(`read a letter from ${letterInfo.sender || 'an unknown sender'} out of MAIL_SLOT`)
   // `text` is the whole page including the postmark, which is the only
@@ -250,6 +264,17 @@ function decodePage(reply) {
 // Paper.PUT destroys a sheet outright once it is blank (Paper.java:334), so
 // disposal is just "blank it, then put it down".
 //
+// The ONE way anything goes to the ground. Every disposal below routes through
+// this, so "a sheet belongs on the floor, not in a pocket" has a single
+// definition and a pocket slot cannot creep back into one of these PUTs — there
+// is no parameter here to pass one in.
+//
+// containerNoid only: Paper.PUT fills x/y/orientation from the avatar, so the
+// sheet lands at the bot's own feet.
+function putOnGround(bot, ref) {
+  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+}
+
 // Put it DOWN ON THE GROUND, never into a pocket (Randy's rule): the region
 // recycles a blank sheet left on the floor, whereas a pocket slot keeps it —
 // and a bot that quietly accumulates paper in its pockets runs out of free
@@ -258,9 +283,7 @@ function decodePage(reply) {
 // replacement, and the sheet we read gets disposed of instead of piling up as a
 // second occupant of the slot.
 function discardBlankPaper(bot, ref) {
-  // containerNoid only: Paper.PUT fills x/y/orientation from the avatar, so the
-  // sheet lands at the bot's own feet.
-  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+  return putOnGround(bot, ref)
 }
 
 // Every Paper.GET is gated on empty_handed(avatar) — ANY object in HANDS makes
@@ -315,8 +338,8 @@ async function clearHands(bot) {
   if (!text) {
     // Could not read it at all - refuse rather than destroy something unseen.
     // `unreadable` tells the caller this is the recoverable kind of stuck: the
-    // page is intact and can be set aside (stowHeldItem) once patience runs
-    // out, which is not the same as being free to destroy it.
+    // page is intact and can be put on the ground (dropHeldItem) once patience
+    // runs out, which is not the same as being free to destroy it.
     return { ok: false, unreadable: true, ref: held.ref, error: 'holding a page that cannot be read' }
   }
   await discardHeldPaper(bot, held.ref)
@@ -324,13 +347,20 @@ async function clearHands(bot) {
   return { ok: true, cleared: true }
 }
 
-// Blank a held sheet and put it away; Paper.PUT destroys a blank one.
-// The escape hatch for a page the bot cannot read: move it out of HANDS into a
-// free numbered pocket slot, WITHOUT blanking it first. Nothing is destroyed -
-// Paper.PUT only destroys a sheet that is already blank - so an unreadable page
-// survives for a human to look at, while the hands come free and mail flows
-// again. Slots 0-3 are the pockets; MAIL_SLOT (4) is the mailbox and must stay
-// available for incoming letters, so it is never a target.
+// The escape hatch for an item the bot cannot deal with: move it out of HANDS
+// onto the GROUND, WITHOUT blanking it first. This is deliberately not a pocket.
+// An earlier version parked the page in a free numbered pocket, which broke the
+// one-sheet invariant (two Papers on the avatar at once), stacked up sheets the
+// bot would never look at again, and eventually dead-ended on "every pocket slot
+// is full" — with mail still blocked, which was the thing it set out to fix.
+//
+// On the ground the outcome is right either way, because Paper.PUT
+// (Paper.java:330) destroys the sheet only when is_blank():
+//   - a blank sheet is recycled by the game, exactly as it should be;
+//   - a written sheet SURVIVES at the bot's feet, where a human can walk in,
+//     read it and pick it up — which was the whole point of "set aside intact".
+// Either way the hands come free, which is what gates Paper.GET and therefore
+// all mail in both directions.
 //
 // Preferred over destroying an unreadable page (which risks erasing a player's
 // letter) and over leaving it in hands (which silently disables the whole bot).
@@ -339,41 +369,85 @@ async function clearHands(bot) {
 // generic_PUT announces the move with send_neighbor_msg, which excludes the
 // actor — the same blindness that stops a bot seeing its own GET — so elko and
 // the model disagree until the region is re-entered. A caller that loops on
-// "are my hands clear?" must refresh, or it will set the same page aside on
-// every pass and never get any further. Seen in production the first time this
-// ran.
-async function stowHeldItem(bot) {
-  const inv = awareness.getInventory(bot)
-  const held = inv.find((it) => it.slot === awareness.HANDS_SLOT)
-  if (!held) return { ok: true, stowed: false }
-  const me = bot.world && bot.world.me
-  if (!me) return { ok: false, error: 'no avatar in the world model' }
-  const taken = new Set(inv.map((it) => it.slot))
-  const slot = POCKET_SLOTS.find((n) => !taken.has(n))
-  if (slot === undefined) {
-    return { ok: false, error: 'every pocket slot is full' }
+// "are my hands clear?" must refresh, or it will drop the same page on every
+// pass and never get any further. Seen in production the first time this ran.
+async function dropHeldItem(bot) {
+  const held = awareness.getInventory(bot).find((it) => it.slot === awareness.HANDS_SLOT)
+  if (!held) return { ok: true, dropped: false }
+  // A Paper that reached here has been read and re-read and will not yield its
+  // text, which means its text_path points at a body that is already gone. It
+  // has been dealt with as far as it can be, so it is erased like any other
+  // handled sheet: there is nothing left to destroy, and a blank sheet is
+  // recycled on PUT instead of lying on the floor forever.
+  //
+  // Only Paper is erased. Anything else in the hands (a Compass, say) has no
+  // page to write, so it is simply put down.
+  if (held.type === 'Paper') {
+    await withTimeout(discardHeldPaper(bot, held.ref), 20000, 'dropHeldItem.discard')
+    log.warn(`erased and dropped an unreadable Paper ${held.ref} to free the hands`)
+  } else {
+    await withTimeout(putOnGround(bot, held.ref), 10000, 'dropHeldItem.put')
+    log.warn(`put ${held.type} ${held.ref} on the ground to free the hands`)
   }
-  await withTimeout(
-    bot.send({ op: 'PUT', to: held.ref, containerNoid: me.noid, x: 0, y: slot, orientation: 0 }),
-    10000, 'stowHeldItem.put')
-  log.warn(`set aside ${held.type} ${held.ref} in pocket slot ${slot} to free the hands`)
-  return { ok: true, stowed: true, slot: slot, ref: held.ref, type: held.type }
+  return { ok: true, dropped: true, ref: held.ref, type: held.type }
 }
 
-// Put a sheet down on the ground exactly as it is — no blanking, so nothing is
-// deleted. A non-blank sheet survives the PUT (Paper.PUT only destroys when
-// is_blank()), which is the point: the letter's content stays intact for whoever
-// else still points at it. Frees the hands, which is what blocks Paper.GET.
-function putDownHeldPaper(bot, ref) {
-  return bot.send({ op: 'PUT', to: ref, containerNoid: THE_REGION })
+// Enforce the one-sheet invariant: the ONLY Paper an avatar may carry is the one
+// in MAIL_SLOT. Any sheet found in a numbered pocket (0-3) is a stray — put it on
+// the ground, where a blank one is recycled and a written one stays readable.
+//
+// This both cleans up after the old pocket-stowing behaviour and stops any future
+// path from quietly re-breaking the invariant. Non-Paper items are left strictly
+// alone: Tokens legitimately live in slot 0 and a Head in slot 6.
+//
+// Same CALLER CONTRACT as dropHeldItem — the model will not reflect these PUTs
+// until the region is re-entered.
+async function sweepStrayPaper(bot) {
+  const strays = awareness.getInventory(bot).filter((it) =>
+    it.type === 'Paper' && NUMBERED_POCKET_SLOTS.includes(it.slot))
+  const moved = []
+  for (const stray of strays) {
+    await withTimeout(putOnGround(bot, stray.ref), 10000, 'sweepStrayPaper.put')
+    log.warn(`swept a stray Paper ${stray.ref} out of pocket slot ${stray.slot} onto the ground`)
+    moved.push(stray.ref)
+  }
+  return { ok: true, moved: moved }
 }
 
-// Dispose of a sheet WE wrote: blank it (destroying the body we created, which
-// nothing else references) and put it down so the region recycles it. Never call
-// this on a letter someone mailed us — see putDownHeldPaper.
+// Dispose of a handled sheet: blank it, then put it down so the region recycles
+// it. This is the disposal for EVERY sheet the bot is finished with — a draft we
+// wrote, a letter we have relayed, or a page that would not read. Blanking
+// deletes the body via deletePaperContents(), which is correct in all three
+// cases: by the time a sheet is finished with, its body is its own (see the note
+// in drainMailSlot for why the sender and the mail queue no longer hold it).
 async function discardHeldPaper(bot, ref) {
   await withTimeout(bot.writePaper(ref, ''), 10000, 'discardHeld.blank')
   await withTimeout(discardBlankPaper(bot, ref), 10000, 'discardHeld.discard')
+}
+
+// Did the mail actually GO? Nothing else in the bot answers this: mailPaper
+// resolves when the bytes reach the socket (sendWithDelay's server.write
+// callback), not when elko replies, so a PSENDMAIL that the server rejected —
+// an addressee it could not parse, or a sheet we turned out not to be holding —
+// looks exactly like a success from here.
+//
+// The server gives us a usable acknowledgement, though. PSENDMAIL on success
+// does send_goaway_msg(noid) then destroy_object (Paper.java:276), and
+// send_goaway_msg is a CONTEXT BROADCAST (new_broadcast_msg + context().send),
+// which reaches the sender too — unlike send_neighbor_goaway_msg, which excludes
+// the actor. habiworld applies GOAWAY_$ by removing the object, so THE SHEET
+// DISAPPEARING FROM OUR OWN INVENTORY IS THE PROOF THAT THE MAIL WENT.
+//
+// Returns true once the sheet is gone, false if it is still ours when the clock
+// runs out.
+async function confirmMailSent(bot, ref, timeoutMs) {
+  const deadline = Date.now() + (timeoutMs || SEND_CONFIRM_MS)
+  for (;;) {
+    const stillHere = awareness.getInventory(bot).some((it) => it.ref === ref)
+    if (!stillHere) return true
+    if (Date.now() >= deadline) return false
+    await new Promise((r) => setTimeout(r, SEND_CONFIRM_POLL_MS))
+  }
 }
 
 // composeAndSendMail — pick up a blank Paper, write the addressed page,
@@ -416,6 +490,25 @@ async function composeAndSendMail(bot, opts) {
   }
   await withTimeout(bot.writePaper(paper.ref, text), 10000, 'composeAndSendMail.write')
   await withTimeout(bot.mailPaper(paper.ref), 10000, 'composeAndSendMail.send')
+  // Confirm the send BEFORE reporting success. The caller marks the outbox entry
+  // delivered on ok:true, so claiming a send that did not happen loses the answer
+  // permanently — it would never be retried.
+  //
+  // Nothing is erased or deleted on either branch. On success the server already
+  // destroyed the sheet for us (destroy_object in PSENDMAIL), so there is nothing
+  // left to dispose of. On failure the written sheet is still in our hands and we
+  // deliberately leave it: the outbox records a failure and retries, and the stale
+  // draft is recycled by the next clearHands, which reads it, finds our own
+  // unposted text and erases it. Erasing it here would destroy the text while the
+  // answer still had to go out.
+  if (!await confirmMailSent(bot, paper.ref, SEND_CONFIRM_MS)) {
+    log.warn(`PSENDMAIL for ${recipient} was not acknowledged; the sheet is still in hand`)
+    return {
+      ok: false,
+      error: `the server did not accept the letter to ${recipient} (still holding the page)`,
+      readLetters: readLetters,
+    }
+  }
   log.info(`mailed a letter to ${recipient} (${text.length} chars, truncated=${truncated})`)
   return { ok: true, recipient, truncated, readLetters: readLetters }
 }
@@ -425,8 +518,8 @@ module.exports = {
   drainMailSlot,
   clearHands,
   discardHeldPaper,
-  putDownHeldPaper,
-  stowHeldItem,
+  dropHeldItem,
+  sweepStrayPaper,
   parsePostmark,
   buildMailPage,
   wrapForPaper,

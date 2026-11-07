@@ -186,12 +186,15 @@ test('a letter that reads back empty is left intact, not cleared', async () => {
   assert.ok(!sent.includes('PUT'), 'must not discard a letter it could not read')
 })
 
-// Letter bodies are SHARED: sendMailToUser reuses the sender's text_path and
-// advance_mail_slot points the next mail-slot sheet at the same path. Paper.WRITE's
-// clear deletes that body, so blanking a received letter destroys content other
-// sheets still reference — observed in production on 2026-09-30, which left the
-// Oracle holding letters it could not read.
-test('a letter read out of the mail slot is put down, never blanked', async () => {
+// Handled mail is ERASED, then dropped — Randy's rule: there is no utility in old
+// mail once it has been dealt with, and only an erased sheet gets recycled by the
+// region instead of lying on the floor forever.
+//
+// Erasing is safe because Habitat mail is fire-and-forget: PSENDMAIL
+// destroy_object's the sender's own sheet on send (Paper.java:276), and
+// advance_mail_slot popNextMail's the queue record before the slot can be read.
+// By the time a letter is readable in hand, its body is this sheet's alone.
+test('a letter read out of the mail slot is erased, then put down', async () => {
   const sent = []
   const inv = [{ ref: 'letter', type: 'Paper', slot: 4, grState: 2, name: 'Pad and mailbox' }]
   const msgs = []
@@ -200,10 +203,15 @@ test('a letter read out of the mail slot is put down, never blanked', async () =
   const res = await mail.drainMailSlot(bot)
   assert.strictEqual(res.drained, true)
   assert.strictEqual(res.sender, 'Naibor')
-  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'must NOT blank a letter — that deletes a shared body')
+  assert.ok(sent.includes('WRITE:letter:clear'), 'the handled letter is erased')
   const put = msgs.find((m) => m.op === 'PUT')
   assert.ok(put, 'the letter is put down')
   assert.strictEqual(put.containerNoid, 0, 'onto the ground (THE_REGION), not a pocket')
+  // Erase BEFORE drop, or Paper.PUT sees a non-blank sheet and leaves it lying there.
+  assert.ok(sent.indexOf('WRITE:letter:clear') < sent.indexOf('PUT:letter'),
+    'the erase must come before the PUT for the region to recycle it')
+  // The caller still gets the text — it was read before being erased.
+  assert.ok(res.text.includes('Works like a charm'), 'relayed content survives the erase')
 })
 
 // Paper.GET is gated on empty_handed(avatar), and the failure is silent —
@@ -310,48 +318,115 @@ test('an unpostmarked LETTER is still delivered, not discarded', async () => {
 
 // The escape hatch. An unreadable page must not sit in the hands forever (that
 // disables the bot) and must not be destroyed (it may be someone's letter), so
-// it is moved intact into a free pocket.
-test('stowHeldItem moves the held page to a free pocket without blanking it', async () => {
+// it goes on the GROUND intact — never into a pocket. An avatar carries exactly
+// one sheet, in MAIL_SLOT; a second Paper on the avatar is the bug this fixes.
+test('dropHeldItem puts the held page on the ground, never in a pocket', async () => {
   const sent = []
+  const msgs = []
   const bot = fakeBot([
     { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
     { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
   ], sent)
-  const res = await mail.stowHeldItem(bot)
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.dropHeldItem(bot)
   assert.strictEqual(res.ok, true)
-  assert.strictEqual(res.slot, 0)
+  assert.strictEqual(res.dropped, true)
   assert.strictEqual(res.ref, 'husk')
-  assert.ok(sent.includes('PUT:husk'), 'moves it out of the hands')
-  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'never blanks it — that would destroy it on PUT')
+  const put = msgs.find((m) => m.op === 'PUT' && m.to === 'husk')
+  assert.ok(put, 'moves it out of the hands')
+  assert.strictEqual(put.containerNoid, 0, 'containerNoid must be THE_REGION (0) — the ground')
+  assert.strictEqual(put.y, undefined, 'no pocket slot may be named')
+  assert.strictEqual(res.slot, undefined, 'a slot in the result would mean it went into a pocket')
+  // A page this unreadable has a text_path pointing at a body that is already
+  // gone, so erasing destroys nothing and lets the region recycle the sheet.
+  assert.ok(sent.includes('WRITE:husk:clear'), 'the dealt-with page is erased')
+  assert.ok(sent.indexOf('WRITE:husk:clear') < sent.indexOf('PUT:husk'),
+    'erase before drop, or PUT leaves a non-blank sheet on the floor')
 })
 
-test('stowHeldItem skips occupied pockets and never targets the mail slot', async () => {
+// dropHeldItem is the generic hands-freeing escape hatch, so it can meet a
+// Compass or a Head. Only Paper has a page to write — anything else is simply
+// put down, and must never be handed to writePaper.
+test('dropHeldItem puts a non-Paper item down without trying to erase it', async () => {
   const sent = []
-  const bot = fakeBot([
-    { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
-    { ref: 'a', type: 'Paper', slot: 0, grState: 1 },
-    { ref: 'b', type: 'Paper', slot: 1, grState: 1 },
-    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
-  ], sent)
-  assert.strictEqual((await mail.stowHeldItem(bot)).slot, 2)
+  const msgs = []
+  const bot = fakeBot([{ ref: 'compass', type: 'Compass', slot: 5 }], sent)
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.dropHeldItem(bot)
+  assert.strictEqual(res.dropped, true)
+  assert.strictEqual(res.type, 'Compass')
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'a Compass has no page to erase')
+  assert.strictEqual(msgs.find((m) => m.op === 'PUT').containerNoid, 0)
 })
 
-test('stowHeldItem reports failure when every pocket is full', async () => {
+// The old pocket-stowing behaviour dead-ended here: four stowed sheets and it
+// gave up with the hands still full, which is to say with mail still broken.
+// The ground never fills up.
+test('dropHeldItem still frees the hands when every pocket is occupied', async () => {
   const sent = []
+  const msgs = []
   const bot = fakeBot([
     { ref: 'husk', type: 'Paper', slot: 5, grState: 2 },
     ...[0, 1, 2, 3].map((n) => ({ ref: `p${n}`, type: 'Paper', slot: n, grState: 1 })),
   ], sent)
-  const res = await mail.stowHeldItem(bot)
-  assert.strictEqual(res.ok, false)
-  assert.deepStrictEqual(sent, [], 'no half-move')
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.dropHeldItem(bot)
+  assert.strictEqual(res.ok, true, 'full pockets are irrelevant now')
+  assert.strictEqual(res.dropped, true)
+  assert.strictEqual(msgs.find((m) => m.op === 'PUT').containerNoid, 0)
 })
 
-test('stowHeldItem is a no-op with empty hands', async () => {
+test('dropHeldItem is a no-op with empty hands', async () => {
   const sent = []
-  const res = await mail.stowHeldItem(fakeBot([], sent))
+  const res = await mail.dropHeldItem(fakeBot([], sent))
   assert.strictEqual(res.ok, true)
-  assert.strictEqual(res.stowed, false)
+  assert.strictEqual(res.dropped, false)
+  assert.deepStrictEqual(sent, [])
+})
+
+// The invariant sweep: exactly one sheet on the avatar, in MAIL_SLOT. Anything
+// in a numbered pocket is a stray left by the old behaviour and goes to ground.
+test('sweepStrayPaper moves stray sheets out of the numbered pockets', async () => {
+  const sent = []
+  const msgs = []
+  const bot = fakeBot([
+    { ref: 'stray0', type: 'Paper', slot: 0, grState: 2 },
+    { ref: 'stray3', type: 'Paper', slot: 3, grState: 1 },
+    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 0 },
+  ], sent)
+  bot.send = (msg) => { msgs.push(msg); sent.push(`${msg.op}:${msg.to}`); return Promise.resolve({ ok: true }) }
+  const res = await mail.sweepStrayPaper(bot)
+  assert.deepStrictEqual(res.moved, ['stray0', 'stray3'])
+  assert.strictEqual(msgs.length, 2, 'only the strays move')
+  for (const m of msgs) {
+    assert.strictEqual(m.op, 'PUT')
+    assert.strictEqual(m.containerNoid, 0, 'onto the ground')
+  }
+  assert.ok(!sent.some((s) => s.startsWith('WRITE')), 'a stray may be someone\'s letter — never blank it')
+})
+
+test('sweepStrayPaper never touches the mail slot or the hands', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'mailbox', type: 'Paper', slot: 4, grState: 2 },
+    { ref: 'held', type: 'Paper', slot: 5, grState: 1 },
+  ], sent)
+  const res = await mail.sweepStrayPaper(bot)
+  assert.deepStrictEqual(res.moved, [], 'the reserved slot is where a sheet belongs')
+  assert.deepStrictEqual(sent, [])
+})
+
+// Tokens legitimately live in pocket slot 0 and a Head in slot 6 — the sweep is
+// about Paper only, and must not start redistributing the bot's belongings.
+test('sweepStrayPaper leaves non-Paper pocket items alone', async () => {
+  const sent = []
+  const bot = fakeBot([
+    { ref: 'money', type: 'Tokens', slot: 0 },
+    { ref: 'head', type: 'Head', slot: 6 },
+    { ref: 'compass', type: 'Compass', slot: 1 },
+  ], sent)
+  const res = await mail.sweepStrayPaper(bot)
+  assert.deepStrictEqual(res.moved, [])
   assert.deepStrictEqual(sent, [])
 })
 
@@ -366,4 +441,58 @@ test('empty hands need no clearing', async () => {
   const sent = []
   assert.strictEqual((await mail.clearHands(fakeBot([], sent))).ok, true)
   assert.deepStrictEqual(sent, [])
+})
+
+
+// ── Outbound: the send must be CONFIRMED before anything acts on it ──────────
+// mailPaper resolves when the bytes hit the socket, not when elko replies, so a
+// rejected PSENDMAIL used to look like a success — and the caller marks the
+// outbox entry delivered on ok:true, which loses the answer for good. The proof
+// of a real send is the sheet vanishing: PSENDMAIL does send_goaway_msg (a
+// context broadcast, so the sender sees it) then destroy_object.
+test('a send is only reported ok once the sheet is gone from the inventory', async () => {
+  const sent = []
+  const items = [{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }]
+  const bot = fakeBot(items, sent)
+  // elko accepts it: the sheet is destroyed and GOAWAY_$ removes it from the model.
+  bot.send = (msg) => {
+    sent.push(`${msg.op}:${msg.to}`)
+    if (msg.op === 'PSENDMAIL') items.length = 0
+    return Promise.resolve({ ok: true })
+  }
+  bot.mailPaper = (ref) => bot.send({ op: 'PSENDMAIL', to: ref })
+  const res = await mail.composeAndSendMail(bot, { recipient: 'randy', body: 'seek within' })
+  assert.strictEqual(res.ok, true)
+  assert.strictEqual(res.recipient, 'randy')
+  assert.ok(sent.includes('PSENDMAIL:blank'), 'the letter is mailed')
+})
+
+test('a send the server never acknowledged is reported as a failure', async () => {
+  const sent = []
+  // elko rejects it: the sheet stays in our hands, so no GOAWAY ever arrives.
+  const bot = fakeBot([{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }], sent)
+  bot.mailPaper = (ref) => bot.send({ op: 'PSENDMAIL', to: ref })
+  const res = await mail.composeAndSendMail(bot, { recipient: 'randy', body: 'seek within' })
+  assert.strictEqual(res.ok, false, 'must not claim a send the server did not take')
+  assert.ok(/did not accept/.test(res.error), `unexpected error: ${res.error}`)
+  // The unsent reply is left alone — the outbox retries it. Erasing here would
+  // destroy the text while the answer still had to go out.
+  assert.ok(!sent.some((s) => s === 'WRITE:blank:clear'), 'an UNSENT reply is never erased')
+})
+
+// On a successful send the server has already destroyed the sheet, so the bot
+// must not try to dispose of it afterwards — there is nothing left to dispose of.
+test('nothing is erased or put down after a successful send', async () => {
+  const sent = []
+  const items = [{ ref: 'blank', type: 'Paper', slot: 5, grState: 0 }]
+  const bot = fakeBot(items, sent)
+  bot.send = (msg) => {
+    sent.push(`${msg.op}:${msg.to}`)
+    if (msg.op === 'PSENDMAIL') items.length = 0
+    return Promise.resolve({ ok: true })
+  }
+  bot.mailPaper = (ref) => bot.send({ op: 'PSENDMAIL', to: ref })
+  await mail.composeAndSendMail(bot, { recipient: 'randy', body: 'seek within' })
+  const afterSend = sent.slice(sent.indexOf('PSENDMAIL:blank') + 1)
+  assert.deepStrictEqual(afterSend, [], `nothing may follow the send, got ${afterSend}`)
 })
