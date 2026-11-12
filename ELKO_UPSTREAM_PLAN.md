@@ -1,6 +1,6 @@
 # Plan: converge our Elko fork with FUDCo upstream
 
-**Status:** proposed, 2026-11-09. Tracking issue: #730.
+**Status:** proposed 2026-11-09; Phase 0 and Phase 1 passed; **Phase 2 decided 2026-11-12: converge on upstream** (see §8). Phase 3 (ship) not started. Tracking issue: #730.
 
 **Goal:** stop carrying a long-lived divergent Elko fork. Get back to consuming something very
 close to `FUDCo/Elko` master, and send our genuine fixes upstream as PRs instead of hoarding
@@ -147,3 +147,73 @@ risk gate** — we are swapping driver strategy, and prod data is live.
 - Upgrading prod MongoDB 7 → 8. Upstream enables it; we are not doing it in the same change.
 - Our own `master` branch on the fork. It is stale and confusing; delete or reset it to track
   upstream once Phase 2 lands, as a separate tidy-up.
+
+---
+
+## 8. Phase 2 decision (2026-11-12)
+
+**Decision: converge on upstream.** The live Elko line is now FUDCo/Elko master plus our one
+genuine fix, not our modern-driver fork. `fix/persist-container-open-state` (and the whole
+mongo-driver series on it) is abandoned; it stays on the fork untouched for rollback.
+
+| | Value |
+|---|---|
+| New live line | `frandallfarmer/Elko` branch `upstream-converge` @ `daaff50d62` |
+| Contents | `fudco/master` `0475c93` + `14c1c25` (delete-on-delete, the `1b9a753` fix re-picked onto upstream) + `daaff50` (`jitpack.yml`, JDK 17) |
+| Upstream PR source | `frandallfarmer/Elko` branch `upstream/delete-on-delete` @ `14c1c25` (PR to FUDCo/Elko not yet opened) |
+| NeoHabitat change | `pom.xml` only: pin `com.github.frandallfarmer:Elko:daaff50d62`, drop `org.mongodb:mongodb-driver` 3.12.14 (upstream brings `mongodb-driver-legacy` 5.13.0 transitively). No Java changes. |
+
+### Phase 1 evidence (summary)
+
+Run locally on 2026-11-12 against MongoDB 7.0.48 (what prod runs), natively and in the Docker
+dev stack, on a fresh schema load **and** on data written by the current line (`94c6db64fe`).
+The server was SIGKILLed between steps, so nothing relied on a clean shutdown.
+229/230 assertions passed; the one miss was a harness assertion error (server picks the slot),
+fixed, and every later run passed.
+
+- **Containers:** open/closed state survives hard restarts; a second user sees the right
+  contents. Upstream's `collection.update(q, wholeDoc, upsert)` is a full replace, so an omitted
+  `closed` key really is removed. No haunted containers; the `7ff0284`/`94c6db6` series is not needed.
+- **Mail and deletes:** compose → PSENDMAIL → receive → READ works end to end, including a letter
+  sent by the old jar and read by the new one. The sent Paper's document is gone from Mongo
+  immediately. On the old jar the same crash window resurrects the sheet in the sender's HANDS,
+  which is exactly the production husk.
+- **Data compatibility:** on identical scenarios the two jars sent byte-identical object
+  messages (558 `make`s across 41 containers, 0 differences) and wrote 25,217 identical documents
+  (field order and BSON types included).
+- **Everything else:** create/move/get/put across restart, Bureaucrat (NeoHabitat's own Mongo
+  client) on driver 5.13, eliza and hatchery/welcomebot, Telko, and all repo suites
+  (Go vet/test -race, webclient 23/23, habiworld 152/152, habibots 64/64) pass.
+
+Full report: kept outside the repo (`elko-phase1/REPORT.md` on the build box).
+
+### Corrections to this plan found during Phases 0–2
+
+- **Java 17, not 8.** Upstream's pom compiles with `<release>17</release>`, so the Phase 0
+  "build with `maven:3.8-openjdk-8`" step is stale. JitPack defaults to JDK 8 and fails with
+  "invalid target release: 17", so the live line carries a `jitpack.yml` pinning `openjdk17`.
+  NeoHabitat's runtime is Java 21, which is fine.
+- **`4bcf7b9` (Mongo timeouts) is not a carry candidate.** It was already undone in our own line
+  in 2017; prod has always run on driver defaults. Nothing to port.
+- **The allow-list (§4) is just `1b9a753`.** Of the 10 "already upstream" commits in §2, 8 are
+  identical and 2 differ but carry nothing we need.
+- **The delete bug is narrower than first described.** `Item.setContainer(null)` makes the
+  deleted item a codependent of its former container, so on the old jar the delete *is* written
+  the next time that container (e.g. the avatar) is checkpointed. It is lost only if the server
+  stops first (crash, deploy restart, OOM, SIGKILL). The fix closes that window.
+- **Credit:** the modern mongo-driver series on our line was written by Frank Reynolds, not Randy.
+
+### Still untested (carry into Phase 3 verification)
+
+- The Oracle bot and its Discord round trip (needs Discord tokens).
+- Sage (needs `ANTHROPIC_API_KEY`).
+- A real C64 client (no VICE on the build box).
+- MongoDB 8 (out of scope per §7; prod is on 7).
+
+### Still to do outside this change
+
+- **Prod cleanup of resurrected husk rows** (vatty, lena, ash, oracle). The fix prevents new
+  husks but does not remove existing ones; they load faithfully under the new jar.
+- Phase 3 as written: confirm jitpack `status ok` for `daaff50d62` (primed in Phase 2, before the pom
+  bump), **back up prod mongo**, then merge only on Randy's explicit go-ahead, since merging to
+  master auto-deploys.
