@@ -973,6 +973,42 @@ function specialCommand(bot, line) {
   return bot.say(line)
 }
 
+// Another avatar's worn / held / pocketed item is not a floor object.
+// pick_up and walk_to_object (and the other "go over and use the noid"
+// tools) would otherwise pathfind to it as if it were lying in the
+// region — the same misread that made Sage narrate Randy's head on the
+// ground. Own pockets are allowed through; grab_from_avatar is the way
+// to take what someone else is holding.
+function refusalIfCarriedByOther(bot, noid, toolName) {
+  const hit = awareness.carriedByOtherAvatar(bot, noid)
+  if (!hit) return null
+  const { owner, item } = hit
+  const y = item.mod && item.mod.y
+  const how = y === awareness.HEAD_SLOT ? 'wearing'
+    : y === awareness.HANDS_SLOT ? 'holding'
+      : 'carrying'
+  const who = owner.name || 'another avatar'
+  const namePart = item.name && item.name !== item.type ? ` "${item.name}"` : ''
+  const label = `${item.type}${namePart}`
+  let next = ''
+  if (toolName === 'pick_up' && y === awareness.HANDS_SLOT && owner.noid != null) {
+    next = ` To take what they are holding, use grab_from_avatar(${owner.noid}).`
+  } else if (toolName === 'walk_to_object' || toolName === 'talk_to_object') {
+    next = ` To approach ${who}, use walk_to_avatar.`
+  }
+  return {
+    ok: false,
+    error: `${who} is ${how} ${label}. It is on their person, not in the region.${next}`,
+  }
+}
+
+function refusalForCarriedRef(bot, ref, toolName) {
+  if (!bot.world || !ref) return null
+  const item = bot.world.getByRef(ref)
+  if (!item) return null
+  return refusalIfCarriedByOther(bot, item.noid, toolName)
+}
+
 // executeAction: run the tool the model asked for and return a JSON-able
 // result for the next turn. The result shape mirrors what's useful to
 // Claude — { ok: true } for void ops, an items array for list_inventory,
@@ -1004,12 +1040,16 @@ async function executeAction(toolUse, bot, ctx) {
         await withTimeout(bot.walkTo(args.x, args.y, args.facing || 0), 30_000, 'walkTo')
         return { ok: true }
       case 'walk_to_object': {
+        const refused = refusalIfCarriedByOther(bot, args.noid, 'walk_to_object')
+        if (refused) return refused
         const walked = await withTimeout(
           bot.performVerb(ACTION_GO, args.noid, args.pass_through ? { passThrough: true } : {}),
           30_000, 'walk_to_object')
         return walked.ok ? { ok: true } : { ok: false, error: walked.reason }
       }
       case 'talk_to_object': {
+        const refused = refusalIfCarriedByOther(bot, args.noid, 'talk_to_object')
+        if (refused) return refused
         // Walk adjacent first (GO), then TALK — matches the teleport flow
         // where adjacency is required before ZAPTO routes through.
         const go = await withTimeout(
@@ -1056,6 +1096,8 @@ async function executeAction(toolUse, bot, ctx) {
 
       // ── object manipulation ─────────────────────────────────────
       case 'pick_up': {
+        const refused = refusalIfCarriedByOther(bot, args.noid, 'pick_up')
+        if (refused) return refused
         // bot.getIntoHands routes to the correct habiworld behavior:
         // an item in our OWN pocket is unpocketed via avatar_get (GET on
         // self); a ground item walks+GETs via generic_goToAndGet/head_get.
@@ -1187,6 +1229,8 @@ async function executeAction(toolUse, bot, ctx) {
       // walks adjacent, waits for the animation, then sends OPEN/CLOSE.
       case 'open':
       case 'close': {
+        const refused = refusalIfCarriedByOther(bot, args.noid, name)
+        if (refused) return refused
         // Container/door DO toggles (generic_adjacentOpenClose*) do NOT
         // walk — they punt to depends() when not adjacent, so the OPEN
         // never reaches the wire and looks like a silent refusal. Walk
@@ -1203,6 +1247,8 @@ async function executeAction(toolUse, bot, ctx) {
       // (generic_goToFurniture): walks over, SITORSTAND, tracks the
       // avatar's container so the world model knows we're seated.
       case 'sit_down': {
+        const refused = refusalIfCarriedByOther(bot, args.noid, 'sit_down')
+        if (refused) return refused
         const sat = await withTimeout(
           bot.performVerb(ACTION_GO, args.noid), 30_000, 'sit_down')
         return sat.ok ? { ok: true, posture: sat.posture } : { ok: false, error: sat.reason }
@@ -1217,6 +1263,8 @@ async function executeAction(toolUse, bot, ctx) {
         return stood.ok ? { ok: true } : { ok: false, error: stood.reason }
       }
       case 'do_object': {
+        const refused = refusalIfCarriedByOther(bot, args.noid, 'do_object')
+        if (refused) return refused
         const done = await withTimeout(
           bot.performVerb(ACTION_DO, args.noid, {
             amount: args.amount, text: args.text,
@@ -1333,6 +1381,8 @@ async function executeAction(toolUse, bot, ctx) {
 
       // ── apparel ─────────────────────────────────────────────────
       case 'wear_item': {
+        const refused = refusalForCarriedRef(bot, args.ref, 'wear_item')
+        if (refused) return refused
         // wearItem routes through habiworld: ACTION_GET (head_get) to bring a
         // head into HANDS, then ACTION_PUT on self (avatar_put) which wears it
         // if the HEAD slot is free, else pockets it. Report what actually
@@ -1357,6 +1407,8 @@ async function executeAction(toolUse, bot, ctx) {
         }
       }
       case 'remove_item': {
+        const refused = refusalForCarriedRef(bot, args.ref, 'remove_item')
+        if (refused) return refused
         const removed = await withTimeout(bot.removeItem(args.ref), 10_000, 'remove_item')
         return removed.ok ? { ok: true } : { ok: false, error: removed.reason }
       }
