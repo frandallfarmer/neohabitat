@@ -1,6 +1,6 @@
 # Plan: converge our Elko fork with FUDCo upstream
 
-**Status:** proposed 2026-11-09; Phase 0 and Phase 1 passed; **Phase 2 decided 2026-11-12: converge on upstream** (see §8). Phase 3 (ship) not started. Tracking issue: #730.
+**Status:** proposed 2026-11-09; Phase 0 and Phase 1 passed; **Phase 2 decided 2026-11-12: converge on upstream** (see §8). **Phase 3 complete 2026-11-12: production is on upstream Elko** (see §9). Tracking issue: #730.
 
 **Goal:** stop carrying a long-lived divergent Elko fork. Get back to consuming something very
 close to `FUDCo/Elko` master, and send our genuine fixes upstream as PRs instead of hoarding
@@ -125,7 +125,7 @@ risk gate** — we are swapping driver strategy, and prod data is live.
 
 **Gate:** a written decision, in this file.
 
-### Phase 3 — Ship
+### Phase 3 — Ship — **complete 2026-11-12** (see §9)
 1. Prime jitpack for the final sha; bump `pom.xml`.
 2. Backup prod mongo (`~/backups/elko-<ts>.archive.gz`).
 3. Deploy during a quiet window — **merging to master auto-deploys**, so this needs Randy's
@@ -217,3 +217,59 @@ Full report: kept outside the repo (`elko-phase1/REPORT.md` on the build box).
 - Phase 3 as written: confirm jitpack `status ok` for `daaff50d6288b2676c4a5ee1357bd12b1bc9e021` (primed in Phase 2, before the pom
   bump), **back up prod mongo**, then merge only on Randy's explicit go-ahead, since merging to
   master auto-deploys.
+
+---
+
+## 9. Phase 3 shipped (2026-11-12)
+
+**Phase 3 is complete.** Production is on the pin decided in §8. Deployed about 19:27 UTC
+through the normal push-to-master build-and-push workflow, then ansible. `bridge_v2.service`
+restarted with that deploy.
+
+| | Value |
+|---|---|
+| NeoHabitat pin | `com.github.frandallfarmer:Elko:daaff50d6288b2676c4a5ee1357bd12b1bc9e021` (`frandallfarmer/Elko`) |
+| Contents | FUDCo/Elko master `0475c93` (legacy Mongo driver 5.13.0, Java 17) + `14c1c25` (delete-on-delete) + `jitpack.yml` |
+| Pre-deploy backup | `~/backups/elko-20261112T191759Z-pre-upstream-elko.archive.gz` on prod (26,817 docs), with an off-host copy |
+
+Post-deploy checks: containers healthy (`neohabitat`, Mongo 7.0, bots); the deployed jar
+contains the Mongo 5.x legacy driver; bots reconnected; the `odb` document count was unchanged.
+
+**Live delete verification on prod.** Randy threw away a blank Paper while staying in the
+region, so no region-exit flush could happen. A watcher polled `odb` every 250 ms. Thrown at
+20:52:06.929 UTC; document `i-8089823286216907657` was gone at 20:52:07.162, the first check
+after the throw. An earlier test was inconclusive because the avatar changed regions.
+
+### Upstreaming the fix
+
+Opened FUDCo/Elko PR #13, "Persist object deletion at delete time, not at an eventual
+checkpoint" (https://github.com/FUDCo/Elko/pull/13). The patch is a `checkpoint()` between
+`markAsDeleted()` and `myContextor.remove(this)` in
+`ServerCore/java/org/elkoserver/server/context/Item.java`. Awaiting Chip's review. Once it
+merges, NeoHabitat can repin to an upstream commit and drop the fork-only commit.
+
+### Related fix found during verification
+
+SageBot started describing other avatars' worn and carried items (head, bag, money) as lying
+on the floor. The server was sending the right messages: Elko sends carried items as `make`
+messages addressed to `user-<name>-<session>`. The bug was in `habibots/lib/sage/awareness.js`
+`describeWorld()`, which listed every non-avatar object as a room object except Sage's own.
+
+Fixed in neohabitat PR #737 (https://github.com/frandallfarmer/neohabitat/pull/737, squash
+`d77da5d`): possessions are listed under their owner using the `bot.world` model, and
+`pick_up` / `walk_to_object` refuse other avatars' gear. 71 habibots tests passing. Deployed
+about 21:26 UTC and confirmed fixed by Randy in-world.
+
+**Operator note.** Elko gives each region a new session, and refs get a per-session suffix.
+`bridge_v2` (host systemd unit `bridge_v2.service`, logs in `journalctl -u bridge_v2`) is what
+holds a user session together, so session and reconnect questions should be investigated in
+the bridge log.
+
+### Open follow-ups
+
+Not done yet:
+
+- Clean up previously resurrected Paper rows in prod (avatars vatty, lena, ash, oracle), if they are still present.
+- Investigate a `bridge_v2` reconnect-storm.
+- Reset the stale `master` branch of the `frandallfarmer/Elko` fork (§7).
+- Repin to an upstream commit once FUDCo/Elko#13 merges, and drop the fork-only commit.
