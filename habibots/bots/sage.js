@@ -193,16 +193,23 @@ Memory:
   something the hard way. Facts about PEOPLE still go in remember().
 
 Inventory & HANDS:
-- "In your pockets" lists what YOU carry; "Interactable objects in
-  this region" lists what's NOT yours. Don't confuse the two.
+- "In your pockets" lists what YOU carry. Under each other avatar,
+  "wearing", "holding", and "carrying" lines are what THEY have on
+  them. Those items are on their person. A head listed as "wearing"
+  is on their shoulders; do not describe it as sitting on the ground.
+- "Interactable objects in this region" lists only what is in the room:
+  loose objects, furniture, and items tagged [inside ...] an open
+  container. Never pick_up or walk_to_object something listed under an
+  avatar. To take the one item an avatar is HOLDING, use grab_from_avatar.
 - An Avatar holds EXACTLY ONE thing in HANDS (slot 5). Other items live
-  in numbered pocket slots (Head=6, Paper=4, Tokens=0, etc.). Scene
-  shows each as [IN HANDS] or [pocket slot N].
+  in numbered pocket slots (worn head = 6, mail paper = 4, the rest are
+  pockets). Your own lines show [IN HANDS], [mail-slot], or [pocket slot N].
 - list_inventory() gives you the truth on-demand.
 
 Object recipes (read before you guess):
-- Pick up something on the floor: pick_up(ref, noid) — moves it into
-  your HANDS. Requires HANDS empty.
+- Pick up something on the floor, or inside an open container in the
+  room: pick_up(ref, noid) — moves it into your HANDS. Requires HANDS
+  empty. Refuses items another avatar is wearing or carrying.
 - Move a pocket item into HANDS: same pick_up — works on your own
   pocket items too.
 - Drop the thing in your HANDS: put_down(ref). The item being put
@@ -1091,13 +1098,12 @@ const recentInteractComments = []              // most recent first
 async function interactTick() {
   try {
     const objs = awareness.objectsByType(SageBot)
-    // An item is "in the room" iff its _container points at the region
-    // ref (set by the make-event tagging in habibot.js processElkoMessage).
-    // Items in any avatar's pocket have _container = that user's ref;
-    // items inside open containers (Box/Bag/Chest) sit at a non-region
-    // ref — skip both for interactTick.
-    const regionRef = awareness.currentRegionRef(SageBot)
-    const inRoom = (o) => o._container && o._container === regionRef
+    // Directly in the region (ground, furniture, doors). Skip anything an
+    // avatar is wearing or carrying, and anything inside a container.
+    // directlyInRegion reads the live world model, so a GET$ that moved
+    // an item into someone's hands isn't still a pickup target just
+    // because the make-time _container tag still says the region.
+    const inRoom = (o) => awareness.directlyInRegion(SageBot, o)
     const allChoices = []
     for (const o of objs.sittable.filter(inRoom)) allChoices.push({ kind: 'sit', obj: o })
     for (const o of objs.openable.filter(inRoom)) allChoices.push({ kind: 'open', obj: o })

@@ -18,6 +18,9 @@
 //   getInventory(bot)        → [{ ref, type, name, noid }] of items in pocket
 //   describeWorld(bot)       → multiline string for the LLM prompt
 //   currentRegionRef(bot)    → context-XX ref bot is in, or '' before entry
+//   owningAvatar(bot, obj)   → avatar/ghost that contains obj, or null
+//   carriedByOtherAvatar(bot, noid) → { owner, item } when someone else has it
+//   directlyInRegion(bot, obj) → true when obj is loose in the region
 
 // Container slot index for "the item the avatar is currently holding".
 // Mirrors HANDS = 5 from
@@ -26,6 +29,11 @@
 // glance which (if any) item is in the avatar's hands vs in numbered
 // pocket slots.
 const HANDS_SLOT = 5
+
+// HEAD = 6 (Constants.java). A head in this slot is being worn. The same
+// object in any other slot is just cargo — a spare head in a pocket is
+// not "on the ground" and not on the avatar's shoulders.
+const HEAD_SLOT = 6
 
 // MAIL_SLOT = 4 (Constants.java). Every Avatar always has a Paper here;
 // that paper is the mailbox. When new mail arrives for the bot, elko
@@ -159,11 +167,206 @@ function regionName(bot) {
   return (o && o.obj && o.obj.name) || ref
 }
 
+// The habiworld record for a legacy noid-table object, or the record
+// itself when that's what the caller already has. Prefer this over the
+// make-time `_container` tag: GET$/PUT$ update containerRef and slot,
+// but processElkoMessage only stamps `_container` when the make arrives.
+function worldRecord(bot, obj) {
+  if (!obj) return null
+  if (obj.mod && obj.containerRef !== undefined && obj.mods === undefined) return obj
+  const world = bot.world
+  if (!world) return null
+  const noid = obj.noid != null ? obj.noid
+    : (obj.mods && obj.mods[0] && obj.mods[0].noid)
+  if (noid != null) {
+    const byNoid = world.get(noid)
+    if (byNoid) return byNoid
+  }
+  if (obj.ref) return world.getByRef(obj.ref)
+  return null
+}
+
+// Look up an avatar/ghost by its session ref. A `user-...` container
+// that isn't in the object table yet is still someone's pocket — return
+// a stub so callers don't describe the item as loose in the room.
+function avatarByRef(bot, ref) {
+  if (!ref || typeof ref !== 'string') return null
+  if (bot.world) {
+    const rec = bot.world.getByRef(ref)
+    if (rec && (rec.type === 'Avatar' || rec.type === 'Ghost')) return rec
+  }
+  if (bot.avatars) {
+    for (const name in bot.avatars) {
+      const av = bot.avatars[name]
+      if (av && av.ref === ref) {
+        return {
+          type: 'Avatar',
+          name,
+          ref,
+          noid: av.mods && av.mods[0] && av.mods[0].noid,
+          mod: (av.mods && av.mods[0]) || {},
+        }
+      }
+    }
+  }
+  if (ref.startsWith('user-')) {
+    return { type: 'Avatar', name: ref, ref, noid: null, mod: {} }
+  }
+  return null
+}
+
+// The avatar (or ghost) that ultimately contains this object — worn,
+// held, pocketed, or tucked inside something they are carrying. Null
+// when the object is in the region or inside a container that is itself
+// in the region (an open box on the floor). Walks the live container
+// chain so a stale `_container` tag can't put Randy's head on the ground
+// after he picks something up, or leave a dropped item in his pocket.
+function owningAvatar(bot, obj) {
+  const world = bot.world
+  const record = worldRecord(bot, obj)
+  const regionRef = (world && world.region && world.region.ref) || currentRegionRef(bot)
+  if (record && world) {
+    const seen = new Set()
+    let cursor = record
+    while (cursor && cursor.containerRef && cursor.containerRef !== regionRef) {
+      if (cursor.ref && seen.has(cursor.ref)) break
+      if (cursor.ref) seen.add(cursor.ref)
+      const parent = world.getByRef(cursor.containerRef)
+      if (!parent) return avatarByRef(bot, cursor.containerRef)
+      if (parent.type === 'Avatar' || parent.type === 'Ghost') return parent
+      cursor = parent
+    }
+    return null
+  }
+  const container = obj && (obj._container || obj.containerRef)
+  if (!container || (regionRef && container === regionRef)) return null
+  return avatarByRef(bot, container)
+}
+
+// { owner, item } when `noid` is worn, held, or carried by someone other
+// than the bot — including when it's inside a bag they are carrying.
+// Null for ground items, open containers in the room, and our own pockets.
+function carriedByOtherAvatar(bot, noid) {
+  const world = bot.world
+  if (!world || noid == null) return null
+  const item = world.get(noid)
+  if (!item) return null
+  const owner = owningAvatar(bot, item)
+  if (!owner) return null
+  const me = world.me
+  if (me && owner.noid != null && owner.noid === me.noid) return null
+  if (me && owner.ref && me.ref && owner.ref === me.ref) return null
+  return { owner, item }
+}
+
+// True when the object sits directly in the region (floor, furniture,
+// a door), not in a pocket and not inside a container. Uses the world
+// model when it has the object so interact-ticks don't chase an item
+// somebody already picked up.
+function directlyInRegion(bot, obj) {
+  const record = worldRecord(bot, obj)
+  const world = bot.world
+  if (record && world && world.region && world.region.ref) {
+    return record.containerRef === world.region.ref
+  }
+  const regionRef = currentRegionRef(bot)
+  return !!(obj && obj._container && regionRef && obj._container === regionRef)
+}
+
+// Immediate non-region container, or null when the object is loose in
+// the region (or its container isn't in the model).
+function immediateContainer(bot, obj) {
+  const world = bot.world
+  const record = worldRecord(bot, obj)
+  const regionRef = (world && world.region && world.region.ref) || currentRegionRef(bot)
+  if (record && world) {
+    if (!record.containerRef || record.containerRef === regionRef) return null
+    return world.getByRef(record.containerRef)
+  }
+  const container = obj && obj._container
+  if (!container || container === regionRef) return null
+  if (world && world.getByRef(container)) return world.getByRef(container)
+  if (bot.noids) {
+    for (const n in bot.noids) {
+      const o = bot.noids[n]
+      if (o && o.ref === container && o.mods && o.mods[0]) {
+        return {
+          type: o.mods[0].type,
+          name: o.name || o.mods[0].type,
+          ref: o.ref,
+          noid: o.mods[0].noid,
+          mod: o.mods[0],
+        }
+      }
+    }
+  }
+  return null
+}
+
+function formatItem(record) {
+  const namePart = record.name && record.name !== record.type ? ` "${record.name}"` : ''
+  return `${record.type}${namePart} (noid ${record.noid}, ref ${record.ref})`
+}
+
+// Plain-language slot for somebody else's gear. y=6 is worn, y=5 is the
+// one thing in their hand, y=4 is the paper/mail slot, everything else
+// is a pocket.
+function formatPossession(record) {
+  const y = record.mod.y
+  let verb = 'carrying'
+  let slot = ` [pocket slot ${y}]`
+  if (y === HEAD_SLOT) {
+    verb = 'wearing'
+    slot = ''
+  } else if (y === HANDS_SLOT) {
+    verb = 'holding'
+    slot = ''
+  } else if (y === MAIL_SLOT) {
+    slot = ' [mail-slot]'
+  }
+  return `${verb} ${formatItem(record)}${slot}`
+}
+
+function possessionRank(record) {
+  const y = record.mod.y
+  if (y === HEAD_SLOT) return 0
+  if (y === HANDS_SLOT) return 1
+  return 2
+}
+
+// Lines describing what an avatar is wearing, holding, and carrying.
+// Contents of something they have on them (an open bag) stay nested
+// here so they never show up as loose room objects.
+function holdingLines(bot, avatarNoid) {
+  const lines = []
+  if (!bot.world || avatarNoid == null) return lines
+  const records = bot.world.inventory(avatarNoid)
+    .filter((r) => r.type !== 'Avatar' && r.type !== 'Ghost')
+    .sort((a, b) => possessionRank(a) - possessionRank(b) || (a.mod.y - b.mod.y) || (a.noid - b.noid))
+  for (const record of records) {
+    lines.push(`      ${formatPossession(record)}`)
+    appendNestedContents(bot, lines, record, 0)
+  }
+  return lines
+}
+
+function appendNestedContents(bot, lines, record, depth) {
+  if (!bot.world || depth > 4) return
+  const kids = bot.world.contentsOf(record.noid)
+    .filter((k) => k.type !== 'Avatar' && k.type !== 'Ghost')
+    .sort((a, b) => a.noid - b.noid)
+  for (const kid of kids) {
+    lines.push(`${'  '.repeat(4 + depth)}containing ${formatItem(kid)}`)
+    appendNestedContents(bot, lines, kid, depth + 1)
+  }
+}
+
 // Multiline string for direct injection into Claude's prompt. Contains
 // everything sage needs to reason about its environment in one go:
 // region label + ref, exits with their target refs, avatars present
-// (with noid + flag for which ones look like bots), what's in the
-// bot's pockets, and what's interactable in the room.
+// (with noid + flag for which ones look like bots, and the gear each
+// one is wearing / holding / carrying), what's in the bot's pockets,
+// and what's actually interactable in the room.
 function describeWorld(bot) {
   const ref = currentRegionRef(bot)
   const lines = []
@@ -194,6 +397,10 @@ function describeWorld(bot) {
     if (name === myName) continue
     const tag = looksLikeBotName(name) ? ' (bot)' : ''
     avatarLines.push(`  - ${name} (noid ${av.mods[0].noid})${tag}`)
+    // Their worn / held / pocketed gear. These makes arrive addressed
+    // to the avatar's session ref, so they live in the noid table, but
+    // they are not objects in the room.
+    avatarLines.push(...holdingLines(bot, av.mods[0].noid))
   }
   lines.push(`Avatars present:`)
   lines.push(...(avatarLines.length ? avatarLines : ['  (none)']))
@@ -254,27 +461,25 @@ function describeWorld(bot) {
   }
 
   // Interactables in the room — by category, with refs+noids so Claude
-  // can call open/sit/pick_up with valid arguments.
+  // can call open/sit/pick_up with valid arguments. Anything an avatar
+  // is wearing or carrying (including the bot's own pockets, already
+  // listed above) is omitted; those makes are addressed to a user-ref,
+  // not the region. Items inside an open container that is itself in
+  // the room stay here, tagged with that container, so a book in a box
+  // doesn't read as a loose object and doesn't disappear either.
   const objs = objectsByType(bot)
-  // Same matching as getInventory above — pocket items have _container
-  // = the full session ref (names.ME), not the trimmed user-NAME form.
-  const myFullRef = bot.names && bot.names.ME
-  const myShortRef = bot.names && bot.names.USER
-  const isMine = (o) =>
-    o._container && (
-      o._container === myFullRef ||
-      (myShortRef && o._container.startsWith(myShortRef + '-'))
-    )
   lines.push(`Interactable objects in this region:`)
   let any = false
   for (const cat of ['sittable', 'openable', 'pickupable', 'other']) {
     for (const o of objs[cat]) {
-      // Skip items in our own pocket — they're listed above; describing
-      // them here too is the exact bug we're fixing.
-      if (isMine(o)) continue
+      if (owningAvatar(bot, o)) continue
       const m = o.mods[0]
       const namePart = o.name && o.name !== m.type ? ` "${o.name}"` : ''
-      lines.push(`  - [${cat}] ${m.type}${namePart} (noid ${m.noid}, ref ${o.ref})`)
+      const parent = immediateContainer(bot, o)
+      const inside = parent && parent.type !== 'Avatar' && parent.type !== 'Ghost' && parent.type !== 'Region'
+        ? ` [inside ${formatItem(parent)}]`
+        : ''
+      lines.push(`  - [${cat}] ${m.type}${namePart} (noid ${m.noid}, ref ${o.ref})${inside}`)
       any = true
     }
   }
@@ -313,8 +518,10 @@ function typeForRef(bot, ref) {
 // The set of context keys describing "where sage is right now", for
 // matching against procedural memory (memory.proceduresFor). A lesson is
 // keyed to a region name or an object type; we surface it when sage is in
-// that region OR can see / is carrying that kind of object. All lowercased
-// so storage and retrieval agree on casing.
+// that region, can see that kind of object in the room (including inside
+// an open container), or is carrying one. Another avatar's pockets do
+// not count — a head on Randy is not a Head lying in the region. All
+// lowercased so storage and retrieval agree on casing.
 function currentContextKeys(bot) {
   const keys = new Set()
   const region = currentRegionRef(bot)
@@ -324,6 +531,9 @@ function currentContextKeys(bot) {
   const objs = objectsByType(bot)
   for (const cat of ['sittable', 'openable', 'pickupable', 'other']) {
     for (const o of objs[cat]) {
+      // Another avatar's pockets are not "the kind of thing in the room".
+      // Our own inventory is added below, from the live world model.
+      if (owningAvatar(bot, o)) continue
       const t = o.mods && o.mods[0] && o.mods[0].type
       if (t) keys.add(t.toLowerCase())
     }
@@ -344,7 +554,11 @@ module.exports = {
   typeForRef,
   currentContextKeys,
   looksLikeBotName,
+  owningAvatar,
+  carriedByOtherAvatar,
+  directlyInRegion,
   HANDS_SLOT,
+  HEAD_SLOT,
   MAIL_SLOT,
   PAPER_BLANK_STATE,
   PAPER_WRITTEN_STATE,
