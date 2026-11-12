@@ -39,21 +39,16 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver</artifactId>
-            <version>3.12.14</version>
-        </dependency>
-        <dependency>
-            <!-- Randy's Elko fork, branch fix/persist-container-open-state:
-                 ssalevan's driver modernization (7ff0284) + two container
-                 fixes: persist open/closed state at transition time
-                 (FUDCo/Elko PR #4) and replaceOne instead of updateOne($set)
-                 so omitted-field encodes (e.g. 'closed') actually clear in
-                 mongo. Together they fix open containers arriving empty for
-                 users entering the region. -->
+            <!-- Randy's Elko fork, branch upstream-converge: FUDCo/Elko
+                 master (0475c93) + the delete-on-delete fix (Item.delete()
+                 checkpoints before removing the object, so deleted objects
+                 such as mailed Paper don't resurrect) + a jitpack.yml that
+                 builds with JDK 17. Upstream brings mongodb-driver-legacy
+                 5.x transitively, so no separate mongodb-driver dependency.
+                 See ELKO_UPSTREAM_PLAN.md and issue #730. -->
             <groupId>com.github.frandallfarmer</groupId>
             <artifactId>Elko</artifactId>
-            <version>94c6db64fe</version>
+            <version>daaff50d62</version>
         </dependency>
     </dependencies>
 
