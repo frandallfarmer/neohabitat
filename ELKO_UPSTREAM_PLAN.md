@@ -161,7 +161,7 @@ mongo-driver series on it) is abandoned; it stays on the fork untouched for roll
 | New live line | `frandallfarmer/Elko` branch `upstream-converge` @ `daaff50d62` |
 | Contents | `fudco/master` `0475c93` + `14c1c25` (delete-on-delete, the `1b9a753` fix re-picked onto upstream) + `daaff50` (`jitpack.yml`, JDK 17) |
 | Upstream PR source | `frandallfarmer/Elko` branch `upstream/delete-on-delete` @ `14c1c25` (PR to FUDCo/Elko not yet opened) |
-| NeoHabitat change | `pom.xml` only: pin `com.github.frandallfarmer:Elko:daaff50d62`, drop `org.mongodb:mongodb-driver` 3.12.14 (upstream brings `mongodb-driver-legacy` 5.13.0 transitively). No Java changes. |
+| NeoHabitat change | `pom.xml` only: pin `com.github.frandallfarmer:Elko:daaff50d6288b2676c4a5ee1357bd12b1bc9e021` (full sha; jitpack cached a `tagNotFound` for the short form), drop `org.mongodb:mongodb-driver` 3.12.14 (upstream brings `mongodb-driver-legacy` 5.13.0 transitively). No Java changes. |
 
 ### Phase 1 evidence (summary)
 
@@ -214,6 +214,6 @@ Full report: kept outside the repo (`elko-phase1/REPORT.md` on the build box).
 
 - **Prod cleanup of resurrected husk rows** (vatty, lena, ash, oracle). The fix prevents new
   husks but does not remove existing ones; they load faithfully under the new jar.
-- Phase 3 as written: confirm jitpack `status ok` for `daaff50d62` (primed in Phase 2, before the pom
+- Phase 3 as written: confirm jitpack `status ok` for `daaff50d6288b2676c4a5ee1357bd12b1bc9e021` (primed in Phase 2, before the pom
   bump), **back up prod mongo**, then merge only on Randy's explicit go-ahead, since merging to
   master auto-deploys.
