@@ -48,7 +48,7 @@
                  See ELKO_UPSTREAM_PLAN.md and issue #730. -->
             <groupId>com.github.frandallfarmer</groupId>
             <artifactId>Elko</artifactId>
-            <version>daaff50d62</version>
+            <version>daaff50d6288b2676c4a5ee1357bd12b1bc9e021</version>
         </dependency>
     </dependencies>
 
