@@ -80,6 +80,7 @@ function start_pushserver() {
 }
 
 function start_elko_server() {
+  bash "$(cd "$(dirname "$0")" && pwd)/scripts/install-elko.sh"
   mvn package
   java "${JVM_ARGS[@]}" \
     -jar ${GIT_BASE_DIR}/target/neohabitat-${VERSION}.jar \

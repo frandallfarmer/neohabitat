@@ -12,6 +12,9 @@ FROM quay.io/centos/centos:stream9
 
 # ── OS deps ──────────────────────────────────────────────────────────
 # NodeSource sets up the dnf repo for Node 20.
+# java-21-openjdk-devel, not the JRE package: Elko compiles with
+# --release 17, and the JRE compiler rejects that. Maven also pulls a
+# Java 17 JRE, which would otherwise be the only java on the image.
 RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
 
 RUN dnf -y install \
@@ -19,7 +22,7 @@ RUN dnf -y install \
       --setopt=tsflags=nodocs \
       cronie \
       git \
-      java-21-openjdk \
+      java-21-openjdk-devel \
       make \
       maven \
       nc \
@@ -31,6 +34,11 @@ RUN dnf -y install \
  && dnf clean all \
  && rm -rf /var/cache/dnf
 
+# Maven's dependency on a Java 17 JRE would otherwise win `java` via
+# alternatives. Elko and the server both need the JDK above.
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
 # `supervisor` (the file-watcher) restarts node services on source changes
 # in dev. Pure JS, no native deps.
 RUN npm install -g supervisor
@@ -40,7 +48,15 @@ WORKDIR /neohabitat
 # ── Dependency layers (cached when source-only changes happen) ───────
 # Maven first: copy the POM and prime the local repo. The actual `mvn package`
 # runs after source is in place.
+#
+# Elko is not resolved from JitPack. Upstream FUDCo/Elko has no jitpack.yml,
+# and JitPack's default JDK 8 cannot compile it (--release 17; selectable-tls
+# is class version 61). install-elko.sh clones the commit in pom.xml and
+# installs it into this image's local Maven repo, which `run`'s startup
+# `mvn package` then reuses.
 COPY pom.xml ./
+COPY scripts/install-elko.sh scripts/install-elko.sh
+RUN bash scripts/install-elko.sh
 RUN mvn -B -q dependency:go-offline || true
 
 # npm deps for the subdirs the runtime actually uses.
