@@ -7,6 +7,11 @@
     <packaging>jar</packaging>
     <version>0.1.0-SNAPSHOT</version>
 
+    <properties>
+        <!-- FUDCo/Elko commit installed by scripts/install-elko.sh. -->
+        <elko.commit>6f8b6f98452f4ca7e6e80a88707acd694a540660</elko.commit>
+    </properties>
+
     <profiles>
       <profile>
         <id>doclint-disabled</id>
@@ -18,13 +23,6 @@
         </properties>
       </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -39,16 +37,20 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <!-- Randy's Elko fork, branch upstream-converge: FUDCo/Elko
-                 master (0475c93) + the delete-on-delete fix (Item.delete()
-                 checkpoints before removing the object, so deleted objects
-                 such as mailed Paper don't resurrect) + a jitpack.yml that
-                 builds with JDK 17. Upstream brings mongodb-driver-legacy
-                 5.x transitively, so no separate mongodb-driver dependency.
-                 See ELKO_UPSTREAM_PLAN.md and issue #730. -->
-            <groupId>com.github.frandallfarmer</groupId>
-            <artifactId>Elko</artifactId>
-            <version>daaff50d6288b2676c4a5ee1357bd12b1bc9e021</version>
+            <!-- FUDCo/Elko 6f8b6f9: master 0475c93 plus the delete-on-delete
+                 fix (Item.delete() checkpoints before removing the object, so
+                 deleted objects such as mailed Paper don't resurrect). Same
+                 Java as frandallfarmer/Elko daaff50; that pin's only extra
+                 file was a jitpack.yml. JitPack builds this commit with JDK 8
+                 and fails (selectable-tls 0.1.0 is class version 61, and the
+                 pom compiles with release 17). There is no consumer-side
+                 JitPack JDK switch, so scripts/install-elko.sh clones this
+                 commit and installs org.elko:elkoserver:${elko.commit}.
+                 Upstream brings mongodb-driver-legacy 5.13.0 transitively.
+                 Issue #730. -->
+            <groupId>org.elko</groupId>
+            <artifactId>elkoserver</artifactId>
+            <version>${elko.commit}</version>
         </dependency>
     </dependencies>
 
@@ -112,7 +114,7 @@
                         <additionalDependency>
                             <groupId>org.elko</groupId>
                             <artifactId>elkoserver</artifactId>
-                            <version>2.0.4-SNAPSHOT</version>
+                            <version>${elko.commit}</version>
                         </additionalDependency>
                     </additionalDependencies>
                     <additionalparam>${javadoc.opts}</additionalparam>
