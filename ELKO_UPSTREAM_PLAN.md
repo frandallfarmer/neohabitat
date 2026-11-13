@@ -245,8 +245,9 @@ after the throw. An earlier test was inconclusive because the avatar changed reg
 Opened FUDCo/Elko PR #13, "Persist object deletion at delete time, not at an eventual
 checkpoint" (https://github.com/FUDCo/Elko/pull/13). The patch is a `checkpoint()` between
 `markAsDeleted()` and `myContextor.remove(this)` in
-`ServerCore/java/org/elkoserver/server/context/Item.java`. Awaiting Chip's review. Once it
-merges, NeoHabitat can repin to an upstream commit and drop the fork-only commit.
+`ServerCore/java/org/elkoserver/server/context/Item.java`. Chip merged it into FUDCo/Elko
+master at 2026-11-12T21:29:34Z (1:29 PM PT Nov 12) as merge commit
+`6f8b6f98452f4ca7e6e80a88707acd694a540660` (`14c1c25` on top of `0475c93`).
 
 ### Related fix found during verification
 
@@ -272,4 +273,4 @@ Not done yet:
 - Clean up previously resurrected Paper rows in prod (avatars vatty, lena, ash, oracle), if they are still present.
 - Investigate a `bridge_v2` reconnect-storm.
 - Reset the stale `master` branch of the `frandallfarmer/Elko` fork (§7).
-- Repin to an upstream commit once FUDCo/Elko#13 merges, and drop the fork-only commit.
+- The upstream fix is merged. A repin of production to FUDCo/Elko `6f8b6f98` is being prepared in a separate PR (not yet deployed).
