@@ -272,5 +272,15 @@ Not done yet:
 
 - Clean up previously resurrected Paper rows in prod (avatars vatty, lena, ash, oracle), if they are still present.
 - Investigate a `bridge_v2` reconnect-storm.
-- Reset the stale `master` branch of the `frandallfarmer/Elko` fork (§7).
-- The upstream fix is merged. A repin of production to FUDCo/Elko `6f8b6f98` is being prepared in a separate PR (not yet deployed).
+- Once FUDCo/Elko#14 (`jitpack.yml`) merges: pin `com.github.FUDCo:Elko:<commit>` and delete
+  `scripts/install-elko.sh` and the Dockerfile's build-from-source step.
+
+### Done since
+
+- **Production is on upstream.** #739 repinned to FUDCo/Elko `6f8b6f98` (the #13 merge), deployed
+  2026-11-13 17:35 UTC. JitPack can't build upstream (no `jitpack.yml`, defaults to JDK 8), so
+  `scripts/install-elko.sh` builds that commit from source. Opened FUDCo/Elko#14 to add `jitpack.yml`.
+- **Fork retired (2026-11-17).** `frandallfarmer/Elko` `master` fast-forwarded to upstream
+  `6f8b6f98` (it was 0 ahead, 21 behind). All other branches deleted after tagging their heads
+  `archive/*`. Every Elko commit NeoHabitat has ever pinned (`7ff0284`, `94c6db64fe`, `daaff50d62`,
+  `61c78f4`) is still reachable, so old commits stay buildable for rollback.
