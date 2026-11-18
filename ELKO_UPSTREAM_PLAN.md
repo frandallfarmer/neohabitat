@@ -1,6 +1,6 @@
 # Plan: converge our Elko fork with FUDCo upstream
 
-**Status:** proposed 2026-11-09; Phase 0 and Phase 1 passed; **Phase 2 decided 2026-11-12: converge on upstream** (see §8). **Phase 3 complete 2026-11-12: production is on upstream Elko** (see §9). Tracking issue: #730.
+**Status:** proposed 2026-11-09; Phase 0 and Phase 1 passed; **Phase 2 decided 2026-11-12: converge on upstream** (see §8). **Phase 3 complete 2026-11-12: production is on upstream Elko** (see §9). **2026-11-18: no fork, no workaround — prod consumes `com.github.FUDCo:Elko` from JitPack** (see §9, Done since). Tracking issue: #730.
 
 **Goal:** stop carrying a long-lived divergent Elko fork. Get back to consuming something very
 close to `FUDCo/Elko` master, and send our genuine fixes upstream as PRs instead of hoarding
@@ -270,10 +270,7 @@ the bridge log.
 
 Not done yet:
 
-- Clean up previously resurrected Paper rows in prod (avatars vatty, lena, ash, oracle), if they are still present.
 - Investigate a `bridge_v2` reconnect-storm.
-- Once FUDCo/Elko#14 (`jitpack.yml`) merges: pin `com.github.FUDCo:Elko:<commit>` and delete
-  `scripts/install-elko.sh` and the Dockerfile's build-from-source step.
 
 ### Done since
 
@@ -284,3 +281,21 @@ Not done yet:
   `6f8b6f98` (it was 0 ahead, 21 behind). All other branches deleted after tagging their heads
   `archive/*`. Every Elko commit NeoHabitat has ever pinned (`7ff0284`, `94c6db64fe`, `daaff50d62`,
   `61c78f4`) is still reachable, so old commits stay buildable for rollback.
+- **Old hands-papers cleaned (2026-11-17).** The Oracle's row was already gone. Lena, Vatty and
+  ash each had a WRITTEN Paper stored in HANDS (y=5). Only the Oracle's was ever proven to be a
+  resurrected sent letter (live `PSENDMAIL` trace). The three players were inferred from the row
+  shape, and ash's page reads as a letter received from Naibor. So they were **moved** to pocket
+  slot 1, not deleted: hands unblocked, page kept. All three were offline (no bridge activity
+  since Oct 13). Backup: `~/backups/elko-20261117T181420Z-pre-hands-paper-fix.archive.gz`
+  (dry-run restore ok) plus the original rows in `hands-papers-20261117T181420Z.json`. No user
+  Papers remain in HANDS.
+- **Back on plain JitPack (2026-11-18).** FUDCo/Elko#14 (`jitpack.yml`) merged 2026-11-17, and
+  JitPack builds upstream `b36bf4e` with JDK 17 (`status ok`). #740 pinned
+  `com.github.FUDCo:Elko:b36bf4e4e1`, restored the `jitpack.io` repository, and removed
+  `scripts/install-elko.sh`. No server code change: upstream `6f8b6f9..b36bf4e` is `jitpack.yml`
+  only. Merged as `c8f45fbc` in a quiet window (no recent player logins). Deploy finished
+  18:24 UTC. Verified on prod: the running image is `:latest`, built 18:21. Elko resolved from
+  `com.github/FUDCo/Elko/b36bf4e4…`, with no `org.elko` artifact and no install script in the
+  image. `bridge_v2` was untouched (binary and process unchanged, exe not `(deleted)`). The bots
+  restarted after Elko and all four (oracle, sagebot, elizabot, welcomebot) re-entered their
+  regions. Post-deploy bridge errors were restart churn only (10, against 8 for the Nov 13 deploy).
