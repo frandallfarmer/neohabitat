@@ -8,7 +8,7 @@
     "debug": "supervisor --inspect -i public,views -w bin,constants,habiproxy,routes -- bin/pushserver"
   },
   "dependencies": {
-    "@maximegris/node-websockify": "^1.0.7",
+    "@maximegris/node-websockify": "^2.0.0",
     "cookie-parser": "^1.4.7",
     "cookie-session": "^2.0.0-beta.3",
     "debug": "~4.4.3",
