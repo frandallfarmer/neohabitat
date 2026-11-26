@@ -8,20 +8,20 @@
     "debug": "supervisor --inspect -i public,views -w bin,constants,habiproxy,routes -- bin/pushserver"
   },
   "dependencies": {
-    "@maximegris/node-websockify": "^1.0.7",
+    "@maximegris/node-websockify": "^2.0.0",
     "cookie-parser": "^1.4.7",
     "cookie-session": "^2.0.0-beta.3",
     "debug": "~4.4.3",
-    "ejs": "~6.0.1",
+    "ejs": "~7.0.2",
     "express": "^5.3.0",
-    "marked": "^18.1.2",
+    "marked": "^18.2.1",
     "mongo": "^0.1.0",
     "mongodb": "^7.8",
     "morgan": "^1.12.1",
     "serve-favicon": "^2.5.0",
     "supervisor": "^0.12.0",
     "winston": "^3.19.0",
-    "ws": "^8.22.1",
+    "ws": "^8.23.0",
     "yamljs": "^0.3.0"
   },
   "overrides": {
